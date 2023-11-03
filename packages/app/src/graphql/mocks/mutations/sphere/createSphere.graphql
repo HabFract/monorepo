@@ -1,0 +1,8 @@
+mutation addSphere($variables: SphereCreateUpdateParams!) {
+  createSphere(burner: $variables) {
+    payload {
+      headerHash
+      entryHash
+    }
+  }
+}

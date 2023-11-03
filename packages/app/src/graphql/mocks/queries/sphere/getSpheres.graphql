@@ -1,0 +1,12 @@
+query getSpheres {
+  spheres {
+    edges {
+      node {
+        name
+        metadata {
+          description
+        }
+      }
+    }
+  }
+}

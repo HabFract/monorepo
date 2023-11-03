@@ -9,7 +9,7 @@ export default function MyPage() {
       imgAlt="Meaningful alt text for an image that is not purely decorative"
       imgSrc="/images/blog/image-1.jpg"
     >
-      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+      <h5 className="text-2xl font-light tracking-wide text-gray-900 dark:text-white">
         <p>
           Noteworthy technology acquisitions 2021
         </p>

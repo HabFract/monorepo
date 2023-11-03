@@ -1,0 +1,12 @@
+query getMe {
+  me {
+    agentPubKey
+    profile {
+      nickname
+      fields {
+        avatar
+        location
+      }
+    }
+  }
+}

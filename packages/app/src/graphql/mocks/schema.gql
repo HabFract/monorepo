@@ -1,0 +1,149 @@
+# General GQL Types
+type Query {
+  sphere(id: ID!): Sphere!
+  spheres: SphereConnection!
+  habit(id: ID!): Habit!
+  habits: HabitConnection!
+  me: AgentProfile!
+}
+
+type Mutation {
+  createSphere(sphere: SphereCreateUpdateParams): SphereCreateResponse!
+  updateSphere(sphere: SphereCreateUpdateParams): Sphere!
+  createHabit(habit: HabitCreateUpdateParams): HabitCreateResponse!
+  updateHabit(habit: HabitCreateUpdateParams): Habit!
+  createProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
+  updateProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
+}
+
+scalar DateTime
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String!
+  endCursor: String!
+}
+interface Node {
+  id: ID!
+}
+
+# Holochain Specific Types
+type ResponsePayload {
+  headerHash: String!
+  entryHash: String!
+}
+
+# ---- Profiles ----- #
+# Profiles GQL Types
+
+# Profiles Types
+type AgentProfile {
+  agentPubKey: String!
+  profile: Profile!
+}
+
+type Profile {
+  nickname: String!
+  fields: ProfileFields
+}
+
+type ProfileFields {
+  location: String
+  isPublic: String
+  avatar: String
+}
+
+# Profile Input/Output
+input UserProfileCreateUpdateParams {
+  nickname: String!
+  location: String
+  isPublic: String
+  avatar: String
+}
+
+# ---- Sphere ----- #
+# Sphere GQL Types
+type SphereConnection {
+  edges: [SphereEdge!]!
+  pageInfo: PageInfo!
+}
+
+type SphereEdge {
+  cursor: String!
+  node: Sphere!
+}
+
+# Sphere Types
+type Sphere implements Node {
+  id: ID!
+  name: String!
+  metadata: SphereMetaData
+}
+
+type SphereMetaData {
+  description: String!
+  hashtag: String
+}
+
+# Sphere Input/Outputs
+input SphereCreateUpdateParams {
+  name: String!
+  description: String!
+  hashtag: String
+}
+
+type SphereCreateResponse {
+  payload: ResponsePayload!
+}
+
+# ---- Habit ----- #
+# Habit GQL Types
+type HabitConnection {
+  edges: [HabitEdge!]!
+  pageInfo: PageInfo!
+}
+
+type HabitEdge {
+  cursor: String!
+  node: Habit!
+}
+
+# Habit Types
+type Habit implements Node {
+  id: ID!
+  name: String!
+  timeframe: TimeFrame!
+  metadata: HabitMetaData
+}
+type TimeFrame {
+  startTime: DateTime!
+  endTime: DateTime!
+}
+
+type HabitMetaData {
+  description: String!
+  isAtomic: String!
+  # atomicListEntryHash: String
+}
+
+# Habit Input/Outputs
+input HabitCreateUpdateParams {
+  name: String!
+  startTime: DateTime!
+  endTime: DateTime!
+  description: String!
+  isAtomic: String!
+  # atomicListEntryHash: String
+}
+
+type HabitCreateResponse {
+  payload: ResponsePayload!
+}
+
+#
+type Todo {
+  id: ID!
+  description: String!
+  status: Boolean!
+}

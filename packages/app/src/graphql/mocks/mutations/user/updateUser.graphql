@@ -1,0 +1,8 @@
+mutation updateUser($profileFields: UserProfileCreateUpdateParams!) {
+  updateProfile(profile: $profileFields) {
+    agentPubKey
+    profile {
+      nickname
+    }
+  }
+}
