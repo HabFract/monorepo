@@ -1,56 +1,31 @@
-import { MockedProvider } from '@apollo/client/testing';
-import { gql } from '@apollo/client';
+import { aSphere } from './generated/mocks';
 
-export const SPHERES_MOCK = {
+import gql from 'graphql-tag';
+import { loader } from 'graphql.macro';
+
+const GET_SPHERE = loader('../queries/sphere/getSpheres.graphql');
+const GET_SPHERES = loader('../queries/sphere/getSpheres.graphql');
+
+export const SPHERES_MOCKS = [{
   request: {
-    query: gql`
-      query GetSpheres {
-        spheres {
-          edges {
-            cursor
-            node {
-              id
-              name
-              metadata {
-                description
-                hashtag
-              }
-            }
-          }
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
-          }
-        }
-      }
-    `,
+    query: GET_SPHERES,
+    variables: {},
   },
   result: {
     data: {
-      spheres: {
-        edges: [
-          {
-            cursor: 'cursor1',
-            node: {
-              id: '1',
-              name: 'Sphere 1',
-              metadata: {
-                description: 'Description for Sphere 1',
-                hashtag: '#sphere1'
-              },
-            },
-          },
-          // ...add more mock spheres as needed
-        ],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
-          startCursor: 'cursor1',
-          endCursor: 'cursor1',
-        },
-      },
+      sphere: [aSphere()],
     },
   },
-};
+},
+{
+  request: {
+    query: GET_SPHERE,
+    variables: {},
+  },
+  result: {
+    data: {
+      habit: aSphere(),
+    },
+  },
+}
+]

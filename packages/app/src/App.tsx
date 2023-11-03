@@ -1,12 +1,15 @@
-import { aSphere, aHabit, anAgentProfile, aResponsePayload } from './graphql/generated/mocks';
+import { Buffer } from 'buffer'
+
+globalThis.Buffer = Buffer
+
 import ButtonPage from './pages'
 import './App.css'
 
 import { MockedProvider } from '@apollo/client/testing';
-import { SPHERES_MOCK } from './graphql/mocks/spheres';
+import { SPHERES_MOCKS } from './graphql/mocks/spheres';
 const mocks = [
-  SPHERES_MOCK,
-  ORBITS_MOCK,
+  ...SPHERES_MOCKS,
+  // ORBITS_MOCKS,
   // ...add other mocks here
 ];
 
