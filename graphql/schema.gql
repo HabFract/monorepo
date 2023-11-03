@@ -1,0 +1,22 @@
+type Query {
+  habits: [Habit!]!
+}
+
+type Mutation {
+  createHabit(input: HabitInput!): Habit!
+  updateHabit(id: ID!, input: HabitInput!): Habit!
+  deleteHabit(id: ID!): Boolean!
+}
+
+type Habit {
+  id: ID!
+  name: String!
+  description: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+input HabitInput {
+  name: String!
+  description: String
+}
