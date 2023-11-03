@@ -8,5 +8,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "graphql-tag": "^2.12.6",
+    "graphql.macro": "^1.4.2"
+  }
 }
