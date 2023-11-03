@@ -1,10 +1,9 @@
+import { GetSpheresQueryResult } from './generated/index';
 import { aSphere } from './generated/mocks';
 
-import gql from 'graphql-tag';
-import { loader } from 'graphql.macro';
-
-const GET_SPHERE = loader('../queries/sphere/getSpheres.graphql');
-const GET_SPHERES = loader('../queries/sphere/getSpheres.graphql');
+// import GET_SPHERE from './queries/sphere/getSphere.graphql';
+import CREATE_SPHERE from './mutations/sphere/createSphere.graphql';
+import GET_SPHERES from './queries/sphere/getSpheres.graphql';
 
 export const SPHERES_MOCKS = [{
   request: {
@@ -13,18 +12,18 @@ export const SPHERES_MOCKS = [{
   },
   result: {
     data: {
-      sphere: [aSphere()],
+      GetSpheresQueryResult: [aSphere()],
     },
   },
 },
 {
   request: {
-    query: GET_SPHERE,
+    query: CREATE_SPHERE,
     variables: {},
   },
   result: {
     data: {
-      habit: aSphere(),
+      sphere: aSphere(),
     },
   },
 }

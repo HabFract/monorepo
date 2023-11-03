@@ -1,7 +1,3 @@
-import { Buffer } from 'buffer'
-
-globalThis.Buffer = Buffer
-
 import ButtonPage from './pages'
 import './App.css'
 
