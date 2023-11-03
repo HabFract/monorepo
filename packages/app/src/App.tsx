@@ -1,4 +1,5 @@
-import ButtonPage from './pages'
+import CreateSphere from './components/CreateSphere';
+import ListSpheres from './components/ListSpheres';
 import './App.css'
 
 import { MockedProvider } from '@apollo/client/testing';
@@ -13,7 +14,8 @@ function App() {
 
   return (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <ButtonPage></ButtonPage>
+      <CreateSphere />
+      <ListSpheres />
     </MockedProvider>
   )
 }
