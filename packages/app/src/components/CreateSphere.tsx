@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAddSphereMutation } from '../graphql/mocks/generated';
+import { Button, Input, Label } from 'flowbite';
 
 function CreateSphere() {
   const [name, setName] = useState('');
@@ -8,7 +9,6 @@ function CreateSphere() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      console.log('{ variables: { name } } :>> ', { variables: { name } });
       await createSphere({ variables: { name } });
     } catch (error) {
       console.error(error);
@@ -16,14 +16,14 @@ function CreateSphere() {
   };
 
   return (
-    <div>
-      <h2>Create Sphere</h2>
+    <div className="p-4">
+      <h2 className="mb-4 text-lg font-semibold text-gray-700">Create Sphere</h2>
       <form onSubmit={handleSubmit}>
-        <label>
-          Name:
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-        </label>
-        <button type="submit">Create Sphere</button>
+        <Label>
+          <span>Name:</span>
+          <Input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+        </Label>
+        <Button type="submit" variant="primary" className="mt-4">Create Sphere</Button>
       </form>
     </div>
   );
