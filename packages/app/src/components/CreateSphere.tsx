@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import CREATE_SPHERE from '../graphql/mutations/sphere/createSphere.graphql';
+import { useAddSphereMutation } from '../graphql/mocks/generated';
 
 function CreateSphere() {
   const [name, setName] = useState('');
-  const [createSphere, { data }] = useMutation(CREATE_SPHERE);
+  const [createSphere, { data }] = useAddSphereMutation()
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      console.log('{ variables: { name } } :>> ', { variables: { name } });
       await createSphere({ variables: { name } });
     } catch (error) {
       console.error(error);

@@ -6,12 +6,13 @@ function ListSpheres() {
   const { loading, error, data } = useQuery(GET_SPHERES);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (error) return <p>Error :</p>;
 
+  console.log('data.spheres :>> ', data.spheres);
   return (
     <div>
       <h2>List Spheres</h2>
-      {data.spheres.map(({ name }) => (
+      {data.spheres.edges.map(({ node: { name } }) => (
         <p key={name}>{name}</p>
       ))}
     </div>

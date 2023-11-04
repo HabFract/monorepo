@@ -1,5 +1,5 @@
 mutation addSphere($variables: SphereCreateUpdateParams!) {
-  createSphere(burner: $variables) {
+  createSphere(sphere: $variables) {
     payload {
       headerHash
       entryHash

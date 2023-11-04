@@ -14,8 +14,10 @@ function App() {
 
   return (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <CreateSphere />
-      <ListSpheres />
+      <>
+        <CreateSphere />
+        <ListSpheres />
+      </> 
     </MockedProvider>
   )
 }
