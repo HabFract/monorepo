@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { CREATE_SPHERE } from '../graphql/mutations/sphere';
+import CREATE_SPHERE from '../graphql/mutations/sphere/createSphere.graphql';
 
 function CreateSphere() {
   const [name, setName] = useState('');

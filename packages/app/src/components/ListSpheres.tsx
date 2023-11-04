@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_SPHERES } from '../graphql/queries/sphere';
+import GET_SPHERES from '../graphql/queries/sphere/getSpheres.graphql';
 
 function ListSpheres() {
   const { loading, error, data } = useQuery(GET_SPHERES);
