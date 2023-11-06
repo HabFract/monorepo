@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAddSphereMutation } from '../graphql/mocks/generated';
-import { Button, Input, Label } from 'flowbite';
+import { Button, Input, Label } from 'flowbite-react';
 
 function CreateSphere() {
   const [name, setName] = useState('');
