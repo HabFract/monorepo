@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAddSphereMutation } from '../graphql/mocks/generated';
-import { Button, Input, Label } from 'flowbite-react';
+import { Button, TextInput, Label } from 'flowbite-react';
 
 function CreateSphere() {
   const [name, setName] = useState('');
@@ -21,7 +21,7 @@ function CreateSphere() {
       <form onSubmit={handleSubmit}>
         <Label>
           <span>Name:</span>
-          <Input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+          <TextInput type="text" value={name} onChange={(e) => setName(e.target.value)} required />
         </Label>
         <Button type="submit" variant="primary" className="mt-4">Create Sphere</Button>
       </form>
