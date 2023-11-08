@@ -1,6 +1,8 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import GET_SPHERES from '../graphql/queries/sphere/getSpheres.graphql';
+import PageHeader from './PageHeader';
+import ListSortFilter from './ListSortFilter';
 
 function ListSpheres() {
   const { loading, error, data } = useQuery(GET_SPHERES);
@@ -8,13 +10,15 @@ function ListSpheres() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :</p>;
 
-  console.log('data.spheres :>> ', data.spheres);
   return (
     <div>
-      <h2>List Spheres</h2>
-      {data.spheres.edges.map(({ node: { name } }) => (
-        <p key={name}>{name}</p>
-      ))}
+      <PageHeader title="List of Spheres" />
+      <ListSortFilter />
+      <div className="spheres-list">
+        {data.spheres.edges.map(({ node }) => (
+          <p key={node.id}>{node.name}</p> // Adjusted to match the GraphQL schema assuming 'id' is part of the node
+        ))}
+      </div>
     </div>
   );
 }
