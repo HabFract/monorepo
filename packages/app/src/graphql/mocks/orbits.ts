@@ -69,19 +69,16 @@ export const ORBITS_MOCKS = [{
   request: {
     query: CREATE_ORBIT,
     variables: {
-      variables:{
       name: "ABC",
       hashtag: "ABC",
       description: "ABC",
-    }},
+    },
   },
   result: {
     data: {
-      createSphere: {
-        payload: {
-          headerHash: "mockedHeaderHash",
-          entryHash: "mockedEntryHash",
-        },
+      createOrbit: {
+        actionHash: "bW9ja2VkQWN0aW9uSGFzaA==", // Base64 for "mockedActionHash"
+        entryHash: "bW9ja2VkRW50cnlIYXNo", // Base64 for "mockedEntryHash"
       },
     },
   },
