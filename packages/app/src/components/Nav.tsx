@@ -37,8 +37,8 @@ function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
   return [...spheres.edges!.map((sphere: SphereEdge, idx: number) => {
     return getItem(`S${(idx + 1).toString()}`, sphere.node.id, null,
       [
-        getItem('Item 1', 'g1', null, [getItem('Option 1', '1'), getItem('Option 2', '1')], 'group'),
-        getItem('Item 2', 'g2', null, [getItem('Option 3', '1'), getItem('Option 4', '1')], 'group'),
+        getItem('List Orbits', 'list-orbits', null),
+        getItem('Create Orbit', 'add-orbit', null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'
       ])
   }),
   getItem('Add Sphere', 'add-sphere', <PlusCircleOutlined />)] 
@@ -61,6 +61,14 @@ const Nav: React.FC = ({children, transition} : any) => {
     
       case 'list-spheres':
         transition('ListSpheres')
+        break;
+
+      case 'add-orbit':
+        transition('CreateOrbit')
+        break;
+    
+      case 'list-orbits':
+        transition('ListOrbits')
         break;
     
       default:
