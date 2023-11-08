@@ -16,8 +16,9 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
         <div className="orbit-title">
           <h2>{orbit.name}</h2>
         </div>
-        <div className="orbit-timeframe">
-          <p>{orbit?.timeframe.startTime}</p>
+        <div className="orbit-timeframe flex flex-col items-center">
+          <p>Last tracked:</p>
+          <p>{new Date(orbit?.timeframe.startTime).toLocaleDateString('en-GB')}</p>
         </div>
       </header>
       <div className="orbit-description flex items-center justify-center">
