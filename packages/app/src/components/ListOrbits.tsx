@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 import GET_ORBITS from '../graphql/queries/orbit/getOrbits.graphql';
 import PageHeader from './PageHeader';
 import ListSortFilter from './ListSortFilter';
-import OrbitCard from './cards/OrbitCard';
+import OrbitCard from '../../../design-system/cards/OrbitCard';
 
 function ListOrbits() {
   const { loading, error, data } = useQuery(GET_ORBITS);

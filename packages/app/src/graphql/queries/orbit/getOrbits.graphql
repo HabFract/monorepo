@@ -6,7 +6,8 @@ query getOrbits {
         name
         metadata {
           description
-          isAtomic
+          frequency
+          scale
         }
         timeframe {
           startTime

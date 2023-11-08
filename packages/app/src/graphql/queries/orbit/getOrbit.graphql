@@ -3,7 +3,8 @@ query getOrbit($id: ID!) {
     name
     metadata {
       description
-      isAtomic
+      frequency
+      scale
     }
     timeframe {
       startTime

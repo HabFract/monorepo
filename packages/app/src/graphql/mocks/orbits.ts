@@ -2,6 +2,7 @@ import { aOrbitConnection } from './generated/mocks';
 
 import CREATE_ORBIT from '../mutations/orbit/createOrbit.graphql';
 import GET_ORBITS from '../queries/orbit/getOrbits.graphql';
+import { Frequency, Scale } from './generated';
 
 export const ORBITS_MOCKS = [{
   request: {
@@ -26,30 +27,39 @@ export const ORBITS_MOCKS = [{
               endTime: 1617321600,   // Mocked Unix timestamp for example
             },
           },
+          cursor: ''
         },
         {
           node: {
             id: 'TGlmdCB3ZWlnaHRz', // Base64 for "Lift weights"
             name: 'Lift weights',
-            description: 'Strength training to build muscle and increase metabolism.',
             metadata: {
               description: 'Strength training to build muscle and increase metabolism.',
               frequency: Frequency.WEEK, // Assuming 'MONTH' should be replaced with 'WEEK' as 'MONTH' is not part of the enum
               scale: Scale.MICRO,
             },
+            timeframe: {
+              startTime: 1617235200, // Mocked Unix timestamp for example
+              endTime: 1617321600,   // Mocked Unix timestamp for example
+            },
           },
+          cursor: ''
         },
         {
           node: {
             id: 'UmVhZCBhbiBpbnRlcmVzdGluZyBib29r', // Base64 for "Read an interesting book"
             name: 'Read an interesting book',
-            description: 'Reading to expand knowledge and relax the mind.',
             metadata: {
               description: 'Reading to expand knowledge and relax the mind.',
               frequency: Frequency.DAY, // Assuming 'YEAR' should be replaced with 'DAY' as 'YEAR' is not part of the enum
               scale: Scale.MACRO,
             },
+            timeframe: {
+              startTime: 1617235200, // Mocked Unix timestamp for example
+              endTime: 1617321600,   // Mocked Unix timestamp for example
+            },
           },
+          cursor: ''
         },
       ]})
     },
@@ -58,7 +68,8 @@ export const ORBITS_MOCKS = [{
 {
   request: {
     query: CREATE_ORBIT,
-    variables: {variables:{
+    variables: {
+      variables:{
       name: "ABC",
       hashtag: "ABC",
       description: "ABC",
