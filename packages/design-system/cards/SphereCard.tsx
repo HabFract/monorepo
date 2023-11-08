@@ -2,6 +2,7 @@ import React from 'react';
 import { PieChartOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import SpherePie from '../vis/SpherePie';
 import { Sphere } from '../../app/src/graphql/mocks/generated';
+import { Button } from 'flowbite-react';
 
 type SphereCardProps = {
   sphere: Sphere;
@@ -12,6 +13,8 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere }) => {
   return (
     <div className="sphere-card flex flex-col">
       <header className="sphere-header">
+
+      <Button>Click me</Button>
         <h2 style={{ textAlign: 'center' }}>{sphere.name}</h2>
       </header>
       <div className="sphere-description">
