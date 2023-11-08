@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { StateMachine, StateTransitions } from './stateMachine.ts'
-import CreateSphere from './components/CreateSphere.tsx'
+import CreateSphere from './components/forms/CreateSphere.tsx'
 import ListSpheres from './components/ListSpheres.tsx'
 import { StateMachineContext } from './contexts/state-machine.ts'
 
