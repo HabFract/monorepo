@@ -14,7 +14,39 @@ export const SPHERES_MOCKS = [{
     data: {
       
       orbits: aOrbitConnection({edges: [
-        // ... Add your mock orbit data here
+        {
+          node: {
+            id: 'R28gZm9yIGEgd2Fsay==', // Base64 for "Go for a walk"
+            name: 'Go for a walk',
+            description: 'A daily walk to improve cardiovascular health.',
+            metadata: {
+              frequency: 'DAY',
+              scale: 'ATOMIC',
+            },
+          },
+        },
+        {
+          node: {
+            id: 'TGlmdCB3ZWlnaHRz', // Base64 for "Lift weights"
+            name: 'Lift weights',
+            description: 'Strength training to build muscle and increase metabolism.',
+            metadata: {
+              frequency: 'MONTH',
+              scale: 'MICRO',
+            },
+          },
+        },
+        {
+          node: {
+            id: 'UmVhZCBhbiBpbnRlcmVzdGluZyBib29r', // Base64 for "Read an interesting book"
+            name: 'Read an interesting book',
+            description: 'Reading to expand knowledge and relax the mind.',
+            metadata: {
+              frequency: 'YEAR',
+              scale: 'MACRO',
+            },
+          },
+        },
       ]})
     },
   },
