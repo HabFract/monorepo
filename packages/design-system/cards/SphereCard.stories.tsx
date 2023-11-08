@@ -1,14 +1,14 @@
 import React from 'react';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import SphereCard from './SphereCard';
-import { Sphere } from '../../graphql/mocks/generated';
+import { Sphere } from '../../app/src/graphql/mocks/generated';
 
 export default {
   title: 'Components/Cards/SphereCard',
   component: SphereCard,
 } as Meta;
 
-const Template: Story<{ sphere: Sphere }> = (args) => <SphereCard {...args} />;
+const Template: StoryFn<{ sphere: Sphere }> = (args) => <SphereCard {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

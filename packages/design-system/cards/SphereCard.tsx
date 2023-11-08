@@ -1,7 +1,7 @@
 import React from 'react';
-import { PieChartOutlined, UnorderedListOutlined } from '@ant-design/icons'; // Import icons
-import SpherePie from '../vis/SpherePie'; // Import the new SpherePie component
-import { Sphere } from '../../graphql/mocks/generated';
+import { PieChartOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import SpherePie from '../vis/SpherePie';
+import { Sphere } from '../../app/src/graphql/mocks/generated';
 
 type SphereCardProps = {
   sphere: Sphere;
