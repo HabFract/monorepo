@@ -5,6 +5,7 @@ query getSpheres {
         name
         metadata {
           description
+          hashtag
         }
       }
     }

@@ -13,11 +13,11 @@ export const SPHERES_MOCKS = [{
   result: {
     data: {
       spheres: aSphereConnection({edges: [
-        aSphereEdge({node: aSphere({id: '1', name:'bob', metadata: {hashtag: 'hello', description: 'world'}})}),
-        aSphereEdge({node: aSphere({id: '2', name:'bob', metadata: {hashtag: 'hello', description: 'world'}})}),
-        aSphereEdge({node: aSphere({id: '3', name:'bob', metadata: {hashtag: 'hello', description: 'world'}})}),
-        aSphereEdge({node: aSphere({id: '4', name:'bob', metadata: {hashtag: 'hello', description: 'world'}})}),
-        aSphereEdge({node: aSphere({id: '5', name:'bob', metadata: {hashtag: 'hello', description: 'world'}})})]
+        aSphereEdge({node: aSphere({id: 'SGVhbHRoMQ==', name:'Health and Fitness', metadata: {hashtag: 'fitness exercise nutrition', description: 'Focus on physical health, exercise, and nutrition.'}})}),
+        aSphereEdge({node: aSphere({id: 'TWVudGFsV2VsbGJlaW5nMg==', name:'Mental Wellbeing', metadata: {hashtag: 'wellbeing mindfulness meditation', description: 'Improve your mental health through mindfulness and meditation.'}})}),
+        aSphereEdge({node: aSphere({id: 'UGVyc29uYWxEZXZlbG9wbWVudDM=', name:'Personal Development', metadata: {hashtag: 'learning growth self-improvement', description: 'Pursue personal growth and continuous learning.'}})}),
+        aSphereEdge({node: aSphere({id: 'U29jaWFsQ29ubmVjdGlvbjQ=', name:'Social Connection', metadata: {hashtag: 'relationships networking community', description: 'Build and maintain meaningful relationships.'}})}),
+        aSphereEdge({node: aSphere({id: 'V29ya0FuZENhcmVlcjU=', name:'Work and Career', metadata: {hashtag: 'career success work-life-balance', description: 'Advance your career while maintaining work-life balance.'}})})]
       })
     },
   },
