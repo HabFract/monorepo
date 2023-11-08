@@ -15,9 +15,7 @@ function ListSpheres() {
       <PageHeader title="List of Spheres" />
       <ListSortFilter />
       <div className="spheres-list">
-        {data.spheres.edges.map(({ node }) => (
-          <p key={node.id}>{node.name}</p> // Adjusted to match the GraphQL schema assuming 'id' is part of the node
-        ))}
+        {data.spheres.edges.map(({ node }) => <SphereCard key={node.id} sphere={node} />)}
       </div>
     </div>
   );
