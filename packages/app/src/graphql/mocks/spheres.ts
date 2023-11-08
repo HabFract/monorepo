@@ -12,7 +12,13 @@ export const SPHERES_MOCKS = [{
   },
   result: {
     data: {
-      spheres: aSphereConnection({edges: [aSphereEdge(),aSphereEdge(),aSphereEdge(),aSphereEdge(),aSphereEdge()]})
+      spheres: aSphereConnection({edges: [
+        aSphereEdge({node: aSphere({id: '1', name:'bob', metadata: {hashtag: 'hello', description: 'world'}})}),
+        aSphereEdge({node: aSphere({id: '2', name:'bob', metadata: {hashtag: 'hello', description: 'world'}})}),
+        aSphereEdge({node: aSphere({id: '3', name:'bob', metadata: {hashtag: 'hello', description: 'world'}})}),
+        aSphereEdge({node: aSphere({id: '4', name:'bob', metadata: {hashtag: 'hello', description: 'world'}})}),
+        aSphereEdge({node: aSphere({id: '5', name:'bob', metadata: {hashtag: 'hello', description: 'world'}})})]
+      })
     },
   },
 },
