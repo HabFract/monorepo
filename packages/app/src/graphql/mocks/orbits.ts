@@ -18,10 +18,15 @@ export const SPHERES_MOCKS = [{
           node: {
             id: 'R28gZm9yIGEgd2Fsay==', // Base64 for "Go for a walk"
             name: 'Go for a walk',
-            description: 'A daily walk to improve cardiovascular health.',
             metadata: {
+              description: 'A daily walk to improve cardiovascular health.',
               frequency: 'DAY',
               scale: 'ATOMIC',
+              isAtomic: true,
+            },
+            timeframe: {
+              startTime: 1617235200, // Mocked Unix timestamp for example
+              endTime: 1617321600,   // Mocked Unix timestamp for example
             },
           },
         },
