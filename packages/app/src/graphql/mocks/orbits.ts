@@ -69,9 +69,16 @@ export const ORBITS_MOCKS = [{
   request: {
     query: CREATE_ORBIT,
     variables: {
-      name: "ABC",
-      hashtag: "ABC",
-      description: "ABC",
+      name: 'Go for a walk',
+      metadata: {
+        description: 'A daily walk to improve cardiovascular health.',
+        frequency: Frequency.DAY,
+        scale: Scale.MICRO,
+      },
+      timeframe: {
+        startTime: 1617235200,
+        endTime: 1617321600,
+      },
     },
   },
   result: {
