@@ -19,9 +19,11 @@ export const SPHERES_MOCKS = [{
 {
   request: {
     query: CREATE_SPHERE,
-    variables: {
-      name: 'jjd'
-    },
+    variables: {variables:{
+      name: "ABC",
+      hashtag: "ABC",
+      description: "ABC",
+    }},
   },
   result: {
     data: {
