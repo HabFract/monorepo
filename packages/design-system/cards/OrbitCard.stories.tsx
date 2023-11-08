@@ -1,14 +1,14 @@
 import React from 'react';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import OrbitCard from './OrbitCard';
-import { Orbit } from '../../graphql/mocks/generated';
+import { Orbit } from '../../app/src/graphql/mocks/generated';
 
 export default {
   title: 'Components/Cards/OrbitCard',
   component: OrbitCard,
 } as Meta;
 
-const Template: Story<{ orbit: Orbit }> = (args) => <OrbitCard {...args} />;
+const Template: StoryFn<{ orbit: Orbit }> = (args) => <OrbitCard {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -1,0 +1,3 @@
+.card-h1 {
+  @apply uppercase text-[#3E3F48] font-semibold font-sans text-base leading-5 tracking-wide;
+}

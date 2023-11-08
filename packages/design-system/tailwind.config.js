@@ -4,9 +4,14 @@ export default {
     './**/*.{js,jsx,ts,tsx}',
     '../../node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}'
   ],
-  theme: {
-    extend: {},
-  },
   plugins: [require('flowbite/plugin')],
+  theme: {
+    textTransform: {
+      'uppercase': 'uppercase',
+    },
+    fontFamily: {
+      sans: ['Open Sans', 'Arial']
+    }
+  },
 }
 

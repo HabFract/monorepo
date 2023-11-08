@@ -1,5 +1,5 @@
 import React from 'react';
-import './cardStyles.css';
+import './common.css';
 import { PieChartOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import SpherePie from '../vis/SpherePie';
 import { Sphere } from '../../app/src/graphql/mocks/generated';

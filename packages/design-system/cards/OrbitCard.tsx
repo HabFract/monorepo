@@ -1,4 +1,5 @@
-import './cardStyles.css';
+
+import './common.css';
 import { EditOutlined, DeleteOutlined, PieChartOutlined } from '@ant-design/icons'; // Import icons
 import { Orbit } from '../../app/src/graphql/mocks/generated';
 import OrbitVis from '../vis/OrbitVis';
@@ -14,7 +15,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
     <div className="orbit-card flex flex-col rounded-lg">
       <header className="orbit-header flex bg-white rounded-t-lg items-center justify-around">
         <div className="orbit-title">
-          <h2 className="card-name">{orbit.name}</h2>
+          <h2 className="card-name card-h1">{orbit.name}</h2>
         </div>
         <div className="orbit-timeframe flex flex-col items-center">
           <p>Last tracked:</p>
