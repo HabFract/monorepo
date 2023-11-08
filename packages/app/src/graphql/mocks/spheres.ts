@@ -1,5 +1,5 @@
 import { GetSpheresQueryResult } from './generated/index';
-import { aSphere, aSphereConnection } from './generated/mocks';
+import { aSphere, aSphereConnection, aSphereEdge } from './generated/mocks';
 
 // import GET_SPHERE from './queries/sphere/getSphere.graphql';
 import CREATE_SPHERE from '../mutations/sphere/createSphere.graphql';
@@ -12,7 +12,7 @@ export const SPHERES_MOCKS = [{
   },
   result: {
     data: {
-      spheres: aSphereConnection()
+      spheres: aSphereConnection({edges: [aSphereEdge(),aSphereEdge(),aSphereEdge(),aSphereEdge(),aSphereEdge()]})
     },
   },
 },
