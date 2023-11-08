@@ -97,10 +97,23 @@ export type OrbitEdge = {
   node: Orbit
 }
 
+export enum Frequency {
+  DAY = 'DAY',
+  HOUR = 'HOUR',
+  WEEK = 'WEEK',
+}
+
+export enum Scale {
+  MICRO = 'MICRO',
+  MACRO = 'MACRO',
+  REGULAR = 'REGULAR',
+}
+
 export type OrbitMetaData = {
   __typename?: 'OrbitMetaData'
   description: Scalars['String']
-  isAtomic: Scalars['String']
+  frequency: Frequency
+  scale: Scale
 }
 
 export type Mutation = {
