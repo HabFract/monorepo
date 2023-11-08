@@ -1,5 +1,5 @@
 import React from 'react';
-import { PieChartOutlined, UnorderedListOutlined } from '@ant-design/icons'; // Import icons
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'; // Import icons
 import { Orbit } from '../../graphql/mocks/generated';
 
 type OrbitCardProps = {
@@ -9,27 +9,30 @@ type OrbitCardProps = {
 const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }) => {
   console.log('orbit :>> ', orbit);
   return (
-    <div className="orbit-card flex flex-col">
-      <header className="orbit-header">
-        <h2 style={{ textAlign: 'center' }}>{orbit.name}</h2>
+    <div className="orbit-card flex flex-col rounded-lg">
+      <header className="orbit-header flex bg-white rounded-t-lg">
+        <div className="orbit-title flex-1">
+          <h2>{orbit.name}</h2>
+        </div>
+        <div className="orbit-timeframe flex-1">
+          <p>{orbit.metadata?.timeframeStart}</p>
+        </div>
       </header>
-      <div className="orbit-description">
+      <div className="orbit-description flex items-center justify-center">
         <p>{orbit.metadata?.description}</p>
       </div>
-      <div className="orbit-actions flex">
-        <div className="actions" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <button>
-            <PieChartOutlined />
-            Visualise
-          </button>
-          <button>
-            <UnorderedListOutlined />
-            Orbits
-          </button>
-        </div>
-        <div className="mini-vis" style={{ flex: 1 }}>
-          Atomic? {orbit.metadata?.isAtomic && <p>{orbit.metadata.isAtomic}</p>}
-        </div>
+      <div className="orbit-actions flex justify-center">
+        <button className="flex-1">
+          <EditOutlined />
+          Edit
+        </button>
+        <button className="flex-1">
+          <DeleteOutlined />
+          Delete
+        </button>
+      </div>
+      <div className="mini-vis flex items-center justify-center">
+        Atomic? {orbit.metadata?.isAtomic && <p>{orbit.metadata.isAtomic}</p>}
       </div>
     </div>
   );
