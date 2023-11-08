@@ -24,13 +24,7 @@ function getItem(
 }
 
 function createFixedMenuItems() {
-  return [getItem('S1', '2', <MailOutlined />, [
-    getItem('Item 1', 'g1', null, [getItem('Option 1', '1'), getItem('Option 2', '2')], 'group'),
-    getItem('Item 2', 'g2', null, [getItem('Option 3', '3'), getItem('Option 4', '4')], 'group'),
-  ]),getItem('S1', '3', <MailOutlined />, [
-    getItem('Item 1', 'g1', null, [getItem('Option 1', '1'), getItem('Option 2', '2')], 'group'),
-    getItem('Item 2', 'g2', null, [getItem('Option 3', '3'), getItem('Option 4', '4')], 'group'),
-  ])]  
+  return [getItem('S1', '2', <MailOutlined />),getItem('S1', '3', <MailOutlined />)]  
 }
 
 function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
@@ -64,18 +58,19 @@ const Nav: React.FC = ({children, transition} : any) => {
 
   return (
     <>
-      {error && "Error"} 
-      {loading ? "Loading" : 
-        <Menu
-          onClick={onClick}
-          style={{ width: 256 }}
-          defaultSelectedKeys={['1']}
-          defaultOpenKeys={['sub1']}
-          mode="inline"
-          items={[...createSphereMenuItems(spheres), ...createFixedMenuItems()]}
-        />}
-
-      {children}
+      <nav className={"fixed inset-y-0 left-0 z-10"}>
+        {error && "Error"}
+        {loading ? "Loading" :
+          <Menu
+            onClick={onClick}
+            style={{ width: 256 }}
+            defaultSelectedKeys={['1']}
+            defaultOpenKeys={['sub1']}
+            mode="inline"
+            items={[...createSphereMenuItems(spheres), ...createFixedMenuItems()]}
+          />}
+      </nav>
+      <main className={"fixed w-full h-full inset-y-0 left-0"}>{children}</main>
     </>
   );
 };
