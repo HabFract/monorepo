@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "buffer": "^6.0.3",
-    "graphql-tag": "^2.12.6"
+    "formik": "^2.2.9",
+    "graphql-tag": "^2.12.6",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@rollup/plugin-graphql": "^2.0.4",
