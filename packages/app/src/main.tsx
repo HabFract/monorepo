@@ -43,7 +43,7 @@ and Plans that has a completely different screen to begin with.
 // | 'loaded'
 export type AppState = // Currently just for routing
 | 'Home'
-| 'About'
+| 'CreateSphere'
 | 'ListSpheres'
 
 /**
@@ -61,9 +61,9 @@ export type AppState = // Currently just for routing
 // loaded: ['loaded'],
 // }
 const AppTransitions: StateTransitions<AppState> = {
-  Home: ['About', 'ListSpheres'],
-  About: ['Home', 'ListSpheres'],
-  ListSpheres: ['Home', 'About'],
+  Home: ['CreateSphere', 'ListSpheres'],
+  CreateSphere: ['Home', 'ListSpheres'],
+  ListSpheres: ['Home', 'CreateSphere'],
   }
 
 /**
@@ -99,21 +99,21 @@ AppMachine.on('Home', async (_state: AppStateStore) => {
     <React.StrictMode>
       <StateMachineContext.Provider value={AppMachine as any}>
         <App>
-          <CreateSphere></CreateSphere>
+          Welcome Home
         </App>
       </StateMachineContext.Provider>
     </React.StrictMode>,
   )
 });
 
-AppMachine.on('About', async (_state: AppStateStore) => {
-  console.log('About');
-  // Render About component
+AppMachine.on('CreateSphere', async (_state: AppStateStore) => {
+  console.log('CreateSphere');
+  // Render CreateSphere component
   root.render(
     <React.StrictMode>
       <StateMachineContext.Provider value={AppMachine as any}>
         <App>
-          <p>HI</p>
+          <CreateSphere></CreateSphere>
         </App>
       </StateMachineContext.Provider>
     </React.StrictMode>,

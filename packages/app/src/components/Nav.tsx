@@ -55,11 +55,11 @@ const Nav: React.FC = ({children, transition} : any) => {
 
   const onClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
-      case '2':
-        transition('About')
+      case 'add-sphere':
+        transition('CreateSphere')
         break;
     
-      case '3':
+      case 'list-spheres':
         transition('ListSpheres')
         break;
     
