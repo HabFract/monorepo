@@ -1,15 +1,16 @@
-query getHabits {
-  habits {
+query getOrbits {
+  orbits {
     edges {
       node {
+        id
         name
-        timeframe {
-          startTime
-          endTime
-        }
         metadata {
           description
           isAtomic
+        }
+        timeframe {
+          startTime
+          endTime
         }
       }
     }

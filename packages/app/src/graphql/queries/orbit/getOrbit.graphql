@@ -1,5 +1,5 @@
-query getHabit($id: ID!) {
-  habit(id: $id) {
+query getOrbit($id: ID!) {
+  orbit(id: $id) {
     name
     timeframe {
       startTime
@@ -8,6 +8,10 @@ query getHabit($id: ID!) {
     metadata {
       description
       isAtomic
+    }
+    timeframe {
+      startTime
+      endTime
     }
   }
 }

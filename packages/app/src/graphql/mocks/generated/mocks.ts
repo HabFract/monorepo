@@ -6,12 +6,12 @@ import {
   SphereCreateUpdateParams,
   SphereEdge,
   SphereMetaData,
-  Habit,
-  HabitConnection,
-  HabitCreateResponse,
-  HabitCreateUpdateParams,
-  HabitEdge,
-  HabitMetaData,
+  Orbit,
+  OrbitConnection,
+  OrbitCreateResponse,
+  OrbitCreateUpdateParams,
+  OrbitEdge,
+  OrbitMetaData,
   Mutation,
   Node,
   PageInfo,
@@ -127,7 +127,7 @@ export const aSphereMetaData = (
   }
 }
 
-export const aHabit = (overrides?: Partial<Habit>): Habit => {
+export const aOrbit = (overrides?: Partial<Orbit>): Orbit => {
   return {
     id:
       overrides && overrides.hasOwnProperty('id')
@@ -136,7 +136,7 @@ export const aHabit = (overrides?: Partial<Habit>): Habit => {
     metadata:
       overrides && overrides.hasOwnProperty('metadata')
         ? overrides.metadata!
-        : aHabitMetaData(),
+        : aOrbitMetaData(),
     name:
       overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'odit',
     timeframe:
@@ -146,14 +146,14 @@ export const aHabit = (overrides?: Partial<Habit>): Habit => {
   }
 }
 
-export const aHabitConnection = (
-  overrides?: Partial<HabitConnection>,
-): HabitConnection => {
+export const aOrbitConnection = (
+  overrides?: Partial<OrbitConnection>,
+): OrbitConnection => {
   return {
     edges:
       overrides && overrides.hasOwnProperty('edges')
         ? overrides.edges!
-        : [aHabitEdge()],
+        : [aOrbitEdge()],
     pageInfo:
       overrides && overrides.hasOwnProperty('pageInfo')
         ? overrides.pageInfo!
@@ -161,9 +161,9 @@ export const aHabitConnection = (
   }
 }
 
-export const aHabitCreateResponse = (
-  overrides?: Partial<HabitCreateResponse>,
-): HabitCreateResponse => {
+export const aOrbitCreateResponse = (
+  overrides?: Partial<OrbitCreateResponse>,
+): OrbitCreateResponse => {
   return {
     payload:
       overrides && overrides.hasOwnProperty('payload')
@@ -172,9 +172,9 @@ export const aHabitCreateResponse = (
   }
 }
 
-export const aHabitCreateUpdateParams = (
-  overrides?: Partial<HabitCreateUpdateParams>,
-): HabitCreateUpdateParams => {
+export const aOrbitCreateUpdateParams = (
+  overrides?: Partial<OrbitCreateUpdateParams>,
+): OrbitCreateUpdateParams => {
   return {
     description:
       overrides && overrides.hasOwnProperty('description')
@@ -197,7 +197,7 @@ export const aHabitCreateUpdateParams = (
   }
 }
 
-export const aHabitEdge = (overrides?: Partial<HabitEdge>): HabitEdge => {
+export const aOrbitEdge = (overrides?: Partial<OrbitEdge>): OrbitEdge => {
   return {
     cursor:
       overrides && overrides.hasOwnProperty('cursor')
@@ -206,13 +206,13 @@ export const aHabitEdge = (overrides?: Partial<HabitEdge>): HabitEdge => {
     node:
       overrides && overrides.hasOwnProperty('node')
         ? overrides.node!
-        : aHabit(),
+        : aOrbit(),
   }
 }
 
-export const aHabitMetaData = (
-  overrides?: Partial<HabitMetaData>,
-): HabitMetaData => {
+export const aOrbitMetaData = (
+  overrides?: Partial<OrbitMetaData>,
+): OrbitMetaData => {
   return {
     description:
       overrides && overrides.hasOwnProperty('description')
@@ -231,10 +231,10 @@ export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
       overrides && overrides.hasOwnProperty('createSphere')
         ? overrides.createSphere!
         : aSphereCreateResponse(),
-    createHabit:
-      overrides && overrides.hasOwnProperty('createHabit')
-        ? overrides.createHabit!
-        : aHabitCreateResponse(),
+    createOrbit:
+      overrides && overrides.hasOwnProperty('createOrbit')
+        ? overrides.createOrbit!
+        : aOrbitCreateResponse(),
     createProfile:
       overrides && overrides.hasOwnProperty('createProfile')
         ? overrides.createProfile!
@@ -243,10 +243,10 @@ export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
       overrides && overrides.hasOwnProperty('updateSphere')
         ? overrides.updateSphere!
         : aSphere(),
-    updateHabit:
-      overrides && overrides.hasOwnProperty('updateHabit')
-        ? overrides.updateHabit!
-        : aHabit(),
+    updateOrbit:
+      overrides && overrides.hasOwnProperty('updateOrbit')
+        ? overrides.updateOrbit!
+        : aOrbit(),
     updateProfile:
       overrides && overrides.hasOwnProperty('updateProfile')
         ? overrides.updateProfile!
@@ -326,14 +326,14 @@ export const aQuery = (overrides?: Partial<Query>): Query => {
       overrides && overrides.hasOwnProperty('spheres')
         ? overrides.spheres!
         : aSphereConnection(),
-    habit:
-      overrides && overrides.hasOwnProperty('habit')
-        ? overrides.habit!
-        : aHabit(),
-    habits:
-      overrides && overrides.hasOwnProperty('habits')
-        ? overrides.habits!
-        : aHabitConnection(),
+    orbit:
+      overrides && overrides.hasOwnProperty('orbit')
+        ? overrides.orbit!
+        : aOrbit(),
+    orbits:
+      overrides && overrides.hasOwnProperty('orbits')
+        ? overrides.orbits!
+        : aOrbitConnection(),
     me:
       overrides && overrides.hasOwnProperty('me')
         ? overrides.me!
