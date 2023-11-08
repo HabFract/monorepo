@@ -6,6 +6,8 @@ import { StateMachine, StateTransitions } from './stateMachine.ts'
 import CreateSphere from './components/forms/CreateSphere.tsx'
 import ListSpheres from './components/ListSpheres.tsx'
 import { StateMachineContext } from './contexts/state-machine.ts'
+import ListOrbits from './components/ListOrbits.tsx'
+import CreateOrbit from './components/forms/CreateOrbit.tsx'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
@@ -45,6 +47,8 @@ export type AppState = // Currently just for routing
 | 'Home'
 | 'CreateSphere'
 | 'ListSpheres'
+| 'CreateOrbit'
+| 'ListOrbits'
 
 /**
 * Application State Transitions
@@ -63,7 +67,9 @@ export type AppState = // Currently just for routing
 const AppTransitions: StateTransitions<AppState> = {
   Home: ['CreateSphere', 'ListSpheres'],
   CreateSphere: ['Home', 'ListSpheres'],
-  ListSpheres: ['Home', 'CreateSphere'],
+  ListSpheres: ['Home', 'CreateSphere', 'ListOrbits', 'CreateOrbit'],
+  CreateOrbit: ['Home', 'ListOrbits'],
+  ListOrbits: ['Home', 'CreateSphere', 'CreateOrbit'],
   }
 
 /**
@@ -128,6 +134,34 @@ AppMachine.on('ListSpheres', async (_state: AppStateStore) => {
       <StateMachineContext.Provider value={AppMachine as any}>
         <App>
           <ListSpheres></ListSpheres>
+        </App>
+      </StateMachineContext.Provider>
+    </React.StrictMode>,
+  )
+});
+
+AppMachine.on('CreateOrbit', async (_state: AppStateStore) => {
+  console.log('CreateOrbit route active');
+  // Render CreateOrbit component
+  root.render(
+    <React.StrictMode>
+      <StateMachineContext.Provider value={AppMachine as any}>
+        <App>
+          <CreateOrbit></CreateOrbit>
+        </App>
+      </StateMachineContext.Provider>
+    </React.StrictMode>,
+  )
+});
+
+AppMachine.on('ListOrbits', async (_state: AppStateStore) => {
+  console.log('ListOrbits route active');
+  // Render ListOrbits component
+  root.render(
+    <React.StrictMode>
+      <StateMachineContext.Provider value={AppMachine as any}>
+        <App>
+          <ListOrbits></ListOrbits>
         </App>
       </StateMachineContext.Provider>
     </React.StrictMode>,

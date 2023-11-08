@@ -1,11 +1,9 @@
-import { GetSpheresQueryResult } from './generated/index';
-import { aOrbitConnection, aSphere, aSphereConnection, aSphereEdge } from './generated/mocks';
+import { aOrbitConnection } from './generated/mocks';
 
-// import GET_SPHERE from './queries/sphere/getSphere.graphql';
 import CREATE_ORBIT from '../mutations/orbit/createOrbit.graphql';
 import GET_ORBITS from '../queries/orbit/getOrbits.graphql';
 
-export const SPHERES_MOCKS = [{
+export const ORBITS_MOCKS = [{
   request: {
     query: GET_ORBITS,
     variables: {},
@@ -22,7 +20,7 @@ export const SPHERES_MOCKS = [{
               description: 'A daily walk to improve cardiovascular health.',
               frequency: 'DAY',
               scale: 'ATOMIC',
-              isAtomic: true,
+              isAtomic: 'true',
             },
             timeframe: {
               startTime: 1617235200, // Mocked Unix timestamp for example
