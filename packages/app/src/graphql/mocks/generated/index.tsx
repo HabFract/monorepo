@@ -64,26 +64,26 @@ export type SphereMetaData = {
   hashtag?: Maybe<Scalars['String']>
 }
 
-export type Habit = Node & {
-  __typename?: 'Habit'
+export type Orbit = Node & {
+  __typename?: 'Orbit'
   id: Scalars['ID']
-  metadata?: Maybe<HabitMetaData>
+  metadata?: Maybe<OrbitMetaData>
   name: Scalars['String']
   timeframe: TimeFrame
 }
 
-export type HabitConnection = {
-  __typename?: 'HabitConnection'
-  edges: Array<HabitEdge>
+export type OrbitConnection = {
+  __typename?: 'OrbitConnection'
+  edges: Array<OrbitEdge>
   pageInfo: PageInfo
 }
 
-export type HabitCreateResponse = {
-  __typename?: 'HabitCreateResponse'
+export type OrbitCreateResponse = {
+  __typename?: 'OrbitCreateResponse'
   payload: ResponsePayload
 }
 
-export type HabitCreateUpdateParams = {
+export type OrbitCreateUpdateParams = {
   description: Scalars['String']
   endTime: Scalars['DateTime']
   isAtomic: Scalars['String']
@@ -91,14 +91,14 @@ export type HabitCreateUpdateParams = {
   startTime: Scalars['DateTime']
 }
 
-export type HabitEdge = {
-  __typename?: 'HabitEdge'
+export type OrbitEdge = {
+  __typename?: 'OrbitEdge'
   cursor: Scalars['String']
-  node: Habit
+  node: Orbit
 }
 
-export type HabitMetaData = {
-  __typename?: 'HabitMetaData'
+export type OrbitMetaData = {
+  __typename?: 'OrbitMetaData'
   description: Scalars['String']
   isAtomic: Scalars['String']
 }
@@ -106,10 +106,10 @@ export type HabitMetaData = {
 export type Mutation = {
   __typename?: 'Mutation'
   createSphere: SphereCreateResponse
-  createHabit: HabitCreateResponse
+  createOrbit: OrbitCreateResponse
   createProfile: AgentProfile
   updateSphere: Sphere
-  updateHabit: Habit
+  updateOrbit: Orbit
   updateProfile: AgentProfile
 }
 
@@ -117,8 +117,8 @@ export type MutationCreateSphereArgs = {
   sphere?: InputMaybe<SphereCreateUpdateParams>
 }
 
-export type MutationCreateHabitArgs = {
-  habit?: InputMaybe<HabitCreateUpdateParams>
+export type MutationCreateOrbitArgs = {
+  orbit?: InputMaybe<OrbitCreateUpdateParams>
 }
 
 export type MutationCreateProfileArgs = {
@@ -129,8 +129,8 @@ export type MutationUpdateSphereArgs = {
   sphere?: InputMaybe<SphereCreateUpdateParams>
 }
 
-export type MutationUpdateHabitArgs = {
-  habit?: InputMaybe<HabitCreateUpdateParams>
+export type MutationUpdateOrbitArgs = {
+  orbit?: InputMaybe<OrbitCreateUpdateParams>
 }
 
 export type MutationUpdateProfileArgs = {
@@ -166,8 +166,8 @@ export type Query = {
   __typename?: 'Query'
   sphere: Sphere
   spheres: SphereConnection
-  habit: Habit
-  habits: HabitConnection
+  orbit: Orbit
+  orbits: OrbitConnection
   me: AgentProfile
 }
 
@@ -175,7 +175,7 @@ export type QuerySphereArgs = {
   id: Scalars['ID']
 }
 
-export type QueryHabitArgs = {
+export type QueryOrbitArgs = {
   id: Scalars['ID']
 }
 
@@ -221,14 +221,14 @@ export type AddSphereMutation = {
   }
 }
 
-export type AddHabitMutationVariables = Exact<{
-  variables: HabitCreateUpdateParams
+export type AddOrbitMutationVariables = Exact<{
+  variables: OrbitCreateUpdateParams
 }>
 
-export type AddHabitMutation = {
+export type AddOrbitMutation = {
   __typename?: 'Mutation'
-  createHabit: {
-    __typename?: 'HabitCreateResponse'
+  createOrbit: {
+    __typename?: 'OrbitCreateResponse'
     payload: {
       __typename?: 'ResponsePayload'
       headerHash: string
@@ -237,13 +237,13 @@ export type AddHabitMutation = {
   }
 }
 
-export type UpdateHabitMutationVariables = Exact<{
-  habitFields: HabitCreateUpdateParams
+export type UpdateOrbitMutationVariables = Exact<{
+  orbitFields: OrbitCreateUpdateParams
 }>
 
-export type UpdateHabitMutation = {
+export type UpdateOrbitMutation = {
   __typename?: 'Mutation'
-  updateHabit: { __typename?: 'Habit'; id: string }
+  updateOrbit: { __typename?: 'Orbit'; id: string }
 }
 
 export type AddUserMutationVariables = Exact<{
@@ -289,38 +289,38 @@ export type GetSpheresQuery = {
   }
 }
 
-export type GetHabitQueryVariables = Exact<{
+export type GetOrbitQueryVariables = Exact<{
   id: Scalars['ID']
 }>
 
-export type GetHabitQuery = {
+export type GetOrbitQuery = {
   __typename?: 'Query'
-  habit: {
-    __typename?: 'Habit'
+  orbit: {
+    __typename?: 'Orbit'
     name: string
     timeframe: { __typename?: 'TimeFrame'; startTime: any; endTime: any }
     metadata?: {
-      __typename?: 'HabitMetaData'
+      __typename?: 'OrbitMetaData'
       description: string
       isAtomic: string
     } | null
   }
 }
 
-export type GetHabitsQueryVariables = Exact<{ [key: string]: never }>
+export type GetOrbitsQueryVariables = Exact<{ [key: string]: never }>
 
-export type GetHabitsQuery = {
+export type GetOrbitsQuery = {
   __typename?: 'Query'
-  habits: {
-    __typename?: 'HabitConnection'
+  orbits: {
+    __typename?: 'OrbitConnection'
     edges: Array<{
-      __typename?: 'HabitEdge'
+      __typename?: 'OrbitEdge'
       node: {
-        __typename?: 'Habit'
+        __typename?: 'Orbit'
         name: string
         timeframe: { __typename?: 'TimeFrame'; startTime: any; endTime: any }
         metadata?: {
-          __typename?: 'HabitMetaData'
+          __typename?: 'OrbitMetaData'
           description: string
           isAtomic: string
         } | null
@@ -400,9 +400,9 @@ export type AddSphereMutationOptions = Apollo.BaseMutationOptions<
   AddSphereMutation,
   AddSphereMutationVariables
 >
-export const AddHabitDocument = gql`
-  mutation addHabit($variables: HabitCreateUpdateParams!) {
-    createHabit(habit: $variables) {
+export const AddOrbitDocument = gql`
+  mutation addOrbit($variables: OrbitCreateUpdateParams!) {
+    createOrbit(orbit: $variables) {
       payload {
         headerHash
         entryHash
@@ -410,95 +410,95 @@ export const AddHabitDocument = gql`
     }
   }
 `
-export type AddHabitMutationFn = Apollo.MutationFunction<
-  AddHabitMutation,
-  AddHabitMutationVariables
+export type AddOrbitMutationFn = Apollo.MutationFunction<
+  AddOrbitMutation,
+  AddOrbitMutationVariables
 >
 
 /**
- * __useAddHabitMutation__
+ * __useAddOrbitMutation__
  *
- * To run a mutation, you first call `useAddHabitMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddHabitMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAddOrbitMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddOrbitMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [addHabitMutation, { data, loading, error }] = useAddHabitMutation({
+ * const [addOrbitMutation, { data, loading, error }] = useAddOrbitMutation({
  *   variables: {
  *      variables: // value for 'variables'
  *   },
  * });
  */
-export function useAddHabitMutation(
+export function useAddOrbitMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    AddHabitMutation,
-    AddHabitMutationVariables
+    AddOrbitMutation,
+    AddOrbitMutationVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<AddHabitMutation, AddHabitMutationVariables>(
-    AddHabitDocument,
+  return Apollo.useMutation<AddOrbitMutation, AddOrbitMutationVariables>(
+    AddOrbitDocument,
     options,
   )
 }
-export type AddHabitMutationHookResult = ReturnType<typeof useAddHabitMutation>
-export type AddHabitMutationResult = Apollo.MutationResult<AddHabitMutation>
-export type AddHabitMutationOptions = Apollo.BaseMutationOptions<
-  AddHabitMutation,
-  AddHabitMutationVariables
+export type AddOrbitMutationHookResult = ReturnType<typeof useAddOrbitMutation>
+export type AddOrbitMutationResult = Apollo.MutationResult<AddOrbitMutation>
+export type AddOrbitMutationOptions = Apollo.BaseMutationOptions<
+  AddOrbitMutation,
+  AddOrbitMutationVariables
 >
-export const UpdateHabitDocument = gql`
-  mutation updateHabit($habitFields: HabitCreateUpdateParams!) {
-    updateHabit(habit: $habitFields) {
+export const UpdateOrbitDocument = gql`
+  mutation updateOrbit($orbitFields: OrbitCreateUpdateParams!) {
+    updateOrbit(orbit: $orbitFields) {
       id
     }
   }
 `
-export type UpdateHabitMutationFn = Apollo.MutationFunction<
-  UpdateHabitMutation,
-  UpdateHabitMutationVariables
+export type UpdateOrbitMutationFn = Apollo.MutationFunction<
+  UpdateOrbitMutation,
+  UpdateOrbitMutationVariables
 >
 
 /**
- * __useUpdateHabitMutation__
+ * __useUpdateOrbitMutation__
  *
- * To run a mutation, you first call `useUpdateHabitMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateHabitMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateOrbitMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOrbitMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateHabitMutation, { data, loading, error }] = useUpdateHabitMutation({
+ * const [updateOrbitMutation, { data, loading, error }] = useUpdateOrbitMutation({
  *   variables: {
- *      habitFields: // value for 'habitFields'
+ *      orbitFields: // value for 'orbitFields'
  *   },
  * });
  */
-export function useUpdateHabitMutation(
+export function useUpdateOrbitMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    UpdateHabitMutation,
-    UpdateHabitMutationVariables
+    UpdateOrbitMutation,
+    UpdateOrbitMutationVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<UpdateHabitMutation, UpdateHabitMutationVariables>(
-    UpdateHabitDocument,
+  return Apollo.useMutation<UpdateOrbitMutation, UpdateOrbitMutationVariables>(
+    UpdateOrbitDocument,
     options,
   )
 }
-export type UpdateHabitMutationHookResult = ReturnType<
-  typeof useUpdateHabitMutation
+export type UpdateOrbitMutationHookResult = ReturnType<
+  typeof useUpdateOrbitMutation
 >
-export type UpdateHabitMutationResult =
-  Apollo.MutationResult<UpdateHabitMutation>
-export type UpdateHabitMutationOptions = Apollo.BaseMutationOptions<
-  UpdateHabitMutation,
-  UpdateHabitMutationVariables
+export type UpdateOrbitMutationResult =
+  Apollo.MutationResult<UpdateOrbitMutation>
+export type UpdateOrbitMutationOptions = Apollo.BaseMutationOptions<
+  UpdateOrbitMutation,
+  UpdateOrbitMutationVariables
 >
 export const AddUserDocument = gql`
   mutation addUser($profileFields: UserProfileCreateUpdateParams!) {
@@ -664,9 +664,9 @@ export type GetSpheresQueryResult = Apollo.QueryResult<
   GetSpheresQuery,
   GetSpheresQueryVariables
 >
-export const GetHabitDocument = gql`
-  query getHabit($id: ID!) {
-    habit(id: $id) {
+export const GetOrbitDocument = gql`
+  query getOrbit($id: ID!) {
+    orbit(id: $id) {
       name
       timeframe {
         startTime
@@ -681,53 +681,53 @@ export const GetHabitDocument = gql`
 `
 
 /**
- * __useGetHabitQuery__
+ * __useGetOrbitQuery__
  *
- * To run a query within a React component, call `useGetHabitQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetHabitQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetOrbitQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOrbitQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetHabitQuery({
+ * const { data, loading, error } = useGetOrbitQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetHabitQuery(
-  baseOptions: Apollo.QueryHookOptions<GetHabitQuery, GetHabitQueryVariables>,
+export function useGetOrbitQuery(
+  baseOptions: Apollo.QueryHookOptions<GetOrbitQuery, GetOrbitQueryVariables>,
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetHabitQuery, GetHabitQueryVariables>(
-    GetHabitDocument,
+  return Apollo.useQuery<GetOrbitQuery, GetOrbitQueryVariables>(
+    GetOrbitDocument,
     options,
   )
 }
-export function useGetHabitLazyQuery(
+export function useGetOrbitLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetHabitQuery,
-    GetHabitQueryVariables
+    GetOrbitQuery,
+    GetOrbitQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetHabitQuery, GetHabitQueryVariables>(
-    GetHabitDocument,
+  return Apollo.useLazyQuery<GetOrbitQuery, GetOrbitQueryVariables>(
+    GetOrbitDocument,
     options,
   )
 }
-export type GetHabitQueryHookResult = ReturnType<typeof useGetHabitQuery>
-export type GetHabitLazyQueryHookResult = ReturnType<
-  typeof useGetHabitLazyQuery
+export type GetOrbitQueryHookResult = ReturnType<typeof useGetOrbitQuery>
+export type GetOrbitLazyQueryHookResult = ReturnType<
+  typeof useGetOrbitLazyQuery
 >
-export type GetHabitQueryResult = Apollo.QueryResult<
-  GetHabitQuery,
-  GetHabitQueryVariables
+export type GetOrbitQueryResult = Apollo.QueryResult<
+  GetOrbitQuery,
+  GetOrbitQueryVariables
 >
-export const GetHabitsDocument = gql`
-  query getHabits {
-    habits {
+export const GetOrbitsDocument = gql`
+  query getOrbits {
+    orbits {
       edges {
         node {
           name
@@ -746,51 +746,51 @@ export const GetHabitsDocument = gql`
 `
 
 /**
- * __useGetHabitsQuery__
+ * __useGetOrbitsQuery__
  *
- * To run a query within a React component, call `useGetHabitsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetHabitsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetOrbitsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOrbitsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetHabitsQuery({
+ * const { data, loading, error } = useGetOrbitsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useGetHabitsQuery(
+export function useGetOrbitsQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    GetHabitsQuery,
-    GetHabitsQueryVariables
+    GetOrbitsQuery,
+    GetOrbitsQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetHabitsQuery, GetHabitsQueryVariables>(
-    GetHabitsDocument,
+  return Apollo.useQuery<GetOrbitsQuery, GetOrbitsQueryVariables>(
+    GetOrbitsDocument,
     options,
   )
 }
-export function useGetHabitsLazyQuery(
+export function useGetOrbitsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetHabitsQuery,
-    GetHabitsQueryVariables
+    GetOrbitsQuery,
+    GetOrbitsQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetHabitsQuery, GetHabitsQueryVariables>(
-    GetHabitsDocument,
+  return Apollo.useLazyQuery<GetOrbitsQuery, GetOrbitsQueryVariables>(
+    GetOrbitsDocument,
     options,
   )
 }
-export type GetHabitsQueryHookResult = ReturnType<typeof useGetHabitsQuery>
-export type GetHabitsLazyQueryHookResult = ReturnType<
-  typeof useGetHabitsLazyQuery
+export type GetOrbitsQueryHookResult = ReturnType<typeof useGetOrbitsQuery>
+export type GetOrbitsLazyQueryHookResult = ReturnType<
+  typeof useGetOrbitsLazyQuery
 >
-export type GetHabitsQueryResult = Apollo.QueryResult<
-  GetHabitsQuery,
-  GetHabitsQueryVariables
+export type GetOrbitsQueryResult = Apollo.QueryResult<
+  GetOrbitsQuery,
+  GetOrbitsQueryVariables
 >
 export const GetMeDocument = gql`
   query getMe {
