@@ -44,7 +44,7 @@ and Plans that has a completely different screen to begin with.
 export type AppState = // Currently just for routing
 | 'Home'
 | 'About'
-| 'Contact'
+| 'ListSpheres'
 
 /**
 * Application State Transitions
@@ -61,9 +61,9 @@ export type AppState = // Currently just for routing
 // loaded: ['loaded'],
 // }
 const AppTransitions: StateTransitions<AppState> = {
-  Home: ['About', 'Contact'],
-  About: ['Home', 'Contact'],
-  Contact: ['Home', 'About'],
+  Home: ['About', 'ListSpheres'],
+  About: ['Home', 'ListSpheres'],
+  ListSpheres: ['Home', 'About'],
   }
 
 /**
@@ -120,9 +120,9 @@ AppMachine.on('About', async (_state: AppStateStore) => {
   )
 });
 
-AppMachine.on('Contact', async (_state: AppStateStore) => {
-  console.log('Contact');
-  // Render Contact component
+AppMachine.on('ListSpheres', async (_state: AppStateStore) => {
+  console.log('ListSpheres route active');
+  // Render ListSpheres component
   root.render(
     <React.StrictMode>
       <StateMachineContext.Provider value={AppMachine as any}>

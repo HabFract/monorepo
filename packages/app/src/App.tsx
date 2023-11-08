@@ -5,24 +5,23 @@ import { MockedProvider } from '@apollo/client/testing';
 import { SPHERES_MOCKS } from './graphql/mocks/spheres';
 import { useStateTransition } from './hooks/useStateTransition';
 
+import Nav from './components/Nav';
+
 const mocks = [
   ...SPHERES_MOCKS,
   // ORBITS_MOCKS,
   // ...add other mocks here
 ];
 
-function App({ children } : any) {
-  const [state, transition] = useStateTransition();
+function App({ children: pageComponent } : any) {
+  const [_, transition] = useStateTransition();
 
   return (
     <>
-      <nav>
-        <button onClick={() => transition('Home')}>Home</button>
-        <button onClick={() => transition('Contact')}>Contact</button>
-        <button onClick={() => transition('About')}>About</button>
-      </nav>
       <MockedProvider mocks={mocks} addTypename={false}>
-        {children}
+        <Nav transition={transition}>
+          {pageComponent}
+        </Nav>
       </MockedProvider>
     </>
   )
