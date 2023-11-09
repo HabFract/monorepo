@@ -30,7 +30,7 @@ export const routes: Routes = {
 };
 
 export const AppTransitions: StateTransitions<AppState> = {
-  Home: ['CreateSphere', 'ListSpheres'],
+  Home: ['CreateSphere', 'ListSpheres', 'ListOrbits'],
   CreateSphere: ['Home', 'ListSpheres'],
   ListSpheres: ['Home', 'CreateSphere', 'ListOrbits', 'CreateOrbit'],
   CreateOrbit: ['Home', 'ListOrbits'],
