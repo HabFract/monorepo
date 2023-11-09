@@ -20,7 +20,7 @@ export const ORBITS_MOCKS = [{
             metadata: {
               description: 'A daily walk to improve cardiovascular health.',
               frequency: Frequency.DAY,
-              scale: Scale.MICRO, // Assuming 'ATOMIC' was a typo and should be 'MICRO'
+              scale: Scale.ATOM,
             },
             timeframe: {
               startTime: 1617235200, // Mocked Unix timestamp for example
@@ -35,8 +35,8 @@ export const ORBITS_MOCKS = [{
             name: 'Lift weights',
             metadata: {
               description: 'Strength training to build muscle and increase metabolism.',
-              frequency: Frequency.WEEK, // Assuming 'MONTH' should be replaced with 'WEEK' as 'MONTH' is not part of the enum
-              scale: Scale.MICRO,
+              frequency: Frequency.WEEK,
+              scale: Scale.ATOM,
             },
             timeframe: {
               startTime: 1617235200, // Mocked Unix timestamp for example
@@ -51,8 +51,8 @@ export const ORBITS_MOCKS = [{
             name: 'Read an interesting book',
             metadata: {
               description: 'Reading to expand knowledge and relax the mind.',
-              frequency: Frequency.DAY, // Assuming 'YEAR' should be replaced with 'DAY' as 'YEAR' is not part of the enum
-              scale: Scale.MACRO,
+              frequency: Frequency.DAY,
+              scale: Scale.ASTRO,
             },
             timeframe: {
               startTime: 1617235200, // Mocked Unix timestamp for example
@@ -73,7 +73,7 @@ export const ORBITS_MOCKS = [{
       metadata: {
         description: 'A daily walk to improve cardiovascular health.',
         frequency: Frequency.DAY,
-        scale: Scale.MICRO,
+        scale: Scale.ATOM,
       },
       timeframe: {
         startTime: 1617235200,

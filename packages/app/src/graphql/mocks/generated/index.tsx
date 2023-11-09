@@ -104,9 +104,9 @@ export enum Frequency {
 }
 
 export enum Scale {
-  MICRO = 'MICRO',
-  MACRO = 'MACRO',
-  REGULAR = 'REGULAR',
+  SUB = 'SUB',
+  ATOM = 'ATOM',
+  ASTRO = 'ASTRO',
 }
 
 export type OrbitMetaData = {
