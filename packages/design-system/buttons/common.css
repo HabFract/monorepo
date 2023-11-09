@@ -17,6 +17,13 @@
   @apply text-danger-hover-text bg-danger-hover-bg !important;
 }
 
+.btn:active {
+  outline: 1px solid #40a9ff;
+}
+.btn:focus {
+  outline: 1px dashed #40a9ff;
+}
+
 .btn-icon {
   @apply 
     mr-2

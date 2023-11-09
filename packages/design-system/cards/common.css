@@ -11,7 +11,7 @@
 }
 
 .card-copy {
-  @apply text-white leading-normal text-xl text-center py-2;
+  @apply text-white leading-normal text-lg max-w-xl text-center py-2;
 }
 
 .card-body-bg {

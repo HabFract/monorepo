@@ -26,24 +26,24 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
           <p>{new Date(orbit?.timeframe.startTime).toLocaleDateString('en-GB')}</p>
         </div>
       </header>
-      <main className="card-body-bg p-4 gap-2 col-c card-copy">
+      <main className="card-body-bg p-4 gap-2 col-c">
         <div className="orbit-description flex items-center justify-center">
-          <p>{orbit.metadata?.description}</p>
+          <p className='card-copy'>{orbit.metadata?.description}</p>
         </div>
         <div className="row-c-around">
           <div className="orbit-actions col-c gap-2">
             <div className="orbit-actions-crud row-c-around">
-              <Button className="btn-secondary" size="sm">
+              <Button className="btn btn-secondary" size="sm">
                 <EditOutlined className="btn-icon" />
                 Edit
               </Button>
-              <Button className="btn-danger" size="sm">
+              <Button className="btn btn-danger" size="sm">
                 <DeleteOutlined className="btn-icon" />
                 Delete
               </Button>
             </div>
             <div className="orbit-actions-vis row-c">
-              <Button className="btn-primary" size="sm">
+              <Button className="btn btn-primary" size="sm">
                 <PieChartOutlined className="btn-icon" />
                 Visualise
               </Button>
