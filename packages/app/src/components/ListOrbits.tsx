@@ -14,7 +14,7 @@ function ListOrbits() {
   if (error) return <p>Error :</p>;
 
   return (
-    <div className='bg-dark-gray px-2 py-1'>
+    <div className='h-full bg-dark-gray p-2 flex flex-col gap-2'>
       <PageHeader title="List of Orbits" />
       <ListSortFilter />
       <div className="orbits-list">

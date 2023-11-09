@@ -3,7 +3,7 @@ import { SortDescendingOutlined, SortAscendingOutlined } from '@ant-design/icons
 import './list.css';
 
 const ListSortFilter = () => (
-  <div className="list-sort-filter bg-off-white rounded-xl rounded-b-0 my-2">
+  <div className="list-sort-filter bg-off-white rounded-xl">
     <div className="sort-icon-container flex justify-end">
       <SortDescendingOutlined />
     </div>
