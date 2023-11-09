@@ -16,6 +16,12 @@
 .btn-danger:hover {
   @apply text-danger-hover-text bg-danger-hover-bg !important;
 }
+.btn-neutral {
+  @apply bg-neutral-transparent border-neutral border-4;
+}
+.btn-neutral:hover {
+  @apply text-neutral-hover-text bg-neutral-hover-bg !important;
+}
 
 .btn:active {
   outline: 1px solid #40a9ff;
