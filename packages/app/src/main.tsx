@@ -4,9 +4,8 @@ import App from './App.tsx'
 import './index.css'
 import { StateMachine, StateTransitions } from './stateMachine.ts'
 import CreateSphere from './components/forms/CreateSphere.tsx'
-import ListSpheres from './components/ListSpheres.tsx'
+import { ListSpheres, ListOrbits }from './components/lists'
 import { StateMachineContext } from './contexts/state-machine.ts'
-import ListOrbits from './components/ListOrbits.tsx'
 import CreateOrbit from './components/forms/CreateOrbit.tsx'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);

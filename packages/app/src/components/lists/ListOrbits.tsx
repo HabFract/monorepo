@@ -1,11 +1,14 @@
 import React from 'react';
-import './list.css';
+import './common.css';
+
 import { useQuery } from '@apollo/client';
-import GET_ORBITS from '../graphql/queries/orbit/getOrbits.graphql';
-import PageHeader from './PageHeader';
+import { OrbitEdge } from '../../graphql/mocks/generated';
+import GET_ORBITS from '../../graphql/queries/orbit/getOrbits.graphql';
+
+import PageHeader from '../PageHeader';
 import ListSortFilter from './ListSortFilter';
-import OrbitCard from '../../../design-system/cards/OrbitCard';
-import { OrbitEdge } from '../graphql/mocks/generated';
+
+import OrbitCard from '../../../../design-system/cards/OrbitCard';
 
 function ListOrbits() {
   const { loading, error, data } = useQuery(GET_ORBITS);
@@ -18,7 +21,7 @@ function ListOrbits() {
       <PageHeader title="List of Orbits" />
       <ListSortFilter />
       <div className="orbits-list">
-        {data.orbits.edges.map(({ node } : OrbitEdge) => <OrbitCard key={node.id} orbit={node} />)}
+        {data?.orbits.edges.map(({ node } : OrbitEdge) => <OrbitCard key={node.id} orbit={node} />)}
       </div>
     </div>
   );
