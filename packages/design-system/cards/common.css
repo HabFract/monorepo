@@ -1,3 +1,26 @@
+.col-c {
+  @apply flex flex-col items-center justify-center;
+}
+.row-c-around {
+  @apply flex justify-around items-center gap-4;
+}
+
 .card-h1 {
-  @apply uppercase text-[#3E3F48] font-semibold font-sans text-base leading-5 tracking-wide;
+  @apply 
+    uppercase
+    text-[#3E3F48]
+    font-semibold
+    font-sans
+    text-xl
+    py-4
+    leading-5
+    tracking-wide;
+}
+
+.card-copy {
+  @apply text-white leading-normal text-xl text-center py-2;
+}
+
+.card-body-bg {
+  background: linear-gradient(180deg, rgba(67,82,95,1) 36%, rgba(62,63,72,1) 91%);
 }
