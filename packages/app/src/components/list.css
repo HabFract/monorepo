@@ -1,0 +1,27 @@
+.orbits-list {
+  @apply flex flex-col items-center gap-2;
+}
+
+.list-sort-filter {
+  font-size: 2rem;
+  @apply p-2;
+}
+
+@media screen and (min-width: 640px) {
+  .orbits-list {
+    @apply grid grid-cols-2 gap-2;
+  }
+  .orbit-card, .orbit-card main {
+   height: 100%; 
+  }
+}
+@media screen and (min-width: 960px) {
+  .orbits-list {
+    @apply grid-cols-3;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .orbits-list {
+    @apply grid-cols-4;
+  }
+}

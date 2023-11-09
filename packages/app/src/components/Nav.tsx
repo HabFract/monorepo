@@ -1,3 +1,4 @@
+import "./style.css";
 import { useQuery } from "@apollo/client";
 import GET_SPHERES from '../graphql/queries/sphere/getSpheres.graphql';
 
@@ -104,7 +105,7 @@ const Nav: React.FC = ({children, transition} : any) => {
             {collapsed ? <MenuUnfoldOutlined onClick={toggleCollapsed}/> : <MenuFoldOutlined onClick={toggleCollapsed}/>}
           </div>
       </nav>
-      <main className={"fixed w-full h-full inset-y-0 left-0"}>{children}</main>
+      <main className={"overflow-auto fixed w-full h-full inset-y-0 left-0"}>{children}</main>
     </>
   );
 };
