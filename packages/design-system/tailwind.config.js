@@ -58,6 +58,14 @@ export default {
           "hover-text": "#3E3F48",
         }, // info color for pointing things out, it doesn't clash with primary and secondary colors and still conveys the right meaning
 
+        warn: {
+          DEFAULT: "#D8973C",
+          // "hover-bg": "#91d5ff",
+          // "hover-text": "#3E3F48",
+        },
+
+        "off-white": "#E6E8E6",
+        "brown": "#E4DFDA",
         "dark-gray": "#3E3F48",
       },
     },
