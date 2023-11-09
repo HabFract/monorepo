@@ -33,19 +33,19 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
         <div className="row-c-around">
           <div className="orbit-actions col-c gap-2">
             <div className="orbit-actions-crud row-c-around">
-              <Button className="btn btn-secondary" size="sm">
+              <Button className="btn responsive btn-secondary" size="sm">
                 <EditOutlined className="btn-icon" />
-                Edit
+                <span>Edit</span>
               </Button>
-              <Button className="btn btn-danger" size="sm">
+              <Button className="btn responsive btn-danger" size="sm">
                 <DeleteOutlined className="btn-icon" />
-                Delete
+                <span>Delete</span>
               </Button>
             </div>
             <div className="orbit-actions-vis row-c">
               <Button className="btn btn-primary" size="sm">
                 <PieChartOutlined className="btn-icon" />
-                Visualise
+                <span>Visualise</span>
               </Button>
             </div>
           </div>

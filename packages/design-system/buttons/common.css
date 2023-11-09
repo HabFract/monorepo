@@ -24,6 +24,15 @@
   outline: 1px dashed #40a9ff;
 }
 
+/* Hide icon test on smaller viewports */
+
+.btn.responsive span[role="img"] {
+  @apply m-0-sm;
+}
+.btn.responsive span[role="img"] + span {
+  @apply hidden-sm;
+}
+
 .btn-icon {
   @apply 
     mr-2
