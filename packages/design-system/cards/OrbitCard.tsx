@@ -5,7 +5,7 @@ import '../buttons/common.css';
 
 import { Button } from 'flowbite-react';
 import { EditOutlined, DeleteOutlined, PieChartOutlined } from '@ant-design/icons'; // Import icons
-import { Orbit } from '../../app/src/graphql/mocks/generated';
+import { Orbit, Scale } from '../../app/src/graphql/mocks/generated';
 import OrbitVis from '../vis/OrbitVis';
 
 type OrbitCardProps = {
@@ -49,7 +49,8 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
               </Button>
             </div>
           </div>
-          <div className="mini-vis flex items-center justify-center">
+          <div className="mini-vis col-c">
+            {orbit?.metadata?.scale && (orbit.metadata.scale == Scale.ASTRO) && <OrbitVis scale={orbit.metadata.scale} />}
             {orbit?.metadata?.scale && <OrbitVis scale={orbit.metadata.scale} />}
           </div>
         </div>

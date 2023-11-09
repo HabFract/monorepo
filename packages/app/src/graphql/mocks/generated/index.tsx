@@ -105,7 +105,7 @@ export enum Frequency {
 
 export enum Scale {
   SUB = 'SUB',
-  ATOM = 'ATOM',
+  ATOM = 'ATOMIC',
   ASTRO = 'ASTRO',
 }
 

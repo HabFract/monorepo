@@ -17,3 +17,7 @@
 .card-body-bg {
   background: linear-gradient(180deg, rgba(67,82,95,1) 36%, rgba(62,63,72,1) 91%);
 }
+
+.orbit-card {
+  max-width: 440px;
+}

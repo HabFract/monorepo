@@ -9,12 +9,12 @@ export default {
     function ({ addUtilities }) {
       const newUtilities = {
         ".hidden-sm": {
-          "@media (max-width: 767px)": {
+          "@media (max-width: 440px)": {
             display: "none",
           },
         },
         ".m-0-sm": {
-          "@media (max-width: 767px)": {
+          "@media (max-width: 440px)": {
             margin: 0
           },
         },
@@ -51,6 +51,12 @@ export default {
           "hover-bg": "rgba(178,34,34, 0.9)",
           "hover-text": "#fff",
         }, // firebrick color for danger buttons, it doesn't clash with primary and secondary colors and still conveys the right meaning
+
+        info: {
+          DEFAULT: "#40a9ff",
+          "hover-bg": "#91d5ff",
+          "hover-text": "#3E3F48",
+        }, // info color for pointing things out, it doesn't clash with primary and secondary colors and still conveys the right meaning
 
         "dark-gray": "#3E3F48",
       },

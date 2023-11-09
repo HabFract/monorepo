@@ -1,0 +1,22 @@
+.orbit-vis {
+  border: 2px dashed #FAFAFA;
+    border-radius: 16px;
+    padding: 8px;
+}
+
+label {
+  @apply font-sans uppercase text-xs text-white;
+}
+
+div[role="progressbar"] > div > div {
+  @apply bg-info;
+}
+div[role="progressbar"] > div.sub > div {
+  margin-left: 0;
+}
+div[role="progressbar"] > div.atomic > div {
+  margin-left: 23%;
+}
+div[role="progressbar"] > div.astro > div {
+  margin-left: 58%;
+}
