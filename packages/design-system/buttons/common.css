@@ -1,0 +1,23 @@
+.btn-primary {
+  @apply bg-primary-transparent border-primary border-4;
+}
+.btn-primary:hover {
+  @apply text-primary-hover-text bg-primary-hover-bg !important;
+}
+.btn-secondary {
+  @apply bg-secondary-transparent border-secondary border-4;
+}
+.btn-secondary:hover {
+  @apply text-secondary-hover-text bg-secondary-hover-bg !important;
+}
+.btn-danger {
+  @apply bg-danger-transparent border-danger border-4;
+}
+.btn-danger:hover {
+  @apply text-danger-hover-text bg-danger-hover-bg !important;
+}
+
+.btn-icon {
+  @apply 
+    mr-2
+}

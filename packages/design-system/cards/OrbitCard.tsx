@@ -1,5 +1,9 @@
-
+import React from 'react';
 import './common.css';
+import '../common.css';
+import '../buttons/common.css';
+
+import { Button } from 'flowbite-react';
 import { EditOutlined, DeleteOutlined, PieChartOutlined } from '@ant-design/icons'; // Import icons
 import { Orbit } from '../../app/src/graphql/mocks/generated';
 import OrbitVis from '../vis/OrbitVis';
@@ -27,22 +31,22 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
           <p>{orbit.metadata?.description}</p>
         </div>
         <div className="row-c-around">
-          <div className="orbit-actions flex flex-col justify-center">
-            <div className="orbit-actions-crud flex flex-1 justify-center">
-              <button className="flex-1 bg-blue-100">
-                <EditOutlined />
+          <div className="orbit-actions col-c gap-2">
+            <div className="orbit-actions-crud row-c-around">
+              <Button className="btn-secondary" size="sm">
+                <EditOutlined className="btn-icon" />
                 Edit
-              </button>
-              <button className="flex-1 bg-red-100">
-                <DeleteOutlined />
+              </Button>
+              <Button className="btn-danger" size="sm">
+                <DeleteOutlined className="btn-icon" />
                 Delete
-              </button>
+              </Button>
             </div>
-            <div className="orbit-actions-vis bg-gray-100 flex flex-1 justify-center">
-              <button>
-                <PieChartOutlined />
+            <div className="orbit-actions-vis row-c">
+              <Button className="btn-primary" size="sm">
+                <PieChartOutlined className="btn-icon" />
                 Visualise
-              </button>
+              </Button>
             </div>
           </div>
           <div className="mini-vis flex items-center justify-center">

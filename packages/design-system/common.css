@@ -1,0 +1,9 @@
+.col-c {
+  @apply flex flex-col items-center justify-center;
+}
+.row-c-around, .row-c {
+  @apply flex items-center gap-4;
+}
+.row-c-around {
+  @apply justify-around;
+}
