@@ -1,4 +1,4 @@
-import './styles.css';
+import "./styles.css";
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -9,6 +9,16 @@ const preview = {
         color: /(background|color)$/i,
         date: /Date$/i,
       },
+    },
+    backgrounds: {
+      default: "myDefault",
+      values: [
+        {
+          name: "myDefault",
+          value: "#322B33", // your desired default background color
+        },
+        // ... other backgrounds
+      ],
     },
   },
 };
