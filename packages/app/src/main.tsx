@@ -97,9 +97,20 @@ const initialState: AppStateStore = {
 // const AppMachine = new StateMachine<AppState, AppStateStore>(initialState, AppTransitions);
 const AppMachine = new StateMachine<AppState, AppStateStore>(initialState, AppTransitions);
 
-AppMachine.on('Home', async (_state: AppStateStore) => {
+function renderComponent(component: React.ReactNode) {
+  root.render(
+    <React.StrictMode>
+      <StateMachineContext.Provider value={AppMachine as any}>
+        <App>
+          {component}
+        </App>
+      </StateMachineContext.Provider>
+    </React.StrictMode>,
+  );
+}
+
+AppMachine.on('Home', (_state: AppStateStore) => {
   console.log('Home');
-  // Render Home component
   root.render(
     <React.StrictMode>
       <StateMachineContext.Provider value={AppMachine as any}>
@@ -111,9 +122,9 @@ AppMachine.on('Home', async (_state: AppStateStore) => {
   )
 });
 
-AppMachine.on('CreateSphere', async (_state: AppStateStore) => {
+AppMachine.on('CreateSphere', (_state: AppStateStore) => {
   console.log('CreateSphere');
-  // Render CreateSphere component
+  renderComponent(<CreateSphere />);
   root.render(
     <React.StrictMode>
       <StateMachineContext.Provider value={AppMachine as any}>
