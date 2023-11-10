@@ -1,6 +1,7 @@
 query getOrbit($id: ID!) {
   orbit(id: $id) {
     name
+    sphereEntryHashB64
     metadata {
       description
       frequency

@@ -4,6 +4,7 @@ query getOrbits {
       node {
         id
         name
+        sphereEntryHashB64
         metadata {
           description
           frequency
