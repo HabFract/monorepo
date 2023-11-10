@@ -4,10 +4,22 @@ import { SortDescendingOutlined, FilterOutlined } from '@ant-design/icons';
 import { Modal, Radio } from 'flowbite-react';
 import './common.css';
 
+enum SortCriteria {
+  Name = 'name',
+  AtomicOrbits = 'atomicOrbits',
+  SubatomicOrbits = 'subatomicOrbits',
+  AstronomicOrbits = 'astronomicOrbits',
+}
+
+enum SortOrder {
+  GreatestToLowest = 'greatestToLowest',
+  LowestToGreatest = 'lowestToGreatest',
+}
+
 const ListSortFilter = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [sortCriteria, setSortCriteria] = useState('name');
-  const [sortOrder, setSortOrder] = useState('greatestToLowest');
+  const [sortCriteria, setSortCriteria] = useState(SortCriteria.Name);
+  const [sortOrder, setSortOrder] = useState(SortOrder.GreatestToLowest);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -27,12 +39,12 @@ const ListSortFilter = () => {
           <Modal.Body>
             <Formik
               initialValues={{
-                sortCriteria: 'name',
-                sortOrder: 'greatestToLowest',
+                sortCriteria: SortCriteria.Name,
+                sortOrder: SortOrder.GreatestToLowest,
               }}
               onSubmit={(values) => {
-                setSortCriteria(values.sortCriteria);
-                setSortOrder(values.sortOrder);
+                setSortCriteria(SortCriteria[values.sortCriteria as keyof typeof SortCriteria]);
+                setSortOrder(SortOrder[values.sortOrder as keyof typeof SortOrder]);
                 toggleModal();
               }}
             >
@@ -43,7 +55,7 @@ const ListSortFilter = () => {
                       <label className="block mb-2 text-sm font-medium">Sort by:</label>
                       <div className="flex flex-col">
                         <label>
-                          <Field type="radio" name="sortCriteria" value="name" as={Radio} />
+                          <Field type="radio" name="sortCriteria" value={SortCriteria.Name} as={Radio} />
                           Name
                         </label>
                         <label>
