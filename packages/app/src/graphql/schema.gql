@@ -2,16 +2,16 @@
 type Query {
   sphere(id: ID!): Sphere!
   spheres: SphereConnection!
-  habit(id: ID!): Habit!
-  habits: HabitConnection!
+  orbit(id: ID!): Orbit!
+  orbits: OrbitConnection!
   me: AgentProfile!
 }
 
 type Mutation {
   createSphere(sphere: SphereCreateUpdateParams): SphereCreateResponse!
   updateSphere(sphere: SphereCreateUpdateParams): Sphere!
-  createHabit(habit: HabitCreateUpdateParams): HabitCreateResponse!
-  updateHabit(habit: HabitCreateUpdateParams): Habit!
+  createOrbit(orbit: OrbitCreateUpdateParams): OrbitCreateResponse!
+  updateOrbit(orbit: OrbitCreateUpdateParams): Orbit!
   createProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
   updateProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
 }
@@ -30,7 +30,7 @@ interface Node {
 
 # Holochain Specific Types
 type ResponsePayload {
-  headerHash: String!
+  actionHash: String!
   entryHash: String!
 }
 
@@ -97,54 +97,56 @@ type SphereCreateResponse {
   payload: ResponsePayload!
 }
 
-# ---- Habit ----- #
-# Habit GQL Types
-type HabitConnection {
-  edges: [HabitEdge!]!
+# ---- Orbit ----- #
+# Orbit GQL Types
+type OrbitConnection {
+  edges: [OrbitEdge!]!
   pageInfo: PageInfo!
 }
 
-type HabitEdge {
+type OrbitEdge {
   cursor: String!
-  node: Habit!
+  node: Orbit!
 }
 
-# Habit Types
-type Habit implements Node {
+# Orbit Types
+type Orbit implements Node {
   id: ID!
   name: String!
   timeframe: TimeFrame!
-  metadata: HabitMetaData
+  sphereEntryHashB64: String!
+  metadata: OrbitMetaData
 }
 type TimeFrame {
   startTime: DateTime!
   endTime: DateTime!
 }
 
-type HabitMetaData {
-  description: String!
-  isAtomic: String!
-  # atomicListEntryHash: String
+type Frequency {
+  #
 }
 
-# Habit Input/Outputs
-input HabitCreateUpdateParams {
+type Scale {
+  #
+}
+
+type OrbitMetaData {
+  description: String!
+  frequency: Frequency!
+  scale: Scale!
+}
+
+# Orbit Input/Outputs
+input OrbitCreateUpdateParams {
   name: String!
   startTime: DateTime!
   endTime: DateTime!
   description: String!
-  isAtomic: String!
-  # atomicListEntryHash: String
+  frequency: Frequency!
+  scale: Scale!
+  sphereEntryHashB64: String!
 }
 
-type HabitCreateResponse {
+type OrbitCreateResponse {
   payload: ResponsePayload!
-}
-
-#
-type Todo {
-  id: ID!
-  description: String!
-  status: Boolean!
-  sphereHashB64: String!
 }
