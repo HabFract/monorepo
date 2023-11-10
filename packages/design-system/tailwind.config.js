@@ -34,11 +34,11 @@ export default {
     },
     extend: {
       colors: {
-        primary: { //A2EAC4
+        primary: {
           DEFAULT: "#559E78",
           transparent: "rgba(85,158,120, 0.5)",
           "hover-bg": "rgba(85,158,120, 0.9)",
-          "hover-text": "#3E3F48",
+          "hover-text": "#fff",
         }, // sea green for primary buttons
 
         secondary: {
@@ -50,11 +50,17 @@ export default {
 
         neutral: {
           DEFAULT: "#4B3030",
-          transparent: "rgba(75, 48, 48, 0.2)",
-          "hover-bg": "rgba(75, 48, 48, 1)",
-          "hover-text": "#E4DFDA",
+          transparent: "rgba(75, 48, 48, 0.65)",
+          "hover-bg": "rgba(75, 48, 48, 0.9)",
+          "hover-text": "#fff",
         }, // neutral brown
-
+        
+        accent: {
+          DEFAULT: "#6F54B2",
+          "hover-bg": "#91d5ff",
+          "hover-text": "#3E3F48",
+        }, 
+        
         danger: {
           DEFAULT: "#B22222",
           transparent: "rgba(178,34,34, 0.5)",
@@ -64,24 +70,20 @@ export default {
 
         info: {
           DEFAULT: "#40a9ff",
+          "transparent": "rgba(64, 169, 255, 0.5)",
           "hover-bg": "#91d5ff",
           "hover-text": "#3E3F48",
         }, // info color for pointing things out, it doesn't clash with primary and secondary colors and still conveys the right meaning
 
-        accent: {
-          DEFAULT: "#6F54B2",
-          "hover-bg": "#91d5ff",
-          "hover-text": "#3E3F48",
-        }, 
-        
         warn: {
           DEFAULT: "#D8973C",
-          // "hover-bg": "#91d5ff",
-          // "hover-text": "#3E3F48",
+          "transparent": "rgba(216, 151, 60,0.5)",
+          "hover-bg": "rgba(216, 151, 60,0.9)",
+          "hover-text": "#3E3F48",
         },
 
         "off-white": "#E6E8E6",
-        brown: "#E4DFDA",
+        "brown": "#E4DFDA",
         "dark-gray": "#3E3F48",
       },
     },

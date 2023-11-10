@@ -36,7 +36,7 @@ export default {
           DEFAULT: "#559E78",
           transparent: "rgba(85,158,120, 0.5)",
           "hover-bg": "rgba(85,158,120, 0.9)",
-          "hover-text": "#3E3F48",
+          "hover-text": "#fff",
         }, // sea green for primary buttons
 
         secondary: {
