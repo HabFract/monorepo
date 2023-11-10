@@ -10,8 +10,40 @@ import ListSortFilter from './ListSortFilter';
 
 import OrbitCard from '../../../../design-system/cards/OrbitCard';
 
-function ListOrbits() {
-  const { loading, error, data } = useQuery(GET_ORBITS);
+import { useQuery, gql } from '@apollo/client';
+
+interface ListOrbitsProps {
+  sphereId?: string; // Optional prop to filter orbits by sphere
+}
+
+const GET_ORBITS_BY_SPHERE = gql`
+  query getOrbits($sphereEntryHashB64: String) {
+    orbits(sphereEntryHashB64: $sphereEntryHashB64) {
+      edges {
+        node {
+          id
+          name
+          metadata {
+            description
+            frequency
+            scale
+          }
+          timeframe {
+            startTime
+            endTime
+          }
+          sphereEntryHashB64
+        }
+      }
+    }
+  }
+`;
+
+function ListOrbits({ sphereId }: ListOrbitsProps) {
+  const { loading, error, data } = useQuery(GET_ORBITS_BY_SPHERE, {
+    variables: { sphereEntryHashB64: sphereId },
+    skip: !sphereId, // Skip the query if no sphereId is provided
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :</p>;

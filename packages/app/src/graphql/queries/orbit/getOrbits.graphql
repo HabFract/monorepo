@@ -1,5 +1,5 @@
-query getOrbits {
-  orbits {
+query getOrbits($sphereEntryHashB64: String) {
+  orbits(sphereEntryHashB64: $sphereEntryHashB64) {
     edges {
       node {
         id
