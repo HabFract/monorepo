@@ -41,7 +41,8 @@ export class StateMachine<S extends State, T extends StateStore<S>> {
 
   public on(
     state: S,
-    callback: StateTransitionCallback<S>
+    callback: StateTransitionCallback<S>,
+    params?: object,
   ): void {
     if (!this.callbacks) {
       this.callbacks = {} as Callbacks<S>
