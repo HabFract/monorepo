@@ -22,7 +22,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere } : SphereCardProps) => 
           <p>{}</p>
         </div> */}
       </header>
-      <main className="card-body-bg p-4 gap-2 col-c">
+      <main className="card-body-bg col-c">
         <div className="sphere-description flex items-center justify-center">
           <p className='card-copy'>{metadata?.description}</p>
         </div>
@@ -39,13 +39,13 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere } : SphereCardProps) => 
               </Button>
             </div>
             <div className="sphere-actions-vis col-c">
-              <Button className="btn btn-primary w-full" size="sm">
-                <PieChartOutlined className="btn-icon" />
-                <span>Visualise</span>
-              </Button>
-              <Button className="btn btn-neutral w-full" size="sm">
+              <Button className="btn responsive btn-neutral w-full" size="sm">
                 <OrderedListOutlined className="btn-icon" />
                 <span>Orbits</span>
+              </Button>
+              <Button className="btn responsive btn-primary w-full" size="sm">
+                <PieChartOutlined className="btn-icon" />
+                <span>Visualise</span>
               </Button>
             </div>
           </div>

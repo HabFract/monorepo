@@ -4,15 +4,21 @@
     text-[#3E3F48]
     font-semibold
     font-heading
-    text-xl
-    py-4
+    text-base
+    py-1
     pl-2
     leading-5
     tracking-tight;
 }
 
 .card-copy {
-  @apply text-white leading-normal text-lg max-w-xl text-center py-2;
+  @apply
+    text-white
+    leading-normal
+    text-sm
+    max-w-xl
+    text-center
+    py-2;
 }
 
 .card-header {
@@ -20,6 +26,8 @@
 }
 
 .card-body-bg {
+  padding: 0.5rem;
+  gap: 0.5rem;
   justify-content: flex-start !important;
   background: linear-gradient(180deg, rgba(67,82,95,1) 36%, rgba(62,63,72,1) 91%);
 }
@@ -33,6 +41,17 @@
 }
 
 @media screen and (min-width: 420px) {
+  .card-h1 {
+    @apply py-4 text-xl;
+  }
+  .card-copy {
+    @apply
+      text-lg
+  }
+  .card-body-bg {
+    @apply p-4 gap-4;
+  }
+
   .sphere-card .sphere-description + div {
     gap: 0;
     margin-left: 2rem;

@@ -23,5 +23,6 @@ div[role="progressbar"] > div.astro > div {
 }
 
 .sphere-pie svg {
+  margin-top: 1rem;
   overflow: inherit;
 }

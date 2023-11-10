@@ -24,14 +24,14 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
           <p>{new Date(orbit?.timeframe.startTime).toLocaleDateString('en-GB')}</p>
         </div>
       </header>
-      <main className="card-body-bg p-4 gap-2 col-c">
+      <main className="card-body-bg col-c">
         <div className="orbit-description flex items-center justify-center">
           <p className='card-copy'>{orbit.metadata?.description}</p>
         </div>
         <div className="row-c-around">
           <div className="orbit-actions col-c gap-2">
             <div className="orbit-actions-crud row-c-around">
-              <Button className="btn responsive btn-secondary" size="sm">
+              <Button className="btn responsive btn-warn" size="sm">
                 <EditOutlined className="btn-icon" />
                 <span>Edit</span>
               </Button>
