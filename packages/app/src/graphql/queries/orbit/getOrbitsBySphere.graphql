@@ -1,0 +1,21 @@
+
+query getOrbitsBySphere($sphereEntryHashB64: String) {
+  orbits(sphereEntryHashB64: $sphereEntryHashB64) {
+    edges {
+      node {
+        id
+        name
+        metadata {
+          description
+          frequency
+          scale
+        }
+        timeframe {
+          startTime
+          endTime
+        }
+        sphereEntryHashB64
+      }
+    }
+  }
+}

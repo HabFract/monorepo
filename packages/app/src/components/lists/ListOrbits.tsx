@@ -3,41 +3,17 @@ import './common.css';
 
 import { useQuery } from '@apollo/client';
 import { OrbitEdge } from '../../graphql/mocks/generated';
-import GET_ORBITS from '../../graphql/queries/orbit/getOrbits.graphql';
+// import GET_ORBITS from '../../graphql/queries/orbit/getOrbits.graphql';
+import GET_ORBITS_BY_SPHERE from '../../graphql/queries/orbit/getOrbitsBySphere.graphql';
 
 import PageHeader from '../PageHeader';
 import ListSortFilter from './ListSortFilter';
 
 import OrbitCard from '../../../../design-system/cards/OrbitCard';
 
-import { useQuery, gql } from '@apollo/client';
-
 interface ListOrbitsProps {
   sphereId?: string; // Optional prop to filter orbits by sphere
 }
-
-const GET_ORBITS_BY_SPHERE = gql`
-  query getOrbits($sphereEntryHashB64: String) {
-    orbits(sphereEntryHashB64: $sphereEntryHashB64) {
-      edges {
-        node {
-          id
-          name
-          metadata {
-            description
-            frequency
-            scale
-          }
-          timeframe {
-            startTime
-            endTime
-          }
-          sphereEntryHashB64
-        }
-      }
-    }
-  }
-`;
 
 function ListOrbits({ sphereId }: ListOrbitsProps) {
   const { loading, error, data } = useQuery(GET_ORBITS_BY_SPHERE, {
