@@ -45,6 +45,13 @@ export default {
           "hover-text": "#3E3F48",
         }, // salmon for secondary buttons
 
+        neutral: {
+          DEFAULT: "#4B3030",
+          transparent: "rgba(75, 48, 48, 0.65)",
+          "hover-bg": "rgba(75, 48, 48, 0.9)",
+          "hover-text": "#E4DFDA",
+        }, // neutral brown
+        
         danger: {
           DEFAULT: "#B22222",
           transparent: "rgba(178,34,34, 0.5)",

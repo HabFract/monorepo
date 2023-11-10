@@ -49,8 +49,8 @@ export default {
 
         neutral: {
           DEFAULT: "#4B3030",
-          transparent: "rgba(75, 48, 48, 0.65)",
-          "hover-bg": "rgba(75, 48, 48, 0.9)",
+          transparent: "rgba(75, 48, 48, 0.2)",
+          "hover-bg": "rgba(75, 48, 48, 1)",
           "hover-text": "#E4DFDA",
         }, // neutral brown
 

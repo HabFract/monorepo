@@ -10,36 +10,35 @@ type SphereCardProps = {
 };
 
 const SphereCard: React.FC<SphereCardProps> = ({ sphere } : SphereCardProps) => {
-  console.log('sphere :>> ', sphere);
+  const { name, metadata } = sphere;
   return (
-    // @ts-ignore
-    <div className="orbit-card flex flex-col rounded-2xl overflow-hidden">
-      <header className="orbit-header flex bg-off-white rounded-t-lg items-center justify-around">
-        <div className="orbit-title">
-          <h2 className="card-name card-h1"></h2>
+    <div className="sphere-card flex flex-col rounded-2xl overflow-hidden">
+      <header className="sphere-header card-header">
+        <div className="sphere-title">
+          <h2 className="card-name card-h1">{name}</h2>
         </div>
-        <div className="orbit-timeframe col-c text-sm p-1">
+        {/* <div className="sphere-timeframe col-c text-sm p-1">
           <span className="font-semibold">Last tracked:</span>
           <p>{}</p>
-        </div>
+        </div> */}
       </header>
       <main className="card-body-bg p-4 gap-2 col-c">
-        <div className="orbit-description flex items-center justify-center">
-          <p className='card-copy'>{}</p>
+        <div className="sphere-description flex items-center justify-center">
+          <p className='card-copy'>{metadata?.description}</p>
         </div>
-        <div className="row-c-around">
-          <div className="orbit-actions col-c gap-2">
-            <div className="orbit-actions-crud row-c-around">
-              <Button className="btn responsive btn-secondary" size="sm">
+        <div className="row-c-around flex-1">
+          <div className="sphere-actions col-c gap-2">
+            <div className="sphere-actions-crud col-c">
+              <Button className="btn responsive btn-secondary w-full" size="sm">
                 <EditOutlined className="btn-icon" />
                 <span>Edit</span>
               </Button>
-              <Button className="btn responsive btn-danger" size="sm">
+              <Button className="btn responsive btn-danger w-full" size="sm">
                 <DeleteOutlined className="btn-icon" />
                 <span>Delete</span>
               </Button>
             </div>
-            <div className="orbit-actions-vis col-c">
+            <div className="sphere-actions-vis col-c">
               <Button className="btn btn-primary w-full" size="sm">
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>
@@ -50,7 +49,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere } : SphereCardProps) => 
               </Button>
             </div>
           </div>
-          <div className="mini-vis col-c">
+          <div className="mini-vis col-c flex-1">
             <SphereVis />
           </div>
         </div>

@@ -1,3 +1,15 @@
-nav + main {
+nav
+  + main {
   padding-left: 72px;
+}
+
+.page-header {
+  @apply
+    bg-primary
+    h-12
+    text-off-white
+    rounded-xl
+    flex
+    items-center
+    justify-around;
 }

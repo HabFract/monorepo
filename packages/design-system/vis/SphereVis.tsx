@@ -2,7 +2,7 @@ import ApexCharts from 'apexcharts';
 import React, { useRef, useEffect } from 'react';
 
 const SpherePie: React.FC = () => {
-  const pieChart = useRef();
+  const pieChart = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const getChartOptions = () => {
@@ -10,8 +10,8 @@ const SpherePie: React.FC = () => {
         series: [52.8, 26.8, 20.4],
         colors: ["#1C64F2", "#16BDCA", "#9061F9"],
         chart: {
-          height: 420,
-          width: "100%",
+          width: 'auto',
+          height: "100%",
           type: "pie",
         },
         stroke: {
@@ -23,49 +23,29 @@ const SpherePie: React.FC = () => {
             labels: {
               show: true,
             },
-            size: "100%",
+            size: "80%",
             dataLabels: {
-              offset: -25
+              offset: -8
             }
           },
         },
-        labels: ["Direct", "Organic search", "Referrals"],
+        labels: ["Atomic", "Subatomic", "Astronomic"],
         dataLabels: {
           enabled: true,
           style: {
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Open Sans, sans-serif",
           },
         },
         legend: {
-          position: "bottom",
-          fontFamily: "Inter, sans-serif",
-        },
-        yaxis: {
-          labels: {
-            formatter: function (value) {
-              return value + "%"
-            },
-          },
-        },
-        xaxis: {
-          labels: {
-            formatter: function (value) {
-              return value  + "%"
-            },
-          },
-          axisTicks: {
-            show: false,
-          },
-          axisBorder: {
-            show: false,
-          },
-        },
+          show: false
+        }
       }
     }
-    const chart = new ApexCharts(pieChart, getChartOptions());
+    if(typeof  pieChart?.current === "undefined" || (pieChart.current as HTMLElement)!.children?.length > 0) return;
+    const chart = new ApexCharts(pieChart.current, getChartOptions());
     chart.render();
   }, [])
-
+  
   return (
     //@ts-ignore
     <div className="sphere-pie">

@@ -15,10 +15,26 @@
   @apply text-white leading-normal text-lg max-w-xl text-center py-2;
 }
 
+.card-header {
+  @apply flex bg-off-white rounded-t-lg items-center justify-around;
+}
+
 .card-body-bg {
+  justify-content: flex-start !important;
   background: linear-gradient(180deg, rgba(67,82,95,1) 36%, rgba(62,63,72,1) 91%);
 }
 
-.orbit-card {
+.orbit-card, .sphere-card {
   max-width: 540px;
+}
+
+.mini-vis {
+  max-width: 50%;
+}
+
+@media screen and (min-width: 420px) {
+  .sphere-card .sphere-description + div {
+    gap: 0;
+    margin-left: 2rem;
+  }
 }

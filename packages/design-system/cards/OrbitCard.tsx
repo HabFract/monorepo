@@ -13,11 +13,9 @@ type OrbitCardProps = {
 };
 
 const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
-  // console.log('orbit :>> ', orbit);
   return (
-    // @ts-ignore
     <div className="orbit-card flex flex-col rounded-2xl overflow-hidden">
-      <header className="orbit-header flex bg-off-white rounded-t-lg items-center justify-around">
+      <header className="orbit-header card-header">
         <div className="orbit-title">
           <h2 className="card-name card-h1">{orbit.name}</h2>
         </div>

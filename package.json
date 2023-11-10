@@ -26,8 +26,9 @@
   },
   "devDependencies": {
     "@rollup/plugin-graphql": "^2.0.4",
-    "vite-plugin-node-polyfills": "^0.15.0",
+    "@types/react": "^18.2.37",
     "@vitejs/plugin-react": "^4.0.3",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-plugin-node-polyfills": "^0.15.0"
   }
 }

@@ -2,25 +2,25 @@
   @apply bg-primary-transparent border-primary border-4;
 }
 .btn-primary:hover {
-  @apply text-primary-hover-text bg-primary-hover-bg !important;
+  @apply text-primary-hover-text bg-primary-hover-bg border-primary !important;
 }
 .btn-secondary {
   @apply bg-secondary-transparent border-secondary border-4;
 }
 .btn-secondary:hover {
-  @apply text-secondary-hover-text bg-secondary-hover-bg !important;
+  @apply text-secondary-hover-text bg-secondary-hover-bg border-secondary !important;
 }
 .btn-danger {
   @apply bg-danger-transparent border-danger border-4;
 }
 .btn-danger:hover {
-  @apply text-danger-hover-text bg-danger-hover-bg !important;
+  @apply text-danger-hover-text bg-danger-hover-bg border-danger !important;
 }
 .btn-neutral {
   @apply bg-neutral-transparent border-neutral border-4;
 }
 .btn-neutral:hover {
-  @apply text-neutral-hover-text bg-neutral-hover-bg !important;
+  @apply text-neutral-hover-text bg-neutral-hover-bg border-neutral !important;
 }
 
 .btn:active {
