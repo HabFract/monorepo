@@ -97,6 +97,20 @@ type SphereCreateResponse {
   payload: ResponsePayload!
 }
 
+# Frequency Enum
+enum Frequency {
+  DAY
+  HOUR
+  WEEK
+}
+
+# Scale Enum
+enum Scale {
+  SUB
+  ATOMIC
+  ASTRO
+}
+
 # ---- Orbit ----- #
 # Orbit GQL Types
 type OrbitConnection {
