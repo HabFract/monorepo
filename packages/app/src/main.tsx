@@ -29,7 +29,11 @@ function renderComponent(component: React.ReactNode) {
   );
 }
 
-Object.entries(routes).forEach(([routeName, component]) => 
-  AppMachine.on(routeName as AppState, async () => renderComponent(component as React.ReactNode)));
+Object.entries(routes).forEach(([routeName, component]) => {
+  AppMachine.on(routeName as AppState, async (params) => {
+    const ComponentWithProps = React.cloneElement(component as React.ReactElement, params);
+    renderComponent(ComponentWithProps);
+  });
+});
 
 AppMachine.go();

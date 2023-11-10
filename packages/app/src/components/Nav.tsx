@@ -55,11 +55,12 @@ const Nav: React.FC = ({children, transition} : any) => {
   };
 
   const onClick: MenuProps['onClick'] = (e) => {
+    const sphereId = e.keyPath[1]; // Assuming the sphereId is the second item in the keyPath array
     switch (e.key) {
       case 'add-sphere':
         transition('CreateSphere')
         break;
-    
+
       case 'list-spheres':
         transition('ListSpheres')
         break;
@@ -67,11 +68,11 @@ const Nav: React.FC = ({children, transition} : any) => {
       case 'add-orbit':
         transition('CreateOrbit')
         break;
-    
+
       case 'list-orbits':
-        transition('ListOrbits')
+        transition('ListOrbits', { sphereId })
         break;
-    
+
       default:
         transition('Home')
         break;
