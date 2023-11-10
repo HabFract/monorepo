@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { SortDescendingOutlined, FilterOutlined } from '@ant-design/icons';
+import { SortDescendingOutlined, SortAscendingOutlined, FilterOutlined } from '@ant-design/icons';
 import { Modal, Radio } from 'flowbite-react';
 import './common.css';
 
@@ -23,12 +23,20 @@ const ListSortFilter = () => {
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === SortOrder.GreatestToLowest ? SortOrder.LowestToGreatest : SortOrder.GreatestToLowest);
+  };
+
   return (
     <div className="list-sort-filter">
       <div className="sort-icon-container flex justify-end">
         <div className="flex gap-2 text-2xl">
           <FilterOutlined className="sort-filter-icon" onClick={toggleModal} />
-          <SortDescendingOutlined className="sort-filter-icon" onClick={toggleModal} />
+          {sortOrder === SortOrder.GreatestToLowest ? (
+            <SortDescendingOutlined className="sort-filter-icon" onClick={toggleSortOrder} />
+          ) : (
+            <SortAscendingOutlined className="sort-filter-icon" onClick={toggleSortOrder} />
+          )}
         </div>
       </div>
       {isModalOpen && (
@@ -69,19 +77,6 @@ const ListSortFilter = () => {
                         <label>
                           <Field type="radio" name="sortCriteria" value="astronomicOrbits" as={Radio} />
                           Astronomic Orbits
-                        </label>
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block mb-2 text-sm font-medium">Sort order:</label>
-                      <div className="flex flex-col">
-                        <label>
-                          <Field type="radio" name="sortOrder" value="greatestToLowest" as={Radio} />
-                          Greatest to Lowest
-                        </label>
-                        <label>
-                          <Field type="radio" name="sortOrder" value="lowestToGreatest" as={Radio} />
-                          Lowest to Greatest
                         </label>
                       </div>
                     </div>
