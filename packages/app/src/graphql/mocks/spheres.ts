@@ -35,8 +35,8 @@ export const SPHERES_MOCKS = [{
     data: {
       createSphere: {
         payload: {
-          headerHash: "mockedHeaderHash",
-          entryHash: "mockedEntryHash",
+          actionHash: "SGVhbHRoMQ==e",
+          entryHash: "SGVhbHRoMQ==",
         },
       },
     },

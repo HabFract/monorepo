@@ -43,7 +43,7 @@ export const ORBITS_MOCKS = [{
               startTime: 1617235200, // Mocked Unix timestamp for example
               endTime: 1617321600,   // Mocked Unix timestamp for example
             },
-            sphereEntryHashB64: 'TWVudGFsV2VsbGJlaW5nMg==', // Corresponding to "Mental Wellbeing" sphere id
+            sphereEntryHashB64: 'SGVhbHRoMQ==', // Corresponding to "Health and Fitness" sphere id
           },
           cursor: ''
         },
@@ -60,6 +60,7 @@ export const ORBITS_MOCKS = [{
               startTime: 1617235200, // Mocked Unix timestamp for example
               endTime: 1617321600,   // Mocked Unix timestamp for example
             },
+            sphereEntryHashB64: 'TWVudGFsV2VsbGJlaW5nMg==', // Corresponding to "Mental Wellbeing" sphere id
           },
           cursor: ''
         },
