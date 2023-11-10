@@ -1,4 +1,5 @@
 import ApexCharts from 'apexcharts';
+import './common.css'
 import React, { useRef, useEffect } from 'react';
 
 const SpherePie: React.FC = () => {
@@ -8,7 +9,7 @@ const SpherePie: React.FC = () => {
     const getChartOptions = () => {
       return {
         series: [52.8, 26.8, 20.4],
-        colors: ["#1C64F2", "#16BDCA", "#9061F9"],
+        colors: ["#A2EAC4", "#91d5ff", "#6F54B2"],
         chart: {
           width: 'auto',
           height: "100%",

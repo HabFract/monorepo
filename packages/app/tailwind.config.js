@@ -28,6 +28,7 @@ export default {
     },
     fontFamily: {
       sans: ["Open Sans", "Arial"],
+      heading: ["Montserrat", "Arial"],
     },
     extend: {
       colors: {
@@ -49,8 +50,14 @@ export default {
           DEFAULT: "#4B3030",
           transparent: "rgba(75, 48, 48, 0.65)",
           "hover-bg": "rgba(75, 48, 48, 0.9)",
-          "hover-text": "#E4DFDA",
+          "hover-text": "#fff",
         }, // neutral brown
+        
+        accent: {
+          DEFAULT: "#6F54B2",
+          "hover-bg": "#91d5ff",
+          "hover-text": "#3E3F48",
+        }, 
         
         danger: {
           DEFAULT: "#B22222",
@@ -61,14 +68,16 @@ export default {
 
         info: {
           DEFAULT: "#40a9ff",
+          "transparent": "rgba(64, 169, 255, 0.5)",
           "hover-bg": "#91d5ff",
           "hover-text": "#3E3F48",
         }, // info color for pointing things out, it doesn't clash with primary and secondary colors and still conveys the right meaning
 
         warn: {
           DEFAULT: "#D8973C",
-          // "hover-bg": "#91d5ff",
-          // "hover-text": "#3E3F48",
+          "transparent": "rgba(216, 151, 60,0.5)",
+          "hover-bg": "rgba(216, 151, 60,0.9)",
+          "hover-text": "#3E3F48",
         },
 
         "off-white": "#E6E8E6",

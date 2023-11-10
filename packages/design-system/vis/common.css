@@ -5,7 +5,7 @@
 }
 
 label {
-  @apply font-sans uppercase text-xs;
+  @apply font-heading uppercase text-xs;
   color: #E6E8E6;
 }
 
@@ -20,4 +20,8 @@ div[role="progressbar"] > div.atomic > div {
 }
 div[role="progressbar"] > div.astro > div {
   margin-left: 58%;
+}
+
+.sphere-pie svg {
+  overflow: inherit;
 }

@@ -30,10 +30,11 @@ export default {
     },
     fontFamily: {
       sans: ["Open Sans", "Arial"],
+      heading: ["Montserrat", "Arial"],
     },
     extend: {
       colors: {
-        primary: {
+        primary: { //A2EAC4
           DEFAULT: "#559E78",
           transparent: "rgba(85,158,120, 0.5)",
           "hover-bg": "rgba(85,158,120, 0.9)",
@@ -67,6 +68,12 @@ export default {
           "hover-text": "#3E3F48",
         }, // info color for pointing things out, it doesn't clash with primary and secondary colors and still conveys the right meaning
 
+        accent: {
+          DEFAULT: "#6F54B2",
+          "hover-bg": "#91d5ff",
+          "hover-text": "#3E3F48",
+        }, 
+        
         warn: {
           DEFAULT: "#D8973C",
           // "hover-bg": "#91d5ff",

@@ -3,8 +3,21 @@
 }
 
 .list-sort-filter {
+  @apply bg-off-white rounded-lg -mt-2;
   font-size: 2rem;
   padding: 0.25rem .5rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.sort-filter-icon {
+
+}
+
+.sort-filter-icon:hover {
+  @apply text-accent;
+  transform: scale(1.2);
+  cursor: pointer;
 }
 
 @media screen and (min-width: 640px) {

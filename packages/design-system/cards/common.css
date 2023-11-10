@@ -3,12 +3,12 @@
     uppercase
     text-[#3E3F48]
     font-semibold
-    font-sans
+    font-heading
     text-xl
     py-4
     pl-2
     leading-5
-    tracking-wide;
+    tracking-tight;
 }
 
 .card-copy {

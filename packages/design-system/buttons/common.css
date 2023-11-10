@@ -1,3 +1,7 @@
+button {
+  @apply text-off-white;
+}
+
 .btn-primary {
   @apply bg-primary-transparent border-primary border-4;
 }
@@ -9,6 +13,12 @@
 }
 .btn-secondary:hover {
   @apply text-secondary-hover-text bg-secondary-hover-bg border-secondary !important;
+}
+.btn-warn {
+  @apply bg-warn-transparent border-warn border-4;
+}
+.btn-warn:hover {
+  @apply text-warn-hover-text bg-warn-hover-bg border-warn !important;
 }
 .btn-danger {
   @apply bg-danger-transparent border-danger border-4;

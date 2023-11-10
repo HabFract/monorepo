@@ -1,11 +1,14 @@
 import React from 'react';
-import { SortDescendingOutlined, SortAscendingOutlined } from '@ant-design/icons'; // Assuming you have an SVG for the sort icon
+import { SortDescendingOutlined, SortAscendingOutlined, FilterOutlined } from '@ant-design/icons'; // Assuming you have an SVG for the sort icon
 import './common.css';
 
 const ListSortFilter = () => (
-  <div className="list-sort-filter bg-off-white rounded-xl">
+  <div className="list-sort-filter">
     <div className="sort-icon-container flex justify-end">
-      <SortDescendingOutlined />
+      <div className="flex gap-2 text-2xl">
+        <FilterOutlined className="sort-filter-icon" />
+        <SortDescendingOutlined className="sort-filter-icon" />
+      </div>
     </div>
   </div>
 );
