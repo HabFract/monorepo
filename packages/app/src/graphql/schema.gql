@@ -146,4 +146,5 @@ type Todo {
   id: ID!
   description: String!
   status: Boolean!
+  sphereHashB64: String!
 }
