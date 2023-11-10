@@ -35,6 +35,7 @@ const SpherePie: React.FC = () => {
           enabled: true,
           style: {
             fontFamily: "Open Sans, sans-serif",
+            colors: ['#E6E8E6']
           },
         },
         legend: {
