@@ -9,6 +9,11 @@ label {
   @apply font-heading uppercase text-xs text-off-white;
 }
 
+.sphere-pie-label {
+  padding-left: 15%;
+  margin-top: -1rem;
+}
+
 div[role="progressbar"] > div > div {
   @apply bg-primary;
 }

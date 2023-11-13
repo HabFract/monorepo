@@ -52,7 +52,7 @@ const SpherePie: React.FC = () => {
     //@ts-ignore
     <div className="sphere-pie">
       <div ref={pieChart} className="py-6" id="pie-chart"></div>
-      <label><div className="text-center w-full">By Sphere Scale</div></label>
+      <label><div className="sphere-pie-label w-full">By Orbit Scale</div></label>
     </div>
   );
 };
