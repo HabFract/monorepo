@@ -14,7 +14,8 @@ export type Routes = {
 };
 
 export type AppStateStore = {
-  currentState: AppState
+  currentState: AppState,
+  params?: object
 }
 
 export const initialState: AppStateStore = { // Home route

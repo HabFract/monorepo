@@ -13,10 +13,10 @@ export type Callbacks<S extends State> = Record<S, StateTransitionCallback<S>>;
 /**
  * The main mechanism for maintaining app loading state
  */
-export class StateMachine<S extends State, T extends StateStore<S>> {
+export class StateMachine<S extends State, T extends StateStore<S>, P = {}> {
   state: T
   transitions: StateTransitions<S>
-  callbacks?: Callbacks<State>
+  callbacks?: Callbacks<S>
 
   constructor(init: T, transitions: StateTransitions<S>) {
     this.state = init;
@@ -27,9 +27,10 @@ export class StateMachine<S extends State, T extends StateStore<S>> {
     if (
       this.transitions[this.state.currentState].findIndex(
         (nState) => state == nState
-      ) >= 0
-    ) {
-      this.state.currentState = state
+        ) >= 0
+        ) {
+        this.state.currentState = state
+        // this.state = {currentState: state, params: this.params};
       this.go()
     } else {
       const currState = this.state.currentState
@@ -42,7 +43,6 @@ export class StateMachine<S extends State, T extends StateStore<S>> {
   public on(
     state: S,
     callback: StateTransitionCallback<S>,
-    params?: object,
   ): void {
     if (!this.callbacks) {
       this.callbacks = {} as Callbacks<S>
