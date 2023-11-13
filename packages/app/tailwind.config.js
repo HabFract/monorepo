@@ -64,7 +64,7 @@ export default {
         info: {
           DEFAULT: "#365d56",
           "transparent": "rgba(54, 93, 86, 0.5)",
-          "hover-bg": "#a8deca",
+          "hover-bg": "#365d56",
           "hover-text": "#3E3F48",
         }, // info color for pointing things out, it doesn't clash with primary and secondary colors and still conveys the right meaning
 
@@ -75,7 +75,7 @@ export default {
           "hover-text": "#3E3F48",
         },
 
-        "off-white": "#E6E8E6",
+        "off-white": "#fdfdfd",
         "brown": "#E4DFDA",
         // "dark-gray": "#3E3F48",
         "dark-gray": "#011632",
@@ -83,6 +83,8 @@ export default {
         "sphere-card-bg": "#172b34",
         "card-bg-light": "#95afc0",
         "card-bg": "#173a3e",
+        
+        "nav-bg": "#1B2430",
       },
     },
   },

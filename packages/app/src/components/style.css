@@ -20,3 +20,13 @@ nav
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
+
+ul[role="menu"] {
+  @apply bg-nav-bg text-off-white rounded-b-xl;
+}
+ul[role="menu"] li:hover {
+  @apply bg-nav-bg text-info;
+}
+ul[role="menu"] .ant-menu-submenu-selected >.ant-menu-submenu-title {
+  @apply text-info;
+}

@@ -21,7 +21,8 @@ export const SPHERES_MOCKS = [{
       })
     },
   },
-},{
+},
+{
   request: {
     query: GET_SPHERE,
     variables: {
@@ -30,6 +31,50 @@ export const SPHERES_MOCKS = [{
   },
   result: {
     data: {sphere: aSphere({id: 'SGVhbHRoMQ==', name:'Health and Fitness', metadata: {hashtag: 'fitness exercise nutrition', description: 'Focus on physical health, exercise, and nutrition.'}})},
+  },
+},
+{
+  request: {
+    query: GET_SPHERE,
+    variables: {
+      id: "TWVudGFsV2VsbGJlaW5nMg=="
+    },
+  },
+  result: {
+    data: {sphere: aSphere({id: 'TWVudGFsV2VsbGJlaW5nMg==', name:'Mental Wellbeing', metadata: {hashtag: 'wellbeing mindfulness meditation', description: 'Improve your mental health through mindfulness and meditation.'}})},
+  },
+},
+{
+  request: {
+    query: GET_SPHERE,
+    variables: {
+      id: "UGVyc29uYWxEZXZlbG9wbWVudDM="
+    },
+  },
+  result: {
+    data: {sphere: aSphere({id: 'UGVyc29uYWxEZXZlbG9wbWVudDM=', name:'Personal Development', metadata: {hashtag: 'learning growth self-improvement', description: 'Pursue personal growth and continuous learning.'}})},
+  },
+},
+{
+  request: {
+    query: GET_SPHERE,
+    variables: {
+      id: "U29jaWFsQ29ubmVjdGlvbjQ="
+    },
+  },
+  result: {
+    data: {sphere: aSphere({id: 'U29jaWFsQ29ubmVjdGlvbjQ=', name:'Social Connection', metadata: {hashtag: 'relationships networking community', description: 'Build and maintain meaningful relationships.'}})},
+  },
+},
+{
+  request: {
+    query: GET_SPHERE,
+    variables: {
+      id: "V29ya0FuZENhcmVlcjU="
+    },
+  },
+  result: {
+    data: {sphere: aSphere({id: 'V29ya0FuZENhcmVlcjU=', name:'Work and Career', metadata: {hashtag: 'career success work-life-balance', description: 'Advance your career while maintaining work-life balance.'}})},
   },
 },
 {

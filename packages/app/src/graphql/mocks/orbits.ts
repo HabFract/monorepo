@@ -85,6 +85,37 @@ export const ORBITS_MOCKS = [
               },
               cursor: "",
             },
+          ],
+        }),
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_ORBITS_BY_SPHERE,
+      variables: { sphereEntryHashB64: "TWVudGFsV2VsbGJlaW5nMg==" }, // Base64 for "Mental Wellbeing" sphere id
+    },
+    result: {
+      data: {
+        orbits: aOrbitConnection({
+          edges: [
+            {
+              node: {
+                id: "R28gZm9yIGEgd2Fsay==", // Base64 for "Go for a walk"
+                name: "Go for a walk",
+                metadata: {
+                  description: "A daily walk to improve cardiovascular health.",
+                  frequency: Frequency.DAY,
+                  scale: Scale.ATOM,
+                },
+                timeframe: {
+                  startTime: 1617235200, // Mocked Unix timestamp for example
+                  endTime: 1617321600, // Mocked Unix timestamp for example
+                },
+                sphereEntryHashB64: "TWVudGFsV2VsbGJlaW5nMg==", // Corresponding to "Health and Fitness" sphere id
+              },
+              cursor: "",
+            },
             {
               node: {
                 id: "QXR0ZW5kIGEgc29jaWFsIGdhdGhlcmluZw==", // Base64 for "Attend a social gathering"
@@ -102,23 +133,20 @@ export const ORBITS_MOCKS = [
               },
               cursor: "",
             },
-            {
-              node: {
-                id: "T3JnYW5pemUgYSBjb21tdW5pdHkgZXZlbnQ=", // Base64 for "Organize a community event"
-                name: "Organize a community event",
-                metadata: {
-                  description: "Plan and host an event to bring the local community together.",
-                  frequency: Frequency.MONTH,
-                  scale: Scale.ATOM,
-                },
-                timeframe: {
-                  startTime: 1617235200, // Mocked Unix timestamp for example
-                  endTime: 1617321600, // Mocked Unix timestamp for example
-                },
-                sphereEntryHashB64: "U29jaWFsQ29ubmVjdGlvbjQ=", // Corresponding to "Social Connection" sphere id
-              },
-              cursor: "",
-            },
+          ],
+        }),
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_ORBITS_BY_SPHERE,
+      variables: { sphereEntryHashB64: "UGVyc29uYWxEZXZlbG9wbWVudDM=" }, // Base64 for "Personal Development" sphere id
+    },
+    result: {
+      data: {
+        orbits: aOrbitConnection({
+          edges: [
             {
               node: {
                 id: "TGVhcm4gYSBuZXcgbGFuZ3VhZ2U=", // Base64 for "Learn a new language"
@@ -162,106 +190,6 @@ export const ORBITS_MOCKS = [
   {
     request: {
       query: GET_ORBITS_BY_SPHERE,
-      variables: { sphereEntryHashB64: "TWVudGFsV2VsbGJlaW5nMg==" }, // Base64 for "Mental Wellbeing" sphere id
-    },
-    result: {
-      data: {
-        orbits: aOrbitConnection({
-          edges: [
-            {
-              node: {
-                id: "R28gZm9yIGEgd2Fsay==", // Base64 for "Go for a walk"
-                name: "Go for a walk",
-                metadata: {
-                  description: "A daily walk to improve cardiovascular health.",
-                  frequency: Frequency.DAY,
-                  scale: Scale.ATOM,
-                },
-                timeframe: {
-                  startTime: 1617235200, // Mocked Unix timestamp for example
-                  endTime: 1617321600, // Mocked Unix timestamp for example
-                },
-                sphereEntryHashB64: "TWVudGFsV2VsbGJlaW5nMg==", // Corresponding to "Health and Fitness" sphere id
-              },
-              cursor: "",
-            },
-            {
-              node: {
-                id: "TGlmdCB3ZWlnaHRz", // Base64 for "Lift weights"
-                name: "Lift weights",
-                metadata: {
-                  description:
-                    "Strength training to build muscle and increase metabolism.",
-                  frequency: Frequency.WEEK,
-                  scale: Scale.ATOM,
-                },
-                timeframe: {
-                  startTime: 1617235200, // Mocked Unix timestamp for example
-                  endTime: 1617321600, // Mocked Unix timestamp for example
-                },
-                sphereEntryHashB64: "TWVudGFsV2VsbGJlaW5nMg==", // Corresponding to "Health and Fitness" sphere id
-              },
-              cursor: "",
-            },
-            // ... other orbits with the same sphereEntryHashB64 if any
-          ],
-        }),
-      },
-    },
-  },
-  {
-    request: {
-      query: GET_ORBITS_BY_SPHERE,
-      variables: { sphereEntryHashB64: "UGVyc29uYWxEZXZlbG9wbWVudDM=" }, // Base64 for "Personal Development" sphere id
-    },
-    result: {
-      data: {
-        orbits: aOrbitConnection({
-          edges: [
-            {
-              node: {
-                id: "R28gZm9yIGEgd2Fsay==", // Base64 for "Go for a walk"
-                name: "Go for a walk",
-                metadata: {
-                  description: "A daily walk to improve cardiovascular health.",
-                  frequency: Frequency.DAY,
-                  scale: Scale.ATOM,
-                },
-                timeframe: {
-                  startTime: 1617235200, // Mocked Unix timestamp for example
-                  endTime: 1617321600, // Mocked Unix timestamp for example
-                },
-                sphereEntryHashB64: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
-              },
-              cursor: "",
-            },
-            {
-              node: {
-                id: "TGlmdCB3ZWlnaHRz", // Base64 for "Lift weights"
-                name: "Lift weights",
-                metadata: {
-                  description:
-                    "Strength training to build muscle and increase metabolism.",
-                  frequency: Frequency.WEEK,
-                  scale: Scale.ATOM,
-                },
-                timeframe: {
-                  startTime: 1617235200, // Mocked Unix timestamp for example
-                  endTime: 1617321600, // Mocked Unix timestamp for example
-                },
-                sphereEntryHashB64: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
-              },
-              cursor: "",
-            },
-            // ... other orbits with the same sphereEntryHashB64 if any
-          ],
-        }),
-      },
-    },
-  },
-  {
-    request: {
-      query: GET_ORBITS_BY_SPHERE,
       variables: { sphereEntryHashB64: "U29jaWFsQ29ubmVjdGlvbjQ=" }, // Base64 for "Social Connection" sphere id
     },
     result: {
@@ -270,40 +198,21 @@ export const ORBITS_MOCKS = [
           edges: [
             {
               node: {
-                id: "R28gZm9yIGEgd2Fsay==", // Base64 for "Go for a walk"
-                name: "Go for a walk",
+                id: "T3JnYW5pemUgYSBjb21tdW5pdHkgZXZlbnQ=", // Base64 for "Organize a community event"
+                name: "Organize a community event",
                 metadata: {
-                  description: "A daily walk to improve cardiovascular health.",
-                  frequency: Frequency.DAY,
+                  description: "Plan and host an event to bring the local community together.",
+                  frequency: Frequency.MONTH,
                   scale: Scale.ATOM,
                 },
                 timeframe: {
                   startTime: 1617235200, // Mocked Unix timestamp for example
                   endTime: 1617321600, // Mocked Unix timestamp for example
                 },
-                sphereEntryHashB64: "U29jaWFsQ29ubmVjdGlvbjQ=", // Corresponding to "Health and Fitness" sphere id
+                sphereEntryHashB64: "U29jaWFsQ29ubmVjdGlvbjQ=", // Corresponding to "Social Connection" sphere id
               },
               cursor: "",
             },
-            {
-              node: {
-                id: "TGlmdCB3ZWlnaHRz", // Base64 for "Lift weights"
-                name: "Lift weights",
-                metadata: {
-                  description:
-                    "Strength training to build muscle and increase metabolism.",
-                  frequency: Frequency.WEEK,
-                  scale: Scale.ATOM,
-                },
-                timeframe: {
-                  startTime: 1617235200, // Mocked Unix timestamp for example
-                  endTime: 1617321600, // Mocked Unix timestamp for example
-                },
-                sphereEntryHashB64: "U29jaWFsQ29ubmVjdGlvbjQ=", // Corresponding to "Health and Fitness" sphere id
-              },
-              cursor: "",
-            },
-            // ... other orbits with the same sphereEntryHashB64 if any
           ],
         }),
       },
