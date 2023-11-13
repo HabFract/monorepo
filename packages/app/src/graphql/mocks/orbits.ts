@@ -218,36 +218,35 @@ export const ORBITS_MOCKS = [
           edges: [
             {
               node: {
-                id: "R28gZm9yIGEgd2Fsay==", // Base64 for "Go for a walk"
-                name: "Go for a walk",
+                id: "R2V0IGEgcHJvbW90aW9u", // Base64 for "Get a promotion"
+                name: "Get a promotion",
                 metadata: {
-                  description: "A daily walk to improve cardiovascular health.",
-                  frequency: Frequency.DAY,
-                  scale: Scale.ATOM,
+                  description: "Work towards achieving a higher position within the company.",
+                  frequency: Frequency.MONTH,
+                  scale: Scale.ASTRONOMIC,
                 },
                 timeframe: {
                   startTime: 1617235200, // Mocked Unix timestamp for example
                   endTime: 1617321600, // Mocked Unix timestamp for example
                 },
-                sphereEntryHashB64: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
+                sphereEntryHashB64: "V29ya0FuZENhcmVlcjU=", // Corresponding to "Work and Career" sphere id
               },
               cursor: "",
             },
             {
               node: {
-                id: "TGlmdCB3ZWlnaHRz", // Base64 for "Lift weights"
-                name: "Lift weights",
+                id: "U3RhcnQgYSBidXNpbmVzcw==", // Base64 for "Start a business"
+                name: "Start a business",
                 metadata: {
-                  description:
-                    "Strength training to build muscle and increase metabolism.",
-                  frequency: Frequency.WEEK,
-                  scale: Scale.ATOM,
+                  description: "Initiate the foundation of a new entrepreneurial venture.",
+                  frequency: Frequency.QUARTER,
+                  scale: Scale.ASTRONOMIC,
                 },
                 timeframe: {
                   startTime: 1617235200, // Mocked Unix timestamp for example
                   endTime: 1617321600, // Mocked Unix timestamp for example
                 },
-                sphereEntryHashB64: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
+                sphereEntryHashB64: "V29ya0FuZENhcmVlcjU=", // Corresponding to "Work and Career" sphere id
               },
               cursor: "",
             },
