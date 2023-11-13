@@ -2,6 +2,7 @@ query getSpheres {
   spheres {
     edges {
       node {
+        id
         name
         metadata {
           description

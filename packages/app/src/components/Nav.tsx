@@ -34,11 +34,10 @@ function createFixedMenuItems() {
 }
 
 function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
-  console.log('spheres :>> ', spheres);
   return [...spheres.edges!.map((sphere: SphereEdge, idx: number) => {
     return getItem(`S${(idx + 1).toString()}`, sphere.node.id, null,
       [
-        getItem('List Orbits', 'list-orbits', null),
+        getItem('List Orbits', 'list-orbits-' + sphere.node.id, null),
         getItem('Create Orbit', 'add-orbit', null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'
       ])
   }),
@@ -46,7 +45,7 @@ function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
 }
 
 
-const Nav: React.FC = ({children, transition} : any) => {
+const Nav: React.FC = ({ children, transition } : any) => {
   const { loading, error, data: spheres } = useQuery(GET_SPHERES);
 
   const [collapsed, setCollapsed] = useState(true);
@@ -55,21 +54,21 @@ const Nav: React.FC = ({children, transition} : any) => {
   };
 
   const onClick: MenuProps['onClick'] = (e) => {
-    const sphereId = e.keyPath[1]; // Assuming the sphereId is the second item in the keyPath array
-    switch (e.key) {
-      case 'add-sphere':
+    switch (true) {
+      case e.key == 'add-sphere':
         transition('CreateSphere')
         break;
 
-      case 'list-spheres':
+      case e.key == 'list-spheres':
         transition('ListSpheres')
         break;
 
-      case 'add-orbit':
+      case e.key == 'add-orbit':
         transition('CreateOrbit')
         break;
 
-      case 'list-orbits':
+      case !!e.key.match(/list\-orbits/):
+        const sphereId = e.key.split('list-orbits-')[1];
         transition('ListOrbits', { sphereId })
         break;
 

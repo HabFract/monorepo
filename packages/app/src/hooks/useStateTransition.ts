@@ -10,8 +10,9 @@ export function useStateTransition() {
 
   const [state, setState] = useState(stateMachine.currentState);
 
-  const transition = (newState: string) => {
-    stateMachine.to(newState);
+  const transition = (newState: string, params: object) => {
+    stateMachine.to(newState, params);
+    debugger;
     setState(newState);
   };
 
