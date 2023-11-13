@@ -51,6 +51,40 @@ export const ORBITS_MOCKS = [
               },
               cursor: "",
             },
+            {
+              node: {
+                id: "TWFrZSBhIGhlYWx0aHkgbWVhbA==", // Base64 for "Make a healthy meal"
+                name: "Make a healthy meal",
+                metadata: {
+                  description: "Preparing nutritious meals to fuel the body for optimal health.",
+                  frequency: Frequency.DAY,
+                  scale: Scale.ATOM,
+                },
+                timeframe: {
+                  startTime: 1617235200, // Mocked Unix timestamp for example
+                  endTime: 1617321600, // Mocked Unix timestamp for example
+                },
+                sphereEntryHashB64: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
+              },
+              cursor: "",
+            },
+            {
+              node: {
+                id: "UHJhY3RpY2UgeW9nYQ==", // Base64 for "Practice yoga"
+                name: "Practice yoga",
+                metadata: {
+                  description: "Engage in yoga to enhance flexibility, strength, and mental clarity.",
+                  frequency: Frequency.WEEK,
+                  scale: Scale.ATOM,
+                },
+                timeframe: {
+                  startTime: 1617235200, // Mocked Unix timestamp for example
+                  endTime: 1617321600, // Mocked Unix timestamp for example
+                },
+                sphereEntryHashB64: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
+              },
+              cursor: "",
+            },
             // ... other orbits with the same sphereEntryHashB64 if any
           ],
         }),
