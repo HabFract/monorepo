@@ -12,7 +12,6 @@ export function useStateTransition() {
 
   const transition = (newState: string, params: object) => {
     stateMachine.to(newState, params);
-    debugger;
     setState(newState);
   };
 

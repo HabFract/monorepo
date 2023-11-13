@@ -30,9 +30,9 @@ function renderComponent(component: React.ReactNode) {
 }
 
 Object.entries(routes).forEach(([routeName, component]) => {
-  AppMachine.on(routeName as AppState, async (state, _cb) => {
-    const ComponentWithProps = React.cloneElement(component as React.ReactElement);
-    console.log('params :>> ', state);
+  AppMachine.on(routeName as AppState, async (state) => {
+    const ComponentWithProps = React.cloneElement(component as React.ReactElement, state.params);
+    console.log('params :>> ', ComponentWithProps,state.params);
     renderComponent(ComponentWithProps);
   });
 });

@@ -3,7 +3,8 @@ export type State = string | number | symbol;
 export type StateTransitions<S extends State> = Record<S, Array<S>>
 
 export type StateStore<S extends State> = {
-  currentState: S
+  currentState: S,
+  params?: object
 };
 
 export type StateTransitionCallback<S extends State> = (_: StateStore<S>) => Promise<void>
@@ -13,7 +14,7 @@ export type Callbacks<S extends State> = Record<S, StateTransitionCallback<S>>;
 /**
  * The main mechanism for maintaining app loading state
  */
-export class StateMachine<S extends State, T extends StateStore<S>, P = {}> {
+export class StateMachine<S extends State, T extends StateStore<S>> {
   state: T
   transitions: StateTransitions<S>
   callbacks?: Callbacks<S>
@@ -23,14 +24,14 @@ export class StateMachine<S extends State, T extends StateStore<S>, P = {}> {
     this.transitions = transitions
   }
 
-  public to(state: S) {
+  public to(state: S, params: object) {
     if (
       this.transitions[this.state.currentState].findIndex(
         (nState) => state == nState
         ) >= 0
         ) {
         this.state.currentState = state
-        // this.state = {currentState: state, params: this.params};
+        this.state.params = params;
       this.go()
     } else {
       const currState = this.state.currentState

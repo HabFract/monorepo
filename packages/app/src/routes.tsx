@@ -20,6 +20,7 @@ export type AppStateStore = {
 
 export const initialState: AppStateStore = { // Home route
   currentState: 'Home',
+  params: {}
 }
 
 export const routes: Routes = {
@@ -31,9 +32,9 @@ export const routes: Routes = {
 };
 
 export const AppTransitions: StateTransitions<AppState> = {
-  Home: ['CreateSphere', 'ListSpheres', 'ListOrbits'],
+  Home: ['CreateSphere', 'ListSpheres', 'ListOrbits', 'CreateOrbit'],
   CreateSphere: ['Home', 'ListSpheres'],
   ListSpheres: ['Home', 'CreateSphere', 'ListOrbits', 'CreateOrbit'],
-  CreateOrbit: ['Home', 'ListOrbits'],
-  ListOrbits: ['Home', 'CreateSphere', 'CreateOrbit', 'ListSpheres'],
+  CreateOrbit: ['Home', 'ListOrbits', 'CreateOrbit'],
+  ListOrbits: ['Home', 'CreateSphere', 'CreateOrbit', 'ListSpheres', 'ListOrbits'],
   }

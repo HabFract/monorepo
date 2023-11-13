@@ -22,7 +22,7 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
   });
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :</p>;
+  if (error) return <p>Error : {error.message}</p>;
 
   return (
     <div className='h-full bg-dark-gray p-2 flex flex-col gap-2'>
