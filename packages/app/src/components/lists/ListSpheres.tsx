@@ -19,7 +19,7 @@ function ListSpheres() {
       <PageHeader title="Spheres of Action" />
       <ListSortFilter />
       <div className="spheres-list">
-        {spheres.edges.map(({ node } : SphereEdge) => <SphereCard key={node.id} sphere={node} />)}
+        {spheres.edges.map(({ node } : SphereEdge) => <SphereCard key={node.id} sphere={node} isHeader={false} />)}
       </div>
     </div>
   );

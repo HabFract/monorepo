@@ -36,7 +36,7 @@ const OrbitVis: React.FC<OrbitVisProps> = ({ scale }: OrbitVisProps) => {
       <div>
         <img className="w-24" alt={getOrbitScaleImg(scale).alt} src={getOrbitScaleImg(scale).src} />
         <Progress className={scale.toLowerCase()} progress={getOrbitScalePercent(scale)} color="dark" />
-        <label><div className="pt-1 text-center w-full">Scale</div></label>
+        <label><div className="pt-1 mt-2 text-center w-full">Scale</div></label>
       </div>
     </div>
   );

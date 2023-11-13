@@ -2,13 +2,14 @@
   @apply 
     uppercase
     text-[#3E3F48]
-    font-semibold
+    font-medium
     font-heading
     text-base
     py-1
     pl-2
     leading-5
-    tracking-tight;
+    tracking-tight
+    text-off-white;
 }
 
 .card-copy {
@@ -18,22 +19,50 @@
     text-sm
     max-w-xl
     text-center
-    py-2;
+    p-2;
 }
 
 .card-header {
-  @apply flex bg-off-white rounded-t-lg items-center justify-around;
+  @apply flex rounded-t-lg items-center justify-around rounded-xl;
+}
+.list-header {
+  border: 2px dashed white;
+  @apply border-info;
+}
+.card-header.orbit-header {
+  background: #172b34;
+}
+.card-header.sphere-header {
+  background: #1a494a;
+}
+
+.card-copy {
+  @apply font-sans;
+  background: rgba(0,0,0,0.15);
+  border-radius: .75rem;
+  margin-bottom: .5rem;
 }
 
 .card-body-bg {
   padding: 0.5rem;
   gap: 0.5rem;
   justify-content: flex-start !important;
-  background: linear-gradient(180deg, rgba(67,82,95,1) 36%, rgba(62,63,72,1) 91%);
+  @apply bg-card-bg;
+  border-radius: .5rem;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.orbit-timeframe {
+  @apply font-sans text-white;
 }
 
 .orbit-card, .sphere-card {
   max-width: 540px;
+}
+
+.sphere-card {
+  @apply bg-sphere-card-bg flex flex-col rounded-2xl self-center rounded-xl;
 }
 
 .mini-vis {

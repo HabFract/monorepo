@@ -9,7 +9,7 @@ const SpherePie: React.FC = () => {
     const getChartOptions = () => {
       return {
         series: [52.8, 26.8, 20.4],
-        colors: ["#A2EAC4", "#91d5ff", "#6F54B2"],
+        colors: ["#a8deca", "#91d5ff", "#6F54B2"],
         chart: {
           width: 'auto',
           height: "100%",
@@ -52,6 +52,7 @@ const SpherePie: React.FC = () => {
     //@ts-ignore
     <div className="sphere-pie">
       <div ref={pieChart} className="py-6" id="pie-chart"></div>
+      <label><div className="text-center w-full">By Sphere Scale</div></label>
     </div>
   );
 };

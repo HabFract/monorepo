@@ -1,9 +1,9 @@
-import { GetSpheresQueryResult } from './generated/index';
 import { aSphere, aSphereConnection, aSphereEdge } from './generated/mocks';
 
 // import GET_SPHERE from './queries/sphere/getSphere.graphql';
 import CREATE_SPHERE from '../mutations/sphere/createSphere.graphql';
 import GET_SPHERES from '../queries/sphere/getSpheres.graphql';
+import GET_SPHERE from '../queries/sphere/getSphere.graphql';
 
 export const SPHERES_MOCKS = [{
   request: {
@@ -20,6 +20,16 @@ export const SPHERES_MOCKS = [{
         aSphereEdge({node: aSphere({id: 'V29ya0FuZENhcmVlcjU=', name:'Work and Career', metadata: {hashtag: 'career success work-life-balance', description: 'Advance your career while maintaining work-life balance.'}})})]
       })
     },
+  },
+},{
+  request: {
+    query: GET_SPHERE,
+    variables: {
+      id: "SGVhbHRoMQ=="
+    },
+  },
+  result: {
+    data: {sphere: aSphere({id: 'SGVhbHRoMQ==', name:'Health and Fitness', metadata: {hashtag: 'fitness exercise nutrition', description: 'Focus on physical health, exercise, and nutrition.'}})},
   },
 },
 {

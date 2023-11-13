@@ -81,7 +81,7 @@ const Nav: React.FC = ({ children, transition } : any) => {
 
   return (
     <>
-      <nav className={"fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col"}>
+      <nav className={"bg-dark-gray fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col"}>
         {error && "Error"}
         {loading ? "Loading" :
           <Menu
@@ -106,7 +106,7 @@ const Nav: React.FC = ({ children, transition } : any) => {
             {collapsed ? <MenuUnfoldOutlined onClick={toggleCollapsed}/> : <MenuFoldOutlined onClick={toggleCollapsed}/>}
           </div>
       </nav>
-      <main className={"overflow-auto fixed w-full h-full inset-y-0 left-0"}>{children}</main>
+      <main className={"bg-dark-gray overflow-auto fixed w-full h-full inset-y-0 left-0"}>{children}</main>
     </>
   );
 };

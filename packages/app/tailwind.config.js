@@ -27,37 +27,32 @@ export default {
       uppercase: "uppercase",
     },
     fontFamily: {
-      sans: ["Open Sans", "Arial"],
-      heading: ["Montserrat", "Arial"],
+
+      sans: ["Nunito", "Arial"],
+      heading: ["Poppins", "Arial"],
     },
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#559E78",
-          transparent: "rgba(85,158,120, 0.5)",
-          "hover-bg": "rgba(85,158,120, 0.9)",
+          DEFAULT: "#16a085", // deep emerald
+          transparent: "rgba(22, 160, 133, 0.5)",
+          "hover-bg": "rgba(22, 160, 133, 0.9)",
           "hover-text": "#fff",
-        }, // sea green for primary buttons
-
+        },
+    
         secondary: {
-          DEFAULT: "#FE6483",
-          transparent: "rgba(254,100,131, 0.5)",
-          "hover-bg": "rgba(254,100,131, 0.9)",
+          DEFAULT: "#ff6b6b", // coral
+          transparent: "rgba(255, 107, 107, 0.5)",
+          "hover-bg": "rgba(255, 107, 107, 0.9)",
           "hover-text": "#3E3F48",
-        }, // salmon for secondary buttons
-
+        },
+    
         neutral: {
-          DEFAULT: "#4B3030",
-          transparent: "rgba(75, 48, 48, 0.65)",
-          "hover-bg": "rgba(75, 48, 48, 0.9)",
+          DEFAULT: "#95afc0", // soft blue-grey
+          transparent: "rgba(149, 175, 192, 0.65)",
+          "hover-bg": "rgba(149, 175, 192, 0.9)",
           "hover-text": "#fff",
-        }, // neutral brown
-        
-        accent: {
-          DEFAULT: "#6F54B2",
-          "hover-bg": "#91d5ff",
-          "hover-text": "#3E3F48",
-        }, 
+        },
         
         danger: {
           DEFAULT: "#B22222",
@@ -67,9 +62,9 @@ export default {
         }, // firebrick color for danger buttons, it doesn't clash with primary and secondary colors and still conveys the right meaning
 
         info: {
-          DEFAULT: "#40a9ff",
-          "transparent": "rgba(64, 169, 255, 0.5)",
-          "hover-bg": "#91d5ff",
+          DEFAULT: "#365d56",
+          "transparent": "rgba(54, 93, 86, 0.5)",
+          "hover-bg": "#a8deca",
           "hover-text": "#3E3F48",
         }, // info color for pointing things out, it doesn't clash with primary and secondary colors and still conveys the right meaning
 
@@ -82,7 +77,11 @@ export default {
 
         "off-white": "#E6E8E6",
         "brown": "#E4DFDA",
-        "dark-gray": "#3E3F48",
+        // "dark-gray": "#3E3F48",
+        "dark-gray": "#1B2430",
+        "sphere-card-bg": "#172b34",
+        "card-bg-light": "#95afc0",
+        "card-bg": "#173a3e",
       },
     },
   },

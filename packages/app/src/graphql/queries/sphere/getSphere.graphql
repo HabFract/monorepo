@@ -1,0 +1,10 @@
+query getSphere($id: ID!) {
+  sphere(id: $id) {
+    id
+    name
+    metadata {
+      description
+      hashtag
+    }
+  }
+}

@@ -16,7 +16,7 @@ enum SortOrder {
   LowestToGreatest = 'lowestToGreatest',
 }
 
-const ListSortFilter = () => {
+const ListSortFilter = ({label} : {label: string}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortCriteria, setSortCriteria] = useState(SortCriteria.Name);
   const [sortOrder, setSortOrder] = useState(SortOrder.GreatestToLowest);
@@ -30,6 +30,7 @@ const ListSortFilter = () => {
   return (
     <div className="list-sort-filter">
       <div className="sort-icon-container flex justify-end">
+        {!!label && <span className="sort-filter-label">{label}</span>}
         <div className="flex gap-2 text-2xl">
           <FilterOutlined className="sort-filter-icon" onClick={toggleModal} />
           {sortOrder === SortOrder.GreatestToLowest ? (

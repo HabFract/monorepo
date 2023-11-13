@@ -28,7 +28,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
         <div className="orbit-description flex items-center justify-center">
           <p className='card-copy'>{orbit.metadata?.description}</p>
         </div>
-        <div className="row-c-around">
+        <div className="row-c-around h-full">
           <div className="orbit-actions col-c gap-2">
             <div className="orbit-actions-crud row-c-around">
               <Button className="btn responsive btn-warn" size="sm">

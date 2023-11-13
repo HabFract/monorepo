@@ -1,12 +1,12 @@
 .orbit-vis {
   border: 2px dashed #E6E8E6;
-  border-radius: 16px;
-  padding: 8px;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  background: rgba(0,0,0,0.07);
 }
 
 label {
-  @apply font-heading uppercase text-xs;
-  color: #E6E8E6;
+  @apply font-heading uppercase text-xs text-off-white;
 }
 
 div[role="progressbar"] > div > div {

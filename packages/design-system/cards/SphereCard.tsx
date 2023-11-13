@@ -7,13 +7,15 @@ import { Button } from 'flowbite-react';
 
 type SphereCardProps = {
   sphere: Sphere;
+  isHeader: boolean;
 };
 
-const SphereCard: React.FC<SphereCardProps> = ({ sphere } : SphereCardProps) => {
+const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader } : SphereCardProps) => {
   const { name, metadata } = sphere;
+  console.log('sphere :>> ', sphere);
   return (
-    <div className="sphere-card flex flex-col rounded-2xl overflow-hidden">
-      <header className="sphere-header card-header">
+    <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
+      <header className={"sphere-header card-header"}>
         <div className="sphere-title">
           <h2 className="card-name card-h1">{name}</h2>
         </div>
@@ -22,11 +24,11 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere } : SphereCardProps) => 
           <p>{}</p>
         </div> */}
       </header>
-      <main className="card-body-bg col-c">
+      <main className="card-body-bg sphere-card col-c">
         <div className="sphere-description flex items-center justify-center">
           <p className='card-copy'>{metadata?.description}</p>
         </div>
-        <div className="row-c-around flex-1">
+        <div className="row-c-around h-full flex-1">
           <div className="sphere-actions col-c gap-2">
             <div className="sphere-actions-crud col-c">
               <Button className="btn responsive btn-warn w-full" size="sm">
@@ -39,10 +41,10 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere } : SphereCardProps) => 
               </Button>
             </div>
             <div className="sphere-actions-vis col-c">
-              <Button className="btn responsive btn-neutral w-full" size="sm">
+              {!isHeader && <Button className="btn responsive btn-neutral w-full" size="sm">
                 <OrderedListOutlined className="btn-icon" />
                 <span>Orbits</span>
-              </Button>
+              </Button>}
               <Button className="btn responsive btn-primary w-full" size="sm">
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>

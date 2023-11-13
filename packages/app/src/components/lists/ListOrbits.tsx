@@ -23,7 +23,7 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
     skip: !sphereId, // Skip the query if no sphereId is provided
   });
 
-  const [getSphere, { loading: loadingSphere, data: dataSphere }] = useLazyQuery<Sphere>(GET_SPHERE, {
+  const [getSphere, { loading: loadingSphere, data: dataSphere }] = useLazyQuery(GET_SPHERE, {
     variables: { id: sphereId },
   });
 
@@ -32,6 +32,7 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
     if (sphereId) {
       getSphere();
     }
+    console.log('dataSphere :>> ', sphereId == 'SGVhbHRoMQ==', loadingSphere, dataSphere);
   }, [sphereId, getSphere]);
 
   if (loadingOrbits || loadingSphere) return <p>Loading...</p>;
@@ -39,9 +40,10 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
 
   return (
     <div className='h-full bg-dark-gray p-2 flex flex-col gap-2'>
-      <PageHeader title="List of Orbits" />
-      <ListSortFilter />
-      {dataSphere && <SphereCard sphere={dataSphere} />}
+      <PageHeader title="List Orbits" />
+      <ListSortFilter label={'for the Sphere'} />
+      {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} />// change this to dataSphere in real query
+      }
       <div className="orbits-list">
         {dataOrbits?.orbits.edges.map(({ node } : OrbitEdge) => <OrbitCard key={node.id} orbit={node} />)}
       </div>
