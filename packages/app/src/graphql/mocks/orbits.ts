@@ -113,7 +113,7 @@ export const ORBITS_MOCKS = [
                   startTime: 1617235200, // Mocked Unix timestamp for example
                   endTime: 1617321600, // Mocked Unix timestamp for example
                 },
-                sphereEntryHashB64: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
+                sphereEntryHashB64: "TWVudGFsV2VsbGJlaW5nMg==", // Corresponding to "Health and Fitness" sphere id
               },
               cursor: "",
             },
@@ -131,7 +131,7 @@ export const ORBITS_MOCKS = [
                   startTime: 1617235200, // Mocked Unix timestamp for example
                   endTime: 1617321600, // Mocked Unix timestamp for example
                 },
-                sphereEntryHashB64: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
+                sphereEntryHashB64: "TWVudGFsV2VsbGJlaW5nMg==", // Corresponding to "Health and Fitness" sphere id
               },
               cursor: "",
             },
@@ -213,7 +213,7 @@ export const ORBITS_MOCKS = [
                   startTime: 1617235200, // Mocked Unix timestamp for example
                   endTime: 1617321600, // Mocked Unix timestamp for example
                 },
-                sphereEntryHashB64: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
+                sphereEntryHashB64: "U29jaWFsQ29ubmVjdGlvbjQ=", // Corresponding to "Health and Fitness" sphere id
               },
               cursor: "",
             },
@@ -231,7 +231,7 @@ export const ORBITS_MOCKS = [
                   startTime: 1617235200, // Mocked Unix timestamp for example
                   endTime: 1617321600, // Mocked Unix timestamp for example
                 },
-                sphereEntryHashB64: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
+                sphereEntryHashB64: "U29jaWFsQ29ubmVjdGlvbjQ=", // Corresponding to "Health and Fitness" sphere id
               },
               cursor: "",
             },
@@ -257,7 +257,7 @@ export const ORBITS_MOCKS = [
                 metadata: {
                   description: "Work towards achieving a higher position within the company.",
                   frequency: Frequency.MONTH,
-                  scale: Scale.ASTRONOMIC,
+                  scale: Scale.ASTRO,
                 },
                 timeframe: {
                   startTime: 1617235200, // Mocked Unix timestamp for example
@@ -274,7 +274,7 @@ export const ORBITS_MOCKS = [
                 metadata: {
                   description: "Initiate the foundation of a new entrepreneurial venture.",
                   frequency: Frequency.QUARTER,
-                  scale: Scale.ASTRONOMIC,
+                  scale: Scale.ASTRO,
                 },
                 timeframe: {
                   startTime: 1617235200, // Mocked Unix timestamp for example

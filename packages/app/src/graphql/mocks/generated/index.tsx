@@ -101,6 +101,8 @@ export enum Frequency {
   DAY = 'DAY',
   HOUR = 'HOUR',
   WEEK = 'WEEK',
+  MONTH = 'MONTH',
+  QUARTER = 'QUARTER',
 }
 
 export enum Scale {
