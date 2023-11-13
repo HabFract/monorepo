@@ -13,7 +13,7 @@ nav
     items-center
     justify-around;
 
-  background: linear-gradient(180deg, rgba(27, 36, 48, 0.95) 69%, rgba(255, 255, 255, 0.15) 91%);
+  background: linear-gradient(180deg, rgba(27, 36, 48, 0.95) 69%, rgba(54, 93, 86, 0.45) 91%);
 
   border: 2px dashed white;
   border-bottom: 0;

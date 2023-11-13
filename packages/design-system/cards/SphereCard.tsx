@@ -30,7 +30,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader } : SphereCard
         </div>
         <div className="row-c-around h-full flex-1">
           <div className="sphere-actions col-c gap-2">
-            <div className="sphere-actions-crud col-c">
+            <div className="sphere-actions-crud col-c w-full">
               <Button className="btn responsive btn-warn w-full" size="sm">
                 <EditOutlined className="btn-icon" />
                 <span>Edit</span>

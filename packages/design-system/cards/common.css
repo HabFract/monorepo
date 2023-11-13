@@ -23,7 +23,7 @@
 }
 
 .card-header {
-  @apply flex rounded-t-lg items-center justify-around rounded-xl;
+  @apply flex rounded-t-lg items-center justify-around;
 }
 .list-header {
   border: 2px dashed white;
