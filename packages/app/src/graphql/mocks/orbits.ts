@@ -85,6 +85,74 @@ export const ORBITS_MOCKS = [
               },
               cursor: "",
             },
+            {
+              node: {
+                id: "QXR0ZW5kIGEgc29jaWFsIGdhdGhlcmluZw==", // Base64 for "Attend a social gathering"
+                name: "Attend a social gathering",
+                metadata: {
+                  description: "Join friends or family for a social event to strengthen bonds.",
+                  frequency: Frequency.WEEK,
+                  scale: Scale.ATOM,
+                },
+                timeframe: {
+                  startTime: 1617235200, // Mocked Unix timestamp for example
+                  endTime: 1617321600, // Mocked Unix timestamp for example
+                },
+                sphereEntryHashB64: "U29jaWFsQ29ubmVjdGlvbjQ=", // Corresponding to "Social Connection" sphere id
+              },
+              cursor: "",
+            },
+            {
+              node: {
+                id: "T3JnYW5pemUgYSBjb21tdW5pdHkgZXZlbnQ=", // Base64 for "Organize a community event"
+                name: "Organize a community event",
+                metadata: {
+                  description: "Plan and host an event to bring the local community together.",
+                  frequency: Frequency.MONTH,
+                  scale: Scale.ATOM,
+                },
+                timeframe: {
+                  startTime: 1617235200, // Mocked Unix timestamp for example
+                  endTime: 1617321600, // Mocked Unix timestamp for example
+                },
+                sphereEntryHashB64: "U29jaWFsQ29ubmVjdGlvbjQ=", // Corresponding to "Social Connection" sphere id
+              },
+              cursor: "",
+            },
+            {
+              node: {
+                id: "TGVhcm4gYSBuZXcgbGFuZ3VhZ2U=", // Base64 for "Learn a new language"
+                name: "Learn a new language",
+                metadata: {
+                  description: "Dedicate time to mastering a new language for personal growth.",
+                  frequency: Frequency.DAY,
+                  scale: Scale.ATOM,
+                },
+                timeframe: {
+                  startTime: 1617235200, // Mocked Unix timestamp for example
+                  endTime: 1617321600, // Mocked Unix timestamp for example
+                },
+                sphereEntryHashB64: "UGVyc29uYWxEZXZlbG9wbWVudDM=", // Corresponding to "Personal Development" sphere id
+              },
+              cursor: "",
+            },
+            {
+              node: {
+                id: "QXR0ZW5kIGEgcHJvZmVzc2lvbmFsIHdvcmtzaG9w", // Base64 for "Attend a professional workshop"
+                name: "Attend a professional workshop",
+                metadata: {
+                  description: "Participate in a workshop to gain new skills in your field.",
+                  frequency: Frequency.MONTH,
+                  scale: Scale.ATOM,
+                },
+                timeframe: {
+                  startTime: 1617235200, // Mocked Unix timestamp for example
+                  endTime: 1617321600, // Mocked Unix timestamp for example
+                },
+                sphereEntryHashB64: "UGVyc29uYWxEZXZlbG9wbWVudDM=", // Corresponding to "Personal Development" sphere id
+              },
+              cursor: "",
+            },
             // ... other orbits with the same sphereEntryHashB64 if any
           ],
         }),
