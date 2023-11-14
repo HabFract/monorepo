@@ -39,15 +39,22 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
 
   const [listSortFilter] = useAtom(listSortFilterAtom);
 
+  const scaleValues = { SUB: 1, ATOM: 2, ASTRO: 3 };
+
   const sortOrbits = (a, b) => {
-    // Implement your sorting logic here based on listSortFilter.sortCriteria and listSortFilter.sortOrder
-    // This is a placeholder, replace with actual properties and comparison
-    const propertyA = a[listSortFilter.sortCriteria];
-    const propertyB = b[listSortFilter.sortCriteria];
+    let propertyA = a[listSortFilter.sortCriteria];
+    let propertyB = b[listSortFilter.sortCriteria];
+
+    // If the sortCriteria is 'scale', use the scaleValues for comparison
+    if (listSortFilter.sortCriteria === 'scale') {
+      propertyA = scaleValues[propertyA];
+      propertyB = scaleValues[propertyB];
+    }
+
     if (listSortFilter.sortOrder === 'ASCENDING') {
-      return propertyA.localeCompare(propertyB);
+      return propertyA < propertyB ? -1 : propertyA > propertyB ? 1 : 0;
     } else {
-      return propertyB.localeCompare(propertyA);
+      return propertyA > propertyB ? -1 : propertyA < propertyB ? 1 : 0;
     }
   };
 
