@@ -48,7 +48,6 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
             </div>
           </div>
           <div className="mini-vis col-c">
-            {orbit?.metadata?.scale && (orbit.metadata.scale == Scale.ASTRO) && <OrbitVis scale={orbit.metadata.scale} />}
             {orbit?.metadata?.scale && <OrbitVis scale={orbit.metadata.scale} />}
           </div>
         </div>

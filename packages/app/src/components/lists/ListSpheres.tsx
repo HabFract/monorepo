@@ -43,7 +43,7 @@ function ListSpheres() {
   const sortedSpheres = [...spheres.edges].sort((edgeA: SphereEdge, edgeB: SphereEdge) => sortSpheres(edgeA.node, edgeB.node));
 
   return (
-    <div className='h-full bg-dark-gray p-2 flex flex-col gap-2'>
+    <div className='layout spheres'>
       <PageHeader title="Spheres of Action" />
       <ListSortFilter label='' />
       <div className="spheres-list">

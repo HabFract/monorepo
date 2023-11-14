@@ -66,7 +66,7 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
   if (loadingOrbits || loadingSphere) return <p>Loading...</p>;
   if (errorOrbits) return <p>Error : {errorOrbits.message}</p>;
   return (
-    <div className='h-full bg-dark-gray p-2 flex flex-col gap-2'>
+    <div className='layout orbits'>
       <PageHeader title="Orbit List" />
       <ListSortFilter label={'for the Sphere'} />
       {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} orbitScales={dataOrbits.orbits.edges.map((orbitEdge: OrbitEdge) => orbitEdge.node.metadata?.scale )} />// change this to dataSphere in real query

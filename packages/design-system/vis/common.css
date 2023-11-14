@@ -32,3 +32,9 @@ div[role="progressbar"] > div.astro > div {
   @apply -ml-1 mt-1 sm:ml-2;
   overflow: inherit;
 }
+
+@media screen and (min-width: 1280px) {
+  .orbit-vis {
+    max-width: 80%;
+  }
+}
