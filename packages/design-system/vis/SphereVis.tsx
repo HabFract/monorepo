@@ -10,14 +10,6 @@ interface SpherePieProps {
   };
 }
 
-interface SpherePieProps {
-  spherePercentages: {
-    SUB: number;
-    ATOM: number;
-    ASTRO: number;
-  };
-}
-
 const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
   const pieChart = useRef<HTMLDivElement>(null);
 

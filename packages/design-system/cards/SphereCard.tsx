@@ -2,16 +2,45 @@ import React from 'react';
 import './common.css';
 import { DeleteOutlined, EditOutlined, PieChartOutlined, OrderedListOutlined } from '@ant-design/icons';
 import SphereVis from '../vis/SphereVis';
-import { Sphere } from '../../app/src/graphql/mocks/generated';
+import { Orbit, Scale, Sphere } from '../../app/src/graphql/mocks/generated';
 import { Button } from 'flowbite-react';
 import { useStateTransition } from '../../app/src/hooks/useStateTransition';
 
 type SphereCardProps = {
   sphere: Sphere;
   isHeader: boolean;
+  orbitScales: Scale[]
 };
 
-const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader } : SphereCardProps) => {
+function calculateSpherePercentages(counts: object) : any {
+  const total = Object.values(counts).reduce((acc: number, count: number) => acc + count, 0);
+  return Object.entries(counts).reduce((acc: object, [scale, count]: [string, number]) => {
+    //@ts-ignore
+    acc[scale] = count / total * 100;
+    return acc;
+  }, {SUB: 0, ATOM: 0, ASTRO: 0});
+}
+function calculateSphereCounts(orbitScales: Scale[]) {
+  return orbitScales.reduce((acc: object, orbitScale: Scale) => {
+    switch (orbitScale) {
+      case Scale.SUB:
+        //@ts-ignore
+        acc['SUB'] += 1;
+        break;
+      case Scale.ATOM:
+        //@ts-ignore
+        acc['ATOM'] += 1;
+        break;
+        case Scale.ASTRO:
+          //@ts-ignore
+        acc['ASTRO'] += 1;
+        break;
+    }
+    return acc
+  }, {SUB: 0, ATOM: 0, ASTRO: 0});
+}
+
+const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales } : SphereCardProps) => {
   const { name, metadata } = sphere;
   const [_, transition] = useStateTransition();
 
@@ -54,7 +83,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader } : SphereCard
             </div>
           </div>
           <div className="mini-vis col-c flex-1">
-            <SphereVis />
+            <SphereVis spherePercentages={calculateSpherePercentages(calculateSphereCounts(orbitScales))}/>
           </div>
         </div>
       </main>

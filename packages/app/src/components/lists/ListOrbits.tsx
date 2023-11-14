@@ -34,7 +34,6 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
     if (sphereId) {
       getSphere();
     }
-    console.log('dataSphere :>> ', sphereId == 'SGVhbHRoMQ==', loadingSphere, dataSphere);
   }, [sphereId, getSphere]);
 
   const [listSortFilter] = useAtom(listSortFilterAtom);
@@ -70,7 +69,7 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
     <div className='h-full bg-dark-gray p-2 flex flex-col gap-2'>
       <PageHeader title="Orbit List" />
       <ListSortFilter label={'for the Sphere'} />
-      {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} />// change this to dataSphere in real query
+      {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} orbitScales={dataOrbits.orbits.edges.map((orbitEdge: OrbitEdge) => orbitEdge.node.metadata?.scale )} />// change this to dataSphere in real query
       }
       <div className="orbits-list">
         {[...dataOrbits.orbits.edges].sort((edgeA: OrbitEdge, edgeB: OrbitEdge) => sortOrbits(edgeA.node, edgeB.node))
