@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { useAtom } from 'jotai';
 import { listSortFilterAtom } from '../../state/listSortFilterAtom';
 import GET_SPHERES from '../../graphql/queries/sphere/getSpheres.graphql';
-import { SphereEdge } from '../../graphql/mocks/generated';
+import { Scale, Sphere, SphereEdge, SphereMetaData } from '../../graphql/mocks/generated';
 
 import './common.css';
 
@@ -15,29 +15,39 @@ function ListSpheres() {
 
   const [listSortFilter] = useAtom(listSortFilterAtom);
 
-  const sortSpheres = (a, b) => {
-    // Implement your sorting logic here based on listSortFilter.sortCriteria and listSortFilter.sortOrder
-    // This is a placeholder, replace with actual properties and comparison
-    const propertyA = a[listSortFilter.sortCriteria];
-    const propertyB = b[listSortFilter.sortCriteria];
-    if (listSortFilter.sortOrder === 'ASCENDING') {
-      return propertyA.localeCompare(propertyB);
+  const sortSpheres = (a: Sphere, b: Sphere) => {
+    let propertyA;
+    let propertyB;
+
+    // If the sortCriteria is 'scale', use the scaleValues for comparison
+    if (listSortFilter.sortCriteria === 'name') {
+      propertyA = a ? a[listSortFilter.sortCriteria as keyof Sphere] : 0
+      propertyB = b ? b[listSortFilter.sortCriteria as keyof Sphere] : 0
     } else {
-      return propertyB.localeCompare(propertyA);
+      propertyA = a?.metadata[listSortFilter.sortCriteria as keyof SphereMetaData];
+      propertyB = b?.metadata[listSortFilter.sortCriteria as keyof SphereMetaData];
+    }
+
+
+    if (listSortFilter.sortOrder === 'lowestToGreatest') {
+      return propertyA < propertyB ? -1 : propertyA > propertyB ? 1 : 0;
+    } else {
+      return propertyA > propertyB ? -1 : propertyA < propertyB ? 1 : 0;
     }
   };
+
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  const sortedSpheres = spheres.edges.sort((edgeA, edgeB) => sortSpheres(edgeA.node, edgeB.node));
+  const sortedSpheres = [...spheres.edges].sort((edgeA: SphereEdge, edgeB: SphereEdge) => sortSpheres(edgeA.node, edgeB.node));
 
   return (
     <div className='h-full bg-dark-gray p-2 flex flex-col gap-2'>
       <PageHeader title="Spheres of Action" />
-      <ListSortFilter />
+      <ListSortFilter label='' />
       <div className="spheres-list">
-        {sortedSpheres.map(({ node } : SphereEdge) => <SphereCard key={node.id} sphere={node} isHeader={false} />)}
+        {sortedSpheres.map(({ node } : SphereEdge) => <SphereCard key={node.id} sphere={node} isHeader={false} orbitScales={[Scale.ASTRO]}/>)}
       </div>
     </div>
   );
