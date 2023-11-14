@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { useAtom } from 'jotai';
+import { listSortFilterAtom } from '../../state/listSortFilterAtom';
 import './common.css';
 
 import { useQuery, useLazyQuery } from '@apollo/client';
@@ -35,8 +37,24 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
     console.log('dataSphere :>> ', sphereId == 'SGVhbHRoMQ==', loadingSphere, dataSphere);
   }, [sphereId, getSphere]);
 
+  const [listSortFilter] = useAtom(listSortFilterAtom);
+
+  const sortOrbits = (a, b) => {
+    // Implement your sorting logic here based on listSortFilter.sortCriteria and listSortFilter.sortOrder
+    // This is a placeholder, replace with actual properties and comparison
+    const propertyA = a[listSortFilter.sortCriteria];
+    const propertyB = b[listSortFilter.sortCriteria];
+    if (listSortFilter.sortOrder === 'ASCENDING') {
+      return propertyA.localeCompare(propertyB);
+    } else {
+      return propertyB.localeCompare(propertyA);
+    }
+  };
+
   if (loadingOrbits || loadingSphere) return <p>Loading...</p>;
   if (errorOrbits) return <p>Error : {errorOrbits.message}</p>;
+
+  const sortedOrbits = dataOrbits.orbits.edges.sort((edgeA, edgeB) => sortOrbits(edgeA.node, edgeB.node));
 
   return (
     <div className='h-full bg-dark-gray p-2 flex flex-col gap-2'>
@@ -45,7 +63,7 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
       {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} />// change this to dataSphere in real query
       }
       <div className="orbits-list">
-        {dataOrbits?.orbits.edges.map(({ node } : OrbitEdge) => <OrbitCard key={node.id} orbit={node} />)}
+        {sortedOrbits.map(({ node } : OrbitEdge) => <OrbitCard key={node.id} orbit={node} />)}
       </div>
     </div>
   );
