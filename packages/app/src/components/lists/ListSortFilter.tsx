@@ -18,7 +18,7 @@ const ListSortFilter = ({label} : {label: string}) => {
       sortOrder: listSortFilter.sortOrder === SortOrder.GreatestToLowest ? SortOrder.LowestToGreatest : SortOrder.GreatestToLowest
     });
   };
-
+  
   return (
     <div className="list-sort-filter">
       <div className="sort-icon-container text-dark-gray flex justify-end">
@@ -41,13 +41,11 @@ const ListSortFilter = ({label} : {label: string}) => {
             <Formik
               initialValues={{
                 sortCriteria: SortCriteria.Name,
-                sortOrder: SortOrder.GreatestToLowest,
               }}
               onSubmit={(values) => {
                 setListSortFilter({
-                  ...listSortFilter,
                   sortCriteria: values.sortCriteria,
-                  sortOrder: values.sortOrder,
+                  sortOrder: listSortFilter.sortOrder,
                 });
                 toggleModal();
               }}
