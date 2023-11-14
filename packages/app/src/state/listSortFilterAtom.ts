@@ -2,9 +2,7 @@ import { atom } from 'jotai';
 
 export enum SortCriteria {
   Name = 'name',
-  AtomicOrbits = 'atomicOrbits',
-  SubatomicOrbits = 'subatomicOrbits',
-  AstronomicOrbits = 'astronomicOrbits',
+  Scale = 'scale',
 }
 
 export enum SortOrder {
