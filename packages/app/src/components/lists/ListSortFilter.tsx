@@ -3,28 +3,17 @@ import { Formik, Form, Field } from 'formik';
 import { SortDescendingOutlined, SortAscendingOutlined, FilterOutlined } from '@ant-design/icons';
 import { Modal, Radio } from 'flowbite-react';
 import './common.css';
-
-enum SortCriteria {
-  Name = 'name',
-  AtomicOrbits = 'atomicOrbits',
-  SubatomicOrbits = 'subatomicOrbits',
-  AstronomicOrbits = 'astronomicOrbits',
-}
-
-enum SortOrder {
-  GreatestToLowest = 'greatestToLowest',
-  LowestToGreatest = 'lowestToGreatest',
-}
+import { useAtom } from 'jotai';
+import { SortCriteria, SortOrder, listSortFilterAtom } from '../../state/listSortFilterAtom';
 
 const ListSortFilter = ({label} : {label: string}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [sortCriteria, setSortCriteria] = useState(SortCriteria.Name);
-  const [sortOrder, setSortOrder] = useState(SortOrder.GreatestToLowest);
-
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
+  const [listSortFilter, setListSortFilter] = useAtom(listSortFilterAtom)
+
   const toggleSortOrder = () => {
-    setSortOrder(sortOrder === SortOrder.GreatestToLowest ? SortOrder.LowestToGreatest : SortOrder.GreatestToLowest);
+    setListSortFilter(listSortFilter.sortOrder === SortOrder.GreatestToLowest ? SortOrder.LowestToGreatest : SortOrder.GreatestToLowest);
   };
 
   return (
@@ -33,7 +22,7 @@ const ListSortFilter = ({label} : {label: string}) => {
         {!!label && <span className="sort-filter-label">{label}</span>}
         <div className="flex gap-2 text-2xl">
           <FilterOutlined className="sort-filter-icon" onClick={toggleModal} />
-          {sortOrder === SortOrder.GreatestToLowest ? (
+          {listSortFilter.sortOrder === SortOrder.GreatestToLowest ? (
             <SortDescendingOutlined className="sort-filter-icon" onClick={toggleSortOrder} />
           ) : (
             <SortAscendingOutlined className="sort-filter-icon" onClick={toggleSortOrder} />
@@ -52,8 +41,9 @@ const ListSortFilter = ({label} : {label: string}) => {
                 sortOrder: SortOrder.GreatestToLowest,
               }}
               onSubmit={(values) => {
-                setSortCriteria(SortCriteria[values.sortCriteria as keyof typeof SortCriteria]);
-                setSortOrder(SortOrder[values.sortOrder as keyof typeof SortOrder]);
+                console.log('values :>> ', values);
+                // setSortCriteria(SortCriteria[values.sortCriteria as keyof typeof SortCriteria]);
+                // setListSortFilter(SortOrder[values.sortOrder as keyof typeof SortOrder]);
                 toggleModal();
               }}
             >
