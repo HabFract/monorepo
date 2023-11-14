@@ -10,13 +10,21 @@ interface SpherePieProps {
   };
 }
 
+interface SpherePieProps {
+  spherePercentages: {
+    SUB: number;
+    ATOM: number;
+    ASTRO: number;
+  };
+}
+
 const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
   const pieChart = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const getChartOptions = () => {
       return {
-        series: [spherePercentages.ATOM, spherePercentages.SUB, spherePercentages.ASTRO],
+        series: [spherePercentages.SUB, spherePercentages.ATOM, spherePercentages.ASTRO],
         colors: ["#a8deca", "#91d5ff", "#6F54B2"],
         chart: {
           width: 'auto',
