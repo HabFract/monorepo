@@ -132,7 +132,7 @@ enum Frequency {
 # Scale Enum
 enum Scale {
   SUB
-  ATOMIC
+  ATOM
   ASTRO
 }
 

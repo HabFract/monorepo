@@ -10,7 +10,7 @@ label {
 }
 
 .sphere-pie-label {
-  padding-left: 15%;
+  padding-left: 13%;
   margin-top: -1rem;
 }
 
@@ -20,7 +20,7 @@ div[role="progressbar"] > div > div {
 div[role="progressbar"] > div.sub > div {
   margin-left: 0;
 }
-div[role="progressbar"] > div.atomic > div {
+div[role="progressbar"] > div.atom > div {
   margin-left: 23%;
 }
 div[role="progressbar"] > div.astro > div {
@@ -28,6 +28,7 @@ div[role="progressbar"] > div.astro > div {
 }
 
 .sphere-pie svg {
-  margin-top: 1rem;
+  width: 100%;
+  @apply -ml-1 mt-1 sm:ml-2;
   overflow: inherit;
 }

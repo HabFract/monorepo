@@ -17,5 +17,5 @@ export interface SortFilterState {
 
 export const listSortFilterAtom = atom<SortFilterState>({
   sortCriteria: SortCriteria.Name,
-  sortOrder: SortOrder.GreatestToLowest,
+  sortOrder: SortOrder.LowestToGreatest,
 });

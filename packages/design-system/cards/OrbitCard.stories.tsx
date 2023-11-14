@@ -35,7 +35,7 @@ Atomic.args = {
     metadata: {
       description: 'A daily walk to improve cardiovascular health.',
       frequency: 'DAY',
-      scale: 'ATOMIC',
+      scale: 'ATOM',
       isAtomic: true,
     },
     timeframe: {

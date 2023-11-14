@@ -12,6 +12,10 @@
     text-off-white;
 }
 
+.orbit-card .card-h1 {
+  text-transform: initial;
+}
+
 .card-copy {
   @apply
     text-white
@@ -34,6 +38,9 @@
 .list-header .card-header {
   border: 2px dashed white;
   @apply border-off-white bg-nav-bg;
+}
+.list-header .card-body-bg {
+  background-color: rgba(50, 48, 75, 0.65);
 }
 
 .card-copy {

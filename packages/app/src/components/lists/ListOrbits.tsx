@@ -45,21 +45,19 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
     let propertyA;
     let propertyB;
 
-  // If the sortCriteria is 'scale', use the scaleValues for comparison
-  if (listSortFilter.sortCriteria === 'name') {
-    propertyA = a ? a[listSortFilter.sortCriteria as keyof Orbit] : 0 
-    propertyB = b ? b[listSortFilter.sortCriteria as keyof Orbit] : 0 
-    console.log('NAME propertyA, propertyB :>> ', propertyA, propertyB);
-  } else {
-    propertyA = a?.metadata[listSortFilter.sortCriteria as keyof OrbitMetaData];
-    propertyB = b?.metadata[listSortFilter.sortCriteria as keyof OrbitMetaData];
-    propertyA = scaleValues[propertyA] || 0; // Assign a default value if propertyA is undefined
-    propertyB = scaleValues[propertyB] || 0; // Assign a default value if propertyB is undefined
-    console.log('propertyA, propertyB :>> ', propertyA, propertyB);
-  }
+    // If the sortCriteria is 'scale', use the scaleValues for comparison
+    if (listSortFilter.sortCriteria === 'name') {
+      propertyA = a ? a[listSortFilter.sortCriteria as keyof Orbit] : 0
+      propertyB = b ? b[listSortFilter.sortCriteria as keyof Orbit] : 0
+    } else {
+      propertyA = a?.metadata[listSortFilter.sortCriteria as keyof OrbitMetaData];
+      propertyB = b?.metadata[listSortFilter.sortCriteria as keyof OrbitMetaData];
+      propertyA = scaleValues[propertyA] || 0; // Assign a default value if propertyA is undefined
+      propertyB = scaleValues[propertyB] || 0; // Assign a default value if propertyB is undefined
+    }
 
 
-    if (listSortFilter.sortOrder === 'greatestToLowest') {
+    if (listSortFilter.sortOrder === 'lowestToGreatest') {
       return propertyA < propertyB ? -1 : propertyA > propertyB ? 1 : 0;
     } else {
       return propertyA > propertyB ? -1 : propertyA < propertyB ? 1 : 0;
@@ -68,18 +66,15 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
 
   if (loadingOrbits || loadingSphere) return <p>Loading...</p>;
   if (errorOrbits) return <p>Error : {errorOrbits.message}</p>;
-
-  // const sortedOrbits = dataOrbits.orbits.edges.sort((edgeA: OrbitEdge, edgeB: OrbitEdge) => { console.log('sorted', sortOrbits(edgeA.node, edgeB.node)); return sortOrbits(edgeA.node, edgeB.node)});
-
   return (
     <div className='h-full bg-dark-gray p-2 flex flex-col gap-2'>
-      <PageHeader title="List Orbits" />
+      <PageHeader title="Orbit List" />
       <ListSortFilter label={'for the Sphere'} />
       {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} />// change this to dataSphere in real query
       }
       <div className="orbits-list">
-        {dataOrbits.orbits.edges.sort((edgeA: OrbitEdge, edgeB: OrbitEdge) => { console.log('sorted', sortOrbits(edgeA.node, edgeB.node)); return sortOrbits(edgeA.node, edgeB.node)})
-.map(({ node } : OrbitEdge) => <OrbitCard key={node.id} orbit={node} />)}
+        {[...dataOrbits.orbits.edges].sort((edgeA: OrbitEdge, edgeB: OrbitEdge) => sortOrbits(edgeA.node, edgeB.node))
+          .map(({ node }: OrbitEdge) => <OrbitCard key={node.id} orbit={node} />)}
       </div>
     </div>
   );

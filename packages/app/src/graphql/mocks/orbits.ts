@@ -23,7 +23,7 @@ export const ORBITS_MOCKS = [
                 metadata: {
                   description: "A daily walk to improve cardiovascular health.",
                   frequency: Frequency.DAY,
-                  scale: Scale.ATOM,
+                  scale: Scale.SUB,
                 },
                 timeframe: {
                   startTime: 1617235200, // Mocked Unix timestamp for example
@@ -85,6 +85,23 @@ export const ORBITS_MOCKS = [
               },
               cursor: "",
             },
+            {
+              node: {
+                id: "UHJhY3RpY2UgeW9nYasfdQ==", // Base64 for "Run a marathon"
+                name: "Run a marathon",
+                metadata: {
+                  description: "Hit those fitness goals.",
+                  frequency: Frequency.QUARTER,
+                  scale: Scale.ASTRO,
+                },
+                timeframe: {
+                  startTime: 1617235200, // Mocked Unix timestamp for example
+                  endTime: 1617321600, // Mocked Unix timestamp for example
+                },
+                sphereEntryHashB64: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
+              },
+              cursor: "",
+            },
           ],
         }),
       },
@@ -106,7 +123,7 @@ export const ORBITS_MOCKS = [
                 metadata: {
                   description: "A daily walk to improve cardiovascular health.",
                   frequency: Frequency.DAY,
-                  scale: Scale.ATOM,
+                  scale: Scale.SUB,
                 },
                 timeframe: {
                   startTime: 1617235200, // Mocked Unix timestamp for example
@@ -154,7 +171,7 @@ export const ORBITS_MOCKS = [
                 metadata: {
                   description: "Dedicate time to mastering a new language for personal growth.",
                   frequency: Frequency.DAY,
-                  scale: Scale.ATOM,
+                  scale: Scale.ASTRO,
                 },
                 timeframe: {
                   startTime: 1617235200, // Mocked Unix timestamp for example
@@ -283,7 +300,7 @@ export const ORBITS_MOCKS = [
                 metadata: {
                   description: "A daily walk to improve cardiovascular health.",
                   frequency: Frequency.DAY,
-                  scale: Scale.ATOM,
+                  scale: Scale.SUB,
                 },
                 timeframe: {
                   startTime: 1617235200, // Mocked Unix timestamp for example

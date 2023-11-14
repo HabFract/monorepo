@@ -18,7 +18,7 @@ const ListSortFilter = ({label} : {label: string}) => {
       sortOrder: listSortFilter.sortOrder === SortOrder.GreatestToLowest ? SortOrder.LowestToGreatest : SortOrder.GreatestToLowest
     });
   };
-  
+
   return (
     <div className="list-sort-filter">
       <div className="sort-icon-container text-dark-gray flex justify-end">
@@ -42,42 +42,30 @@ const ListSortFilter = ({label} : {label: string}) => {
               initialValues={{
                 sortCriteria: SortCriteria.Name,
               }}
-              onSubmit={(values) => {
-                setListSortFilter({
-                  sortCriteria: values.sortCriteria,
-                  sortOrder: listSortFilter.sortOrder,
-                });
+              onSubmit={(_values) => {
                 toggleModal();
               }}
             >
               {({ handleSubmit }) => (
                 <Form onSubmit={handleSubmit}>
-                  <div className="space-y-4">
+                  <div className="space-y-4 bg-dark-gray">
                     <div>
                       <label className="block mb-2 text-sm font-medium">Sort by:</label>
                       <div className="flex flex-col">
                         <label>
-                          <Field type="radio" name="sortCriteria" value={SortCriteria.Name} as={Radio} />
+                          <Field onChange={(e: any) => setListSortFilter({...listSortFilter, sortCriteria: e.currentTarget.value})} checked={listSortFilter.sortCriteria==SortCriteria.Name} type="radio" name="sortCriteria" value={SortCriteria.Name} as={Radio} />
                           Name
                         </label>
                         <label>
-                          <Field type="radio" name="sortCriteria" value="atomicOrbits" as={Radio} />
-                          Atomic Orbits
-                        </label>
-                        <label>
-                          <Field type="radio" name="sortCriteria" value="subatomicOrbits" as={Radio} />
-                          Subatomic Orbits
-                        </label>
-                        <label>
-                          <Field type="radio" name="sortCriteria" value="astronomicOrbits" as={Radio} />
-                          Astronomic Orbits
+                          <Field onChange={(e: any) => setListSortFilter({...listSortFilter, sortCriteria: e.currentTarget.value})} checked={listSortFilter.sortCriteria==SortCriteria.Scale} type="radio" name="sortCriteria" value={SortCriteria.Scale} as={Radio} />
+                          Scale
                         </label>
                       </div>
                     </div>
                   </div>
                   <div className="mt-4">
                     <button type="submit" className="btn btn-primary">
-                      Apply
+                      Ok
                     </button>
                   </div>
                 </Form>

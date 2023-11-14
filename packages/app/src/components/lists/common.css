@@ -11,10 +11,10 @@
 }
 
 .sort-filter-icon {
-
+  @apply text-base md:text-xl;
 }
 .sort-filter-label {
-  font-size: 1rem;
+  @apply text-xs md:text-sm;
   text-align: center;
   width: 100%;
   padding-left: 56px;
