@@ -13,7 +13,10 @@ const ListSortFilter = ({label} : {label: string}) => {
   const [listSortFilter, setListSortFilter] = useAtom(listSortFilterAtom)
 
   const toggleSortOrder = () => {
-    setListSortFilter(listSortFilter.sortOrder === SortOrder.GreatestToLowest ? SortOrder.LowestToGreatest : SortOrder.GreatestToLowest);
+    setListSortFilter({
+      ...listSortFilter,
+      sortOrder: listSortFilter.sortOrder === SortOrder.GreatestToLowest ? SortOrder.LowestToGreatest : SortOrder.GreatestToLowest
+    });
   };
 
   return (
@@ -41,9 +44,11 @@ const ListSortFilter = ({label} : {label: string}) => {
                 sortOrder: SortOrder.GreatestToLowest,
               }}
               onSubmit={(values) => {
-                console.log('values :>> ', values);
-                // setSortCriteria(SortCriteria[values.sortCriteria as keyof typeof SortCriteria]);
-                // setListSortFilter(SortOrder[values.sortOrder as keyof typeof SortOrder]);
+                setListSortFilter({
+                  ...listSortFilter,
+                  sortCriteria: values.sortCriteria,
+                  sortOrder: values.sortOrder,
+                });
                 toggleModal();
               }}
             >
