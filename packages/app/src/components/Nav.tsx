@@ -35,7 +35,8 @@ function createFixedMenuItems() {
 
 function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
   return [...spheres.edges!.map((sphere: SphereEdge, idx: number) => {
-    return getItem(`S${(idx + 1).toString()}`, sphere.node.id, null,
+    console.log('sphere.node.name.split(" ").map(word => word[0]).join("") :>> ', sphere.node.name.split(" ").map(word => word[0]).join(""));
+    return getItem(`${sphere.node.name}`, sphere.node.id, null,
       [
         getItem('List Orbits', 'list-orbits-' + sphere.node.id, null),
         getItem('Create Orbit', 'add-orbit-' + sphere.node.id, null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'

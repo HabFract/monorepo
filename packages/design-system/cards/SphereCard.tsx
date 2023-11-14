@@ -4,6 +4,7 @@ import { DeleteOutlined, EditOutlined, PieChartOutlined, OrderedListOutlined } f
 import SphereVis from '../vis/SphereVis';
 import { Sphere } from '../../app/src/graphql/mocks/generated';
 import { Button } from 'flowbite-react';
+import { useStateTransition } from '../../app/src/hooks/useStateTransition';
 
 type SphereCardProps = {
   sphere: Sphere;
@@ -12,7 +13,8 @@ type SphereCardProps = {
 
 const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader } : SphereCardProps) => {
   const { name, metadata } = sphere;
-  console.log('sphere :>> ', sphere);
+  const [_, transition] = useStateTransition();
+
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
       <header className={"sphere-header card-header"}>
@@ -41,7 +43,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader } : SphereCard
               </Button>
             </div>
             <div className="sphere-actions-vis col-c">
-              {!isHeader && <Button className="btn responsive btn-neutral w-full" size="sm">
+              {!isHeader && <Button onClick={() => transition('ListOrbits', { sphereId: sphere.id })} className="btn responsive btn-neutral w-full" size="sm">
                 <OrderedListOutlined className="btn-icon" />
                 <span>Orbits</span>
               </Button>}

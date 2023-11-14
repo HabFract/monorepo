@@ -29,7 +29,7 @@ const ListSortFilter = ({label} : {label: string}) => {
 
   return (
     <div className="list-sort-filter">
-      <div className="sort-icon-container flex justify-end">
+      <div className="sort-icon-container text-dark-gray flex justify-end">
         {!!label && <span className="sort-filter-label">{label}</span>}
         <div className="flex gap-2 text-2xl">
           <FilterOutlined className="sort-filter-icon" onClick={toggleModal} />

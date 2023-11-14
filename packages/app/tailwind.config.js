@@ -49,6 +49,7 @@ export default {
     
         neutral: {
           DEFAULT: "#95afc0", // soft blue-grey
+          dark: "rgba(75, 48, 48, 0.65)", // soft blue-grey
           transparent: "rgba(149, 175, 192, 0.65)",
           "hover-bg": "rgba(149, 175, 192, 0.9)",
           "hover-text": "#fff",
