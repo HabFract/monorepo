@@ -2,13 +2,21 @@ import ApexCharts from 'apexcharts';
 import './common.css'
 import React, { useRef, useEffect } from 'react';
 
-const SpherePie: React.FC = () => {
+interface SpherePieProps {
+  spherePercentages: {
+    SUB: number;
+    ATOM: number;
+    ASTRO: number;
+  };
+}
+
+const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
   const pieChart = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const getChartOptions = () => {
       return {
-        series: [52.8, 26.8, 20.4],
+        series: [spherePercentages.ATOM, spherePercentages.SUB, spherePercentages.ASTRO],
         colors: ["#a8deca", "#91d5ff", "#6F54B2"],
         chart: {
           width: 'auto',
