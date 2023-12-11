@@ -44,8 +44,11 @@ function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
   getItem('Add Sphere', 'add-sphere', <PlusCircleOutlined />)] 
 }
 
+export interface INav {
+  transition: (newState: string, params?: object) => void
+}
 
-const Nav: React.FC = ({ children, transition } : any) => {
+const Nav: React.FC<INav> = ({ transition } : INav) => {
   const { loading, error, data: spheres } = useQuery(GET_SPHERES);
 
   const [collapsed, setCollapsed] = useState(true);
@@ -80,34 +83,31 @@ const Nav: React.FC = ({ children, transition } : any) => {
   };
 
   return (
-    <>
-      <nav className={"bg-dark-gray fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col"}>
-        {error && "Error"}
-        {loading ? "Loading" :
+    <nav className={"bg-dark-gray fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col"}>
+      {error && "Error"}
+      {loading ? "Loading" :
+        <Menu
+          inlineCollapsed={collapsed}
+          onClick={onClick}
+          style={{ width: collapsed ? 72 : 256 }}
+          defaultSelectedKeys={['1']}
+          defaultOpenKeys={['sub1']}
+          mode="inline"
+          items={createSphereMenuItems(spheres)}
+        />}
+        <div className={"flex flex-col items-center mb-4 gap-2"}>
           <Menu
             inlineCollapsed={collapsed}
             onClick={onClick}
-            style={{ width: collapsed ? 72 : 256 }}
+            style={{ width: 72 }}
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}
             mode="inline"
-            items={createSphereMenuItems(spheres)}
-          />}
-          <div className={"flex flex-col items-center mb-4 gap-2"}>
-            <Menu
-              inlineCollapsed={collapsed}
-              onClick={onClick}
-              style={{ width: 72 }}
-              defaultSelectedKeys={['1']}
-              defaultOpenKeys={['sub1']}
-              mode="inline"
-              items={createFixedMenuItems()}
-            />
-            {collapsed ? <MenuUnfoldOutlined onClick={toggleCollapsed}/> : <MenuFoldOutlined onClick={toggleCollapsed}/>}
-          </div>
-      </nav>
-      <main className={"bg-dark-gray overflow-auto fixed w-full h-full inset-y-0 left-0"}>{children}</main>
-    </>
+            items={createFixedMenuItems()}
+          />
+          {collapsed ? <MenuUnfoldOutlined onClick={toggleCollapsed}/> : <MenuFoldOutlined onClick={toggleCollapsed}/>}
+        </div>
+    </nav>
   );
 };
 

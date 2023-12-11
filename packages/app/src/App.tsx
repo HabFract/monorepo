@@ -22,10 +22,11 @@ function App({ children: pageComponent }: any) {
     <>
       <MockedProvider mocks={mocks} addTypename={false}>
         { state.match('Onboarding')
-          ? pageComponent
-          : <Nav transition={transition}>
-            {pageComponent}
-          </Nav>
+          ? <main className={"page-container"}>{pageComponent}</main>
+          : <>
+            <Nav transition={transition}></Nav>
+            <main className={"page-container"}>{pageComponent}</main>
+          </>
         }
       </MockedProvider>
     </>
