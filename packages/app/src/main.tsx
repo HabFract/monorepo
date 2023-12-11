@@ -13,7 +13,7 @@ Application State Management (Courtesy of Ada Burrows for hREA playspace)
 
 */
 
-const AppMachine = new StateMachine<AppState, AppStateStore>(initialState, AppTransitions);
+export const AppMachine = new StateMachine<AppState, AppStateStore>(initialState, AppTransitions);
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
@@ -32,7 +32,6 @@ function renderComponent(component: React.ReactNode) {
 Object.entries(routes).forEach(([routeName, component]) => {
   AppMachine.on(routeName as AppState, async (state) => {
     const ComponentWithProps = React.cloneElement(component as React.ReactElement, state.params);
-    console.log('params :>> ', ComponentWithProps,state.params);
     renderComponent(ComponentWithProps);
   });
 });

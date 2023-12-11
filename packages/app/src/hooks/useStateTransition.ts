@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { StateMachineContext } from '../contexts/state-machine';
 
-export function useStateTransition() {
+export function useStateTransition() { 
   const stateMachine = useContext(StateMachineContext) as any;
 
   if (!stateMachine) {
