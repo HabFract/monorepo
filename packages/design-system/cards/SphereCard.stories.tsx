@@ -2,13 +2,16 @@ import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import SphereCard from './SphereCard';
 import { Scale, Sphere } from '../../app/src/graphql/mocks/generated';
+import { AppMachine } from '../../app/src/main';
+import { StateMachineContext } from '../../app/src/contexts/state-machine';
 
 export default {
   title: 'Components/Cards/SphereCard',
   component: SphereCard,
 } as Meta;
 
-const Template: StoryFn<{ sphere: Sphere }> = (args) => <SphereCard {...args} />;
+const Template: StoryFn<{ sphere: Sphere }> = (args) => 
+<StateMachineContext.Provider value={AppMachine as any}><SphereCard {...args} /></StateMachineContext.Provider>;
 
 export const Default = Template.bind({});
 Default.args = {
