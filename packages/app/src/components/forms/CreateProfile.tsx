@@ -2,19 +2,17 @@
 import React, { useEffect } from 'react'
 import { Field, Form, Formik, FormikProps } from 'formik'
 import * as Yup from 'yup'
-import { Alert, Spin } from 'antd'
+import { Alert, Spin, Input, Switch } from 'antd'
 // #endregion Global Imports
 
 // #region Local Imports
-import './common.css'
+import './common.css';
+import { useAddUserMutation } from '../../graphql/mocks/generated';
 // import { P, TextInput, Button, SwitchInput } from '@/atoms/.'
 // import { ImageUploadInput } from '@/atoms/Input/ImageUpload'
 
-import { useMyProfile } from from '../../hooks/useMyProfile';
+import { useMyProfile } from '../../hooks/useMyProfile';
 
-import {
-  OnboardingProgressBarContainer,
-} from '@/pages/styled/Onboarding'
 // #endregion Local Imports
 
 // #region Interface Imports
@@ -45,11 +43,6 @@ export const ProfileForm: React.FunctionComponent<IProfileForm> = ({
           avatar: '',
           isPublic: false,
         }
-
-  useEffect(() => {
-    // if (data) onSuccess.call(null)
-    // This needs to trigger only if backend returned something meaningful
-  }, [data])
 
   return (
     <div className='form-container'>
@@ -101,7 +94,7 @@ export const ProfileForm: React.FunctionComponent<IProfileForm> = ({
                 <div className="w-full">
                   <label htmlFor="nickname">Nickname:</label>
                   <Field
-                    component={TextInput}
+                    component={Input}
                     id="nickname"
                     name="nickname"
                     placeholder="Pick a nickname"
@@ -109,46 +102,37 @@ export const ProfileForm: React.FunctionComponent<IProfileForm> = ({
                   {errors &&
                     errors.nickname &&
                     touched &&
-                    touched.nickname &&
-                    errors && <label warning>{errors.nickname}</label>}
+                    touched.nickname && <label>{errors.nickname as string}</label>}
                 </div>
                 <div className="w-full">
                   <label htmlFor="location">Location:</label>
                   <Field
-                    component={TextInput}
+                    component={Input}
                     id="location"
                     name="location"
                     placeholder="Pick a location"
                   />
                 </div>
-                <ImageUploadContainer>
-                  <CenteringFlexHorizontal>
-                    <Field
+                {/* <ImageUploadContainer>
+                  <CenteringFlexHorizontal> */}
+                    {/* <Field
                       className="grid mr-2 place-content-end"
                       component={ImageUploadInput}
                       id="avatar-upload"
                       name="avatar-upload"
-                    />
+                    /> */}
                     <div style={{ flexBasis: '33%', margin: '0 0 0 2rem' }}>
-                      <P
-                        copyText="Add a user avatar and people can relate visually *"
-                        level={2}
-                      />
+                      <p>Add a user avatar and people can relate visually *</p>
                     </div>
-                  </CenteringFlexHorizontal>
-                </ImageUploadContainer>
-                <MakePublicContainer>
+                  {/* </CenteringFlexHorizontal>
+                </ImageUploadContainer> */}
                   <div className="flex justify-around w-1/2">
                     <label htmlFor="public">Make Profile Public</label>
-                    <Field component={SwitchInput} id="public" name="public" />
+                    <Field component={Switch} id="public" name="public" />
                   </div>
                   <div className="px-4 mb-6">
-                    <P
-                      copyText="Going public will enable sharing and trading of habit structures, but isn’t required to use the app."
-                      level={4}
-                    />
+                    <p>Going public will enable sharing and trading of habit structures, but is not required to use the app.</p>
                   </div>
-                </MakePublicContainer>
                 {/* <OnboardingProgressBarContainer>
                   <EndFlexHorizontal>
                     <div className="w-full h-6 bg-gray-200 rounded-full lg:hidden dark:bg-gray-700">
