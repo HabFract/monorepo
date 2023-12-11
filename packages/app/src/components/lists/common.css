@@ -63,8 +63,8 @@
     grid-row: 1/-1;
     display: flex;
     flex-wrap: wrap;
-    justify-content: start;
-    align-items: start;
+    justify-content: flex-start;
+    align-items: flex-start;
     display: grid;
     grid-template-rows: auto auto auto auto;
   }
