@@ -35,7 +35,6 @@ function createFixedMenuItems() {
 
 function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
   return [...spheres.edges!.map((sphere: SphereEdge, idx: number) => {
-    console.log('sphere.node.name.split(" ").map(word => word[0]).join("") :>> ', sphere.node.name.split(" ").map(word => word[0]).join(""));
     return getItem(`${sphere.node.name}`, sphere.node.id, null,
       [
         getItem('Orbit List', 'list-orbits-' + sphere.node.id, null),

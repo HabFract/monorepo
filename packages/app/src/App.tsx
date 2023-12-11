@@ -16,8 +16,8 @@ const mocks = [
 ];
 
 function App({ children: pageComponent }: any) {
-  const [state, transition] = useStateTransition();
-console.log('state :>> ', state);
+  const [state, transition] = useStateTransition(); // Top level state machine and routing
+  
   return (
     <>
       <MockedProvider mocks={mocks} addTypename={false}>
