@@ -20,7 +20,7 @@ export type AppStateStore = {
 }
 
 export const initialState: AppStateStore = { // Home route
-  currentState: 'Home',
+  currentState: "Onboarding:NoProfile",
   params: {}
 }
 

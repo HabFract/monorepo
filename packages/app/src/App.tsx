@@ -15,15 +15,18 @@ const mocks = [
   // ...add other mocks here
 ];
 
-function App({ children: pageComponent } : any) {
-  const [_, transition] = useStateTransition();
-
+function App({ children: pageComponent }: any) {
+  const [state, transition] = useStateTransition();
+console.log('state :>> ', state);
   return (
     <>
       <MockedProvider mocks={mocks} addTypename={false}>
-        <Nav transition={transition}>
-          {pageComponent}
-        </Nav>
+        { state.match('Onboarding')
+          ? pageComponent
+          : <Nav transition={transition}>
+            {pageComponent}
+          </Nav>
+        }
       </MockedProvider>
     </>
   )

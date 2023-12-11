@@ -4,6 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import { StateMachine } from './stateMachine.ts'
 import { StateMachineContext } from './contexts/state-machine.ts'
+import { MyProfileProvider } from './contexts/myProfile.tsx'
 import { AppState, AppStateStore, AppTransitions, initialState, routes } from './routes.tsx'
 
 /*
@@ -20,11 +21,13 @@ const root = ReactDOM.createRoot(document.getElementById('root')!);
 function renderComponent(component: React.ReactNode) {
   root.render(
     <React.StrictMode>
-      <StateMachineContext.Provider value={AppMachine as any}>
-        <App>
-          {component}
-        </App>
-      </StateMachineContext.Provider>
+      <MyProfileProvider>
+        <StateMachineContext.Provider value={AppMachine as any}>
+          <App>
+            {component}
+          </App>
+        </StateMachineContext.Provider>
+      </MyProfileProvider>
     </React.StrictMode>,
   );
 }

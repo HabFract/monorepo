@@ -8,7 +8,7 @@ export function useStateTransition() {
     throw new Error('useStateTransition must be used within a StateMachineProvider');
   }
 
-  const [state, setState] = useState(stateMachine.currentState);
+  const [state, setState] = useState(stateMachine.state.currentState);
 
   const transition = (newState: string, params: object) => {
     stateMachine.to(newState, params);
