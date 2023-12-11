@@ -23,7 +23,7 @@ export interface IProfileForm {
   editMode: boolean
 }
 
-export const ProfileForm: React.FunctionComponent<IProfileForm> = ({
+const ProfileForm: React.FunctionComponent<IProfileForm> = ({
   editMode,
 }: IProfileForm) => {
   const [profile, _] = useMyProfile()
@@ -177,3 +177,5 @@ export const ProfileForm: React.FunctionComponent<IProfileForm> = ({
     </div>
   )
 }
+
+export default ProfileForm;
