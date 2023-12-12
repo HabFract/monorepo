@@ -3,7 +3,10 @@ import { ListOrbits, ListSpheres } from "./components/lists";
 import { StateTransitions } from "./stateMachine";
 
 export type AppState = // Currently just for routing in the state machine
-  | 'Onboarding:NoProfile'
+  | 'Onboarding1'
+  | 'Onboarding2'
+  | 'Onboarding3'
+  | 'Onboarding4'
   | 'Home'
   | 'CreateSphere'
   | 'ListSpheres'
@@ -20,21 +23,27 @@ export type AppStateStore = {
 }
 
 export const initialState: AppStateStore = { // Home route
-  currentState: "Onboarding:NoProfile",
+  currentState: "Onboarding1",
   params: {}
 }
 
 export const routes: Routes = {
   Home: <p>Welcome Home</p>,
+  Onboarding1: <CreateProfile />,
+  Onboarding2: <CreateSphere />,
+  Onboarding3: <CreateOrbit />,
+  Onboarding4: <CreateOrbit />,
   CreateSphere: <CreateSphere />,
-  ["Onboarding:NoProfile"]: <CreateProfile />,
   ListSpheres: <ListSpheres />,
   CreateOrbit: <CreateOrbit />,
   ListOrbits: <ListOrbits />,
 };
 
 export const AppTransitions: StateTransitions<AppState> = {
-  ["Onboarding:NoProfile"]: ['Home', 'ListSpheres'],
+  Onboarding1: ['Onboarding2'],
+  Onboarding2: ['Onboarding1', 'Onboarding3'],
+  Onboarding3: ['Onboarding2', 'Onboarding4'],
+  Onboarding4: ['Onboarding3', 'Home'],
   Home: ['CreateSphere', 'ListSpheres', 'ListOrbits', 'CreateOrbit'],
   CreateSphere: ['Home', 'ListSpheres'],
   ListSpheres: ['Home', 'CreateSphere', 'ListOrbits', 'CreateOrbit'],

@@ -1,6 +1,8 @@
 
 import './App.css'
 
+import { Steps } from 'antd';
+
 import { MockedProvider } from '@apollo/client/testing';
 import { SPHERES_MOCKS } from './graphql/mocks/spheres';
 import { ORBITS_MOCKS } from './graphql/mocks/orbits';
@@ -22,7 +24,23 @@ function App({ children: pageComponent }: any) {
     <>
       <MockedProvider mocks={mocks} addTypename={false}>
         { state.match('Onboarding')
-          ? <main className={"page-container"}>{pageComponent}</main>
+          ? <>
+            <main className={"page-container"}>{pageComponent}</main>
+            <Steps
+              current={state.match(/Onboarding(\d+)/)[1]}
+              items={[
+                {
+                  title: 'Finished',
+                },
+                {
+                  title: 'In Progress',
+                },
+                {
+                  title: 'Waiting',
+                },
+              ]}
+            />
+          </>
           : <>
             <Nav transition={transition}></Nav>
             <main className={"page-container"}>{pageComponent}</main>
