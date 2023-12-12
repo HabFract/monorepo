@@ -40,7 +40,7 @@ export const routes: Routes = {
 };
 
 export const AppTransitions: StateTransitions<AppState> = {
-  Onboarding1: ['Onboarding2'],
+  Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding3'],
   Onboarding3: ['Onboarding2', 'Onboarding4'],
   Onboarding4: ['Onboarding3', 'Home'],
