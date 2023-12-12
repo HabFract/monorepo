@@ -25,18 +25,23 @@ function App({ children: pageComponent }: any) {
       <MockedProvider mocks={mocks} addTypename={false}>
         { state.match('Onboarding')
           ? <>
-            <main className={"page-container"}>{pageComponent}</main>
+            <main className={"page-container onboarding-page"}>{pageComponent}</main>
             <Steps
+              className={"onboarding-progress"}
+              direction={'horizontal'}
               current={state.match(/Onboarding(\d+)/)[1]}
               items={[
                 {
-                  title: 'Finished',
+                  subTitle: 'Profile',
                 },
                 {
-                  title: 'In Progress',
+                  subTitle: 'Sphere',
                 },
                 {
-                  title: 'Waiting',
+                  subTitle: 'Orbit',
+                },
+                {
+                  subTitle: 'Visualise',
                 },
               ]}
             />
