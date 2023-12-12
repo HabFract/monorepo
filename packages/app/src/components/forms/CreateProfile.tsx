@@ -17,6 +17,7 @@ import { useMyProfile } from '../../hooks/useMyProfile';
 
 // #region Interface Imports
 import { IProfileForm } from './types'
+import { ImageUpload } from '../inputs';
 // #endregion Interface Imports
 
 export interface IProfileForm {
@@ -113,19 +114,15 @@ const ProfileForm: React.FunctionComponent<IProfileForm> = ({
                     placeholder="Pick a location"
                   />
                 </div>
-                {/* <ImageUploadContainer>
-                  <CenteringFlexHorizontal> */}
-                    {/* <Field
-                      className="grid mr-2 place-content-end"
-                      component={ImageUploadInput}
-                      id="avatar-upload"
-                      name="avatar-upload"
-                    /> */}
-                    <div style={{ flexBasis: '33%', margin: '0 0 0 2rem' }}>
-                      <p>Add a user avatar and people can relate visually *</p>
-                    </div>
-                  {/* </CenteringFlexHorizontal>
-                </ImageUploadContainer> */}
+                  <Field
+                    className="grid mr-2 place-content-end"
+                    component={ImageUpload}
+                    id="avatar-upload"
+                    name="avatar-upload"
+                  />
+                  <div style={{ flexBasis: '33%', margin: '0 0 0 2rem' }}>
+                    <p>Add a user avatar and people can relate visually *</p>
+                  </div>
                   <div className="flex justify-around w-1/2">
                     <label htmlFor="public">Make Profile Public</label>
                     <Field component={Switch} id="public" name="public" />
@@ -133,8 +130,7 @@ const ProfileForm: React.FunctionComponent<IProfileForm> = ({
                   <div className="px-4 mb-6">
                     <p>Going public will enable sharing and trading of habit structures, but is not required to use the app.</p>
                   </div>
-                {/* <OnboardingProgressBarContainer>
-                  <EndFlexHorizontal>
+                {/* 
                     <div className="w-full h-6 bg-gray-200 rounded-full lg:hidden dark:bg-gray-700">
                       <div
                         className="h-6 bg-blue-600 rounded-full dark:bg-blue-500"
@@ -166,9 +162,7 @@ const ProfileForm: React.FunctionComponent<IProfileForm> = ({
                           clipRule="evenodd"
                         />
                       </svg>
-                    </button>
-                  </EndFlexHorizontal>
-                </OnboardingProgressBarContainer> */}
+                    </button>*/}
               </Form>
             )
           }}
