@@ -3,7 +3,6 @@
   "private": true,
   "scripts": {
     "start": "npm run launch:happ",
-    "network": "hc s clean && npm run build:happ && npm run launch:happ",
 
     "build": "npm run build:happ && hc web-app pack workdir",
     "build:happ": "npm run build:dnas && hc app pack ./workdir",
@@ -25,14 +24,9 @@
     "clean:dnas": "rimraf dnas/**/workdir/*.dna",
     "clean:build": "rimraf target; npm run clean:dnas; npm run clean:happ; rimraf ui/app/dist; exit 0",
     "clean:modules": "rimraf **/node_modules",
-    "clean:sandbox": "hc sandbox clean",
-    
-    "check-env": "test ! -f .env && cp .env.example .env; exit 0",
-    "postinstall": "npm run check-env"
+    "clean:sandbox": "hc sandbox clean"
   },
   "devDependencies": {
-    "concurrently": "^6.2.1",
-    "dotenv-cli": "^7.3.0",
     "rimraf": "^3.0.2"
   },
   "engines": {

@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "dotenv -- concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:frontend": "cd packages/app && npm run start",
+    "start:backend": "cd packages/crates && npm run start:holochain-single",
+    
+    "check-env": "test ! -f .env && cp .env.example .env; exit 0",
+    "postinstall": "npm run check-env"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +30,8 @@
     "yup": "1.3.2"
   },
   "devDependencies": {
+    "concurrently": "^6.2.1",
+    "dotenv-cli": "^7.3.0",
     "@rollup/plugin-graphql": "^2.0.4",
     "@types/react": "^18.2.37",
     "@vitejs/plugin-react": "^4.0.3",
