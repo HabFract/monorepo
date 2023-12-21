@@ -1,7 +1,7 @@
 mutation createOrbit($variables: OrbitCreateUpdateParams!) {
   createOrbit(orbit: $variables) {
     payload {
-      headerHash
+      actionHash
       entryHash
     }
   }

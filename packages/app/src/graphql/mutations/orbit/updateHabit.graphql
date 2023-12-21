@@ -1,5 +1,0 @@
-mutation updateHabit($habitFields: HabitCreateUpdateParams!) {
-  updateHabit(habit: $habitFields) {
-    id
-  }
-}

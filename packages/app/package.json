@@ -6,6 +6,7 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
+    "generate": "graphql-codegen --config codegen.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -24,6 +25,9 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "5.0.0",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-operations": "^4.0.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -33,6 +37,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "typescript": "^5.0.2",
-    "vite": "^4.5.0"
+    "vite": "^4.5.0",
+    "@graphql-codegen/introspection": "4.0.0",
+    "@graphql-codegen/client-preset": "4.1.0"
   }
 }

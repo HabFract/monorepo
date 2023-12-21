@@ -3,7 +3,7 @@ type Query {
   sphere(id: ID!): Sphere!
   spheres: SphereConnection!
   orbit(id: ID!): Orbit!
-  orbits: OrbitConnection!
+  orbits(sphereEntryHashB64: String): OrbitConnection!
   me: AgentProfile!
 }
 
