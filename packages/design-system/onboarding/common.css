@@ -1,0 +1,10 @@
+
+.onboarding-progress {
+  background: white;
+  position: fixed;
+  height: var(--onboarding-progress-bar-height);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  flex-direction: row !important;
+}
