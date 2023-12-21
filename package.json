@@ -4,9 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "dotenv -- concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "dev": "dotenv -- concurrently \"npm run start:frontend\" \"npm run stop:backend-services; npm run start:backend-services && npm run build:backend && npm run start:backend\"",
     "start:frontend": "cd packages/app && npm run start",
+    
     "start:backend": "cd packages/crates && npm run start:holochain-single",
+    "build:backend": "cd packages/crates && npm run build",
+    "start:backend-services": "cd packages/crates && npm run start:precheck ",
+    "stop:backend-services": "cd packages/crates && npm run stop:local-services ",
     
     "check-env": "test ! -f .env && cp .env.example .env; exit 0",
     "postinstall": "npm run check-env"
