@@ -35,4 +35,15 @@ export type PersonalSignal = {
   link_type: string;
 };
 
-export type EntryTypes = {};
+export type EntryTypes =
+ | ({  type: 'Sphere'; } & Sphere);
+
+
+
+export interface Sphere { 
+  name: string;
+
+  metadata: number | undefined;
+}
+
+
