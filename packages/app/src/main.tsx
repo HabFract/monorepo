@@ -4,8 +4,10 @@ import App from './App.tsx'
 import './index.css'
 import { StateMachine } from './stateMachine.ts'
 import { StateMachineContext } from './contexts/state-machine.ts'
+import { ApolloProvider } from '@apollo/client'
 import { MyProfileProvider } from './contexts/myProfile.tsx'
 import { AppState, AppStateStore, AppTransitions, initialState, routes } from './routes.tsx'
+import connect, { ClientOptions } from './graphql/client.ts'
 
 /*
 
@@ -18,16 +20,20 @@ export const AppMachine = new StateMachine<AppState, AppStateStore>(initialState
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
-function renderComponent(component: React.ReactNode) {
+
+async function renderComponent(component: React.ReactNode) {
+  const client = await connect({} as ClientOptions);
   root.render(
     <React.StrictMode>
-      <MyProfileProvider>
-        <StateMachineContext.Provider value={AppMachine as any}>
-          <App>
-            {component}
-          </App>
-        </StateMachineContext.Provider>
-      </MyProfileProvider>
+      <ApolloProvider client={client}>
+        <MyProfileProvider>
+          <StateMachineContext.Provider value={AppMachine as any}>
+            <App>
+              {component}
+            </App>
+          </StateMachineContext.Provider>
+        </MyProfileProvider>
+      </ApolloProvider>
     </React.StrictMode>,
   );
 }

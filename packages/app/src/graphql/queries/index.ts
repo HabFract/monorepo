@@ -1,12 +1,10 @@
 import { DNAIdMappings } from '../types'
-import Burner from './sphere'
-import Habit from './orbit'
-import User from './user'
+import Sphere from './sphere'
+import Orbit from './orbit'
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   return {
-    ...Burner(dnaConfig, conductorUri),
-    ...Habit(dnaConfig, conductorUri),
-    ...User(dnaConfig, conductorUri),
+    ...Sphere(dnaConfig, conductorUri),
+    ...Orbit(dnaConfig, conductorUri),
   }
 }

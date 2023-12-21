@@ -1,33 +1,33 @@
 import { mapZomeFn } from '../../connection'
 import { DNAIdMappings, ById } from '../../types'
 import { HAPP_ID, HAPP_ZOME_NAME_PERSONAL_HABITS } from '../../../constants'
-import { Orbit, OrbitConnection } from '../../mocks/generated/index'
+import { Sphere, SphereConnection } from '../../mocks/generated/index'
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
-  const read = mapZomeFn<ById, Orbit>(
+  const read = mapZomeFn<ById, Sphere>(
     dnaConfig,
     conductorUri,
     HAPP_ID,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    'get_orbit',
+    'get_sphere',
   )
-  const readAll = mapZomeFn<null, OrbitConnection>(
+  const readAll = mapZomeFn<null, SphereConnection>(
     dnaConfig,
     conductorUri,
     HAPP_ID,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    'get_all_orbits',
+    'get_all_spheres',
   )
 
   return {
-    orbit: async (_, args): Promise<Orbit> => {
+    sphere: async (_, args): Promise<Sphere> => {
       return read(args.id)
     },
 
-    orbits: async (): Promise<OrbitConnection> => {
-      const maybeOrbits = await readAll(null)
+    spheres: async (): Promise<SphereConnection> => {
+      const maybeSpheres = await readAll(null)
 
-      return Promise.resolve(maybeOrbits || [])
+      return Promise.resolve(maybeSpheres || [])
     },
   }
 }

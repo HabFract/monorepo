@@ -1,10 +1,8 @@
 import { DNAIdMappings } from '../types'
-import Habit from './orbit'
-import User from './user'
+import Orbit from './orbit'
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   return {
-    ...Habit(dnaConfig, conductorUri),
-    ...User(dnaConfig, conductorUri),
+    ...Orbit(dnaConfig, conductorUri),
   }
 }

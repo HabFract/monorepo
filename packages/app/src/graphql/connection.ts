@@ -13,7 +13,7 @@
 
  */
 import { DNAIdMappings } from './types'
-import { APP_WS_PORT, HAPP_ID } from '../constants'
+import { APP_WS_PORT, HAPP_DNA_NAME, HAPP_ID, HAPP_ZOME_NAME_PERSONAL_HABITS } from '../constants'
 import { AppSignalCb, AppWebsocket, CellId, HoloHash } from '@holochain/client'
 import deepForEach from 'deep-for-each'
 import { format, parse } from 'fecha'
@@ -42,13 +42,12 @@ const CONNECTION_CACHE: { [i: string]: Promise<AppWebsocket> } = {}
 export async function autoConnect(
   conductorUri?: string,
   appID?: string,
-  traceAppSignals?: AppSignalCb,
 ) {
   if (!conductorUri) {
     conductorUri = DEFAULT_CONNECTION_URI
   }
 
-  const conn = await openConnection(conductorUri, traceAppSignals)
+  const conn = await openConnection(conductorUri)
   const dnaConfig = await sniffHolochainAppCells(conn, appID)
 
   return { conn, dnaConfig, conductorUri }
@@ -107,14 +106,13 @@ export async function sniffHolochainAppCells(
       }' - ensure the name is correct and that the app installation has succeeded`,
     )
   }
+  const dnas: object = (
+    appInfo['cell_info']
+    );
+  console.log('dnas :>> ', dnas);
+  
 
-  const dnaMappings: DNAIdMappings = (
-    appInfo['cell_data'] as unknown[] as ActualInstalledCell[]
-  ).reduce((mappings, { cell_id, role_id }) => {
-    mappings['habit_tracking' as keyof DNAIdMappings] = cell_id
-    return mappings
-  }, {} as DNAIdMappings)
-
+  const dnaMappings = dnas[HAPP_DNA_NAME][0]['provisioned'];
   console.info('Connecting to detected Holochain cells:', dnaMappings)
 
   return dnaMappings

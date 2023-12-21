@@ -12,7 +12,7 @@ import {
   sniffHolochainAppCells,
 } from './connection.js'
 import generateResolvers from './resolvers'
-import typeDefs from './schema/schema.graphql'
+import typeDefs from './schema.graphql'
 import { APIOptions, ResolverOptions, DNAIdMappings, CellId } from './types.js'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 

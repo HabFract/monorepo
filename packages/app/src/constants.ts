@@ -1,5 +1,6 @@
 export const APP_WS_PORT = '9000'
 export const ADMIN_WS_PORT = '9001'
 export const HAPP_ID = 'habit_fract'
+export const HAPP_DNA_NAME = 'habits'
 export const HAPP_ZOME_NAME_PERSONAL_HABITS = 'personal'
 export const HAPP_ZOME_NAME_PROFILES = 'profiles'

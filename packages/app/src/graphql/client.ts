@@ -11,7 +11,7 @@ interface AutoConnectionOptions {
 export type ClientOptions = APIOptions & AutoConnectionOptions
 
 const errorLink = onError(
-  ({ graphQLErrors, networkError, response, operation }) => {
+  ({ graphQLErrors, networkError, response }) => {
     console.log('error response :>> ', response)
 
     if (graphQLErrors)

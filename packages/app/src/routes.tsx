@@ -3,6 +3,7 @@ import { ListOrbits, ListSpheres } from "./components/lists";
 import { StateTransitions } from "./stateMachine";
 
 export type AppState = // Currently just for routing in the state machine
+  | 'Boot'
   | 'Onboarding1'
   | 'Onboarding2'
   | 'Onboarding3'
@@ -23,11 +24,12 @@ export type AppStateStore = {
 }
 
 export const initialState: AppStateStore = { // Home route
-  currentState: "Onboarding1",
+  currentState: "Boot",
   params: {}
 }
 
 export const routes: Routes = {
+  Boot: <p>Connecting...</p>,
   Home: <p>Welcome Home</p>,
   Onboarding1: <CreateProfile />,
   Onboarding2: <CreateSphere />,
@@ -40,6 +42,7 @@ export const routes: Routes = {
 };
 
 export const AppTransitions: StateTransitions<AppState> = {
+  Boot: ['Onboarding1'],
   Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding3'],
   Onboarding3: ['Onboarding2', 'Onboarding4'],

@@ -1,9 +1,0 @@
-{
-	"scripts": {
-    "dev": "dotenv -- concurrently cd crates"
-	},
-	"devDependencies": {
-    "concurrently": "^6.2.1",
-    "dotenv-cli": "^7.3.0"
-	}
-}

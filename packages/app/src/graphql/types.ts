@@ -2,11 +2,12 @@
  * base types for GraphQL query layer
  */
 import { AppSignalCb, CellId } from '@holochain/client'
+import { HAPP_DNA_NAME } from '../constants'
 
 // Configuration object to allow specifying custom conductor DNA IDs to bind to.
 // Default is to use a DNA with the same ID as the mapping ID (ie. agent = "agent")
 export interface DNAIdMappings {
-  habit_tracking?: CellId
+  [HAPP_DNA_NAME]?: object[]
   // lobby?: CellId
 }
 
