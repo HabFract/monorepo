@@ -22,7 +22,7 @@ import {
   TimeFrame,
   Todo,
   UserProfileCreateUpdateParams,
-} from '../generated/index'
+} from './index'
 
 export const anAgentProfile = (
   overrides?: Partial<AgentProfile>,

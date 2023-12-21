@@ -9,3 +9,12 @@
 4: `pnpm run dev`
 
 5: Open a browser at http://localhost:8888/
+
+
+For graphql intellisense based on the schema:
+
+1: Install 'Graphql for VSCode' extension
+
+2: Install Watchman. https://facebook.github.io/watchman/docs/install
+
+If you get errors, check the output tab of your console under 'GraphQL - monorepo'

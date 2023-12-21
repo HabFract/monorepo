@@ -1,0 +1,30 @@
+{
+  schema: {
+    files: 'packages/app/src/graphql/schema.graphql'
+  },
+  query: {
+    files: [ /* define file paths which you'd like the gql parser to watch and give autocomplete suggestions for */
+      {
+        match: ['src/**/*.ts', 'src/**/*.tsx'], // match multiple extensions
+        parser: ['EmbeddedQueryParser', { startTag: 'gql`', endTag: '`' }], // parse any query inside gql template literal
+      },
+      {
+        match: 'ui/src/**/*.js', // for js
+        parser: ['EmbeddedQueryParser', { startTag: 'Relay\\.QL`', endTag: '`' }], // parse Relay syntax
+        isRelay: true,
+      },
+      {
+        match: 'features/**/*.feature', // for gherkin
+        parser: ['EmbeddedQueryParser', { startTag: 'graphql request\\s+"""', endTag: '"""' }],
+      },
+      {
+        "match": "lib/**/*.rb", // sample config you might use for Ruby-aware highlighting (inside `<<-GRAPHQL` heredocs)
+        "parser": ["EmbeddedQueryParser", { "startTag": "<<-GRAPHQL", "endTag": "GRAPHQL" }]
+      },
+      {
+        match: '**/*.graphql',
+        parser: 'QueryParser',
+      },
+    ],
+  },
+}
