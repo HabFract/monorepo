@@ -1,0 +1,16 @@
+[package]
+name = "personal"
+version = "0.0.1"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "personal"
+
+[dependencies]
+hdk = { workspace = true }
+holochain_integrity_types = { workspace = true }
+
+serde = { workspace = true }
+
+personal_integrity = { workspace = true } 

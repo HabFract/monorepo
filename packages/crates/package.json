@@ -1,5 +1,5 @@
 {
-  "name": "habit-fract",
+  "name": "habit_fract",
   "private": true,
   "scripts": {
     "start": "npm run launch:happ",
