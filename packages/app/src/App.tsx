@@ -3,26 +3,17 @@ import './App.css'
 
 import { Steps, Button } from 'antd';
 
-import { MockedProvider } from '@apollo/client/testing';
-import { SPHERES_MOCKS } from './graphql/mocks/spheres';
-import { ORBITS_MOCKS } from './graphql/mocks/orbits';
-
 import { useStateTransition } from './hooks/useStateTransition';
 
 import Nav from './components/Nav';
 
-const mocks = [
-  ...SPHERES_MOCKS,
-  ...ORBITS_MOCKS,
-  // ...add other mocks here
-];
 function getLastOnboardingState(state: string) {
   if(state == 'Onboarding1') return 'Home';
-  return `Onboarding${+(state.match(/Onboarding(\d+)/)[1]) - 1}`
+  return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) - 1}`
 };
 function getNextOnboardingState(state: string) {
   if(state == 'Onboarding4') return 'Home';
-  return `Onboarding${+(state.match(/Onboarding(\d+)/)[1]) + 1}`
+  return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) + 1}`
 };
 
 function App({ children: pageComponent }: any) {
@@ -30,7 +21,6 @@ function App({ children: pageComponent }: any) {
   
   return (
     <>
-      <MockedProvider mocks={mocks} addTypename={false}>
         { state.match('Onboarding')
           ? <>
             <Button 
@@ -64,7 +54,7 @@ function App({ children: pageComponent }: any) {
             <main className={"page-container"}>{pageComponent}</main>
           </>
         }
-      </MockedProvider>
+        
     </>
   )
 }

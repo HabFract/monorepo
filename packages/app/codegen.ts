@@ -6,8 +6,7 @@ const config: CodegenConfig = {
   schema: "src/graphql/schema.graphql",
   documents: "src/graphql/**/*.graphql",
   generates: {
-    "src/graphql/generated/": {
-      preset: "client",
+    "src/graphql/generated/index.ts": {
       presetConfig: {
         fragmentMasking: false
       },

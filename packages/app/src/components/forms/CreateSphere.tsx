@@ -2,7 +2,7 @@ import React from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Button, TextInput, Label } from 'flowbite-react';
-import { useCreateSphereMutation } from '../../graphql/generated/graphql';
+import { useCreateSphereMutation } from '../../graphql/generated';
 
 // Define the validation schema using Yup
 const SphereValidationSchema = Yup.object().shape({
@@ -11,7 +11,7 @@ const SphereValidationSchema = Yup.object().shape({
   hashtag: Yup.string(),
 });
 
-const CreateSphere = () => {
+const CreateSphere: React.FC = () => {
   const [addSphere] = useCreateSphereMutation();
 
   return (

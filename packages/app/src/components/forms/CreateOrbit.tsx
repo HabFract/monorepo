@@ -3,7 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
 import { Button, TextInput, Label } from 'flowbite-react';
-import { Frequency, Scale, useCreateOrbitMutation } from '../../graphql/generated/graphql';
+import { Frequency, Scale, useCreateOrbitMutation } from '../../graphql/generated';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -12,7 +12,7 @@ const OrbitValidationSchema = Yup.object().shape({
   hashtag: Yup.string(),
 });
 
-const CreateOrbit = () => {
+const CreateOrbit: React.FC = () => {
   const [addOrbit] = useCreateOrbitMutation();
 
   return (

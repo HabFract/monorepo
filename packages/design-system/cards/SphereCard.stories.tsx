@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import SphereCard from './SphereCard';
-import { Scale, Sphere } from '../../app/src/graphql/mocks/generated';
+import { Scale, Sphere } from '../../app/src/graphql/generated';
 import { AppMachine } from '../../app/src/main';
 import { StateMachineContext } from '../../app/src/contexts/state-machine';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import './common.css';
 import { DeleteOutlined, EditOutlined, PieChartOutlined, OrderedListOutlined } from '@ant-design/icons';
 import SphereVis from '../vis/SphereVis';
-import { Orbit, Scale, Sphere } from '../../app/src/graphql/mocks/generated';
+import { Orbit, Scale, Sphere } from '../../app/src/graphql/generated';
 import { Button } from 'flowbite-react';
 import { useStateTransition } from '../../app/src/hooks/useStateTransition';
 

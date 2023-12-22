@@ -13,13 +13,13 @@ import ListSortFilter from './ListSortFilter';
 
 import OrbitCard from '../../../../design-system/cards/OrbitCard';
 import SphereCard from '../../../../design-system/cards/SphereCard';
-import { Orbit, OrbitMetaData, OrbitEdge } from '../../graphql/generated/graphql';
+import { Orbit, OrbitMetaData, OrbitEdge } from '../../graphql/generated';
 
 interface ListOrbitsProps {
   sphereId?: string; // Optional prop to filter orbits by sphere
 }
 
-function ListOrbits({ sphereId }: ListOrbitsProps) {
+const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
   const { loading: loadingOrbits, error: errorOrbits, data: dataOrbits } = useQuery(GET_ORBITS_BY_SPHERE, {
     variables: { sphereEntryHashB64: sphereId },
     skip: !sphereId, // Skip the query if no sphereId is provided
@@ -49,8 +49,8 @@ function ListOrbits({ sphereId }: ListOrbitsProps) {
       propertyA = a ? a[listSortFilter.sortCriteria as keyof Orbit] : 0
       propertyB = b ? b[listSortFilter.sortCriteria as keyof Orbit] : 0
     } else {
-      propertyA = a?.metadata[listSortFilter.sortCriteria as keyof OrbitMetaData];
-      propertyB = b?.metadata[listSortFilter.sortCriteria as keyof OrbitMetaData];
+      propertyA = a?.metadata![listSortFilter.sortCriteria as keyof OrbitMetaData];
+      propertyB = b?.metadata![listSortFilter.sortCriteria as keyof OrbitMetaData];
       propertyA = scaleValues[propertyA] || 0; // Assign a default value if propertyA is undefined
       propertyB = scaleValues[propertyB] || 0; // Assign a default value if propertyB is undefined
     }

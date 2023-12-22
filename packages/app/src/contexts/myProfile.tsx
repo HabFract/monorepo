@@ -1,4 +1,4 @@
-import { Profile } from '../graphql/mocks/generated';
+import { Profile } from '../graphql/generated';
 import { useState, useMemo, createContext } from 'react'
 
 export const MyProfileContext = createContext(null)

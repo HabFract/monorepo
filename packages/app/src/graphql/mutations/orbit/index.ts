@@ -1,7 +1,7 @@
 import { mapZomeFn } from "../../connection";
 import { DNAIdMappings } from "../../types";
 import { HAPP_ID, HAPP_ZOME_NAME_PERSONAL_HABITS } from "../../../constants";
-import { Orbit, OrbitCreateUpdateParams } from "../../generated/graphql";
+import { Orbit, OrbitCreateUpdateParams } from "../../generated";
 
 export type createArgs = { orbit: OrbitCreateUpdateParams };
 export type createHandler = (root: any, args: createArgs) => Promise<Orbit>;

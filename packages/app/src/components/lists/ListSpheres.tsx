@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { useAtom } from 'jotai';
 import { listSortFilterAtom } from '../../state/listSortFilterAtom';
 import GET_SPHERES from '../../graphql/queries/sphere/getSpheres.graphql';
-import { Scale, Sphere, SphereEdge, SphereMetaData } from '../../graphql/mocks/generated';
+import { Scale, Sphere, SphereEdge, SphereMetaData } from '../../graphql/generated';
 
 import './common.css';
 
@@ -47,7 +47,7 @@ function ListSpheres() {
       <PageHeader title="Spheres of Action" />
       <ListSortFilter label='' />
       <div className="spheres-list">
-        {sortedSpheres.map(({ node } : SphereEdge) => <SphereCard key={node.id} sphere={node} isHeader={false} orbitScales={[Scale.ASTRO]}/>)}
+        {sortedSpheres.map(({ node } : SphereEdge) => <SphereCard key={node.id} sphere={node} isHeader={false} orbitScales={[Scale.Astro]}/>)}
       </div>
     </div>
   );

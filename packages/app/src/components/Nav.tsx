@@ -5,7 +5,7 @@ import GET_SPHERES from '../graphql/queries/sphere/getSpheres.graphql';
 import { MenuUnfoldOutlined, MenuFoldOutlined, PlusCircleOutlined, DashboardFilled, UnorderedListOutlined, PieChartFilled } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useState } from "react";
-import { SphereConnection, SphereEdge } from "../graphql/generated/graphql";
+import { SphereConnection, SphereEdge } from "../graphql/generated";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -34,7 +34,7 @@ function createFixedMenuItems() {
 }
 
 function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
-  return [...spheres.edges!.map((sphere: SphereEdge, idx: number) => {
+  return [...spheres.edges!.map((sphere: SphereEdge, _idx: number) => {
     return getItem(`${sphere.node.name}`, sphere.node.id, null,
       [
         getItem('Orbit List', 'list-orbits-' + sphere.node.id, null),
@@ -85,7 +85,7 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
   return (
     <nav className={"bg-dark-gray fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col"}>
       {error && "Error"}
-      {loading ? "Loading" :
+      {loading || !spheres ? "Loading" :
         <Menu
           inlineCollapsed={collapsed}
           onClick={onClick}

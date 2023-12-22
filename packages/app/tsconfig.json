@@ -22,5 +22,10 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src", "../design-system/vis"],
+  "exclude": [
+    "node_modules",
+    "src/graphql/generated",
+    "src/mocks"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
