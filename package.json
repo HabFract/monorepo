@@ -10,7 +10,7 @@
     "build:backend": "cd packages/crates && npm run build",
     "start:backend-services": "cd packages/crates && npm run start:precheck ",
     "stop:backend-services": "cd packages/crates && npm run stop:local-services ",
-    "check-env": "test ! -f .env && cp .env.example .env; exit 0",
+    "check-env": "test ! -f .env && cp .env.example .env && cp .env packages/crates/.env; exit 0",
     "postinstall": "npm run check-env"
   },
   "keywords": [],
