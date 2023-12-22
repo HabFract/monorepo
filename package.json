@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npm run stop:backend-services && dotenv -- concurrently \"npm run start:backend-services && npm run build:backend && npm run start:backend\" \"npm run start:frontend\" \"npm run open-browser\"",
     "start:frontend": "cd packages/app && npm run start",
-    "open-browser": "sleep 5 && open-cli http://localhost:${VITE_UI_PORT}",
+    "open-browser": "sleep 15 && open-cli http://localhost:${VITE_UI_PORT}",
     "start:backend": "cd packages/crates && npm run start:holochain-single",
     "build:backend": "cd packages/crates && npm run build",
     "start:backend-services": "cd packages/crates && npm run start:precheck ",
