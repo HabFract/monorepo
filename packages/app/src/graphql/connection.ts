@@ -14,7 +14,7 @@
  */
 import { DNAIdMappings } from './types'
 import { APP_WS_PORT, HAPP_DNA_NAME, HAPP_ID, HAPP_ZOME_NAME_PERSONAL_HABITS } from '../constants'
-import { AppSignalCb, AppWebsocket, CellId, HoloHash } from '@holochain/client'
+import { AdminWebsocket, AppSignalCb, AppWebsocket, CellId, CellInfo, HoloHash } from '@holochain/client'
 import deepForEach from 'deep-for-each'
 import { format, parse } from 'fecha'
 import isObject from 'is-object'
@@ -26,6 +26,16 @@ type ActualInstalledCell = {
   // :TODO: remove this when fixed in tryorama
   cell_id: CellId
   role_id: string
+}
+
+export function getCellId(cellInfo: CellInfo): CellId {
+  if ("provisioned" in cellInfo) {
+    return cellInfo.provisioned.cell_id;
+  }
+  if ("cloned" in cellInfo) {
+    return cellInfo.cloned.cell_id;
+  }
+  throw new Error("CellInfo does not contain a CellId.")
 }
 
 // ----------------------------------------------------------------------------------------------------------------------
@@ -47,10 +57,14 @@ export async function autoConnect(
     conductorUri = DEFAULT_CONNECTION_URI
   }
 
-  const conn = await openConnection(conductorUri)
-  const dnaConfig = await sniffHolochainAppCells(conn, appID)
+  const appWs = await openConnection(conductorUri)
+  const dnaConfig = await sniffHolochainAppCells(appWs, appID)
 
-  return { conn, dnaConfig, conductorUri }
+  const adminWs = await AdminWebsocket.connect(new URL(`ws://localhost:${9001}`));
+
+  await adminWs.authorizeSigningCredentials(dnaConfig[HAPP_DNA_NAME]!.cell_id!);
+
+  return { conn: appWs, dnaConfig, conductorUri }
 }
 
 /**
@@ -110,9 +124,8 @@ export async function sniffHolochainAppCells(
     appInfo['cell_info']
     );
   console.log('dnas :>> ', dnas);
-  
 
-  const dnaMappings = dnas[HAPP_DNA_NAME][0]['provisioned'];
+  const dnaMappings = {[HAPP_DNA_NAME]: dnas[HAPP_DNA_NAME][0]['provisioned']};
   console.info('Connecting to detected Holochain cells:', dnaMappings)
 
   return dnaMappings
@@ -296,9 +309,15 @@ const zomeFunction =
   ): BoundZomeFn<InputType, Promise<OutputType>> =>
   async (args): Promise<OutputType> => {
     const { callZome } = await getConnection(socketURI)
+    
+    console.log('res :>> ', {cap_secret: null,
+      cell_id,
+      zome_name,
+      fn_name,
+      provenance: cell_id});
     const res = await callZome(
       {
-        cap_secret: null, // :TODO:
+        cap_secret: null,
         cell_id,
         zome_name,
         fn_name,
@@ -307,6 +326,7 @@ const zomeFunction =
       },
       60000,
     )
+
     if (!skipEncodeDecode) decodeFields(res)
     return res
   }
@@ -328,13 +348,14 @@ export const mapZomeFn = <InputType, OutputType>(
   fn: string,
   skipEncodeDecode?: boolean,
 ) =>
-  zomeFunction<InputType, OutputType>(
+  {
+    return zomeFunction<InputType, OutputType>(
     socketURI,
-    mappings && mappings[instance],
+    mappings && mappings[instance]['cell_id'],
     zome,
     fn,
     skipEncodeDecode,
-  )
+  )}
 
 export const extractEdges = <T>(withEdges: { edges: { node: T }[] }): T[] => {
   if (!withEdges.edges || !withEdges.edges.length) {

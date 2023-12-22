@@ -1,6 +1,6 @@
 import { mapZomeFn } from "../../connection";
 import { DNAIdMappings } from "../../types";
-import { HAPP_ID, HAPP_ZOME_NAME_PERSONAL_HABITS } from "../../../constants";
+import { HAPP_DNA_NAME, HAPP_ZOME_NAME_PERSONAL_HABITS } from "../../../constants";
 import { Sphere, SphereCreateUpdateParams } from "../../generated";
 
 export type createArgs = { sphere: SphereCreateUpdateParams };
@@ -10,7 +10,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   const runCreate = mapZomeFn<Omit<Sphere, "id">, Sphere>(
     dnaConfig,
     conductorUri,
-    HAPP_ID,
+    HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
     "create_sphere"
   );

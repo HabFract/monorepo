@@ -1,6 +1,6 @@
 import { mapZomeFn } from "../../connection";
 import { DNAIdMappings } from "../../types";
-import { HAPP_ID, HAPP_ZOME_NAME_PERSONAL_HABITS } from "../../../constants";
+import { HAPP_DNA_NAME, HAPP_ZOME_NAME_PERSONAL_HABITS } from "../../../constants";
 import { Orbit, OrbitCreateUpdateParams } from "../../generated";
 
 export type createArgs = { orbit: OrbitCreateUpdateParams };
@@ -10,7 +10,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   const runCreate = mapZomeFn<Omit<Orbit, "id">, Orbit>(
     dnaConfig,
     conductorUri,
-    HAPP_ID,
+    HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
     "create_orbit"
   );

@@ -1,20 +1,20 @@
 import { mapZomeFn } from '../../connection'
 import { DNAIdMappings, ById } from '../../types'
-import { HAPP_ID, HAPP_ZOME_NAME_PERSONAL_HABITS } from '../../../constants'
-import { Sphere, SphereConnection } from '../../mocks/generated/index'
+import { HAPP_DNA_NAME, HAPP_ZOME_NAME_PERSONAL_HABITS } from '../../../constants'
+import { Sphere, SphereConnection } from '../../generated'
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   const read = mapZomeFn<ById, Sphere>(
     dnaConfig,
     conductorUri,
-    HAPP_ID,
+    HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
     'get_sphere',
   )
   const readAll = mapZomeFn<null, SphereConnection>(
     dnaConfig,
     conductorUri,
-    HAPP_ID,
+    HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
     'get_all_spheres',
   )
