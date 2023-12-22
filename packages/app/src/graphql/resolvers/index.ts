@@ -7,8 +7,6 @@ import { DateTimeResolver as DateTime } from 'graphql-scalars'
 export default async (options: ResolverOptions) => {
   const { conductorUri, dnaConfig } = options
 
-  // prefetch connection for this API schema
-  await openConnection(conductorUri)
   return {
     // scalars
     DateTime,

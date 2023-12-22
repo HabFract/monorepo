@@ -84,7 +84,7 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
 
   return (
     <nav className={"bg-dark-gray fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col"}>
-      {error && "Error"}
+      {/* {error && "Error"} */}
       {loading || !spheres ? "Loading" :
         <Menu
           inlineCollapsed={collapsed}
