@@ -1,28 +1,33 @@
-import { mapZomeFn } from '../../connection'
-import { DNAIdMappings } from '../../types'
-import { HAPP_ID, HAPP_ZOME_NAME_PERSONAL_HABITS } from '../../../constants'
-import { Orbit, OrbitCreateUpdateParams } from '../../mocks/generated/index'
+import { mapZomeFn } from "../../connection";
+import { DNAIdMappings } from "../../types";
+import { HAPP_ID, HAPP_ZOME_NAME_PERSONAL_HABITS } from "../../../constants";
+import { Orbit, OrbitCreateUpdateParams } from "../../generated/graphql";
 
-export type createArgs = { orbit: OrbitCreateUpdateParams }
-export type createHandler = (root: any, args: createArgs) => Promise<Orbit>
+export type createArgs = { orbit: OrbitCreateUpdateParams };
+export type createHandler = (root: any, args: createArgs) => Promise<Orbit>;
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
-  const runCreate = mapZomeFn<Omit<Orbit, 'id'>, Orbit>(
+  const runCreate = mapZomeFn<Omit<Orbit, "id">, Orbit>(
     dnaConfig,
     conductorUri,
     HAPP_ID,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    'create_orbit',
-  )
+    "create_orbit"
+  );
 
   const createOrbit: createHandler = async (
     _,
-    { orbit: { name, startTime, endTime, ...metadata } },
+    { orbit: { name, startTime, endTime, sphereEntryHashB64, ...metadata } }
   ) => {
-    return runCreate({ name, timeframe: { startTime, endTime } })
-  }
+    return runCreate({
+      name,
+      timeframe: { startTime, endTime },
+      sphereEntryHashB64,
+      metadata,
+    });
+  };
 
   return {
     createOrbit,
-  }
-}
+  };
+};

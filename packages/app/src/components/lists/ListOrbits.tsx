@@ -4,7 +4,6 @@ import { listSortFilterAtom } from '../../state/listSortFilterAtom';
 import './common.css';
 
 import { useQuery, useLazyQuery } from '@apollo/client';
-import { Orbit, OrbitEdge, OrbitMetaData, Sphere } from '../../graphql/mocks/generated';
 import GET_SPHERE from '../../graphql/queries/sphere/getSphere.graphql';
 // import GET_ORBITS from '../../graphql/queries/orbit/getOrbits.graphql';
 import GET_ORBITS_BY_SPHERE from '../../graphql/queries/orbit/getOrbitsBySphere.graphql';
@@ -14,6 +13,7 @@ import ListSortFilter from './ListSortFilter';
 
 import OrbitCard from '../../../../design-system/cards/OrbitCard';
 import SphereCard from '../../../../design-system/cards/SphereCard';
+import { Orbit, OrbitMetaData, OrbitEdge } from '../../graphql/generated/graphql';
 
 interface ListOrbitsProps {
   sphereId?: string; // Optional prop to filter orbits by sphere

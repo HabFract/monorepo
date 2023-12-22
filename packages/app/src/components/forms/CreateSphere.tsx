@@ -1,8 +1,8 @@
 import React from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { useAddSphereMutation } from '../../graphql/mocks/generated';
 import { Button, TextInput, Label } from 'flowbite-react';
+import { useCreateSphereMutation } from '../../graphql/generated/graphql';
 
 // Define the validation schema using Yup
 const SphereValidationSchema = Yup.object().shape({
@@ -12,7 +12,7 @@ const SphereValidationSchema = Yup.object().shape({
 });
 
 const CreateSphere = () => {
-  const [addSphere] = useAddSphereMutation();
+  const [addSphere] = useCreateSphereMutation();
 
   return (
     <div className="p-4">
@@ -26,7 +26,7 @@ const CreateSphere = () => {
         validationSchema={SphereValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            await addSphere({ variables: { name: values.name, metadata: { description: values.description, hashtag: values.hashtag } } });
+            await addSphere({ variables: { variables: { name: values.name, description: values.description, hashtag: values.hashtag} } });
             setSubmitting(false);
           } catch (error) {
             console.error(error);
@@ -53,7 +53,7 @@ const CreateSphere = () => {
             </Label>
             {errors.hashtag && touched.hashtag ? <div>{errors.hashtag}</div> : null}
 
-            <Button type="submit" variant="primary" className="mt-4">Create Sphere</Button>
+            <Button type="submit" className="mt-4">Create Sphere</Button>
           </Form>
         )}
       </Formik>

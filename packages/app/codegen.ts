@@ -8,11 +8,22 @@ const config: CodegenConfig = {
   generates: {
     "src/graphql/generated/": {
       preset: "client",
-      plugins: []
+      presetConfig: {
+        fragmentMasking: false
+      },
+      plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
+      config: {
+        withComponent: false,
+        withHOC: false,
+        withHooks: true
+      },
     },
-    "./graphql.schema.json": {
+    "src/graphql/graphql.schema.json": {
       plugins: ["introspection"]
-    }
+    },
+    "src/graphql/generated/mocks.ts": {
+      plugins: ["graphql-codegen-typescript-mock-data"]
+    },
   }
 };
 

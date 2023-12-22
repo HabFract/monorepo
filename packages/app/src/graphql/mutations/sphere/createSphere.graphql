@@ -1,4 +1,4 @@
-mutation addSphere($variables: SphereCreateUpdateParams!) {
+mutation createSphere($variables: SphereCreateUpdateParams!) {
   createSphere(sphere: $variables) {
     payload {
       actionHash

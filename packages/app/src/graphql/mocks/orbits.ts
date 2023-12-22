@@ -1,4 +1,4 @@
-import { aOrbitConnection } from "./generated/mocks";
+import { aOrbitConnection } from "./mocks";
 
 import CREATE_ORBIT from "../mutations/orbit/createOrbit.graphql";
 import GET_ORBITS from "../queries/orbit/getOrbits.graphql";

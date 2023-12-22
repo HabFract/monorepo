@@ -24,6 +24,7 @@ type PageInfo {
   startCursor: String!
   endCursor: String!
 }
+
 interface Node {
   id: ID!
 }
@@ -89,7 +90,7 @@ type SphereMetaData {
 # Sphere Input/Outputs
 input SphereCreateUpdateParams {
   name: String!
-  description: String!
+  description: String
   hashtag: String
 }
 
@@ -117,6 +118,7 @@ type Orbit implements Node {
   sphereEntryHashB64: String!
   metadata: OrbitMetaData
 }
+
 type TimeFrame {
   startTime: DateTime!
   endTime: DateTime!
@@ -137,7 +139,7 @@ enum Scale {
 }
 
 type OrbitMetaData {
-  description: String!
+  description: String
   frequency: Frequency!
   scale: Scale!
 }
@@ -147,7 +149,7 @@ input OrbitCreateUpdateParams {
   name: String!
   startTime: DateTime!
   endTime: DateTime!
-  description: String!
+  description: String
   frequency: Frequency!
   scale: Scale!
   sphereEntryHashB64: String!

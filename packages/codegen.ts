@@ -10,9 +10,12 @@ const config: CodegenConfig = {
       preset: "client",
       plugins: []
     },
-    "./graphql.schema.json": {
+    "src/graphql/graphql.schema.json": {
       plugins: ["introspection"]
-    }
+    },
+    "src/graphql/generated/mocks.ts": {
+      plugins: ["graphql-codegen-typescript-mock-data"]
+    },
   }
 };
 

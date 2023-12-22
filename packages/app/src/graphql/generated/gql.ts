@@ -15,7 +15,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "mutation createOrbit($variables: OrbitCreateUpdateParams!) {\n  createOrbit(orbit: $variables) {\n    payload {\n      actionHash\n      entryHash\n    }\n  }\n}": types.CreateOrbitDocument,
     "mutation updateOrbit($orbitFields: OrbitCreateUpdateParams!) {\n  updateOrbit(orbit: $orbitFields) {\n    id\n  }\n}": types.UpdateOrbitDocument,
-    "mutation addSphere($variables: SphereCreateUpdateParams!) {\n  createSphere(sphere: $variables) {\n    payload {\n      actionHash\n      entryHash\n    }\n  }\n}": types.AddSphereDocument,
+    "mutation createSphere($variables: SphereCreateUpdateParams!) {\n  createSphere(sphere: $variables) {\n    payload {\n      actionHash\n      entryHash\n    }\n  }\n}": types.CreateSphereDocument,
+    "mutation updateSphere($sphereFields: SphereCreateUpdateParams!) {\n  updateSphere(sphere: $sphereFields) {\n    id\n  }\n}": types.UpdateSphereDocument,
     "query getOrbit($id: ID!) {\n  orbit(id: $id) {\n    name\n    sphereEntryHashB64\n    metadata {\n      description\n      frequency\n      scale\n    }\n    timeframe {\n      startTime\n      endTime\n    }\n  }\n}": types.GetOrbitDocument,
     "query getOrbits($sphereEntryHashB64: String) {\n  orbits(sphereEntryHashB64: $sphereEntryHashB64) {\n    edges {\n      node {\n        id\n        name\n        sphereEntryHashB64\n        metadata {\n          description\n          frequency\n          scale\n        }\n        timeframe {\n          startTime\n          endTime\n        }\n      }\n    }\n  }\n}": types.GetOrbitsDocument,
     "query getOrbitsBySphere($sphereEntryHashB64: String) {\n  orbits(sphereEntryHashB64: $sphereEntryHashB64) {\n    edges {\n      node {\n        id\n        name\n        metadata {\n          description\n          frequency\n          scale\n        }\n        timeframe {\n          startTime\n          endTime\n        }\n        sphereEntryHashB64\n      }\n    }\n  }\n}": types.GetOrbitsBySphereDocument,
@@ -48,7 +49,11 @@ export function graphql(source: "mutation updateOrbit($orbitFields: OrbitCreateU
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation addSphere($variables: SphereCreateUpdateParams!) {\n  createSphere(sphere: $variables) {\n    payload {\n      actionHash\n      entryHash\n    }\n  }\n}"): (typeof documents)["mutation addSphere($variables: SphereCreateUpdateParams!) {\n  createSphere(sphere: $variables) {\n    payload {\n      actionHash\n      entryHash\n    }\n  }\n}"];
+export function graphql(source: "mutation createSphere($variables: SphereCreateUpdateParams!) {\n  createSphere(sphere: $variables) {\n    payload {\n      actionHash\n      entryHash\n    }\n  }\n}"): (typeof documents)["mutation createSphere($variables: SphereCreateUpdateParams!) {\n  createSphere(sphere: $variables) {\n    payload {\n      actionHash\n      entryHash\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation updateSphere($sphereFields: SphereCreateUpdateParams!) {\n  updateSphere(sphere: $sphereFields) {\n    id\n  }\n}"): (typeof documents)["mutation updateSphere($sphereFields: SphereCreateUpdateParams!) {\n  updateSphere(sphere: $sphereFields) {\n    id\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

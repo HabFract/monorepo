@@ -4,8 +4,8 @@ import GET_SPHERES from '../graphql/queries/sphere/getSpheres.graphql';
 
 import { MenuUnfoldOutlined, MenuFoldOutlined, PlusCircleOutlined, DashboardFilled, UnorderedListOutlined, PieChartFilled } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
-import { SphereConnection, SphereEdge } from "../graphql/mocks/generated";
 import { useState } from "react";
+import { SphereConnection, SphereEdge } from "../graphql/generated/graphql";
 
 type MenuItem = Required<MenuProps>['items'][number];
 

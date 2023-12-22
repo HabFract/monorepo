@@ -1,4 +1,4 @@
-import { aSphere, aSphereConnection, aSphereEdge } from './generated/mocks';
+import { aSphere, aSphereConnection, aSphereEdge } from './mocks';
 
 // import GET_SPHERE from './queries/sphere/getSphere.graphql';
 import CREATE_SPHERE from '../mutations/sphere/createSphere.graphql';

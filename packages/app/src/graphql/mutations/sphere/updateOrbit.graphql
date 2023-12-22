@@ -1,0 +1,5 @@
+mutation updateSphere($sphereFields: SphereCreateUpdateParams!) {
+  updateSphere(sphere: $sphereFields) {
+    id
+  }
+}

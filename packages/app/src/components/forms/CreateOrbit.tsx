@@ -1,8 +1,9 @@
 import React from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { useAddOrbitMutation } from '../../graphql/mocks/generated';
+
 import { Button, TextInput, Label } from 'flowbite-react';
+import { Frequency, Scale, useCreateOrbitMutation } from '../../graphql/generated/graphql';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -12,7 +13,7 @@ const OrbitValidationSchema = Yup.object().shape({
 });
 
 const CreateOrbit = () => {
-  const [addOrbit] = useAddOrbitMutation();
+  const [addOrbit] = useCreateOrbitMutation();
 
   return (
     <div className="p-4">
@@ -21,12 +22,15 @@ const CreateOrbit = () => {
         initialValues={{
           name: '',
           description: '',
-          hashtag: '',
+          startTime: '',
+          endTime: '',
+          frequency: Frequency.Day,
+          scale: Scale.Astro,
         }}
         validationSchema={OrbitValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            await addOrbit({ variables: { name: values.name, metadata: { description: values.description, hashtag: values.hashtag } } });
+            await addOrbit({ variables: { variables: { ...values, sphereEntryHashB64: '' } } });
             setSubmitting(false);
           } catch (error) {
             console.error(error);
@@ -48,12 +52,30 @@ const CreateOrbit = () => {
             {errors.description && touched.description ? <div>{errors.description}</div> : null}
 
             <Label>
-              <span>Hashtag:</span>
+              <span>Start Time:</span>
               <Field as={TextInput} type="text" name="hashtag" />
             </Label>
-            {errors.hashtag && touched.hashtag ? <div>{errors.hashtag}</div> : null}
+            {errors.startTime && touched.startTime ? <div>{errors.startTime}</div> : null}
 
-            <Button type="submit" variant="primary" className="mt-4">Create Orbit</Button>
+            <Label>
+              <span>End Time:</span>
+              <Field as={TextInput} type="text" name="hashtag" />
+            </Label>
+            {errors.endTime && touched.endTime ? <div>{errors.endTime}</div> : null}
+
+            <Label>
+              <span>Frequency:</span>
+              <Field as={TextInput} type="text" name="hashtag" />
+            </Label>
+            {errors.frequency && touched.frequency ? <div>{errors.frequency}</div> : null}
+
+            <Label>
+              <span>Scale:</span>
+              <Field as={TextInput} type="text" name="hashtag" />
+            </Label>
+            {errors.scale && touched.scale ? <div>{errors.scale}</div> : null}
+
+            <Button type="submit" className="mt-4">Create Orbit</Button>
           </Form>
         )}
       </Formik>
