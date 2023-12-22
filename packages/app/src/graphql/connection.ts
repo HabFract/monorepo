@@ -80,7 +80,6 @@ export const openConnection = (
   socketURI: string,
 ) => {
   console.log(`Init Holochain connection: ${socketURI}`)
-
   CONNECTION_CACHE[socketURI] = AppWebsocket.connect(
     new URL(socketURI),
     undefined,
