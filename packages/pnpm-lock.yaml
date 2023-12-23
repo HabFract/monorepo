@@ -14,6 +14,9 @@ importers:
       '@graphql-tools/schema':
         specifier: ^10.0.2
         version: 10.0.2(graphql@16.8.1)
+      '@holochain-open-dev/utils':
+        specifier: ^0.16.3
+        version: 0.16.3
       '@holochain/client':
         specifier: ^0.16.7
         version: 0.16.7
@@ -2638,6 +2641,20 @@ packages:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       graphql: 16.8.1
+
+  /@holochain-open-dev/utils@0.16.3:
+    resolution: {integrity: sha512-mmn3Lo3bQAdPaPFUfjYj64CH/G5ywOuC9zFbF9XqZO3MyMsqWmvIJjVmgEDDCKQ8s/lMEUyZhhEOTLbhEw1Y5w==}
+    dependencies:
+      '@holochain/client': 0.16.7
+      '@msgpack/msgpack': 2.8.0
+      blakejs: 1.2.1
+      emittery: 1.0.1
+      lodash-es: 4.17.21
+      sort-keys: 5.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
 
   /@holochain/client@0.16.7:
     resolution: {integrity: sha512-wCFm71HUnZ9vxmuguqKqDOhqjE5Qq5e8bM4q9W1ginel3UAZF3LmYym5Ny4pOG2aqf2tD5mpf7xTZjBxPDGnjA==}
@@ -5399,6 +5416,10 @@ packages:
       readable-stream: 3.6.2
     dev: true
 
+  /blakejs@1.2.1:
+    resolution: {integrity: sha512-QXUSXI3QVc/gJME0dBpXrag1kbzOqCjCX8/b54ntNyW6sjtoqxqRk3LTmXzaJoh71zMsDCjM+47jS7XiwN/+fQ==}
+    dev: false
+
   /body-parser@1.20.1:
     resolution: {integrity: sha512-jWi7abTbYwajOytWCQc37VulmWiRae5RyTpaCyDcS5/lMdtwSz5lOpDE67srw/HYe35f1z3fDQw+3txg7gNtWw==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
@@ -7656,6 +7677,11 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /is-plain-obj@4.1.0:
+    resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
+    engines: {node: '>=12'}
+    dev: false
+
   /is-plain-object@2.0.4:
     resolution: {integrity: sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==}
     engines: {node: '>=0.10.0'}
@@ -9653,6 +9679,13 @@ packages:
       dot-case: 3.0.4
       tslib: 2.6.2
     dev: true
+
+  /sort-keys@5.0.0:
+    resolution: {integrity: sha512-Pdz01AvCAottHTPQGzndktFNdbRA75BgOfeT1hH+AMnJFv8lynkPi42rfeEhpx1saTEI3YNMWxfqu0sFD1G8pw==}
+    engines: {node: '>=12'}
+    dependencies:
+      is-plain-obj: 4.1.0
+    dev: false
 
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
