@@ -355,10 +355,3 @@ export const mapZomeFn = <InputType, OutputType>(
     fn,
     skipEncodeDecode,
   )}
-
-export const extractEdges = <T>(withEdges: { edges: { node: T }[] }): T[] => {
-  if (!withEdges.edges || !withEdges.edges.length) {
-    return []
-  }
-  return withEdges.edges.map(({ node }) => node)
-}

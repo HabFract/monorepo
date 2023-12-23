@@ -1,0 +1,11 @@
+export const extractEdges = <T>(withEdges: { edges: { node: T }[] }): T[] => {
+  if (!withEdges.edges || !withEdges.edges.length) {
+    return []
+  }
+  return withEdges.edges.map(({ node }) => node)
+}
+
+export const createEdges = <T>(nodes: T[]): { edges: { node: T }[] } => {
+  const edges = nodes.map((node) => ({ node }));
+  return { edges };
+};
