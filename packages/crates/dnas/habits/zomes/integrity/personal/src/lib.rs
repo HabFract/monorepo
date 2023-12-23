@@ -5,9 +5,13 @@ use hdi::prelude::*;
 #[serde(tag = "type")]
 #[hdk_entry_defs]
 #[unit_enum(UnitEntryTypes)]
-pub enum EntryTypes {
+pub enum EntryTypes { 
+    #[entry_def( 
+        name = "my_sphere", // Must be unique across entry types
+        visibility = "private" )] // Entry not published to the DHT, only stored in the source chain
     Sphere(Sphere),
 }
+
 #[derive(Serialize, Deserialize)]
 #[hdk_link_types]
 pub enum LinkTypes {

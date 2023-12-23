@@ -66,6 +66,22 @@ pub fn delete_sphere(original_sphere_hash: ActionHash) -> ExternResult<ActionHas
 }
 
 #[hdk_extern]
+pub fn create_my_sphere(sphere: Sphere) -> ExternResult<Record> {
+    let sphere_hash = create_entry(&EntryTypes::Sphere(sphere.clone()))?;
+    let record = get(sphere_hash.clone(), GetOptions::default())?
+        .ok_or(
+            wasm_error!(
+                WasmErrorInner::Guest(String::from("Could not find the newly created Sphere"))
+            ),
+        )?;
+    debug!(
+        "_+_+_+_+_+_+_+_+_+_ Created My Sphere: {:#?}",
+        record.clone()
+    );
+    Ok(record)
+}
+
+#[hdk_extern]
 pub fn get_all_my_spheres(_:()) -> ExternResult<Vec<Record>> {
     let sphere_entry_type: EntryType = UnitEntryTypes::Sphere.try_into()?; 
     let filter = ChainQueryFilter::new().entry_type(sphere_entry_type); 
