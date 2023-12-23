@@ -1,10 +1,19 @@
+use std::collections::BTreeSet;
 use hdi::prelude::*;
+
 #[hdk_entry_helper]
-#[derive(Clone, PartialEq)]
+#[derive(Clone)]
 pub struct Sphere {
     pub name: String,
-    pub metadata: Option<Timestamp>,
+    pub metadata: Option<SphereMetadata>,
 }
+
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
+pub struct SphereMetadata {
+    pub description: Option<String>,
+    pub hashtag: Option<String>
+}
+    
 pub fn validate_create_sphere(
     _action: EntryCreationAction,
     _sphere: Sphere,
