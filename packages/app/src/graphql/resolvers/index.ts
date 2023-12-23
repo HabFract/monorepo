@@ -1,4 +1,3 @@
-import { openConnection } from '../connection.js'
 import Mutation from '../mutations'
 import Query from '../queries'
 import { ResolverOptions } from '../types.js'
