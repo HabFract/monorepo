@@ -8,6 +8,7 @@ import {
 
 import { select } from "d3";
 import { selectInUnpersisted } from "features/habitDate/selectors";
+import { ViewConfig, VisType, ZoomConfig } from "./types";
 
 // General helpers
 
@@ -86,52 +87,44 @@ export const updateVisRootData = (
 };
 
 export const getInitialXTranslate = ({ levelsWide, defaultView }) => {
-  const [x, y, w, h] = defaultView.split` `;
+  const [_x, _y, w, _h] = defaultView.split` `;
   return w / levelsWide / 1.5;
 };
 
 export const getInitialYTranslate = (
-  type,
+  type: VisType,
   { levelsHigh, defaultView },
   menuExpanded
 ) => {
-  const [x, y, w, h] = defaultView.split` `;
+  const [_x, _y, _w, h] = defaultView.split` `;
   switch (type) {
-    case "tree":
+    case VisType.Tree:
       return menuExpanded ? h / 5.5 : h / 3;
     default:
       return (h / levelsHigh) * 1.5;
   }
 };
 
-// export const radialTranslation = (zoomConfig) => {
-//   const [x, y] = radialPoint(
-//     zoomConfig.previousRenderZoom?.node?.x,
-//     zoomConfig.previousRenderZoom?.node?.y
-//   );
-//   return { x, y };
-// };
-
-export const newXTranslate = (type, viewConfig, zoomConfig) => {
+export const newXTranslate = (type: VisType, viewConfig: ViewConfig, zoomConfig: ZoomConfig) => {
   const scale = zoomConfig.globalZoomScale || viewConfig.scale;
   switch (type) {
-    case "cluster":
-      return -zoomConfig.previousRenderZoom?.node?.y * scale;
-    case "radial":
-      return 0; // -radialTranslation(zoomConfig).x * scale;
-    case "tree":
+    // case "cluster":
+    //   return -zoomConfig.previousRenderZoom?.node?.y * scale;
+    // case "radial":
+    //   return 0; // -radialTranslation(zoomConfig).x * scale;
+    case VisType.Tree:
       return -zoomConfig.previousRenderZoom?.node?.x * scale;
   }
 };
 
-export const newYTranslate = (newScale, type, viewConfig, zoomConfig) => {
+export const newYTranslate = (newScale, type: VisType, viewConfig: ViewConfig, zoomConfig: ZoomConfig) => {
   const scale = newScale || viewConfig.scale;
   switch (type) {
-    case "cluster":
-      return -zoomConfig.previousRenderZoom?.node?.x * scale;
-    case "radial":
-      return 0; //-radialTranslation(zoomConfig).y * scale;
-    case "tree":
+    // case "cluster":
+    //   return -zoomConfig.previousRenderZoom?.node?.x * scale;
+    // case "radial":
+    //   return 0; //-radialTranslation(zoomConfig).y * scale;
+    case VisType.Tree:
       return -zoomConfig.previousRenderZoom?.node?.y * scale;
   }
 };

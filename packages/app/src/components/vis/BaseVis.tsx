@@ -55,7 +55,7 @@ import {
   newXTranslate,
   newYTranslate,
 } from "./helpers";
-// import { debounce, handleErrorType, isTouchDevice } from "app/helpers";
+// import { debounce, console.error, isTouchDevice } from "app/helpers";
 
 import {
   positiveCol,
@@ -64,24 +64,49 @@ import {
   neutralCol,
   parentPositiveBorderCol,
   positiveColLighter,
+  BASE_SCALE,
+  FOCUS_MODE_SCALE,
+  LG_BUTTON_SCALE,
+  LG_LABEL_SCALE,
+  LG_LEVELS_HIGH,
+  LG_LEVELS_WIDE,
+  LG_NODE_RADIUS,
+  XS_BUTTON_SCALE,
+  XS_LABEL_SCALE,
+  XS_LEVELS_HIGH,
+  XS_LEVELS_WIDE,
+  XS_NODE_RADIUS,
 } from "./constants";
+import { EventHandlers, IVisualization, ViewConfig, VisType, ZoomConfig } from "./types";
 
 
+export default class Visualization implements IVisualization {
+  type: VisType;
+  _svgId: string;
+  _canvas: any;
+  rootData: any; // Replace 'any' with a more specific type representing the input tree structure
+  _nextRootData: any; // Replace 'any' with a more specific type representing the input tree structure
+  _viewConfig: ViewConfig;
+  _zoomConfig: ZoomConfig;
+  eventHandlers: EventHandlers;
+  _hasRendered: boolean = false;
+  isNewActiveNode?: boolean;
+  activeNode: any;
+  _enteringNodes: any;
 
-export default class Visualization {
-  constructor(svgId, inputTree, canvasHeight, canvasWidth, margin, type) {
+  constructor(type, svgId, inputTree, canvasHeight, canvasWidth, margin) {
     this.type = type;
-    this.isDemo = false;
     this._svgId = svgId;
     this.rootData = inputTree;
+    
     this._viewConfig = {
-      scale: type == "radial" ? BASE_SCALE / 2 : BASE_SCALE,
+      scale: type == "Radial" ? BASE_SCALE / 2 : BASE_SCALE,
       clickScale: FOCUS_MODE_SCALE,
       margin: margin,
       canvasHeight,
       canvasWidth,
 
-      defaultCanvasTranslateX: (scale) => {
+      defaultCanvasTranslateX: () => {
         const initialX = getInitialXTranslate.call(this, this._viewConfig);
         return typeof this._zoomConfig.previousRenderZoom?.node?.x !==
           "undefined"
@@ -273,33 +298,36 @@ export default class Visualization {
     return select(`#${this._svgId}`);
   }
 
-  firstRender() {
+  firstRender() : boolean {
     return typeof this?._hasRendered == "undefined";
   }
 
   clearFirstRenderFlag() {
-    delete this._hasRendered;
+    this._hasRendered = false;
   }
 
-  noCanvas() {
+  noCanvas() : boolean {
     return (
       typeof this?._canvas == "undefined" ||
       document.querySelectorAll(".canvas")?.length == 0
     );
   }
-  hasNextData() {
+
+  hasNextData() : boolean {
     return !!this?._nextRootData;
   }
-  hasSummedData() {
+
+  hasSummedData() : boolean {
     return !!this.rootData?.value;
   }
+
   hasNewHierarchyData() {
     return (
       this.hasNextData() && hierarchyStateHasChanged(this._nextRootData, this)
     );
   }
 
-  setActiveNode(clickedNodeContent, event = null) {
+  setActiveNode(clickedNodeContent, event : any = null) {
     this?.isNewActiveNode && delete this.isNewActiveNode;
 
     this.activeNode = this.findNodeByContent(clickedNodeContent);
@@ -312,6 +340,7 @@ export default class Visualization {
     this.activateNodeAnimation();
     return this.activeNode;
   }
+
   findNodeByContent(node) {
     if (node === undefined || node.content === undefined) return;
     let found;
@@ -334,7 +363,7 @@ export default class Visualization {
       nodeContent.right
     );
     if (!newCurrent) {
-      handleErrorType("Couldn't select node");
+      console.error("Couldn't select node");
       return;
     }
     store.dispatch(updateCurrentNode(newCurrent));
@@ -352,7 +381,7 @@ export default class Visualization {
         nodeContent.right
       );
     } catch (err) {
-      handleErrorType("Couldn't select habit: " + err);
+      console.error("Couldn't select habit: " + err);
       return;
     }
     store.dispatch(updateCurrentHabit(newCurrent));
@@ -455,7 +484,7 @@ export default class Visualization {
         .fromDate;
 
       const nodeContent = parseTreeValues(node.data.content);
-      const currentStatus = nodeContent.status;
+      const currentStatus = nodeContent!.status;
 
       const theNode = this.zoomBase()
         .selectAll(".the-node circle")
@@ -1372,7 +1401,7 @@ export default class Visualization {
           !this._zoomConfig.zoomedInView() &&
             this.setActiveNode(newActive?.data);
         } catch (err) {
-          handleErrorType("No active habits for this date");
+          console.error("No active habits for this date");
         }
       }
       this.activateNodeAnimation();
@@ -1393,7 +1422,7 @@ export default class Visualization {
     }
 
     if (!select("svg.legend-svg").empty() && select("svg .legend").empty()) {
-      // console.log("Added legend :>> ");
+      console.log("Added legend :>> ");
       this.addLegend();
       this.bindLegendEventHandler();
     }
