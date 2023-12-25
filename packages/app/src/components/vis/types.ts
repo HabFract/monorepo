@@ -32,10 +32,10 @@ export interface ViewConfig {
 }
 
 export type Margins = {
-  top?: number;
-  right?: number;
-  bottom?: number;
-  left?: number;
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
 }
 
 export interface ZoomConfig {

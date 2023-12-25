@@ -1,0 +1,86 @@
+g.nodes {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.the-node.active {
+  stroke: #3d3229;
+  stroke-width: 4px;
+}
+
+.instruct-legend .cell:nth-child(3) circle,
+.legend-svg .cell:nth-child(3) circle {
+  fill: #edd837;
+  stroke: #93cc96;
+  stroke-width: 8px;
+}
+
+.expand-arrow {
+  stroke: #f8f8f8;
+  stroke-width: 2px;
+}
+
+.instruct-legend .cell,
+.legend-svg .cell {
+  position: relative;
+  pointer-events: none;
+}
+
+.controls-div {
+  height: 15vh;
+  background-color: #dddddd;
+  opacity: 0.4;
+  z-index: 10;
+}
+
+.help-svg,
+.legend-svg {
+  z-index: 17;
+}
+.legend-svg {
+  z-index: 19;
+}
+
+.swipe-zone {
+  color: #ddd;
+  font-weight: 900;
+}
+
+svg path.link {
+  stroke: #1a140e;
+  fill: none;
+}
+
+g.tooltip rect {
+  fill: #f8f8f8;
+  stroke: #1a140e !important;
+  stroke-width: 1px;
+}
+
+g.tooltip text {
+  fill: #1a140e !important;
+  stroke: #1a140e !important;
+  stroke-width: 1px;
+}
+
+body[class^="scroll"] .legend-svg,
+body[class^="scroll"] .controls-div {
+  opacity: 0;
+  visibility: none;
+  transition: opacity 0.2s ease-out;
+}
+
+.habit-label-dash-button text {
+  fill: #f8f8f8 !important;
+  stroke-width: 1px;
+}
+
+.habit-label-dash-button {
+  fill: #1a140e !important;
+  stroke: #f8f8f8 !important;
+  stroke-width: 1px;
+}
+
+g.tooltip rect:first-of-type {
+  fill: #47301f !important;
+}
