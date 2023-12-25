@@ -13,12 +13,22 @@ export interface EventHandlers {
 export interface ViewConfig {
   scale: number;
   clickScale: number;
-  margin: { top: number; right: number; bottom: number; left: number };
+  margin: Margins;
   canvasHeight: number;
   canvasWidth: number;
+  levelsHigh?: number;
+  levelsWide?: number;
   defaultCanvasTranslateX: () => number;
   defaultCanvasTranslateY: (scale: number) => number;
   isSmallScreen: () => boolean;
+  defaultView: string;
+}
+
+export type Margins = {
+  top?: number;
+  right?: number;
+  bottom?: number;
+  left?: number;
 }
 
 export interface ZoomConfig {

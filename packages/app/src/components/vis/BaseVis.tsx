@@ -77,7 +77,7 @@ import {
   XS_LEVELS_WIDE,
   XS_NODE_RADIUS,
 } from "./constants";
-import { EventHandlers, IVisualization, ViewConfig, VisType, ZoomConfig } from "./types";
+import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
 
 
 export default class Visualization implements IVisualization {
@@ -93,8 +93,12 @@ export default class Visualization implements IVisualization {
   isNewActiveNode?: boolean;
   activeNode: any;
   _enteringNodes: any;
+  isCollapsed: boolean = false;
+  isExpanded: boolean = false;
+  expand: () => void;
+  collapse: () => void;
 
-  constructor(type, svgId, inputTree, canvasHeight, canvasWidth, margin) {
+  constructor(type, svgId, inputTree, canvasHeight, canvasWidth, margin: Margins) {
     this.type = type;
     this._svgId = svgId;
     this.rootData = inputTree;
@@ -105,9 +109,11 @@ export default class Visualization implements IVisualization {
       margin: margin,
       canvasHeight,
       canvasWidth,
+      defaultView: 'Tree',
 
       defaultCanvasTranslateX: () => {
-        const initialX = getInitialXTranslate.call(this, this._viewConfig);
+        const initialX = getInitialXTranslate.call(this, 
+          { defaultView: this._viewConfig.defaultView, levelsWide: this._viewConfig.levelsWide });
         return typeof this._zoomConfig.previousRenderZoom?.node?.x !==
           "undefined"
           ? initialX +
@@ -118,12 +124,11 @@ export default class Visualization implements IVisualization {
         const initialY = getInitialYTranslate.call(
           this,
           this.type,
-          this._viewConfig,
-          document.querySelector(".calendar-widget").style.right == "0px"
+          { defaultView: this._viewConfig.defaultView, levelsHigh: this._viewConfig.levelsHigh },
         );
         return typeof this._zoomConfig.previousRenderZoom?.node?.y !==
           "undefined"
-          ? this._viewConfig.margin.top +
+          ? (this._viewConfig.margin.top as number) +
               initialY +
               newYTranslate(
                 scale,
@@ -148,128 +153,128 @@ export default class Visualization implements IVisualization {
 
     this.eventHandlers = {
       handlePrependNode: function () {
-        store.dispatch(toggleConfirm({ type: "Prepend" }));
+        // store.dispatch(toggleConfirm({ type: "Prepend" }));
       },
       handleAppendNode: function () {
-        store.dispatch(toggleConfirm({ type: "Append" }));
+        // store.dispatch(toggleConfirm({ type: "Append" }));
       },
       handleDeleteNode: function (_, node) {
-        this.setCurrentHabit(node);
-        this.setCurrentNode(node);
-        store.dispatch(toggleConfirm({ type: "Delete" }));
-        this.render();
+        // this.setCurrentHabit(node);
+        // this.setCurrentNode(node);
+        // store.dispatch(toggleConfirm({ type: "Delete" }));
+        // this.render();
       },
       rgtClickOrDoubleTap: function (e, d) {
-        this.eventHandlers.handleNodeFocus.call(this, e, d);
-        this.handleStatusChange.call(this, d);
-        this.type != "radial" &&
-          this.eventHandlers.handleNodeZoom.call(this, e, d, false);
+        // this.eventHandlers.handleNodeFocus.call(this, e, d);
+        // this.handleStatusChange.call(this, d);
+        // this.type != "radial" &&
+        //   this.eventHandlers.handleNodeZoom.call(this, e, d, false);
       }.bind(this),
       handleNodeZoom: function (event, node, forParent = false) {
-        if (!node) return;
-        this._zoomConfig.globalZoomScale = this._viewConfig.clickScale;
-        this._zoomConfig.focusMode = true;
+        // if (!node) return;
+        // this._zoomConfig.globalZoomScale = this._viewConfig.clickScale;
+        // this._zoomConfig.focusMode = true;
 
-        if (event) {
-          this.setActiveNode(node.data, event);
-        }
-        const parentNode = { ...node.parent };
+        // if (event) {
+        //   this.setActiveNode(node.data, event);
+        // }
+        // const parentNode = { ...node.parent };
 
-        if (!this._gLink.attr("transform")) {
-          // Set for cross render transformation memory
-          this._zoomConfig.previousRenderZoom = {
-            event: event,
-            node: forParent ? parentNode : node,
-            scale: this._zoomConfig.globalZoomScale,
-          };
-        }
-        select(".canvas")
-          .transition()
-          .ease(easePolyIn.exponent(8))
-          .delay(!!event || !this.isNewActiveNode ? 0 : 100)
-          .duration(!!event || !this.isNewActiveNode ? 1 : 2000)
-          .attr(
-            "transform",
-            `translate(${this._viewConfig.defaultCanvasTranslateX(
-              this._zoomConfig.globalZoomScale
-            )},${this._viewConfig.defaultCanvasTranslateY(
-              this._zoomConfig.globalZoomScale
-            )}), scale(${this._zoomConfig.globalZoomScale})`
-          );
+        // if (!this._gLink.attr("transform")) {
+        //   // Set for cross render transformation memory
+        //   this._zoomConfig.previousRenderZoom = {
+        //     event: event,
+        //     node: forParent ? parentNode : node,
+        //     scale: this._zoomConfig.globalZoomScale,
+        //   };
+        // }
+        // select(".canvas")
+        //   .transition()
+        //   .ease(easePolyIn.exponent(8))
+        //   .delay(!!event || !this.isNewActiveNode ? 0 : 100)
+        //   .duration(!!event || !this.isNewActiveNode ? 1 : 2000)
+        //   .attr(
+        //     "transform",
+        //     `translate(${this._viewConfig.defaultCanvasTranslateX(
+        //       this._zoomConfig.globalZoomScale
+        //     )},${this._viewConfig.defaultCanvasTranslateY(
+        //       this._zoomConfig.globalZoomScale
+        //     )}), scale(${this._zoomConfig.globalZoomScale})`
+        //   );
       },
       handleNodeFocus: function (event, node) {
-        event.preventDefault();
-        this.calibrateViewBox();
-        const currentHabit = selectCurrentHabit(store.getState());
+        // event.preventDefault();
+        // this.calibrateViewBox();
+        // const currentHabit = selectCurrentHabit(store.getState());
 
-        const targ = event?.target;
-        if (targ.tagName == "circle") {
-          if (
-            !!node?.data?.name &&
-            !(node.data.name == currentHabit?.meta.name)
-          ) {
-            this.setCurrentHabit(node);
-            this.setCurrentNode(node);
-          }
-          if (currentHabit?.meta?.name !== node?.data?.name)
-            this.setActiveNode(node.data, event);
+        // const targ = event?.target;
+        // if (targ.tagName == "circle") {
+        //   if (
+        //     !!node?.data?.name &&
+        //     !(node.data.name == currentHabit?.meta.name)
+        //   ) {
+        //     this.setCurrentHabit(node);
+        //     this.setCurrentNode(node);
+        //   }
+        //   if (currentHabit?.meta?.name !== node?.data?.name)
+        //     this.setActiveNode(node.data, event);
 
-          // if (this.type == "tree") {
-          //   const nodesToCollapse = nodesForCollapse
-          //     .call(this, node, {
-          //       cousinCollapse: true,
-          //       auntCollapse: true,
-          //     })
-          //     .map((n) => n?.data?.content);
-          //   this.rootData.each((node) => {
-          //     if (nodesToCollapse.includes(node.data.content)) collapse(node);
-          //   });
-          //   expand(node?.parent ? node.parent : node);
-          //   this.render();
-          // }
-        }
+        //   // if (this.type == "tree") {
+        //   //   const nodesToCollapse = nodesForCollapse
+        //   //     .call(this, node, {
+        //   //       cousinCollapse: true,
+        //   //       auntCollapse: true,
+        //   //     })
+        //   //     .map((n) => n?.data?.content);
+        //   //   this.rootData.each((node) => {
+        //   //     if (nodesToCollapse.includes(node.data.content)) collapse(node);
+        //   //   });
+        //   //   expand(node?.parent ? node.parent : node);
+        //   //   this.render();
+        //   // }
+        // }
       },
       handleMouseEnter: function ({ target: d }) {
-        this.currentTooltip = select(d).selectAll("g.tooltip");
-        this.currentTooltip.transition().duration(450).style("opacity", "1");
-        this.currentButton = select(d).selectAll("g.habit-label-dash-button");
-        this.currentButton
-          .transition()
-          .delay(100)
-          .duration(450)
-          .style("opacity", "1");
+        // this.currentTooltip = select(d).selectAll("g.tooltip");
+        // this.currentTooltip.transition().duration(450).style("opacity", "1");
+        // this.currentButton = select(d).selectAll("g.habit-label-dash-button");
+        // this.currentButton
+        //   .transition()
+        //   .delay(100)
+        //   .duration(450)
+        //   .style("opacity", "1");
       },
       handleMouseLeave: function (e) {
-        const g = select(e.target);
-        g.select(".tooltip").transition().duration(50).style("opacity", "0");
-        g.select(".habit-label-dash-button")
-          .transition()
-          .delay(2000)
-          .duration(150)
-          .style("opacity", "0");
-        setTimeout(() => {
-          this.currentButton = false;
-        }, 100);
-        setTimeout(() => {
-          this.currentTooltip = false;
-        }, 100);
+        // const g = select(e.target);
+        // g.select(".tooltip").transition().duration(50).style("opacity", "0");
+        // g.select(".habit-label-dash-button")
+        //   .transition()
+        //   .delay(2000)
+        //   .duration(150)
+        //   .style("opacity", "0");
+        // setTimeout(() => {
+        //   this.currentButton = false;
+        // }, 100);
+        // setTimeout(() => {
+        //   this.currentTooltip = false;
+        // }, 100);
       },
       handleHover: function (e, d) {
-        // If it is an animated concentric circle, delegate to parent node
-        if (e.target.classList.length === 0) {
-          d = e.target.parentElement.__data__;
-        }
-        if (parseTreeValues(d.data.content).status === "") return;
-        e.stopPropagation();
-        // Hide labels if they are not part of the current subtree
-        if (
-          !(
-            this.activeNode !== undefined &&
-            d.ancestors().includes(this.activeNode)
-          )
-        ) {
-          return;
-        }
+        // // If it is an animated concentric circle, delegate to parent node
+        // if (e.target.classList.length === 0) {
+        //   d = e.target.parentElement.__data__;
+        // }
+        // if (parseTreeValues(d.data.content).status === "") return;
+        // e.stopPropagation();
+        // // Hide labels if they are not part of the current subtree
+        // if (
+        //   !(
+        //     this.activeNode !== undefined &&
+        //     d.ancestors().includes(this.activeNode)
+        //   )
+        // ) {
+        //   return;
+        // }
       },
     };
 
@@ -321,7 +326,7 @@ export default class Visualization implements IVisualization {
     return !!this.rootData?.value;
   }
 
-  hasNewHierarchyData() {
+  hasNewHierarchyData() : boolean {
     return (
       this.hasNextData() && hierarchyStateHasChanged(this._nextRootData, this)
     );

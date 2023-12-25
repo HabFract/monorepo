@@ -94,12 +94,9 @@ export const getInitialXTranslate = ({ levelsWide, defaultView }) => {
 export const getInitialYTranslate = (
   type: VisType,
   { levelsHigh, defaultView },
-  menuExpanded
 ) => {
   const [_x, _y, _w, h] = defaultView.split` `;
   switch (type) {
-    case VisType.Tree:
-      return menuExpanded ? h / 5.5 : h / 3;
     default:
       return (h / levelsHigh) * 1.5;
   }
