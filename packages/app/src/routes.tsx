@@ -1,5 +1,6 @@
 import { CreateProfile, CreateSphere, CreateOrbit } from "./components/forms";
 import { ListOrbits, ListSpheres } from "./components/lists";
+import OrbitTree from "./components/vis/OrbitTree";
 import { StateTransitions } from "./stateMachine";
 
 export type AppState = // Currently just for routing in the state machine
@@ -29,7 +30,7 @@ export const initialState: AppStateStore = { // Home route
 }
 
 export const routes: Routes = {
-  Boot: <CreateSphere />, //<p>Connecting...</p>,
+  Boot: <OrbitTree />, //<p>Connecting...</p>,
   Home: <p>Welcome Home</p>,
   Onboarding1: <CreateProfile editMode={false} />,
   Onboarding2: <CreateSphere />,

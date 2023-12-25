@@ -9,8 +9,8 @@ import {
 export const isTouchDevice = () => {
   return (
     "ontouchstart" in window ||
-    navigator.maxTouchPoints > 0 ||
-    navigator.msMaxTouchPoints > 0
+    navigator.maxTouchPoints > 0 //||
+    // navigator.msMaxTouchPoints > 0
   );
 };
 
@@ -34,7 +34,7 @@ export const debounce = function (func, delay) {
 
 
 import { select } from "d3";
-import { selectInUnpersisted } from "features/habitDate/selectors";
+// import { selectInUnpersisted } from "features/habitDate/selectors";
 import { ViewConfig, VisType, ZoomConfig } from "./types";
 
 // General helpers
@@ -108,7 +108,7 @@ export const updateVisRootData = (
       visObject.clearFirstRenderFlag();
     }
     visObject.render();
-    _p("Rendered from component & updated ", {}, "!");
+    console.log("Rendered from component & updated ", {}, "!");
     return visObject;
   }
 };
@@ -159,7 +159,7 @@ export const oppositeStatus = (current) =>
   [undefined, "false", "incomplete", ""].includes(current) ? "true" : "false";
 
 export const notOOB = (node) =>
-  parseTreeValues(node.data.content).status !== "OOB";
+  parseTreeValues(node.data.content)!.status !== "OOB";
 
 export const sumChildrenValues = (node, hidden = false) => {
   let children = node?._children || node?.children || node?.data?.children;
@@ -168,10 +168,10 @@ export const sumChildrenValues = (node, hidden = false) => {
 };
 
 export const nodeWithoutHabitDate = (data, store) =>
-  habitDateNotPersisted(data) && !selectInUnpersisted(data)(store.getState());
+  habitDateNotPersisted(data) //&& !selectInUnpersisted(data)(store.getState());
 
 const allOOB = (nodes) =>
-  nodes.every((d) => parseTreeValues(d.data.content).status === "OOB");
+  nodes.every((d) => parseTreeValues(d.data.content)!.status === "OOB");
 
 export const isALeaf = (node) => {
   return (
@@ -211,7 +211,7 @@ export const parseTreeValues = (valueString) => {
 };
 
 export const outOfBoundsNode = (d, rootData) => {
-  return nodeStatusColours(d, rootData) == noNodeCol;
+  return nodeStatusColours(d) == noNodeCol;
 };
 
 export const areSomeDescendantsIncomplete = (descendants) =>
@@ -224,7 +224,7 @@ export const areSomeDescendantsIncomplete = (descendants) =>
     descendants.some(
       (descendant) =>
         !["true", "OOB"].includes(
-          parseTreeValues(descendant.data.content).status
+          parseTreeValues(descendant.data.content)!.status
         )
     )
   );
@@ -245,8 +245,8 @@ export const areAllChildrenComplete = (children) =>
 
 export const habitDateNotPersisted = (node) => {
   return node?.data?.content
-    ? ["", "false"].includes(parseTreeValues(node.data.content).status)
-    : ["", "false"].includes(parseTreeValues(node?.content).status);
+    ? ["", "false"].includes(parseTreeValues(node.data.content)!.status)
+    : ["", "false"].includes(parseTreeValues(node?.content)!.status);
 };
 
 export const cumulativeValue = (node) => {
@@ -302,14 +302,14 @@ export const nodeStatusColours = (d) => {
   const cumulativeVal = cumulativeValue(d);
   let decidingVal =
     d?.value && d.value == cumulativeVal ? d.value : cumulativeVal;
-  const status = parseTreeValues(d.data.content).status;
+  const status = parseTreeValues(d.data.content)!.status;
 
   if (
     d.height === 0 ||
     d?._children?.every(
-      (d) => parseTreeValues(d.data.content).status === "OOB"
+      (d) => parseTreeValues(d.data.content)!.status === "OOB"
     ) ||
-    d?.children?.every((d) => parseTreeValues(d.data.content).status === "OOB")
+    d?.children?.every((d) => parseTreeValues(d.data.content)!.status === "OOB")
   ) {
     if (status == "true") return positiveCol;
     if (status == "false") return negativeCol;

@@ -46,11 +46,12 @@ export interface ZoomConfig {
     scale?: number;
   };
   zoomedInView: () => boolean;
+  globalZoomScale? : number;
 }
 
 export enum VisType {
   Tree = "Tree",
-  Cluster = "Cluster"
+  Cluster = "Cluster",
   Radial = "Radial"
 }
 
@@ -72,12 +73,12 @@ export interface Hierarchy {
   hier: object;
 }
 export interface VisProps {
-  canvasHeight: number;
-  canvasWidth: number;
+  canvasHeight?: number;
+  canvasWidth?: number;
   divId: number;
   margin?: any; //(_:any):void
-  render: any; //(_:any):void
-  routeChanged: boolean;
-  deleteCompleted: boolean;
-  changesMade: any;
+  render?: any; //(_:any):void
+  routeChanged?: boolean;
+  deleteCompleted?: boolean;
+  changesMade?: any;
 }
