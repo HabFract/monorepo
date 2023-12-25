@@ -11,9 +11,16 @@ export interface EventHandlers {
 }
 
 export interface ViewConfig {
+  dx?: number;
+  dy?: number;
   scale: number;
   clickScale: number;
+  nodeRadius?: number;
   margin: Margins;
+  viewportX?: number;
+  viewportY?: number;
+  viewportW?: number;
+  viewportH?: number;
   canvasHeight: number;
   canvasWidth: number;
   levelsHigh?: number;
@@ -42,7 +49,9 @@ export interface ZoomConfig {
 }
 
 export enum VisType {
-  Tree = "Tree"
+  Tree = "Tree",
+  Cluster = "Cluster"
+  Radial = "Radial"
 }
 
 // Now define the interface for the Visualization class

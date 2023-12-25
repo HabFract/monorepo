@@ -12,6 +12,7 @@ import {
   easePolyIn,
   easeLinear,
   hierarchy,
+  TreeLayout,
 } from "d3";
 import { legendColor } from "d3-svg-legend";
 import Hammer from "hammerjs";
@@ -54,6 +55,7 @@ import {
   getInitialYTranslate,
   newXTranslate,
   newYTranslate,
+  debounce,
 } from "./helpers";
 // import { debounce, console.error, isTouchDevice } from "app/helpers";
 
@@ -84,8 +86,11 @@ export default class Visualization implements IVisualization {
   type: VisType;
   _svgId: string;
   _canvas: any;
+  _manager: any;
+  zoomer: any;
   rootData: any; // Replace 'any' with a more specific type representing the input tree structure
   _nextRootData: any; // Replace 'any' with a more specific type representing the input tree structure
+  layout!: TreeLayout<unknown>;
   _viewConfig: ViewConfig;
   _zoomConfig: ZoomConfig;
   eventHandlers: EventHandlers;
@@ -97,6 +102,15 @@ export default class Visualization implements IVisualization {
   isExpanded: boolean = false;
   expand: () => void;
   collapse: () => void;
+  currentEventTimestamp!: number;
+
+  _gLink: any;
+  _gNode: any;
+  _gCircle: any;
+  gCirclePulse: any;
+  _gTooltip: any;
+  _gButton: any;
+  _enteringLinks: any;
 
   constructor(type, svgId, inputTree, canvasHeight, canvasWidth, margin: Margins) {
     this.type = type;
@@ -104,7 +118,7 @@ export default class Visualization implements IVisualization {
     this.rootData = inputTree;
     
     this._viewConfig = {
-      scale: type == "Radial" ? BASE_SCALE / 2 : BASE_SCALE,
+      scale: type == VisType.Radial ? BASE_SCALE / 2 : BASE_SCALE,
       clickScale: FOCUS_MODE_SCALE,
       margin: margin,
       canvasHeight,
@@ -117,7 +131,7 @@ export default class Visualization implements IVisualization {
         return typeof this._zoomConfig.previousRenderZoom?.node?.x !==
           "undefined"
           ? initialX +
-              newXTranslate(this.type, this._viewConfig, this._zoomConfig)
+              (newXTranslate(this.type, this._viewConfig, this._zoomConfig) as number)
           : initialX;
       },
       defaultCanvasTranslateY: (scale) => {
@@ -219,7 +233,7 @@ export default class Visualization implements IVisualization {
         //   if (currentHabit?.meta?.name !== node?.data?.name)
         //     this.setActiveNode(node.data, event);
 
-        //   // if (this.type == "tree") {
+        //   // if (this.type == VisType.Tree) {
         //   //   const nodesToCollapse = nodesForCollapse
         //   //     .call(this, node, {
         //   //       cousinCollapse: true,
@@ -357,91 +371,92 @@ export default class Visualization implements IVisualization {
     return found;
   }
 
-  setCurrentNode(node) {
+  setCurrentNode(node) : void {
     const nodeContent = node?.data
       ? parseTreeValues(node?.data.content)
       : parseTreeValues(node.content);
-
-    let newCurrent = selectCurrentNodeByMptt(
-      store.getState(),
-      nodeContent.left,
-      nodeContent.right
-    );
-    if (!newCurrent) {
-      console.error("Couldn't select node");
-      return;
-    }
-    store.dispatch(updateCurrentNode(newCurrent));
+debugger;
+    // let newCurrent = selectCurrentNodeByMptt(
+    //   store.getState(),
+    //   nodeContent.left,
+    //   nodeContent.right
+    // );
+    // if (!newCurrent) {
+    //   console.error("Couldn't select node");
+    //   return;
+    // }
+    // store.dispatch(updateCurrentNode(newCurrent));
   }
 
-  setCurrentHabit(node) {
+  setCurrentHabit(node) : void {
     let newCurrent;
+debugger;
     try {
       const nodeContent = node?.data
         ? parseTreeValues(node?.data.content)
         : parseTreeValues(node.content);
-      newCurrent = selectCurrentHabitByMptt(
-        store.getState(),
-        nodeContent.left,
-        nodeContent.right
-      );
+      // newCurrent = selectCurrentHabitByMptt(
+      //   store.getState(),
+      //   nodeContent.left,
+      //   nodeContent.right
+      // );
     } catch (err) {
       console.error("Couldn't select habit: " + err);
       return;
     }
-    store.dispatch(updateCurrentHabit(newCurrent));
-    const s = store.getState();
-    if (selectCurrentHabit(s)?.meta.id !== selectCurrentHabitDate(s)?.habitId) {
-      store.dispatch(
-        fetchHabitDatesREST({
-          id: newCurrent?.meta.id,
-          periodLength: 7,
-        })
-      );
-    }
+    // store.dispatch(updateCurrentHabit(newCurrent));
+    // const s = store.getState();
+    // if (selectCurrentHabit(s)?.meta.id !== selectCurrentHabitDate(s)?.habitId) {
+    //   store.dispatch(
+    //     fetchHabitDatesREST({
+    //       id: newCurrent?.meta.id,
+    //       periodLength: 7,
+    //     })
+    //   );
+    // }
   }
 
   updateRootDataAfterAccumulation(newRootData) {
-    const currentDate = selectCurrentDateId(store.getState());
+    // const currentDate = selectCurrentDateId(store.getState());
 
-    const { updateCurrentHierarchy, updateCachedHierarchyForDate } =
-      hierarchySlice.actions;
-    store.dispatch(
-      updateCachedHierarchyForDate({
-        dateId: currentDate,
-        newHierarchy: newRootData,
-      })
-    );
-    store.dispatch(updateCurrentHierarchy({ nextDateId: currentDate }));
-    this._nextRootData = newRootData;
-    delete this._nextRootData.newHabitDatesAdded;
+    // const { updateCurrentHierarchy, updateCachedHierarchyForDate } =
+    //   hierarchySlice.actions;
+    // store.dispatch(
+    //   updateCachedHierarchyForDate({
+    //     dateId: currentDate,
+    //     newHierarchy: newRootData,
+    //   })
+    // );
+    // store.dispatch(updateCurrentHierarchy({ nextDateId: currentDate }));
+    // this._nextRootData = newRootData;
+    // delete this._nextRootData.newHabitDatesAdded;
   }
 
   addHabitDatesForNewNodes(
     startingNode = this.rootData,
     completedValue = false
   ) {
-    // If we are adding a false completed value (temp habit dates that will only be persisted if updated to true)
-    let newRootData = hierarchy({ ...this.rootData.data });
-    accumulateTree(newRootData, this);
-    if (startingNode.data.name == this.rootData.data.name) {
-      // Option 1: Traverse the tree and create many
-      newRootData.each((d) => {
-        if (
-          nodeWithoutHabitDate(d?.data, store) &&
-          isALeaf(d) &&
-          !d?.data.content.match(/OOB/)
-        ) {
-          this.createNewHabitDateForNode(d, completedValue);
-          this.mutateTreeJsonForNewHabitDates(d);
-        }
-      });
-    } else {
-      // Option 2: Create a new true habit date for a 'cascaded' ancestor node
-      this.createNewHabitDateForNode(startingNode, JSON.parse(completedValue));
-    }
-    this.updateRootDataAfterAccumulation(newRootData);
-    this.rootData.newHabitDatesAdded = true;
+    // // If we are adding a false completed value (temp habit dates that will only be persisted if updated to true)
+    // let newRootData = hierarchy({ ...this.rootData.data });
+    // accumulateTree(newRootData, this);
+    // if (startingNode.data.name == this.rootData.data.name) {
+    //   // Option 1: Traverse the tree and create many
+    //   newRootData.each((d) => {
+    //     if (
+    //       nodeWithoutHabitDate(d?.data, store) &&
+    //       isALeaf(d) &&
+    //       !d?.data.content.match(/OOB/)
+    //     ) {
+    //       this.createNewHabitDateForNode(d, completedValue);
+    //       this.mutateTreeJsonForNewHabitDates(d);
+    //     }
+    //   });
+    // } else {
+    //   // Option 2: Create a new true habit date for a 'cascaded' ancestor node
+    //   this.createNewHabitDateForNode(startingNode, JSON.parse(completedValue));
+    // }
+    // this.updateRootDataAfterAccumulation(newRootData);
+    // this.rootData.newHabitDatesAdded = true;
   }
 
   mutateTreeJsonForNewHabitDates(d) {
@@ -450,163 +465,163 @@ export default class Visualization implements IVisualization {
   }
 
   createNewHabitDateForNode(node, withStatus = false) {
-    const nodeContent = node?.data
-      ? parseTreeValues(node?.data.content)
-      : parseTreeValues(node.content);
+    // const nodeContent = node?.data
+    //   ? parseTreeValues(node?.data.content)
+    //   : parseTreeValues(node.content);
 
-    const currentDate = selectCurrentDateId(store.getState());
-    const currentHabit = selectCurrentHabitByMptt(
-      store.getState(),
-      nodeContent.left,
-      nodeContent.right
-    );
-    if (!currentHabit) {
-      console.log("Couldn't select habit when adding habit dates");
-      return;
-    }
-    // Create a habit date ready for persisting
-    store.dispatch(
-      createHabitDate({
-        habitId: currentHabit?.meta.id,
-        dateId: currentDate,
-        completed: withStatus,
-      })
-    );
+    // const currentDate = selectCurrentDateId(store.getState());
+    // const currentHabit = selectCurrentHabitByMptt(
+    //   store.getState(),
+    //   nodeContent.left,
+    //   nodeContent.right
+    // );
+    // if (!currentHabit) {
+    //   console.log("Couldn't select habit when adding habit dates");
+    //   return;
+    // }
+    // // Create a habit date ready for persisting
+    // store.dispatch(
+    //   createHabitDate({
+    //     habitId: currentHabit?.meta.id,
+    //     dateId: currentDate,
+    //     completed: withStatus,
+    //   })
+    // );
   }
 
   handleStatusChange(node) {
-    const nodeHasOOBAncestors =
-      node.descendants().findIndex((n) => {
-        return n.data.content.match(/OOB/);
-      }) !== -1;
+    // const nodeHasOOBAncestors =
+    //   node.descendants().findIndex((n) => {
+    //     return n.data.content.match(/OOB/);
+    //   }) !== -1;
 
-    if (!isALeaf(node) && !nodeHasOOBAncestors) {
-      return;
-    } else {
-      const currentHabit = selectCurrentHabit(store.getState());
-      const currentDate = selectCurrentDateId(store.getState());
-      const currentDateFromDate = selectCurrentDate(store.getState())?.timeframe
-        .fromDate;
+    // if (!isALeaf(node) && !nodeHasOOBAncestors) {
+    //   return;
+    // } else {
+    //   const currentHabit = selectCurrentHabit(store.getState());
+    //   const currentDate = selectCurrentDateId(store.getState());
+    //   const currentDateFromDate = selectCurrentDate(store.getState())?.timeframe
+    //     .fromDate;
 
-      const nodeContent = parseTreeValues(node.data.content);
-      const currentStatus = nodeContent!.status;
+    //   const nodeContent = parseTreeValues(node.data.content);
+    //   const currentStatus = nodeContent!.status;
 
-      const theNode = this.zoomBase()
-        .selectAll(".the-node circle")
-        .filter((n) => {
-          if (!!n?.data?.name && n?.data?.name === node.data.name) return n;
-        });
-      if (node.data.name.includes("Sub-Habit")) return;
-      // If this was not a ternarising/placeholder sub habit that we created just for more even distribution
-      const newStatus = oppositeStatus(currentStatus);
-      if (currentStatus == "true" && newStatus == "false") {
-        this.addHabitDatesForNewNodes(node, false);
-      } else {
-        store.dispatch(
-          updateHabitDateForNode({
-            habitId: currentHabit?.meta?.id,
-            dateId: currentDate,
-            completed: JSON.parse(newStatus),
-            fromDateForToday: currentDateFromDate,
-          })
-          // Also toggle 'cascaded' ancestor nodes
-        );
-      }
-      if (currentStatus) {
-        node.data.content = node.data.content.replace(/true|false/, newStatus);
-      } else {
-        node.data.content = node.data.content.replace(/\-$/, "-" + newStatus);
-      }
-      const newColor = getColor(JSON.parse(newStatus));
-      theNode.attr("fill", newColor);
-      theNode.attr("stroke", newColor);
+    //   const theNode = this.zoomBase()
+    //     .selectAll(".the-node circle")
+    //     .filter((n) => {
+    //       if (!!n?.data?.name && n?.data?.name === node.data.name) return n;
+    //     });
+    //   if (node.data.name.includes("Sub-Habit")) return;
+    //   // If this was not a ternarising/placeholder sub habit that we created just for more even distribution
+    //   const newStatus = oppositeStatus(currentStatus);
+    //   if (currentStatus == "true" && newStatus == "false") {
+    //     this.addHabitDatesForNewNodes(node, false);
+    //   } else {
+    //     store.dispatch(
+    //       updateHabitDateForNode({
+    //         habitId: currentHabit?.meta?.id,
+    //         dateId: currentDate,
+    //         completed: JSON.parse(newStatus),
+    //         fromDateForToday: currentDateFromDate,
+    //       })
+    //       // Also toggle 'cascaded' ancestor nodes
+    //     );
+    //   }
+    //   if (currentStatus) {
+    //     node.data.content = node.data.content.replace(/true|false/, newStatus);
+    //   } else {
+    //     node.data.content = node.data.content.replace(/\-$/, "-" + newStatus);
+    //   }
+    //   const newColor = getColor(JSON.parse(newStatus));
+    //   theNode.attr("fill", newColor);
+    //   theNode.attr("stroke", newColor);
 
-      const storedHabits = selectStoredHabits(store.getState());
-      let lastCascadedNode = false;
-      node?.ancestors()?.length &&
-        node.ancestors().forEach((a) => {
-          if (a?.data?.name == currentHabit?.meta?.name || lastCascadedNode)
-            return;
-          if (a?.children && a.children.length > 1) {
-            lastCascadedNode = true;
-            return;
-          }
+    //   const storedHabits = selectStoredHabits(store.getState());
+    //   let lastCascadedNode = false;
+    //   node?.ancestors()?.length &&
+    //     node.ancestors().forEach((a) => {
+    //       if (a?.data?.name == currentHabit?.meta?.name || lastCascadedNode)
+    //         return;
+    //       if (a?.children && a.children.length > 1) {
+    //         lastCascadedNode = true;
+    //         return;
+    //       }
 
-          const nodeCircle = this.zoomBase()
-            .selectAll(".the-node circle")
-            .filter((n) => {
-              if (!!n?.data?.name && n?.data?.name === a.data.name) return a;
-            });
+    //       const nodeCircle = this.zoomBase()
+    //         .selectAll(".the-node circle")
+    //         .filter((n) => {
+    //           if (!!n?.data?.name && n?.data?.name === a.data.name) return a;
+    //         });
 
-          nodeCircle.attr("fill", newColor);
-          nodeCircle.attr("stroke", newColor);
+    //       nodeCircle.attr("fill", newColor);
+    //       nodeCircle.attr("stroke", newColor);
 
-          if (nodeWithoutHabitDate(a?.data, store)) {
-            this.addHabitDatesForNewNodes(a, true);
-            return;
-          }
+    //       if (nodeWithoutHabitDate(a?.data, store)) {
+    //         this.addHabitDatesForNewNodes(a, true);
+    //         return;
+    //       }
 
-          if (parseTreeValues(a.data.content)?.status == "") {
-            const habitId =
-              storedHabits[
-                storedHabits.findIndex((h) => h.meta?.name == a.data.name)
-              ]?.meta?.id;
+    //       if (parseTreeValues(a.data.content)?.status == "") {
+    //         const habitId =
+    //           storedHabits[
+    //             storedHabits.findIndex((h) => h.meta?.name == a.data.name)
+    //           ]?.meta?.id;
 
-            store.dispatch(
-              updateHabitDateForNode({
-                habitId: habitId,
-                dateId: currentDate,
-                completed: JSON.parse(newStatus),
-                fromDateForToday: currentDateFromDate,
-              })
-            );
-          }
-        });
+    //         store.dispatch(
+    //           updateHabitDateForNode({
+    //             habitId: habitId,
+    //             dateId: currentDate,
+    //             completed: JSON.parse(newStatus),
+    //             fromDateForToday: currentDateFromDate,
+    //           })
+    //         );
+    //       }
+    //     });
 
-      accumulateTree(this.rootData, this);
-      this.updateRootDataAfterAccumulation(this.rootData);
-      this.newHabitDatesAdded = true;
-    }
+    //   accumulateTree(this.rootData, this);
+    //   this.updateRootDataAfterAccumulation(this.rootData);
+    //   this.newHabitDatesAdded = true;
+    // }
   }
 
-  removeCanvas() {
+  removeCanvas() : void {
     select(".canvas")?.remove();
   }
 
-  clearCanvas() {
+  clearCanvas() : void {
     select(".canvas").selectAll("*").remove();
   }
 
   resetForExpandedMenu({ justTranslation }) {
-    let newTranslate = this._viewConfig.defaultView.split` `;
-    if (this.type !== "radial") {
-      newTranslate[0] = -(this._viewConfig.previousRenderZoom
-        ? this._viewConfig.previousRenderZoom.x + this._viewConfig.margin.left
-        : 0);
-      newTranslate[1] = -(this._viewConfig.previousRenderZoom
-        ? this._viewConfig.previousRenderZoom.y -
-          this._viewConfig.defaultCanvasTranslateY() / 2
-        : 0);
-    }
-    let newTranslateString = newTranslate.join(" ");
-    this.zoomBase()
-      .transition()
-      .duration(0)
-      .ease(easeLinear)
-      .attr("viewBox", newTranslateString);
+    // let newTranslate = this._viewConfig.defaultView.split` `;
+    // if (this.type !== "radial") {
+    //   newTranslate[0] = -(this._viewConfig.previousRenderZoom
+    //     ? this._viewConfig.previousRenderZoom.x + this._viewConfig.margin.left
+    //     : 0);
+    //   newTranslate[1] = -(this._viewConfig.previousRenderZoom
+    //     ? this._viewConfig.previousRenderZoom.y -
+    //       this._viewConfig.defaultCanvasTranslateY() / 2
+    //     : 0);
+    // }
+    // let newTranslateString = newTranslate.join(" ");
+    // this.zoomBase()
+    //   .transition()
+    //   .duration(0)
+    //   .ease(easeLinear)
+    //   .attr("viewBox", newTranslateString);
 
-    this._zoomConfig.previousRenderZoom = {};
+    // this._zoomConfig.previousRenderZoom = {};
 
-    if (!justTranslation) {
-      this.expand();
-      this.activeNode.isNew = null;
-      this.activeNode = this.rootData;
-      document.querySelector(".the-node.active") &&
-        document.querySelector(".the-node.active").classList.remove("active");
-    }
+    // if (!justTranslation) {
+    //   this.expand();
+    //   this.activeNode.isNew = null;
+    //   this.activeNode = this.rootData;
+    //   document.querySelector(".the-node.active") &&
+    //     document.querySelector(".the-node.active").classList.remove("active");
+    // }
   }
 
-  setLevelsHighAndWide() {
+  setLevelsHighAndWide() : void {
     if (this._viewConfig.isSmallScreen()) {
       this._viewConfig.levelsHigh = XS_LEVELS_HIGH;
       this._viewConfig.levelsWide = XS_LEVELS_WIDE;
@@ -615,43 +630,45 @@ export default class Visualization implements IVisualization {
       this._viewConfig.levelsWide = LG_LEVELS_WIDE;
     }
   }
-  setdXdY() {
+
+  setdXdY() : void {
     this._viewConfig.dx =
-      this._viewConfig.canvasWidth / this._viewConfig.levelsHigh - // Adjust for tree horizontal spacing on different screens
-      +(this.type == "tree" && this._viewConfig.isSmallScreen()) * 250 -
-      (this.type == "cluster" && this._viewConfig.isSmallScreen()) * 210;
+      this._viewConfig.canvasWidth / (this._viewConfig.levelsHigh as number) - // Adjust for tree horizontal spacing on different screens
+      +(this.type == VisType.Tree && this._viewConfig.isSmallScreen()) * 250 -
+      +(this.type == VisType.Cluster && this._viewConfig.isSmallScreen()) * 210;
     this._viewConfig.dy =
-      this._viewConfig.canvasHeight / this._viewConfig.levelsWide;
+      this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number);
 
     //adjust for taller aspect ratio
     this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 4.25 : 3.5;
     this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3.25 : 3.5;
   }
-  setNodeRadius() {
+
+  setNodeRadius() : void {
     this._viewConfig.nodeRadius =
-      (this._viewConfig.isSmallScreen() ? XS_NODE_RADIUS : LG_NODE_RADIUS) *
-      (this.type == "radial" ? BASE_SCALE * 1.15 : BASE_SCALE);
+      (this._viewConfig.isSmallScreen() ? XS_NODE_RADIUS : LG_NODE_RADIUS) * BASE_SCALE;
   }
-  setZoomBehaviour() {
+
+  setZoomBehaviour() : void {
     const zooms = function (e) {
       let t = { ...e.transform };
       let scale;
       let x, y;
       if (
-        e?.sourceEvent &&
-        this.type == "radial" && // If it's the first zoom, just zoom in a little programatically, not out to scale 1
-        ((Math.abs(t.k < 1.1) &&
-          e.sourceEvent?.deltaY < 0 &&
-          e.sourceEvent?.deltaY > -60) ||
-          (t.k == 1 && t.x < 150 && t.y < 150))
+        false //e?.sourceEvent &&
+        // this.type == "radial" && // If it's the first zoom, just zoom in a little programatically, not out to scale 1
+        // ((Math.abs(t.k < 1.1) &&
+        //   e.sourceEvent?.deltaY < 0 &&
+        //   e.sourceEvent?.deltaY > -60) ||
+        //   (t.k == 1 && t.x < 150 && t.y < 150))
       ) {
         // Radial needs an initial zoom in
-        t.k = this._viewConfig.clickScale;
-        this.zoomBase().call(
-          this.zoomer.transform,
-          Object.assign(e.transform, t)
-        );
-        return;
+        // t.k = this._viewConfig.clickScale;
+        // this.zoomBase().call(
+        //   this.zoomer.transform,
+        //   Object.assign(e.transform, t)
+        // );
+        // return;
       }
       if (this._zoomConfig.focusMode) {
         this.resetForExpandedMenu({ justTranslation: true });
@@ -674,39 +691,41 @@ export default class Visualization implements IVisualization {
     this.zoomBase().call(this.zoomer);
   }
 
-  calibrateViewPortAttrs() {
+  calibrateViewPortAttrs() : void {
     this._viewConfig.viewportW =
-      this._viewConfig.canvasWidth * this._viewConfig.levelsWide;
+      this._viewConfig.canvasWidth * (this._viewConfig.levelsWide as number);
     this._viewConfig.viewportH =
-      this._viewConfig.canvasHeight * this._viewConfig.levelsHigh;
+      this._viewConfig.canvasHeight * (this._viewConfig.levelsHigh as number);
 
     this._viewConfig.viewportX = 0;
     this._viewConfig.viewportY = 0;
 
     this._viewConfig.defaultView = `${this._viewConfig.viewportX} ${this._viewConfig.viewportY} ${this._viewConfig.viewportW} ${this._viewConfig.viewportH}`;
   }
-  calibrateViewBox() {
+
+  calibrateViewBox() : void {
     this.zoomBase()
       .attr("viewBox", this._viewConfig.defaultView)
       .attr("preserveAspectRatio", "xMidYMid meet")
       .on("dblclick.zoom", null);
   }
 
-  static sumHierarchyData(data) {
+  static sumHierarchyData(data) : void {
     if (!data?.sum) return;
     data.sum((d) => {
       // Return a binary interpretation of whether the habit was completed that day
       const thisNode = data.descendants().find((node) => node.data == d);
       let content = parseTreeValues(thisNode.data.content);
 
-      if (content.status === "") return 0;
-      if (content.status === "OOB") return 0;
+      if (content!.status === "") return 0;
+      if (content!.status === "OOB") return 0;
 
-      const statusValue = JSON.parse(content.status);
+      const statusValue = JSON.parse(content!.status);
       return +statusValue;
     });
   }
-  static accumulateNodeValues(node) {
+
+  static accumulateNodeValues(node) : void {
     if (!node?.descendants) return;
     while (node.descendants().some((node) => node.value > 1)) {
       // Convert node values to binary based on whether their descendant nodes are all completed
@@ -717,7 +736,8 @@ export default class Visualization implements IVisualization {
       });
     }
   }
-  activeOrNonActiveOpacity(d, dimmedOpacity) {
+
+  activeOrNonActiveOpacity(d, dimmedOpacity : string) : string {
     if (
       !this.activeNode ||
       (!!this.activeNode &&
@@ -735,70 +755,72 @@ export default class Visualization implements IVisualization {
     return dimmedOpacity;
   }
 
-  getLinkPathGenerator() {
+  getLinkPathGenerator() : void {
     switch (this.type) {
-      case "tree":
+      case VisType.Tree:
         return linkVertical()
           .x((d) => d.x)
           .y((d) => d.y);
-      case "cluster":
+      case VisType.Cluster:
         return linkHorizontal()
           .x((d) => d.y)
           .y((d) => d.x);
-      case "radial":
-        return linkRadial()
-          .angle((d) => d.x / 8)
-          .radius((d) => d.y);
+      // case "radial":
+      //   return linkRadial()
+      //     .angle((d) => d.x / 8)
+      //     .radius((d) => d.y);
     }
   }
-  setLayout() {
+
+  setLayout() : void {
     switch (this.type) {
-      case "tree":
+      case VisType.Tree:
         this.layout = tree()
           .size(
-            this._viewConfig.canvasWidth / 2,
-            this._viewConfig.canvasHeight / 2
+            [this._viewConfig.canvasWidth / 2,
+            this._viewConfig.canvasHeight / 2]
           )
           .separation((a, b) => (a.parent == b.parent ? 3.5 : 1) / a.depth);
 
-        this.layout.nodeSize([this._viewConfig.dx, this._viewConfig.dy]);
+        this.layout.nodeSize([this._viewConfig.dx as number, this._viewConfig.dy as number]);
         break;
-      case "cluster":
-        this.layout = cluster().size(
-          this._viewConfig.canvasWidth,
-          this._viewConfig.canvasHeight
-        );
-        this.layout.nodeSize([this._viewConfig.dx, this._viewConfig.dy]);
-        break;
-      case "radial":
-        this.layout = cluster()
-          .size([360, this.canvasHeight * 2])
-          .separation((a, b) => (a.parent == b.parent ? 0.5 : 0.01) / a.depth);
+      // case VisType.Cluster:
+      //   this.layout = cluster().size(
+      //     this._viewConfig.canvasWidth,
+      //     this._viewConfig.canvasHeight
+      //   );
+      //   this.layout.nodeSize([this._viewConfig.dx, this._viewConfig.dy]);
+      //   break;
+      // case "radial":
+      //   this.layout = cluster()
+      //     .size([360, this.canvasHeight * 2])
+      //     .separation((a, b) => (a.parent == b.parent ? 0.5 : 0.01) / a.depth);
 
-        this.layout.nodeSize(
-          this._viewConfig.isSmallScreen()
-            ? [300, 300]
-            : [
-                this.rootData.height > 4
-                  ? (this._viewConfig.canvasHeight / this.rootData.height) * 8
-                  : 400,
-                this.rootData.height > 4
-                  ? (this._viewConfig.canvasHeight / this.rootData.height) * 8
-                  : 400,
-              ]
-        );
-        break;
+      //   this.layout.nodeSize(
+      //     this._viewConfig.isSmallScreen()
+      //       ? [300, 300]
+      //       : [
+      //           this.rootData.height > 4
+      //             ? (this._viewConfig.canvasHeight / this.rootData.height) * 8
+      //             : 400,
+      //           this.rootData.height > 4
+      //             ? (this._viewConfig.canvasHeight / this.rootData.height) * 8
+      //             : 400,
+      //         ]
+      //   );
+      //   break;
     }
 
     try {
       this.layout(this.rootData);
     } catch (error) {
-      _p("Failed layout data", this.rootData, "!");
+      console.error("Failed layout data", this.rootData, "! ", error);
       console.error(error);
     }
   }
-  setNodeAndLinkGroups() {
-    const transformation = this.type == "radial" ? `rotate(90)` : "";
+
+  setNodeAndLinkGroups() : void {
+    const transformation = this.type == VisType.Radial ? `rotate(90)` : "";
     this._gLink = this._canvas
       .append("g")
       .classed("links", true)
@@ -808,7 +830,8 @@ export default class Visualization implements IVisualization {
       .classed("nodes", true)
       .attr("transform", transformation);
   }
-  setNodeAndLinkEnterSelections() {
+  
+  setNodeAndLinkEnterSelections() : void {
     const nodes = this._gNode.selectAll("g.node").data(
       this.rootData.descendants().filter((d) => {
         const outOfBounds = outOfBoundsNode(d, this.rootData);
@@ -835,29 +858,29 @@ export default class Visualization implements IVisualization {
           : "the-node solid";
       })
       .style("fill", (d) => {
-        return nodeStatusColours(d, this.rootData);
+        return nodeStatusColours(d);
       })
       .style("stroke", (d) =>
-        nodeStatusColours(d, this.rootData) === positiveColLighter
+        nodeStatusColours(d) === positiveColLighter
           ? parentPositiveBorderCol
           : noNodeCol
       )
       .style("opacity", (d) =>
-        this.type == "tree" ? this.activeOrNonActiveOpacity(d, "0.5") : 1
+        this.type == VisType.Tree ? this.activeOrNonActiveOpacity(d, "0.5") : 1
       )
       .style("stroke-width", (d) =>
         // !!this.activeNode && d.ancestors().includes(this.activeNode)
         // TODO : memoize nodeStatus colours
-        nodeStatusColours(d, this.rootData) === positiveColLighter
+        nodeStatusColours(d) === positiveColLighter
           ? "30px"
           : "1px"
       )
       .attr("transform", (d) => {
-        if (this.type == "radial")
+        if (this.type == VisType.Radial)
           return `rotate(${((d.x / 8) * 180) / Math.PI - 90}) translate(${
             d.y
           },0)`;
-        return this.type == "cluster"
+        return this.type == VisType.Cluster
           ? `translate(${d.y},${d.x})`
           : `translate(${d.x},${d.y})`;
       })
@@ -887,22 +910,23 @@ export default class Visualization implements IVisualization {
       .attr("d", this.getLinkPathGenerator())
       .attr("transform", (d) => {
         if (!d?.x) return "";
-        if (this.type == "radial")
+        if (this.type == VisType.Radial)
           return `rotate(${((d.x / 8) * 180) / Math.PI}) translate(${d.y},0)`;
         return "";
       });
   }
-  setCircleAndLabelGroups() {
+
+  setCircleAndLabelGroups() : void {
     this._gCircle = this._enteringNodes
       .append("g")
       .classed("node-subgroup", true);
     this._gTooltip = this._enteringNodes
       .append("g")
       .classed("tooltip", true)
-      .classed("hidden", this.type == "radial")
+      .classed("hidden", this.type == VisType.Radial)
       .attr(
         "transform",
-        `translate(${this._viewConfig.nodeRadius / 10}, ${
+        `translate(${this._viewConfig.nodeRadius as number / 10}, ${
           this._viewConfig.nodeRadius
         }), scale(${
           this._viewConfig.isSmallScreen() ? XS_LABEL_SCALE : LG_LABEL_SCALE
@@ -910,48 +934,49 @@ export default class Visualization implements IVisualization {
       )
       .attr("opacity", (d) => this.activeOrNonActiveOpacity(d, "0"));
   }
+
   setButtonGroups() {
-    this._gButton = this._gCircle
-      .append("g")
-      .classed("habit-label-dash-button", true)
-      .attr(
-        "transform",
-        (d) =>
-          `translate(${
-            (this._viewConfig.isSmallScreen() ? -1.25 : -0.98) *
-            (this.type == "radial"
-              ? this._viewConfig.nodeRadius
-              : this._viewConfig.nodeRadius)
-          }, ${
-            -(this._viewConfig.isSmallScreen() ? 1.5 : 1.1) *
-            (this.type == "radial"
-              ? d.height / this._viewConfig.nodeRadius +
-                1.2 * this._viewConfig.nodeRadius
-              : this._viewConfig.nodeRadius)
-          }), scale(${
-            this._viewConfig.isSmallScreen()
-              ? this.type == "radial"
-                ? XS_BUTTON_SCALE * 1.15
-                : XS_BUTTON_SCALE
-              : this.type == "radial"
-              ? LG_BUTTON_SCALE / 1.15
-              : LG_BUTTON_SCALE
-          })` +
-          (this.type == "radial"
-            ? `, rotate(${450 - ((d.x / 8) * 180) / Math.PI - 90})`
-            : "")
-      )
-      .attr("style", "opacity: 0");
+    // this._gButton = this._gCircle
+    //   .append("g")
+    //   .classed("habit-label-dash-button", true)
+    //   .attr(
+    //     "transform",
+    //     (d) =>
+    //       `translate(${
+    //         (this._viewConfig.isSmallScreen() ? -1.25 : -0.98) *
+    //         (this.type == VisType.Radial
+    //           ? this._viewConfig.nodeRadius
+    //           : this._viewConfig.nodeRadius)
+    //       }, ${
+    //         -(this._viewConfig.isSmallScreen() ? 1.5 : 1.1) *
+    //         (this.type == VisType.Radial
+    //           ? d.height / this._viewConfig.nodeRadius +
+    //             1.2 * this._viewConfig.nodeRadius
+    //           : this._viewConfig.nodeRadius)
+    //       }), scale(${
+    //         this._viewConfig.isSmallScreen()
+    //           ? this.type == VisType.Radial
+    //             ? XS_BUTTON_SCALE * 1.15
+    //             : XS_BUTTON_SCALE
+    //           : this.type == VisType.Radial
+    //           ? LG_BUTTON_SCALE / 1.15
+    //           : LG_BUTTON_SCALE
+    //       })` +
+    //       (this.type == VisType.Radial
+    //         ? `, rotate(${450 - ((d.x / 8) * 180) / Math.PI - 90})`
+    //         : "")
+    //   )
+    //   .attr("style", "opacity: 0");
   }
 
-  appendCirclesAndLabels() {
+  appendCirclesAndLabels() : void {
     this._gCircle
       .insert("circle", "g")
       .attr("r", this._viewConfig.nodeRadius)
       .on("mouseenter", this.eventHandlers.handleHover.bind(this));
   }
 
-  appendLabels() {
+  appendLabels() : void {
     this._gTooltip
       .append("rect")
       .attr("width", 3)
@@ -961,7 +986,7 @@ export default class Visualization implements IVisualization {
 
     this._gTooltip
       .append("div")
-      .attr("width", this.type == "radial" ? 130 : 275)
+      .attr("width", this.type == VisType.Radial ? 130 : 275)
       .attr("height", 100)
       .attr("x", -6)
       .attr("y", -10);
@@ -978,7 +1003,7 @@ export default class Visualization implements IVisualization {
         }`;
       })
       .attr("transform", (d) => {
-        return this.type == "radial"
+        return this.type == VisType.Radial
           ? `scale(0.75), translate(${
               d.x < Math.PI / 2 ? "130, 100" : "0,0"
             }), rotate(${0})`
@@ -1001,13 +1026,13 @@ export default class Visualization implements IVisualization {
       .attr(
         "transform",
         "translate(" +
-          (this.type == "radial" ? -10 : -35) +
+          (this.type == VisType.Radial ? -10 : -35) +
           "," +
-          (this.type == "tree" ? -25 : this.type == "radial " ? -30 : 5) +
+          (this.type == VisType.Tree ? -25 : this.type == VisType.Radial ? -30 : 5) +
           ") scale( " +
           this._viewConfig.scale * 1.5 +
           ") rotate(" +
-          (this.type == "cluster" ? 270 : this.type == "radial" ? 270 : 0) +
+          (this.type == VisType.Cluster ? 270 : this.type == VisType.Radial ? 270 : 0) +
           ")"
       )
       .append("path")
@@ -1027,7 +1052,6 @@ export default class Visualization implements IVisualization {
       .attr("display", (d) => (d.depth === 0 ? "none" : "initial"))
       .on("click", this.eventHandlers.handleDeleteNode.bind(this));
 
-    if (!this.isDemo) {
       this._gButton
         .append("rect")
         .attr("rx", 15)
@@ -1044,7 +1068,7 @@ export default class Visualization implements IVisualization {
         .text((d) => "DIVIDE")
         .on("click", (e, n) => {
           if (
-            isTouchDevice() ||
+            // isTouchDevice() ||
             select(e?.target?.parentNode).attr("style").match("opacity: 0")
           )
             return e.stopPropagation();
@@ -1069,21 +1093,20 @@ export default class Visualization implements IVisualization {
         .text("EXPAND")
         .on("click", (e, n) => {
           if (
-            isTouchDevice() ||
+            // isTouchDevice() ||
             select(e?.target?.parentNode).attr("style").match("opacity: 0")
           )
             return e.stopPropagation();
           this.setCurrentHabit(n);
-          this.eventHandlers.handlePrependNode.call(this, e, n);
+          // this.eventHandlers.handlePrependNode.call(this, e, n);
         });
-    }
   }
 
   bindEventHandlers(selection) {
     selection
       .on("contextmenu", this.eventHandlers.rgtClickOrDoubleTap)
       .on("click", (e, d) => {
-        if (isTouchDevice()) return;
+        // if (isTouchDevice()) return;
 
         if (e.target.tagName !== "circle") return;
 
@@ -1127,7 +1150,7 @@ export default class Visualization implements IVisualization {
     this._manager.on("doubletap", (ev) => {
       ev.srcEvent.preventDefault();
       ev.srcEvent.stopPropagation();
-      if (!isTouchDevice()) return;
+      // if (!isTouchDevice()) return;
 
       const target = ev.firstTarget;
       if (!target || target?.tagName !== "circle") return;
@@ -1148,7 +1171,7 @@ export default class Visualization implements IVisualization {
     this._manager.on("singletap", (ev) => {
       ev.srcEvent.preventDefault();
       if (
-        !isTouchDevice() ||
+        // !isTouchDevice() ||
         ev.srcEvent.timeStamp === this.currentEventTimestamp || // Guard clause for callback firing twice
         select(`#${this._svgId}`).empty() // Guard clause for wrong vis element
       )
@@ -1201,10 +1224,10 @@ export default class Visualization implements IVisualization {
   }
 
   bindLegendEventHandler() {
-    let infoCell = document.querySelector(".help-svg");
-    infoCell?.addEventListener("click", () => {
-      store.dispatch(toggleConfirm({ type: "Instructions" }));
-    });
+    // let infoCell = document.querySelector(".help-svg");
+    // infoCell?.addEventListener("click", () => {
+    //   store.dispatch(toggleConfirm({ type: "Instructions" }));
+    // });
   }
 
   addLegend() {
@@ -1255,13 +1278,13 @@ export default class Visualization implements IVisualization {
     );
 
     this.gCirclePulse.pulseScale = scaleLinear()
-      .range(["#1a140e", "#5568d2", "#3349c1"])
-      .domain([0, 3 * this._viewConfig.nodeRadius]);
+      // .range(["#1a140e", "#5568d2", "#3349c1"])
+      .domain([0, 3 * (this._viewConfig.nodeRadius as number)]);
 
     this.gCirclePulse.pulseData = [
       0,
       this._viewConfig.nodeRadius,
-      this._viewConfig.nodeRadius * 2,
+      this._viewConfig.nodeRadius as number * 2,
     ];
 
     this.gCirclePulse.pulseCircles = this.gCirclePulse
@@ -1290,13 +1313,12 @@ export default class Visualization implements IVisualization {
 
     let data = this.gCirclePulse.pulseData
       .map((d) => {
-        return d == 2 * this._viewConfig.nodeRadius
+        return d == 2 * (this._viewConfig.nodeRadius as number)
           ? 0
           : d + this._viewConfig.nodeRadius;
       })
       .slice(0, -2);
 
-    var i = 0;
     // Grow circles
     this.gCirclePulse.pulseCircles
       .data(data)
@@ -1310,7 +1332,7 @@ export default class Visualization implements IVisualization {
       })
       .style("stroke", this.gCirclePulse.pulseScale)
       .style("opacity", (d) => {
-        return d == 3 * this._viewConfig.nodeRadius ? 0 : 1;
+        return d == 3 * (this._viewConfig.nodeRadius as number) ? 0 : 1;
       })
       .duration(200);
 
@@ -1325,7 +1347,7 @@ export default class Visualization implements IVisualization {
   }, 800);
 
   render() {
-    _p("Rendering vis... :>>", this?._canvas?._groups);
+    console.log("Rendering vis... :>>", this?._canvas?._groups);
     if (this.noCanvas()) {
       this._canvas = select(`#${this._svgId}`)
         .append("g")
@@ -1357,14 +1379,14 @@ export default class Visualization implements IVisualization {
       if (this.hasNextData()) this.rootData = this._nextRootData;
       if (this.hasSummedData()) delete this._nextRootData;
 
-      if (!this.activeNode) _p("Need new active node", {});
+      if (!this.activeNode) console.log("Need new active node", {});
 
       if (this.noCanvas()) return;
 
       //Render cleared canvas for OOB dates
       const isBlankData = this.rootData?.data?.content == "";
       if (isBlankData) {
-        _p("Rendered blank :>> ");
+        console.log("Rendered blank :>> ");
         this.clearCanvas();
         return;
       }
@@ -1385,7 +1407,7 @@ export default class Visualization implements IVisualization {
       this.setCircleAndLabelGroups();
       this.setButtonGroups();
 
-      _p("Appended and set groups... :>>", {});
+      console.log("Appended and set groups... :>>", {});
 
       this.appendCirclesAndLabels();
       this.appendLabels();

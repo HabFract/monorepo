@@ -6,6 +6,33 @@ import {
   noNodeCol,
 } from "./constants";
 
+export const isTouchDevice = () => {
+  return (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0
+  );
+};
+
+export const isSmallScreen = () => {
+  return document.body.getBoundingClientRect().width < 768;
+};
+
+export const isSuperSmallScreen = () => {
+  return document.body.getBoundingClientRect().width < 340;
+};
+
+export const debounce = function (func, delay) {
+  let timeout;
+  return (...args) => {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => func.apply(null, args), delay);
+  };
+};
+
+
 import { select } from "d3";
 import { selectInUnpersisted } from "features/habitDate/selectors";
 import { ViewConfig, VisType, ZoomConfig } from "./types";
