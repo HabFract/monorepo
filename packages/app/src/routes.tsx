@@ -31,7 +31,7 @@ export const initialState: AppStateStore = { // Home route
 }
 
 export const routes: Routes = {
-  Boot: <>{withVis("OrbitTree")}</>, //<p>Connecting...</p>,
+  Boot: <>{withVis(OrbitTree)}</>, //<p>Connecting...</p>,
   Home: <p>Welcome Home</p>,
   Onboarding1: <CreateProfile editMode={false} />,
   Onboarding2: <CreateSphere />,

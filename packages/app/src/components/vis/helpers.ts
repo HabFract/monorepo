@@ -51,10 +51,10 @@ export const getTransform = (node, xScale) => {
 };
 
 export const appendSvg = (divId) => {
-  select(`#div${divId}`).empty() &&
-    select(`#vis`)
+  select(`#${divId}`).empty() &&
+    select(`#vis-root`)
       .append("svg")
-      .attr("id", `div${divId}`)
+      .attr("id", `${divId}`)
       .attr("width", "100%")
       .attr("height", "100%")
       .attr("style", "pointer-events: all");
@@ -86,27 +86,23 @@ export const hierarchyStateHasChanged = (currentHierarchy, visObject) => {
 export const updateVisRootData = (
   visObject,
   currentHierarchy,
-  routeChanged
 ) => {
-  const visExists = visObject?._svgId && visObject?.firstRender;
+  debugger;
+  const visHasRenders = typeof visObject == 'object' && !visObject.firstRender();
+  console.log('visHasRenders :>> ', visHasRenders);
+  debugger;
   // Check if the hierarchy in the store is a new one (a new tree needs rendering)
   // either because of a different node set/relationships
   // or because node values changed
 
   if (
-    visExists &&
+    visHasRenders &&
     (visObject.firstRender() ||
-      routeChanged ||
       hierarchyStateHasChanged(currentHierarchy, visObject) ||
       checkAndResetCollapsed(visObject))
   ) {
     visObject._nextRootData = currentHierarchy;
 
-    // Account for second page load of an already instantiated vis
-    if (routeChanged) {
-      visObject._nextRootData.routeChanged = true;
-      visObject.clearFirstRenderFlag();
-    }
     visObject.render();
     console.log("Rendered from component & updated ", {}, "!");
     return visObject;

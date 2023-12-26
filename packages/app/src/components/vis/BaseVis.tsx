@@ -318,7 +318,7 @@ export default class Visualization implements IVisualization {
   }
 
   firstRender() : boolean {
-    return typeof this?._hasRendered == "undefined";
+    return !this._hasRendered;
   }
 
   clearFirstRenderFlag() {
@@ -375,7 +375,6 @@ export default class Visualization implements IVisualization {
     const nodeContent = node?.data
       ? parseTreeValues(node?.data.content)
       : parseTreeValues(node.content);
-debugger;
     // let newCurrent = selectCurrentNodeByMptt(
     //   store.getState(),
     //   nodeContent.left,
@@ -390,7 +389,6 @@ debugger;
 
   setCurrentHabit(node) : void {
     let newCurrent;
-debugger;
     try {
       const nodeContent = node?.data
         ? parseTreeValues(node?.data.content)
@@ -1411,7 +1409,7 @@ debugger;
 
       this.appendCirclesAndLabels();
       this.appendLabels();
-      this.appendButtons();
+      // this.appendButtons();
       if (!!this.activeNode) {
         // this?.isNewActiveNode &&
         //   this.zoomBase().selectAll(".active-circle").remove();
