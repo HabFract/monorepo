@@ -50,15 +50,6 @@ export const getTransform = (node, xScale) => {
   return { translate: [tx, ty], scale: xScale };
 };
 
-export const appendSvg = (divId) => {
-  select(`#${divId}`).empty() &&
-    select(`#vis-root`)
-      .append("svg")
-      .attr("id", `${divId}`)
-      .attr("width", "100%")
-      .attr("height", "100%")
-      .attr("style", "pointer-events: all");
-};
 
 const concatenateHierarchyNodeValues = (hierarchy) =>
   hierarchy?.descendants && hierarchy.descendants().map((n) => n.value).join``;

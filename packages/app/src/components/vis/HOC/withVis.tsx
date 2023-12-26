@@ -3,6 +3,7 @@ import React, { ComponentType, ReactNode, useEffect } from 'react'
 import "./vis.css";
 
 import { Margins } from '../types';
+import { select } from 'd3';
 
 const defaultMargins: Margins = {
   top: (document.body.getBoundingClientRect().height / (document.body.getBoundingClientRect().height > 1025 ? 6 : 4)),
@@ -19,16 +20,27 @@ const d3SetupCanvas = function () {
   return { canvasHeight, canvasWidth };
 };
 
+const appendSvg = (mountingDivId: string, divId: string) : void => {
+  select(`#${divId}`).empty() &&
+    select(`#${mountingDivId}`)
+      .append("svg")
+      .attr("id", `${divId}`)
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .attr("style", "pointer-events: all");
+};
+
 export function withVis<T>(Component: ComponentType<T>): ReactNode {
   const ComponentWithVis: React.FC<any> = (_hocProps: T) => {
     const { canvasHeight, canvasWidth } = d3SetupCanvas()
+    const mountingDivId = 'vis-root';
+    const svgId = 'vis';
 
     return (
       <Component
         canvasHeight={canvasHeight}
         canvasWidth={canvasWidth}
         margin={defaultMargins}
-        divId={'vis'}
         render={(currentVis: any) => {
 
           useEffect(() => {
@@ -51,6 +63,8 @@ export function withVis<T>(Component: ComponentType<T>): ReactNode {
 
           useEffect(() => {
             // if (deleteCompleted) {
+            appendSvg(mountingDivId, svgId);
+
             currentVis?.render()
             // dispatch(resetDeleteCompleted())
             // }
