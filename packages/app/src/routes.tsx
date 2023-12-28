@@ -11,6 +11,7 @@ export type AppState = // Currently just for routing in the state machine
   | 'Onboarding3'
   | 'Onboarding4'
   | 'Home'
+  | 'Vis'
   | 'CreateSphere'
   | 'ListSpheres'
   | 'CreateOrbit'
@@ -31,7 +32,8 @@ export const initialState: AppStateStore = { // Home route
 }
 
 export const routes: Routes = {
-  Boot: <>{withVis(OrbitTree)}</>, //<p>Connecting...</p>,
+  Boot: <CreateSphere />,
+  Vis: <>{withVis(OrbitTree)}</>,
   Home: <p>Welcome Home</p>,
   Onboarding1: <CreateProfile editMode={false} />,
   Onboarding2: <CreateSphere />,
@@ -50,6 +52,7 @@ export const AppTransitions: StateTransitions<AppState> = {
   Onboarding3: ['Onboarding2', 'Onboarding4'],
   Onboarding4: ['Onboarding3', 'Home'],
   Home: ['CreateSphere', 'ListSpheres', 'ListOrbits', 'CreateOrbit'],
+  Vis: ['Home', 'CreateSphere', 'ListSpheres', 'ListOrbits', 'CreateOrbit'],
   CreateSphere: ['Home', 'ListSpheres'],
   ListSpheres: ['Home', 'CreateSphere', 'ListOrbits', 'CreateOrbit'],
   CreateOrbit: ['Home', 'ListOrbits', 'CreateOrbit'],
