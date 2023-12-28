@@ -1,6 +1,6 @@
 {
   schema: {
-    files: 'packages/app/src/graphql/schema.graphql'
+    files: 'app/src/graphql/schema.graphql'
   },
   query: {
     files: [ /* define file paths which you'd like the gql parser to watch and give autocomplete suggestions for */
