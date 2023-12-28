@@ -58,6 +58,10 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
 
   const onClick: MenuProps['onClick'] = (e) => {
     switch (true) {
+      case e.key == 'vis':
+        transition('Vis')
+        break;
+
       case e.key == 'add-sphere':
         transition('CreateSphere')
         break;

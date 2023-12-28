@@ -46,15 +46,15 @@ export const routes: Routes = {
 };
 
 export const AppTransitions: StateTransitions<AppState> = {
-  Boot: ['Onboarding1'],
+  Boot: ['Onboarding1', 'Vis'],
   Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding3'],
   Onboarding3: ['Onboarding2', 'Onboarding4'],
   Onboarding4: ['Onboarding3', 'Home'],
-  Home: ['CreateSphere', 'ListSpheres', 'ListOrbits', 'CreateOrbit'],
+  Home: ['CreateSphere', 'ListSpheres', 'ListOrbits', 'CreateOrbit', 'Vis'],
   Vis: ['Home', 'CreateSphere', 'ListSpheres', 'ListOrbits', 'CreateOrbit'],
-  CreateSphere: ['Home', 'ListSpheres'],
-  ListSpheres: ['Home', 'CreateSphere', 'ListOrbits', 'CreateOrbit'],
-  CreateOrbit: ['Home', 'ListOrbits', 'CreateOrbit'],
-  ListOrbits: ['Home', 'CreateSphere', 'CreateOrbit', 'ListSpheres', 'ListOrbits'],
+  CreateSphere: ['Home', 'ListSpheres', 'Vis'],
+  ListSpheres: ['Home', 'CreateSphere', 'ListOrbits', 'CreateOrbit', 'Vis'],
+  CreateOrbit: ['Home', 'ListOrbits', 'CreateOrbit', 'Vis'],
+  ListOrbits: ['Home', 'CreateSphere', 'CreateOrbit', 'ListSpheres', 'ListOrbits', 'Vis'],
   }
