@@ -84,7 +84,7 @@ pub fn create_my_sphere(sphere: Sphere) -> ExternResult<Record> {
 #[hdk_extern]
 pub fn get_all_my_spheres(_:()) -> ExternResult<Vec<Record>> {
     let sphere_entry_type: EntryType = UnitEntryTypes::Sphere.try_into()?; 
-    let filter = ChainQueryFilter::new().entry_type(sphere_entry_type); 
+    let filter = ChainQueryFilter::new().entry_type(sphere_entry_type).include_entries(true); 
 
     let all_my_spheres = query(filter)?; 
 

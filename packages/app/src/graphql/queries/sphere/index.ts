@@ -27,16 +27,16 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     },
 
     spheres: async () : Promise<SphereConnection> => {
-      const maybeSpheres : Sphere[] = await readAll(null);
-      const rawRecords = createEdges(maybeSpheres);
-      console.log('get_all_my_sphere payload :>> ', maybeSpheres);
+      const rawRecords : Sphere[] = await readAll(null);
+      // const rawRecords = createEdges(maybeSpheres);
+      console.log('get_all_my_sphere payload :>> ', rawRecords);
       
-      if(typeof rawRecords !== 'object' || !Object.values(rawRecords)?.length) return Promise.resolve({} as SphereConnection)
+      if(typeof rawRecords !== 'object' || !rawRecords?.length) return Promise.resolve({} as SphereConnection)
 
-      const entryRecords = Object.values(rawRecords)[1].map((record: any) => new EntryRecord<Sphere>(record));
-      
+      const entryRecords = rawRecords!.map((record: any) => new EntryRecord<Sphere>(record));
       // TODO: change backend fn so records are visible and complete the following line 
-      const sphereConnection = {}  as SphereConnection;
+      const sphereConnection = createEdges(entryRecords.map((entryRecord: EntryRecord<Sphere>) => ({...entryRecord.entry, id: entryRecord.actionHash })))  as SphereConnection;
+      console.log('entryRecords :>> ', sphereConnection);
       return Promise.resolve(sphereConnection)
     },
   }
