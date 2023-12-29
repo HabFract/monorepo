@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use hdk::prelude::{*, holo_hash::EntryHashB64};
+use hdk::prelude::{*, holo_hash::{EntryHashB64, ActionHashB64}};
 use personal_integrity::*;
 
 #[hdk_extern]
@@ -87,9 +87,9 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
 pub fn get_all_my_orbits(_:()) -> ExternResult<Vec<Record>> {
     let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?; 
     let filter = ChainQueryFilter::new().entry_type(orbit_entry_type).include_entries(true); 
-
+    
     let all_my_orbits = query(filter)?; 
-
+    
     debug!(
         "_+_+_+_+_+_+_+_+_+_ All Orbits from my source chain: {:#?}",
         all_my_orbits.clone()
@@ -97,6 +97,21 @@ pub fn get_all_my_orbits(_:()) -> ExternResult<Vec<Record>> {
     Ok(all_my_orbits)
 }
 
+#[hdk_extern]
+pub fn get_orbit_hierarchy_json(input: ActionHashInput) -> ExternResult<String> {
+    
+    debug!(
+        "_+_+_+_+_+_+_+_+_+_ All Orbits from my source chain: {:#?}",
+        input.orbit_entry_hash_b64.clone()
+    );
+    Ok("hello".to_string())
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct ActionHashInput {
+    pub orbit_entry_hash_b64: ActionHashB64
+}
 
 /** Private helpers */
 

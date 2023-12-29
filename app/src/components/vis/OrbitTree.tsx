@@ -5,6 +5,7 @@ import { VisType } from './types';
 import { hierarchy } from 'd3';
 import { VisComponent } from './HOC/withVisCanvas';
 import { useGetOrbitHierarchyQuery } from '../../graphql/generated';
+import { decodeHashFromBase64 } from '@holochain/client';
 
 export const OrbitTree: ComponentType<VisComponent> = ({
   canvasHeight,
@@ -12,7 +13,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   margin,
   render,
 }) => {
-  const { data, loading, error } = useGetOrbitHierarchyQuery();
+  const { data, loading, error } = useGetOrbitHierarchyQuery({variables: { orbitEntryHashB64: ("uhCkkiMqhpYpAxnNwWFGsR-IWIAGwNtMprYqCCKDaYlUGYbmpehm5") as any}});
   const [currentOrbitTree, setCurrentOrbitTree] = useState<Vis | null>(null);
   console.log('data :>> ', data);
   // Mock data until the vis is stable:
@@ -34,10 +35,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
     }
   }, [data]);
 
-  return loading ? <p>Loading</p>
-    : error
-      ? <p>Error</p>
-      : data && render(currentOrbitTree)
+  return data && render(currentOrbitTree)
 };
 
 export default OrbitTree;
