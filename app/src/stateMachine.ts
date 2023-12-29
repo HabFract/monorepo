@@ -54,7 +54,7 @@ export class StateMachine<S extends State, T extends StateStore<S>> {
   public go() {
     setTimeout(() => {
       const currState = this.state.currentState
-      this.callbacks[currState](this.state)
+      this.callbacks![currState](this.state)
     })
   }
 }

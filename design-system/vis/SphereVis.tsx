@@ -4,9 +4,9 @@ import React, { useRef, useEffect } from 'react';
 
 interface SpherePieProps {
   spherePercentages: {
-    SUB: number;
-    ATOM: number;
-    ASTRO: number;
+    Sub: number;
+    Atom: number;
+    Astro: number;
   };
 }
 
@@ -16,7 +16,7 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
   useEffect(() => {
     const getChartOptions = () => {
       return {
-        series: [spherePercentages.SUB, spherePercentages.ATOM, spherePercentages.ASTRO],
+        series: [spherePercentages.Sub, spherePercentages.Atom, spherePercentages.Astro],
         colors: ["#a8deca", "#91d5ff", "#6F54B2"],
         chart: {
           width: 'auto',

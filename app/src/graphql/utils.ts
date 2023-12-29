@@ -6,6 +6,6 @@ export const extractEdges = <T>(withEdges: { edges: { node: T }[] }): T[] => {
 }
 
 export const createEdges = <T>(nodes: T[]): { edges: { node: T }[] } => {
-  const edges = nodes.map((node) => ({ node }));
+  const edges = nodes.map((node) => ({ node, cursor: null }));
   return { edges };
 };

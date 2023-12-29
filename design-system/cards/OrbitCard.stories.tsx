@@ -18,7 +18,7 @@ Subatomic.args = {
     metadata: {
       description: 'A daily walk to improve cardiovascular health.',
       frequency: 'DAY',
-      scale: 'SUB',
+      scale: 'Sub',
       isAtomic: true,
     },
     timeframe: {
@@ -35,7 +35,7 @@ Atomic.args = {
     metadata: {
       description: 'A daily walk to improve cardiovascular health.',
       frequency: 'DAY',
-      scale: 'ATOM',
+      scale: 'Atom',
       isAtomic: true,
     },
     timeframe: {
@@ -52,7 +52,7 @@ Astronomic.args = {
     metadata: {
       description: 'A daily walk to improve cardiovascular health.',
       frequency: 'DAY',
-      scale: 'ASTRO',
+      scale: 'Astro',
       isAtomic: true,
     },
     timeframe: {

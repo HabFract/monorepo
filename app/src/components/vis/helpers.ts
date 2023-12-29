@@ -128,8 +128,8 @@ export const newXTranslate = (type: VisType, viewConfig: ViewConfig, zoomConfig:
   }
 };
 
-export const newYTranslate = (newScale, type: VisType, viewConfig: ViewConfig, zoomConfig: ZoomConfig) => {
-  const scale = newScale || viewConfig.scale;
+export const newYTranslate = (type: VisType, viewConfig: ViewConfig, zoomConfig: ZoomConfig) : number => {
+  const scale = viewConfig.scale;
   switch (type) {
     // case "cluster":
     //   return -zoomConfig.previousRenderZoom?.node?.x * scale;
@@ -137,6 +137,7 @@ export const newYTranslate = (newScale, type: VisType, viewConfig: ViewConfig, z
     //   return 0; //-radialTranslation(zoomConfig).y * scale;
     case VisType.Tree:
       return -zoomConfig.previousRenderZoom?.node?.y * scale;
+    default: return 1;
   }
 };
 

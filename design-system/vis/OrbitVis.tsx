@@ -9,22 +9,22 @@ type OrbitVisProps = {
 
 function getOrbitScalePercent(scale: Scale) : number {
   switch (scale) {
-    case Scale.SUB:
+    case Scale.Sub:
       return 23
-    case Scale.ATOM:
+    case Scale.Atom:
       return 30
-    case Scale.ASTRO:
+    case Scale.Astro:
       return 100
   }
 }
 
 function getOrbitScaleImg(scale: Scale) {
   switch (scale) {
-    case Scale.SUB:
+    case Scale.Sub:
       return { src: "assets/orbits/scale-outlines-1.png", alt: "Orbit"}
-    case Scale.ATOM:
+    case Scale.Atom:
       return { src: "assets/orbits/scale-outlines-2.png", alt: "Orbit"}
-    case Scale.ASTRO:
+    case Scale.Astro:
       return { src: "assets/orbits/scale-outlines-3.png", alt: "Orbit"}
   }
 }
@@ -34,7 +34,7 @@ const OrbitVis: React.FC<OrbitVisProps> = ({ scale }: OrbitVisProps) => {
     // @ts-ignore
     <div className="orbit-vis">
       <div>
-        <img className="w-24" alt={getOrbitScaleImg(scale).alt} src={getOrbitScaleImg(scale).src} />
+        <img className="w-24" alt={getOrbitScaleImg(scale)?.alt} src={getOrbitScaleImg(scale)?.src} />
         <Progress className={scale.toLowerCase()} progress={getOrbitScalePercent(scale)} color="dark" />
         <label><div className="pt-1 mt-2 text-center w-full">Scale</div></label>
       </div>

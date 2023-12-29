@@ -24,8 +24,8 @@ function ListSpheres() {
       propertyA = a ? a[listSortFilter.sortCriteria as keyof Sphere] : 0
       propertyB = b ? b[listSortFilter.sortCriteria as keyof Sphere] : 0
     } else {
-      propertyA = a?.metadata[listSortFilter.sortCriteria as keyof SphereMetaData];
-      propertyB = b?.metadata[listSortFilter.sortCriteria as keyof SphereMetaData];
+      propertyA = a?.metadata![listSortFilter.sortCriteria as any];
+      propertyB = b?.metadata![listSortFilter.sortCriteria as any];
     }
 
 

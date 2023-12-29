@@ -30,8 +30,15 @@ const appendSvg = (mountingDivId: string, divId: string) : void => {
       .attr("style", "pointer-events: all");
 };
 
-export function withVis<T>(Component: ComponentType<T>): ReactNode {
-  const ComponentWithVis: React.FC<any> = (_hocProps: T) => {
+export type VisComponent = { // e.g. OrbitTree, OrbitCluster
+  canvasHeight: number;
+  canvasWidth: number;
+  margin: Margins;
+  render: (currentVis: any) => JSX.Element;
+}
+
+export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode {
+  const ComponentWithVis: React.FC<any> = (_hocProps: VisComponent) => {
     const { canvasHeight, canvasWidth } = d3SetupCanvas()
     const mountingDivId = 'vis-root';
     const svgId = 'vis';

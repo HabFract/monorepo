@@ -22,7 +22,7 @@
     "clean": "npm run clean:sandbox; npm run clean:build && npm run clean:modules",
     "clean:happ": "rm workdir/habit_fract.happ; rm workdir/habit_fract.webhapp",
     "clean:dnas": "rimraf dnas/**/workdir/*.dna",
-    "clean:build": "rimraf target; npm run clean:dnas; npm run clean:happ; rimraf ui/app/dist; exit 0",
+    "clean:build": "rimraf target; npm run clean:dnas; npm run clean:happ; exit 0",
     "clean:modules": "rimraf **/node_modules",
     "clean:sandbox": "hc sandbox clean"
   },

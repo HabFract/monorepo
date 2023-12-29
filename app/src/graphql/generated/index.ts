@@ -169,9 +169,9 @@ export type ResponsePayload = {
 };
 
 export enum Scale {
-  Astro = 'ASTRO',
-  Atom = 'ATOM',
-  Sub = 'SUB'
+  Astro = 'Astro',
+  Atom = 'Atom',
+  Sub = 'Sub'
 }
 
 export type Sphere = Node & {

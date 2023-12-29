@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && npm run zip",
     "generate": "graphql-codegen --config codegen.ts",
     "generate:watch": "graphql-codegen --watch --config codegen.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "zip": "cd ./dist && bestzip ../../ui.zip *",
+    "clean": "rimraf ui.zip dist"
   },
   "dependencies": {
     "@apollo/client": "^3.8.6",
@@ -44,6 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "babel-plugin-import": "^1.13.8",
+    "bestzip": "^2.2.1",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",

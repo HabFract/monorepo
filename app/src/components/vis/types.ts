@@ -28,7 +28,7 @@ export interface ViewConfig {
   levelsHigh?: number;
   levelsWide?: number;
   defaultCanvasTranslateX: () => number;
-  defaultCanvasTranslateY: (scale: number) => number;
+  defaultCanvasTranslateY: () => number;
   isSmallScreen: () => boolean;
   defaultView: string;
 }

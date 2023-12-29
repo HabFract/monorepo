@@ -1072,19 +1072,19 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "ASTRO",
+            "name": "Astro",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "ATOM",
+            "name": "Atom",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "SUB",
+            "name": "Sub",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

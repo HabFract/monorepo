@@ -18,26 +18,26 @@ function calculateSpherePercentages(counts: object) : any {
     //@ts-ignore
     acc[scale] = count / total * 100;
     return acc;
-  }, {SUB: 0, ATOM: 0, ASTRO: 0});
+  }, {Sub: 0, Atom: 0, Astro: 0});
 }
 function calculateSphereCounts(orbitScales: Scale[]) {
   return orbitScales.reduce((acc: object, orbitScale: Scale) => {
     switch (orbitScale) {
-      case Scale.SUB:
+      case Scale.Sub:
         //@ts-ignore
-        acc['SUB'] += 1;
+        acc['Sub'] += 1;
         break;
-      case Scale.ATOM:
+      case Scale.Atom:
         //@ts-ignore
-        acc['ATOM'] += 1;
+        acc['Atom'] += 1;
         break;
-        case Scale.ASTRO:
+        case Scale.Astro:
           //@ts-ignore
-        acc['ASTRO'] += 1;
+        acc['Astro'] += 1;
         break;
     }
     return acc
-  }, {SUB: 0, ATOM: 0, ASTRO: 0});
+  }, {Sub: 0, Atom: 0, Astro: 0});
 }
 
 const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales } : SphereCardProps) => {

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { ComponentType, useEffect, useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import Vis from "./BaseVis";
 import { VisProps, VisType } from './types'; // Ensure this is the correct path to your types
 import { hierarchy } from 'd3';
+import { VisComponent } from './HOC/withVisCanvas';
 
 // Define the GraphQL query to fetch the orbit hierarchy
 const GET_ORBIT_HIERARCHY = gql`
@@ -11,7 +12,7 @@ const GET_ORBIT_HIERARCHY = gql`
   }
 `;
 
-export const OrbitTree: React.FC<VisProps> = ({
+export const OrbitTree: ComponentType<VisComponent> = ({
   canvasHeight,
   canvasWidth,
   margin,

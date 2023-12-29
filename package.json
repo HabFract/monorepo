@@ -4,13 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run stop:backend-services; dotenv -- concurrently \"npm run start:backend-services && npm run build:backend && npm run start:backend\" \"npm run start:frontend\" \"npm run open-browser\"",
+    "start": "npm run stop:backend-services; dotenv -- concurrently \"npm run start:backend-services && npm run build:backend && npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
+    "dev": "npm run stop:backend-services; dotenv -- concurrently \"npm run start:backend-services && npm run build:backend && npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
+
+    "build:frontend": "cd app && npm run generate && npm run build",
     "start:frontend": "cd app && npm run start",
     "open-browser": "sleep 15 && open-cli http://localhost:${VITE_UI_PORT}",
-    "start:backend": "cd crates && npm run start:holochain-single",
+    
     "build:backend": "cd crates && npm run build",
-    "start:backend-services": "cd crates && npm run start:precheck ",
+    "start:backend-dev": "cd crates && npm run start:holochain-single",
+
     "stop:backend-services": "cd crates && npm run stop:local-services ",
+    "start:backend-services": "cd crates && npm run start:precheck ",
     "check-env": "test ! -f .env && cp .env.example .env && cp .env crates/.env; exit 0",
     "postinstall": "npm run check-env"
   },

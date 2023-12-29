@@ -134,7 +134,7 @@ export default class Visualization implements IVisualization {
               (newXTranslate(this.type, this._viewConfig, this._zoomConfig) as number)
           : initialX;
       },
-      defaultCanvasTranslateY: (scale) => {
+      defaultCanvasTranslateY: () => {
         const initialY = getInitialYTranslate.call(
           this,
           this.type,
@@ -145,11 +145,10 @@ export default class Visualization implements IVisualization {
           ? (this._viewConfig.margin.top as number) +
               initialY +
               newYTranslate(
-                scale,
                 this.type,
                 this._viewConfig,
                 this._zoomConfig
-              )
+              ) as number
           : initialY;
       },
       isSmallScreen: function () {
@@ -756,13 +755,15 @@ export default class Visualization implements IVisualization {
   getLinkPathGenerator() : void {
     switch (this.type) {
       case VisType.Tree:
+        //@ts-ignore
         return linkVertical()
-          .x((d) => d.x)
-          .y((d) => d.y);
-      case VisType.Cluster:
+        .x((d : any) => d.x)
+        .y((d : any) => d.y);
+        case VisType.Cluster:
+        //@ts-ignore
         return linkHorizontal()
-          .x((d) => d.y)
-          .y((d) => d.x);
+          .x((d : any) => d.y)
+          .y((d : any) => d.x);
       // case "radial":
       //   return linkRadial()
       //     .angle((d) => d.x / 8)
@@ -1071,7 +1072,7 @@ export default class Visualization implements IVisualization {
           )
             return e.stopPropagation();
           this.setCurrentHabit(n);
-          this.eventHandlers.handleAppendNode.call(this, e, n);
+          this.eventHandlers.handleAppendNode.call(this);
         });
       this._gButton
         .append("rect")
@@ -1185,6 +1186,7 @@ export default class Visualization implements IVisualization {
         case "path":
           this.eventHandlers.handleDeleteNode.call(this, ev, node.data);
           break;
+        //@ts-ignore
         case "rect":
           if (target.parentNode.classList.contains("tooltip")) return; // Stop label from triggering
         // Append or prepend are currently the only text
@@ -1204,7 +1206,7 @@ export default class Visualization implements IVisualization {
           });
           target = parentNodeGroup;
           try {
-            this.eventHandlers.handleMouseEnter.call(this, ev, node);
+            this.eventHandlers.handleMouseEnter.call(this, ev);
             this.eventHandlers.handleNodeFocus.call(this, ev.srcEvent, node);
             if (!this._gLink.attr("transform"))
               this.eventHandlers.handleNodeZoom.call(
@@ -1267,7 +1269,7 @@ export default class Visualization implements IVisualization {
       .shapePadding(-5)
       .scale(ordinal);
 
-    gLegend.call(legend);
+    gLegend.call(legend as any);
   }
 
   setNodeAnimationGroups() {

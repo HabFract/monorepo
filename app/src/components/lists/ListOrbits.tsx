@@ -38,7 +38,7 @@ const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
 
   const [listSortFilter] = useAtom(listSortFilterAtom);
 
-  const scaleValues = { SUB: 1, ATOM: 2, ASTRO: 3 };
+  const scaleValues = { Sub: 1, Atom: 2, Astro: 3 };
 
   const sortOrbits = (a: Orbit, b: Orbit) => {
     let propertyA;

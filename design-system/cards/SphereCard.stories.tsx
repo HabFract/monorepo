@@ -24,7 +24,7 @@ Default.args = {
     },
   },
   isHeader: false,
-  orbitScales: [Scale.ASTRO,Scale.ATOM,Scale.ASTRO,Scale.SUB,Scale.SUB]
+  orbitScales: [Scale.Astro,Scale.Atom,Scale.Astro,Scale.Sub,Scale.Sub]
 };
 
 export const Header = Template.bind({});
@@ -38,5 +38,5 @@ Header.args = {
     },
   },
   isHeader: true,
-  orbitScales: [Scale.ASTRO,Scale.ATOM,Scale.ASTRO,Scale.SUB,Scale.SUB]
+  orbitScales: [Scale.Astro,Scale.Atom,Scale.Astro,Scale.Sub,Scale.Sub]
 };
