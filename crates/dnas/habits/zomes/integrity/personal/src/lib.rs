@@ -1,5 +1,8 @@
 pub mod sphere;
+pub mod orbit;
 pub use sphere::*;
+pub use orbit::*;
+
 use hdi::prelude::*;
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "type")]
@@ -10,14 +13,23 @@ pub enum EntryTypes {
         name = "my_sphere", // Must be unique across entry types
         visibility = "private" )] // Entry not published to the DHT, only stored in the source chain
     Sphere(Sphere),
+    #[entry_def( 
+        name = "my_orbit", // Must be unique across entry types
+        visibility = "private" )] // Entry not published to the DHT, only stored in the source chain
+    Orbit(Orbit),
 }
 
 #[derive(Serialize, Deserialize)]
 #[hdk_link_types]
 pub enum LinkTypes {
+    SpheresPrefixPath,
     SphereUpdates,
     AgentToSphere,
-    SpheresPrefixPath
+    AgentToOrbit,
+    SphereToOrbit,
+    OrbitUpdates,
+    OrbitsPrefixPath,
+    OrbitHierarchyLevel
 }
 
 #[hdk_extern]
@@ -44,13 +56,25 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 EntryCreationAction::Create(action),
                                 sphere,
                             )
-                        }
+                        },
+                        EntryTypes::Orbit(sphere) => {
+                            validate_create_orbit(
+                                EntryCreationAction::Create(action),
+                                sphere,
+                            )
+                        },
                     }
                 }
                 OpEntry::UpdateEntry { app_entry, action, .. } => {
                     match app_entry {
                         EntryTypes::Sphere(sphere) => {
                             validate_create_sphere(
+                                EntryCreationAction::Update(action),
+                                sphere,
+                            )
+                        },
+                        EntryTypes::Orbit(sphere) => {
+                            validate_create_orbit(
                                 EntryCreationAction::Update(action),
                                 sphere,
                             )
@@ -99,9 +123,12 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     match original_app_entry {
                         EntryTypes::Sphere(sphere) => {
                             validate_delete_sphere(action, original_action, sphere)
+                        },
+                        EntryTypes::Orbit(sphere) => {
+                            validate_delete_orbit(action, original_action, sphere)
                         }
                     }
-                }
+                },
                 _ => Ok(ValidateCallbackResult::Valid),
             }
         }
@@ -129,7 +156,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 },
-                LinkTypes::SpheresPrefixPath => {
+                _ => {
                     Ok(ValidateCallbackResult::Valid)
                 }
             }
@@ -161,7 +188,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 },
-                LinkTypes::SpheresPrefixPath => {
+                _ => {
                     Ok(ValidateCallbackResult::Valid)
                 }
             }
@@ -172,6 +199,12 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     match app_entry {
                         EntryTypes::Sphere(sphere) => {
                             validate_create_sphere(
+                                EntryCreationAction::Create(action),
+                                sphere,
+                            )
+                        },
+                        EntryTypes::Orbit(sphere) => {
+                            validate_create_orbit(
                                 EntryCreationAction::Create(action),
                                 sphere,
                             )
@@ -221,6 +254,37 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                     }
                                 };
                                 validate_update_sphere(
+                                    action,
+                                    sphere,
+                                    original_action,
+                                    original_sphere,
+                                )
+                            } else {
+                                Ok(result)
+                            }
+                        }
+                        EntryTypes::Orbit(sphere) => {
+                            let result = validate_create_orbit(
+                                EntryCreationAction::Update(action.clone()),
+                                sphere.clone(),
+                            )?;
+                            if let ValidateCallbackResult::Valid = result {
+                                let original_sphere: Option<Orbit> = original_record
+                                    .entry()
+                                    .to_app_option()
+                                    .map_err(|e| wasm_error!(e))?;
+                                let original_sphere = match original_sphere {
+                                    Some(sphere) => sphere,
+                                    None => {
+                                        return Ok(
+                                            ValidateCallbackResult::Invalid(
+                                                "The updated entry type must be the same as the original entry type"
+                                                    .to_string(),
+                                            ),
+                                        );
+                                    }
+                                };
+                                validate_update_orbit(
                                     action,
                                     sphere,
                                     original_action,
@@ -291,6 +355,13 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 original_sphere,
                             )
                         }
+                        EntryTypes::Orbit(original_sphere) => {
+                            validate_delete_orbit(
+                                action,
+                                original_action,
+                                original_sphere,
+                            )
+                        }
                     }
                 }
                 OpRecord::CreateLink {
@@ -317,7 +388,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 tag,
                             )
                         },
-                        LinkTypes::SpheresPrefixPath => {
+                        _ => {
                             Ok(ValidateCallbackResult::Valid)
                         }
                     }
@@ -363,7 +434,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 create_link.tag,
                             )
                         },
-                        LinkTypes::SpheresPrefixPath => {
+                        _ => {
                             Ok(ValidateCallbackResult::Valid)
                         }
                     }

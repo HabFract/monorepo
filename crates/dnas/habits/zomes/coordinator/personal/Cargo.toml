@@ -8,9 +8,8 @@ crate-type = ["cdylib", "rlib"]
 name = "personal"
 
 [dependencies]
+serde_json = { workspace = true }
 hdk = { workspace = true }
 holochain_integrity_types = { workspace = true }
-
 serde = { workspace = true }
-
 personal_integrity = { workspace = true } 

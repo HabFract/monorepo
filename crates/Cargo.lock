@@ -1526,6 +1526,7 @@ dependencies = [
  "holochain_integrity_types 0.1.2",
  "personal_integrity",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -1535,6 +1536,7 @@ dependencies = [
  "hdi",
  "holochain_integrity_types 0.1.2",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
