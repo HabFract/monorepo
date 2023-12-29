@@ -99,6 +99,7 @@ export const aProfileFields = (overrides?: Partial<ProfileFields>): ProfileField
 
 export const aQuery = (overrides?: Partial<Query>): Query => {
     return {
+        getOrbitHierarchy: overrides && overrides.hasOwnProperty('getOrbitHierarchy') ? overrides.getOrbitHierarchy! : 'sint',
         me: overrides && overrides.hasOwnProperty('me') ? overrides.me! : anAgentProfile(),
         orbit: overrides && overrides.hasOwnProperty('orbit') ? overrides.orbit! : anOrbit(),
         orbits: overrides && overrides.hasOwnProperty('orbits') ? overrides.orbits! : anOrbitConnection(),

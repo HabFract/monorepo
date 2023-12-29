@@ -18,6 +18,13 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     HAPP_ZOME_NAME_PERSONAL_HABITS,
     'get_all_orbits',
   )
+  const getHierarchyForOrbit = mapZomeFn<null, String>(
+    dnaConfig,
+    conductorUri,
+    HAPP_DNA_NAME,
+    HAPP_ZOME_NAME_PERSONAL_HABITS,
+    'get_orbit_hierarchy_json',
+  )
 
   return {
     orbit: async (_, args): Promise<Orbit> => {
@@ -28,6 +35,12 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       const maybeOrbits = await readAll(null)
 
       return Promise.resolve(maybeOrbits || [])
+    },
+
+    hierarchy: async (): Promise<String> => {
+      const maybeJson = await getHierarchyForOrbit(null)
+
+      return Promise.resolve(maybeJson || "")
     },
   }
 }

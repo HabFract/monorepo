@@ -4,6 +4,7 @@ type Query {
   spheres: SphereConnection!
   orbit(id: ID!): Orbit!
   orbits(sphereEntryHashB64: String): OrbitConnection!
+  getOrbitHierarchy(orbitEntryHashB64: String) : String! 
   me: AgentProfile!
 }
 

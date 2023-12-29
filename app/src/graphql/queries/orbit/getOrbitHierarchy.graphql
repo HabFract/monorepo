@@ -1,0 +1,3 @@
+query getOrbitHierarchy($orbitEntryHashB64: String) {
+  getOrbitHierarchy(orbitEntryHashB64: $orbitEntryHashB64)
+}

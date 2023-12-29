@@ -1,16 +1,10 @@
 import React, { ComponentType, useEffect, useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import Vis from "./BaseVis";
-import { VisProps, VisType } from './types'; // Ensure this is the correct path to your types
+import { VisType } from './types';
 import { hierarchy } from 'd3';
 import { VisComponent } from './HOC/withVisCanvas';
-
-// Define the GraphQL query to fetch the orbit hierarchy
-const GET_ORBIT_HIERARCHY = gql`
-  query GetOrbitHierarchy {
-    getOrbitHierarchy
-  }
-`;
+import { useGetOrbitHierarchyQuery } from '../../graphql/generated';
 
 export const OrbitTree: ComponentType<VisComponent> = ({
   canvasHeight,
@@ -18,16 +12,16 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   margin,
   render,
 }) => {
-  // const { data, loading, error } = useQuery(GET_ORBIT_HIERARCHY);
+  const { data, loading, error } = useGetOrbitHierarchyQuery();
   const [currentOrbitTree, setCurrentOrbitTree] = useState<Vis | null>(null);
-
+  console.log('data :>> ', data);
   // Mock data until the vis is stable:
-  const data = `{"content":"L1R20-","name":"Live long and prosper","children":[{"content":"L2R13-","name":"Be in peak physical condition","children":[{"content":"L3R12-","name":"Have a good exercise routine","children":[{"content":"L4R5-","name":"go for a short walk at least once a day","children":[]},{"content":"L6R11-","name":"Do some weight training","children":[{"content":"L7R8-","name":"3 sets of weights, til failure","children":[]},{"content":"L9R10-","name":"Do 3 sets of calisthenic exercises","children":[]}]}]}]},{"content":"L14R19-","name":"Establish productive work habits","children":[{"content":"L15R16-","name":"Do one 50 minute pomodoro ","children":[]},{"content":"L17R18-","name":"Read more books on computing","children":[]}]}]}`
-  const loading = false;
+  // const data = `{"content":"L1R20-","name":"Live long and prosper","children":[{"content":"L2R13-","name":"Be in peak physical condition","children":[{"content":"L3R12-","name":"Have a good exercise routine","children":[{"content":"L4R5-","name":"go for a short walk at least once a day","children":[]},{"content":"L6R11-","name":"Do some weight training","children":[{"content":"L7R8-","name":"3 sets of weights, til failure","children":[]},{"content":"L9R10-","name":"Do 3 sets of calisthenic exercises","children":[]}]}]}]},{"content":"L14R19-","name":"Establish productive work habits","children":[{"content":"L15R16-","name":"Do one 50 minute pomodoro ","children":[]},{"content":"L17R18-","name":"Read more books on computing","children":[]}]}]}`
+  // const loading = false;
 
   useEffect(() => {
     if (!loading && data) {
-      const hierarchyData = hierarchy(JSON.parse(data));
+      const hierarchyData = hierarchy(JSON.parse(data as any));
       const orbitVis = new Vis(
         VisType.Tree,
         'vis',
@@ -40,7 +34,10 @@ export const OrbitTree: ComponentType<VisComponent> = ({
     }
   }, [data]);
 
-  return data && render(currentOrbitTree)
+  return loading ? <p>Loading</p>
+    : error
+      ? <p>Error</p>
+      : data && render(currentOrbitTree)
 };
 
 export default OrbitTree;

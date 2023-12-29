@@ -140,11 +140,17 @@ export type ProfileFields = {
 
 export type Query = {
   __typename?: 'Query';
+  getOrbitHierarchy: Scalars['String']['output'];
   me: AgentProfile;
   orbit: Orbit;
   orbits: OrbitConnection;
   sphere: Sphere;
   spheres: SphereConnection;
+};
+
+
+export type QueryGetOrbitHierarchyArgs = {
+  orbitEntryHashB64?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -257,6 +263,13 @@ export type GetOrbitQueryVariables = Exact<{
 
 
 export type GetOrbitQuery = { __typename?: 'Query', orbit: { __typename?: 'Orbit', name: string, sphereEntryHashB64: string, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, frequency: Frequency, scale: Scale } | null, timeframe: { __typename?: 'TimeFrame', startTime: any, endTime: any } } };
+
+export type GetOrbitHierarchyQueryVariables = Exact<{
+  orbitEntryHashB64?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetOrbitHierarchyQuery = { __typename?: 'Query', getOrbitHierarchy: string };
 
 export type GetOrbitsQueryVariables = Exact<{
   sphereEntryHashB64?: InputMaybe<Scalars['String']['input']>;
@@ -473,6 +486,44 @@ export type GetOrbitQueryHookResult = ReturnType<typeof useGetOrbitQuery>;
 export type GetOrbitLazyQueryHookResult = ReturnType<typeof useGetOrbitLazyQuery>;
 export type GetOrbitSuspenseQueryHookResult = ReturnType<typeof useGetOrbitSuspenseQuery>;
 export type GetOrbitQueryResult = Apollo.QueryResult<GetOrbitQuery, GetOrbitQueryVariables>;
+export const GetOrbitHierarchyDocument = gql`
+    query getOrbitHierarchy($orbitEntryHashB64: String) {
+  getOrbitHierarchy(orbitEntryHashB64: $orbitEntryHashB64)
+}
+    `;
+
+/**
+ * __useGetOrbitHierarchyQuery__
+ *
+ * To run a query within a React component, call `useGetOrbitHierarchyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOrbitHierarchyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOrbitHierarchyQuery({
+ *   variables: {
+ *      orbitEntryHashB64: // value for 'orbitEntryHashB64'
+ *   },
+ * });
+ */
+export function useGetOrbitHierarchyQuery(baseOptions?: Apollo.QueryHookOptions<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>(GetOrbitHierarchyDocument, options);
+      }
+export function useGetOrbitHierarchyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>(GetOrbitHierarchyDocument, options);
+        }
+export function useGetOrbitHierarchySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>(GetOrbitHierarchyDocument, options);
+        }
+export type GetOrbitHierarchyQueryHookResult = ReturnType<typeof useGetOrbitHierarchyQuery>;
+export type GetOrbitHierarchyLazyQueryHookResult = ReturnType<typeof useGetOrbitHierarchyLazyQuery>;
+export type GetOrbitHierarchySuspenseQueryHookResult = ReturnType<typeof useGetOrbitHierarchySuspenseQuery>;
+export type GetOrbitHierarchyQueryResult = Apollo.QueryResult<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>;
 export const GetOrbitsDocument = gql`
     query getOrbits($sphereEntryHashB64: String) {
   orbits(sphereEntryHashB64: $sphereEntryHashB64) {
