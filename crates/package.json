@@ -17,7 +17,7 @@
     "start:local-services": "hc run-local-services --bootstrap-address-path .bootstrap-path --signal-address-path .signal-path & echo $! > .local-services-pid && sleep 5",
     "stop:local-services": "kill `cat .local-services-pid`; rm .local-services-pid; rm .bootstrap-path; rm .signal-path",
 
-    "start:holochain-single": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc s --piped -f=$VITE_ADMIN_PORT generate ./workdir/habit_fract.happ --run $VITE_APP_PORT -a habit_fract network --bootstrap `cat .bootstrap-path` webrtc `cat .signal-path`",
+    "start:holochain-single": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc s --piped -f=$VITE_ADMIN_PORT generate ./workdir/habit_fract.happ --run $VITE_APP_PORT -a habit_fract network mem",
 
     "clean": "npm run clean:sandbox; npm run clean:build && npm run clean:modules",
     "clean:happ": "rm workdir/habit_fract.happ; rm workdir/habit_fract.webhapp",

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run stop:backend-services; dotenv -- concurrently \"npm run start:backend-services && npm run build:backend && npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
-    "dev": "npm run stop:backend-services; dotenv -- concurrently \"npm run start:backend-services && npm run build:backend && npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
+    "dev": "dotenv -- concurrently \"npm run build:backend && npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
 
     "build:frontend": "cd app && npm run generate && npm run build",
     "start:frontend": "cd app && npm run start",

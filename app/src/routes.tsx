@@ -1,6 +1,6 @@
 import { CreateProfile, CreateSphere, CreateOrbit } from "./components/forms";
 import { ListOrbits, ListSpheres } from "./components/lists";
-import { withVisCanvas } from "./components/vis/HOC/withVisCanvas";
+import withVisCanvas from "./components/vis/HOC/withVisCanvas";
 import OrbitTree from "./components/vis/OrbitTree";
 import { StateTransitions } from "./stateMachine";
 
