@@ -1,17 +1,16 @@
-import { useQuery } from '@apollo/client';
 import { useAtom } from 'jotai';
 import { listSortFilterAtom } from '../../state/listSortFilterAtom';
-import GET_SPHERES from '../../graphql/queries/sphere/getSpheres.graphql';
-import { Scale, Sphere, SphereEdge, SphereMetaData } from '../../graphql/generated';
+import { Scale, Sphere, useGetSpheresQuery } from '../../graphql/generated';
 
 import './common.css';
 
 import PageHeader from '../PageHeader';
 import ListSortFilter from './ListSortFilter';
 import SphereCard from '../../../../design-system/cards/SphereCard';
+import { extractEdges } from '../../graphql/utils';
 
 function ListSpheres() {
-  const { loading, error, data: { spheres } } = useQuery(GET_SPHERES);
+  const { loading, error, data } = useGetSpheresQuery();
 
   const [listSortFilter] = useAtom(listSortFilterAtom);
 
@@ -40,14 +39,15 @@ function ListSpheres() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  const sortedSpheres = [...spheres.edges].sort((edgeA: SphereEdge, edgeB: SphereEdge) => sortSpheres(edgeA.node, edgeB.node));
-
+  const spheres = extractEdges(data!.spheres) as Sphere[];
+  const sortedSpheres = spheres.sort((s1: Sphere, s2: Sphere) => sortSpheres(s1, s2));
+  
   return (
     <div className='layout spheres'>
       <PageHeader title="Spheres of Action" />
       <ListSortFilter label='' />
       <div className="spheres-list">
-        {sortedSpheres.map(({ node } : SphereEdge) => <SphereCard key={node.id} sphere={node} isHeader={false} orbitScales={[Scale.Astro]}/>)}
+        {sortedSpheres.map((sphere : Sphere) => <SphereCard key={sphere.id} sphere={sphere} isHeader={false} orbitScales={[Scale.Astro]}/>)}
       </div>
     </div>
   );
