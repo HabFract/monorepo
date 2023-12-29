@@ -27,12 +27,12 @@ export type AppStateStore = {
 }
 
 export const initialState: AppStateStore = { // Home route
-  currentState: "Boot",
+  currentState: "Home",
   params: {}
 }
 
 export const routes: Routes = {
-  Boot: <CreateSphere />,
+  Boot: <p>Loading</p>,
   Vis: <>{withVisCanvas(OrbitTree)}</>,
   Home: <p>Welcome Home</p>,
   Onboarding1: <CreateProfile editMode={false} />,
@@ -46,7 +46,7 @@ export const routes: Routes = {
 };
 
 export const AppTransitions: StateTransitions<AppState> = {
-  Boot: ['Onboarding1', 'Vis'],
+  Boot: ['Onboarding1'],
   Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding3'],
   Onboarding3: ['Onboarding2', 'Onboarding4'],
