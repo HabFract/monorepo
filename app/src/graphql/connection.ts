@@ -308,12 +308,6 @@ const zomeFunction =
   ): BoundZomeFn<InputType, Promise<OutputType>> =>
   async (args): Promise<OutputType> => {
     const { callZome } = await getConnection(socketURI)
-    
-    console.log('res :>> ', {cap_secret: null,
-      cell_id,
-      zome_name,
-      fn_name,
-      provenance: cell_id});
     const res = await callZome(
       {
         cap_secret: null,
