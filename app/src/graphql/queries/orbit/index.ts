@@ -37,7 +37,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       return Promise.resolve(maybeOrbits || [])
     },
 
-    hierarchy: async (): Promise<String> => {
+    getOrbitHierarchy: async (): Promise<String> => {
       const maybeJson = await getHierarchyForOrbit(null)
 
       return Promise.resolve(maybeJson || "")

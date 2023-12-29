@@ -25,11 +25,11 @@ pub struct Node {
 }
 
 impl Node {
-    fn new(id: EntryHashB64, children: Vec<Box<Node>>) -> Self {
+    pub fn new(id: EntryHashB64, children: Vec<Box<Node>>) -> Self {
         Node { id, children }
     }
 
-    fn to_json(&self) -> serde_json::Value {
+    pub fn to_json(&self) -> serde_json::Value {
         serde_json::json!({
             "id": self.id,
             "children": self.children.iter().map(|child| child.to_json()).collect::<Vec<_>>(),

@@ -1,4 +1,6 @@
-use hdk::prelude::*;
+use std::collections::HashMap;
+
+use hdk::prelude::{*, holo_hash::EntryHashB64};
 use personal_integrity::*;
 
 #[hdk_extern]
