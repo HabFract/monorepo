@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use hdi::prelude::{holo_hash::EntryHashB64, *};
 
 #[hdk_entry_helper]
@@ -21,9 +19,9 @@ impl Orbit {
 }
 
 #[derive(Debug)]
-struct Node {
-    id: EntryHashB64,
-    children: Vec<Box<Node>>,
+pub struct Node {
+    pub id: EntryHashB64,
+    pub children: Vec<Box<Node>>,
 }
 
 impl Node {
@@ -37,29 +35,6 @@ impl Node {
             "children": self.children.iter().map(|child| child.to_json()).collect::<Vec<_>>(),
         })
     }
-}
-
-fn build_tree(orbits: &[Orbit]) -> ExternResult<HashMap<EntryHashB64, Box<Node>>> {
-    let mut tree: HashMap<EntryHashB64, Box<Node>> = HashMap::new();
-
-    for orbit in orbits {
-        let entry_hash = hash_entry(orbit.clone());
-        if let Ok(hash) = entry_hash {
-            let node = Box::new(Node::new(hash.clone().into(), Vec::new()));
-
-            match orbit.parent_hash.clone() {
-                Some(parent_hash) => {
-                    if let Some(parent_node) = tree.get_mut(&parent_hash.clone().into()) {
-                        parent_node.children.push(node);
-                    }
-                }
-                None => {
-                    tree.insert(hash.clone().into(), node);
-                }
-            }
-        }
-    }
-    Ok(tree)
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
