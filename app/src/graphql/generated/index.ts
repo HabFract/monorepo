@@ -97,12 +97,12 @@ export type OrbitCreateResponse = {
 
 export type OrbitCreateUpdateParams = {
   description?: InputMaybe<Scalars['String']['input']>;
-  endTime: Scalars['DateTime']['input'];
+  endTime: Scalars['Float']['input'];
   frequency: Frequency;
   name: Scalars['String']['input'];
   scale: Scale;
   sphereEntryHashB64: Scalars['String']['input'];
-  startTime: Scalars['DateTime']['input'];
+  startTime: Scalars['Float']['input'];
 };
 
 export type OrbitEdge = {

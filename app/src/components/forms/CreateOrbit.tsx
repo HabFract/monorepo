@@ -31,7 +31,7 @@ const OrbitValidationSchema = Yup.object().shape({
 const CreateOrbit: React.FC = () => {
   const { data: orbits, loading, error } = useGetOrbitsQuery();
   const [addOrbit] = useCreateOrbitMutation();
-  loading ? "" : console.log('orbit action hashes :>> ', extractEdges(orbits?.orbits).map(orbit => orbit.id));
+  // loading ? "" : console.log('orbit action hashes :>> ', extractEdges(orbits?.orbits).map(orbit => orbit.id));
   return (
     <div className="p-4">
       <h2 className="mb-4 text-lg font-semibold text-gray-700">Create Orbit</h2>
@@ -48,6 +48,8 @@ const CreateOrbit: React.FC = () => {
         validationSchema={OrbitValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
+            if(!values.archival) delete values.endTime;
+            delete values.archival;
             await addOrbit({ variables: { variables: { ...values, sphereEntryHashB64: '' } } });
             setSubmitting(false);
           } catch (error) {
@@ -55,9 +57,8 @@ const CreateOrbit: React.FC = () => {
           }
         }}
       >
-        {({ values, errors, touched, setFieldValue }) => (
-          typeof console.log('values :>> ', values) == 'undefined' &&
-          <Form>
+        {({ values, errors, touched }) => (
+        <Form>
             <Label>
               <span>Name:</span>
               <Field as={TextInput} type="text" name="name" required />
@@ -78,8 +79,8 @@ const CreateOrbit: React.FC = () => {
                     {...field}
                     color={errors.frequency && touched.frequency ? "failure" : ""}
                   >
-                    {Object.values(Frequency).map(freq =>
-                      <option value={freq}>{freq}</option>
+                    {Object.values(Frequency).map((freq, i) =>
+                      <option key={i} value={freq}>{freq}</option>
                     )
                     }
                   </Select>
@@ -96,8 +97,8 @@ const CreateOrbit: React.FC = () => {
                     {...field}
                     color={errors.scale && touched.scale ? "failure" : ""}
                   >
-                    {Object.values(Scale).map(scale =>
-                      <option value={scale}>{scale}</option>
+                    {Object.values(Scale).map((scale, i) =>
+                      <option key={i} value={scale}>{scale}</option>
                     )
                     }
                   </Select>

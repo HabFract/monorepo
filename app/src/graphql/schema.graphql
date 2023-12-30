@@ -149,8 +149,8 @@ type OrbitMetaData {
 # Orbit Input/Outputs
 input OrbitCreateUpdateParams {
   name: String!
-  startTime: DateTime!
-  endTime: DateTime!
+  startTime: Float!
+  endTime: Float!
   description: String
   frequency: Frequency!
   scale: Scale!

@@ -49,12 +49,12 @@ export const anOrbitCreateResponse = (overrides?: Partial<OrbitCreateResponse>):
 export const anOrbitCreateUpdateParams = (overrides?: Partial<OrbitCreateUpdateParams>): OrbitCreateUpdateParams => {
     return {
         description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'tenetur',
-        endTime: overrides && overrides.hasOwnProperty('endTime') ? overrides.endTime! : 'voluptas',
+        endTime: overrides && overrides.hasOwnProperty('endTime') ? overrides.endTime! : 7.66,
         frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'non',
         scale: overrides && overrides.hasOwnProperty('scale') ? overrides.scale! : Scale.Astro,
         sphereEntryHashB64: overrides && overrides.hasOwnProperty('sphereEntryHashB64') ? overrides.sphereEntryHashB64! : 'nemo',
-        startTime: overrides && overrides.hasOwnProperty('startTime') ? overrides.startTime! : 'sed',
+        startTime: overrides && overrides.hasOwnProperty('startTime') ? overrides.startTime! : 5.37,
     };
 };
 
