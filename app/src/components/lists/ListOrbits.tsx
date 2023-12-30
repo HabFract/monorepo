@@ -3,30 +3,26 @@ import { useAtom } from 'jotai';
 import { listSortFilterAtom } from '../../state/listSortFilterAtom';
 import './common.css';
 
-import { useQuery, useLazyQuery } from '@apollo/client';
-import GET_SPHERE from '../../graphql/queries/sphere/getSphere.graphql';
-// import GET_ORBITS from '../../graphql/queries/orbit/getOrbits.graphql';
-import GET_ORBITS_BY_SPHERE from '../../graphql/queries/orbit/getOrbitsBySphere.graphql';
-
 import PageHeader from '../PageHeader';
 import ListSortFilter from './ListSortFilter';
 
 import OrbitCard from '../../../../design-system/cards/OrbitCard';
 import SphereCard from '../../../../design-system/cards/SphereCard';
-import { Orbit, OrbitMetaData, OrbitEdge } from '../../graphql/generated';
+import { Orbit, OrbitMetaData, OrbitEdge, useGetOrbitsQuery, useGetSphereLazyQuery } from '../../graphql/generated';
 
 interface ListOrbitsProps {
   sphereId?: string; // Optional prop to filter orbits by sphere
 }
 
 const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
-  const { loading: loadingOrbits, error: errorOrbits, data: dataOrbits } = useQuery(GET_ORBITS_BY_SPHERE, {
+  
+  const { loading: loadingOrbits, error: errorOrbits, data: dataOrbits } = useGetOrbitsQuery({
     variables: { sphereEntryHashB64: sphereId },
     skip: !sphereId, // Skip the query if no sphereId is provided
   });
 
-  const [getSphere, { loading: loadingSphere, data: dataSphere }] = useLazyQuery(GET_SPHERE, {
-    variables: { id: sphereId },
+  const [getSphere, { loading: loadingSphere, data: dataSphere }] = useGetSphereLazyQuery({
+    variables: { id: sphereId as string },
   });
 
   // Fetch sphere details when component mounts if sphereId is provided

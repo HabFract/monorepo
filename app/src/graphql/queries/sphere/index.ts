@@ -31,7 +31,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       // const rawRecords = createEdges(maybeSpheres);
       console.log('get_all_my_sphere payload :>> ', rawRecords);
       
-      if(typeof rawRecords !== 'object' || !rawRecords?.length) return Promise.resolve({} as SphereConnection)
+      if(typeof rawRecords !== 'object' || !rawRecords?.length) return Promise.resolve(createEdges([]) as unknown as SphereConnection)
 
       const entryRecords = rawRecords!.map((record: any) => new EntryRecord<Sphere>(record));
       // TODO: change backend fn so records are visible and complete the following line 

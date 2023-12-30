@@ -25,9 +25,10 @@ export type AgentProfile = {
 };
 
 export enum Frequency {
-  Day = 'DAY',
-  Hour = 'HOUR',
-  Week = 'WEEK'
+  Day = 'Day',
+  Month = 'Month',
+  Quarter = 'Quarter',
+  Week = 'Week'
 }
 
 export type Mutation = {
