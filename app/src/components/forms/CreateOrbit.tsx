@@ -1,20 +1,37 @@
 import React from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
+import { DateTime } from "luxon"
 
-import { Button, TextInput, Label } from 'flowbite-react';
-import { Frequency, Scale, useCreateOrbitMutation } from '../../graphql/generated';
+
+import { Checkbox, DatePicker, Flex } from 'antd';
+const { RangePicker } = DatePicker;
+
+import { Button, TextInput, Label, Select } from 'flowbite-react';
+import { Frequency, Scale, useCreateOrbitMutation, useGetOrbitsQuery } from '../../graphql/generated';
+import { extractEdges } from '../../graphql/utils';
+import { boolean, mixed } from 'yup';
+import DateInput from './input/DatePicker';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
   description: Yup.string(),
-  hashtag: Yup.string(),
+  startTime: Yup.number().min(0).required("Start date/time is required"),
+  endTime: Yup.number().min(0),
+  frequency: mixed()
+    .oneOf(Object.values(Frequency))
+    .required('Choose a frequency'),
+  scale: mixed()
+    .oneOf(Object.values(Scale))
+    .required('Choose a scale'),
+  archival: boolean(),
 });
 
 const CreateOrbit: React.FC = () => {
+  const { data: orbits, loading, error } = useGetOrbitsQuery();
   const [addOrbit] = useCreateOrbitMutation();
-
+  loading ? "" : console.log('orbit action hashes :>> ', extractEdges(orbits?.orbits).map(orbit => orbit.id));
   return (
     <div className="p-4">
       <h2 className="mb-4 text-lg font-semibold text-gray-700">Create Orbit</h2>
@@ -22,10 +39,11 @@ const CreateOrbit: React.FC = () => {
         initialValues={{
           name: '',
           description: '',
-          startTime: '',
-          endTime: '',
+          startTime: DateTime.now().ts,
+          endTime: DateTime.now().ts,
           frequency: Frequency.Day,
           scale: Scale.Astro,
+          archival: false,
         }}
         validationSchema={OrbitValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
@@ -37,7 +55,8 @@ const CreateOrbit: React.FC = () => {
           }
         }}
       >
-        {({ errors, touched }) => (
+        {({ values, errors, touched, setFieldValue }) => (
+          typeof console.log('values :>> ', values) == 'undefined' &&
           <Form>
             <Label>
               <span>Name:</span>
@@ -52,28 +71,82 @@ const CreateOrbit: React.FC = () => {
             {errors.description && touched.description ? <div>{errors.description}</div> : null}
 
             <Label>
-              <span>Start Time:</span>
-              <Field as={TextInput} type="text" name="hashtag" />
-            </Label>
-            {errors.startTime && touched.startTime ? <div>{errors.startTime}</div> : null}
-
-            <Label>
-              <span>End Time:</span>
-              <Field as={TextInput} type="text" name="hashtag" />
-            </Label>
-            {errors.endTime && touched.endTime ? <div>{errors.endTime}</div> : null}
-
-            <Label>
               <span>Frequency:</span>
-              <Field as={TextInput} type="text" name="hashtag" />
+              <Field name="frequency" >
+                {({ field }) => (
+                  <Select
+                    {...field}
+                    color={errors.frequency && touched.frequency ? "failure" : ""}
+                  >
+                    {Object.values(Frequency).map(freq =>
+                      <option value={freq}>{freq}</option>
+                    )
+                    }
+                  </Select>
+                )}
+              </Field>
             </Label>
             {errors.frequency && touched.frequency ? <div>{errors.frequency}</div> : null}
 
             <Label>
               <span>Scale:</span>
-              <Field as={TextInput} type="text" name="hashtag" />
+              <Field name="scale" >
+                {({ field }) => (
+                  <Select
+                    {...field}
+                    color={errors.scale && touched.scale ? "failure" : ""}
+                  >
+                    {Object.values(Scale).map(scale =>
+                      <option value={scale}>{scale}</option>
+                    )
+                    }
+                  </Select>
+                )}
+              </Field>
             </Label>
             {errors.scale && touched.scale ? <div>{errors.scale}</div> : null}
+
+            <Flex vertical={true}>
+              <Flex justify='space-around' align='center'>
+                <Label htmlFor='startTime'>
+                  <span>Start:</span>
+                </Label>
+                <Label htmlFor='startTime'>
+                  <span>End (archival):</span>
+                </Label>
+              </Flex>
+              <Flex justify='space-around' align='center'>
+                <Field
+                  name="startTime"
+                  type="date"
+                  component={DateInput}
+                  defaultValue={values.startTime}
+                />
+
+                <Field
+                  name="endTime"
+                  type="date"
+                  component={DateInput}
+                  disabled={(!values.archival)}
+                  defaultValue={values.endTime}
+                />
+              </Flex>
+              <Flex justify='space-around' align='center'>
+                <div></div>
+                <Field name="archival" >
+                  {({ field }) => (
+                    <Checkbox
+                      {...field}
+                      // onChange={async (e) => {  setFieldValue('archival', e.target.checked) }}
+                    >Archival?</Checkbox>
+                  )}
+                </Field>
+              </Flex>
+              <Flex justify='space-around' align='center'>
+                {errors.startTime && touched.startTime ? <div>{errors.startTime}</div> : <div></div>}
+                {errors.endTime && touched.endTime ? <div>{errors.endTime}</div> : <div></div>}
+              </Flex>
+            </Flex>
 
             <Button type="submit" className="mt-4">Create Orbit</Button>
           </Form>
