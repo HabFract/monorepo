@@ -127,9 +127,10 @@ type TimeFrame {
 
 # Frequency Enum
 enum Frequency {
-  DAY
-  HOUR
-  WEEK
+  Day
+  Week
+  Month
+  Quarter
 }
 
 # Scale Enum

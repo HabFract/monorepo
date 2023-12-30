@@ -80,19 +80,25 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "DAY",
+            "name": "Day",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "HOUR",
+            "name": "Month",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "WEEK",
+            "name": "Quarter",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "Week",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
