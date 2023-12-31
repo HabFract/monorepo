@@ -18,3 +18,7 @@ For graphql intellisense based on the schema:
 2: Install Watchman. https://facebook.github.io/watchman/docs/install
 
 If you get errors, check the output tab of your console under 'GraphQL - monorepo'
+
+## Tests:
+
+In a nix shell, run `pnpm test` from the workspace root.

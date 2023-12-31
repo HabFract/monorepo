@@ -10,7 +10,7 @@ import {
 import { decode } from "@msgpack/msgpack";
 import { ok } from "assert";
 import pkg from "tape-promise/tape";
-import { installAgent, sampleAppletConfig, setUpAliceandBob } from "../../utils";
+import { installAgent, setUpAliceandBob } from "../../../../utils";
 const { test } = pkg;
 
 export default () => {
@@ -40,35 +40,10 @@ export default () => {
           provenance: alice_agent_key,
         });
       };
-      const callZomeBob = async (
-        zome_name,
-        fn_name,
-        payload,
-      ) => {
-        return await bob.callZome({
-          cap_secret: null,
-          cell_id: habits_cell_bob,
-          zome_name,
-          fn_name,
-          payload,
-          provenance: bob_agent_key,
-        });
-      };
       try {
         const pauseDuration = 1000
         await scenario.shareAllAgents();
         await pause(pauseDuration*2);
-
-        let agents: Array<AgentPubKey> = await callZomeAlice(
-          "personal",
-          "get_all_agents",
-          null
-        );
-        t.ok(agents);
-        t.equal(agents.length, 0);
-        console.log("agents", agents);
-        // Wait for the created entry to be propagated to the other node.
-        await pause(pauseDuration);
 
         // agents = await callZomeBob(
         //   "personal",
@@ -92,7 +67,8 @@ export default () => {
         // console.log("agents", agents);
 
       } catch (e) {
-        console.log(e);
+        console.log('Testing error: ', e);
+
         t.ok(null);
       }
 

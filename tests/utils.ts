@@ -24,7 +24,7 @@ const __dirname = path.dirname(__filename);
 
 export const habits_dna = path.join(
   __dirname,
-  "dnas/habits/workdir/habits.dna"
+  "../crates/dnas/habits/workdir/habits.dna"
 );
 
 export const installAgent = async (
@@ -65,6 +65,7 @@ export const installAgent = async (
               dna: {
                 //@ts-ignore
                 modifiers: {
+                  //@ts-ignore
                   properties: {
                   },
                 },
