@@ -54,8 +54,8 @@ pub struct OrbitMetadata {
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct TimeFrame {
-    pub start_time: u32,
-    pub end_time: Option<u32>,
+    pub start_time: u64,
+    pub end_time: Option<u64>,
 }
 
 pub fn validate_create_orbit(

@@ -18,6 +18,17 @@ import pkg from "tape-promise/tape";
 import { setUpAliceandBob } from "../../../../utils";
 const { test } = pkg;
 
+function aSphere(overrides?): any {
+  return {
+      id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '14830037-c822-4498-8463-d3354c2fce66',
+      metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : {
+        description: "This is a nice sphere",
+        hashtag: 'TheBestSphere',
+      },
+      name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'est',
+  };
+}
+
 const anOrbit = (overrides?) => {
   return {
     frequency:
@@ -89,11 +100,10 @@ export default () => {
         const createOrbitResponse = await callZomeAlice(
           "personal",
           "create_orbit",
-          anOrbit()
+          anOrbit({sphereHash: encodeHashToBase64(hash)})
         );
-        // t.equal(agents.length, 1);
-        // t.equal(encodeHashToBase64(agents[0]), encodeHashToBase64(bob_agent_key));
-        // console.log("agents", agents);
+        t.ok(createOrbitResponse, 'an Orbit was created');
+        
       } catch (e) {
         // console.log("Testing error: ", e);
 
@@ -115,14 +125,4 @@ export default () => {
     });
   });
 };
-function aSphere(overrides?): any {
-  return {
-      id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '14830037-c822-4498-8463-d3354c2fce66',
-      metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : {
-        description: "This is a nice sphere",
-        hashtag: 'TheBestSphere',
-      },
-      name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'est',
-  };
-}
 
