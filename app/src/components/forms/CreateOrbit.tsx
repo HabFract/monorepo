@@ -3,15 +3,12 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { DateTime } from "luxon"
 
-
-import { Checkbox, DatePicker, Flex } from 'antd';
-const { RangePicker } = DatePicker;
-
-import { Button, TextInput, Label, Select } from 'flowbite-react';
-import { Frequency, Scale, useCreateOrbitMutation, useGetOrbitsQuery } from '../../graphql/generated';
-import { extractEdges } from '../../graphql/utils';
-import { boolean, mixed } from 'yup';
+import { Checkbox, Flex } from 'antd';
 import DateInput from './input/DatePicker';
+import { Button, TextInput, Label, Select } from 'flowbite-react';
+
+import { Frequency, Scale, useCreateOrbitMutation, useGetOrbitsQuery } from '../../graphql/generated';
+import { boolean, mixed } from 'yup';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -27,8 +24,12 @@ const OrbitValidationSchema = Yup.object().shape({
     .required('Choose a scale'),
   archival: boolean(),
 });
+interface CreateOrbitProps {
+  sphereId: string; // Link to a sphere
+  parentOrbitId: string | null; // Link to a parent Orbit to create hierarchies
+}
 
-const CreateOrbit: React.FC = () => {
+const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereId, parentOrbitId = null }: CreateOrbitProps) => {
   const { data: orbits, loading, error } = useGetOrbitsQuery();
   const [addOrbit] = useCreateOrbitMutation();
   // loading ? "" : console.log('orbit action hashes :>> ', extractEdges(orbits?.orbits).map(orbit => orbit.id));
@@ -50,7 +51,7 @@ const CreateOrbit: React.FC = () => {
           try {
             if(!values.archival) delete values.endTime;
             delete values.archival;
-            await addOrbit({ variables: { variables: { ...values, sphereEntryHashB64: '' } } });
+            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereId, parentHash: parentOrbitId } } });
             setSubmitting(false);
           } catch (error) {
             console.error(error);

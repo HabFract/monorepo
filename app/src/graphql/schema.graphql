@@ -115,14 +115,16 @@ type OrbitEdge {
 type Orbit implements Node {
   id: ID!
   name: String!
-  timeframe: TimeFrame!
-  sphereEntryHashB64: String!
+  sphereHash: String!
+  parentHash: String!
+  frequency: Frequency!
+  scale: Scale!
   metadata: OrbitMetaData
 }
 
 type TimeFrame {
-  startTime: DateTime!
-  endTime: DateTime!
+  startTime: Float!
+  endTime: Float
 }
 
 # Frequency Enum
@@ -142,8 +144,7 @@ enum Scale {
 
 type OrbitMetaData {
   description: String
-  frequency: Frequency!
-  scale: Scale!
+  timeframe: TimeFrame!
 }
 
 # Orbit Input/Outputs
@@ -154,7 +155,8 @@ input OrbitCreateUpdateParams {
   description: String
   frequency: Frequency!
   scale: Scale!
-  sphereEntryHashB64: String!
+  sphereHash: String!
+  parentHash: String!
 }
 
 type OrbitCreateResponse {
