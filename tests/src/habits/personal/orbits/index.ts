@@ -1,4 +1,4 @@
-import { anOrbit } from './../../../../../app/src/graphql/generated/mocks';
+import { anOrbit } from '../../../../../../app/src/graphql/generated/mocks';
 import { DnaSource, Record, ActionHash, EntryHash, AppEntryDef, Create, AgentPubKey, encodeHashToBase64 } from "@holochain/client";
 
 import {
