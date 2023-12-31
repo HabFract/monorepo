@@ -1,16 +1,14 @@
+import { anOrbit } from './../../../../../app/src/graphql/generated/mocks';
 import { DnaSource, Record, ActionHash, EntryHash, AppEntryDef, Create, AgentPubKey, encodeHashToBase64 } from "@holochain/client";
+
 import {
   pause,
   runScenario,
-  Scenario,
-  createConductor,
-  addAllAgentsToAllConductors,
-  cleanAllConductors,
 } from "@holochain/tryorama";
 import { decode } from "@msgpack/msgpack";
 import { ok } from "assert";
 import pkg from "tape-promise/tape";
-import { installAgent, setUpAliceandBob } from "../../../../utils";
+import { setUpAliceandBob } from "../../../../utils";
 const { test } = pkg;
 
 export default () => {
@@ -45,23 +43,12 @@ export default () => {
         await scenario.shareAllAgents();
         await pause(pauseDuration*2);
 
-        // agents = await callZomeBob(
-        //   "personal",
-        //   "get_all_agents",
-        //   null
-        // );
-        // t.ok(agents);
-        // t.equal(agents.length, 1);
-        // t.equal(encodeHashToBase64(agents[0]), encodeHashToBase64(alice_agent_key));
-        // console.log("agents", agents);
-        // await pause(pauseDuration);
-
-        // agents = await callZomeAlice(
-        //   "personal",
-        //   "get_all_agents",
-        //   null
-        // );
-        // t.ok(agents);
+        const createOrbitResponse = await callZomeAlice(
+          "personal",
+          "create_orbit",
+          anOrbit
+        );
+        t.ok(anOrbit, "A response comes back");
         // t.equal(agents.length, 1);
         // t.equal(encodeHashToBase64(agents[0]), encodeHashToBase64(bob_agent_key));
         // console.log("agents", agents);
