@@ -2,6 +2,7 @@ import bindSchema, { autoConnect, APIOptions, DNAIdMappings } from '.'
 import { InMemoryCache, ApolloClient, from } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
 import { SchemaLink } from '@apollo/client/link/schema'
+import { decode } from '@msgpack/msgpack'
 
 // Same as OpenConnectionOptions but for external client where dnaConfig may be autodetected
 interface AutoConnectionOptions {
@@ -12,12 +13,11 @@ export type ClientOptions = APIOptions & AutoConnectionOptions
 
 const errorLink = onError(
   ({ graphQLErrors, networkError, response }) => {
-    console.log('error response :>> ', response)
 
     if (graphQLErrors)
       graphQLErrors.forEach(({ message, locations, path }) =>
         console.log(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+          `[GraphQL error]: DeserializedBuffer: ${JSON.stringify(decode(JSON.parse("[" + message.match(/Deserialize\(\[(.*?)\]\)/)[1] + "]")), null, 2)}, Message: ${message}, Location: ${locations}, Path: ${path}`,
         ),
       )
     if (networkError) console.log(`[Network error]: ${networkError}`)

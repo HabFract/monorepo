@@ -308,6 +308,7 @@ const zomeFunction =
   ): BoundZomeFn<InputType, Promise<OutputType>> =>
   async (args): Promise<OutputType> => {
     const { callZome } = await getConnection(socketURI)
+    console.log('args :>> ', args);
     const res = await callZome(
       {
         cap_secret: null,
