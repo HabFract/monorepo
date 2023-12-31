@@ -77,11 +77,13 @@ export type Node = {
 
 export type Orbit = Node & {
   __typename?: 'Orbit';
+  frequency: Frequency;
   id: Scalars['ID']['output'];
   metadata?: Maybe<OrbitMetaData>;
   name: Scalars['String']['output'];
-  sphereEntryHashB64: Scalars['String']['output'];
-  timeframe: TimeFrame;
+  parentHash?: Maybe<Scalars['String']['output']>;
+  scale: Scale;
+  sphereHash: Scalars['String']['output'];
 };
 
 export type OrbitConnection = {
@@ -97,11 +99,12 @@ export type OrbitCreateResponse = {
 
 export type OrbitCreateUpdateParams = {
   description?: InputMaybe<Scalars['String']['input']>;
-  endTime: Scalars['Float']['input'];
+  endTime?: InputMaybe<Scalars['Float']['input']>;
   frequency: Frequency;
   name: Scalars['String']['input'];
+  parentHash?: InputMaybe<Scalars['String']['input']>;
   scale: Scale;
-  sphereEntryHashB64: Scalars['String']['input'];
+  sphereHash: Scalars['String']['input'];
   startTime: Scalars['Float']['input'];
 };
 
@@ -114,8 +117,7 @@ export type OrbitEdge = {
 export type OrbitMetaData = {
   __typename?: 'OrbitMetaData';
   description?: Maybe<Scalars['String']['output']>;
-  frequency: Frequency;
-  scale: Scale;
+  timeframe: TimeFrame;
 };
 
 export type PageInfo = {
@@ -219,8 +221,8 @@ export type SphereMetaData = {
 
 export type TimeFrame = {
   __typename?: 'TimeFrame';
-  endTime: Scalars['DateTime']['output'];
-  startTime: Scalars['DateTime']['output'];
+  endTime?: Maybe<Scalars['Float']['output']>;
+  startTime: Scalars['Float']['output'];
 };
 
 export type UserProfileCreateUpdateParams = {
@@ -263,7 +265,7 @@ export type GetOrbitQueryVariables = Exact<{
 }>;
 
 
-export type GetOrbitQuery = { __typename?: 'Query', orbit: { __typename?: 'Orbit', name: string, sphereEntryHashB64: string, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, frequency: Frequency, scale: Scale } | null, timeframe: { __typename?: 'TimeFrame', startTime: any, endTime: any } } };
+export type GetOrbitQuery = { __typename?: 'Query', orbit: { __typename?: 'Orbit', name: string, sphereHash: string, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
 
 export type GetOrbitHierarchyQueryVariables = Exact<{
   orbitEntryHashB64?: InputMaybe<Scalars['String']['input']>;
@@ -277,14 +279,14 @@ export type GetOrbitsQueryVariables = Exact<{
 }>;
 
 
-export type GetOrbitsQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, name: string, sphereEntryHashB64: string, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, frequency: Frequency, scale: Scale } | null, timeframe: { __typename?: 'TimeFrame', startTime: any, endTime: any } } }> } };
+export type GetOrbitsQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, name: string, sphereHash: string, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } }> } };
 
 export type GetOrbitsBySphereQueryVariables = Exact<{
   sphereEntryHashB64?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetOrbitsBySphereQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, name: string, sphereEntryHashB64: string, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, frequency: Frequency, scale: Scale } | null, timeframe: { __typename?: 'TimeFrame', startTime: any, endTime: any } } }> } };
+export type GetOrbitsBySphereQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, name: string, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } }> } };
 
 export type GetSphereQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -441,15 +443,15 @@ export const GetOrbitDocument = gql`
     query getOrbit($id: ID!) {
   orbit(id: $id) {
     name
-    sphereEntryHashB64
+    sphereHash
+    frequency
+    scale
     metadata {
       description
-      frequency
-      scale
-    }
-    timeframe {
-      startTime
-      endTime
+      timeframe {
+        startTime
+        endTime
+      }
     }
   }
 }
@@ -532,15 +534,15 @@ export const GetOrbitsDocument = gql`
       node {
         id
         name
-        sphereEntryHashB64
+        sphereHash
+        frequency
+        scale
         metadata {
           description
-          frequency
-          scale
-        }
-        timeframe {
-          startTime
-          endTime
+          timeframe {
+            startTime
+            endTime
+          }
         }
       }
     }
@@ -587,16 +589,15 @@ export const GetOrbitsBySphereDocument = gql`
       node {
         id
         name
+        frequency
+        scale
         metadata {
           description
-          frequency
-          scale
+          timeframe {
+            startTime
+            endTime
+          }
         }
-        timeframe {
-          startTime
-          endTime
-        }
-        sphereEntryHashB64
       }
     }
   }

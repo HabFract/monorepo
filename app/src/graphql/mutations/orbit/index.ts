@@ -17,13 +17,18 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
 
   const createOrbit: createHandler = async (
     _,
-    { orbit: { name, startTime, endTime, sphereEntryHashB64, ...metadata } }
+    { orbit: { name, description, startTime, endTime, sphereHash, parentHash, frequency, scale } }
   ) => {
     return runCreate({
       name,
-      timeframe: { startTime, endTime },
-      sphereEntryHashB64,
-      metadata,
+      sphereHash,
+      parentHash,
+      metadata: {
+        timeframe: { startTime, endTime },
+        description
+      },
+      frequency,
+      scale
     });
   };
 

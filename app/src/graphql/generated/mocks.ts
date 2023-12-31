@@ -25,11 +25,13 @@ export const aNode = (overrides?: Partial<Node>): Node => {
 
 export const anOrbit = (overrides?: Partial<Orbit>): Orbit => {
     return {
+        frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 'cb6d9b13-cc5b-4d03-ab32-b7e56988c4e1',
         metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : anOrbitMetaData(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'tempora',
-        sphereEntryHashB64: overrides && overrides.hasOwnProperty('sphereEntryHashB64') ? overrides.sphereEntryHashB64! : 'quibusdam',
-        timeframe: overrides && overrides.hasOwnProperty('timeframe') ? overrides.timeframe! : aTimeFrame(),
+        parentHash: overrides && overrides.hasOwnProperty('parentHash') ? overrides.parentHash! : 'error',
+        scale: overrides && overrides.hasOwnProperty('scale') ? overrides.scale! : Scale.Astro,
+        sphereHash: overrides && overrides.hasOwnProperty('sphereHash') ? overrides.sphereHash! : 'ducimus',
     };
 };
 
@@ -52,8 +54,9 @@ export const anOrbitCreateUpdateParams = (overrides?: Partial<OrbitCreateUpdateP
         endTime: overrides && overrides.hasOwnProperty('endTime') ? overrides.endTime! : 7.66,
         frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'non',
+        parentHash: overrides && overrides.hasOwnProperty('parentHash') ? overrides.parentHash! : 'voluptatibus',
         scale: overrides && overrides.hasOwnProperty('scale') ? overrides.scale! : Scale.Astro,
-        sphereEntryHashB64: overrides && overrides.hasOwnProperty('sphereEntryHashB64') ? overrides.sphereEntryHashB64! : 'nemo',
+        sphereHash: overrides && overrides.hasOwnProperty('sphereHash') ? overrides.sphereHash! : 'fugiat',
         startTime: overrides && overrides.hasOwnProperty('startTime') ? overrides.startTime! : 5.37,
     };
 };
@@ -68,8 +71,7 @@ export const anOrbitEdge = (overrides?: Partial<OrbitEdge>): OrbitEdge => {
 export const anOrbitMetaData = (overrides?: Partial<OrbitMetaData>): OrbitMetaData => {
     return {
         description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'mollitia',
-        frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,
-        scale: overrides && overrides.hasOwnProperty('scale') ? overrides.scale! : Scale.Astro,
+        timeframe: overrides && overrides.hasOwnProperty('timeframe') ? overrides.timeframe! : aTimeFrame(),
     };
 };
 
@@ -160,8 +162,8 @@ export const aSphereMetaData = (overrides?: Partial<SphereMetaData>): SphereMeta
 
 export const aTimeFrame = (overrides?: Partial<TimeFrame>): TimeFrame => {
     return {
-        endTime: overrides && overrides.hasOwnProperty('endTime') ? overrides.endTime! : 'facilis',
-        startTime: overrides && overrides.hasOwnProperty('startTime') ? overrides.startTime! : 'quae',
+        endTime: overrides && overrides.hasOwnProperty('endTime') ? overrides.endTime! : 6.44,
+        startTime: overrides && overrides.hasOwnProperty('startTime') ? overrides.startTime! : 0.44,
     };
 };
 

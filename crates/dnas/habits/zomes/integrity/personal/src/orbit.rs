@@ -1,19 +1,19 @@
-use hdi::prelude::{holo_hash::EntryHashB64, *};
+use hdi::prelude::{holo_hash::{EntryHash, EntryHashB64}, *};
 
 #[hdk_entry_helper]
 #[derive(Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Orbit {
     pub name: String,
-    pub parent_hash: Option<EntryHashB64>,
-    pub sphere_hash: EntryHashB64,
+    pub parent_hash: Option<EntryHash>,
+    pub sphere_hash: EntryHash,
     pub frequency: String,
     pub scale: String,
     pub metadata: Option<OrbitMetadata>,
 }
 
 impl Orbit {
-    fn new(name: &str, parent_hash: Option<EntryHashB64>, sphere_hash: EntryHashB64, frequency: String, scale: String, metadata: Option<OrbitMetadata>) -> Self {
+    fn new(name: &str, parent_hash: Option<EntryHash>, sphere_hash: EntryHash, frequency: String, scale: String, metadata: Option<OrbitMetadata>) -> Self {
         Orbit {
             name: name.to_string(),
             parent_hash,
@@ -54,8 +54,8 @@ pub struct OrbitMetadata {
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct TimeFrame {
-    pub start_date: u32,
-    pub end_date: Option<u32>,
+    pub start_time: u32,
+    pub end_time: Option<u32>,
 }
 
 pub fn validate_create_orbit(

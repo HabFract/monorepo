@@ -30,6 +30,7 @@ interface CreateOrbitProps {
 }
 
 const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereId, parentOrbitId = null }: CreateOrbitProps) => {
+  console.log('sphereId :>> ', sphereId);
   const { data: orbits, loading, error } = useGetOrbitsQuery();
   const [addOrbit] = useCreateOrbitMutation();
   // loading ? "" : console.log('orbit action hashes :>> ', extractEdges(orbits?.orbits).map(orbit => orbit.id));
@@ -51,7 +52,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereId, parentOrbitId = nul
           try {
             if(!values.archival) delete values.endTime;
             delete values.archival;
-            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereId, parentHash: parentOrbitId } } });
+            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereId, parentHash: parentOrbitId ? parentOrbitId : undefined } } });
             setSubmitting(false);
           } catch (error) {
             console.error(error);
