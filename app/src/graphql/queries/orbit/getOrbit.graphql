@@ -1,15 +1,15 @@
 query getOrbit($id: ID!) {
   orbit(id: $id) {
     name
-    sphereEntryHashB64
+    sphereHash
+    frequency
+      scale
     metadata {
       description
-      frequency
-      scale
-    }
-    timeframe {
-      startTime
-      endTime
+      timeframe {
+        startTime
+        endTime
+      }
     }
   }
 }

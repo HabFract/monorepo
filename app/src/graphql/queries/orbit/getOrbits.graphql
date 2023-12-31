@@ -4,15 +4,15 @@ query getOrbits($sphereEntryHashB64: String) {
       node {
         id
         name
-        sphereEntryHashB64
+        sphereHash
+        frequency
+        scale
         metadata {
           description
-          frequency
-          scale
-        }
-        timeframe {
-          startTime
-          endTime
+          timeframe {
+            startTime
+            endTime
+          }
         }
       }
     }
