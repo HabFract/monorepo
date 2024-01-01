@@ -1,43 +1,49 @@
 button {
-  color: #2d3436;
+  color: #000;
 }
 
 .btn-primary {
-  @apply bg-primary-transparent border-primary border-4;
+  @apply bg-primary-transparent border-primary border-2;
 }
 .btn-primary:hover {
   @apply text-primary-hover-text bg-primary-hover-bg border-primary !important;
 }
 .btn-secondary {
-  @apply bg-secondary-transparent border-secondary border-4;
+  @apply bg-secondary-transparent border-secondary border-2;
 }
 .btn-secondary:hover {
   @apply text-secondary-hover-text bg-secondary-hover-bg border-secondary !important;
 }
 .btn-warn {
-  @apply bg-warn-transparent border-warn border-4;
+  @apply bg-warn-transparent border-warn border-2;
 }
 .btn-warn:hover {
   @apply text-warn-hover-text bg-warn-hover-bg border-warn !important;
 }
 .btn-danger {
-  @apply bg-danger-transparent border-danger border-4;
+  @apply bg-danger-transparent border-danger border-2;
 }
 .btn-danger:hover {
   @apply text-danger-hover-text bg-danger-hover-bg border-danger !important;
 }
 .btn-neutral {
-  @apply bg-neutral-transparent border-neutral border-4;
+  @apply bg-neutral-transparent border-neutral border-2;
 }
 .btn-neutral:hover {
   @apply text-neutral-hover-text bg-neutral-hover-bg border-neutral !important;
 }
+.btn-info {
+  @apply bg-info-transparent border-info border-2;
+}
+.btn-info:hover {
+  @apply text-info-hover-text bg-info-hover-bg border-info !important;
+}
 
 .btn:active {
-  outline: 1px solid #40a9ff;
+  outline: 1px solid #2d3436;
 }
 .btn:focus {
-  outline: 1px dashed #40a9ff;
+  outline: 1px dashed #2d3436;
 }
 
 /* Hide icon test on smaller viewports */
