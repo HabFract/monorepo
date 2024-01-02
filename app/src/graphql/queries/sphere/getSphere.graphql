@@ -1,6 +1,7 @@
 query getSphere($id: ID!) {
   sphere(id: $id) {
     id
+    eH
     name
     metadata {
       description

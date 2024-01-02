@@ -28,6 +28,7 @@ type PageInfo {
 
 interface Node {
   id: ID!
+  eH: String!
 }
 
 # Holochain Specific Types
@@ -79,6 +80,7 @@ type SphereEdge {
 # Sphere Types
 type Sphere implements Node {
   id: ID!
+  eH: String!
   name: String!
   metadata: SphereMetaData
 }
@@ -114,6 +116,7 @@ type OrbitEdge {
 # Orbit Types
 type Orbit implements Node {
   id: ID!
+  eH: String!
   name: String!
   sphereHash: String!
   parentHash: String

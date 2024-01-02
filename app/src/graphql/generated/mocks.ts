@@ -19,12 +19,14 @@ export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
 
 export const aNode = (overrides?: Partial<Node>): Node => {
     return {
+        eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'iure',
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '95bb2f34-6c86-495f-bfdc-f25b025cdba5',
     };
 };
 
 export const anOrbit = (overrides?: Partial<Orbit>): Orbit => {
     return {
+        eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'exercitationem',
         frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 'cb6d9b13-cc5b-4d03-ab32-b7e56988c4e1',
         metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : anOrbitMetaData(),
@@ -119,6 +121,7 @@ export const aResponsePayload = (overrides?: Partial<ResponsePayload>): Response
 
 export const aSphere = (overrides?: Partial<Sphere>): Sphere => {
     return {
+        eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'libero',
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '14830037-c822-4498-8463-d3354c2fce66',
         metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : aSphereMetaData(),
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'est',

@@ -3,6 +3,7 @@ query getOrbits($sphereEntryHashB64: String) {
     edges {
       node {
         id
+        eH
         name
         sphereHash
         frequency

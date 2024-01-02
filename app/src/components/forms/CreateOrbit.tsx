@@ -25,15 +25,15 @@ const OrbitValidationSchema = Yup.object().shape({
   archival: boolean(),
 });
 interface CreateOrbitProps {
-  sphereId: string; // Link to a sphere
-  parentOrbitId: string | null; // Link to a parent Orbit to create hierarchies
+  sphereEh: string; // Link to a sphere
+  parentOrbitEh: string | null; // Link to a parent Orbit to create hierarchies
 }
 
-const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereId, parentOrbitId }: CreateOrbitProps) => {
-  console.log('sphereId :>> ', sphereId);
+const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: CreateOrbitProps) => {
+  console.log('sphereEh :>> ', sphereEh);
   const { data: orbits, loading, error } = useGetOrbitsQuery();
   const [addOrbit] = useCreateOrbitMutation();
-  // loading ? "" : console.log('orbit action hashes :>> ', extractEdges(orbits?.orbits).map(orbit => orbit.id));
+  
   return (
     <div className="p-4">
       <h2 className="mb-4 text-lg font-semibold text-gray-700">Create Orbit</h2>
@@ -52,7 +52,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereId, parentOrbitId }: Cr
           try {
             if(!values.archival) delete values.endTime;
             delete values.archival;
-            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereId, parentHash: parentOrbitId ? parentOrbitId : undefined } } });
+            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : undefined } } });
             setSubmitting(false);
           } catch (error) {
             console.error(error);

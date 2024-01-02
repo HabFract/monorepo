@@ -37,8 +37,8 @@ function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
   return [...spheres.edges!.map((sphere: SphereEdge, _idx: number) => {
     return getItem(`${sphere.node.name}`, sphere.node.id, null,
       [
-        getItem('Orbit List', 'list-orbits-' + sphere.node.id, null),
-        getItem('Create Orbit', 'add-orbit-' + sphere.node.id, null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'
+        getItem('Orbit List', 'list-orbits-' + sphere.node.eH, null),
+        getItem('Create Orbit', 'add-orbit-' + sphere.node.eH, null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'
       ])
   }),
   getItem('Add Sphere', 'add-sphere', <PlusCircleOutlined />)] 
@@ -71,13 +71,14 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
         break;
 
       case !!e.key.match(/add\-orbit/):
-        const addOrbitSphereId = e.key.split('add-orbit-')[1];
-        transition('CreateOrbit', { sphereId: addOrbitSphereId })
+        const addOrbitSphereEh = e.key.split('add-orbit-')[1];
+        transition('CreateOrbit', { sphereEh: addOrbitSphereEh })
         break;
 
       case !!e.key.match(/list\-orbits/):
-        const sphereId = e.key.split('list-orbits-')[1];
-        transition('ListOrbits', { sphereId })
+        const sphereEh = e.key.split('list-orbits-')[1];
+        console.log('sphereEh :>> ', sphereEh);
+        transition('ListOrbits', { sphereEh })
         break;
 
       default:

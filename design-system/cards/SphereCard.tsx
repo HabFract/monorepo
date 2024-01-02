@@ -72,7 +72,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales }
               </Button>
             </div>
             <div className="sphere-actions-vis col-c">
-              {!isHeader && <Button onClick={() => transition('ListOrbits', { sphereId: sphere.id })} className="btn responsive btn-neutral w-full" size="sm">
+              {!isHeader && <Button onClick={() => transition('ListOrbits', { sphereEh: sphere.eH })} className="btn responsive btn-neutral w-full" size="sm">
                 <OrderedListOutlined className="btn-icon" />
                 <span>Orbits</span>
               </Button>}

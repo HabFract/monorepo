@@ -8,35 +8,39 @@ import ListSortFilter from './ListSortFilter';
 
 import OrbitCard from '../../../../design-system/cards/OrbitCard';
 import SphereCard from '../../../../design-system/cards/SphereCard';
-import { Orbit, OrbitMetaData, OrbitEdge, useGetOrbitsQuery, useGetSphereLazyQuery } from '../../graphql/generated';
+import { Orbit, useGetOrbitsQuery, useGetSphereLazyQuery } from '../../graphql/generated';
+import { extractEdges } from '../../graphql/utils';
 
 interface ListOrbitsProps {
-  sphereId?: string; // Optional prop to filter orbits by sphere
+  sphereEh?: string; // Optional prop to filter orbits by sphere
 }
 
-const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
-  
-  const { loading: loadingOrbits, error: errorOrbits, data: dataOrbits } = useGetOrbitsQuery({
-    variables: { sphereEntryHashB64: sphereId },
-    skip: !sphereId, // Skip the query if no sphereId is provided
-  });
-  console.log('sphereId :>> ', sphereId);
-
+const ListOrbits: React.FC = ({ sphereEh }: ListOrbitsProps) => {
   const [getSphere, { loading: loadingSphere, data: dataSphere }] = useGetSphereLazyQuery({
-    variables: { id: sphereId as string },
+    variables: { id: sphereEh as string },
   });
 
-  // Fetch sphere details when component mounts if sphereId is provided
+  const { loading: loadingOrbits, error: errorOrbits, data } = useGetOrbitsQuery({
+    variables: { sphereEntryHashB64: sphereEh },
+    skip: !sphereEh, // Skip the query if no sphereEh is provided
+  });
+
+  // Fetch sphere details when component mounts if sphereEh is provided
   useEffect(() => {
-    if (sphereId) {
+    if (sphereEh) {
       getSphere();
     }
-  }, [sphereId, getSphere]);
+  }, [sphereEh]);
 
   const [listSortFilter] = useAtom(listSortFilterAtom);
-
+  
   const scaleValues = { Sub: 1, Atom: 2, Astro: 3 };
 
+  if (loadingOrbits || loadingSphere) return <p>Loading...</p>;
+  if (errorOrbits) return <p>Error : {errorOrbits.message}</p>;
+  if(!data?.orbits) return <></>;
+  const orbits = extractEdges(data.orbits);
+  
   const sortOrbits = (a: Orbit, b: Orbit) => {
     let propertyA;
     let propertyB;
@@ -46,12 +50,11 @@ const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
       propertyA = a ? a[listSortFilter.sortCriteria as keyof Orbit] : 0
       propertyB = b ? b[listSortFilter.sortCriteria as keyof Orbit] : 0
     } else {
-      propertyA = a?.metadata![listSortFilter.sortCriteria as keyof OrbitMetaData];
-      propertyB = b?.metadata![listSortFilter.sortCriteria as keyof OrbitMetaData];
+      propertyA = a?.metadata![listSortFilter.sortCriteria as any];
+      propertyB = b?.metadata![listSortFilter.sortCriteria as any];
       propertyA = scaleValues[propertyA] || 0; // Assign a default value if propertyA is undefined
       propertyB = scaleValues[propertyB] || 0; // Assign a default value if propertyB is undefined
     }
-
 
     if (listSortFilter.sortOrder === 'lowestToGreatest') {
       return propertyA < propertyB ? -1 : propertyA > propertyB ? 1 : 0;
@@ -60,17 +63,14 @@ const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
     }
   };
 
-  if (loadingOrbits || loadingSphere) return <p>Loading...</p>;
-  if (errorOrbits) return <p>Error : {errorOrbits.message}</p>;
   return (
     <div className='layout orbits'>
       <PageHeader title="Orbit List" />
       <ListSortFilter label={'for the Sphere'} />
-      {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} orbitScales={dataOrbits.orbits.edges.map((orbitEdge: OrbitEdge) => orbitEdge.node.metadata?.scale )} />// change this to dataSphere in real query
-      }
+      {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} orbitScales={orbits.map((orbit: Orbit) => orbit?.scale )} />}
       <div className="orbits-list">
-        {[...dataOrbits.orbits.edges].sort((edgeA: OrbitEdge, edgeB: OrbitEdge) => sortOrbits(edgeA.node, edgeB.node))
-          .map(({ node }: OrbitEdge) => <OrbitCard key={node.id} orbit={node} />)}
+        {orbits.sort(sortOrbits)
+          .map((orbit: Orbit) => <OrbitCard key={orbit.id} orbit={orbit} />)}
       </div>
     </div>
   );

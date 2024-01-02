@@ -21,7 +21,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
         </div>
         <div className="orbit-timeframe col-c text-sm p-1">
           <span className="font-semibold">Last tracked:</span>
-          <p>{new Date(orbit?.timeframe.startTime).toLocaleDateString('en-GB')}</p>
+          <p>{new Date(orbit?.metadata!.timeframe?.startTime)?.toLocaleDateString('en-GB')}</p>
         </div>
       </header>
       <main className="card-body-bg col-c">
@@ -48,7 +48,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
             </div>
           </div>
           <div className="mini-vis col-c">
-            {orbit?.metadata?.scale && <OrbitVis scale={orbit.metadata.scale} />}
+            {orbit?.scale && <OrbitVis scale={orbit.scale} />}
           </div>
         </div>
       </main>

@@ -72,11 +72,13 @@ export type MutationUpdateSphereArgs = {
 };
 
 export type Node = {
+  eH: Scalars['String']['output'];
   id: Scalars['ID']['output'];
 };
 
 export type Orbit = Node & {
   __typename?: 'Orbit';
+  eH: Scalars['String']['output'];
   frequency: Frequency;
   id: Scalars['ID']['output'];
   metadata?: Maybe<OrbitMetaData>;
@@ -185,6 +187,7 @@ export enum Scale {
 
 export type Sphere = Node & {
   __typename?: 'Sphere';
+  eH: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   metadata?: Maybe<SphereMetaData>;
   name: Scalars['String']['output'];
@@ -265,7 +268,7 @@ export type GetOrbitQueryVariables = Exact<{
 }>;
 
 
-export type GetOrbitQuery = { __typename?: 'Query', orbit: { __typename?: 'Orbit', name: string, sphereHash: string, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
+export type GetOrbitQuery = { __typename?: 'Query', orbit: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
 
 export type GetOrbitHierarchyQueryVariables = Exact<{
   orbitEntryHashB64?: InputMaybe<Scalars['String']['input']>;
@@ -279,26 +282,19 @@ export type GetOrbitsQueryVariables = Exact<{
 }>;
 
 
-export type GetOrbitsQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, name: string, sphereHash: string, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } }> } };
-
-export type GetOrbitsBySphereQueryVariables = Exact<{
-  sphereEntryHashB64?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type GetOrbitsBySphereQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, name: string, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } }> } };
+export type GetOrbitsQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } }> } };
 
 export type GetSphereQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type GetSphereQuery = { __typename?: 'Query', sphere: { __typename?: 'Sphere', id: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, hashtag?: string | null } | null } };
+export type GetSphereQuery = { __typename?: 'Query', sphere: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, hashtag?: string | null } | null } };
 
 export type GetSpheresQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSpheresQuery = { __typename?: 'Query', spheres: { __typename?: 'SphereConnection', edges: Array<{ __typename?: 'SphereEdge', node: { __typename?: 'Sphere', id: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, hashtag?: string | null } | null } }> } };
+export type GetSpheresQuery = { __typename?: 'Query', spheres: { __typename?: 'SphereConnection', edges: Array<{ __typename?: 'SphereEdge', node: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, hashtag?: string | null } | null } }> } };
 
 
 export const CreateOrbitDocument = gql`
@@ -442,6 +438,8 @@ export type UpdateSphereMutationOptions = Apollo.BaseMutationOptions<UpdateSpher
 export const GetOrbitDocument = gql`
     query getOrbit($id: ID!) {
   orbit(id: $id) {
+    id
+    eH
     name
     sphereHash
     frequency
@@ -533,6 +531,7 @@ export const GetOrbitsDocument = gql`
     edges {
       node {
         id
+        eH
         name
         sphereHash
         frequency
@@ -582,64 +581,11 @@ export type GetOrbitsQueryHookResult = ReturnType<typeof useGetOrbitsQuery>;
 export type GetOrbitsLazyQueryHookResult = ReturnType<typeof useGetOrbitsLazyQuery>;
 export type GetOrbitsSuspenseQueryHookResult = ReturnType<typeof useGetOrbitsSuspenseQuery>;
 export type GetOrbitsQueryResult = Apollo.QueryResult<GetOrbitsQuery, GetOrbitsQueryVariables>;
-export const GetOrbitsBySphereDocument = gql`
-    query getOrbitsBySphere($sphereEntryHashB64: String) {
-  orbits(sphereEntryHashB64: $sphereEntryHashB64) {
-    edges {
-      node {
-        id
-        name
-        frequency
-        scale
-        metadata {
-          description
-          timeframe {
-            startTime
-            endTime
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetOrbitsBySphereQuery__
- *
- * To run a query within a React component, call `useGetOrbitsBySphereQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetOrbitsBySphereQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetOrbitsBySphereQuery({
- *   variables: {
- *      sphereEntryHashB64: // value for 'sphereEntryHashB64'
- *   },
- * });
- */
-export function useGetOrbitsBySphereQuery(baseOptions?: Apollo.QueryHookOptions<GetOrbitsBySphereQuery, GetOrbitsBySphereQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetOrbitsBySphereQuery, GetOrbitsBySphereQueryVariables>(GetOrbitsBySphereDocument, options);
-      }
-export function useGetOrbitsBySphereLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrbitsBySphereQuery, GetOrbitsBySphereQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetOrbitsBySphereQuery, GetOrbitsBySphereQueryVariables>(GetOrbitsBySphereDocument, options);
-        }
-export function useGetOrbitsBySphereSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetOrbitsBySphereQuery, GetOrbitsBySphereQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetOrbitsBySphereQuery, GetOrbitsBySphereQueryVariables>(GetOrbitsBySphereDocument, options);
-        }
-export type GetOrbitsBySphereQueryHookResult = ReturnType<typeof useGetOrbitsBySphereQuery>;
-export type GetOrbitsBySphereLazyQueryHookResult = ReturnType<typeof useGetOrbitsBySphereLazyQuery>;
-export type GetOrbitsBySphereSuspenseQueryHookResult = ReturnType<typeof useGetOrbitsBySphereSuspenseQuery>;
-export type GetOrbitsBySphereQueryResult = Apollo.QueryResult<GetOrbitsBySphereQuery, GetOrbitsBySphereQueryVariables>;
 export const GetSphereDocument = gql`
     query getSphere($id: ID!) {
   sphere(id: $id) {
     id
+    eH
     name
     metadata {
       description
@@ -687,6 +633,7 @@ export const GetSpheresDocument = gql`
     edges {
       node {
         id
+        eH
         name
         metadata {
           description

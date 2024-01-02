@@ -4,6 +4,7 @@ import { HAPP_DNA_NAME, HAPP_ZOME_NAME_PERSONAL_HABITS } from '../../../constant
 import { Sphere, SphereConnection } from '../../generated'
 import { createEdges } from '../../utils'
 import { EntryRecord } from '@holochain-open-dev/utils'
+import { encodeHashToBase64 } from '@holochain/client'
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   const read = mapZomeFn<ById, Sphere>(
@@ -34,9 +35,9 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       if(typeof rawRecords !== 'object' || !rawRecords?.length) return Promise.resolve(createEdges([]) as unknown as SphereConnection)
 
       const entryRecords = rawRecords!.map((record: any) => new EntryRecord<Sphere>(record));
-      // TODO: change backend fn so records are visible and complete the following line 
-      const sphereConnection = createEdges(entryRecords.map((entryRecord: EntryRecord<Sphere>) => ({...entryRecord.entry, id: entryRecord.entryHash })))  as Partial<SphereConnection> & any; // Need to resolve type errors when no pagination implemented
-      console.log('entryRecords :>> ', sphereConnection);
+
+      const sphereConnection = createEdges(entryRecords.map((entryRecord: EntryRecord<Sphere>) => ({...entryRecord.entry, id: entryRecord.actionHash, eH: encodeHashToBase64(entryRecord.entryHash) })))  as Partial<SphereConnection> & any; // Need to resolve type errors when no pagination implemented
+
       return Promise.resolve(sphereConnection)
     },
   }

@@ -66,9 +66,9 @@
   @apply font-sans text-white;
 }
 
-.orbit-card, .sphere-card {
+/* .orbit-card, .sphere-card {
   max-width: 540px;
-}
+} */
 
 .sphere-card {
   @apply flex flex-col rounded-2xl self-center rounded-xl;
