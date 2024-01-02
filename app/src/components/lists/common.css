@@ -3,7 +3,7 @@
 }
 
 .list-sort-filter {
-  @apply bg-off-white rounded-lg -mt-2;
+  @apply bg-primary-transparent rounded-lg -mt-2;
   font-size: 2rem;
   padding: 0.25rem .5rem;
   border-top-left-radius: 0;
@@ -15,7 +15,7 @@
 }
 
 .sort-filter-icon {
-  @apply text-base md:text-xl;
+  @apply text-white text-xl md:text-xl;
 }
 
 .sort-filter-label {
@@ -27,7 +27,7 @@
 }
 
 .sort-filter-icon:hover {
-  @apply text-info-hover-bg;
+  @apply text-primary-hover-bg;
   transform: scale(1.2);
   cursor: pointer;
 }

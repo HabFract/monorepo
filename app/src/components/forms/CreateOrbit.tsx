@@ -29,7 +29,7 @@ interface CreateOrbitProps {
   parentOrbitId: string | null; // Link to a parent Orbit to create hierarchies
 }
 
-const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereId, parentOrbitId = null }: CreateOrbitProps) => {
+const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereId, parentOrbitId }: CreateOrbitProps) => {
   console.log('sphereId :>> ', sphereId);
   const { data: orbits, loading, error } = useGetOrbitsQuery();
   const [addOrbit] = useCreateOrbitMutation();

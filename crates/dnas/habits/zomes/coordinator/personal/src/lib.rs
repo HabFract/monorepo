@@ -1,5 +1,7 @@
 pub mod sphere;
 pub mod orbit;
+pub mod utils;
+
 use hdk::prelude::*;
 use personal_integrity::*;
 #[hdk_extern]

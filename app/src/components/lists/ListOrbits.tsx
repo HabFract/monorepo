@@ -20,6 +20,7 @@ const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
     variables: { sphereEntryHashB64: sphereId },
     skip: !sphereId, // Skip the query if no sphereId is provided
   });
+  console.log('sphereId :>> ', sphereId);
 
   const [getSphere, { loading: loadingSphere, data: dataSphere }] = useGetSphereLazyQuery({
     variables: { id: sphereId as string },

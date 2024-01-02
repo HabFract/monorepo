@@ -25,7 +25,7 @@ impl Orbit {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Node {
     pub id: EntryHashB64,
     pub children: Vec<Box<Node>>,

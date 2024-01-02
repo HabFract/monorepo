@@ -1,4 +1,4 @@
-import { Sphere } from './../../../../../app/src/graphql/generated/index';
+import { Orbit, Sphere } from './../../../../../app/src/graphql/generated/index';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import {
   DnaSource,
@@ -65,7 +65,7 @@ const anOrbit = (overrides?) => {
 };
 
 export default () => {
-  test("Orbit CRUD", async (t) => {
+  test("Orbit Hierarchy Happy Path", async (t) => {
     await runScenario(async (scenario) => {
       const {
         alice,
@@ -91,26 +91,93 @@ export default () => {
       try {
         const pauseDuration = 1000;
         await scenario.shareAllAgents();
-        await pause(pauseDuration * 2);
+        await pause(pauseDuration);
 
         // 1. Given a Sphere has been created and we know its hash
         const hash = await setupSphere();
         t.ok(hash, "A sphere was created");
 
+        // When Alice then creates an Orbit with otherwise valid input, using the hash as a sphereHash 
         const createOrbitResponse = await callZomeAlice(
           "personal",
           "create_orbit",
           anOrbit({sphereHash: encodeHashToBase64(hash)})
         );
         t.ok(createOrbitResponse, 'an Orbit was created');
+        // Then the Orbit was created
+
+        // And When Alice then requests an orbit hierarchy
+        const orbitHash = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse).entryHash);
+        const orbitHierarchyResponse = await callZomeAlice(
+          "personal",
+          "get_orbit_hierarchy_json",
+          {orbitEntryHashB64: orbitHash}
+          );
+        // And an Orbit hierarchy was returned
+        console.log('orbitHierarchyResponse :>> ', orbitHierarchyResponse);
+        t.ok(orbitHierarchyResponse, 'a hierarchy can be generated');
         
       } catch (e) {
-        // console.log("Testing error: ", e);
-
         t.ok(null);
       }
-
       await cleanup();
+
+      async function setupSphere() {
+        const createSphereResponse = await callZomeAlice(
+          "personal",
+          "create_sphere",
+          aSphere()
+        );
+        t.ok(createSphereResponse, "A response comes back");
+
+        return new EntryRecord<Sphere>(createSphereResponse).entryHash;
+      }
+    });
+  });
+
+  test.skip("Orbit Hierarchy Sad Path", async (t) => {
+    await runScenario(async (scenario) => {
+      const {
+        alice,
+        bob,
+        cleanup,
+        alice_agent_key,
+        bob_agent_key,
+        habits_cell_alice,
+        habits_cell_bob,
+      } = await setUpAliceandBob();
+
+      const callZomeAlice = async (zome_name, fn_name, payload) => {
+        console.log('payload :>> ', payload);
+        return await alice.callZome({
+          cap_secret: null,
+          cell_id: habits_cell_alice,
+          zome_name,
+          fn_name,
+          payload,
+          provenance: alice_agent_key,
+        });
+      };
+      try {
+        const pauseDuration = 1000;
+        await scenario.shareAllAgents();
+        await pause(pauseDuration);
+
+        // 2. Given a Sphere has not been created And an Orbit has not been created
+        // When Alice then requests an orbit hierarchy
+        const orbitHierarchyResponse = await callZomeAlice(
+          "personal",
+          "get_orbit_hierarchy_json",
+          {orbitEntryHashB64: null}
+          );
+        // And an Orbit hierarchy was returned
+        console.log('orbitHierarchyResponse2 :>> ', orbitHierarchyResponse);
+        t.ok(orbitHierarchyResponse, 'a hierarchy can not be generated');
+      } catch (e) {
+        t.ok(null);
+      }
+      await cleanup();
+
 
       async function setupSphere() {
         const createSphereResponse = await callZomeAlice(

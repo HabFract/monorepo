@@ -35,7 +35,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
 
       const entryRecords = rawRecords!.map((record: any) => new EntryRecord<Sphere>(record));
       // TODO: change backend fn so records are visible and complete the following line 
-      const sphereConnection = createEdges(entryRecords.map((entryRecord: EntryRecord<Sphere>) => ({...entryRecord.entry, id: entryRecord.actionHash })))  as Partial<SphereConnection> & any; // Need to resolve type errors when no pagination implemented
+      const sphereConnection = createEdges(entryRecords.map((entryRecord: EntryRecord<Sphere>) => ({...entryRecord.entry, id: entryRecord.entryHash })))  as Partial<SphereConnection> & any; // Need to resolve type errors when no pagination implemented
       console.log('entryRecords :>> ', sphereConnection);
       return Promise.resolve(sphereConnection)
     },

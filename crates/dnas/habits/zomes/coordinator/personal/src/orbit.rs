@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use hdk::prelude::{*, holo_hash::{EntryHashB64, ActionHashB64}};
 use personal_integrity::*;
 
+use crate::utils::entry_from_record;
+
 #[hdk_extern]
 pub fn create_orbit(orbit: Orbit) -> ExternResult<Record> {
     let orbit_hash = create_entry(&EntryTypes::Orbit(orbit.clone()))?;
@@ -98,45 +100,64 @@ pub fn get_all_my_orbits(_:()) -> ExternResult<Vec<Record>> {
 }
 
 #[hdk_extern]
-pub fn get_orbit_hierarchy_json(input: ActionHashInput) -> ExternResult<String> {
-    
+pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<String> {
+    let mut hashes = HashSet::new();
+    hashes.insert(input.orbit_entry_hash_b64.into());
+
+    let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?; 
+    let filter = ChainQueryFilter::new().entry_hashes(hashes).entry_type(orbit_entry_type).include_entries(true); 
+    let selected_orbits = query(filter)?; 
     debug!(
-        "_+_+_+_+_+_+_+_+_+_ All Orbits from my source chain: {:#?}",
-        input.orbit_entry_hash_b64.clone()
+        "_+_+_+_+_+_+_+_+_+_ Hierarchy filtered orbit: {:#?}",
+        selected_orbits.clone()
     );
-    Ok("hello".to_string())
+    let maybe_json = build_tree(&selected_orbits);
+    if let Ok(hashmap) = maybe_json {
+        debug!(
+            "_+_+_+_+_+_+_+_+_+_ Hashmap: {:#?}",
+            hashmap
+        );
+        let a = serde_json::to_string(&hashmap)
+            .map_err(|err| wasm_error!(WasmErrorInner::Guest(err.to_string())))?;
+        Ok(a)
+            
+    } else {
+        Ok("None".to_string())
+    }
+
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ActionHashInput {
-    pub orbit_entry_hash_b64: ActionHashB64
+pub struct OrbitHierarchyInput {
+    pub orbit_entry_hash_b64: EntryHashB64
 }
 
 /** Private helpers */
 
-// fn build_tree(orbits: &[Orbit]) -> ExternResult<HashMap<EntryHashB64, Box<Node>>> {
-//     let mut tree: HashMap<EntryHashB64, Box<Node>> = HashMap::new();
+fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternResult<HashMap<EntryHashB64, Box<Node>>> {
+    let mut tree: HashMap<EntryHashB64, Box<Node>> = HashMap::new();
 
-//     for orbit in orbits {
-//         let entry_hash = hash_entry(orbit.clone());
-//         if let Ok(hash) = entry_hash {
-//             let node = Box::new(Node::new(hash.clone().into(), Vec::new()));
-
-//             match orbit.parent_hash.clone() {
-//                 Some(parent_hash) => {
-//                     if let Some(parent_node) = tree.get_mut(&parent_hash.clone().into()) {
-//                         parent_node.children.push(node);
-//                     }
-//                 }
-//                 None => {
-//                     tree.insert(hash.clone().into(), node);
-//                 }
-//             }
-//         }
-//     }
-//     Ok(tree)
-// }
+    for record in orbits {
+        let orbit = entry_from_record::<Orbit>(record.clone())?;
+            let entry_hash = hash_entry(orbit.clone());
+            if let Ok(hash) = entry_hash {
+                let node = Box::new(Node::new(hash.clone().into(), Vec::new()));
+                
+                match orbit.parent_hash.clone() {
+                    Some(parent_hash) => {
+                        if let Some(parent_node) = tree.get_mut(&parent_hash.clone().into()) {
+                            parent_node.children.push(node);
+                        }
+                    }
+                    None => {
+                            tree.insert(hash.clone().into(), node);
+                        }
+                    }
+            }
+    }
+    Ok(tree)
+}
 
 
 fn _agent_to_orbit_links() -> ExternResult<Option<Vec<Link>>> {
