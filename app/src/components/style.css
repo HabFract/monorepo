@@ -11,11 +11,11 @@ nav
     rounded-lg
     flex
     items-center
-    justify-around;
+    justify-around
+    bg-gradient-to-b
+    from-card-bg
+    to-dark-gray;
 
-  background: linear-gradient(180deg, rgba(27, 36, 48, 0.95) 69%, rgba(54, 93, 86, 0.45) 91%);
-
-  border: 2px dashed white;
   border-bottom: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;

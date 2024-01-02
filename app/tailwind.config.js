@@ -32,60 +32,51 @@ export default {
       heading: ["Poppins", "Arial"],
     },
     extend: {
-      colors: {
-        primary: {
-          DEFAULT: "#16a085", // deep emerald
-          transparent: "rgba(22, 160, 133, 0.5)",
-          "hover-bg": "rgba(22, 160, 133, 0.9)",
-          "hover-text": "#fff",
-        },
-    
-        secondary: {
-          DEFAULT: "#ff6b6b", // coral
-          transparent: "rgba(255, 107, 107, 0.5)",
-          "hover-bg": "rgba(255, 107, 107, 0.9)",
-          "hover-text": "#3E3F48",
-        },
-    
-        neutral: {
-          DEFAULT: "#95afc0", // soft blue-grey
-          dark: "rgba(75, 48, 48, 0.65)", // soft blue-grey
-          transparent: "rgba(149, 175, 192, 0.65)",
-          "hover-bg": "rgba(149, 175, 192, 0.9)",
-          "hover-text": "#fff",
-        },
+      colors: {"primary": {
+        "DEFAULT": "rgba(80, 227, 194, 0.9)",
+        "transparent": "rgba(80, 227, 194, 0.4)",
+        "hover-bg": "rgba(80, 227, 194, 0.8)",
+        "hover-text": "#000"
+      },
+      "secondary": {
+        "DEFAULT": "#9B59B6",
+        "transparent": "rgba(155, 89, 182, 0.5)",
+        "hover-bg": "rgba(155, 89, 182, 0.9)",
+        "hover-text": "#FDFEFE"
+      },
+      "neutral": {
+        "DEFAULT": "#6B7D7F",
+        "dark": "#566573",
+        "transparent": "rgba(107,125,127, 0.65)",
+        "hover-bg": "rgba(107,125,127, 0.9)",
+        "hover-text": "#FDFEFE"
+      },
         
-        danger: {
-          DEFAULT: "#B22222",
-          transparent: "rgba(178,34,34, 0.5)",
-          "hover-bg": "rgba(178,34,34, 0.9)",
-          "hover-text": "#fff",
-        }, // firebrick color for danger buttons, it doesn't clash with primary and secondary colors and still conveys the right meaning
-
-        info: {
-          DEFAULT: "#365d56",
-          "transparent": "rgba(54, 93, 86, 0.5)",
-          "hover-bg": "#365d56",
-          "hover-text": "#3E3F48",
-        }, // info color for pointing things out, it doesn't clash with primary and secondary colors and still conveys the right meaning
-
-        warn: {
-          DEFAULT: "#D8973C",
-          "transparent": "rgba(216, 151, 60,0.5)",
-          "hover-bg": "rgba(216, 151, 60,0.9)",
-          "hover-text": "#3E3F48",
-        },
-
-        "off-white": "#fdfdfd",
-        "brown": "#E4DFDA",
-        // "dark-gray": "#3E3F48",
-        "dark-gray": "#011632",
-        // "dark-gray": "#1B2430",
-        "sphere-card-bg": "#172b34",
-        "card-bg-light": "#95afc0",
-        "card-bg": "#173a3e",
-        
-        "nav-bg": "#1B2430",
+      "danger": {
+        "DEFAULT": "rgba(189, 16, 224, 0.9)",
+        "transparent": "rgba(189, 16, 224, 0.3)",
+        "hover-bg": "rgba(189, 16, 224, 0.7)",
+        "hover-text": "#fff"
+      },
+      "info": {
+        "DEFAULT": "#40A9FF",
+        "transparent": "rgba(64, 169, 255, 0.5)",
+        "hover-bg": "rgba(64, 169, 255, 0.9)",
+        "hover-text": "#fff"
+      },
+      "warn": {
+        "DEFAULT": "rgba(248, 231, 28, 0.8)",
+        "transparent": "rgba(248, 231, 28, 0.3)",
+        "hover-bg": "rgba(248, 231, 28, 0.7)",
+        "hover-text": "#000"
+      },
+      "off-white": "#FEFEFE",
+      "brown": "#5E503F",
+      "dark-gray": "#222222",
+      "sphere-card-bg": "#004955",
+      "card-bg": "rgba(0,73,85, 0.5)",
+      "card-bg-light": "rgba(0,73,85, 0.9)",
+      "nav-bg": "rgba(0,73,85, 0.5)"
       },
     },
   },
