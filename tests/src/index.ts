@@ -1,3 +1,4 @@
-import orbits from './habits/personal/orbits';
+import {orbits1, orbits2} from './habits/personal/orbits';
 
-orbits();
+orbits1();
+orbits2();
