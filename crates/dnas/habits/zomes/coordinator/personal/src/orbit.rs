@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, cell::RefCell, rc::Rc};
 use hdk::prelude::{*, holo_hash::{EntryHashB64}};
 use personal_integrity::*;
 
@@ -116,7 +116,7 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
     debug!("---- Hashes retrieved after recursion: ---- {:#?}", selected_orbits.len());
     let maybe_node_hashmap = build_tree(&selected_orbits);
     if let Ok(hashmap) = maybe_node_hashmap {
-        Ok(hashmap.get(&input.orbit_entry_hash_b64).unwrap().to_json())
+        Ok(hashmap.get(&input.orbit_entry_hash_b64).unwrap().borrow().to_json())
     } else {
         Err(wasm_error!(WasmErrorInner::Guest("Could not build tree from the given Orbit hash".to_string())))
     }
@@ -149,30 +149,44 @@ fn insert_descendants(parent_hash: EntryHash, hashes: &mut HashSet<EntryHash>) {
     debug!("---- Hashes after recursion: ---- {:#?}", hashes);
 }
 
-fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternResult<HashMap<EntryHashB64, Box<Node>>> {
-    let mut tree: HashMap<EntryHashB64, Box<Node>> = HashMap::new();
+fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternResult<HashMap<EntryHashB64, Rc<RefCell<Node>>>> {
+    let mut nodes: HashMap<EntryHashB64, Rc<RefCell<Node>>> = HashMap::new();
+    let mut child_parent_relationships: HashMap<EntryHashB64, EntryHashB64> = HashMap::new();
 
+    // First, create all nodes and track child-parent relationships
     for record in orbits {
         let orbit = entry_from_record::<Orbit>(record.clone())?;
-            let entry_hash = hash_entry(orbit.clone());
-            if let Ok(hash) = entry_hash {
-                let node = Box::new(Node::new(hash.clone().into(), Vec::new()));
-                
-                match orbit.parent_hash.clone() {
-                    Some(parent_hash) => {
-                        if let Some(parent_node) = tree.get_mut(&parent_hash.clone().into()) {
-                            parent_node.children.push(node);
-                        }
-                    }
-                    None => {
-                            tree.insert(hash.clone().into(), node);
-                        }
-                    }
-            }
-    }
-    Ok(tree)
-}
+        let entry_hash = hash_entry(orbit.clone())?;
+        let entry_hash_b64 : EntryHashB64 = entry_hash.clone().into();
+        let node = Rc::new(RefCell::new(Node::new(entry_hash_b64.clone(), Vec::new())));
 
+        // Insert the node into the nodes map
+        nodes.insert(entry_hash_b64.clone(), node.clone());
+
+        // If the orbit has a parent, remember this relationship to process later
+        if let Some(parent_hash) = orbit.parent_hash {
+            let parent_hash_b64 = parent_hash.clone().into();
+            child_parent_relationships.insert(entry_hash_b64, parent_hash_b64);
+        }
+    }
+
+    // Now, establish the parent-child relationships
+    for (child_hash_b64, parent_hash_b64) in child_parent_relationships {
+        if let Some(parent_node_rc) = nodes.get(&parent_hash_b64) {
+            if let Some(child_node_rc) = nodes.get(&child_hash_b64) {
+                parent_node_rc.borrow_mut().children.push(child_node_rc.clone());
+            }
+        } else {
+            // If the parent is not in the nodes map, this indicates a problem with the data or logic
+            return Err(wasm_error!(WasmErrorInner::Guest(format!(
+                "Parent hash not found in the nodes map: {}",
+                parent_hash_b64
+            ))));
+        }
+    }
+
+    Ok(nodes)
+}
 
 fn parent_to_child_links(parent_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
     let links = get_links(parent_hash, LinkTypes::OrbitParentToChild, None)?;

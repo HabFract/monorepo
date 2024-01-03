@@ -1,5 +1,8 @@
 use hdi::prelude::{holo_hash::{EntryHashB64}, *};
 
+use std::rc::Rc;
+use std::cell::RefCell;
+
 #[hdk_entry_helper]
 #[derive(Clone)]
 #[serde(rename_all = "camelCase")]
@@ -28,18 +31,18 @@ impl Orbit {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Node {
     pub id: EntryHashB64,
-    pub children: Vec<Box<Node>>,
+    pub children: Vec<Rc<RefCell<Node>>>, // Now holds Rc<RefCell<Node>> values
 }
 
 impl Node {
-    pub fn new(id: EntryHashB64, children: Vec<Box<Node>>) -> Self {
+    pub fn new(id: EntryHashB64, children: Vec<Rc<RefCell<Node>>>) -> Self {
         Node { id, children }
     }
 
     pub fn to_json(&self) -> serde_json::Value {
         serde_json::json!({
             "id": self.id,
-            "children": self.children.iter().map(|child| child.to_json()).collect::<Vec<_>>(),
+            "children": self.children.iter().map(|child| child.borrow_mut().to_json()).collect::<Vec<_>>(),
         })
     }
 }
