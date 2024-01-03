@@ -32,21 +32,30 @@ export default {
       heading: ["Poppins", "Arial"],
     },
     extend: {
-      colors: {"primary": {
+      colors: {
+      "primary": {
         "DEFAULT": "rgba(80, 227, 194, 0.9)",
         "transparent": "rgba(80, 227, 194, 0.4)",
         "hover-bg": "rgba(80, 227, 194, 0.8)",
         "hover-text": "#000"
       },
       "secondary": {
-        "DEFAULT": "#9B59B6",
-        "transparent": "rgba(155, 89, 182, 0.5)",
-        "hover-bg": "rgba(155, 89, 182, 0.9)",
+        "DEFAULT": "rgb(54, 25, 91)",
+        "extra-transparent": "rgba(54, 25, 91, 0.25)",
+        "transparent": "rgba(54, 25, 91, 0.5)",
+        "hover-bg": "rgba(54, 25, 91, 0.9)",
         "hover-text": "#FDFEFE"
       },
+      // "secondary": {
+      //   "DEFAULT": "#9B59B6",
+      //   "extra-transparent": "rgba(155, 89, 182, 0.25)",
+      //   "transparent": "rgba(155, 89, 182, 0.5)",
+      //   "hover-bg": "rgba(155, 89, 182, 0.9)",
+      //   "hover-text": "#FDFEFE"
+      // },
       "neutral": {
         "DEFAULT": "#6B7D7F",
-        "dark": "#566573",
+        "extra-transparent": "rgba(107,125,127, 0.25)",
         "transparent": "rgba(107,125,127, 0.65)",
         "hover-bg": "rgba(107,125,127, 0.9)",
         "hover-text": "#FDFEFE"
@@ -72,10 +81,10 @@ export default {
       },
       "off-white": "#FEFEFE",
       "brown": "#5E503F",
-      "dark-gray": "#424949",
-      "sphere-card-bg": "#004955",
-      "card-bg-light": "rgba(0,73,85, 0.5)",
-      "card-bg": "rgba(0,73,85, 0.9)",
+      "dark-gray": "#222222",
+      // "sphere-card-bg": "#004955",
+      "card-bg": "rgba(0,73,85, 0.5)",
+      "card-bg-light": "rgba(0,73,85, 0.9)",
       "nav-bg": "rgba(0,73,85, 0.5)"
       },
     },

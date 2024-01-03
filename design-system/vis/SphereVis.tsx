@@ -17,7 +17,7 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
     const getChartOptions = () => {
       return {
         series: [spherePercentages.Sub, spherePercentages.Atom, spherePercentages.Astro],
-        colors: ["rgba(155, 89, 182, 0.5)", "rgba(107,125,127, 0.9)", "rgba(80, 227, 194, 0.5)"],
+        colors: ["rgba(64, 169, 255, 0.5)", "rgba(107,125,127, 0.9)","rgba(189, 16, 224, 0.3)"],
         chart: {
           width: 'auto',
           height: "100%",
