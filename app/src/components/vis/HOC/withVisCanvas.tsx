@@ -43,27 +43,23 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
     const mountingDivId = 'vis-root';
     const svgId = 'vis';
 
+    useEffect(() => {
+      appendSvg(mountingDivId, svgId);
+    }, []);
+
     return (
       <Component
         canvasHeight={canvasHeight}
         canvasWidth={canvasWidth}
         margin={defaultMargins}
         render={(currentVis: any) => {
-
-
-          useEffect(() => {
-            // if (deleteCompleted) {
-            appendSvg(mountingDivId, svgId);
-
-            currentVis?.render()
-            // dispatch(resetDeleteCompleted())
-            // }
-          }, [currentVis])//deleteCompleted])
-
+          currentVis?.render();
           return (
             <><div id="vis-root" className="h-full"></div></>
           )
-        }}></Component>)
+        }}
+      ></Component>
+    );
   }
   return <ComponentWithVis />
 }
