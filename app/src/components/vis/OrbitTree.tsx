@@ -24,8 +24,14 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   // const loading = false;
 
   useEffect(() => {
-      console.log('data :>> ', data);
-      const hierarchyData = hierarchy(JSON.parse(data as any));
+    if (typeof data?.getOrbitHierarchy === 'string') {
+      let parsedData = JSON.parse(data.getOrbitHierarchy);
+      // Continue parsing if the result is still a string
+      while (typeof parsedData === 'string') {
+        parsedData = JSON.parse(parsedData);
+      }
+      console.log('parsedData :>> ', parsedData);
+      const hierarchyData = hierarchy(parsedData);
       const orbitVis = new Vis(
         VisType.Tree,
         'vis',
@@ -34,7 +40,8 @@ export const OrbitTree: ComponentType<VisComponent> = ({
         canvasWidth,
         margin
       );
-      setCurrentOrbitTree(orbitVis)
+      setCurrentOrbitTree(orbitVis);
+    }
   }, [data]);
 
   return data && render(currentOrbitTree)
