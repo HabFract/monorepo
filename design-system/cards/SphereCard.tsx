@@ -2,14 +2,14 @@ import React from 'react';
 import './common.css';
 import { DeleteOutlined, EditOutlined, PieChartOutlined, OrderedListOutlined } from '@ant-design/icons';
 import SphereVis from '../vis/SphereVis';
-import { Orbit, Scale, Sphere } from '../../app/src/graphql/generated';
+import { Scale, Sphere } from '../../app/src/graphql/generated';
 import { Button } from 'flowbite-react';
-import { useStateTransition } from '../../app/src/hooks/useStateTransition';
 
 type SphereCardProps = {
   sphere: Sphere;
   isHeader: boolean;
-  orbitScales: Scale[]
+  orbitScales: Scale[];
+  transition: (newState: string, params?: object) => void;
 };
 
 function calculateSpherePercentages(counts: object) : any {
@@ -40,9 +40,8 @@ function calculateSphereCounts(orbitScales: Scale[]) {
   }, {Sub: 0, Atom: 0, Astro: 0});
 }
 
-const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales } : SphereCardProps) => {
+const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition } : SphereCardProps) => {
   const { name, metadata } = sphere;
-  const [_, transition] = useStateTransition();
 
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>

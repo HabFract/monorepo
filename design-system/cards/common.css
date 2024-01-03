@@ -48,11 +48,10 @@
   border-radius: .5rem;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
-  @apply bg-gradient-to-b from-card-bg to-transparent;
+  @apply w-full bg-gradient-to-b from-card-bg to-transparent;
 }
 .list-header .card-header {
-  border: 2px dashed white;
-  @apply border-off-white bg-nav-bg;
+  @apply border-secondary-transparent bg-nav-bg;
 }
 
 .card-copy {

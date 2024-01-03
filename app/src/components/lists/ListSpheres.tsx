@@ -8,6 +8,7 @@ import PageHeader from '../PageHeader';
 import ListSortFilter from './ListSortFilter';
 import SphereCard from '../../../../design-system/cards/SphereCard';
 import { extractEdges } from '../../graphql/utils';
+import { useStateTransition } from '../../hooks/useStateTransition';
 
 function ListSpheres() {
   const { loading, error, data } = useGetSpheresQuery();
@@ -35,6 +36,7 @@ function ListSpheres() {
     }
   };
 
+  const [state, transition] = useStateTransition(); // Top level state machine and routing
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
@@ -47,7 +49,7 @@ function ListSpheres() {
       <PageHeader title="Spheres of Action" />
       <ListSortFilter label='' />
       <div className="spheres-list">
-        {sortedSpheres.map((sphere : Sphere) => <SphereCard key={sphere.id} sphere={sphere} isHeader={false} orbitScales={[Scale.Astro]}/>)}
+        {sortedSpheres.map((sphere : Sphere) => <SphereCard key={sphere.id} sphere={sphere} transition={transition} isHeader={false} orbitScales={[Scale.Astro]}/>)}
       </div>
     </div>
   );

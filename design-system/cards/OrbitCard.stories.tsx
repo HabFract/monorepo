@@ -17,14 +17,14 @@ Subatomic.args = {
     name: 'Go for a walk',
     metadata: {
       description: 'A daily walk to improve cardiovascular health.',
-      frequency: 'DAY',
-      scale: 'Sub',
-      isAtomic: true,
+      timeframe: {
+        startTime: 1617235200,
+        endTime: 1617321600,
+      },
     },
-    timeframe: {
-      startTime: 1617235200,
-      endTime: 1617321600,
-    },
+    frequency: 'DAY',
+    scale: 'Sub',
+    isAtomic: true,
   },
 };
 export const Atomic = Template.bind({});
@@ -34,14 +34,14 @@ Atomic.args = {
     name: 'Go for a walk',
     metadata: {
       description: 'A daily walk to improve cardiovascular health.',
-      frequency: 'DAY',
-      scale: 'Atom',
-      isAtomic: true,
+      timeframe: {
+        startTime: 1617235200,
+        endTime: 1617321600,
+      },
     },
-    timeframe: {
-      startTime: 1617235200,
-      endTime: 1617321600,
-    },
+    frequency: 'DAY',
+    scale: 'Atom',
+    isAtomic: true,
   },
 };
 export const Astronomic = Template.bind({});
@@ -51,13 +51,13 @@ Astronomic.args = {
     name: 'Go for a walk',
     metadata: {
       description: 'A daily walk to improve cardiovascular health.',
-      frequency: 'DAY',
-      scale: 'Astro',
-      isAtomic: true,
+      timeframe: {
+        startTime: 1617235200,
+        endTime: 1617321600,
+      },
     },
-    timeframe: {
-      startTime: 1617235200,
-      endTime: 1617321600,
-    },
+    frequency: 'DAY',
+    scale: 'Astro',
+    isAtomic: true,
   },
 };

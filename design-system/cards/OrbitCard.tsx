@@ -10,9 +10,11 @@ import OrbitVis from '../vis/OrbitVis';
 
 type OrbitCardProps = {
   orbit: Orbit;
+  sphereEh?: string,
+  transition: (newState: string, params?: object) => void
 };
 
-const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
+const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition }: OrbitCardProps) => {
   return (
     <div className="orbit-card flex flex-col rounded-2xl overflow-hidden">
       <header className="orbit-header card-header">
@@ -41,7 +43,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit }: OrbitCardProps) => {
               </Button>
             </div>
             <div className="orbit-actions-vis row-c">
-              <Button className="btn btn-primary" size="sm">
+              <Button className="btn btn-primary" size="sm" onClick={() => transition('Vis', { sphereEh })}>
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>
               </Button>

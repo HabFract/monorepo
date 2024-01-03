@@ -114,9 +114,22 @@ export default () => {
           {orbitEntryHashB64: orbitHash}
           );
         // And an Orbit hierarchy was returned
-        console.log('orbitHierarchyResponse :>> ', orbitHierarchyResponse);
         t.ok(orbitHierarchyResponse, 'a hierarchy can be generated');
-        
+
+
+        const orbitActionHash = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse).actionHash);
+        const orbitGetResponse = await callZomeAlice(
+          "personal",
+          "get_orbit",
+          orbitActionHash
+        );
+        // And an Orbit can be retrieved
+        const orbitRecord = new EntryRecord<Orbit>(orbitGetResponse);
+        t.ok(orbitGetResponse, 'an orbit can be retrieved');
+        t.deepEqual(
+          anOrbit({sphereHash: encodeHashToBase64(hash)}),
+          orbitRecord.entry
+        )
       } catch (e) {
         t.ok(null);
       }

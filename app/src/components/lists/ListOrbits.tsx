@@ -8,29 +8,32 @@ import ListSortFilter from './ListSortFilter';
 
 import OrbitCard from '../../../../design-system/cards/OrbitCard';
 import SphereCard from '../../../../design-system/cards/SphereCard';
-import { Orbit, useGetOrbitsQuery, useGetSphereLazyQuery } from '../../graphql/generated';
+import { Orbit, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSphereLazyQuery, useGetSphereQuery } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
+import { useStateTransition } from '../../hooks/useStateTransition';
 
 interface ListOrbitsProps {
-  sphereEh?: string; // Optional prop to filter orbits by sphere
+  sphereId?: string; // Optional prop to filter orbits by sphere
 }
 
-const ListOrbits: React.FC = ({ sphereEh }: ListOrbitsProps) => {
-  const [getSphere, { loading: loadingSphere, data: dataSphere }] = useGetSphereLazyQuery({
-    variables: { id: sphereEh as string },
+const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
+  const [state, transition] = useStateTransition(); // Top level state machine and routing
+  
+  const { loading: loadingSphere, data: dataSphere } = useGetSphereQuery({
+    variables: { id: sphereId as string },
   });
-
-  const { loading: loadingOrbits, error: errorOrbits, data } = useGetOrbitsQuery({
-    variables: { sphereEntryHashB64: sphereEh },
-    skip: !sphereEh, // Skip the query if no sphereEh is provided
+  
+    const sphereEh = dataSphere;
+    console.log('sphereEh :>> ', sphereEh, );
+  const [getOrbits, { loading: loadingOrbits, error: errorOrbits, data }] = useGetOrbitsLazyQuery({
+    variables: { sphereEntryHashB64: dataSphere?.sphere?.eH },
   });
-
-  // Fetch sphere details when component mounts if sphereEh is provided
+  
   useEffect(() => {
     if (sphereEh) {
-      getSphere();
+      getOrbits();
     }
-  }, [sphereEh]);
+  }, [dataSphere, loadingSphere]);
 
   const [listSortFilter] = useAtom(listSortFilterAtom);
   
@@ -39,6 +42,7 @@ const ListOrbits: React.FC = ({ sphereEh }: ListOrbitsProps) => {
   if (loadingOrbits || loadingSphere) return <p>Loading...</p>;
   if (errorOrbits) return <p>Error : {errorOrbits.message}</p>;
   if(!data?.orbits) return <></>;
+
   const orbits = extractEdges(data.orbits);
   
   const sortOrbits = (a: Orbit, b: Orbit) => {
@@ -67,10 +71,10 @@ const ListOrbits: React.FC = ({ sphereEh }: ListOrbitsProps) => {
     <div className='layout orbits'>
       <PageHeader title="Orbit List" />
       <ListSortFilter label={'for the Sphere'} />
-      {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} orbitScales={orbits.map((orbit: Orbit) => orbit?.scale )} />}
+      {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} transition={transition} orbitScales={orbits.map((orbit: Orbit) => orbit?.scale )} />}
       <div className="orbits-list">
         {orbits.sort(sortOrbits)
-          .map((orbit: Orbit) => <OrbitCard key={orbit.id} orbit={orbit} />)}
+          .map((orbit: Orbit) => <OrbitCard key={orbit.id} sphereEh={sphereEh} transition={transition} orbit={orbit} />)}
       </div>
     </div>
   );

@@ -24,6 +24,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
 
   return {
     sphere: async (_, args): Promise<Sphere> => {
+      console.log('args :>> ', args);
       return read(args.id)
     },
 

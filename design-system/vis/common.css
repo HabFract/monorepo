@@ -9,9 +9,9 @@ label {
   @apply font-heading uppercase text-xs text-off-white;
 }
 
-.sphere-pie-label {
-  padding-left: 13%;
-  margin-top: -1rem;
+.sphere-pie-label {    
+  padding-left: 3.5rem;
+  margin-top: -1.5rem;
 }
 
 div[role="progressbar"] > div > div {

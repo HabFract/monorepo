@@ -36,8 +36,8 @@ function createFixedMenuItems() {
 function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
   return [...spheres.edges!.map((sphere: SphereEdge, _idx: number) => {
     return getItem(`${sphere.node.name}`, sphere.node.id, null,
-      [
-        getItem('Orbit List', 'list-orbits-' + sphere.node.eH, null),
+      [ 
+        getItem('Orbit List', 'list-orbits-' + sphere.node.id, null),
         getItem('Create Orbit', 'add-orbit-' + sphere.node.eH, null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'
       ])
   }),
@@ -59,7 +59,8 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
   const onClick: MenuProps['onClick'] = (e) => {
     switch (true) {
       case e.key == 'vis':
-        transition('Vis')
+        const visSphereEh = e.key.split('vis-')[1];
+        transition('Vis', { sphereEh: visSphereEh })
         break;
 
       case e.key == 'add-sphere':
@@ -76,9 +77,8 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
         break;
 
       case !!e.key.match(/list\-orbits/):
-        const sphereEh = e.key.split('list-orbits-')[1];
-        console.log('sphereEh :>> ', sphereEh);
-        transition('ListOrbits', { sphereEh })
+        const sphereId = e.key.split('list-orbits-')[1];
+        transition('ListOrbits', { sphereEh: sphereId, sphereId })
         break;
 
       default:

@@ -19,11 +19,10 @@
 }
 
 .sort-filter-label {
-  @apply text-xs md:text-sm;
+  @apply text-xs md:text-sm text-off-white font-semibold;
   text-align: center;
   width: 100%;
   padding-left: 56px;
-  @apply text-info;
 }
 
 .sort-filter-icon:hover {
@@ -32,12 +31,16 @@
   cursor: pointer;
 }
 
+.orbit-card {
+  @apply w-full;
+}
+
 @media screen and (min-width: 768px) {
   .orbits-list, .spheres-list {
     @apply grid grid-cols-2 gap-2;
   }
   .orbit-card, .orbit-card main, .sphere-card, .sphere-card main {
-    height: 100%; 
+    height: 100%;
   }
 }
 @media screen and (min-width: 960px) {
