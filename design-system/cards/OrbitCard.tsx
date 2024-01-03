@@ -43,7 +43,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition }: Or
               </Button>
             </div>
             <div className="orbit-actions-vis row-c">
-              <Button className="btn btn-primary" size="sm" onClick={() => transition('Vis', { sphereEh })}>
+              <Button className="btn btn-primary" size="sm" onClick={() => {transition('Vis', { orbitEh: orbit.eH })}}>
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>
               </Button>

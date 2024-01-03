@@ -33,7 +33,7 @@ export const initialState: AppStateStore = { // Home route
 
 export const routes: Routes = {
   Boot: <p>Loading</p>,
-  Vis: <>{withVisCanvas(OrbitTree)}</>,
+  Vis: withVisCanvas(OrbitTree),
   Home: <p>Welcome Home</p>,
   Onboarding1: <CreateProfile editMode={false} />,
   Onboarding2: <CreateSphere />,

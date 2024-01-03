@@ -9,11 +9,10 @@ export function useStateTransition() {
   }
 
   const [state, setState] = useState(stateMachine.state.currentState);
-
   const transition = (newState: string, params: object) => {
     stateMachine.to(newState, params);
     setState(newState);
   };
 
-  return [state, transition];
+  return [state, transition, stateMachine.state.params];
 }

@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-
+use serde::de::value::MapDeserializer;
 use hdk::prelude::{*, holo_hash::{EntryHashB64, ActionHashB64}};
 use personal_integrity::*;
 
@@ -113,13 +113,13 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<Stri
     );
     let maybe_json = build_tree(&selected_orbits);
     if let Ok(hashmap) = maybe_json {
+        let json = serde_json::to_string(&hashmap)
+            .map_err(|err| wasm_error!(WasmErrorInner::Guest(err.to_string())))?;
         debug!(
             "_+_+_+_+_+_+_+_+_+_ Hashmap: {:#?}",
-            hashmap
+            json
         );
-        let a = serde_json::to_string(&hashmap)
-            .map_err(|err| wasm_error!(WasmErrorInner::Guest(err.to_string())))?;
-        Ok(a)
+        Ok(json)
             
     } else {
         Ok("None".to_string())
