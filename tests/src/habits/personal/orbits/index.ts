@@ -116,7 +116,7 @@ export default () => {
         // Then an Orbit hierarchy was returned
         t.ok(orbitHierarchyResponse, 'a hierarchy can be generated');
 
-
+console.log('orbitHierarchyResponse :>> ', orbitHierarchyResponse);
         const orbitActionHash = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse).actionHash);
         const orbitGetResponse = await callZomeAlice(
           "personal",

@@ -100,29 +100,19 @@ pub fn get_all_my_orbits(_:()) -> ExternResult<Vec<Record>> {
 }
 
 #[hdk_extern]
-pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<String> {
+pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serde_json::Value> {
     let mut hashes = HashSet::new();
-    hashes.insert(input.orbit_entry_hash_b64.into());
+    hashes.insert(input.orbit_entry_hash_b64.clone().into());
 
     let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?; 
     let filter = ChainQueryFilter::new().entry_hashes(hashes).entry_type(orbit_entry_type).include_entries(true); 
     let selected_orbits = query(filter)?; 
-    debug!(
-        "_+_+_+_+_+_+_+_+_+_ Hierarchy filtered orbit: {:#?}",
-        selected_orbits.clone()
-    );
-    let maybe_json = build_tree(&selected_orbits);
-    if let Ok(hashmap) = maybe_json {
-        let json = serde_json::to_string(&hashmap)
-            .map_err(|err| wasm_error!(WasmErrorInner::Guest(err.to_string())))?;
-        debug!(
-            "_+_+_+_+_+_+_+_+_+_ Hashmap: {:#?}",
-            json
-        );
-        Ok(json)
-            
+
+    let maybe_node_hashmap = build_tree(&selected_orbits);
+    if let Ok(hashmap) = maybe_node_hashmap {
+        Ok(hashmap.get(&input.orbit_entry_hash_b64).unwrap().to_json())
     } else {
-        Ok("None".to_string())
+        Err(wasm_error!(WasmErrorInner::Guest("Could not build tree from the given Orbit hash".to_string())))
     }
 
 }
