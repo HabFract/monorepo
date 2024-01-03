@@ -147,7 +147,7 @@ export default () => {
         // And the children array of the hierarchy contains the second Orbit's entry hash
 
         const orbitHash2 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse2).entryHash);
-        t.equal(orbitHash2, orbitHierarchyResponse2.children[0], 'another hierarchy can be generated');
+        t.equal(orbitHash2, orbitHierarchyResponse2.children[0].id, 'another hierarchy can be generated');
 
         
       } catch (e) {
