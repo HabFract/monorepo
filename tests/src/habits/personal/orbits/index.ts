@@ -12,8 +12,6 @@ import {
 } from "@holochain/client";
 
 import { pause, runScenario } from "@holochain/tryorama";
-import { decode } from "@msgpack/msgpack";
-import { ok } from "assert";
 import pkg from "tape-promise/tape";
 import { setUpAliceandBob } from "../../../../utils";
 const { test } = pkg;
@@ -100,7 +98,7 @@ export default () => {
         // When Alice then creates an Orbit with otherwise valid input, using the hash as a sphereHash 
         const createOrbitResponse = await callZomeAlice(
           "personal",
-          "create_orbit",
+          "create_my_orbit",
           anOrbit({sphereHash: encodeHashToBase64(hash)})
         );
         t.ok(createOrbitResponse, 'an Orbit was created');
@@ -116,7 +114,6 @@ export default () => {
         // Then an Orbit hierarchy was returned
         t.ok(orbitHierarchyResponse, 'a hierarchy can be generated');
 
-console.log('orbitHierarchyResponse :>> ', orbitHierarchyResponse);
         const orbitActionHash = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse).actionHash);
         const orbitGetResponse = await callZomeAlice(
           "personal",
@@ -127,6 +124,31 @@ console.log('orbitHierarchyResponse :>> ', orbitHierarchyResponse);
         const orbitRecord = new EntryRecord<Orbit>(orbitGetResponse);
         // Then Orbit can be retrieved
         t.ok(orbitGetResponse, 'an orbit can be retrieved');
+
+
+        // 2. Given Alice then creates another Orbit with otherwise valid input, using the hash as a sphereHash and the new Orbit's hash as a parentHash 
+        const createOrbitResponse2 = await callZomeAlice(
+          "personal",
+          "create_my_orbit",
+          anOrbit({sphereHash: encodeHashToBase64(hash), parentHash: orbitHash})
+        );
+        t.ok(createOrbitResponse, 'another Orbit was created');
+        // Then the Orbit was created
+
+        // And When Alice then requests an orbit hierarchy
+        const orbitHierarchyResponse2 = await callZomeAlice(
+          "personal",
+          "get_orbit_hierarchy_json",
+          {orbitEntryHashB64: orbitHash}
+          );
+        // Then an Orbit hierarchy was returned
+        t.ok(orbitHierarchyResponse, 'another hierarchy can be generated');
+
+        // And the children array of the hierarchy contains the second Orbit's entry hash
+
+        const orbitHash2 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse2).entryHash);
+        t.equal(orbitHash2, orbitHierarchyResponse2.children[0], 'another hierarchy can be generated');
+
         
       } catch (e) {
         t.ok(null);

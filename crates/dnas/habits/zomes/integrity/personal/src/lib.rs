@@ -29,7 +29,8 @@ pub enum LinkTypes {
     SphereToOrbit,
     OrbitUpdates,
     OrbitsPrefixPath,
-    OrbitHierarchyLevel
+    OrbitHierarchyLevel,
+    OrbitParentToChild,
 }
 
 #[hdk_extern]

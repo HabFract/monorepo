@@ -1,6 +1,5 @@
 use std::collections::HashMap;
-use serde::de::value::MapDeserializer;
-use hdk::prelude::{*, holo_hash::{EntryHashB64, ActionHashB64}};
+use hdk::prelude::{*, holo_hash::{EntryHashB64}};
 use personal_integrity::*;
 
 use crate::utils::entry_from_record;
@@ -71,17 +70,23 @@ pub fn delete_orbit(original_orbit_hash: ActionHash) -> ExternResult<ActionHash>
 
 #[hdk_extern]
 pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
-    let orbit_hash = create_entry(&EntryTypes::Orbit(orbit.clone()))?;
-    let record = get(orbit_hash.clone(), GetOptions::default())?
+    let orbit_action_hash = create_entry(&EntryTypes::Orbit(orbit.clone()))?;
+    let orbit_entry_hash = hash_entry(&orbit)?;
+    let record = get(orbit_action_hash.clone(), GetOptions::default())?
         .ok_or(
             wasm_error!(
                 WasmErrorInner::Guest(String::from("Could not find the newly created Orbit"))
             ),
         )?;
-    debug!(
-        "_+_+_+_+_+_+_+_+_+_ Created My Orbit: {:#?}",
-        record.clone()
-    );
+
+    if let Some(parent_hash) = orbit.parent_hash {
+        create_link(
+            parent_hash,
+            orbit_entry_hash,
+            LinkTypes::OrbitParentToChild,
+            (),
+        )?;
+    }
     Ok(record)
 }
 
@@ -101,11 +106,11 @@ pub fn get_all_my_orbits(_:()) -> ExternResult<Vec<Record>> {
 
 #[hdk_extern]
 pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serde_json::Value> {
-    let mut hashes = HashSet::new();
-    hashes.insert(input.orbit_entry_hash_b64.clone().into());
+    let mut all_descendant_hashes = HashSet::new();
+    insert_descendants(input.orbit_entry_hash_b64.clone().into(), &mut all_descendant_hashes);
 
     let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?; 
-    let filter = ChainQueryFilter::new().entry_hashes(hashes).entry_type(orbit_entry_type).include_entries(true); 
+    let filter = ChainQueryFilter::new().entry_hashes(all_descendant_hashes).entry_type(orbit_entry_type).include_entries(true); 
     let selected_orbits = query(filter)?; 
 
     let maybe_node_hashmap = build_tree(&selected_orbits);
@@ -124,6 +129,24 @@ pub struct OrbitHierarchyInput {
 }
 
 /** Private helpers */
+
+fn insert_descendants(parent_hash: EntryHash, hashes: &mut HashSet<EntryHash>) {
+    hashes.insert(parent_hash.clone());
+
+    if let Ok(links) = parent_to_child_links(parent_hash) {
+        if let Some(links_vec) = links {
+            for link in links_vec {
+                if let Some(child_hash) = link.target.into_entry_hash() {
+                    if hashes.insert(child_hash.clone()) {
+                        // Only recurse if the child hash was not already present
+                        insert_descendants(child_hash, hashes);
+                    }
+                }
+            }
+        }
+    }
+    debug!("---- Hashes after recursion: ---- {:#?}", hashes);
+}
 
 fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternResult<HashMap<EntryHashB64, Box<Node>>> {
     let mut tree: HashMap<EntryHashB64, Box<Node>> = HashMap::new();
@@ -149,6 +172,15 @@ fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternRe
     Ok(tree)
 }
 
+
+fn parent_to_child_links(parent_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
+    let links = get_links(parent_hash, LinkTypes::OrbitParentToChild, None)?;
+
+    if links.len() == 0 {
+        return Ok(None);
+    }
+    Ok(Some(links))
+}
 
 fn _agent_to_orbit_links() -> ExternResult<Option<Vec<Link>>> {
     let agent_address = agent_info()?.agent_initial_pubkey.clone();
