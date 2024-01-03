@@ -23,10 +23,9 @@ const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
     variables: { id: sphereId as string },
   });
   
-    const sphereEh = dataSphere;
-    console.log('sphereEh :>> ', sphereEh, );
+  const sphereEh = dataSphere?.sphere?.eH;
   const [getOrbits, { loading: loadingOrbits, error: errorOrbits, data }] = useGetOrbitsLazyQuery({
-    variables: { sphereEntryHashB64: dataSphere?.sphere?.eH },
+    variables: { sphereEntryHashB64: sphereEh },
   });
   
   useEffect(() => {
@@ -54,8 +53,8 @@ const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
       propertyA = a ? a[listSortFilter.sortCriteria as keyof Orbit] : 0
       propertyB = b ? b[listSortFilter.sortCriteria as keyof Orbit] : 0
     } else {
-      propertyA = a?.metadata![listSortFilter.sortCriteria as any];
-      propertyB = b?.metadata![listSortFilter.sortCriteria as any];
+      propertyA = a![listSortFilter.sortCriteria as any];
+      propertyB = b![listSortFilter.sortCriteria as any];
       propertyA = scaleValues[propertyA] || 0; // Assign a default value if propertyA is undefined
       propertyB = scaleValues[propertyB] || 0; // Assign a default value if propertyB is undefined
     }
@@ -70,7 +69,7 @@ const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
   return (
     <div className='layout orbits'>
       <PageHeader title="Orbit List" />
-      <ListSortFilter label={'for the Sphere'} />
+      <ListSortFilter label={'for the Sphere:'} />
       {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} transition={transition} orbitScales={orbits.map((orbit: Orbit) => orbit?.scale )} />}
       <div className="orbits-list">
         {orbits.sort(sortOrbits)

@@ -3,15 +3,18 @@
 }
 
 .list-sort-filter {
-  @apply bg-primary-transparent rounded-lg -mt-2;
+  @apply bg-neutral-extra-transparent rounded-lg -mt-1;
   font-size: 2rem;
   padding: 0.25rem .5rem;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  outline: 2px solid rgba(107,125,127, 0.25);
 }
 
 .layout {
-  @apply h-full bg-dark-gray p-2 flex flex-col gap-2;
+  @apply bg-dark-gray p-2 flex flex-col gap-2;
+  min-height: 100%;
+  padding-top: 4px;
 }
 
 .sort-filter-icon {
@@ -36,7 +39,7 @@
 }
 
 @media screen and (min-width: 768px) {
-  .orbits-list, .spheres-list {
+  .orbits-list {
     @apply grid grid-cols-2 gap-2;
   }
   .orbit-card, .orbit-card main, .sphere-card, .sphere-card main {
@@ -44,12 +47,16 @@
   }
 }
 @media screen and (min-width: 960px) {
-  .orbits-list, .spheres-list {
+  .orbits-list {
     @apply grid-cols-3;
+  }
+  .spheres-list {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
   }
 }
 @media screen and (min-width: 1200px) {
-  .layout {
+  .layout:not(.spheres) {
     display: grid;
     grid-template-columns: 400px 1fr 1fr 1fr;
     grid-template-rows: auto auto 1fr;
@@ -75,12 +82,24 @@
     align-self: start;
   }
 
-  .orbits-list, .spheres-list {
+  .orbits-list {
     @apply grid-cols-2;
+  }
+  .list-sort-filter {
+    /* grid-column: 2/2; */
+  }
+  .spheres {
+    @apply grid grid-cols-1;
+  }
+  .spheres-list {
+    @apply grid grid-cols-3;
   }
 }
 @media screen and (min-width: 1680px) {
+  .layout {
+    grid-template-rows: 3rem 2rem min-content;
+  }
   .orbits-list, .spheres-list {
-    @apply grid-cols-3;
+    @apply grid-cols-4;
   }
 }

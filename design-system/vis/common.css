@@ -10,7 +10,7 @@ label {
 }
 
 .sphere-pie-label {    
-  padding-left: 3.5rem;
+  padding-left: 1rem;
   margin-top: -1.5rem;
 }
 
@@ -28,11 +28,20 @@ div[role="progressbar"] > div.astro > div {
 }
 
 .sphere-pie svg {
-  width: 100%;
-  @apply -ml-1 mt-1 sm:ml-2;
+  @apply -ml-10 mt-1 sm:ml-2;
   overflow: inherit;
 }
 
+@media screen and (min-width: 420px) {
+  .sphere-pie svg {
+    @apply -ml-2;
+  }
+
+  .sphere-pie-label {    
+    padding-left: 3rem;
+    margin-top: -1.5rem;
+  }
+}
 @media screen and (min-width: 1280px) {
   .orbit-vis {
     max-width: 80%;

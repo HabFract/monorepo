@@ -19,6 +19,17 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     _,
     { orbit: { name, description, startTime, endTime, sphereHash, parentHash, frequency, scale } }
   ) => {
+    console.log('{ ', {
+      name,
+      sphereHash,
+      parentHash,
+      metadata: {
+        timeframe: { startTime, endTime },
+        description
+      },
+      frequency,
+      scale
+    });
     return runCreate({
       name,
       sphereHash,

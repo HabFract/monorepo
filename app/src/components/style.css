@@ -14,11 +14,16 @@ nav
     justify-around
     bg-gradient-to-b
     from-card-bg
-    to-dark-gray;
-
+    to-card-bg-light
+    text-base;
+  outline: 2px solid rgba(107,125,127, 0.25);
   border-bottom: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+}
+
+.page-header h1{
+  @apply text-lg;
 }
 
 ul[role="menu"] {
@@ -29,4 +34,22 @@ ul[role="menu"] li:hover {
 }
 ul[role="menu"] .ant-menu-submenu-selected >.ant-menu-submenu-title {
   @apply text-info;
+}
+
+
+@media screen and (min-width: 420px) {
+  .page-header h1 {
+    @apply text-2xl
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .page-header h1 {
+    @apply text-3xl
+  }
+}
+@media screen and (min-width: 1200px) {
+  .page-header h1 {
+    @apply text-4xl
+  }
 }

@@ -7,7 +7,7 @@ import { EntryRecord } from '@holochain-open-dev/utils'
 import { encodeHashToBase64 } from '@holochain/client'
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
-  const read = mapZomeFn<ById, Sphere>(
+  const read = mapZomeFn<ById, HolochainRecord<Sphere>>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
@@ -23,9 +23,18 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   )
 
   return {
-    sphere: async (_, args): Promise<Sphere> => {
-      console.log('args :>> ', args);
-      return read(args.id)
+    sphere: async (_, args): Promise<Partial<Sphere>> => {
+      const rawRecord = await read(args.id)
+      const entryRecord = new EntryRecord<Sphere>(rawRecord);
+      console.log('args :>> ', {
+        ...entryRecord.entry,
+        id: encodeHashToBase64(entryRecord.actionHash),
+      });
+      return {
+        ...entryRecord.entry,
+        id: encodeHashToBase64(entryRecord.actionHash),
+        eH: encodeHashToBase64(entryRecord.entryHash),
+      }
     },
 
     spheres: async () : Promise<Partial<SphereConnection>> => {

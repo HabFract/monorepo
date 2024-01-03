@@ -16,9 +16,12 @@ const errorLink = onError(
 
     if (graphQLErrors)
       graphQLErrors.forEach(({ message, locations, path }) =>
-        console.log(
-          `[GraphQL error]: DeserializedBuffer: ${JSON.stringify(decode(JSON.parse("[" + message.match(/Deserialize\(\[(.*?)\]\)/)[1] + "]")), null, 2)}, Message: ${message}, Location: ${locations}, Path: ${path}`,
-        ),
+        {
+          const decodedErrors = message.match(/Deserialize\(\[(.*?)\]\)/);
+          const error = decodedErrors?[1] : "";
+          console.log(
+          `[GraphQL error]: DeserializedBuffer: ${JSON.stringify(error ? decode(JSON.parse("[" + error + "]")) : "{}", null, 2)}, Message: ${message}, Location: ${locations}, Path: ${path}`,
+        )},
       )
     if (networkError) console.log(`[Network error]: ${networkError}`)
   },

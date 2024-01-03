@@ -31,7 +31,6 @@ interface CreateOrbitProps {
 
 const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: CreateOrbitProps) => {
   console.log('sphereEh :>> ', sphereEh);
-  const { data: orbits, loading, error } = useGetOrbitsQuery();
   const [addOrbit] = useCreateOrbitMutation();
   
   return (

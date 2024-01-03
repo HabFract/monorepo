@@ -37,12 +37,15 @@
   @apply border-t-4 border-neutral-transparent bg-card-bg-light;
 }
 
-.list-header .card-body-bg {
-  @apply bg-card-bg;
+.sphere-card .card-body-bg {
+  @apply to-secondary-transparent from-secondary-extra-transparent;
+}
+.orbit-card .card-body-bg {
+  @apply from-card-bg-light;
 }
 
 .card-body-bg {
-  padding: 0.5rem;
+  padding: 0.25rem;
   gap: 0.5rem;
   justify-content: flex-start !important;
   border-radius: .5rem;
@@ -52,6 +55,9 @@
 }
 .list-header .card-header {
   @apply border-secondary-transparent bg-nav-bg;
+}
+.sphere-card.list-header .card-header {
+  @apply bg-secondary-transparent;
 }
 
 .card-copy {
@@ -93,6 +99,17 @@
 
   .sphere-card .sphere-description + div {
     gap: 0;
-    margin-left: 2rem;
+  }
+}
+
+@media screen and (min-width: 500px) {
+  .sphere-card .sphere-description + div {
+    @apply justify-between;
+    padding-left: clamp(3rem, 1rem, 2.5rem);
+  }
+}
+@media screen and (min-width: 1200px) {
+  .sphere-card .sphere-description + div {
+    padding-left: 1rem;
   }
 }
