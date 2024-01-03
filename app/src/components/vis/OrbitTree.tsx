@@ -15,9 +15,8 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   render
 }) => {
   const [_state, _transition, params] = useStateTransition(); // Top level state machine and routing
-  console.log('props :>> ', params);
-  
   const { data, loading, error } = useGetOrbitHierarchyQuery({variables: { orbitEntryHashB64: params.orbitEh }});
+  console.log('props :>> ', params);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<Vis | null>(null);
   // debugger;
   // Mock data until the vis is stable:
