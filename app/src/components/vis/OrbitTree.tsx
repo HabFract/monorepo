@@ -24,7 +24,6 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   // const loading = false;
 
   useEffect(() => {
-    if (!loading && data) {
       console.log('data :>> ', data);
       const hierarchyData = hierarchy(JSON.parse(data as any));
       const orbitVis = new Vis(
@@ -36,8 +35,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
         margin
       );
       setCurrentOrbitTree(orbitVis)
-    }
-  }, []);
+  }, [data]);
 
   return data && render(currentOrbitTree)
 };
