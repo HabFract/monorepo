@@ -50,23 +50,6 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
         margin={defaultMargins}
         render={(currentVis: any) => {
 
-          useEffect(() => {
-            // if (!currentVis?._manager) return  // If mobile event handlers have already been bound
-
-            // Propagate changes to the App component so that it can post new habitDates only after a doubletap event is handled
-            // const f = currentVis.eventHandlers.rgtClickOrDoubleTap.bind(null)
-            // currentVis.eventHandlers.rgtClickOrDoubleTap = function (e: any, d: any) {
-            //   f.call(null, e, d) // Call the original function
-            //   changesMade(true)
-            // }.bind(currentVis)
-
-            // Unbind other vis hammerjs mobile event handlers
-            // const otherVisObjs = selectOtherVisObjects(currentVis.type, store.getState());
-            // otherVisObjs.forEach(unBindTouchHandlers);
-
-            // Rebind current mob events if they were lost due to the above
-            // currentVis?._manager.handlers.length === 0 && currentVis.bindMobileEventHandlers(currentVis._enteringNodes)
-          }, [])
 
           useEffect(() => {
             // if (deleteCompleted) {
@@ -76,17 +59,6 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
             // dispatch(resetDeleteCompleted())
             // }
           }, [currentVis])//deleteCompleted])
-
-          // if (routeChanged) {
-          //   if (currentVis?.rootData) {
-          //     currentVis.zoomBase().call(
-          //       currentVis.zoomer.transform,
-          //       zoomIdentity
-          //     )
-          //     currentVis.rootData.routeChanged = true
-          //   }
-          //   return (<Redirect to={currentPath.pathname} />)
-          // }
 
           return (
             <><div id="vis-root" className="h-full"></div></>
