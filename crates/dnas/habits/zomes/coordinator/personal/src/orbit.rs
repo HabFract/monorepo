@@ -38,15 +38,15 @@ pub fn get_orbit(original_orbit_hash: ActionHash) -> ExternResult<Option<Record>
     get(latest_orbit_hash, GetOptions::default())
 }
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct UpdateOrbitInput {
     pub original_orbit_hash: ActionHash,
-    pub previous_orbit_hash: ActionHash,
     pub updated_orbit: Orbit,
 }
 #[hdk_extern]
 pub fn update_orbit(input: UpdateOrbitInput) -> ExternResult<Record> {
     let updated_orbit_hash = update_entry(
-        input.previous_orbit_hash.clone(),
+        input.original_orbit_hash.clone(),
         &input.updated_orbit,
     )?;
     create_link(
@@ -97,10 +97,6 @@ pub fn get_all_my_orbits(_:()) -> ExternResult<Vec<Record>> {
     
     let all_my_orbits = query(filter)?; 
     
-    debug!(
-        "_+_+_+_+_+_+_+_+_+_ All Orbits from my source chain: {:#?}",
-        all_my_orbits.clone()
-    );
     Ok(all_my_orbits)
 }
 

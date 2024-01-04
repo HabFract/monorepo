@@ -86,7 +86,7 @@ export const installAgent = async (
         : habits_cell;
         
     await admin.enableApp({ installed_app_id: agentHapp.installed_app_id });
-    console.log("app installed", agentHapp);
+    // console.log("app installed", agentHapp);
     const port = await conductor.attachAppInterface();
     appAgentWs = await conductor.connectAppAgentWs(
       port,
