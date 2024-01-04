@@ -1,8 +1,6 @@
 mutation createSphere($variables: SphereCreateUpdateParams!) {
   createSphere(sphere: $variables) {
-    payload {
-      actionHash
-      entryHash
-    }
+    actionHash
+    entryHash
   }
 }

@@ -39,7 +39,6 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
 
     spheres: async () : Promise<Partial<SphereConnection>> => {
       const rawRecords : Sphere[] = await readAll(null);
-      // const rawRecords = createEdges(maybeSpheres);
       console.log('get_all_my_sphere payload :>> ', rawRecords);
       
       if(typeof rawRecords !== 'object' || !rawRecords?.length) return Promise.resolve(createEdges([]) as unknown as SphereConnection)

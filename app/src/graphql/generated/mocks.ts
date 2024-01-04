@@ -6,11 +6,18 @@ export const anAgentProfile = (overrides?: Partial<AgentProfile>): AgentProfile 
     };
 };
 
+export const aCreateResponsePayload = (overrides?: Partial<CreateResponsePayload>): CreateResponsePayload => {
+    return {
+        actionHash: overrides && overrides.hasOwnProperty('actionHash') ? overrides.actionHash! : 'voluptatem',
+        entryHash: overrides && overrides.hasOwnProperty('entryHash') ? overrides.entryHash! : 'et',
+    };
+};
+
 export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
     return {
-        createOrbit: overrides && overrides.hasOwnProperty('createOrbit') ? overrides.createOrbit! : anOrbitCreateResponse(),
+        createOrbit: overrides && overrides.hasOwnProperty('createOrbit') ? overrides.createOrbit! : aCreateResponsePayload(),
         createProfile: overrides && overrides.hasOwnProperty('createProfile') ? overrides.createProfile! : anAgentProfile(),
-        createSphere: overrides && overrides.hasOwnProperty('createSphere') ? overrides.createSphere! : aSphereCreateResponse(),
+        createSphere: overrides && overrides.hasOwnProperty('createSphere') ? overrides.createSphere! : aCreateResponsePayload(),
         updateOrbit: overrides && overrides.hasOwnProperty('updateOrbit') ? overrides.updateOrbit! : anOrbit(),
         updateProfile: overrides && overrides.hasOwnProperty('updateProfile') ? overrides.updateProfile! : anAgentProfile(),
         updateSphere: overrides && overrides.hasOwnProperty('updateSphere') ? overrides.updateSphere! : aSphere(),
@@ -41,12 +48,6 @@ export const anOrbitConnection = (overrides?: Partial<OrbitConnection>): OrbitCo
     return {
         edges: overrides && overrides.hasOwnProperty('edges') ? overrides.edges! : [anOrbitEdge()],
         pageInfo: overrides && overrides.hasOwnProperty('pageInfo') ? overrides.pageInfo! : aPageInfo(),
-    };
-};
-
-export const anOrbitCreateResponse = (overrides?: Partial<OrbitCreateResponse>): OrbitCreateResponse => {
-    return {
-        payload: overrides && overrides.hasOwnProperty('payload') ? overrides.payload! : aResponsePayload(),
     };
 };
 
@@ -112,13 +113,6 @@ export const aQuery = (overrides?: Partial<Query>): Query => {
     };
 };
 
-export const aResponsePayload = (overrides?: Partial<ResponsePayload>): ResponsePayload => {
-    return {
-        actionHash: overrides && overrides.hasOwnProperty('actionHash') ? overrides.actionHash! : 'aut',
-        entryHash: overrides && overrides.hasOwnProperty('entryHash') ? overrides.entryHash! : 'similique',
-    };
-};
-
 export const aSphere = (overrides?: Partial<Sphere>): Sphere => {
     return {
         eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'libero',
@@ -132,12 +126,6 @@ export const aSphereConnection = (overrides?: Partial<SphereConnection>): Sphere
     return {
         edges: overrides && overrides.hasOwnProperty('edges') ? overrides.edges! : [aSphereEdge()],
         pageInfo: overrides && overrides.hasOwnProperty('pageInfo') ? overrides.pageInfo! : aPageInfo(),
-    };
-};
-
-export const aSphereCreateResponse = (overrides?: Partial<SphereCreateResponse>): SphereCreateResponse => {
-    return {
-        payload: overrides && overrides.hasOwnProperty('payload') ? overrides.payload! : aResponsePayload(),
     };
 };
 

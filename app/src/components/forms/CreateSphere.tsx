@@ -12,7 +12,10 @@ const SphereValidationSchema = Yup.object().shape({
 });
 
 const CreateSphere: React.FC = () => {
-  const [addSphere] = useCreateSphereMutation();
+  const [addSphere] = useCreateSphereMutation({refetchQueries: [
+      'getSpheres',
+    ]
+  });
 
   return (
     <div className="p-4">

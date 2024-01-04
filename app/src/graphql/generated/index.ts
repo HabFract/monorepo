@@ -24,6 +24,12 @@ export type AgentProfile = {
   profile: Profile;
 };
 
+export type CreateResponsePayload = {
+  __typename?: 'CreateResponsePayload';
+  actionHash: Scalars['String']['output'];
+  entryHash: Scalars['String']['output'];
+};
+
 export enum Frequency {
   Day = 'Day',
   Month = 'Month',
@@ -33,9 +39,9 @@ export enum Frequency {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createOrbit: OrbitCreateResponse;
+  createOrbit: CreateResponsePayload;
   createProfile: AgentProfile;
-  createSphere: SphereCreateResponse;
+  createSphere: CreateResponsePayload;
   updateOrbit: Orbit;
   updateProfile: AgentProfile;
   updateSphere: Sphere;
@@ -92,11 +98,6 @@ export type OrbitConnection = {
   __typename?: 'OrbitConnection';
   edges: Array<OrbitEdge>;
   pageInfo: PageInfo;
-};
-
-export type OrbitCreateResponse = {
-  __typename?: 'OrbitCreateResponse';
-  payload: ResponsePayload;
 };
 
 export type OrbitCreateUpdateParams = {
@@ -173,12 +174,6 @@ export type QuerySphereArgs = {
   id: Scalars['ID']['input'];
 };
 
-export type ResponsePayload = {
-  __typename?: 'ResponsePayload';
-  actionHash: Scalars['String']['output'];
-  entryHash: Scalars['String']['output'];
-};
-
 export enum Scale {
   Astro = 'Astro',
   Atom = 'Atom',
@@ -197,11 +192,6 @@ export type SphereConnection = {
   __typename?: 'SphereConnection';
   edges: Array<SphereEdge>;
   pageInfo: PageInfo;
-};
-
-export type SphereCreateResponse = {
-  __typename?: 'SphereCreateResponse';
-  payload: ResponsePayload;
 };
 
 export type SphereCreateUpdateParams = {
@@ -240,7 +230,7 @@ export type CreateOrbitMutationVariables = Exact<{
 }>;
 
 
-export type CreateOrbitMutation = { __typename?: 'Mutation', createOrbit: { __typename?: 'OrbitCreateResponse', payload: { __typename?: 'ResponsePayload', actionHash: string, entryHash: string } } };
+export type CreateOrbitMutation = { __typename?: 'Mutation', createOrbit: { __typename?: 'CreateResponsePayload', actionHash: string, entryHash: string } };
 
 export type UpdateOrbitMutationVariables = Exact<{
   orbitFields: OrbitCreateUpdateParams;
@@ -254,7 +244,7 @@ export type CreateSphereMutationVariables = Exact<{
 }>;
 
 
-export type CreateSphereMutation = { __typename?: 'Mutation', createSphere: { __typename?: 'SphereCreateResponse', payload: { __typename?: 'ResponsePayload', actionHash: string, entryHash: string } } };
+export type CreateSphereMutation = { __typename?: 'Mutation', createSphere: { __typename?: 'CreateResponsePayload', actionHash: string, entryHash: string } };
 
 export type UpdateSphereMutationVariables = Exact<{
   sphereFields: SphereCreateUpdateParams;
@@ -300,10 +290,8 @@ export type GetSpheresQuery = { __typename?: 'Query', spheres: { __typename?: 'S
 export const CreateOrbitDocument = gql`
     mutation createOrbit($variables: OrbitCreateUpdateParams!) {
   createOrbit(orbit: $variables) {
-    payload {
-      actionHash
-      entryHash
-    }
+    actionHash
+    entryHash
   }
 }
     `;
@@ -369,10 +357,8 @@ export type UpdateOrbitMutationOptions = Apollo.BaseMutationOptions<UpdateOrbitM
 export const CreateSphereDocument = gql`
     mutation createSphere($variables: SphereCreateUpdateParams!) {
   createSphere(sphere: $variables) {
-    payload {
-      actionHash
-      entryHash
-    }
+    actionHash
+    entryHash
   }
 }
     `;

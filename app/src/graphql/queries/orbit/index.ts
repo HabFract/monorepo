@@ -36,6 +36,8 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
 
     orbits: async (): Promise<OrbitConnection> => {
       const rawRecords : Orbit[] = await readAll(null);
+
+      console.log('get_all_my_orbits payload :>> ', rawRecords);
       if(typeof rawRecords !== 'object' || !rawRecords?.length) return Promise.resolve({ edges: [], pageInfo: undefined } as any)
 
       const entryRecords = rawRecords!.map((record: any) => new EntryRecord<Orbit>(record));

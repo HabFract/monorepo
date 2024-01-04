@@ -9,9 +9,9 @@ type Query {
 }
 
 type Mutation {
-  createSphere(sphere: SphereCreateUpdateParams): SphereCreateResponse!
+  createSphere(sphere: SphereCreateUpdateParams): CreateResponsePayload!
   updateSphere(sphere: SphereCreateUpdateParams): Sphere!
-  createOrbit(orbit: OrbitCreateUpdateParams): OrbitCreateResponse!
+  createOrbit(orbit: OrbitCreateUpdateParams): CreateResponsePayload!
   updateOrbit(orbit: OrbitCreateUpdateParams): Orbit!
   createProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
   updateProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
@@ -32,7 +32,7 @@ interface Node {
 }
 
 # Holochain Specific Types
-type ResponsePayload {
+type CreateResponsePayload {
   actionHash: String!
   entryHash: String!
 }
@@ -97,10 +97,6 @@ input SphereCreateUpdateParams {
   hashtag: String
 }
 
-type SphereCreateResponse {
-  payload: ResponsePayload!
-}
-
 # ---- Orbit ----- #
 # Orbit GQL Types
 type OrbitConnection {
@@ -160,8 +156,4 @@ input OrbitCreateUpdateParams {
   scale: Scale!
   sphereHash: String!
   parentHash: String
-}
-
-type OrbitCreateResponse {
-  payload: ResponsePayload!
 }

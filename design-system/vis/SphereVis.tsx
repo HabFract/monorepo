@@ -16,7 +16,6 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
   useEffect(() => {
     const getChartOptions = () => {
       const series = Object.fromEntries(Object.entries(spherePercentages).map(([type, number]) => [type, isNaN(number) ? 0 : number]));
-      console.log('series :>> ', series);
       return {
         series: [series.Sub, series.Atom, series.Astro],
         colors: ["rgba(64, 169, 255, 0.5)", "rgba(107,125,127, 0.9)","rgba(189, 16, 224, 0.3)"],
