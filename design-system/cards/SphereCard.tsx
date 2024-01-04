@@ -1,6 +1,6 @@
 import React from 'react';
 import './common.css';
-import { DeleteOutlined, EditOutlined, PieChartOutlined, OrderedListOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PieChartOutlined, OrderedListOutlined, PlusCircleFilled, PlusCircleOutlined } from '@ant-design/icons';
 import SphereVis from '../vis/SphereVis';
 import { Scale, Sphere } from '../../app/src/graphql/generated';
 import { Button } from 'flowbite-react';
@@ -59,7 +59,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
           <p className='card-copy'>{metadata?.description}</p>
         </div>
         <div className="row-c-around h-full flex-1">
-          <div className="sphere-actions col-c gap-2">
+          <div className="sphere-actions col-c">
             <div className="sphere-actions-crud col-c w-full">
               <Button className="btn responsive btn-warn w-full" size="sm">
                 <EditOutlined className="btn-icon" />
@@ -75,6 +75,10 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
                 <OrderedListOutlined className="btn-icon" />
                 <span>Orbits</span>
               </Button>}
+              <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn responsive btn-neutral border-0 w-full" size="sm">
+                <PlusCircleOutlined className="btn-icon btn-neutral" />
+                <span>Add Orbit</span>
+              </Button>
               <Button className="btn responsive btn-primary w-full" size="sm">
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>

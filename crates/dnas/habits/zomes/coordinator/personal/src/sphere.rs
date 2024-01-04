@@ -74,10 +74,10 @@ pub fn create_my_sphere(sphere: Sphere) -> ExternResult<Record> {
                 WasmErrorInner::Guest(String::from("Could not find the newly created Sphere"))
             ),
         )?;
-    debug!(
-        "_+_+_+_+_+_+_+_+_+_ Created My Sphere: {:#?}",
-        record.clone()
-    );
+    // debug!(
+    //     "_+_+_+_+_+_+_+_+_+_ Created My Sphere: {:#?}",
+    //     record.clone()
+    // );
     Ok(record)
 }
 
@@ -88,10 +88,10 @@ pub fn get_all_my_spheres(_:()) -> ExternResult<Vec<Record>> {
 
     let all_my_spheres = query(filter)?; 
 
-    debug!(
-        "_+_+_+_+_+_+_+_+_+_ All Spheres from my source chain: {:#?}",
-        all_my_spheres.clone()
-    );
+    // debug!(
+    //     "_+_+_+_+_+_+_+_+_+_ All Spheres from my source chain: {:#?}",
+    //     all_my_spheres.clone()
+    // );
     Ok(all_my_spheres)
 }
 
@@ -101,7 +101,7 @@ pub fn get_all_my_spheres(_:()) -> ExternResult<Vec<Record>> {
 fn _agent_to_sphere_links() -> ExternResult<Option<Vec<Link>>> {
     let agent_address = agent_info()?.agent_initial_pubkey.clone();
     let links = get_links(agent_address, LinkTypes::AgentToSphere, None)?;
-    debug!("---- LINKS ---- {:#?}", links);
+    // debug!("---- LINKS ---- {:#?}", links);
     if links.len() == 0 {
         return Ok(None);
     }

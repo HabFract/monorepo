@@ -45,16 +45,20 @@ export const routes: Routes = {
   ListOrbits: <ListOrbits />,
 };
 
+const forms = ['CreateSphere', 'CreateOrbit'] as any[];
+const lists = ['ListSpheres', 'ListOrbits'];
+
 export const AppTransitions: StateTransitions<AppState> = {
   Boot: ['Onboarding1'],
   Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding3'],
   Onboarding3: ['Onboarding2', 'Onboarding4'],
   Onboarding4: ['Onboarding3', 'Home'],
-  Home: ['CreateSphere', 'ListSpheres', 'ListOrbits', 'CreateOrbit', 'Vis'],
-  Vis: ['Home', 'CreateSphere', 'ListSpheres', 'ListOrbits', 'CreateOrbit'],
-  CreateSphere: ['Home', 'ListSpheres', 'CreateOrbit', 'Vis'],
-  ListSpheres: ['Home', 'CreateSphere', 'ListOrbits', 'CreateOrbit', 'Vis'],
-  CreateOrbit: ['Home', 'ListOrbits', 'CreateOrbit', 'Vis'],
-  ListOrbits: ['Home', 'CreateSphere', 'CreateOrbit', 'ListSpheres', 'ListOrbits', 'Vis'],
+
+  Home: [...forms, ...lists, 'Vis'],
+  Vis: ['Home', ...forms, ...lists],
+  CreateSphere: ['Home', ...lists, ...forms, 'Vis'],
+  ListSpheres: ['Home', ...lists, ...forms, 'Vis'],
+  CreateOrbit: ['Home', ...lists, ...forms, 'Vis'],
+  ListOrbits: ['Home', ...lists, ...forms,, 'Vis'],
   }

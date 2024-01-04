@@ -49,7 +49,7 @@ button {
 /* Hide icon test on smaller viewports */
 
 .btn.responsive span[role="img"] {
-  @apply m-0-sm;
+  @apply m-0-sm border-0;
 }
 .btn.responsive span[role="img"] + span {
   @apply hidden-sm;

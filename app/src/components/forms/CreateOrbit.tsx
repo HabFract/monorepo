@@ -7,8 +7,8 @@ import { Checkbox, Flex } from 'antd';
 import DateInput from './input/DatePicker';
 import { Button, TextInput, Label, Select } from 'flowbite-react';
 
-import { Frequency, Scale, useCreateOrbitMutation, useGetOrbitsQuery } from '../../graphql/generated';
-import { boolean, mixed } from 'yup';
+import { Frequency, Orbit, Scale, useCreateOrbitMutation, useGetOrbitsQuery } from '../../graphql/generated';
+import { extractEdges } from '../../graphql/utils';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -16,23 +16,25 @@ const OrbitValidationSchema = Yup.object().shape({
   description: Yup.string(),
   startTime: Yup.number().min(0).required("Start date/time is required"),
   endTime: Yup.number().min(0),
-  frequency: mixed()
+  frequency: Yup.mixed()
     .oneOf(Object.values(Frequency))
     .required('Choose a frequency'),
-  scale: mixed()
+  scale: Yup.mixed()
     .oneOf(Object.values(Scale))
     .required('Choose a scale'),
-  archival: boolean(),
+  parentHash: Yup.string()
+    .required('Choose a parent orbit'),
+  archival: Yup.boolean(),
 });
 interface CreateOrbitProps {
   sphereEh: string; // Link to a sphere
-  parentOrbitEh: string | null; // Link to a parent Orbit to create hierarchies
+  parentOrbitEh: string | undefined; // Link to a parent Orbit to create hierarchies
 }
 
 const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: CreateOrbitProps) => {
-  console.log('sphereEh :>> ', sphereEh);
   const [addOrbit] = useCreateOrbitMutation();
-  
+  const {data: orbits, loading, error} = useGetOrbitsQuery({variables: {sphereEntryHashB64: sphereEh}});
+
   return (
     <div className="p-4">
       <h2 className="mb-4 text-lg font-semibold text-gray-700">Create Orbit</h2>
@@ -45,13 +47,14 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
           frequency: Frequency.Day,
           scale: Scale.Astro,
           archival: false,
+          parentHash: ''
         }}
         validationSchema={OrbitValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
             if(!values.archival) delete values.endTime;
             delete values.archival;
-            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : undefined } } });
+            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash } } });
             setSubmitting(false);
           } catch (error) {
             console.error(error);
@@ -69,6 +72,26 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
             <Label>
               <span>Description:</span>
               <Field as={TextInput} type="text" name="description" />
+            </Label>
+            {errors.description && touched.description ? <div>{errors.description}</div> : null}
+
+            <Label>
+              <span>Parent Orbit:</span>
+              
+              <Field type="text" name="parentHash">
+                {({ field }) => (
+                  <Select
+                    {...field}
+                    color={errors.parentHash && touched.parentHash ? "failure" : ""}
+                  >
+                    <option value={'root'}>{'None'}</option>
+                    {(extractEdges((orbits as any)?.orbits) as Orbit[]).map((orbit, i) =>
+                      <option key={i} value={orbit.eH}>{orbit.name}</option>
+                    )
+                    }
+                  </Select>
+                )}
+              </Field>
             </Label>
             {errors.description && touched.description ? <div>{errors.description}</div> : null}
 

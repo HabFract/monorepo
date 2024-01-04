@@ -3,7 +3,8 @@
 }
 
 .list-sort-filter {
-  @apply bg-neutral-extra-transparent rounded-lg -mt-1;
+  @apply bg-neutral-extra-transparent rounded-lg;
+  margin-top: -0.3rem;
   font-size: 2rem;
   padding: 0.25rem .5rem;
   border-top-left-radius: 0;
