@@ -327,7 +327,7 @@ export default class Visualization implements IVisualization {
   noCanvas() : boolean {
     return (
       typeof this?._canvas == "undefined" ||
-      document.querySelectorAll(".canvas")?.length == 0
+      (select(`#${this._svgId}`) as any)._groups.length == 0
     );
   }
 
@@ -1348,9 +1348,7 @@ export default class Visualization implements IVisualization {
   }, 800);
 
   render() {
-    console.log("Rendering vis... :>>", this?._canvas?._groups);
-    console.log('this.noCanvas() :>> ', this.noCanvas()), this.firstRender();
-    // if (!this.noCanvas()) return;
+    if (this.rootData.data.name == "Live long and prosper") return;
     if (this.noCanvas()) {
       this._canvas = select(`#${this._svgId}`)
         .append("g")
