@@ -30,6 +30,20 @@ export const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
+        orbits: {
+          keyArgs: false, // Indicates that all arguments for this field should be considered when caching
+          merge(existing = [], incoming) {
+            const merged = existing ? existing.slice(0) : [];
+            // Assuming 'id' is the unique identifier for orbits
+            const existingIds = new Set(merged.map(orbit => orbit.id));
+            for (const orbit of incoming) {
+              if (!existingIds.has(orbit.id)) {
+                merged.push(orbit);
+              }
+            }
+            return merged;
+          },
+        },
         orbit(_, { args, toReference }) {
           return toReference({
             __typename: 'Orbit',
