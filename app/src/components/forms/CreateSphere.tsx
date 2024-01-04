@@ -1,18 +1,31 @@
 import React from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Button, TextInput, Label } from 'flowbite-react';
+import { Button, TextInput, Label, Textarea, Tooltip } from 'flowbite-react';
 import { useCreateSphereMutation } from '../../graphql/generated';
+import { AlertOutlined } from '@ant-design/icons';
 
 // Define the validation schema using Yup
 const SphereValidationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
-  description: Yup.string(),
+  description: Yup.string().min(10, 'Testing'),
   hashtag: Yup.string(),
 });
 
+const CustomLabel: any = (fieldName: string, errors: object, touched: object) => {
+  return (
+    <div className='error-label'>
+      {errors[fieldName] && touched[fieldName] 
+        ? <>
+            <AlertOutlined className={errors[fieldName].match(/required/) ? 'icon-warn' : 'icon-danger'} /><span className='error-label-text'>{errors.name}</span>
+          </> 
+        : ''}</div>
+      );
+}
+
 const CreateSphere: React.FC = () => {
-  const [addSphere] = useCreateSphereMutation({refetchQueries: [
+  const [addSphere] = useCreateSphereMutation({
+    refetchQueries: [
       'getSpheres',
     ]
   });
@@ -29,7 +42,7 @@ const CreateSphere: React.FC = () => {
         validationSchema={SphereValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            await addSphere({ variables: { variables: { name: values.name, description: values.description, hashtag: values.hashtag} } });
+            await addSphere({ variables: { variables: { name: values.name, description: values.description, hashtag: values.hashtag } } });
             setSubmitting(false);
           } catch (error) {
             console.error(error);
@@ -38,25 +51,25 @@ const CreateSphere: React.FC = () => {
       >
         {({ errors, touched }) => (
           <Form>
-            <Label>
-              <span>Name:</span>
-              <Field as={TextInput} type="text" name="name" required />
-            </Label>
-            {errors.name && touched.name ? <div>{errors.name}</div> : null}
+            <div className="field">
+              <Label htmlFor='name'>Name:</Label>
+              <Field as={TextInput} color={"default"} autoComplete={'off'} type="text" name="name" required />
+              {CustomLabel('name', errors, touched)}
+            </div>
 
-            <Label>
-              <span>Description:</span>
-              <Field as={TextInput} type="text" name="description" />
-            </Label>
-            {errors.description && touched.description ? <div>{errors.description}</div> : null}
+            <div className="field">
+              <Label htmlFor='description'>Description:</Label>
+              <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" />
+              {<div className='error-label'>{errors.description && touched.description ? errors.description : ''}</div>}
+            </div>
 
-            <Label>
-              <span>Hashtag:</span>
-              <Field as={TextInput} type="text" name="hashtag" />
-            </Label>
+            <div className="field">
+              <Label htmlFor='hashtag' disabled>Hashtag:</Label>
+              <Field as={TextInput} disabled color={"default"} autoComplete={'off'} type="text" name="hashtag" />
+            </div>
             {errors.hashtag && touched.hashtag ? <div>{errors.hashtag}</div> : null}
 
-            <Button type="submit" className="mt-4">Create Sphere</Button>
+            <Button type="submit" className="btn-primary mt-4">Create Sphere</Button>
           </Form>
         )}
       </Formik>

@@ -9,9 +9,14 @@
 }
 
 .page-container {
-  @apply bg-white overflow-auto fixed w-full h-full inset-y-0 left-0;
+  @apply bg-dark-gray overflow-auto fixed w-full h-full inset-y-0 left-0;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem
+}
 
 .onboarding-page {
   padding-top: var(--onboarding-progress-bar-height);

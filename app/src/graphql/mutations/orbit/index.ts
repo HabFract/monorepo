@@ -14,16 +14,17 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "create_orbit"
+    "create_my_orbit"
   );
 
   const createOrbit: createHandler = async (
     _,
     { orbit: { name, description, startTime, endTime, sphereHash, parentHash, frequency, scale } }
   ) => {
-      const rawRecord = await runCreate({
-        name,
-        sphereHash,
+    console.log('parentHash :>> ', parentHash);
+    const rawRecord = await runCreate({
+      name,
+      sphereHash,
         parentHash,
         metadata: {
           timeframe: { startTime, endTime },
@@ -33,6 +34,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
         scale
       });
       const entryRecord = new EntryRecord<Orbit>(rawRecord);
+      console.log('rawRecord :>> ', entryRecord.entry);
       return {
         actionHash: encodeHashToBase64(entryRecord.actionHash),
         entryHash: encodeHashToBase64(entryRecord.entryHash),

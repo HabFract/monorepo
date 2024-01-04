@@ -28,7 +28,7 @@ export default {
     },
     fontFamily: {
 
-      sans: ["Nunito", "Arial"],
+      sans: ["Open Sans", "Arial"],
       heading: ["Poppins", "Arial"],
     },
     extend: {
@@ -79,9 +79,12 @@ export default {
         "hover-bg": "rgba(248, 231, 28, 0.7)",
         "hover-text": "#000"
       },
+
       "off-white": "#FEFEFE",
+      "light-gray": "#dadce0",
       "brown": "#5E503F",
       "dark-gray": "#222222",
+      
       // "sphere-card-bg": "#004955",
       "card-bg": "rgba(0,73,85, 0.5)",
       "card-bg-light": "rgba(0,73,85, 0.9)",
@@ -93,6 +96,7 @@ export default {
     extend: {
       backgroundColor: ["hover", "focus"],
       textColor: ["hover", "focus"],
+      border: ["hover", "focus"],
     },
   },
 };

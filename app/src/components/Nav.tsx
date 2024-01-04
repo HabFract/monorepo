@@ -4,6 +4,7 @@ import { MenuUnfoldOutlined, MenuFoldOutlined, PlusCircleOutlined, DashboardFill
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useState } from "react";
 import { SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
+import { DarkThemeToggle } from "flowbite-react";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -99,6 +100,7 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
           items={createSphereMenuItems(spheres)}
         />}
         <div className={"flex flex-col items-center mb-4 gap-2"}>
+          {collapsed ? <MenuUnfoldOutlined onClick={toggleCollapsed}/> : <MenuFoldOutlined onClick={toggleCollapsed}/>}
           <Menu
             inlineCollapsed={collapsed}
             onClick={onClick}
@@ -108,7 +110,7 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
             mode="inline"
             items={createFixedMenuItems()}
           />
-          {collapsed ? <MenuUnfoldOutlined onClick={toggleCollapsed}/> : <MenuFoldOutlined onClick={toggleCollapsed}/>}
+          <DarkThemeToggle />
         </div>
     </nav>
   );

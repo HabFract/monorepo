@@ -11,3 +11,43 @@
   xl:px-8
   md:py-0;
 }
+
+.field {
+  flex-direction: column;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.field label {
+  @apply flex text-sm;
+}
+
+.field .error-label {
+  @apply h-2 text-slate-300 text-sm pl-3 mb-2;
+}
+.field .error-label-text {
+  @apply pl-2;
+}
+
+.field .icon-warn {
+  @apply text-warn;
+}
+.field .icon-danger {
+  @apply text-danger;
+}
+
+.field textarea, .field > label + div {
+  flex: 1;
+}
+
+@media screen and (min-width: 420px) {
+  .field {
+      flex-wrap: nowrap;
+      @apply flex-row;
+  }
+  .field label {
+    @apply flex text-sm;
+    flex-basis: 7rem;
+  }
+}

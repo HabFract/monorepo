@@ -31,11 +31,12 @@ interface CreateOrbitProps {
 }
 
 const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: CreateOrbitProps) => {
-  const [addOrbit] = useCreateOrbitMutation({refetchQueries: [
-    'getOrbits',
-  ]
-});
-  const {data: orbits, loading, error} = useGetOrbitsQuery({variables: {sphereEntryHashB64: sphereEh}});
+  const [addOrbit] = useCreateOrbitMutation({
+    refetchQueries: [
+      'getOrbits',
+    ]
+  });
+  const { data: orbits, loading, error } = useGetOrbitsQuery({ variables: { sphereEntryHashB64: sphereEh } });
 
   return (
     <div className="p-4">
@@ -54,9 +55,9 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
         validationSchema={OrbitValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            if(!values.archival) delete values.endTime;
+            if (!values.archival) delete values.endTime;
             delete values.archival;
-            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : undefined } } });
+            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } });
             setSubmitting(false);
           } catch (error) {
             console.error(error);
@@ -64,7 +65,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
         }}
       >
         {({ values, errors, touched }) => (
-        <Form>
+          <Form>
             <Label>
               <span>Name:</span>
               <Field as={TextInput} type="text" name="name" required />
@@ -79,20 +80,23 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
 
             <Label>
               <span>Parent Orbit:</span>
-              
+
               <Field name="parentHash">
-                {({ field }) => (
-                  <Select
+                {({ field }) => {
+                  const innerOrbits = extractEdges((orbits as any)?.orbits) as Orbit[];
+                  return <Select
                     {...field}
                     color={errors.parentHash && touched.parentHash ? "failure" : ""}
                   >
-                    <option value={'root'}>{'None'}</option>
-                    {(extractEdges((orbits as any)?.orbits) as Orbit[]).map((orbit, i) =>
-                      <option key={i} value={orbit.eH}>{orbit.name}</option>
-                    )
+                    {
+                      innerOrbits.length == 0
+                        ? <option value={'root'}>{'None'}</option>
+                        : innerOrbits.map((orbit, i) =>
+                          <option key={i} value={orbit.eH}>{orbit.name}</option>
+                        )
                     }
                   </Select>
-                )}
+                }}
               </Field>
             </Label>
             {errors.description && touched.description ? <div>{errors.description}</div> : null}
@@ -164,7 +168,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
                   {({ field }) => (
                     <Checkbox
                       {...field}
-                      // onChange={async (e) => {  setFieldValue('archival', e.target.checked) }}
+                    // onChange={async (e) => {  setFieldValue('archival', e.target.checked) }}
                     >Archival?</Checkbox>
                   )}
                 </Field>

@@ -19,7 +19,6 @@ interface ListOrbitsProps {
 const ListOrbits: React.FC = ({ sphereHash }: ListOrbitsProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   
-  debugger;
   const { loading: loadingSphere, data: dataSphere } = useGetSphereQuery({
     variables: { id: sphereHash as string },
     skip: !sphereHash
