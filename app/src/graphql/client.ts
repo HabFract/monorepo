@@ -3,6 +3,7 @@ import { InMemoryCache, ApolloClient, from, makeVar } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
 import { SchemaLink } from '@apollo/client/link/schema'
 import { decode } from '@msgpack/msgpack'
+import { extractEdges } from './utils'
 
 // Same as OpenConnectionOptions but for external client where dnaConfig may be autodetected
 interface AutoConnectionOptions {
@@ -33,6 +34,7 @@ export const cache = new InMemoryCache({
         orbits: {
           keyArgs: false, // Indicates that all arguments for this field should be considered when caching
           merge(existing, incoming) {
+            incoming = extractEdges(incoming);
             // Ensure incoming is an array
             if (!Array.isArray(incoming)) {
               throw new Error(`Incoming data is not iterable: ${incoming}`);
@@ -45,6 +47,26 @@ export const cache = new InMemoryCache({
                 merged.push(orbit);
               }
             }
+            return merged;
+          },
+        },
+        spheres: {
+          keyArgs: false, // Indicates that all arguments for this field should be considered when caching
+          merge(existing, incoming) {
+            incoming = extractEdges(incoming);
+            // Ensure incoming is an array
+            if (!Array.isArray(incoming)) {
+              throw new Error(`Incoming data is not iterable: ${incoming}`);
+            }
+            const merged = existing ? existing.slice(0) : [];
+            // Assuming 'id' is the unique identifier for spheres
+            const existingIds = new Set(merged.map(sphere => sphere.id));
+            for (const sphere of incoming) {
+              if (!existingIds.has(sphere.id)) {
+                merged.push(sphere);
+              }
+            }
+            console.log('merged :>> ', merged);
             return merged;
           },
         },
