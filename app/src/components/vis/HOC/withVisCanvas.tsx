@@ -6,7 +6,7 @@ import { Margins } from '../types';
 import { select } from 'd3';
 
 const defaultMargins: Margins = {
-  top: (document.body.getBoundingClientRect().height / (document.body.getBoundingClientRect().height > 1025 ? 6 : 4)),
+  top: (document.body.getBoundingClientRect().height / (document.body.getBoundingClientRect().height > 1025 ? 6 : 2)),
   right: 0,
   bottom: 0,
   left: 0,

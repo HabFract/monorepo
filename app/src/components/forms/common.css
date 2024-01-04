@@ -1,15 +1,15 @@
 .form-container {
-  @apply
-  flex
-  flex-col
-  justify-between
-  w-full
-  lg:h-3/4
-  xl:h-full
-  bg-gray-100/80
-  px-2
-  xl:px-8
-  md:py-0;
+  @apply py-2 px-4 text-off-white;
+}
+
+.form-container h2 {
+  @apply my-2 text-off-white text-center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem
 }
 
 .field {
@@ -24,7 +24,7 @@
 }
 
 .field .error-label {
-  @apply h-2 text-slate-300 text-sm pl-3 mb-2;
+  @apply h-4 text-slate-300 text-sm pl-1 mb-2;
 }
 .field .error-label-text {
   @apply pl-2;
@@ -47,7 +47,10 @@
       @apply flex-row;
   }
   .field label {
-    @apply flex text-sm;
+    @apply flex text-sm mb-4;
     flex-basis: 7rem;
+  }
+  .field .error-label {
+    @apply pb-2;
   }
 }

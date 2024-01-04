@@ -8,16 +8,17 @@ import { AlertOutlined } from '@ant-design/icons';
 // Define the validation schema using Yup
 const SphereValidationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
-  description: Yup.string().min(10, 'Testing'),
-  hashtag: Yup.string(),
+  description: Yup.string().min(10, 'A description needs to be descriptive!'),
+  hashtag: Yup.string().min(2, 'Ah'),
 });
 
-const CustomLabel: any = (fieldName: string, errors: object, touched: object) => {
+const CustomErrorLabel: any = (fieldName: string, errors: object, touched: object) => {
+  console.log('fieldName, errors[fieldName] :>> ', fieldName, errors[fieldName]);
   return (
     <div className='error-label'>
       {errors[fieldName] && touched[fieldName] 
         ? <>
-            <AlertOutlined className={errors[fieldName].match(/required/) ? 'icon-warn' : 'icon-danger'} /><span className='error-label-text'>{errors.name}</span>
+            <AlertOutlined className={errors[fieldName].match(/required/) ? 'icon-warn' : 'icon-danger'} /><span className='error-label-text'>{errors[fieldName]}</span>
           </> 
         : ''}</div>
       );
@@ -31,7 +32,7 @@ const CreateSphere: React.FC = () => {
   });
 
   return (
-    <div className="p-4">
+    <div className="form-container">
       <h2 className="mb-4 text-lg font-semibold text-gray-700">Create Sphere</h2>
       <Formik
         initialValues={{
@@ -50,26 +51,33 @@ const CreateSphere: React.FC = () => {
         }}
       >
         {({ errors, touched }) => (
-          <Form>
+          <Form noValidate={true}>
             <div className="field">
               <Label htmlFor='name'>Name:</Label>
-              <Field as={TextInput} color={"default"} autoComplete={'off'} type="text" name="name" required />
-              {CustomLabel('name', errors, touched)}
+
+              <div className="flex flex-col gap-2">
+                <Field as={TextInput} color={"default"} sizing="lg" autoComplete={'off'} type="text" name="name" id="name" required />
+                {CustomErrorLabel('name', errors, touched)}
+              </div>
             </div>
 
             <div className="field">
               <Label htmlFor='description'>Description:</Label>
-              <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" />
-              {<div className='error-label'>{errors.description && touched.description ? errors.description : ''}</div>}
+              <div className="flex flex-col gap-2">
+                <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" id="description" />
+                {CustomErrorLabel('description', errors, touched)}
+              </div>
             </div>
 
             <div className="field">
               <Label htmlFor='hashtag' disabled>Hashtag:</Label>
-              <Field as={TextInput} disabled color={"default"} autoComplete={'off'} type="text" name="hashtag" />
+              <div className="flex flex-col gap-2">
+                <Field as={TextInput} disabled color={"disabled"} sizing="lg" autoComplete={'off'} type="text" name="hashtag" id="hashtag" />
+                {CustomErrorLabel('hashtag', errors, touched)}
+              </div>
             </div>
-            {errors.hashtag && touched.hashtag ? <div>{errors.hashtag}</div> : null}
 
-            <Button type="submit" className="btn-primary mt-4">Create Sphere</Button>
+            <Button type="submit" disabled={!!Object.values(errors).length} className="btn-primary">Create Sphere</Button>
           </Form>
         )}
       </Formik>

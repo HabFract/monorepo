@@ -39,7 +39,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
   const { data: orbits, loading, error } = useGetOrbitsQuery({ variables: { sphereEntryHashB64: sphereEh } });
 
   return (
-    <div className="p-4">
+    <div className="form-container">
       <h2 className="mb-4 text-lg font-semibold text-gray-700">Create Orbit</h2>
       <Formik
         initialValues={{

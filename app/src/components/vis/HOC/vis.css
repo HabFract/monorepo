@@ -4,7 +4,7 @@ g.nodes {
 }
 
 .the-node.active {
-  stroke: #3d3229;
+  stroke: #6B7D7F;
   stroke-width: 4px;
 }
 
@@ -58,8 +58,8 @@ g.tooltip rect {
 }
 
 g.tooltip text {
-  fill: #1a140e !important;
-  stroke: #1a140e !important;
+  fill: #FDFEFE !important;
+  stroke: #FDFEFE !important;
   stroke-width: 1px;
 }
 
@@ -82,5 +82,5 @@ body[class^="scroll"] .controls-div {
 }
 
 g.tooltip rect:first-of-type {
-  fill: #47301f !important;
+  fill: #6B7D7F !important;
 }
