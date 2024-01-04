@@ -106,6 +106,33 @@ export default () => {
         t.equal(updatedOrbit.name, orbitRecord2.entry.name, 'with the same name.')
         // Then it returns the updated entry
         
+
+        // 3. Given Alice already created two orbits
+        const orbitGetAllResponse = await callZomeAlice(
+          "personal",
+          "get_all_my_orbits",
+          null
+        );
+        t.ok(orbitGetAllResponse, 'Two orbits exist,');
+        t.equal(2, orbitGetAllResponse.length, 'Two orbits exist,');
+        // When Alice deletes the updated orbit
+        const orbitDeleteResponse = await callZomeAlice(
+          "personal",
+          "delete_orbit",
+          orbitActionHash2
+        );
+        t.ok(orbitDeleteResponse, 'an updated orbit can be deleted,');
+
+        // Then another get_all returns only 1 orbit
+        const orbitGetAllResponse2 = await callZomeAlice(
+          "personal",
+          "get_all_my_orbits",
+          null
+        );
+        t.ok(orbitGetAllResponse2, 'and one orbit exists,');
+        t.equal(1, orbitGetAllResponse2.length, 'and one orbit exists,');
+
+
       } catch (e) {
         t.ok(null);
       }
