@@ -32,7 +32,11 @@ export const cache = new InMemoryCache({
       fields: {
         orbits: {
           keyArgs: false, // Indicates that all arguments for this field should be considered when caching
-          merge(existing = [], incoming) {
+          merge(existing, incoming) {
+            // Ensure incoming is an array
+            if (!Array.isArray(incoming)) {
+              throw new Error(`Incoming data is not iterable: ${incoming}`);
+            }
             const merged = existing ? existing.slice(0) : [];
             // Assuming 'id' is the unique identifier for orbits
             const existingIds = new Set(merged.map(orbit => orbit.id));
