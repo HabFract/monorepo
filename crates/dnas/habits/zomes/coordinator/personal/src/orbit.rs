@@ -109,7 +109,7 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
     let filter = ChainQueryFilter::new().entry_hashes(all_descendant_hashes).entry_type(orbit_entry_type).include_entries(true); 
     let selected_orbits = query(filter)?; 
 
-    debug!("---- Hashes retrieved after recursion: ---- {:#?}", selected_orbits.len());
+    // debug!("---- Hashes retrieved after recursion: ---- {:#?}", selected_orbits.len());
     let maybe_node_hashmap = build_tree(&selected_orbits);
     if let Ok(hashmap) = maybe_node_hashmap {
         Ok(hashmap.get(&input.orbit_entry_hash_b64).unwrap().borrow().to_json())

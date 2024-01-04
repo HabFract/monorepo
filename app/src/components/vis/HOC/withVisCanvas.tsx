@@ -44,6 +44,8 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
     const svgId = 'vis';
 
     useEffect(() => {
+      console.log('document.querySelector(`#${mountingDivId} #${svgId}`) :>> ', document.querySelector(`#${mountingDivId} #${svgId}`));
+      if(document.querySelector(`#${mountingDivId} #${svgId}`)) return
       appendSvg(mountingDivId, svgId);
     }, []);
 

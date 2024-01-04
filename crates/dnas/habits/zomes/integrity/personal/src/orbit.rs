@@ -41,7 +41,8 @@ impl Node {
 
     pub fn to_json(&self) -> serde_json::Value {
         serde_json::json!({
-            "id": self.id,
+            "content": self.id,
+            "name": self.id,
             "children": self.children.iter().map(|child| child.borrow_mut().to_json()).collect::<Vec<_>>(),
         })
     }

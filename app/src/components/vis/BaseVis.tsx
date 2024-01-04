@@ -711,14 +711,15 @@ export default class Visualization implements IVisualization {
     if (!data?.sum) return;
     data.sum((d) => {
       // Return a binary interpretation of whether the habit was completed that day
-      const thisNode = data.descendants().find((node) => node.data == d);
-      let content = parseTreeValues(thisNode.data.content);
+      // const thisNode = data.descendants().find((node) => node.data == d);
+      // let content = parseTreeValues(thisNode.data.content);
 
-      if (content!.status === "") return 0;
-      if (content!.status === "OOB") return 0;
+      // if (content!.status === "") return 0;
+      // if (content!.status === "OOB") return 0;
 
-      const statusValue = JSON.parse(content!.status);
-      return +statusValue;
+      // const statusValue = JSON.parse(content!.status);
+      // return +statusValue;
+      return 1
     });
   }
 
@@ -1348,6 +1349,8 @@ export default class Visualization implements IVisualization {
 
   render() {
     console.log("Rendering vis... :>>", this?._canvas?._groups);
+    console.log('this.noCanvas() :>> ', this.noCanvas()), this.firstRender();
+    // if (!this.noCanvas()) return;
     if (this.noCanvas()) {
       this._canvas = select(`#${this._svgId}`)
         .append("g")
