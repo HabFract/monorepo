@@ -1,5 +1,5 @@
 import bindSchema, { autoConnect, APIOptions, DNAIdMappings } from '.'
-import { InMemoryCache, ApolloClient, from } from '@apollo/client'
+import { InMemoryCache, ApolloClient, from, makeVar } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
 import { SchemaLink } from '@apollo/client/link/schema'
 import { decode } from '@msgpack/msgpack'
@@ -26,6 +26,38 @@ const errorLink = onError(
     if (networkError) console.log(`[Network error]: ${networkError}`)
   },
 )
+export const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        orbit(_, { args, toReference }) {
+          return toReference({
+            __typename: 'Orbit',
+            id: args!.id,
+          });
+        },
+        sphere(_, { args, toReference }) {
+          return toReference({
+            __typename: 'Sphere',
+            id: args!.id,
+          });
+        },
+      },
+    },
+    Orbit: {
+      keyFields: ['id'],
+      fields: {
+        // Define custom read functions for fields if necessary
+      },
+    },
+    Sphere: {
+      keyFields: ['id'],
+      fields: {
+        // Define custom read functions for fields if necessary
+      },
+    },
+  },
+});
 
 export async function initGraphQLClient(options: APIOptions) {
   const { dnaConfig, conductorUri } = await autoConnect()
@@ -35,7 +67,7 @@ export async function initGraphQLClient(options: APIOptions) {
   const schema = await bindSchema({ dnaConfig, conductorUri }) // {conductorUri: `ws://localhost:${APP_WS_PORT}`} as APIOptions)
 
   return new ApolloClient({
-    cache: new InMemoryCache(),
+    cache: cache,
     link: from([errorLink, new SchemaLink({ schema })]),
   })
 }
