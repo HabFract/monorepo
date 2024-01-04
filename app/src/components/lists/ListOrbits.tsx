@@ -13,18 +13,21 @@ import { extractEdges } from '../../graphql/utils';
 import { useStateTransition } from '../../hooks/useStateTransition';
 
 interface ListOrbitsProps {
-  sphereId?: string; // Optional prop to filter orbits by sphere
+  sphereHash?: string; // Optional prop to filter orbits by sphere
 }
 
-const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
+const ListOrbits: React.FC = ({ sphereHash }: ListOrbitsProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   
+  debugger;
   const { loading: loadingSphere, data: dataSphere } = useGetSphereQuery({
-    variables: { id: sphereId as string },
+    variables: { id: sphereHash as string },
+    skip: !sphereHash
   });
   
   const sphereEh = dataSphere?.sphere?.eH;
   const [getOrbits, { loading: loadingOrbits, error: errorOrbits, data }] = useGetOrbitsLazyQuery({
+    fetchPolicy: 'cache-first',
     variables: { sphereEntryHashB64: sphereEh },
   });
   
@@ -70,7 +73,7 @@ const ListOrbits: React.FC = ({ sphereId }: ListOrbitsProps) => {
     <div className='layout orbits'>
       <PageHeader title="Orbit List" />
       <ListSortFilter label={'for the Sphere:'} />
-      {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} transition={transition} orbitScales={orbits.map((orbit: Orbit) => orbit?.scale )} />}
+      {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} transition={transition} orbitScales={orbits.map((orbit: Orbit) => orbit?.scale)} />}
       <div className="orbits-list">
         {orbits.sort(sortOrbits)
           .map((orbit: Orbit) => <OrbitCard key={orbit.id} sphereEh={sphereEh} transition={transition} orbit={orbit} />)}

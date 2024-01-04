@@ -1,11 +1,9 @@
 import "./style.css";
-import { useQuery } from "@apollo/client";
-import GET_SPHERES from '../graphql/queries/sphere/getSpheres.graphql';
 
 import { MenuUnfoldOutlined, MenuFoldOutlined, PlusCircleOutlined, DashboardFilled, UnorderedListOutlined, PieChartFilled } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useState } from "react";
-import { SphereConnection, SphereEdge } from "../graphql/generated";
+import { SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -49,7 +47,7 @@ export interface INav {
 }
 
 const Nav: React.FC<INav> = ({ transition } : INav) => {
-  const { loading, error, data: spheres } = useQuery(GET_SPHERES);
+  const { loading, error, data: spheres } = useGetSpheresQuery();
 
   const [collapsed, setCollapsed] = useState(true);
   const toggleCollapsed = () => {
@@ -78,7 +76,7 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
 
       case !!e.key.match(/list\-orbits/):
         const sphereId = e.key.split('list-orbits-')[1];
-        transition('ListOrbits', { sphereEh: sphereId, sphereId })
+        transition('ListOrbits', { sphereHash: sphereId })
         break;
 
       default:

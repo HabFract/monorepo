@@ -46,10 +46,13 @@ button {
   outline: 1px dashed #2d3436;
 }
 
+.btn span[role="img"] {
+  @apply border-0 bg-transparent;
+}
 /* Hide icon test on smaller viewports */
 
 .btn.responsive span[role="img"] {
-  @apply m-0-sm border-0;
+  @apply m-0-sm;
 }
 .btn.responsive span[role="img"] + span {
   @apply hidden-sm;

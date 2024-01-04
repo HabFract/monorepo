@@ -22,8 +22,7 @@ const OrbitValidationSchema = Yup.object().shape({
   scale: Yup.mixed()
     .oneOf(Object.values(Scale))
     .required('Choose a scale'),
-  parentHash: Yup.string()
-    .required('Choose a parent orbit'),
+  parentHash: Yup.string(),
   archival: Yup.boolean(),
 });
 interface CreateOrbitProps {
@@ -54,7 +53,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
           try {
             if(!values.archival) delete values.endTime;
             delete values.archival;
-            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash } } });
+            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : undefined } } });
             setSubmitting(false);
           } catch (error) {
             console.error(error);
@@ -78,7 +77,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
             <Label>
               <span>Parent Orbit:</span>
               
-              <Field type="text" name="parentHash">
+              <Field name="parentHash">
                 {({ field }) => (
                   <Select
                     {...field}

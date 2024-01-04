@@ -49,8 +49,8 @@ function ListSpheres() {
       <PageHeader title="Spheres of Action" />
       <ListSortFilter label='' />
       <div className="spheres-list">
-        {sortedSpheres.map((sphere : Sphere) => <SphereCard key={sphere.id} sphere={sphere} transition={transition} isHeader={false} orbitScales={[Scale.Astro]}/>)}
-      </div>
+        {sortedSpheres.map((sphere : Sphere) => <SphereCard key={sphere.id} sphere={sphere} transition={transition} isHeader={false} orbitScales={[]}/>)//orbits.map((orbit: Orbit) => orbit?.scale)}/>)}
+}</div>
     </div>
   );
 }

@@ -42,7 +42,6 @@ function calculateSphereCounts(orbitScales: Scale[]) {
 
 const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition } : SphereCardProps) => {
   const { name, metadata } = sphere;
-
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
       <header className={"sphere-header card-header"}>
@@ -71,14 +70,16 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
               </Button>
             </div>
             <div className="sphere-actions-vis col-c">
-              {!isHeader && <Button onClick={() => transition('ListOrbits', { sphereEh: sphere.eH })} className="btn responsive btn-neutral w-full" size="sm">
+              {!isHeader && <Button onClick={() => transition('ListOrbits', { sphereHash: sphere.id })} className="btn mt-2 responsive btn-neutral w-full" size="sm">
                 <OrderedListOutlined className="btn-icon" />
                 <span>Orbits</span>
               </Button>}
-              <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn responsive btn-neutral border-0 w-full" size="sm">
-                <PlusCircleOutlined className="btn-icon btn-neutral" />
+
+              {!isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn responsive btn-primary border-0 w-full" size="sm">
+                <PlusCircleOutlined className="btn-icon btn-primary" />
                 <span>Add Orbit</span>
-              </Button>
+              </Button>}
+
               <Button className="btn responsive btn-primary w-full" size="sm">
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>
@@ -90,6 +91,10 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
           </div>
         </div>
       </main>
+      {isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn mt-2 btn-secondary border-0 w-full" size="sm">
+        <PlusCircleOutlined className="btn-icon btn-secondary" />
+        <span>Add Orbit</span>
+      </Button>}
     </div>
   );
 };
