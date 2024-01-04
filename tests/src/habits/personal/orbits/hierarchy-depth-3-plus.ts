@@ -105,7 +105,36 @@ export default () => {
         // And the children array of the second Orbit's hierarchy contains the third Orbit's entry hash
 
 
-        // 3. 
+        // 3. Given Alice then creates a fourth Orbit with otherwise valid and different input, using the third Orbit's hash as a parentHash
+        const createOrbitResponse4 = await callZomeAlice(
+          "personal",
+          "create_my_orbit",
+          anOrbit({ name: 'A second different name!', sphereHash: encodeHashToBase64(hash), parentHash: orbitHash3 })
+        );
+        t.ok(createOrbitResponse4, 'A third orbit was created,');
+
+        // When Alice then requests an orbit hierarchy
+        const orbitHierarchyResponse3 = await callZomeAlice(
+          "personal",
+          "get_orbit_hierarchy_json",
+          { orbitEntryHashB64: orbitHash }
+        );
+        t.ok(orbitHierarchyResponse3, 'a third root hierarchy can be generated,');
+        // Then an Orbit hierarchy was returned
+// console.log('orbitHierarchyResponse3 :>> LVL 0 ', orbitHierarchyResponse3);
+// console.log('orbitHierarchyResponse3 :>> LVL 1 ', orbitHierarchyResponse3.children);
+// console.log('orbitHierarchyResponse3 :>> LVL 2 ', orbitHierarchyResponse3.children[0].children);
+// console.log('orbitHierarchyResponse3 :>> LVL 3 ', orbitHierarchyResponse3.children[0].children[0].children);
+        t.equal(orbitHash2, orbitHierarchyResponse3.children[0].id, 'the second orbit is a child of the first one,');
+        // And the children array of the first Orbit's hierarchy contains the second Orbit's entry hash
+
+        const orbitHash4 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse4).entryHash);
+        t.equal(orbitHash3, orbitHierarchyResponse3.children[0].children[0].id, 'the third orbit is a child of the second one,');
+        // And the children array of the second Orbit's hierarchy contains the third Orbit's entry hash
+
+        t.equal(orbitHash4, orbitHierarchyResponse3.children[0].children[0].children[0].id, 'the fourth orbit is a child of the third one.');
+        // And the children array of the third Orbit's hierarchy contains the fourth Orbit's entry hash
+
       } catch (e) {
         t.ok(null);
       }
