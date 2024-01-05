@@ -37,6 +37,8 @@ const ImageUpload = ({
       shape3Color: ["50e3c2", "004955", "6B7D7F"],
       shape2Color: ["36195b", "transparent"],
       shape1Color: ["transparent"],
+      translateX: -10,
+      translateY: 20
     });
     const url = avatar.toDataUriSync();
     setImageUrl(url)
@@ -63,7 +65,7 @@ const ImageUpload = ({
   const uploadButton = (
     <div className='absolute z-10 top-2 left-5 text-dark-gray '>
       <div className='absolute top-3 bg-secondary-transparent text-white hover:bg-secondary rounded-full p-2 transition-all duration-300'>Upload
-        <span className="pl-1">{loading ? <LoadingOutlined /> : <PlusCircleFilled />}</span>
+        <span className="rounded-xl text-primary bg-secondary">{loading ? <LoadingOutlined /> : <PlusCircleFilled />}</span>
       </div>
     </div>
   );

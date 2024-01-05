@@ -1,6 +1,6 @@
 import "./style.css";
 
-import { MenuUnfoldOutlined, MenuFoldOutlined, PlusCircleOutlined, DashboardFilled, UnorderedListOutlined, PieChartFilled } from "@ant-design/icons";
+import { MenuUnfoldOutlined, MenuFoldOutlined, PlusCircleOutlined, DashboardFilled, UnorderedListOutlined, PieChartFilled, PlusCircleFilled } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
 import { SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
@@ -40,11 +40,12 @@ function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
         getItem('Create Orbit', 'add-orbit-' + sphere.node.eH, null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'
       ])
   }),
-  getItem('Add Sphere', 'add-sphere', <PlusCircleOutlined />)] 
+  getItem('Add Sphere', 'add-sphere', <PlusCircleFilled />)] 
 }
 
 export interface INav {
-  transition: (newState: string, params?: object) => void
+  transition: (newState: string, params?: object) => void;
+  navCollapseVertical: boolean;
 }
 
 const Nav: React.FC<INav> = ({ transition } : INav) => {
@@ -54,11 +55,9 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
   const [collapsed, setCollapsed] = useState(true);
   const closeMenu = () => {
     setCollapsed(true);
-    console.log('collapsed :>> ', collapsed);
   };
   const openMenu = () => {
     setCollapsed(false);
-    console.log('collapsed :>> ', collapsed);
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -116,9 +115,9 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           mode="inline"
-          items={createSphereMenuItems(spheres)}
+          items={createSphereMenuItems(spheres as any)}
         />}
-        <div className={"flex flex-col items-center mb-4 gap-2"}>
+        <div className={"main-actions-menu"}>
           <Menu
             inlineCollapsed={collapsed}
             onClick={onClick}
