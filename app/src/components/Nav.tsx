@@ -2,10 +2,9 @@ import "./style.css";
 
 import { MenuUnfoldOutlined, MenuFoldOutlined, PlusCircleOutlined, DashboardFilled, UnorderedListOutlined, PieChartFilled } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
 import { DarkThemeToggle } from "flowbite-react";
-import Icon from "@ant-design/icons/lib/components/Icon";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -16,7 +15,6 @@ function getItem(
   children?: MenuItem[],
   type?: 'group',
 ): MenuItem {
-  console.log('label, key, type :>> ', label, key, type);
   return {
     key,
     icon,
@@ -37,8 +35,8 @@ function createFixedMenuItems() {
 function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
   return [...spheres.edges!.map((sphere: SphereEdge, _idx: number) => {
     return getItem(`${sphere.node.name}`, sphere.node.id, <img src={sphere.node.metadata!.image as string} />,
-      [ 
-        getItem('Orbit List', 'list-orbits-' + sphere.node.id, null),
+    [ 
+      getItem('Orbit List', 'list-orbits-' + sphere.node.id, null),
         getItem('Create Orbit', 'add-orbit-' + sphere.node.eH, null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'
       ])
   }),
@@ -50,12 +48,31 @@ export interface INav {
 }
 
 const Nav: React.FC<INav> = ({ transition } : INav) => {
+  const ref = useRef(null);
   const { loading, error, data: spheres } = useGetSpheresQuery();
-
+  
   const [collapsed, setCollapsed] = useState(true);
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
+  const closeMenu = () => {
+    setCollapsed(true);
+    console.log('collapsed :>> ', collapsed);
   };
+  const openMenu = () => {
+    setCollapsed(false);
+    console.log('collapsed :>> ', collapsed);
+  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && (event.target.tagName == 'NAV')) {
+        openMenu();
+      } else if(!(ref as any).current.contains(event.target)) {
+        closeMenu();
+      }
+    };
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  }, []);
 
   const onClick: MenuProps['onClick'] = (e) => {
     switch (true) {
@@ -89,7 +106,7 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
   };
 
   return (
-    <nav className={"bg-dark-gray fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col"}>
+    <nav ref={ref} className={"bg-dark-gray fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col"}>
       {/* {error && "Error"} */}
       {loading || !spheres ? "Loading" :
         <Menu
@@ -102,7 +119,6 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
           items={createSphereMenuItems(spheres)}
         />}
         <div className={"flex flex-col items-center mb-4 gap-2"}>
-          {collapsed ? <MenuUnfoldOutlined onClick={toggleCollapsed}/> : <MenuFoldOutlined onClick={toggleCollapsed}/>}
           <Menu
             inlineCollapsed={collapsed}
             onClick={onClick}
