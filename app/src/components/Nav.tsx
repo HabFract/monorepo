@@ -1,6 +1,6 @@
 import "./style.css";
 
-import { DashboardFilled, UnorderedListOutlined, PieChartFilled, PlusCircleFilled } from "@ant-design/icons";
+import { DashboardFilled, UnorderedListOutlined, PieChartFilled, PlusCircleFilled, ArrowsAltOutlined } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
 import { SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
@@ -46,10 +46,11 @@ function createSphereMenuItems({ spheres, onClick }: { spheres: SphereConnection
 
 export interface INav {
   transition: (newState: string, params?: object) => void;
-  navCollapseVertical: boolean;
+  toggleVerticalCollapse: () => void;
+  verticalCollapse: boolean;
 }
 
-const Nav: React.FC<INav> = ({ transition } : INav) => {
+const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalCollapse } : INav) => {
   const ref = useRef(null);
   const { loading, error, data: spheres } = useGetSpheresQuery();
   
@@ -106,7 +107,7 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
   };
 
   return (
-    <nav ref={ref} className={"bg-dark-gray fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col"}>
+    <nav ref={ref} className={verticalCollapse ? "collaped-vertical side-nav" : "side-nav"}>
       {/* {error && "Error"} */}
       {loading || !spheres ? "Loading" :
         <Menu
@@ -128,7 +129,12 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
             mode="inline"
             items={createFixedMenuItems()}
           />
-          <DarkThemeToggle />
+          <div className="flex flex-col">
+            <button className="toggle-vertical-collapse">
+              <ArrowsAltOutlined className={verticalCollapse ? "collapsed" : "expanded"} onClick={() => toggleVerticalCollapse()}/>
+            </button>
+            <DarkThemeToggle />
+          </div>
         </div>
     </nav>
   );

@@ -20,7 +20,7 @@ function getNextOnboardingState(state: string) {
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
-  const [navCollapseVertical, setNavCollapseVertical] = useState<boolean>(false);
+  const [navCollapseVertical, setNavCollapseVertical] = useState<boolean>(true);
 
   const customTheme: CustomFlowbiteTheme = {
     label: {
@@ -55,7 +55,7 @@ function App({ children: pageComponent }: any) {
       }
     }
   };
-  
+
   return (
     <Flowbite theme={{ theme: customTheme }}>
       {state.match('Onboarding')
@@ -87,7 +87,7 @@ function App({ children: pageComponent }: any) {
             className={"fixed top-0 right-0 z-20 text-white"} onClick={() => transition(getNextOnboardingState(state))}>NEXT</Button>
         </>
         : <>
-          <Nav transition={transition} verticalCollapse={navCollapseVertical}></Nav>
+          <Nav transition={transition} verticalCollapse={navCollapseVertical} toggleVerticalCollapse={()=> setNavCollapseVertical(!navCollapseVertical)} ></Nav>
           <main className={"page-container"}>{pageComponent}</main>
         </>
       }

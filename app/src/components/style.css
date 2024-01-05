@@ -1,6 +1,41 @@
-nav
-  + main {
+nav + main {
   padding-left: 72px;
+}
+
+nav.side-nav:not(.collapsed-vertical) {
+  @apply bg-dark-gray fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col;
+  transition: 1s all ease-in;
+}
+nav.side-nav.collaped-vertical {
+  height: auto;
+  top: initial;
+  gap: 0.5rem;
+  transition: 1s all ease-in;
+}
+nav.side-nav.collaped-vertical ul[role="menu"] {
+  border-radius: 1rem;
+}
+
+/* Vertical collapse button */
+.toggle-vertical-collapse {
+  @apply bg-transparent border-0 text-off-white text-sm h-10;
+}
+.toggle-vertical-collapse  span[role="img"]{
+  transform: rotate(-45deg) scale(1.25);
+}
+.toggle-vertical-collapse span[role="img"].collapsed {
+  transform: rotate(-45deg) scale(2);
+}
+.toggle-vertical-collapse:focus {
+  @apply ring-0 outline-0;
+}
+.toggle-vertical-collapse:hover {
+  border-color: rgba(80, 227, 194, 0.9) !important;
+  @apply bg-neutral text-off-white;
+}
+.toggle-vertical-collapse:active {
+  background: rgba(155, 89, 182, 0.5);
+  color: #FDFEFE;
 }
 
 .page-header {
