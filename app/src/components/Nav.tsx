@@ -5,6 +5,7 @@ import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useState } from "react";
 import { SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
 import { DarkThemeToggle } from "flowbite-react";
+import Icon from "@ant-design/icons/lib/components/Icon";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -34,7 +35,7 @@ function createFixedMenuItems() {
 
 function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
   return [...spheres.edges!.map((sphere: SphereEdge, _idx: number) => {
-    return getItem(`${sphere.node.name}`, sphere.node.id, null,
+    return getItem(`${sphere.node.name}`, sphere.node.id, <img src={sphere.node.metadata!.image as string} />,
       [ 
         getItem('Orbit List', 'list-orbits-' + sphere.node.id, null),
         getItem('Create Orbit', 'add-orbit-' + sphere.node.eH, null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'

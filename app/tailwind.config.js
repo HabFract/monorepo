@@ -39,20 +39,20 @@ export default {
         "hover-bg": "rgba(80, 227, 194, 0.8)",
         "hover-text": "#000"
       },
-      "secondary": {
-        "DEFAULT": "rgb(54, 25, 91)",
-        "extra-transparent": "rgba(54, 25, 91, 0.25)",
-        "transparent": "rgba(54, 25, 91, 0.5)",
-        "hover-bg": "rgba(54, 25, 91, 0.9)",
-        "hover-text": "#FDFEFE"
-      },
       // "secondary": {
-      //   "DEFAULT": "#9B59B6",
-      //   "extra-transparent": "rgba(155, 89, 182, 0.25)",
-      //   "transparent": "rgba(155, 89, 182, 0.5)",
-      //   "hover-bg": "rgba(155, 89, 182, 0.9)",
+      //   "DEFAULT": "rgb(54, 25, 91)",
+      //   "extra-transparent": "rgba(54, 25, 91, 0.25)",
+      //   "transparent": "rgba(54, 25, 91, 0.5)",
+      //   "hover-bg": "rgba(54, 25, 91, 0.9)",
       //   "hover-text": "#FDFEFE"
       // },
+      "secondary": {
+        "DEFAULT": "#9B59B6",
+        "extra-transparent": "rgba(155, 89, 182, 0.25)",
+        "transparent": "rgba(155, 89, 182, 0.5)",
+        "hover-bg": "rgba(155, 89, 182, 0.9)",
+        "hover-text": "#FDFEFE"
+      },
       "neutral": {
         "DEFAULT": "#6B7D7F",
         "extra-transparent": "rgba(107,125,127, 0.25)",

@@ -88,6 +88,7 @@ type Sphere implements Node {
 type SphereMetaData {
   description: String!
   hashtag: String
+  image: String
 }
 
 # Sphere Input/Outputs
@@ -95,6 +96,7 @@ input SphereCreateUpdateParams {
   name: String!
   description: String
   hashtag: String
+  image: String
 }
 
 # ---- Orbit ----- #

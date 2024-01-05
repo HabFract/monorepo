@@ -36,6 +36,20 @@ ul[role="menu"] .ant-menu-submenu-selected >.ant-menu-submenu-title {
   @apply text-info;
 }
 
+.ant-menu-submenu.ant-menu-submenu-vertical {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.ant-menu-submenu-title[role="menuitem"] {
+  height: 3rem !important;
+  border-radius: 100% !important;
+  overflow: hidden !important;
+  margin: 8px !important;
+  padding: 0 !important;
+  width: 3rem !important;
+}
 
 @media screen and (min-width: 420px) {
   .page-header h1 {

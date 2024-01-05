@@ -133,6 +133,7 @@ export const aSphereCreateUpdateParams = (overrides?: Partial<SphereCreateUpdate
     return {
         description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'reiciendis',
         hashtag: overrides && overrides.hasOwnProperty('hashtag') ? overrides.hashtag! : 'quibusdam',
+        image: overrides && overrides.hasOwnProperty('image') ? overrides.image! : 'est',
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'voluptas',
     };
 };
@@ -148,6 +149,7 @@ export const aSphereMetaData = (overrides?: Partial<SphereMetaData>): SphereMeta
     return {
         description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'placeat',
         hashtag: overrides && overrides.hasOwnProperty('hashtag') ? overrides.hashtag! : 'facilis',
+        image: overrides && overrides.hasOwnProperty('image') ? overrides.image! : 'esse',
     };
 };
 

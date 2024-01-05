@@ -24,7 +24,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     const rawRecord = await runCreate({
       name,
       //@ts-ignore
-      metadata: { description: metadata?.description, hashtag: metadata?.description }
+      metadata: { description: metadata?.description, hashtag: metadata?.hashtag , image: metadata?.image }
     });
     const entryRecord = new EntryRecord<Sphere>(rawRecord);
 

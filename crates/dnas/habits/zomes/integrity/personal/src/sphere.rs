@@ -11,7 +11,8 @@ pub struct Sphere {
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct SphereMetadata {
     pub description: Option<String>,
-    pub hashtag: Option<String>
+    pub hashtag: Option<String>,
+    pub image: Option<String>,
 }
     
 pub fn validate_create_sphere(

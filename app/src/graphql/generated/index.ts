@@ -197,6 +197,7 @@ export type SphereConnection = {
 export type SphereCreateUpdateParams = {
   description?: InputMaybe<Scalars['String']['input']>;
   hashtag?: InputMaybe<Scalars['String']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
 };
 
@@ -210,6 +211,7 @@ export type SphereMetaData = {
   __typename?: 'SphereMetaData';
   description: Scalars['String']['output'];
   hashtag?: Maybe<Scalars['String']['output']>;
+  image?: Maybe<Scalars['String']['output']>;
 };
 
 export type TimeFrame = {
@@ -279,12 +281,12 @@ export type GetSphereQueryVariables = Exact<{
 }>;
 
 
-export type GetSphereQuery = { __typename?: 'Query', sphere: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, hashtag?: string | null } | null } };
+export type GetSphereQuery = { __typename?: 'Query', sphere: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, image?: string | null } | null } };
 
 export type GetSpheresQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSpheresQuery = { __typename?: 'Query', spheres: { __typename?: 'SphereConnection', edges: Array<{ __typename?: 'SphereEdge', node: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, hashtag?: string | null } | null } }> } };
+export type GetSpheresQuery = { __typename?: 'Query', spheres: { __typename?: 'SphereConnection', edges: Array<{ __typename?: 'SphereEdge', node: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, image?: string | null } | null } }> } };
 
 
 export const CreateOrbitDocument = gql`
@@ -575,7 +577,7 @@ export const GetSphereDocument = gql`
     name
     metadata {
       description
-      hashtag
+      image
     }
   }
 }
@@ -623,7 +625,7 @@ export const GetSpheresDocument = gql`
         name
         metadata {
           description
-          hashtag
+          image
         }
       }
     }

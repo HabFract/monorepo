@@ -1,5 +1,6 @@
 .form-container {
-  @apply py-2 px-4 text-off-white;
+  @apply py-2 px-4 text-off-white relative bg-gradient-to-tr to-transparent from-secondary-transparent;
+  min-height: 100%;
 }
 
 .form-container h2 {
@@ -12,11 +13,28 @@ form {
   gap: 1.25rem
 }
 
+.scene {
+  position: absolute;
+  bottom: .5rem;
+  right: 0;
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  width: 75%;
+  object-fit: cover;
+  opacity: 0.45;
+}
+
 .field {
   flex-direction: column;
   display: flex;
   flex-wrap: wrap;
   gap: .5rem;
+}
+
+.field.row {
+  flex-direction: row;
+  flex: 1 1 auto;
+  justify-content: space-between;
 }
 
 .field label {
@@ -41,16 +59,51 @@ form {
   flex: 1;
 }
 
+/* Image uploader */
+
+.ant-upload.ant-upload-select:hover {
+  background: #475569 !important;
+}
+
+.ant-upload.ant-upload-select {
+  background: #1e293b !important;
+  border: 2px solid #64748b !important;
+  color: #FEFEFE;
+  border-radius: 100%;
+  overflow: auto;
+}
+
+.ant-upload-wrapper.avatar-uploader {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.field.sphere-image label {
+  align-items: flex-start;
+}
+
 @media screen and (min-width: 420px) {
   .field {
       flex-wrap: nowrap;
       @apply flex-row;
   }
   .field label {
-    @apply flex text-sm mb-4;
+    @apply flex text-sm mb-6;
     flex-basis: 7rem;
   }
   .field .error-label {
     @apply pb-2;
+  }
+  .scene {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80%;
+  }
+}
+@media screen and (min-width: 768px) {
+  .scene {
+    width: 100%;
   }
 }
