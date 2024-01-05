@@ -1,6 +1,6 @@
 import "./style.css";
 
-import { MenuUnfoldOutlined, MenuFoldOutlined, PlusCircleOutlined, DashboardFilled, UnorderedListOutlined, PieChartFilled, PlusCircleFilled } from "@ant-design/icons";
+import { DashboardFilled, UnorderedListOutlined, PieChartFilled, PlusCircleFilled } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
 import { SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
@@ -14,13 +14,14 @@ function getItem(
   icon?: React.ReactNode,
   children?: MenuItem[],
   type?: 'group',
+  onClick?: any
 ): MenuItem {
   return {
     key,
     icon,
     children,
     label,
-    type,
+    type
   } as MenuItem;
 }
 
@@ -32,7 +33,7 @@ function createFixedMenuItems() {
   ]  
 }
 
-function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
+function createSphereMenuItems({ spheres, onClick }: { spheres: SphereConnection, onClick: () => void}) {
   return [...spheres.edges!.map((sphere: SphereEdge, _idx: number) => {
     return getItem(`${sphere.node.name}`, sphere.node.id, <img src={sphere.node.metadata!.image as string} />,
     [ 
@@ -40,7 +41,7 @@ function createSphereMenuItems({ spheres }: { spheres: SphereConnection }) {
         getItem('Create Orbit', 'add-orbit-' + sphere.node.eH, null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'
       ])
   }),
-  getItem('Add Sphere', 'add-sphere', <PlusCircleFilled />)] 
+  getItem('New Sphere', 'add-sphere', <PlusCircleFilled />)] 
 }
 
 export interface INav {
@@ -115,7 +116,7 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           mode="inline"
-          items={createSphereMenuItems(spheres as any)}
+          items={createSphereMenuItems({spheres: spheres.spheres as any, onClick: () => {debugger;closeMenu()}})}
         />}
         <div className={"main-actions-menu"}>
           <Menu

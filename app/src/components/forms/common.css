@@ -7,6 +7,10 @@
   @apply my-2 text-off-white text-center;
 }
 
+.form-title {
+  @apply font-heading leading-loose text-3xl tracking-wide;
+}
+
 form {
   display: flex;
   flex-direction: column;

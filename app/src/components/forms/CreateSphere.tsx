@@ -35,7 +35,7 @@ const CreateSphere: React.FC = () => {
 
   return (
     <div className="form-container create-sphere">
-      <h2 className="mb-4 text-lg font-semibold text-gray-700">Create Sphere</h2>
+      <h2 className="form-title">Create New Sphere</h2>
       <Formik
         initialValues={{
           name: '',
@@ -87,7 +87,7 @@ const CreateSphere: React.FC = () => {
               </div>
             </div>
 
-            <Button type="submit" disabled={!!Object.values(errors).length} className="btn-primary">Create Sphere</Button>
+            <Button type="submit" disabled={!!Object.values(errors).length} className="btn-primary">Create</Button>
           </Form>
         )}
       </Formik>

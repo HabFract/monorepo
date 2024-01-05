@@ -77,8 +77,18 @@ nav > .ant-menu .ant-menu-item[role="menuitem"], .ant-menu-item.ant-menu-item-se
   color:rgba(80, 227, 194, 1) !important;
 }
 
-button:focus {
-  
+/* Theme toggle button */
+button[data-testid="dark-theme-toggle"]:focus {
+  @apply ring-0;
+}
+button[data-testid="dark-theme-toggle"]:hover {
+  border-color: rgba(80, 227, 194, 0.9) !important;
+  background-color: #FEFEFE;
+  color: rgba(80, 227, 194, 0.8) !important;
+}
+button[data-testid="dark-theme-toggle"]:active {
+  background: rgba(155, 89, 182, 0.5);
+  color: #FDFEFE;
 }
 
 .ant-tooltip-inner, .ant-tooltip-arrow::before {
@@ -92,15 +102,30 @@ button:focus {
   border-radius: 100%;
   margin: 8px !important;
   padding: 0 !important;
+  transition: .5s all ease-in;
   width: 3rem;
+}
+
+.ant-menu-submenu-popup {
+  background-color: rgba(80, 227, 194, .9) !important;
+}
+.ant-menu-submenu-popup .ant-menu {
+  background:  linear-gradient(180deg, rgba(80, 227, 194, 0.9) 0%, rgba(0,212,255,0) 100%) !important;
+}
+.ant-menu-submenu-popup .ant-menu .ant-menu-title-content, .ant-menu-item-group-title{
+  color: #222222 !important;
+}
+.ant-menu-submenu-popup:hover .ant-menu-item-group, .ant-menu-item-group-title:hover{
+  background-color: rgba(54, 25, 91, 0.25) !important;
+  color: white !important;
+  cursor: pointer;
 }
 
 .ant-menu-submenu-open .ant-menu-submenu-title[role="menuitem"] {
   @apply bg-secondary-transparent;
   transition: .5s all ease-in;
-  transition: 0s border-radius linear;
   width: initial;
-  border-radius: 8px;
+  border-radius: 1rem;
 }
 
 .ant-menu-item-selected {
@@ -121,10 +146,9 @@ button:focus {
 ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] img{
   transition: .3s all cubic-bezier(1, 0.13, 0.13, 1);
   width: 3rem;
-}
-ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] img{
   border-radius: 100%;
 }
+
 ul.ant-menu-inline .ant-menu-submenu-open .ant-menu-submenu-title[role="menuitem"] img{
   border-radius: 12px;
 }

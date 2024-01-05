@@ -40,7 +40,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
 
   return (
     <div className="form-container">
-      <h2 className="mb-4 text-lg font-semibold text-gray-700">Create Orbit</h2>
+      <h2 className="form-title">Create Orbit</h2>
       <Formik
         initialValues={{
           name: '',
