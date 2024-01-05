@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LoadingOutlined, PlusCircleFilled, PlusOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
 import type { UploadChangeParam } from 'antd/es/upload';
@@ -30,13 +30,21 @@ const ImageUpload = ({
   form: { touched, errors, setFieldValue, values },
   ...props
 }) => {
-  const avatar = createAvatar(shapes, {
-    "seed": "Molly" + values.name
-    // ... other options
-  });
-
+  useEffect(() => {
+    const avatar = createAvatar(shapes, {
+      "seed": "Molly" + values.name,
+      backgroundColor: ["dadce0"],
+      shape3Color: ["50e3c2", "004955", "6B7D7F"],
+      shape2Color: ["36195b", "transparent"],
+      shape1Color: ["transparent"],
+    });
+    const url = avatar.toDataUriSync();
+    setImageUrl(url)
+    setFieldValue(field.name, url);
+  }, [values.name])
+  
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>(avatar.toDataUriSync());
+  const [imageUrl, setImageUrl] = useState<string>();
   const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.status === 'uploading') {
       setLoading(true);
@@ -54,7 +62,7 @@ const ImageUpload = ({
 
   const uploadButton = (
     <div className='absolute z-10 top-2 left-5 text-dark-gray '>
-      <div className='absolute top-3 bg-secondary-transparent text-white hover:bg-secondary rounded-full p-2'>Upload
+      <div className='absolute top-3 bg-secondary-transparent text-white hover:bg-secondary rounded-full p-2 transition-all duration-300'>Upload
         <span className="pl-1">{loading ? <LoadingOutlined /> : <PlusCircleFilled />}</span>
       </div>
     </div>

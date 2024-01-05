@@ -22,7 +22,7 @@ function App({ children: pageComponent }: any) {
   const customTheme: CustomFlowbiteTheme = {
     label: {
       root: {
-        base: "text-base font-sans font-semibold tracking-wide leading-[1.5rem] flex items-center gap-2 justify-between",
+        base: "text-base font-sans font-semibold tracking-wide leading-[1.5rem] flex items-center gap-2",
         colors: {
           default: "text-off-white",
           disabled: "text-slate-50",

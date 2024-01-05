@@ -1,5 +1,5 @@
 .form-container {
-  @apply py-2 px-4 text-off-white relative bg-gradient-to-tr to-transparent from-secondary-transparent;
+  @apply py-2 px-4 text-off-white relative bg-gradient-to-l to-transparent from-secondary-transparent;
   min-height: 100%;
 }
 
@@ -57,6 +57,10 @@ form {
 
 .field textarea, .field > label + div {
   flex: 1;
+}
+
+span.reqd {
+  @apply text-info font-bold;
 }
 
 /* Image uploader */

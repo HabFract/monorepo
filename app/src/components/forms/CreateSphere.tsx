@@ -56,7 +56,7 @@ const CreateSphere: React.FC = () => {
         {({ errors, touched }) => (
           <Form noValidate={true}>
             <div className="field">
-              <Label htmlFor='name'>Name:</Label>
+              <Label htmlFor='name'>Name: <span className="reqd">*</span></Label>
 
               <div className="flex flex-col gap-2">
                 <Field as={TextInput} color={"default"} sizing="lg" autoComplete={'off'} type="text" name="name" id="name" required />

@@ -16,6 +16,7 @@ function getItem(
   children?: MenuItem[],
   type?: 'group',
 ): MenuItem {
+  console.log('label, key, type :>> ', label, key, type);
   return {
     key,
     icon,
@@ -105,7 +106,7 @@ const Nav: React.FC<INav> = ({ transition } : INav) => {
           <Menu
             inlineCollapsed={collapsed}
             onClick={onClick}
-            style={{ width: 72 }}
+            style={{ width: collapsed ? 72 : 256 }}
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}
             mode="inline"

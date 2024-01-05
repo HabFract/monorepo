@@ -44,12 +44,47 @@ ul[role="menu"] .ant-menu-submenu-selected >.ant-menu-submenu-title {
 
 .ant-menu-submenu-title[role="menuitem"] {
   height: 3rem !important;
-  border-radius: 100% !important;
-  overflow: hidden !important;
+  border-radius: 100%;
   margin: 8px !important;
   padding: 0 !important;
-  width: 3rem !important;
+  width: 3rem;
 }
+
+.ant-menu-submenu-open .ant-menu-submenu-title[role="menuitem"] {
+  @apply bg-secondary-transparent;
+  transition: .5s all ease-in;
+  transition: 0s border-radius linear;
+  width: initial;
+  border-radius: 8px;
+}
+
+/* Expanded Nav */
+ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] img{
+  transition: .3s all cubic-bezier(1, 0.13, 0.13, 1);
+  width: 3rem;
+}
+ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] img{
+  border-radius: 100%;
+}
+ul.ant-menu-inline .ant-menu-submenu-open .ant-menu-submenu-title[role="menuitem"] img{
+  border-radius: 12px;
+}
+ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] span {
+  color: #dadce0 !important;
+}
+ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] .ant-menu-submenu-arrow{
+  right: 1rem;
+  left: initial;
+  @apply text-primary;
+}
+ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"]:active {
+  @apply bg-secondary-transparent;
+}
+ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] {
+  overflow: initial;
+  width: initial;
+}
+
 
 @media screen and (min-width: 420px) {
   .page-header h1 {
