@@ -1,16 +1,18 @@
-nav + main {
-  padding-left: 72px;
-}
-
 nav.side-nav:not(.collapsed-vertical) {
   @apply bg-dark-gray fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col;
-  transition: 1s all ease-in;
+  /* transition: 1s all ease-in; */
 }
 nav.side-nav.collaped-vertical {
   height: auto;
   top: initial;
   gap: 0.5rem;
-  transition: 1s all ease-in;
+  /* transition: 1s all ease-in; */
+  background: transparent;
+  outline: 2px solid #64748b;
+  border-radius: 1rem;
+  border-bottom: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 nav.side-nav.collaped-vertical ul[role="menu"] {
   border-radius: 1rem;
@@ -31,7 +33,8 @@ nav.side-nav.collaped-vertical ul[role="menu"] {
 }
 .toggle-vertical-collapse:hover {
   border-color: rgba(80, 227, 194, 0.9) !important;
-  @apply bg-neutral text-off-white;
+  @apply bg-neutral-transparent text-off-white;
+  border: 1px solid rgba(80, 227, 194, 0.9);
 }
 .toggle-vertical-collapse:active {
   background: rgba(155, 89, 182, 0.5);
@@ -90,6 +93,9 @@ ul[role="menu"] .ant-menu-submenu-selected >.ant-menu-submenu-title {
   margin-left: -.25rem !important;
   box-shadow: 2px 4px 18px rgba(54, 25, 91, .5) !important;
 }
+.ant-menu-item:hover span[role="img"] {
+  color: rgba(80, 227, 194, 1) !important;
+}
 .ant-menu .ant-menu-item-selected span[role="img"] {
   box-shadow: initial !important;
 }
@@ -124,6 +130,9 @@ button[data-testid="dark-theme-toggle"]:hover {
 button[data-testid="dark-theme-toggle"]:active {
   background: rgba(155, 89, 182, 0.5);
   color: #FDFEFE;
+}
+button[data-testid="dark-theme-toggle"] svg {
+  margin-left: .125rem !important;
 }
 
 .ant-tooltip-inner, .ant-tooltip-arrow::before {

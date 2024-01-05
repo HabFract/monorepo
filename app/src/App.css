@@ -12,6 +12,15 @@
   @apply bg-dark-gray overflow-auto fixed w-full h-full inset-y-0 left-0;
 }
 
+
+nav + main.page-container.nav-collapsed {
+  padding-left: 0 !important;
+}
+
+nav + main.page-container:not(.nav-collapsed) {
+  padding-left: 72px;
+}
+
 .onboarding-page {
   padding-top: var(--onboarding-progress-bar-height);
   padding-bottom: var(--onboarding-progress-bar-height);

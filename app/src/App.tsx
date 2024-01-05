@@ -88,7 +88,7 @@ function App({ children: pageComponent }: any) {
         </>
         : <>
           <Nav transition={transition} verticalCollapse={navCollapseVertical} toggleVerticalCollapse={()=> setNavCollapseVertical(!navCollapseVertical)} ></Nav>
-          <main className={"page-container"}>{pageComponent}</main>
+          <main className={navCollapseVertical ? "page-container nav-collapsed" : "page-container"}>{pageComponent}</main>
         </>
       }
 

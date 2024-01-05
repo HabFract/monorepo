@@ -129,9 +129,9 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
             mode="inline"
             items={createFixedMenuItems()}
           />
-          <div className="flex flex-col">
-            <button className="toggle-vertical-collapse">
-              <ArrowsAltOutlined className={verticalCollapse ? "collapsed" : "expanded"} onClick={() => toggleVerticalCollapse()}/>
+          <div className="flex flex-col gap-1">
+            <button className="toggle-vertical-collapse" onClick={() => toggleVerticalCollapse()}>
+              <ArrowsAltOutlined className={verticalCollapse ? "collapsed" : "expanded"}/>
             </button>
             <DarkThemeToggle />
           </div>
