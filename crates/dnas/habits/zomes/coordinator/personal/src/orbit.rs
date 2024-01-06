@@ -221,12 +221,11 @@ fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternRe
 }
 
 // Link helpers
-fn get_links_from_base(base: impl Into<HoloHash<AnyLinkable>>, link_type: impl LinkTypeFilterExt, link_tag: Option<LinkTag>) -> ExternResult<Option<Vec<Link>>> {
-    let links = get_links(base, link_type, link_tag)?;
-    if links.len() == 0 {
-        return Ok(None);
-    }
-    Ok(Some(links))
+fn get_links_from_base(base: impl Into<HoloHash<AnyLinkable>>, link_type: impl LinkTypeFilterExt, link_tag: Option<LinkTag>) -> ExternResult<impl Iterator<Item = Link>> {
+    let links = get_links(base, link_type, link_tag)?
+        .into_iter()
+        .collect::<Vec<_>>();
+    Ok(links.into_iter())
 }
 fn parent_to_child_links(parent_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
     get_links_from_base(parent_hash, LinkTypes::OrbitParentToChild, None)
