@@ -79,7 +79,7 @@ pub fn update_orbit(input: UpdateOrbitInput) -> ExternResult<Option<Record>> {
         let existing_links : Vec<Vec<Link>> = links.into_iter().take(1).collect();
         let link = existing_links[0][0].clone();
         delete_link(link.create_link_hash)?;
-    
+
         // Create sphere link to updated header
         create_link(
             input.updated_orbit.sphere_hash.clone(),
@@ -148,9 +148,9 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
 pub fn _get_all_my_historic_orbit_records(_:()) -> ExternResult<Vec<Record>> {
     let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?; 
     let filter = ChainQueryFilter::new().entry_type(orbit_entry_type).include_entries(true); 
-    
+
     let all_my_orbits = query(filter)?; 
-    
+
     Ok(all_my_orbits)
 }
 
@@ -166,20 +166,16 @@ pub fn get_all_my_sphere_orbits(SphereOrbitsQueryParams{sphere_hash} : SphereOrb
     let maybe_links = sphere_to_orbit_links(sphere_hash.into())?;
 
     if let Some(links) = maybe_links {
-        let entry_hashes = links
+        let entry_hashes: Vec<EntryHash> = links
             .into_iter()
-            .map(|link| {
+            .filter_map(|link| {
                 let action_hash = link.target.into_action_hash().expect("Only action hashes will be a target of this Link type");
-                get_latest(action_hash)
+                get_latest(action_hash).ok()?
             })
-            .collect::<Result<Vec<Option<Record>>, _>>()?
-            .into_iter()
             .filter_map(|record_option| {
-                record_option.map(|record| record.action().entry_hash())
+                record_option.map(|record| record.action().entry_hash().clone())
             })
-            .map(|o| o.cloned())
-            .filter_map(|optional_hash| optional_hash)
-            .collect::<HashSet<EntryHash>>();
+            .collect();
         let filter = ChainQueryFilter::new().entry_hashes(entry_hashes).include_entries(true); 
         let my_sphere_orbits = query(filter)?;
         return Ok(my_sphere_orbits)
