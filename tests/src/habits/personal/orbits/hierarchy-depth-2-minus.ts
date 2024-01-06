@@ -77,7 +77,7 @@ export default () => {
         // Then an Orbit hierarchy was returned
 
         t.equal(orbitHierarchyResponse2.children.length, 2, 'orbit 1 has two children');
-        const hierarchyChildrenIds = orbitHierarchyResponse2.children.map(child => child.id);
+        const hierarchyChildrenIds = orbitHierarchyResponse2.children.map(child => child.content);
         const childOrbitHashes = childOrbits.map(child => encodeHashToBase64(child.entryHash));
         t.deepEqual(hierarchyChildrenIds, childOrbitHashes, 'and those children have their hashes as id.')
         // And the hierarchy should show the first orbit as the parent of the second and third orbits

@@ -61,7 +61,7 @@ export default () => {
         const orbitActionHash = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse).actionHash);
         const orbitGetResponse = await callZomeAlice(
           "personal",
-          "get_orbit",
+          "get_my_orbit",
           orbitActionHash
         );
         // And When get_orbit is called
@@ -97,7 +97,7 @@ export default () => {
         // And When get_orbit is called
         const orbitGetResponse2 = await callZomeAlice(
           "personal",
-          "get_orbit",
+          "get_my_orbit",
           orbitActionHash2
         );
         t.ok(orbitGetResponse2, 'an updated orbit can be retrieved,');

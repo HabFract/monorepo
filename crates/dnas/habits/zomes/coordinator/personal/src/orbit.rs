@@ -15,7 +15,28 @@ pub fn create_orbit(orbit: Orbit) -> ExternResult<Record> {
         )?;
     Ok(record)
 }
+
+fn get_latest(action_hash: ActionHash) -> ExternResult<Option<Record>> {
+    let details = get_details(action_hash, GetOptions::default())?.ok_or(wasm_error!(
+        WasmErrorInner::Guest("Orbit not found".into())
+    ))?;
+
+    match details {
+        Details::Entry(_) => Err(wasm_error!(WasmErrorInner::Guest(
+            "Malformed details".into()
+        ))),
+        Details::Record(element_details) => match element_details.updates.last() {
+            Some(update) => get_latest(update.action_address().clone()),
+            None => Ok(Some(element_details.record)),
+        },
+    }
+}
+
 #[hdk_extern]
+pub fn get_my_orbit(original_orbit_hash: ActionHash) -> ExternResult<Option<Record>> {
+    get_latest(original_orbit_hash)
+}
+
 pub fn get_orbit(original_orbit_hash: ActionHash) -> ExternResult<Option<Record>> {
     let links = get_links(original_orbit_hash.clone(), LinkTypes::OrbitUpdates, None)?;
     let latest_link = links
@@ -44,9 +65,7 @@ pub struct UpdateOrbitInput {
     pub updated_orbit: Orbit,
 }
 #[hdk_extern]
-pub fn update_orbit(input: UpdateOrbitInput) -> ExternResult<Record> {
-    let record = get_latest(input.original_orbit_hash.clone())?;
-
+pub fn update_orbit(input: UpdateOrbitInput) -> ExternResult<Option<Record>> {
     let updated_orbit_hash = update_entry(
         input.original_orbit_hash.clone(),
         &input.updated_orbit,
@@ -55,33 +74,32 @@ pub fn update_orbit(input: UpdateOrbitInput) -> ExternResult<Record> {
     let path = prefix_path(input.updated_orbit.name.clone())?;
     path.ensure()?;
 
-
     // Delete sphere link to stale header
-    let existing_links = sphere_to_orbit_links(input.updated_orbit.sphere_hash.into());
-    let link_to_delete = existing_links
-        .into_iter()
-        .map(|link| link)
-        .filter(|link| {
-            link.target.clone() == AnyLinkableHash::from(input.original_action_hash.to_owned())
-        })
-        .map(|link| link.create_link_hash)
-        .collect::<Vec<ActionHash>>();
-    delete_link(link_to_delete[0].clone())?;
-
-    create_link(
-        input.original_orbit_hash.clone(),
-        updated_orbit_hash.clone(),
-        LinkTypes::OrbitUpdates,
-        (),
-    )?;
-    let record = get(updated_orbit_hash.clone(), GetOptions::default())?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Could not find the newly updated Orbit"))
-            ),
+    if let Ok(links) = sphere_to_orbit_links(input.updated_orbit.sphere_hash.clone().into()) {
+        let existing_links : Vec<Vec<Link>> = links.into_iter().take(1).collect();
+        let link = existing_links[0][0].clone();
+        delete_link(link.create_link_hash)?;
+    
+        // Create sphere link to updated header
+        create_link(
+            input.updated_orbit.sphere_hash.clone(),
+            updated_orbit_hash.clone(),
+            LinkTypes::SphereToOrbit,
+            (),
         )?;
-    Ok(record)
+    }
+
+    // Create anchor link to updated header
+    create_link(
+        path.path_entry_hash()?,
+        updated_orbit_hash.clone(),
+        LinkTypes::OrbitsPrefixPath,
+        input.updated_orbit.name.as_bytes().to_vec(),
+    )?;
+
+    get_latest(updated_orbit_hash.clone())
 }
+
 #[hdk_extern]
 pub fn delete_orbit(original_orbit_hash: ActionHash) -> ExternResult<ActionHash> {
     delete_entry(original_orbit_hash)
@@ -103,14 +121,14 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
     path.ensure()?;
     create_link(
         path.path_entry_hash()?,
-        orbit_action_hash,
+        orbit_action_hash.clone(),
         LinkTypes::OrbitsPrefixPath,
         orbit.name.as_bytes().to_vec(),
     )?;
     // Create Sphere link
     create_link(
         orbit.sphere_hash,
-        orbit_action_hash,
+        orbit_action_hash.clone(),
         LinkTypes::SphereToOrbit,
         ()
     )?;
@@ -221,11 +239,12 @@ fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternRe
 }
 
 // Link helpers
-fn get_links_from_base(base: impl Into<HoloHash<AnyLinkable>>, link_type: impl LinkTypeFilterExt, link_tag: Option<LinkTag>) -> ExternResult<impl Iterator<Item = Link>> {
-    let links = get_links(base, link_type, link_tag)?
-        .into_iter()
-        .collect::<Vec<_>>();
-    Ok(links.into_iter())
+fn get_links_from_base(base: impl Into<HoloHash<AnyLinkable>>, link_type: impl LinkTypeFilterExt, link_tag: Option<LinkTag>) -> ExternResult<Option<Vec<Link>>> {
+    let links = get_links(base, link_type, link_tag)?;
+    if links.len() == 0 {
+        return Ok(None);
+    }
+    Ok(Some(links))
 }
 fn parent_to_child_links(parent_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
     get_links_from_base(parent_hash, LinkTypes::OrbitParentToChild, None)
@@ -244,20 +263,4 @@ fn prefix_path(name: String) -> ExternResult<TypedPath> {
     let (prefix, _) = lower_name.as_str().split_at(3);
 
     Path::from(format!("all_orbits.{}", prefix)).typed(LinkTypes::OrbitsPrefixPath)
-}
-
-fn get_latest(action_hash: ActionHash) -> ExternResult<Record> {
-    let details = get_details(action_hash, GetOptions::default())?.ok_or(wasm_error!(
-        WasmErrorInner::Guest("Orbit not found".into())
-    ))?;
-
-    match details {
-        Details::Entry(_) => Err(wasm_error!(WasmErrorInner::Guest(
-            "Malformed details".into()
-        ))),
-        Details::Record(element_details) => match element_details.updates.last() {
-            Some(update) => get_latest(update.action_address().clone()),
-            None => Ok(element_details.record),
-        },
-    }
 }

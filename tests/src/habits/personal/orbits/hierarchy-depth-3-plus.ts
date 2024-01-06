@@ -76,7 +76,7 @@ export default () => {
         // Then an Orbit hierarchy was returned
 
         const orbitHash2 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse2).entryHash);
-        t.equal(orbitHash2, orbitHierarchyResponse.children[0].id, 'with the correct children.');
+        t.equal(orbitHash2, orbitHierarchyResponse.children[0].content, 'with the correct children.');
         // And the children array of the hierarchy contains the second Orbit's entry hash
 
 
@@ -97,11 +97,11 @@ export default () => {
         t.ok(orbitHierarchyResponse2, 'a second root hierarchy can be generated,');
         // Then an Orbit hierarchy was returned
 
-        t.equal(orbitHash2, orbitHierarchyResponse2.children[0].id, 'the second orbit is a child of the first one,');
+        t.equal(orbitHash2, orbitHierarchyResponse2.children[0].content, 'the second orbit is a child of the first one,');
         // And the children array of the first Orbit's hierarchy contains the second Orbit's entry hash
 
         const orbitHash3 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse3).entryHash);
-        t.equal(orbitHash3, orbitHierarchyResponse2.children[0].children[0].id, 'the third orbit is a child of the second one.');
+        t.equal(orbitHash3, orbitHierarchyResponse2.children[0].children[0].content, 'the third orbit is a child of the second one.');
         // And the children array of the second Orbit's hierarchy contains the third Orbit's entry hash
 
 
@@ -125,14 +125,14 @@ export default () => {
 // console.log('orbitHierarchyResponse3 :>> LVL 1 ', orbitHierarchyResponse3.children);
 // console.log('orbitHierarchyResponse3 :>> LVL 2 ', orbitHierarchyResponse3.children[0].children);
 // console.log('orbitHierarchyResponse3 :>> LVL 3 ', orbitHierarchyResponse3.children[0].children[0].children);
-        t.equal(orbitHash2, orbitHierarchyResponse3.children[0].id, 'the second orbit is a child of the first one,');
+        t.equal(orbitHash2, orbitHierarchyResponse3.children[0].content, 'the second orbit is a child of the first one,');
         // And the children array of the first Orbit's hierarchy contains the second Orbit's entry hash
 
         const orbitHash4 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse4).entryHash);
-        t.equal(orbitHash3, orbitHierarchyResponse3.children[0].children[0].id, 'the third orbit is a child of the second one,');
+        t.equal(orbitHash3, orbitHierarchyResponse3.children[0].children[0].content, 'the third orbit is a child of the second one,');
         // And the children array of the second Orbit's hierarchy contains the third Orbit's entry hash
 
-        t.equal(orbitHash4, orbitHierarchyResponse3.children[0].children[0].children[0].id, 'the fourth orbit is a child of the third one.');
+        t.equal(orbitHash4, orbitHierarchyResponse3.children[0].children[0].children[0].content, 'the fourth orbit is a child of the third one.');
         // And the children array of the third Orbit's hierarchy contains the fourth Orbit's entry hash
 
       } catch (e) {

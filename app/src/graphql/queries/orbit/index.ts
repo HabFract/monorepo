@@ -12,7 +12,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    'get_orbit',
+    'get_my_orbit',
   )
   const readAll = mapZomeFn<null, Orbit[]>(
     dnaConfig,
