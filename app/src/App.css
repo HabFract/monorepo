@@ -17,6 +17,15 @@ nav + main.page-container.nav-collapsed {
   padding-left: 0 !important;
 }
 
+
+nav + main.page-container.nav-collapsed .sphere-card.list-header {
+  width: 100%;
+}
+nav + main.page-container.nav-collapsed .orbits-list {
+  padding-left: 72px;
+      
+}
+
 nav + main.page-container:not(.nav-collapsed) {
   padding-left: 72px;
 }
