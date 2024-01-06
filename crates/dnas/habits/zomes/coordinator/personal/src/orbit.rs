@@ -166,19 +166,18 @@ pub fn get_all_my_sphere_orbits(SphereOrbitsQueryParams{sphere_hash} : SphereOrb
     let maybe_links = sphere_to_orbit_links(sphere_hash.into())?;
 
     if let Some(links) = maybe_links {
-        let entry_hashes : Vec<EntryHash> = links
+        let entry_hashes: Result<Vec<EntryHash>, _> = links
             .into_iter()
-            .map(|link| get_latest(link.target.into_action_hash().expect("Only action hashes will be a target of this Link type")))
-            .map(|maybe_latest_record| {
-                let a = maybe_latest_record
-                    .map(|maybe_record| {
-                        if let Some(record) = maybe_record {
-                            let hash = record.action().entry_hash();
-                            return hash
-                        }
-                    })?
-                    .cloned();
-            }).collect();
+            .map(|link| {
+                let action_hash = link.target.into_action_hash().expect("Only action hashes will be a target of this Link type");
+                get_latest(action_hash)
+            })
+            .collect::<Result<Vec<Option<Record>>, _>>()?
+            .into_iter()
+            .filter_map(|record_option| {
+                record_option.map(|record| *record.action().entry_hash())
+            })
+            .collect();
     }
 
     Ok(entries)
