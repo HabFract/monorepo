@@ -175,7 +175,7 @@ pub fn get_all_my_sphere_orbits(SphereOrbitsQueryParams{sphere_hash} : SphereOrb
             .collect::<Result<Vec<Option<Record>>, _>>()?
             .into_iter()
             .filter_map(|record_option| {
-                record_option.map(|record| record.clone().action().entry_hash())
+                record_option.map(|record| record.action().entry_hash())
             })
             .map(|o| o.cloned())
             .filter_map(|optional_hash| optional_hash)
