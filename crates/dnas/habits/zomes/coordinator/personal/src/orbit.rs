@@ -166,7 +166,7 @@ pub fn get_all_my_sphere_orbits(SphereOrbitsQueryParams{sphere_hash} : SphereOrb
     let maybe_links = sphere_to_orbit_links(sphere_hash.into())?;
 
     if let Some(links) = maybe_links {
-        let entry_hashes: Result<Vec<EntryHash>, _> = links
+        let entry_hashes = links
             .into_iter()
             .map(|link| {
                 let action_hash = link.target.into_action_hash().expect("Only action hashes will be a target of this Link type");
@@ -175,12 +175,16 @@ pub fn get_all_my_sphere_orbits(SphereOrbitsQueryParams{sphere_hash} : SphereOrb
             .collect::<Result<Vec<Option<Record>>, _>>()?
             .into_iter()
             .filter_map(|record_option| {
-                record_option.map(|record| *record.action().entry_hash())
+                record_option.map(|record| record.clone().action().entry_hash())
             })
-            .collect();
+            .map(|o| o.cloned())
+            .filter_map(|optional_hash| optional_hash)
+            .collect::<HashSet<EntryHash>>();
+        let filter = ChainQueryFilter::new().entry_hashes(entry_hashes).include_entries(true); 
+        let my_sphere_orbits = query(filter)?;
+        return Ok(my_sphere_orbits)
     }
-
-    Ok(entries)
+    Ok(vec![])
 }
 
 #[hdk_extern]
