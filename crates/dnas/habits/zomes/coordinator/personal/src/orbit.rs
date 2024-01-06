@@ -2,7 +2,7 @@ use std::{collections::HashMap, cell::RefCell, rc::Rc};
 use hdk::prelude::{*, holo_hash::{EntryHashB64, hash_type::AnyLinkable}};
 use personal_integrity::*;
 
-use crate::utils::entry_from_record;
+use crate::{utils::entry_from_record, get_entry_for_action};
 
 #[hdk_extern]
 pub fn create_orbit(orbit: Orbit) -> ExternResult<Record> {
@@ -145,13 +145,43 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
 }
 
 #[hdk_extern]
-pub fn get_all_my_orbits(_:()) -> ExternResult<Vec<Record>> {
+pub fn _get_all_my_historic_orbit_records(_:()) -> ExternResult<Vec<Record>> {
     let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?; 
     let filter = ChainQueryFilter::new().entry_type(orbit_entry_type).include_entries(true); 
     
     let all_my_orbits = query(filter)?; 
     
     Ok(all_my_orbits)
+}
+
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct SphereOrbitsQueryParams {
+    pub sphere_hash: EntryHashB64,
+}
+
+#[hdk_extern]
+pub fn get_all_my_sphere_orbits(SphereOrbitsQueryParams{sphere_hash} : SphereOrbitsQueryParams) -> ExternResult<Vec<Record>> {
+    let maybe_links = sphere_to_orbit_links(sphere_hash.into())?;
+
+    if let Some(links) = maybe_links {
+        let entry_hashes : Vec<EntryHash> = links
+            .into_iter()
+            .map(|link| get_latest(link.target.into_action_hash().expect("Only action hashes will be a target of this Link type")))
+            .map(|maybe_latest_record| {
+                let a = maybe_latest_record
+                    .map(|maybe_record| {
+                        if let Some(record) = maybe_record {
+                            let hash = record.action().entry_hash();
+                            return hash
+                        }
+                    })?
+                    .cloned();
+            }).collect();
+    }
+
+    Ok(entries)
 }
 
 #[hdk_extern]
