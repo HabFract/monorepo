@@ -1,5 +1,5 @@
 use std::{collections::HashMap, cell::RefCell, rc::Rc};
-use hdk::prelude::{*, holo_hash::{EntryHashB64}};
+use hdk::prelude::{*, holo_hash::{EntryHashB64, hash_type::AnyLinkable}};
 use personal_integrity::*;
 
 use crate::utils::entry_from_record;
@@ -45,10 +45,29 @@ pub struct UpdateOrbitInput {
 }
 #[hdk_extern]
 pub fn update_orbit(input: UpdateOrbitInput) -> ExternResult<Record> {
+    let record = get_latest(input.original_orbit_hash.clone())?;
+
     let updated_orbit_hash = update_entry(
         input.original_orbit_hash.clone(),
         &input.updated_orbit,
     )?;
+
+    let path = prefix_path(input.updated_orbit.name.clone())?;
+    path.ensure()?;
+
+
+    // Delete sphere link to stale header
+    let existing_links = sphere_to_orbit_links(input.updated_orbit.sphere_hash.into());
+    let link_to_delete = existing_links
+        .into_iter()
+        .map(|link| link)
+        .filter(|link| {
+            link.target.clone() == AnyLinkableHash::from(input.original_action_hash.to_owned())
+        })
+        .map(|link| link.create_link_hash)
+        .collect::<Vec<ActionHash>>();
+    delete_link(link_to_delete[0].clone())?;
+
     create_link(
         input.original_orbit_hash.clone(),
         updated_orbit_hash.clone(),
@@ -79,6 +98,23 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
             ),
         )?;
 
+    // Create path links for name querying
+    let path = prefix_path(orbit.name.clone())?;
+    path.ensure()?;
+    create_link(
+        path.path_entry_hash()?,
+        orbit_action_hash,
+        LinkTypes::OrbitsPrefixPath,
+        orbit.name.as_bytes().to_vec(),
+    )?;
+    // Create Sphere link
+    create_link(
+        orbit.sphere_hash,
+        orbit_action_hash,
+        LinkTypes::SphereToOrbit,
+        ()
+    )?;
+    // Create Orbit parent link
     if let Some(parent_hash) = orbit.parent_hash {
         create_link(
             parent_hash,
@@ -184,26 +220,26 @@ fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternRe
     Ok(nodes)
 }
 
+// Link helpers
+fn get_links_from_base(base: impl Into<HoloHash<AnyLinkable>>, link_type: impl LinkTypeFilterExt, link_tag: Option<LinkTag>) -> ExternResult<Option<Vec<Link>>> {
+    let links = get_links(base, link_type, link_tag)?;
+    if links.len() == 0 {
+        return Ok(None);
+    }
+    Ok(Some(links))
+}
 fn parent_to_child_links(parent_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
-    let links = get_links(parent_hash, LinkTypes::OrbitParentToChild, None)?;
-
-    if links.len() == 0 {
-        return Ok(None);
-    }
-    Ok(Some(links))
+    get_links_from_base(parent_hash, LinkTypes::OrbitParentToChild, None)
+}
+fn sphere_to_orbit_links(sphere_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
+    get_links_from_base(sphere_hash, LinkTypes::SphereToOrbit, None)
+}
+fn orbit_prefix_path_links(path_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
+    get_links_from_base(path_hash, LinkTypes::OrbitsPrefixPath, None)
 }
 
-fn _agent_to_orbit_links() -> ExternResult<Option<Vec<Link>>> {
-    let agent_address = agent_info()?.agent_initial_pubkey.clone();
-    let links = get_links(agent_address, LinkTypes::AgentToOrbit, None)?;
-    debug!("---- LINKS ---- {:#?}", links);
-    if links.len() == 0 {
-        return Ok(None);
-    }
-    Ok(Some(links))
-}
 
-fn _prefix_path(name: String) -> ExternResult<TypedPath> {
+fn prefix_path(name: String) -> ExternResult<TypedPath> {
     // convert to lowercase for path for ease of search
     let lower_name = name.to_lowercase();
     let (prefix, _) = lower_name.as_str().split_at(3);
