@@ -166,6 +166,8 @@ pub fn get_all_my_sphere_orbits(SphereOrbitsQueryParams{sphere_hash} : SphereOrb
     let maybe_links = sphere_to_orbit_links(sphere_hash.into())?;
 
     if let Some(links) = maybe_links {
+
+        let mut query_hashes = HashSet::new();
         let entry_hashes: Vec<EntryHash> = links
             .into_iter()
             .filter_map(|link| {
@@ -173,10 +175,13 @@ pub fn get_all_my_sphere_orbits(SphereOrbitsQueryParams{sphere_hash} : SphereOrb
                 get_latest(action_hash).ok()?
             })
             .filter_map(|record_option| {
-                record_option.map(|record| record.action().entry_hash().clone())
-            })
+                record_option.action().entry_hash().clone()
+            }).map(|o| o.clone())
             .collect();
-        let filter = ChainQueryFilter::new().entry_hashes(entry_hashes).include_entries(true); 
+        for hash in entry_hashes {
+            query_hashes.insert(hash.clone());
+        }
+        let filter = ChainQueryFilter::new().entry_hashes(query_hashes).include_entries(true); 
         let my_sphere_orbits = query(filter)?;
         return Ok(my_sphere_orbits)
     }
