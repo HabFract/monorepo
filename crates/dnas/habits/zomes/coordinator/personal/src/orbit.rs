@@ -167,23 +167,20 @@ pub fn get_all_my_sphere_orbits(SphereOrbitsQueryParams{sphere_hash} : SphereOrb
 
     if let Some(links) = maybe_links {
 
-        let mut query_hashes = HashSet::new();
-        let entry_hashes: Vec<EntryHash> = links.into_iter()
-            .into_iter()
+        let query_hashes = HashSet::new();
+        let entry_hashes: Vec<EntryHash> = links
+            .iter()
             .filter_map(|link| {
-                let action_hash = link.target.into_action_hash().expect("Only action hashes will be a target of this Link type");
+                let action_hash = link.target.clone().into_action_hash().expect("Only action hashes will be a target of this Link type");
                 get_latest(action_hash).ok()?
             })
             .filter_map(|record_option| {
-                Some(record_option.action().entry_hash().clone())
-            })
-            .collect();
-        for hash in entry_hashes {
-            query_hashes.insert(hash);
+                let a = record_option.as_ref();
+                a.action().entry_hash()
             }).map(|o| o.clone())
             .collect();
         for hash in entry_hashes {
-            query_hashes.insert(hash.clone());
+            query_hashes.insert(hash);
         }
         let filter = ChainQueryFilter::new().entry_hashes(query_hashes).include_entries(true); 
         let my_sphere_orbits = query(filter)?;
