@@ -1,25 +1,25 @@
-use std::{collections::HashMap, cell::RefCell, rc::Rc};
-use hdk::prelude::{*, holo_hash::{EntryHashB64, hash_type::AnyLinkable}};
+use hdk::prelude::{
+    holo_hash::{hash_type::AnyLinkable, EntryHashB64},
+    *,
+};
 use personal_integrity::*;
+use std::{cell::RefCell, collections::HashMap, rc::Rc};
 
-use crate::{utils::entry_from_record, get_entry_for_action};
+use crate::utils::entry_from_record;
 
 #[hdk_extern]
 pub fn create_orbit(orbit: Orbit) -> ExternResult<Record> {
     let orbit_hash = create_entry(&EntryTypes::Orbit(orbit.clone()))?;
-    let record = get(orbit_hash.clone(), GetOptions::default())?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Could not find the newly created Orbit"))
-            ),
-        )?;
+    let record = get(orbit_hash.clone(), GetOptions::default())?.ok_or(wasm_error!(
+        WasmErrorInner::Guest(String::from("Could not find the newly created Orbit"))
+    ))?;
     Ok(record)
 }
 
+// Used internally in extern functions to provide latest updated/live record
 fn get_latest(action_hash: ActionHash) -> ExternResult<Option<Record>> {
-    let details = get_details(action_hash, GetOptions::default())?.ok_or(wasm_error!(
-        WasmErrorInner::Guest("Orbit not found".into())
-    ))?;
+    let details = get_details(action_hash, GetOptions::default())?
+        .ok_or(wasm_error!(WasmErrorInner::Guest("Orbit not found".into())))?;
 
     match details {
         Details::Entry(_) => Err(wasm_error!(WasmErrorInner::Guest(
@@ -27,7 +27,12 @@ fn get_latest(action_hash: ActionHash) -> ExternResult<Option<Record>> {
         ))),
         Details::Record(element_details) => match element_details.updates.last() {
             Some(update) => get_latest(update.action_address().clone()),
-            None => Ok(Some(element_details.record)),
+            None => {
+                match element_details.deletes.last() {
+                    Some(_delete) => {Ok(None)}
+                    _ => Ok(Some(element_details.record))
+                }
+            },
         },
     }
 }
@@ -44,15 +49,12 @@ pub fn get_orbit(original_orbit_hash: ActionHash) -> ExternResult<Option<Record>
         .max_by(|link_a, link_b| link_a.timestamp.cmp(&link_b.timestamp));
     let latest_orbit_hash = match latest_link {
         Some(link) => {
-            link
-                .target
+            link.target
                 .clone()
                 .into_action_hash()
-                .ok_or(
-                    wasm_error!(
-                        WasmErrorInner::Guest(String::from("No action hash associated with link"))
-                    ),
-                )?
+                .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+                    "No action hash associated with link"
+                ))))?
         }
         None => original_orbit_hash.clone(),
     };
@@ -66,28 +68,23 @@ pub struct UpdateOrbitInput {
 }
 #[hdk_extern]
 pub fn update_orbit(input: UpdateOrbitInput) -> ExternResult<Option<Record>> {
-    let updated_orbit_hash = update_entry(
-        input.original_orbit_hash.clone(),
-        &input.updated_orbit,
-    )?;
+    let updated_orbit_hash = update_entry(input.original_orbit_hash.clone(), &input.updated_orbit)?;
 
     let path = prefix_path(input.updated_orbit.name.clone())?;
     path.ensure()?;
 
-    // Delete sphere link to stale header
-    if let Ok(links) = sphere_to_orbit_links(input.updated_orbit.sphere_hash.clone().into()) {
-        let existing_links : Vec<Vec<Link>> = links.into_iter().take(1).collect();
-        let link = existing_links[0][0].clone();
-        delete_link(link.create_link_hash)?;
+    let _link_deleted = delete_sphere_hash_link(
+        input.updated_orbit.sphere_hash.clone().into(),
+        input.original_orbit_hash.clone(),
+    )?;
 
-        // Create sphere link to updated header
-        create_link(
-            input.updated_orbit.sphere_hash.clone(),
-            updated_orbit_hash.clone(),
-            LinkTypes::SphereToOrbit,
-            (),
-        )?;
-    }
+    // Create sphere link to updated header
+    create_link(
+        input.updated_orbit.sphere_hash.clone(), // Assume the Sphere cannot be change and validation will be added to ensure this
+        updated_orbit_hash.clone(),
+        LinkTypes::SphereToOrbit,
+        (),
+    )?;
 
     // Create anchor link to updated header
     create_link(
@@ -102,19 +99,30 @@ pub fn update_orbit(input: UpdateOrbitInput) -> ExternResult<Option<Record>> {
 
 #[hdk_extern]
 pub fn delete_orbit(original_orbit_hash: ActionHash) -> ExternResult<ActionHash> {
-    delete_entry(original_orbit_hash)
+    let maybe_record = get_latest(original_orbit_hash.clone())?;
+    if let Some(record) = maybe_record {
+        let orbit = entry_from_record::<Orbit>(record.clone())?;
+
+        let _link_deleted = delete_sphere_hash_link(
+            orbit.sphere_hash.clone().into(),
+            original_orbit_hash.clone(),
+        )?;
+
+        delete_entry(original_orbit_hash)
+    } else {
+        Err(wasm_error!(WasmErrorInner::Guest(String::from(
+            "Could not find the Orbit's record to delete"
+        ))))
+    }
 }
 
 #[hdk_extern]
 pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
     let orbit_action_hash = create_entry(&EntryTypes::Orbit(orbit.clone()))?;
     let orbit_entry_hash = hash_entry(&orbit)?;
-    let record = get(orbit_action_hash.clone(), GetOptions::default())?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Could not find the newly created Orbit"))
-            ),
-        )?;
+    let record = get(orbit_action_hash.clone(), GetOptions::default())?.ok_or(wasm_error!(
+        WasmErrorInner::Guest(String::from("Could not find the newly created Orbit"))
+    ))?;
 
     // Create path links for name querying
     let path = prefix_path(orbit.name.clone())?;
@@ -130,7 +138,7 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
         orbit.sphere_hash,
         orbit_action_hash.clone(),
         LinkTypes::SphereToOrbit,
-        ()
+        (),
     )?;
     // Create Orbit parent link
     if let Some(parent_hash) = orbit.parent_hash {
@@ -145,15 +153,16 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
 }
 
 #[hdk_extern]
-pub fn _get_all_my_historic_orbit_records(_:()) -> ExternResult<Vec<Record>> {
-    let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?; 
-    let filter = ChainQueryFilter::new().entry_type(orbit_entry_type).include_entries(true); 
+pub fn _get_all_my_historic_orbit_records(_: ()) -> ExternResult<Vec<Record>> {
+    let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?;
+    let filter = ChainQueryFilter::new()
+        .entry_type(orbit_entry_type)
+        .include_entries(true);
 
-    let all_my_orbits = query(filter)?; 
+    let all_my_orbits = query(filter)?;
 
     Ok(all_my_orbits)
 }
-
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -162,29 +171,32 @@ pub struct SphereOrbitsQueryParams {
 }
 
 #[hdk_extern]
-pub fn get_all_my_sphere_orbits(SphereOrbitsQueryParams{sphere_hash} : SphereOrbitsQueryParams) -> ExternResult<Vec<Record>> {
+pub fn get_all_my_sphere_orbits(
+    SphereOrbitsQueryParams { sphere_hash }: SphereOrbitsQueryParams,
+) -> ExternResult<Vec<Record>> {
     let maybe_links = sphere_to_orbit_links(sphere_hash.into())?;
 
     if let Some(links) = maybe_links {
-
-        let query_hashes = HashSet::new();
-        let entry_hashes: Vec<EntryHash> = links
-            .iter()
-            .filter_map(|link| {
-                let action_hash = link.target.clone().into_action_hash().expect("Only action hashes will be a target of this Link type");
-                get_latest(action_hash).ok()?
+        let mut query_hashes: HashSet<EntryHash> = HashSet::new();
+        let records: Vec<Record> = links
+            .into_iter()
+            .filter_map(|link| link.target.clone().into_action_hash())
+            .map(|ah| get_latest(ah))
+            .filter_map(|result| match result {
+                Ok(Some(record)) => Some(record),
+                _ => None,
             })
-            .filter_map(|record_option| {
-                let a = record_option.as_ref();
-                a.action().entry_hash()
-            }).map(|o| o.clone())
             .collect();
-        for hash in entry_hashes {
-            query_hashes.insert(hash);
+        for record in records {
+            if let Some(hash) = record.action().entry_hash() {
+                query_hashes.insert(hash.clone().into());
+            }
         }
-        let filter = ChainQueryFilter::new().entry_hashes(query_hashes).include_entries(true); 
+        let filter = ChainQueryFilter::new()
+            .entry_hashes(query_hashes)
+            .include_entries(true);
         let my_sphere_orbits = query(filter)?;
-        return Ok(my_sphere_orbits)
+        return Ok(my_sphere_orbits);
     }
     Ok(vec![])
 }
@@ -192,26 +204,37 @@ pub fn get_all_my_sphere_orbits(SphereOrbitsQueryParams{sphere_hash} : SphereOrb
 #[hdk_extern]
 pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serde_json::Value> {
     let mut all_descendant_hashes = HashSet::new();
-    insert_descendants(input.orbit_entry_hash_b64.clone().into(), &mut all_descendant_hashes);
+    insert_descendants(
+        input.orbit_entry_hash_b64.clone().into(),
+        &mut all_descendant_hashes,
+    );
 
-    let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?; 
-    let filter = ChainQueryFilter::new().entry_hashes(all_descendant_hashes).entry_type(orbit_entry_type).include_entries(true); 
-    let selected_orbits = query(filter)?; 
+    let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?;
+    let filter = ChainQueryFilter::new()
+        .entry_hashes(all_descendant_hashes)
+        .entry_type(orbit_entry_type)
+        .include_entries(true);
+    let selected_orbits = query(filter)?;
 
     // debug!("---- Hashes retrieved after recursion: ---- {:#?}", selected_orbits.len());
     let maybe_node_hashmap = build_tree(&selected_orbits);
     if let Ok(hashmap) = maybe_node_hashmap {
-        Ok(hashmap.get(&input.orbit_entry_hash_b64).unwrap().borrow().to_json())
+        Ok(hashmap
+            .get(&input.orbit_entry_hash_b64)
+            .unwrap()
+            .borrow()
+            .to_json())
     } else {
-        Err(wasm_error!(WasmErrorInner::Guest("Could not build tree from the given Orbit hash".to_string())))
+        Err(wasm_error!(WasmErrorInner::Guest(
+            "Could not build tree from the given Orbit hash".to_string()
+        )))
     }
-
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct OrbitHierarchyInput {
-    pub orbit_entry_hash_b64: EntryHashB64
+    pub orbit_entry_hash_b64: EntryHashB64,
 }
 
 /** Private helpers */
@@ -234,7 +257,9 @@ fn insert_descendants(parent_hash: EntryHash, hashes: &mut HashSet<EntryHash>) {
     debug!("---- Hashes after recursion: ---- {:#?}", hashes);
 }
 
-fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternResult<HashMap<EntryHashB64, Rc<RefCell<Node>>>> {
+fn build_tree(
+    orbits: &[Record<SignedHashed<hdk::prelude::Action>>],
+) -> ExternResult<HashMap<EntryHashB64, Rc<RefCell<Node>>>> {
     let mut nodes: HashMap<EntryHashB64, Rc<RefCell<Node>>> = HashMap::new();
     let mut child_parent_relationships: HashMap<EntryHashB64, EntryHashB64> = HashMap::new();
 
@@ -242,7 +267,7 @@ fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternRe
     for record in orbits {
         let orbit = entry_from_record::<Orbit>(record.clone())?;
         let entry_hash = hash_entry(orbit.clone())?;
-        let entry_hash_b64 : EntryHashB64 = entry_hash.clone().into();
+        let entry_hash_b64: EntryHashB64 = entry_hash.clone().into();
         let node = Rc::new(RefCell::new(Node::new(entry_hash_b64.clone(), Vec::new())));
 
         // Insert the node into the nodes map
@@ -259,7 +284,10 @@ fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternRe
     for (child_hash_b64, parent_hash_b64) in child_parent_relationships {
         if let Some(parent_node_rc) = nodes.get(&parent_hash_b64) {
             if let Some(child_node_rc) = nodes.get(&child_hash_b64) {
-                parent_node_rc.borrow_mut().children.push(child_node_rc.clone());
+                parent_node_rc
+                    .borrow_mut()
+                    .children
+                    .push(child_node_rc.clone());
             }
         } else {
             // If the parent is not in the nodes map, this indicates a problem with the data or logic
@@ -274,23 +302,57 @@ fn build_tree(orbits: &[Record<SignedHashed<hdk::prelude::Action>>]) -> ExternRe
 }
 
 // Link helpers
-fn get_links_from_base(base: impl Into<HoloHash<AnyLinkable>>, link_type: impl LinkTypeFilterExt, link_tag: Option<LinkTag>) -> ExternResult<Option<Vec<Link>>> {
+fn get_links_from_base(
+    base: impl Into<HoloHash<AnyLinkable>>,
+    link_type: impl LinkTypeFilterExt,
+    link_tag: Option<LinkTag>,
+) -> ExternResult<Option<Vec<Link>>> {
     let links = get_links(base, link_type, link_tag)?;
     if links.len() == 0 {
         return Ok(None);
     }
     Ok(Some(links))
 }
+
+fn delete_sphere_hash_link(sphere_hash: EntryHash, target_hash: ActionHash) -> ExternResult<bool> {
+    let replaceable_sphere_links: Vec<Vec<Link>> =
+        sphere_to_orbit_links(sphere_hash.clone().into())
+            .into_iter()
+            .filter(|all_sphere_links| {
+                all_sphere_links.clone().is_some_and(|l| {
+                    l.iter()
+                        .find(|l| l.target == target_hash.clone().into())
+                        .take()
+                        .is_some()
+                })
+            })
+            .map(|maybe_links| maybe_links.unwrap_or_else(Vec::new))
+            .collect();
+
+    match replaceable_sphere_links.len() {
+        1 => {
+            if let Some(target_link) = replaceable_sphere_links[0]
+                .iter()
+                .find(|&l| l.target == target_hash.clone().into())
+                .take()
+            {
+                delete_link(target_link.create_link_hash.clone())?;
+            }
+            Ok(true)
+        }
+        _ => Ok(false),
+    }
+}
+
 fn parent_to_child_links(parent_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
     get_links_from_base(parent_hash, LinkTypes::OrbitParentToChild, None)
 }
 fn sphere_to_orbit_links(sphere_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
     get_links_from_base(sphere_hash, LinkTypes::SphereToOrbit, None)
 }
-fn orbit_prefix_path_links(path_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
+fn _orbit_prefix_path_links(path_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
     get_links_from_base(path_hash, LinkTypes::OrbitsPrefixPath, None)
 }
-
 
 fn prefix_path(name: String) -> ExternResult<TypedPath> {
     // convert to lowercase for path for ease of search
