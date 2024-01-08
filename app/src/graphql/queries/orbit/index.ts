@@ -1,4 +1,4 @@
-import { ActionHashB64, encodeHashToBase64 } from '@holochain/client';
+import { ActionHashB64, EntryHashB64, encodeHashToBase64 } from '@holochain/client';
 import { mapZomeFn } from '../../connection'
 import { DNAIdMappings, ById } from '../../types'
 import { HAPP_DNA_NAME, HAPP_ZOME_NAME_PERSONAL_HABITS } from '../../../constants'
@@ -14,12 +14,12 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     HAPP_ZOME_NAME_PERSONAL_HABITS,
     'get_my_orbit',
   )
-  const readAll = mapZomeFn<null, Orbit[]>(
+  const readAll = mapZomeFn<{sphereHash: EntryHashB64}, Orbit[]>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    'get_all_my_orbits',
+    'get_all_my_sphere_orbits',
   )
   const getHierarchyForOrbit = mapZomeFn<ActionHashB64, String>(
     dnaConfig,
@@ -34,10 +34,8 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       return read(args.id)
     },
 
-    orbits: async (): Promise<OrbitConnection> => {
-      const rawRecords : Orbit[] = await readAll(null);
-
-      console.log('get_all_my_orbits payload :>> ', rawRecords);
+    orbits: async (_, args): Promise<OrbitConnection> => {
+      const rawRecords : Orbit[] = await readAll({sphereHash: args.sphereEntryHashB64});
       if(typeof rawRecords !== 'object' || !rawRecords?.length) return Promise.resolve({ edges: [], pageInfo: undefined } as any)
 
       const entryRecords = rawRecords!.map((record: any) => new EntryRecord<Orbit>(record));

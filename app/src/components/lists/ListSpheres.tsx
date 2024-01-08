@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { listSortFilterAtom } from '../../state/listSortFilterAtom';
-import { Scale, Sphere, useGetSpheresQuery } from '../../graphql/generated';
+import { Scale, Sphere, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSpheresQuery } from '../../graphql/generated';
 
 import './common.css';
 
@@ -36,14 +36,16 @@ function ListSpheres() {
     }
   };
 
-  const [state, transition] = useStateTransition(); // Top level state machine and routing
+  const [_state, transition] = useStateTransition(); // Top level state machine and routing
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
   const spheres = extractEdges(data!.spheres) as Sphere[];
   const sortedSpheres = spheres.sort((s1: Sphere, s2: Sphere) => sortSpheres(s1, s2));
-  
+
+  if(!spheres.length) return <></>;
+
   return (
     <div className='layout spheres'>
       <PageHeader title="Spheres of Action" />

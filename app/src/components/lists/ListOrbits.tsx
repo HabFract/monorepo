@@ -26,24 +26,22 @@ const ListOrbits: React.FC = ({ sphereHash }: ListOrbitsProps) => {
   
   const sphereEh = dataSphere?.sphere?.eH;
   const [getOrbits, { loading: loadingOrbits, error: errorOrbits, data }] = useGetOrbitsLazyQuery({
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'network-only',
     variables: { sphereEntryHashB64: sphereEh },
   });
-  
   useEffect(() => {
     if (sphereEh) {
       getOrbits();
     }
   }, [dataSphere, loadingSphere]);
-
   const [listSortFilter] = useAtom(listSortFilterAtom);
   
   const scaleValues = { Sub: 1, Atom: 2, Astro: 3 };
-
+  
   if (loadingOrbits || loadingSphere) return <p>Loading...</p>;
   if (errorOrbits) return <p>Error : {errorOrbits.message}</p>;
   if(!data?.orbits) return <></>;
-
+  
   const orbits = extractEdges(data.orbits);
   
   const sortOrbits = (a: Orbit, b: Orbit) => {
