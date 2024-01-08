@@ -15,7 +15,7 @@ const SphereValidationSchema = Yup.object().shape({
   //TODO: limit to jpg/png?
 });
 
-const CustomErrorLabel: any = (fieldName: string, errors: object, touched: object) => {
+export const CustomErrorLabel: any = (fieldName: string, errors: object, touched: object) => {
   return (
     <div className='error-label'>
       {errors[fieldName] && touched[fieldName] 

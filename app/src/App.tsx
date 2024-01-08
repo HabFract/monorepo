@@ -49,6 +49,15 @@ function App({ children: pageComponent }: any) {
         default: "p-4 text-base font-normal bg-slate-800 hover:bg-slate-700 text-off-white border-slate-500 border-2 focus:border-transparent  focus:outline-info-hover-bg focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
       }
     },
+    select: {
+      field: {
+        select: {
+          colors: {
+            default: "p-4 text-base font-normal bg-slate-800 hover:bg-slate-700 text-off-white border-slate-500 border-2 focus:border-transparent  focus:outline-info-hover-bg focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
+          }
+        }
+      }
+    },
     tooltip: {
       style: {
         dark: "bg-white"
@@ -87,7 +96,7 @@ function App({ children: pageComponent }: any) {
             className={"fixed top-0 right-0 z-20 text-white"} onClick={() => transition(getNextOnboardingState(state))}>NEXT</Button>
         </>
         : <>
-          <Nav transition={transition} verticalCollapse={navCollapseVertical} toggleVerticalCollapse={()=> setNavCollapseVertical(!navCollapseVertical)} ></Nav>
+          <Nav transition={transition} verticalCollapse={navCollapseVertical} toggleVerticalCollapse={() => setNavCollapseVertical(!navCollapseVertical)} ></Nav>
           <main className={navCollapseVertical ? "page-container nav-collapsed" : "page-container"}>{pageComponent}</main>
         </>
       }

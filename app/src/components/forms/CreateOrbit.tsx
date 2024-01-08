@@ -5,10 +5,11 @@ import { DateTime } from "luxon"
 
 import { Checkbox, Flex } from 'antd';
 import DateInput from './input/DatePicker';
-import { Button, TextInput, Label, Select } from 'flowbite-react';
+import { Button, TextInput, Label, Select, Textarea } from 'flowbite-react';
 
 import { Frequency, Orbit, Scale, useCreateOrbitMutation, useGetOrbitsQuery } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
+import { CustomErrorLabel } from './CreateSphere';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -65,95 +66,106 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
         }}
       >
         {({ values, errors, touched }) => (
-          <Form>
-            <Label>
-              <span>Name:</span>
-              <Field as={TextInput} type="text" name="name" required />
-            </Label>
-            {errors.name && touched.name ? <div>{errors.name}</div> : null}
+          <Form noValidate={true} className='gap-2'>
+            <div className="field">
+              <Label htmlFor='name'>Name: <span className="reqd">*</span></Label>
 
-            <Label>
-              <span>Description:</span>
-              <Field as={TextInput} type="text" name="description" />
-            </Label>
-            {errors.description && touched.description ? <div>{errors.description}</div> : null}
+              <div className="flex flex-col gap-2">
+                <Field as={TextInput} color={"default"} sizing="lg" autoComplete={'off'} type="text" name="name" id="name" required />
+                {CustomErrorLabel('name', errors, touched)}
+              </div>
+            </div>
 
-            <Label>
-              <span>Parent Orbit:</span>
+            <div className="field">
+              <Label htmlFor='description'>Description:</Label>
+              <div className="flex flex-col gap-2">
+                <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" id="description" />
+                {CustomErrorLabel('description', errors, touched)}
+              </div>
+            </div>
 
-              <Field name="parentHash">
-                {({ field }) => {
-                  const innerOrbits = extractEdges((orbits as any)?.orbits) as Orbit[];
-                  return <Select
-                    {...field}
-                    color={errors.parentHash && touched.parentHash ? "failure" : ""}
-                  >
-                    {
-                      innerOrbits.length == 0
-                        ? <option value={'root'}>{'None'}</option>
-                        : innerOrbits.map((orbit, i) =>
-                          <option key={i} value={orbit.eH}>{orbit.name}</option>
-                        )
-                    }
-                  </Select>
-                }}
-              </Field>
-            </Label>
-            {errors.description && touched.description ? <div>{errors.description}</div> : null}
 
-            <Label>
-              <span>Frequency:</span>
-              <Field name="frequency" >
-                {({ field }) => (
-                  <Select
-                    {...field}
-                    color={errors.frequency && touched.frequency ? "failure" : ""}
-                  >
-                    {Object.values(Frequency).map((freq, i) =>
-                      <option key={i} value={freq}>{freq}</option>
-                    )
-                    }
-                  </Select>
-                )}
-              </Field>
-            </Label>
-            {errors.frequency && touched.frequency ? <div>{errors.frequency}</div> : null}
+            <div className="field">
+              <Label htmlFor='name'>Parent Orbit: <span className="reqd">*</span></Label>
 
-            <Label>
-              <span>Scale:</span>
-              <Field name="scale" >
-                {({ field }) => (
-                  <Select
-                    {...field}
-                    color={errors.scale && touched.scale ? "failure" : ""}
-                  >
-                    {Object.values(Scale).map((scale, i) =>
-                      <option key={i} value={scale}>{scale}</option>
-                    )
-                    }
-                  </Select>
-                )}
-              </Field>
-            </Label>
-            {errors.scale && touched.scale ? <div>{errors.scale}</div> : null}
+              <div className="flex flex-col gap-2">
+                <Field name="parentHash">
+                  {({ field }) => {
+                    const innerOrbits = extractEdges((orbits as any)?.orbits) as Orbit[];
+                    return <Select
+                      {...field}
+                      color={errors.parentHash && touched.parentHash ? "invalid" : "default"}
+                    >
+                      {
+                        innerOrbits.length == 0
+                          ? <option value={'root'}>{'None'}</option>
+                          : innerOrbits.map((orbit, i) =>
+                            <option key={i} value={orbit.eH}>{orbit.name}</option>
+                          )
+                      }
+                    </Select>
+                  }}
+                </Field>
+                {CustomErrorLabel('parentHash', errors, touched)}
+              </div>
+            </div>
 
-            <Flex vertical={true}>
-              <Flex justify='space-around' align='center'>
-                <Label htmlFor='startTime'>
-                  <span>Start:</span>
+            <div className="field">
+              <Label htmlFor='name'>Frequency: <span className="reqd">*</span></Label>
+              <div className="flex flex-col gap-2">
+                <Field name="frequency" >
+                  {({ field }) => (
+                    <Select
+                      {...field}
+                      color={errors.frequency && touched.frequency ? "invalid" : "default"}
+                    >
+                      {Object.values(Frequency).map((freq, i) =>
+                        <option key={i} value={freq}>{freq}</option>
+                      )
+                      }
+                    </Select>
+                  )}
+                </Field>
+                {CustomErrorLabel('frequency', errors, touched)}
+              </div>
+            </div>
+
+            <div className="field">
+              <Label htmlFor='name'>Scale: <span className="reqd">*</span></Label>
+              <div className="flex flex-col gap-2">
+                <Field name="scale" >
+                  {({ field }) => (
+                    <Select
+                      {...field}
+                      color={errors.scale && touched.scale ? "invalid" : "default"}
+                    >
+                      {Object.values(Scale).map((scale, i) =>
+                        <option key={i} value={scale}>{scale}</option>
+                      )
+                      }
+                    </Select>
+                  )}
+                </Field>
+                {CustomErrorLabel('scale', errors, touched)}
+              </div>
+            </div>
+
+            <Flex className={"field"} vertical={true}>
+              <Flex justify='space-around'>
+                <Label htmlFor='startTime'>Start<span className="reqd">*</span>/
                 </Label>
-                <Label htmlFor='startTime'>
-                  <span>End (archival):</span>
+                <Label htmlFor='endTime'>&nbsp; End:
                 </Label>
               </Flex>
-              <Flex justify='space-around' align='center'>
+              <div className="flex flex-col gap-2 flex-1">
                 <Field
                   name="startTime"
                   type="date"
                   component={DateInput}
                   defaultValue={values.startTime}
-                />
-
+                  />
+              </div>
+              <div className="flex gap-4 justify-around flex-1">
                 <Field
                   name="endTime"
                   type="date"
@@ -161,25 +173,19 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
                   disabled={(!values.archival)}
                   defaultValue={values.endTime}
                 />
-              </Flex>
-              <Flex justify='space-around' align='center'>
-                <div></div>
-                <Field name="archival" >
+                <Field name="archival">
                   {({ field }) => (
                     <Checkbox
-                      {...field}
+                    className="text-sm text-light-gray"
+                    {...field}
                     // onChange={async (e) => {  setFieldValue('archival', e.target.checked) }}
                     >Archival?</Checkbox>
                   )}
                 </Field>
-              </Flex>
-              <Flex justify='space-around' align='center'>
-                {errors.startTime && touched.startTime ? <div>{errors.startTime}</div> : <div></div>}
-                {errors.endTime && touched.endTime ? <div>{errors.endTime}</div> : <div></div>}
-              </Flex>
+              </div>
             </Flex>
 
-            <Button type="submit" className="mt-4">Create Orbit</Button>
+            <Button type="submit" disabled={!!Object.values(errors).length} className="btn-primary">Create</Button>
           </Form>
         )}
       </Formik>

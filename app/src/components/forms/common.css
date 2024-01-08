@@ -63,10 +63,21 @@ form {
   flex: 1;
 }
 
+.flex-1 {
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
 span.reqd {
   @apply text-info font-bold;
 }
 
+.ant-picker {
+  background: #1e293b !important;
+  border: 2px solid #64748b !important;
+  color: #FEFEFE !important;
+}
 /* Image uploader */
 
 .ant-upload.ant-upload-select:hover {
