@@ -39,7 +39,7 @@ export const cache = new InMemoryCache({
             if (!Array.isArray(incoming)) {
               throw new Error(`Incoming data is not iterable: ${incoming}`);
             }
-            const merged = existing ? existing.slice(0) : [];
+            const merged = existing && existing?.length ? existing.slice(0) : [];
             // Assuming 'id' is the unique identifier for orbits
             const existingIds = new Set(merged.map(orbit => orbit.id));
             for (const orbit of incoming) {
@@ -58,7 +58,7 @@ export const cache = new InMemoryCache({
             if (!Array.isArray(incoming)) {
               throw new Error(`Incoming data is not iterable: ${incoming}`);
             }
-            const merged = existing ? existing.slice(0) : [];
+            const merged = existing && existing?.length ? existing.slice(0) : [];
             // Assuming 'id' is the unique identifier for spheres
             const existingIds = new Set(merged.map(sphere => sphere.id));
             for (const sphere of incoming) {
