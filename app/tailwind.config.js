@@ -28,7 +28,7 @@ export default {
     },
     fontFamily: {
 
-      sans: ["Open Sans", "Arial"],
+      sans: ["Lato", "Arial"],
       heading: ["Poppins", "Arial"],
     },
     extend: {
@@ -40,10 +40,10 @@ export default {
         "hover-text": "#000"
       },
       "secondary": {
-        "DEFAULT": "rgb(54, 25, 91)",
-        "extra-transparent": "rgba(54, 25, 91, 0.25)",
-        "transparent": "rgba(54, 25, 91, 0.5)",
-        "hover-bg": "rgba(54, 25, 91, 0.9)",
+        "DEFAULT": "#6B7D7F",
+        "extra-transparent": "rgba(107,125,127, 0.25)",
+        "transparent": "rgba(107,125,127, 0.65)",
+        "hover-bg": "rgba(107,125,127, 0.9)",
         "hover-text": "#FDFEFE"
       },
       // "secondary": {
@@ -88,7 +88,11 @@ export default {
       // "sphere-card-bg": "#004955",
       "card-bg": "rgba(0,73,85, 0.5)",
       "card-bg-light": "rgba(0,73,85, 0.9)",
-      "nav-bg": "rgba(0,73,85, 0.5)"
+      "nav-bg": "rgba(0,73,85, 0.5)",
+
+      // "extra-transparent": "rgba(100, 116, 139, 0.25)",
+      "card-bg-light": "rgba(100, 116, 139, 0.25)",
+      "card-bg": "rgba(100, 116, 139, 0.49)",
       },
     },
   },

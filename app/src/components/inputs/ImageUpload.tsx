@@ -5,7 +5,7 @@ import type { UploadChangeParam } from 'antd/es/upload';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 
 import { createAvatar } from '@dicebear/core';
-import { shapes } from '@dicebear/collection';
+import { icons } from '@dicebear/collection';
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   const reader = new FileReader();
@@ -31,18 +31,18 @@ const ImageUpload = ({
   ...props
 }) => {
   useEffect(() => {
-    const avatar = createAvatar(shapes, {
-      "seed": "Molly" + values.name,
-      backgroundColor: ["dadce0"],
-      shape3Color: ["50e3c2", "004955", "6B7D7F"],
-      shape2Color: ["36195b", "transparent"],
-      shape1Color: ["transparent"],
+    const avatar = createAvatar(icons, {
+      "seed": "Annie" + values.name,
+      backgroundColor: ["6B7D7F"],
+      // shape3Color: ["50e3c2", "004955", "6B7D7F"],
+      // shape2Color: ["36195b", "transparent"],
+      // shape1Color: ["transparent"],
       translateX: -10,
       translateY: 20
     });
     const url = avatar.toDataUriSync();
-    setImageUrl(url)
     setFieldValue(field.name, url);
+    setImageUrl(url)
   }, [values.name])
   
   const [loading, setLoading] = useState(false);

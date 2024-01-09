@@ -8,7 +8,10 @@
 }
 
 .form-title {
-  @apply font-heading leading-loose text-3xl tracking-wide;
+  @apply leading-loose text-xl tracking-wide;
+  text-align: left;
+  font-family: 'Open Sans';
+  font-weight: 600
 }
 
 form {
@@ -117,8 +120,8 @@ span.reqd {
   .scene {
     position: absolute;
     bottom: 0;
-    left: 0;
-    width: 80%;
+    right: 0;
+    /* width: 80%; */
   }
 }
 @media screen and (min-width: 768px) {

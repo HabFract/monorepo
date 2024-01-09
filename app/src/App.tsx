@@ -62,7 +62,16 @@ function App({ children: pageComponent }: any) {
       style: {
         dark: "bg-white"
       }
-    }
+    },
+    modal: {
+      header: {
+        title: 'text-2xl text-off-white font-heading font-base tracking-wider leading-[1.5rem]'
+      },
+      content: {
+        inner: 'border-2 border-off-white bg-slate-900 rounded-xl text-base text-off-white'
+      },
+    },
+
   };
 
   return (

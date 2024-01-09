@@ -48,16 +48,16 @@ const ListSortFilter = ({label} : {label: string}) => {
             >
               {({ handleSubmit }) => (
                 <Form onSubmit={handleSubmit}>
-                  <div className="space-y-4 bg-dark-gray">
+                  <div className="space-y-4">
                     <div>
-                      <label className="block mb-2 text-sm font-medium">Sort by:</label>
+                      <label className="block mb-2 text-xl">Sort by:</label>
                       <div className="flex flex-col">
-                        <label>
-                          <Field onChange={(e: any) => setListSortFilter({...listSortFilter, sortCriteria: e.currentTarget.value})} checked={listSortFilter.sortCriteria==SortCriteria.Name} type="radio" name="sortCriteria" value={SortCriteria.Name} as={Radio} />
+                        <label className='text-xl lowercase capitalize'>
+                          <Field className="text-primary m-2 p-2" onChange={(e: any) => setListSortFilter({...listSortFilter, sortCriteria: e.currentTarget.value})} checked={listSortFilter.sortCriteria==SortCriteria.Name} type="radio" name="sortCriteria" value={SortCriteria.Name} as={Radio} />
                           Name
                         </label>
-                        <label>
-                          <Field onChange={(e: any) => setListSortFilter({...listSortFilter, sortCriteria: e.currentTarget.value})} checked={listSortFilter.sortCriteria==SortCriteria.Scale} type="radio" name="sortCriteria" value={SortCriteria.Scale} as={Radio} />
+                        <label className='text-xl lowercase capitalize'>
+                          <Field className="text-primary m-2 p-2" onChange={(e: any) => setListSortFilter({...listSortFilter, sortCriteria: e.currentTarget.value})} checked={listSortFilter.sortCriteria==SortCriteria.Scale} type="radio" name="sortCriteria" value={SortCriteria.Scale} as={Radio} />
                           Scale
                         </label>
                       </div>

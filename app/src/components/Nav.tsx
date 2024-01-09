@@ -133,6 +133,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
             <button className="toggle-vertical-collapse" onClick={() => toggleVerticalCollapse()}>
               <ArrowsAltOutlined className={verticalCollapse ? "collapsed" : "expanded"}/>
             </button>
+            <div className="w-16 fixed right-0 top-0 p-2 logo-div"><img src="assets/logo-no-text.svg" alt="habit/fract"/></div>
             <DarkThemeToggle />
           </div>
         </div>

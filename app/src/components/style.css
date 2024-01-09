@@ -8,7 +8,6 @@ nav.side-nav.collaped-vertical {
   gap: 0.5rem;
   /* transition: 1s all ease-in; */
   background: transparent;
-  outline: 2px solid #64748b;
   border-radius: 1rem;
   border-bottom: 0;
   border-bottom-right-radius: 0;
@@ -16,6 +15,12 @@ nav.side-nav.collaped-vertical {
 }
 nav.side-nav.collaped-vertical ul[role="menu"] {
   border-radius: 1rem;
+}
+
+.logo-div {
+  height: 3rem;
+  overflow: hidden;
+  padding-top: 0.75rem;
 }
 
 /* Vertical collapse button */
@@ -151,13 +156,13 @@ button[data-testid="dark-theme-toggle"] svg {
 }
 
 .ant-menu-submenu-popup {
-  background-color: rgba(80, 227, 194, .9) !important;
+  background-color: #222 !important;
 }
 .ant-menu-submenu-popup .ant-menu {
-  background:  linear-gradient(180deg, rgba(80, 227, 194, 0.9) 0%, rgba(0,212,255,0) 100%) !important;
+  background:  linear-gradient(-90deg, #6B7D7F 0%, rgba(0,212,255,0) 100%) !important;
 }
 .ant-menu-submenu-popup .ant-menu .ant-menu-title-content, .ant-menu-item-group-title{
-  color: #222222 !important;
+  color: #fefefe !important;
 }
 .ant-menu-submenu-popup:hover .ant-menu-item-group, .ant-menu-item-group-title:hover{
   background-color: rgba(54, 25, 91, 0.25) !important;
