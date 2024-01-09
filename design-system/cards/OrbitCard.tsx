@@ -12,7 +12,7 @@ type OrbitCardProps = {
   orbit: Orbit;
   sphereEh?: string,
   transition: (newState: string, params?: object) => void
-  runDelete: (id: string) => void
+  runDelete: () => void
 };
 
 const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runDelete }: OrbitCardProps) => {

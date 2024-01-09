@@ -1,5 +1,6 @@
 mutation updateOrbit($orbitFields: OrbitUpdateParams!) {
   updateOrbit(orbit: $orbitFields) {
-    id
+    actionHash,
+    entryHash
   }
 }

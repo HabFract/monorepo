@@ -156,7 +156,7 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
             None,
         )?;
 
-        debug!("----Sphere LINKS queried : ----");
+        debug!("----Sphere LINKS queried : ---- {:#?}", sphere_level_links.clone());
         if let Some(links) = sphere_level_links {
             let mut parent_level_link = links
                 .into_iter()

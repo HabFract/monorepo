@@ -12,7 +12,7 @@ type Mutation {
   createSphere(sphere: SphereCreateUpdateParams): CreateResponsePayload!
   updateSphere(sphere: SphereCreateUpdateParams): Sphere!
   createOrbit(orbit: OrbitCreateUpdateParams): CreateResponsePayload!
-  updateOrbit(orbit: OrbitUpdateParams): Orbit!
+  updateOrbit(orbit: OrbitUpdateParams): CreateResponsePayload!
   deleteOrbit(orbitHash: ID!): ID!
   createProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
   updateProfile(profile: UserProfileCreateUpdateParams): AgentProfile!

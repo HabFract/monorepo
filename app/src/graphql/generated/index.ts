@@ -43,7 +43,7 @@ export type Mutation = {
   createProfile: AgentProfile;
   createSphere: CreateResponsePayload;
   deleteOrbit: Scalars['ID']['output'];
-  updateOrbit: Orbit;
+  updateOrbit: CreateResponsePayload;
   updateProfile: AgentProfile;
   updateSphere: Sphere;
 };
@@ -264,7 +264,7 @@ export type UpdateOrbitMutationVariables = Exact<{
 }>;
 
 
-export type UpdateOrbitMutation = { __typename?: 'Mutation', updateOrbit: { __typename?: 'Orbit', id: string } };
+export type UpdateOrbitMutation = { __typename?: 'Mutation', updateOrbit: { __typename?: 'CreateResponsePayload', actionHash: string, entryHash: string } };
 
 export type CreateSphereMutationVariables = Exact<{
   variables: SphereCreateUpdateParams;
@@ -382,7 +382,8 @@ export type DeleteOrbitMutationOptions = Apollo.BaseMutationOptions<DeleteOrbitM
 export const UpdateOrbitDocument = gql`
     mutation updateOrbit($orbitFields: OrbitUpdateParams!) {
   updateOrbit(orbit: $orbitFields) {
-    id
+    actionHash
+    entryHash
   }
 }
     `;

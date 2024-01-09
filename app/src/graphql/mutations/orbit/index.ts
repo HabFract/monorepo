@@ -1,5 +1,5 @@
 import { mapZomeFn } from "../../connection";
-import { ById, DNAIdMappings } from "../../types";
+import { DNAIdMappings } from "../../types";
 import {
   HAPP_DNA_NAME,
   HAPP_ZOME_NAME_PERSONAL_HABITS,
@@ -81,6 +81,17 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       },
     }
   ) => {
+    console.log('args ', {
+      name,
+      sphereHash,
+      parentHash,
+      metadata: {
+        timeframe: { startTime, endTime },
+        description,
+      },
+      frequency,
+      scale,
+    });
     const rawRecord = await runCreate({
       name,
       sphereHash,
@@ -116,7 +127,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     }
   ) => {
     const rawRecord = await runUpdate({
-      originalOrbitHash: id,
+      originalOrbitHash: id as ActionHashB64,
       updatedOrbit: {
         name,
         sphereHash,
@@ -131,7 +142,8 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     });
     const entryRecord = new EntryRecord<Orbit>(rawRecord);
     return {
-      id: entryRecord.actionHash,
+      actionHash: encodeHashToBase64(entryRecord.actionHash),
+      entryHash: encodeHashToBase64(entryRecord.entryHash),
     };
   };
 
