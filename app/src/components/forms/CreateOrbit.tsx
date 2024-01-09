@@ -56,6 +56,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
         validationSchema={OrbitValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
+            console.log('values :>> ', values);
             if (!values.archival) delete values.endTime;
             delete values.archival;
             await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } });
@@ -66,7 +67,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
         }}
       >
         {({ values, errors, touched }) => (
-          <Form noValidate={true} className='gap-2'>
+          <Form noValidate={true}>
             <div className="field">
               <Label htmlFor='name'>Name: <span className="reqd">*</span></Label>
 
@@ -86,7 +87,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
 
 
             <div className="field">
-              <Label htmlFor='name'>Parent Orbit: <span className="reqd">*</span></Label>
+              <Label htmlFor='parentHash'>Parent Orbit: <span className="reqd">*</span></Label>
 
               <div className="flex flex-col gap-2">
                 <Field name="parentHash">
@@ -95,13 +96,13 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
                     return <Select
                       {...field}
                       color={errors.parentHash && touched.parentHash ? "invalid" : "default"}
+                      defaultValue={innerOrbits[0]}
                     >
                       <option value={'root'}>{'None'}</option>
                       {
                         innerOrbits.length == 0
                           ? <></>
-                          : innerOrbits.map((orbit, i) =>
-                            <option key={i} value={orbit.eH}>{orbit.name}</option>
+                          : innerOrbits.map((orbit, i) => { console.log('orbit  :>> ', orbit); return <option key={i} value={orbit.eH}>{orbit.name}</option> }
                           )
                       }
                     </Select>
@@ -112,7 +113,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
             </div>
 
             <div className="field">
-              <Label htmlFor='name'>Frequency: <span className="reqd">*</span></Label>
+              <Label htmlFor='frequency'>Frequency: <span className="reqd">*</span>
+              </Label>
               <div className="flex flex-col gap-2">
                 <Field name="frequency" >
                   {({ field }) => (
@@ -132,7 +134,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
             </div>
 
             <div className="field">
-              <Label htmlFor='name'>Scale: <span className="reqd">*</span></Label>
+              <Label htmlFor='scale'>Scale: <span className="reqd">*</span></Label>
               <div className="flex flex-col gap-2">
                 <Field name="scale" >
                   {({ field }) => (
@@ -152,37 +154,40 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
             </div>
 
             <Flex className={"field"} vertical={true}>
-              <Flex justify='space-around'>
-                <Label htmlFor='startTime'>Start<span className="reqd">*</span>/
+              <div className='justify-around items-start'>
+                <Label htmlFor='startTime'>Start<span className="reqd">*</span><span className="hidden-sm">/</span>
                 </Label>
                 <Label htmlFor='endTime'>&nbsp; End:
                 </Label>
-              </Flex>
-              <div className="flex flex-col gap-2 flex-1">
-                <Field
-                  name="startTime"
-                  type="date"
-                  component={DateInput}
-                  defaultValue={values.startTime}
-                  />
               </div>
-              <div className="flex gap-4 justify-around flex-1">
-                <Field
-                  name="endTime"
-                  type="date"
-                  component={DateInput}
-                  disabled={(!values.archival)}
-                  defaultValue={values.endTime}
-                />
-                <Field name="archival">
-                  {({ field }) => (
-                    <Checkbox
-                    className="text-sm text-light-gray"
-                    {...field}
-                    // onChange={async (e) => {  setFieldValue('archival', e.target.checked) }}
-                    >Archival?</Checkbox>
-                  )}
-                </Field>
+              <div className="flex flex-wrap items-start">
+                <div className="flex flex-col gap-2 flex-1">
+                  <Field
+                    name="startTime"
+                    id="startTime"
+                    type="date"
+                    component={DateInput}
+                    defaultValue={values.startTime}
+                  />
+                </div>
+                <div className="flex flex-col md:flex-row gap-2 mb-4 justify-around flex-1">
+                  <Field
+                    name="endTime"
+                    id="endTime"
+                    type="date"
+                    component={DateInput}
+                    disabled={(!values.archival)}
+                    defaultValue={values.endTime}
+                  />
+                  <Field name="archival" className="flex items-start">
+                    {({ field }) => (
+                      <Checkbox
+                        {...field}
+                      // onChange={async (e) => {  setFieldValue('archival', e.target.checked) }}
+                      >Archival?</Checkbox>
+                    )}
+                  </Field>
+                </div>
               </div>
             </Flex>
 

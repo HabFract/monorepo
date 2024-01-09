@@ -17,6 +17,21 @@ nav.side-nav.collaped-vertical ul[role="menu"] {
   border-radius: 1rem;
 }
 
+nav.side-nav.collaped-vertical + .page-container .sphere-card.list-header button.add-orbit,
+nav.side-nav.collaped-vertical + .page-container .form-container .field:nth-child(3),
+nav.side-nav.collaped-vertical + .page-container .form-container .field:nth-child(4),
+nav.side-nav.collaped-vertical + .page-container .form-container .field:nth-child(5),
+nav.side-nav.collaped-vertical + .page-container .form-container .field:nth-child(6),
+nav.side-nav.collaped-vertical + .page-container .form-container .field:nth-child(7),
+nav.side-nav.collaped-vertical + .page-container .form-container button[type="submit"] {
+    width: 80%;
+    align-self: end;
+}
+
+nav.side-nav.collaped-vertical + .page-container .sphere-card.list-header button.add-orbit {
+  width: calc(100% - 72px)
+}
+
 .logo-div {
   height: 3rem;
   overflow: hidden;

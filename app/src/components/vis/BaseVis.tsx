@@ -1361,7 +1361,7 @@ export default class Visualization implements IVisualization {
       this.calibrateViewPortAttrs();
       this.calibrateViewBox();
       this.setdXdY();
-      this.setZoomBehaviour();
+      // this.setZoomBehaviour();
     } else {
       this.resetForExpandedMenu({ justTranslation: true });
       this._hasRendered = true;

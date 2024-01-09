@@ -4,11 +4,11 @@
 }
 
 .form-container h2 {
-  @apply my-2 text-off-white text-center;
+  @apply text-off-white text-center;
 }
 
 .form-title {
-  @apply leading-loose text-xl tracking-wide;
+  @apply leading-loose text-lg tracking-wide my-0 h-6 mb-1 md:text-xl md:mb-2 md:h-8;
   text-align: left;
   font-family: 'Open Sans';
   font-weight: 600
@@ -17,7 +17,7 @@
 form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem
+  gap: 0;
 }
 
 .scene {
@@ -49,7 +49,7 @@ form {
 }
 
 .field .error-label {
-  @apply h-4 text-slate-300 text-sm pl-1 mb-2;
+  @apply h-1 text-slate-300 text-sm pl-1 mb-2 text-xs text-right;
 }
 .field .error-label-text {
   @apply pl-2;
@@ -76,10 +76,47 @@ span.reqd {
   @apply text-info font-bold;
 }
 
+/* Date pickers */
+
 .ant-picker {
   background: #1e293b !important;
   border: 2px solid #64748b !important;
+}
+.ant-picker .ant-picker-input > input[disabled], .ant-picker .ant-picker-input > input[disabled]::placeholder {
+  padding: 0 !important;
+  background: rgba(107,125,127, 0.25) !important;
+  color:#475569 !important;
+  cursor: not-allowed;
+}
+
+.ant-picker:active {
+  background: rgb(51 65 85) !important;
+}
+.ant-picker:hover {
+  background: #475569 !important;
+}
+.ant-picker:focus {
+  border-color: transparent !important;
+  outline-offset: 2px !important;
+  outline: 2px solid #1e293b !important;
+}
+.ant-picker-input .ant-picker-clear{
+  background: transparent !important;
+  opacity: 1 !important;
+  color: rgba(189, 16, 224, 0.9) !important;
+}
+.ant-picker-input >input {
   color: #FEFEFE !important;
+}
+.ant-picker-input >input::placeholder {
+  padding: 1rem !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  color: #FEFEFE !important;
+}
+
+.ant-picker-suffix {
+  display: none !important;
 }
 /* Image uploader */
 
@@ -106,6 +143,9 @@ span.reqd {
 }
 
 @media screen and (min-width: 420px) {
+  form {
+    gap: 1.25rem;
+  }
   .field {
       flex-wrap: nowrap;
       @apply flex-row;
@@ -115,7 +155,7 @@ span.reqd {
     flex-basis: 7rem;
   }
   .field .error-label {
-    @apply pb-2;
+    @apply pb-2 h-4;
   }
   .scene {
     position: absolute;

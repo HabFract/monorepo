@@ -75,7 +75,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
                 <span>Orbits</span>
               </Button>}
 
-              {!isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn responsive btn-primary border-0 w-full" size="sm">
+              {!isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn responsive btn-primary add-orbit border-0 w-full" size="sm">
                 <PlusCircleOutlined className="btn-icon btn-primary" />
                 <span>Add Orbit</span>
               </Button>}
@@ -91,7 +91,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
           </div>
         </div>
       </main>
-      {isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn mt-2 btn-secondary border-0 w-full" size="sm">
+      {isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn mt-2 btn-secondary add-orbit border-0 w-full" size="sm">
         <PlusCircleOutlined className="btn-icon btn-secondary" />
         <span>Add Orbit</span>
       </Button>}
