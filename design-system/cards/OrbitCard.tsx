@@ -12,9 +12,10 @@ type OrbitCardProps = {
   orbit: Orbit;
   sphereEh?: string,
   transition: (newState: string, params?: object) => void
+  runDelete: (id: string) => void
 };
 
-const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition }: OrbitCardProps) => {
+const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runDelete }: OrbitCardProps) => {
   return (
     <div className="orbit-card flex flex-col rounded-2xl overflow-hidden">
       <header className="orbit-header card-header">
@@ -37,7 +38,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition }: Or
                 <EditOutlined className="btn-icon" />
                 <span>Edit</span>
               </Button>
-              <Button className="btn responsive btn-danger" size="sm">
+              <Button className="btn responsive btn-danger" size="sm" onClick={runDelete}>
                 <DeleteOutlined className="btn-icon" />
                 <span>Delete</span>
               </Button>

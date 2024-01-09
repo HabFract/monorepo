@@ -18,6 +18,7 @@ export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
         createOrbit: overrides && overrides.hasOwnProperty('createOrbit') ? overrides.createOrbit! : aCreateResponsePayload(),
         createProfile: overrides && overrides.hasOwnProperty('createProfile') ? overrides.createProfile! : anAgentProfile(),
         createSphere: overrides && overrides.hasOwnProperty('createSphere') ? overrides.createSphere! : aCreateResponsePayload(),
+        deleteOrbit: overrides && overrides.hasOwnProperty('deleteOrbit') ? overrides.deleteOrbit! : '8c4ff9e4-b0db-409d-ba41-9a0a173bfe93',
         updateOrbit: overrides && overrides.hasOwnProperty('updateOrbit') ? overrides.updateOrbit! : anOrbit(),
         updateProfile: overrides && overrides.hasOwnProperty('updateProfile') ? overrides.updateProfile! : anAgentProfile(),
         updateSphere: overrides && overrides.hasOwnProperty('updateSphere') ? overrides.updateSphere! : aSphere(),

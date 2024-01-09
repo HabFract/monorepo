@@ -1,0 +1,3 @@
+mutation deleteOrbit($id: ID!) {
+  deleteOrbit(orbitHash: $id)
+}

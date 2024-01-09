@@ -146,6 +146,7 @@ span.reqd {
 @media screen and (min-width: 420px) {
   form {
     gap: 1.25rem;
+    @apply py-4 h-8;
   }
   .field {
       flex-wrap: nowrap;
@@ -156,7 +157,7 @@ span.reqd {
     flex-basis: 7rem;
   }
   .field .error-label {
-    @apply pb-2 h-4;
+    @apply pb-2 h-4 text-left;
   }
   .scene {
     position: absolute;

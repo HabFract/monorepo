@@ -15,8 +15,8 @@ import { useStateTransition } from '../../hooks/useStateTransition';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  description: Yup.string(),
+  name: Yup.string().matches(/(?!^\d+$)^.+$/, 'Name must contain letters.').required('Name is required'),
+  description: Yup.string().matches(/(?!^\d+$)^.+$/, 'Description must contain letters.'),
   startTime: Yup.number().min(0).required("Start date/time is required"),
   endTime: Yup.number(),
   frequency: Yup.mixed()

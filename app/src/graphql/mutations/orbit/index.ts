@@ -1,5 +1,5 @@
 import { mapZomeFn } from "../../connection";
-import { DNAIdMappings } from "../../types";
+import { ById, DNAIdMappings } from "../../types";
 import {
   HAPP_DNA_NAME,
   HAPP_ZOME_NAME_PERSONAL_HABITS,
@@ -11,8 +11,10 @@ import {
   OrbitUpdateParams,
 } from "../../generated";
 import {
+  ActionHash,
   ActionHashB64,
   Record as HolochainRecord,
+  decodeHashFromBase64,
   encodeHashToBase64,
 } from "@holochain/client";
 import { EntryRecord } from "@holochain-open-dev/utils";
@@ -27,6 +29,10 @@ export type updateHandler = (
   root: any,
   args: updateArgs
 ) => Promise<CreateResponsePayload>;
+export type deleteHandler = (
+  root: any,
+  args: {orbitHash: ActionHashB64}
+) => Promise<ActionHashB64>;
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   const runCreate = mapZomeFn<Omit<Orbit, "id" | "eH">, HolochainRecord>(
@@ -48,6 +54,16 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
     "update_orbit"
+  );
+  const runDelete = mapZomeFn<
+    ActionHashB64,
+    ActionHash
+  >(
+    dnaConfig,
+    conductorUri,
+    HAPP_DNA_NAME,
+    HAPP_ZOME_NAME_PERSONAL_HABITS,
+    "delete_orbit"
   );
 
   const createOrbit: createHandler = async (
@@ -119,8 +135,18 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     };
   };
 
+  const deleteOrbit: deleteHandler = async (
+    _,
+    args
+  ) => {
+    const id = args.orbitHash;
+    const rawRecord = await runDelete(id);
+    return encodeHashToBase64(rawRecord);
+  };
+
   return {
     createOrbit,
     updateOrbit,
+    deleteOrbit,
   };
 };

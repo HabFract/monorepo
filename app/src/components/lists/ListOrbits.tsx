@@ -8,7 +8,7 @@ import ListSortFilter from './ListSortFilter';
 
 import OrbitCard from '../../../../design-system/cards/OrbitCard';
 import SphereCard from '../../../../design-system/cards/SphereCard';
-import { Orbit, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSphereLazyQuery, useGetSphereQuery } from '../../graphql/generated';
+import { Orbit, useDeleteOrbitMutation, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSphereLazyQuery, useGetSphereQuery } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { useStateTransition } from '../../hooks/useStateTransition';
 
@@ -17,15 +17,20 @@ interface ListOrbitsProps {
 }
 
 const ListOrbits: React.FC = ({ sphereHash }: ListOrbitsProps) => {
-  console.log('sphereHash :>> ', sphereHash);
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   
   const { loading: loadingSphere, data: dataSphere } = useGetSphereQuery({
     variables: { id: sphereHash as string },
     skip: !sphereHash
   });
-  
   const sphereEh = dataSphere?.sphere?.eH;
+
+  const [runDelete, { loading: loadingDelete, error: errorDelete, data: dataDelete }] = useDeleteOrbitMutation({
+    refetchQueries: [
+      'getOrbits',
+    ],
+  });
+  
   const [getOrbits, { loading: loadingOrbits, error: errorOrbits, data }] = useGetOrbitsLazyQuery({
     fetchPolicy: 'network-only',
     variables: { sphereEntryHashB64: sphereEh },
@@ -74,7 +79,7 @@ const ListOrbits: React.FC = ({ sphereHash }: ListOrbitsProps) => {
       {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} transition={transition} orbitScales={orbits.map((orbit: Orbit) => orbit?.scale)} />}
       <div className="orbits-list">
         {orbits.sort(sortOrbits)
-          .map((orbit: Orbit) => <OrbitCard key={orbit.id} sphereEh={sphereEh} transition={transition} orbit={orbit} />)}
+          .map((orbit: Orbit) => <OrbitCard key={orbit.id} sphereEh={sphereEh} transition={transition} orbit={orbit} runDelete={() => runDelete({variables: {id: orbit.id}})}/>)}
       </div>
     </div>
   );

@@ -122,6 +122,7 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
         WasmErrorInner::Guest(String::from("Could not find the newly created Orbit"))
     ))?;
 
+    debug!("----First RECORD is created : ----");
     // Create path links for name querying
     let path = prefix_path(orbit.name.clone())?;
     path.ensure()?;
