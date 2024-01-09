@@ -1,5 +1,6 @@
 import { EntryRecord } from "@holochain-open-dev/utils";
 import { Orbit, Sphere } from "../../../../../app/src/graphql/generated";
+import { encodeHashToBase64 } from "@holochain/client";
 
 export async function setupSphere(callZomeAlice) {
   const createSphereResponse = await callZomeAlice(
@@ -9,6 +10,40 @@ export async function setupSphere(callZomeAlice) {
   );
 
   return new EntryRecord<Sphere>(createSphereResponse).entryHash;
+}
+export async function setupHierarchy(callZomeAlice) {
+    // Sphere
+    const hash = await setupSphere(callZomeAlice);
+    
+    // Root - L0
+    const createOrbitResponse = await callZomeAlice(
+      "personal",
+      "create_my_orbit",
+      anOrbit({sphereHash: encodeHashToBase64(hash)})
+    );
+    const orbitHash = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse).entryHash);
+
+    // L1
+    // - 0
+    const createOrbitResponse2 = await callZomeAlice(
+      "personal",
+      "create_my_orbit",
+      anOrbit({name: "1.0", sphereHash: encodeHashToBase64(hash), parentHash: orbitHash})
+    );
+    const orbitHash2 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse2).entryHash);
+    // - 1
+    const createOrbitResponse3 = await callZomeAlice(
+      "personal",
+      "create_my_orbit",
+      anOrbit({ name: "1.1", sphereHash: encodeHashToBase64(hash), parentHash: orbitHash })
+      );
+    const orbitHash3 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse3).entryHash);
+    
+    // L2
+    const l20 = (await createOrbitChildren(callZomeAlice, encodeHashToBase64(hash), orbitHash2, 2)).map(eR => encodeHashToBase64(eR.entryHash))
+    const l21 = (await createOrbitChildren(callZomeAlice, encodeHashToBase64(hash), orbitHash3, 2)).map(eR => encodeHashToBase64(eR.entryHash))
+
+    return [hash, orbitHash, orbitHash2, orbitHash3, ...l20, ...l21]
 }
 
 export async function createOrbitChildren(callZome: Function, sphereHash: string, parentHash: string, number: number): Promise<EntryRecord<Orbit>[]> {
