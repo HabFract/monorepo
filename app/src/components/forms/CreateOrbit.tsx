@@ -96,9 +96,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
                       {...field}
                       color={errors.parentHash && touched.parentHash ? "invalid" : "default"}
                     >
+                      <option value={'root'}>{'None'}</option>
                       {
                         innerOrbits.length == 0
-                          ? <option value={'root'}>{'None'}</option>
+                          ? <></>
                           : innerOrbits.map((orbit, i) =>
                             <option key={i} value={orbit.eH}>{orbit.name}</option>
                           )
