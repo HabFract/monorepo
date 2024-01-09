@@ -17,6 +17,7 @@ interface ListOrbitsProps {
 }
 
 const ListOrbits: React.FC = ({ sphereHash }: ListOrbitsProps) => {
+  console.log('sphereHash :>> ', sphereHash);
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   
   const { loading: loadingSphere, data: dataSphere } = useGetSphereQuery({
@@ -30,7 +31,7 @@ const ListOrbits: React.FC = ({ sphereHash }: ListOrbitsProps) => {
     variables: { sphereEntryHashB64: sphereEh },
   });
   useEffect(() => {
-    if (sphereEh) {
+    if (sphereEh && dataSphere) {
       getOrbits();
     }
   }, [dataSphere, loadingSphere]);

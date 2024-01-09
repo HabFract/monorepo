@@ -11,6 +11,7 @@ import { Frequency, Orbit, OrbitCreateUpdateParams, Scale, useCreateOrbitMutatio
 import { extractEdges } from '../../graphql/utils';
 import { CustomErrorLabel } from './CreateSphere';
 import { ActionHashB64 } from '@holochain/client';
+import { useStateTransition } from '../../hooks/useStateTransition';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -53,6 +54,8 @@ const OrbitFetcher = ({orbitToEditId}) => {
 };
 
 const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEditId, sphereEh, parentOrbitEh }: CreateOrbitProps) => {
+  const [state, transition] = useStateTransition(); // Top level state machine and routing
+
   const [addOrbit] = useCreateOrbitMutation({
     refetchQueries: [
       'getOrbits',
@@ -85,18 +88,20 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
         validationSchema={OrbitValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            console.log('values :>> ', values);
             if (!values.archival) delete values.endTime;
             delete values.archival;
-            await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } });
+            editMode
+              ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
+              : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
             setSubmitting(false);
+
+            transition('Home')
           } catch (error) {
             console.error(error);
           }
         }}
         >
         {({ values, errors, touched }) => (
-        typeof console.log('touched :>> ', touched, (Object.values(touched).filter(value => value).length)) == 'undefined' &&
           <Form noValidate={true}>
             {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
             <div className="field">
@@ -121,28 +126,11 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
               <Label htmlFor='parentHash'>Parent Orbit: <span className="reqd">*</span></Label>
 
               <div className="flex flex-col gap-2">
-                {/* <Field name="parentHash">
-                  {({ field }) => {
-                    const innerOrbits = extractEdges((orbits as any)?.orbits) as Orbit[];
-                    return <Select
-                      {...field}
-                      color={errors.parentHash && touched.parentHash ? "invalid" : "default"}
-                      defaultValue={innerOrbits[0]}
-                    >
-                      <option value={'root'}>{'None'}</option>
-                      {
-                        innerOrbits.length == 0
-                          ? <></>
-                          : innerOrbits.map((orbit, i) => { console.log('orbit  :>> ', orbit); return <option key={i} value={orbit.eH}>{orbit.name}</option> }
-                          )
-                      }
-                    </Select>
-                  }}
-                </Field>  */}
                 <Field type="text" name="parentHash">
                 {({ field }) => (
-                  <Select
-                    {...field}
+                  <Select 
+                  {...field}
+                  disabled={!!editMode}
                     color={errors.parentHash && touched.parentHash ? "invalid" : "default"}
                   >
                     <option value={'root'}>{'None'}</option>

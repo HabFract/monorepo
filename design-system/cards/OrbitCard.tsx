@@ -23,7 +23,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition }: Or
         </div>
         <div className="orbit-timeframe col-c text-sm p-1">
           <span className="font-semibold">Last tracked:</span>
-          <p>{new Date(orbit?.metadata!.timeframe?.startTime)?.toLocaleDateString('en-GB')}</p>
+          <p>{new Date(orbit?.metadata!.timeframe?.startTime)?.toLocaleDateString('en-us')}</p>
         </div>
       </header>
       <main className="card-body-bg col-c">
@@ -33,7 +33,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition }: Or
         <div className="row-c-around h-full">
           <div className="orbit-actions col-c gap-2">
             <div className="orbit-actions-crud row-c-around">
-              <Button className="btn responsive btn-warn" size="sm" onClick={() => {transition('CreateOrbit', { editMode: true, orbitToEditId: orbit.id })}}>
+              <Button className="btn responsive btn-warn" size="sm" onClick={() => {transition('CreateOrbit', { editMode: true, orbitToEditId: orbit.id, sphereEh })}}>
                 <EditOutlined className="btn-icon" />
                 <span>Edit</span>
               </Button>

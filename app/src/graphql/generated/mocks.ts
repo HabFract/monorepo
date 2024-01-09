@@ -78,6 +78,20 @@ export const anOrbitMetaData = (overrides?: Partial<OrbitMetaData>): OrbitMetaDa
     };
 };
 
+export const anOrbitUpdateParams = (overrides?: Partial<OrbitUpdateParams>): OrbitUpdateParams => {
+    return {
+        description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'hic',
+        endTime: overrides && overrides.hasOwnProperty('endTime') ? overrides.endTime! : 9.75,
+        frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,
+        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '5e9990e6-4406-4794-b94d-f5a055814d5c',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'ab',
+        parentHash: overrides && overrides.hasOwnProperty('parentHash') ? overrides.parentHash! : 'minima',
+        scale: overrides && overrides.hasOwnProperty('scale') ? overrides.scale! : Scale.Astro,
+        sphereHash: overrides && overrides.hasOwnProperty('sphereHash') ? overrides.sphereHash! : 'omnis',
+        startTime: overrides && overrides.hasOwnProperty('startTime') ? overrides.startTime! : 9.19,
+    };
+};
+
 export const aPageInfo = (overrides?: Partial<PageInfo>): PageInfo => {
     return {
         endCursor: overrides && overrides.hasOwnProperty('endCursor') ? overrides.endCursor! : 'id',

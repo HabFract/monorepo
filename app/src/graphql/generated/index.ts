@@ -64,7 +64,7 @@ export type MutationCreateSphereArgs = {
 
 
 export type MutationUpdateOrbitArgs = {
-  orbit?: InputMaybe<OrbitCreateUpdateParams>;
+  orbit?: InputMaybe<OrbitUpdateParams>;
 };
 
 
@@ -121,6 +121,18 @@ export type OrbitMetaData = {
   __typename?: 'OrbitMetaData';
   description?: Maybe<Scalars['String']['output']>;
   timeframe: TimeFrame;
+};
+
+export type OrbitUpdateParams = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  endTime?: InputMaybe<Scalars['Float']['input']>;
+  frequency: Frequency;
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+  parentHash?: InputMaybe<Scalars['String']['input']>;
+  scale: Scale;
+  sphereHash: Scalars['String']['input'];
+  startTime: Scalars['Float']['input'];
 };
 
 export type PageInfo = {
@@ -235,7 +247,7 @@ export type CreateOrbitMutationVariables = Exact<{
 export type CreateOrbitMutation = { __typename?: 'Mutation', createOrbit: { __typename?: 'CreateResponsePayload', actionHash: string, entryHash: string } };
 
 export type UpdateOrbitMutationVariables = Exact<{
-  orbitFields: OrbitCreateUpdateParams;
+  orbitFields: OrbitUpdateParams;
 }>;
 
 
@@ -324,7 +336,7 @@ export type CreateOrbitMutationHookResult = ReturnType<typeof useCreateOrbitMuta
 export type CreateOrbitMutationResult = Apollo.MutationResult<CreateOrbitMutation>;
 export type CreateOrbitMutationOptions = Apollo.BaseMutationOptions<CreateOrbitMutation, CreateOrbitMutationVariables>;
 export const UpdateOrbitDocument = gql`
-    mutation updateOrbit($orbitFields: OrbitCreateUpdateParams!) {
+    mutation updateOrbit($orbitFields: OrbitUpdateParams!) {
   updateOrbit(orbit: $orbitFields) {
     id
   }

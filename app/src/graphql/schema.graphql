@@ -12,7 +12,7 @@ type Mutation {
   createSphere(sphere: SphereCreateUpdateParams): CreateResponsePayload!
   updateSphere(sphere: SphereCreateUpdateParams): Sphere!
   createOrbit(orbit: OrbitCreateUpdateParams): CreateResponsePayload!
-  updateOrbit(orbit: OrbitCreateUpdateParams): Orbit!
+  updateOrbit(orbit: OrbitUpdateParams): Orbit!
   createProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
   updateProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
 }
@@ -150,6 +150,17 @@ type OrbitMetaData {
 
 # Orbit Input/Outputs
 input OrbitCreateUpdateParams {
+  name: String!
+  startTime: Float!
+  endTime: Float
+  description: String
+  frequency: Frequency!
+  scale: Scale!
+  sphereHash: String!
+  parentHash: String
+}
+input OrbitUpdateParams {
+  id: ID!
   name: String!
   startTime: Float!
   endTime: Float

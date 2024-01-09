@@ -1,4 +1,4 @@
-mutation updateOrbit($orbitFields: OrbitCreateUpdateParams!) {
+mutation updateOrbit($orbitFields: OrbitUpdateParams!) {
   updateOrbit(orbit: $orbitFields) {
     id
   }

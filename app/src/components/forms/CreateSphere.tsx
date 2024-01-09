@@ -5,6 +5,7 @@ import { Button, TextInput, Label, Textarea, Tooltip } from 'flowbite-react';
 import { useCreateSphereMutation } from '../../graphql/generated';
 import { AlertOutlined } from '@ant-design/icons';
 import { ImageUpload } from '../inputs';
+import { useStateTransition } from '../../hooks/useStateTransition';
 
 
 // Define the validation schema using Yup
@@ -27,6 +28,8 @@ export const CustomErrorLabel: any = (fieldName: string, errors: object, touched
 }
 
 const CreateSphere: React.FC = () => {
+  const [state, transition] = useStateTransition(); // Top level state machine and routing
+
   const [addSphere] = useCreateSphereMutation({
     refetchQueries: [
       'getSpheres',
@@ -45,9 +48,10 @@ const CreateSphere: React.FC = () => {
         validationSchema={SphereValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            console.log('values :>> ', values);
             await addSphere({ variables: { variables: { name: values.name, description: values.description, image: values.sphere_image } } });
             setSubmitting(false);
+
+            transition('ListSpheres')
           } catch (error) {
             console.error(error);
           }
