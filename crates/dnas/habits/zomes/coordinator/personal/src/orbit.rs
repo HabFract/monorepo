@@ -138,6 +138,8 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
         LinkTypes::SphereToOrbit,
         (),
     )?;
+
+    debug!("----First LINKS created : ----");
     // Create Orbit parent link
     if let Some(parent_hash) = orbit.parent_hash {
         create_link(
@@ -152,12 +154,14 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
             LinkTypes::OrbitHierarchyLevel,
             None,
         )?;
+
+        debug!("----Sphere LINKS queried : ----");
         if let Some(links) = sphere_level_links {
             let mut parent_level_link = links
                 .into_iter()
                 .filter(|link| link.clone().target == parent_hash.clone().into());
 
-        // debug!("---- PARENT LEVEL LINKS: ---- {:#?}", parent_level_link.clone());
+        debug!("---- PARENT LEVEL LINKS: ---- {:#?}", parent_level_link.clone());
             match parent_level_link.next() {
                 Some(link) => {
                     let new_link_level = link.tag.0[0] + 1;

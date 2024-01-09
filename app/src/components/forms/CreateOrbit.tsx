@@ -1,5 +1,5 @@
-import React from 'react';
-import { Formik, Form, Field } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { Formik, Form, Field, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { DateTime } from "luxon"
 
@@ -7,16 +7,17 @@ import { Checkbox, Flex } from 'antd';
 import DateInput from './input/DatePicker';
 import { Button, TextInput, Label, Select, Textarea } from 'flowbite-react';
 
-import { Frequency, Orbit, Scale, useCreateOrbitMutation, useGetOrbitsQuery } from '../../graphql/generated';
+import { Frequency, Orbit, OrbitCreateUpdateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { CustomErrorLabel } from './CreateSphere';
+import { ActionHashB64 } from '@holochain/client';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
   description: Yup.string(),
   startTime: Yup.number().min(0).required("Start date/time is required"),
-  endTime: Yup.number().min(0),
+  endTime: Yup.number(),
   frequency: Yup.mixed()
     .oneOf(Object.values(Frequency))
     .required('Choose a frequency'),
@@ -27,32 +28,60 @@ const OrbitValidationSchema = Yup.object().shape({
   archival: Yup.boolean(),
 });
 interface CreateOrbitProps {
+  editMode: boolean;
+  orbitToEditId?: ActionHashB64;
   sphereEh: string; // Link to a sphere
   parentOrbitEh: string | undefined; // Link to a parent Orbit to create hierarchies
 }
+const OrbitFetcher = ({orbitToEditId}) => {
+  const { setValues } = useFormikContext();
 
-const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: CreateOrbitProps) => {
+  const {data: getData, error: getError, loading: getLoading } = useGetOrbitQuery({
+    variables: {
+      id: orbitToEditId as string
+    },
+  });
+
+  useEffect(() => {
+      const {  name, sphereHash: parentHash, frequency, scale, metadata: {description, timeframe:  {startTime, endTime} }} = getData!.orbit as any;
+      
+      setValues({
+        name, description, startTime, endTime: endTime || undefined, frequency, scale, archival: !!endTime, parentHash
+      })
+  }, [getData])
+  return null;
+};
+
+const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEditId, sphereEh, parentOrbitEh }: CreateOrbitProps) => {
   const [addOrbit] = useCreateOrbitMutation({
     refetchQueries: [
       'getOrbits',
     ]
   });
+  const [updateOrbit] = useUpdateOrbitMutation({
+    refetchQueries: [
+      'getOrbits',
+    ],
+  }
+  );
+
   const { data: orbits, loading, error } = useGetOrbitsQuery({ variables: { sphereEntryHashB64: sphereEh } });
 
+  const [orbitValues, _] = useState<OrbitCreateUpdateParams & any>({
+    name: '',
+    description: '',
+    startTime: DateTime.now().ts,
+    endTime: DateTime.now().ts,
+    frequency: Frequency.Day,
+    scale: Scale.Astro,
+    archival: false,
+    parentHash: ''
+  });
   return (
     <div className="form-container">
-      <h2 className="form-title">Create Orbit</h2>
+      <h2 className="form-title">{editMode ? "Update" : "Create"} Orbit</h2>
       <Formik
-        initialValues={{
-          name: '',
-          description: '',
-          startTime: DateTime.now().ts,
-          endTime: DateTime.now().ts,
-          frequency: Frequency.Day,
-          scale: Scale.Astro,
-          archival: false,
-          parentHash: ''
-        }}
+        initialValues={orbitValues}
         validationSchema={OrbitValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
@@ -65,9 +94,11 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
             console.error(error);
           }
         }}
-      >
+        >
         {({ values, errors, touched }) => (
+        typeof console.log('touched :>> ', touched, (Object.values(touched).filter(value => value).length)) == 'undefined' &&
           <Form noValidate={true}>
+            {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
             <div className="field">
               <Label htmlFor='name'>Name: <span className="reqd">*</span></Label>
 
@@ -90,7 +121,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
               <Label htmlFor='parentHash'>Parent Orbit: <span className="reqd">*</span></Label>
 
               <div className="flex flex-col gap-2">
-                <Field name="parentHash">
+                {/* <Field name="parentHash">
                   {({ field }) => {
                     const innerOrbits = extractEdges((orbits as any)?.orbits) as Orbit[];
                     return <Select
@@ -107,7 +138,21 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
                       }
                     </Select>
                   }}
-                </Field>
+                </Field>  */}
+                <Field type="text" name="parentHash">
+                {({ field }) => (
+                  <Select
+                    {...field}
+                    color={errors.parentHash && touched.parentHash ? "invalid" : "default"}
+                  >
+                    <option value={'root'}>{'None'}</option>
+                    {(extractEdges((orbits as any)?.orbits) as Orbit[]).map((orbit, i) =>
+                      <option key={i} value={orbit.eH}>{orbit.name}</option>
+                    )
+                    }
+                  </Select>
+                )}
+              </Field>
                 {CustomErrorLabel('parentHash', errors, touched)}
               </div>
             </div>
@@ -154,18 +199,19 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
             </div>
 
             <Flex className={"field"} vertical={true}>
-              <div className='justify-around items-start'>
+              <Flex justify='space-around'>
                 <Label htmlFor='startTime'>Start<span className="reqd">*</span><span className="hidden-sm">/</span>
                 </Label>
                 <Label htmlFor='endTime'>&nbsp; End:
                 </Label>
-              </div>
+              </Flex>
               <div className="flex flex-wrap items-start">
                 <div className="flex flex-col gap-2 flex-1">
                   <Field
                     name="startTime"
                     id="startTime"
                     type="date"
+                    placeholder={"Select:"}
                     component={DateInput}
                     defaultValue={values.startTime}
                   />
@@ -175,13 +221,15 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
                     name="endTime"
                     id="endTime"
                     type="date"
+                    placeholder={"Select:"}
                     component={DateInput}
                     disabled={(!values.archival)}
                     defaultValue={values.endTime}
                   />
-                  <Field name="archival" className="flex items-start">
+                  <Field name="archival">
                     {({ field }) => (
                       <Checkbox
+                        className="text-sm text-light-gray"
                         {...field}
                       // onChange={async (e) => {  setFieldValue('archival', e.target.checked) }}
                       >Archival?</Checkbox>
@@ -191,7 +239,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ sphereEh, parentOrbitEh }: Cr
               </div>
             </Flex>
 
-            <Button type="submit" disabled={!!Object.values(errors).length} className="btn-primary">Create</Button>
+            <Button type="submit" disabled={!!Object.values(errors).length || (Object.values(touched).filter(value => value).length < 1)} className={editMode ? "btn-warn" : "btn-primary"}>{editMode ? "Update" : "Create"}</Button>
           </Form>
         )}
       </Formik>

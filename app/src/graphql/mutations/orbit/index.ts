@@ -21,7 +21,6 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     _,
     { orbit: { name, description, startTime, endTime, sphereHash, parentHash, frequency, scale } }
   ) => {
-    console.log('parentHash :>> ', parentHash);
     const rawRecord = await runCreate({
       name,
       sphereHash,
@@ -34,7 +33,6 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
         scale
       });
       const entryRecord = new EntryRecord<Orbit>(rawRecord);
-      console.log('rawRecord :>> ', entryRecord.entry);
       return {
         actionHash: encodeHashToBase64(entryRecord.actionHash),
         entryHash: encodeHashToBase64(entryRecord.entryHash),

@@ -33,7 +33,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition }: Or
         <div className="row-c-around h-full">
           <div className="orbit-actions col-c gap-2">
             <div className="orbit-actions-crud row-c-around">
-              <Button className="btn responsive btn-warn" size="sm">
+              <Button className="btn responsive btn-warn" size="sm" onClick={() => {transition('CreateOrbit', { editMode: true, orbitToEditId: orbit.id })}}>
                 <EditOutlined className="btn-icon" />
                 <span>Edit</span>
               </Button>

@@ -29,7 +29,9 @@ const DateInput = ({
         hasFeedback
       >
         <MyDatePicker format={dateFormat}
+          placeholder={typeof values[field.name] == 'number' ? DateTime.fromMillis(values[field.name]).toJSDate().toLocaleDateString('en-us', { year:"numeric", month:"numeric", day:"numeric"}) : props.placeholder}
           disabled={props.disabled}
+          // value={DateTime.fromMillis(values[field.name])}
           picker={values.frequency.toLowerCase()} 
           onChange={async (_date, dateString) => setFieldValue(field.name, DateTime.local(...dateString.split('/').map(n => +n)).ts)}
         />
