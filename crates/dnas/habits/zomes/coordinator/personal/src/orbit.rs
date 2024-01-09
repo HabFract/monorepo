@@ -27,11 +27,9 @@ fn get_latest(action_hash: ActionHash) -> ExternResult<Option<Record>> {
         ))),
         Details::Record(element_details) => match element_details.updates.last() {
             Some(update) => get_latest(update.action_address().clone()),
-            None => {
-                match element_details.deletes.last() {
-                    Some(_delete) => {Ok(None)}
-                    _ => Ok(Some(element_details.record))
-                }
+            None => match element_details.deletes.last() {
+                Some(_delete) => Ok(None),
+                _ => Ok(Some(element_details.record)),
             },
         },
     }
@@ -135,7 +133,7 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
     )?;
     // Create Sphere link
     create_link(
-        orbit.sphere_hash,
+        orbit.sphere_hash.clone(),
         orbit_action_hash.clone(),
         LinkTypes::SphereToOrbit,
         (),
@@ -143,10 +141,49 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
     // Create Orbit parent link
     if let Some(parent_hash) = orbit.parent_hash {
         create_link(
-            parent_hash,
-            orbit_entry_hash,
+            parent_hash.clone(),
+            orbit_entry_hash.clone(),
             LinkTypes::OrbitParentToChild,
             (),
+        )?;
+        // Get the parent's level and add a level + 1 link
+        let sphere_level_links = get_links_from_base(
+            orbit.sphere_hash.clone(),
+            LinkTypes::OrbitHierarchyLevel,
+            None,
+        )?;
+        if let Some(links) = sphere_level_links {
+            let mut parent_level_link = links
+                .into_iter()
+                .filter(|link| link.clone().target == parent_hash.clone().into());
+
+        // debug!("---- PARENT LEVEL LINKS: ---- {:#?}", parent_level_link.clone());
+            match parent_level_link.next() {
+                Some(link) => {
+                    let new_link_level = link.tag.0[0] + 1;
+                    let link_tag_bytes = vec![new_link_level];
+                    create_link(
+                        orbit.sphere_hash.clone(),
+                        orbit_entry_hash.clone(),
+                        LinkTypes::OrbitHierarchyLevel,
+                        LinkTag(link_tag_bytes),
+                    )?;
+                },
+                _ => { Err(wasm_error!(WasmErrorInner::Guest(
+                    "Could not add a new level link to the created orbit. Hierarchy queries may fail or provide inaccuracies".to_string()
+                )))?
+                }
+            }
+        }
+    } else {
+        // There is no parent
+        // This is a root node so its level is 0 (temp) TODO: allow multiple level 0s
+        let link_tag_bytes = vec![0 as u8];
+        create_link(
+            orbit.sphere_hash.clone(),
+            orbit_entry_hash,
+            LinkTypes::OrbitHierarchyLevel,
+            LinkTag(link_tag_bytes),
         )?;
     }
     Ok(record)
@@ -203,38 +240,86 @@ pub fn get_all_my_sphere_orbits(
 
 #[hdk_extern]
 pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serde_json::Value> {
-    let mut all_descendant_hashes = HashSet::new();
-    insert_descendants(
-        input.orbit_entry_hash_b64.clone().into(),
-        &mut all_descendant_hashes,
-    );
+    if let Some(entry_hash) = input.orbit_entry_hash_b64 {
+        let mut all_descendant_hashes = HashSet::new();
+        insert_descendants(entry_hash.clone().into(), &mut all_descendant_hashes);
 
-    let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?;
-    let filter = ChainQueryFilter::new()
-        .entry_hashes(all_descendant_hashes)
-        .entry_type(orbit_entry_type)
-        .include_entries(true);
-    let selected_orbits = query(filter)?;
+        let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?;
+        let filter = ChainQueryFilter::new()
+            .entry_hashes(all_descendant_hashes)
+            .entry_type(orbit_entry_type)
+            .include_entries(true);
+        let selected_orbits = query(filter)?;
 
-    // debug!("---- Hashes retrieved after recursion: ---- {:#?}", selected_orbits.len());
-    let maybe_node_hashmap = build_tree(&selected_orbits);
-    if let Ok(hashmap) = maybe_node_hashmap {
-        Ok(hashmap
-            .get(&input.orbit_entry_hash_b64)
-            .unwrap()
-            .borrow()
-            .to_json())
+        // debug!("---- Hashes retrieved after recursion: ---- {:#?}", selected_orbits.len());
+        let maybe_node_hashmap = build_tree(&selected_orbits);
+        if let Ok(hashmap) = maybe_node_hashmap {
+            Ok(hashmap.get(&entry_hash).unwrap().borrow().to_json())
+        } else {
+            Err(wasm_error!(WasmErrorInner::Guest(
+                "Could not build tree from the given Orbit hash".to_string()
+            )))
+        }
+    } else if let Some(HierarchyLevelQueryInput {
+        orbit_level,
+        sphere_hash_b64,
+    }) = input.level_query
+    {
+        if let Some(hash) = sphere_hash_b64 { // we have a sphere hash
+            if let Some(level) = orbit_level { // and a level to query
+                if let Some(links) = orbit_level_links(hash.into(), level)? { // so get the linked orbit entry hashes
+
+        debug!("---- RETRIEVED LEVEL LINKS: ---- {:#?}", links.clone());
+                    let target_ehs_mapped_to_trees: Vec<serde_json::Value>  = links // and map recursively to get entry hashes
+                        .into_iter()
+                        .map(|l| {
+                            l.target
+                                .into_entry_hash()
+                                .expect("This link type will only have entry hashes as a target")
+                        })
+                        .map(|eh| {
+                            debug!("---- tree recursion: ---- {:#?}", 
+                            get_orbit_hierarchy_json(OrbitHierarchyInput{orbit_entry_hash_b64: Some(eh.clone().into()), level_query: None}));
+                            get_orbit_hierarchy_json(OrbitHierarchyInput{orbit_entry_hash_b64: Some(eh.into()), level_query: None})
+                        }).filter_map(Result::ok).collect();
+
+                    return  Ok(serde_json::json!({
+                        "level_trees": target_ehs_mapped_to_trees
+                    }))
+                } else {
+                    Err(wasm_error!(WasmErrorInner::Guest(
+                        "No Sphere level links could be retrieved".to_string()
+                    )))
+                }
+            } else {
+                Err(wasm_error!(WasmErrorInner::Guest(
+                    "Must provide a valid Level to query".to_string()
+                )))
+            }
+        } else {
+            Err(wasm_error!(WasmErrorInner::Guest(
+                "Must provide a Sphere Hash to query".to_string()
+            )))
+        }
     } else {
         Err(wasm_error!(WasmErrorInner::Guest(
-            "Could not build tree from the given Orbit hash".to_string()
+            "Must provide either an Orbit Hash or a Level query".to_string()
         )))
     }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
+pub struct HierarchyLevelQueryInput {
+    pub orbit_level: Option<u8>,
+    pub sphere_hash_b64: Option<EntryHashB64>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct OrbitHierarchyInput {
-    pub orbit_entry_hash_b64: EntryHashB64,
+    pub orbit_entry_hash_b64: Option<EntryHashB64>,
+    pub level_query: Option<HierarchyLevelQueryInput>,
 }
 
 /** Private helpers */
@@ -254,7 +339,7 @@ fn insert_descendants(parent_hash: EntryHash, hashes: &mut HashSet<EntryHash>) {
             }
         }
     }
-    debug!("---- Hashes after recursion: ---- {:#?}", hashes);
+    println!("Ground control to major Tom...")
 }
 
 fn build_tree(
@@ -269,33 +354,26 @@ fn build_tree(
         let entry_hash = hash_entry(orbit.clone())?;
         let entry_hash_b64: EntryHashB64 = entry_hash.clone().into();
         let node = Rc::new(RefCell::new(Node::new(entry_hash_b64.clone(), Vec::new())));
-
+        
         // Insert the node into the nodes map
         nodes.insert(entry_hash_b64.clone(), node.clone());
-
+        
         // If the orbit has a parent, remember this relationship to process later
         if let Some(parent_hash) = orbit.parent_hash {
             let parent_hash_b64 = parent_hash.clone().into();
             child_parent_relationships.insert(entry_hash_b64, parent_hash_b64);
         }
     }
-
     // Now, establish the parent-child relationships
     for (child_hash_b64, parent_hash_b64) in child_parent_relationships {
         if let Some(parent_node_rc) = nodes.get(&parent_hash_b64) {
             if let Some(child_node_rc) = nodes.get(&child_hash_b64) {
                 parent_node_rc
-                    .borrow_mut()
-                    .children
-                    .push(child_node_rc.clone());
-            }
-        } else {
-            // If the parent is not in the nodes map, this indicates a problem with the data or logic
-            return Err(wasm_error!(WasmErrorInner::Guest(format!(
-                "Parent hash not found in the nodes map: {}",
-                parent_hash_b64
-            ))));
+                .borrow_mut()
+                .children
+                .push(child_node_rc.clone());
         }
+        }   
     }
 
     Ok(nodes)
@@ -344,6 +422,14 @@ fn delete_sphere_hash_link(sphere_hash: EntryHash, target_hash: ActionHash) -> E
     }
 }
 
+fn orbit_level_links(sphere_hash: EntryHash, level: u8) -> ExternResult<Option<Vec<Link>>> {
+    let mut link_tag_bytes = vec![level];
+    get_links_from_base(
+        sphere_hash,
+        LinkTypes::OrbitHierarchyLevel,
+        Some(LinkTag(link_tag_bytes)),
+    )
+}
 fn parent_to_child_links(parent_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
     get_links_from_base(parent_hash, LinkTypes::OrbitParentToChild, None)
 }
