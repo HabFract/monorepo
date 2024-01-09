@@ -30,7 +30,7 @@
   @apply flex rounded-t-lg items-center justify-around;
 }
 .card-header.orbit-header {
-  @apply bg-nav-bg;
+  @apply bg-card-bg;
 }
 
 .card-header.sphere-header {
@@ -38,7 +38,7 @@
 }
 
 .sphere-card .card-body-bg {
-  @apply to-secondary-transparent from-secondary-extra-transparent;
+  @apply to-transparent from-secondary-extra-transparent;
 }
 .orbit-card .card-body-bg {
   @apply from-card-bg-light;
