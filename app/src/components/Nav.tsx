@@ -54,6 +54,8 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
   const ref = useRef(null);
   const { loading, error, data: spheres } = useGetSpheresQuery();
   
+
+  const [selectedItemName, setSelectedItemName] = useState<string>();
   const [collapsed, setCollapsed] = useState(true);
   const closeMenu = () => {
     setCollapsed(true);
@@ -76,6 +78,8 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
   }, []);
 
   const onClick: MenuProps['onClick'] = (e) => {
+    setSelectedItemName(e.key)
+    console.log('selectedItemName :>> ', selectedItemName);
     switch (true) {
       case e.key == 'vis':
         const visSphereEh = e.key.split('vis-')[1];
@@ -108,7 +112,6 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
 
   return (
     <nav ref={ref} className={verticalCollapse ? "collaped-vertical side-nav" : "side-nav"}>
-      {/* {error && "Error"} */}
       {loading || !spheres ? "Loading" :
         <Menu
           inlineCollapsed={collapsed}
@@ -133,7 +136,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
             <button className="toggle-vertical-collapse" onClick={() => toggleVerticalCollapse()}>
               <ArrowsAltOutlined className={verticalCollapse ? "collapsed" : "expanded"}/>
             </button>
-            <div className="w-16 fixed overflow-hidden right-0 top-0 p-2 logo-div"><img src="assets/logo-no-text.svg" alt="habit/fract"/></div>
+            <div className="w-16 fixed overflow-hidden right-1 top-0 cursor-pointer p-2 logo-div" onClick={() => transition('Home')}><img src="assets/logo-no-text.svg" alt="habit/fract"/></div>
           </div>
         </div>
     </nav>

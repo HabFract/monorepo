@@ -36,6 +36,12 @@ nav.side-nav.collaped-vertical + .page-container .sphere-card.list-header button
   height: 3rem;
   overflow: hidden;
   padding-top: 0.75rem;
+  background: transparent;
+}
+.logo-div:hover {
+  background: radial-gradient(circle, #222222, transparent, transparent);
+  background-position-y: 2px;
+  background-position-x: -1px;
 }
 
 /* Vertical collapse button */
