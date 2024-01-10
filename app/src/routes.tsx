@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { CreateProfile, CreateSphere, CreateOrbit } from "./components/forms";
 import { ListOrbits, ListSpheres } from "./components/lists";
 import { withVisCanvas } from "./components/vis/HOC/withVisCanvas";
@@ -33,7 +34,7 @@ export const initialState: AppStateStore = { // Home route
 
 export const routes: Routes = {
   Boot: <p>Loading</p>,
-  Vis: withVisCanvas(OrbitTree),
+  Vis: (() : ReactNode => (withVisCanvas(OrbitTree)))(),
   Home: <p>Welcome Home</p>,
   Onboarding1: <CreateProfile editMode={false} />,
   Onboarding2: <CreateSphere />,

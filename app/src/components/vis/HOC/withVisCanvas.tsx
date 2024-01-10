@@ -1,9 +1,12 @@
-import React, { ComponentType, ReactNode, useEffect } from 'react'
+import React, { ComponentType, ReactNode, useEffect, useState } from 'react'
 
 import "./vis.css";
 
 import { Margins } from '../types';
 import { select } from 'd3';
+import { useAtom } from 'jotai';
+import { SphereHashes, currentSphere } from '../../../state/currentSphere';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 const defaultMargins: Margins = {
   top: (document.body.getBoundingClientRect().height / (document.body.getBoundingClientRect().height > 1025 ? 6 : 2)),
@@ -34,33 +37,50 @@ export type VisComponent = { // e.g. OrbitTree, OrbitCluster
   canvasHeight: number;
   canvasWidth: number;
   margin: Margins;
+  selectedSphere: SphereHashes;
+  breadthIndex: number;
   render: (currentVis: any) => JSX.Element;
 }
 
 export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode {
-  const ComponentWithVis: React.FC<any> = (_hocProps: VisComponent) => {
+  const ComponentWithVis: React.FC<any> = (hocProps: VisComponent) => {
     const { canvasHeight, canvasWidth } = d3SetupCanvas()
     const mountingDivId = 'vis-root';
     const svgId = 'vis';
-
+    
+    const [breadthIndex, setBreadthIndex] = useState<number>(0);
+    const [selectedSphere] = useAtom(currentSphere);
+    
     useEffect(() => {
-      console.log('document.querySelector(`#${mountingDivId} #${svgId}`) :>> ', document.querySelector(`#${mountingDivId} #${svgId}`));
       if(document.querySelector(`#${mountingDivId} #${svgId}`)) return
       appendSvg(mountingDivId, svgId);
     }, []);
 
+    const incrementBreadth = () => {
+      setBreadthIndex(1)
+    }
+    const decrementBreadth = () => {
+      setBreadthIndex(0)
+      console.log('breadthIndex :>> ', breadthIndex);
+    }
     return (
-      <Component
-        canvasHeight={canvasHeight}
-        canvasWidth={canvasWidth}
-        margin={defaultMargins}
-        render={(currentVis: any) => {
-          currentVis?.render();
-          return (
-            <><div id="vis-root" className="h-full"></div></>
-          )
-        }}
-      ></Component>
+      <>
+        <Component
+          canvasHeight={canvasHeight}
+          canvasWidth={canvasWidth}
+          margin={defaultMargins}
+          selectedSphere={selectedSphere}
+          breadthIndex={breadthIndex}
+          render={(currentVis: any) => {
+            currentVis?.render();
+            return (
+              <><div id="vis-root" className="h-full"></div></>
+            )
+          }}
+        ></Component>
+        <LeftOutlined className='fixed left-2 text-3xl text-white' style={{top: "48vh"}} onClick={decrementBreadth} />
+        <RightOutlined className='fixed right-2 text-3xl text-white' style={{top: "48vh"}}  onClick={incrementBreadth} />
+      </>
     );
   }
   return <ComponentWithVis />

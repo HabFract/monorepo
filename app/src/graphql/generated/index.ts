@@ -123,6 +123,11 @@ export type OrbitEdge = {
   node: Orbit;
 };
 
+export type OrbitHierarchyQueryParams = {
+  levelQuery?: InputMaybe<QueryParamsLevel>;
+  orbitEntryHashB64?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type OrbitMetaData = {
   __typename?: 'OrbitMetaData';
   description?: Maybe<Scalars['String']['output']>;
@@ -174,7 +179,7 @@ export type Query = {
 
 
 export type QueryGetOrbitHierarchyArgs = {
-  orbitEntryHashB64?: InputMaybe<Scalars['String']['input']>;
+  params: OrbitHierarchyQueryParams;
 };
 
 
@@ -190,6 +195,11 @@ export type QueryOrbitsArgs = {
 
 export type QuerySphereArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type QueryParamsLevel = {
+  orbitLevel: Scalars['Float']['input'];
+  sphereHashB64?: InputMaybe<Scalars['String']['input']>;
 };
 
 export enum Scale {
@@ -288,7 +298,7 @@ export type GetOrbitQueryVariables = Exact<{
 export type GetOrbitQuery = { __typename?: 'Query', orbit: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
 
 export type GetOrbitHierarchyQueryVariables = Exact<{
-  orbitEntryHashB64?: InputMaybe<Scalars['String']['input']>;
+  params: OrbitHierarchyQueryParams;
 }>;
 
 
@@ -533,8 +543,8 @@ export type GetOrbitLazyQueryHookResult = ReturnType<typeof useGetOrbitLazyQuery
 export type GetOrbitSuspenseQueryHookResult = ReturnType<typeof useGetOrbitSuspenseQuery>;
 export type GetOrbitQueryResult = Apollo.QueryResult<GetOrbitQuery, GetOrbitQueryVariables>;
 export const GetOrbitHierarchyDocument = gql`
-    query getOrbitHierarchy($orbitEntryHashB64: String) {
-  getOrbitHierarchy(orbitEntryHashB64: $orbitEntryHashB64)
+    query getOrbitHierarchy($params: OrbitHierarchyQueryParams!) {
+  getOrbitHierarchy(params: $params)
 }
     `;
 
@@ -550,11 +560,11 @@ export const GetOrbitHierarchyDocument = gql`
  * @example
  * const { data, loading, error } = useGetOrbitHierarchyQuery({
  *   variables: {
- *      orbitEntryHashB64: // value for 'orbitEntryHashB64'
+ *      params: // value for 'params'
  *   },
  * });
  */
-export function useGetOrbitHierarchyQuery(baseOptions?: Apollo.QueryHookOptions<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>) {
+export function useGetOrbitHierarchyQuery(baseOptions: Apollo.QueryHookOptions<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>(GetOrbitHierarchyDocument, options);
       }

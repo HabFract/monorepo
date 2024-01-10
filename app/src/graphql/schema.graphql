@@ -4,7 +4,7 @@ type Query {
   spheres: SphereConnection!
   orbit(id: ID!): Orbit!
   orbits(sphereEntryHashB64: String): OrbitConnection!
-  getOrbitHierarchy(orbitEntryHashB64: String) : String! 
+  getOrbitHierarchy(params: OrbitHierarchyQueryParams!) : String! 
   me: AgentProfile!
 }
 
@@ -170,4 +170,14 @@ input OrbitUpdateParams {
   scale: Scale!
   sphereHash: String!
   parentHash: String
+}
+
+input OrbitHierarchyQueryParams {
+  orbitEntryHashB64: String
+  levelQuery: QueryParamsLevel
+}
+
+input QueryParamsLevel {
+  sphereHashB64: String
+  orbitLevel: Float!
 }

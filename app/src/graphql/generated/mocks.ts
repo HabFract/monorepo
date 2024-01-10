@@ -72,6 +72,13 @@ export const anOrbitEdge = (overrides?: Partial<OrbitEdge>): OrbitEdge => {
     };
 };
 
+export const anOrbitHierarchyQueryParams = (overrides?: Partial<OrbitHierarchyQueryParams>): OrbitHierarchyQueryParams => {
+    return {
+        levelQuery: overrides && overrides.hasOwnProperty('levelQuery') ? overrides.levelQuery! : aQueryParamsLevel(),
+        orbitEntryHashB64: overrides && overrides.hasOwnProperty('orbitEntryHashB64') ? overrides.orbitEntryHashB64! : 'aut',
+    };
+};
+
 export const anOrbitMetaData = (overrides?: Partial<OrbitMetaData>): OrbitMetaData => {
     return {
         description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'mollitia',
@@ -125,6 +132,13 @@ export const aQuery = (overrides?: Partial<Query>): Query => {
         orbits: overrides && overrides.hasOwnProperty('orbits') ? overrides.orbits! : anOrbitConnection(),
         sphere: overrides && overrides.hasOwnProperty('sphere') ? overrides.sphere! : aSphere(),
         spheres: overrides && overrides.hasOwnProperty('spheres') ? overrides.spheres! : aSphereConnection(),
+    };
+};
+
+export const aQueryParamsLevel = (overrides?: Partial<QueryParamsLevel>): QueryParamsLevel => {
+    return {
+        orbitLevel: overrides && overrides.hasOwnProperty('orbitLevel') ? overrides.orbitLevel! : 9.99,
+        sphereHashB64: overrides && overrides.hasOwnProperty('sphereHashB64') ? overrides.sphereHashB64! : 'cum',
     };
 };
 

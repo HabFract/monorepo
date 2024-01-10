@@ -327,7 +327,7 @@ export default class Visualization implements IVisualization {
   noCanvas() : boolean {
     return (
       typeof this?._canvas == "undefined" ||
-      (select(`#${this._svgId}`) as any)._groups.length == 0
+      (select(`#${this._svgId} .canvas`) as any)._groups.length == 0
     );
   }
 
@@ -341,7 +341,7 @@ export default class Visualization implements IVisualization {
 
   hasNewHierarchyData() : boolean {
     return (
-      this.hasNextData() && hierarchyStateHasChanged(this._nextRootData, this)
+      this.hasNextData()// && hierarchyStateHasChanged(this._nextRootData, this)
     );
   }
 
@@ -354,7 +354,7 @@ export default class Visualization implements IVisualization {
     if (currentActiveG) currentActiveG.classList.toggle("active");
     event && event.target?.closest(".the-node")?.classList?.toggle("active");
 
-    this.render();
+    // this.render();
     this.activateNodeAnimation();
     return this.activeNode;
   }
@@ -1351,8 +1351,8 @@ export default class Visualization implements IVisualization {
     if (this.rootData.data.name == "Live long and prosper") return;
     if (this.noCanvas()) {
       this._canvas = select(`#${this._svgId}`)
-        .append("g")
-        .classed("canvas", true);
+      .append("g")
+      .classed("canvas", true);
     }
 
     if (this.firstRender()) {
@@ -1362,9 +1362,6 @@ export default class Visualization implements IVisualization {
       this.calibrateViewBox();
       this.setdXdY();
       // this.setZoomBehaviour();
-    } else {
-      this.resetForExpandedMenu({ justTranslation: true });
-      this._hasRendered = true;
     }
 
     if (

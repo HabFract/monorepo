@@ -5,7 +5,7 @@ import { encodeHashToBase64 } from "@holochain/client";
 export async function setupSphere(callZomeAlice) {
   const createSphereResponse = await callZomeAlice(
     "personal",
-    "create_sphere",
+    "create_my_sphere",
     aSphere()
   );
 

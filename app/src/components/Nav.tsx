@@ -85,15 +85,15 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
     setSelectedItemName(e.key)
 
     if(e.key.match(/list\-orbits\-|add\-orbit\-/)) { // Add any nav change conditions that should select a sphere
-      const id = e.key.split(/list\-orbits|add\-orbit/)[1];
+      const id = e.key.split(/list\-orbits\-|add\-orbit\-/)[1];
       const sphere = extractEdges(spheres?.spheres as any).find((sphere: any) => sphere.id == id) as Sphere & {id: ActionHashB64};
       sphere && setSelectedSphere({entryHash: sphere.eH, actionHash: sphere.id})
+      console.log('selectedSphere :>> ', sphere, selectedSphere);
     }
 
     switch (true) {
       case e.key == 'vis':
-        const visSphereEh = e.key.split('vis-')[1];
-        transition('Vis', { sphereEh: visSphereEh })
+        transition('Vis', {currentSphereHash: selectedSphere.entryHash})
         break;
 
       case e.key == 'add-sphere':

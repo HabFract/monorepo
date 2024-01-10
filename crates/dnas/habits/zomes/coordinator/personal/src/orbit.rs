@@ -270,11 +270,12 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
         sphere_hash_b64,
     }) = input.level_query
     {
+        debug!("---- RETRIEVED LEVEL LINKS: ---- {:#?}", orbit_level.clone());
+        debug!("---- RETRIEVED LEVEL LINKS: ---- {:#?}", sphere_hash_b64.clone());
         if let Some(hash) = sphere_hash_b64 { // we have a sphere hash
             if let Some(level) = orbit_level { // and a level to query
                 if let Some(links) = orbit_level_links(hash.into(), level)? { // so get the linked orbit entry hashes
 
-        debug!("---- RETRIEVED LEVEL LINKS: ---- {:#?}", links.clone());
                     let target_ehs_mapped_to_trees: Vec<serde_json::Value>  = links // and map recursively to get entry hashes
                         .into_iter()
                         .map(|l| {
