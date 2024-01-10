@@ -12,6 +12,8 @@ import { extractEdges } from '../../graphql/utils';
 import { CustomErrorLabel } from './CreateSphere';
 import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
+import { currentSphere } from '../../state/currentSphere';
+import { useAtom } from 'jotai';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -55,6 +57,7 @@ const OrbitFetcher = ({orbitToEditId}) => {
 
 const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEditId, sphereEh, parentOrbitEh }: CreateOrbitProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
+  const [selectedSphere, setSelectedSphere] = useAtom(currentSphere);
 
   const [addOrbit] = useCreateOrbitMutation({
     refetchQueries: [
@@ -95,7 +98,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
               : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
             setSubmitting(false);
 
-            transition('Home')
+            transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
           } catch (error) {
             console.error(error);
           }

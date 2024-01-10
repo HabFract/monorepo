@@ -9,7 +9,7 @@
 }
 
 .page-container {
-  @apply bg-dark-gray overflow-auto fixed w-full h-full inset-y-0 left-0;
+  @apply bg-dark-gray overflow-auto fixed w-full h-full inset-y-0 left-0  ;
 }
 
 

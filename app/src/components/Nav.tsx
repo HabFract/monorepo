@@ -3,8 +3,12 @@ import "./style.css";
 import { DashboardFilled, UnorderedListOutlined, PieChartFilled, PlusCircleFilled, ArrowsAltOutlined } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
-import { SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
+import { Sphere, SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
 import { DarkThemeToggle } from "flowbite-react";
+import { useAtom } from "jotai";
+import { currentSphere } from "../state/currentSphere";
+import { extractEdges } from "../graphql/utils";
+import { ActionHashB64 } from "@holochain/client";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -54,8 +58,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
   const ref = useRef(null);
   const { loading, error, data: spheres } = useGetSpheresQuery();
   
-
-  const [selectedItemName, setSelectedItemName] = useState<string>();
+  const [_, setSelectedItemName] = useState<string>();
   const [collapsed, setCollapsed] = useState(true);
   const closeMenu = () => {
     setCollapsed(true);
@@ -77,9 +80,16 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
     };
   }, []);
 
+  const [selectedSphere, setSelectedSphere] = useAtom(currentSphere);
   const onClick: MenuProps['onClick'] = (e) => {
     setSelectedItemName(e.key)
-    console.log('selectedItemName :>> ', selectedItemName);
+
+    if(e.key.match(/list\-orbits\-|add\-orbit\-/)) { // Add any nav change conditions that should select a sphere
+      const id = e.key.split(/list\-orbits|add\-orbit/)[1];
+      const sphere = extractEdges(spheres?.spheres as any).find((sphere: any) => sphere.id == id) as Sphere & {id: ActionHashB64};
+      sphere && setSelectedSphere({entryHash: sphere.eH, actionHash: sphere.id})
+    }
+
     switch (true) {
       case e.key == 'vis':
         const visSphereEh = e.key.split('vis-')[1];

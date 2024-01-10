@@ -29,6 +29,7 @@ form {
   width: 75%;
   object-fit: cover;
   opacity: 0.45;
+  z-index: -1;
 }
 
 .field {

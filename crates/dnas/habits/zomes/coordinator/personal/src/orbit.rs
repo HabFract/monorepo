@@ -283,8 +283,6 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
                                 .expect("This link type will only have entry hashes as a target")
                         })
                         .map(|eh| {
-                            debug!("---- tree recursion: ---- {:#?}", 
-                            get_orbit_hierarchy_json(OrbitHierarchyInput{orbit_entry_hash_b64: Some(eh.clone().into()), level_query: None}));
                             get_orbit_hierarchy_json(OrbitHierarchyInput{orbit_entry_hash_b64: Some(eh.into()), level_query: None})
                         }).filter_map(Result::ok).collect();
 
