@@ -5,7 +5,7 @@ use hdk::prelude::{
 use personal_integrity::*;
 use std::{cell::RefCell, collections::HashMap, rc::Rc};
 
-use crate::utils::entry_from_record;
+use crate::utils::{entry_from_record, get_links_from_base, sphere_to_orbit_links};
 
 #[hdk_extern]
 pub fn create_orbit(orbit: Orbit) -> ExternResult<Record> {
@@ -385,17 +385,6 @@ fn build_tree(
 }
 
 // Link helpers
-fn get_links_from_base(
-    base: impl Into<HoloHash<AnyLinkable>>,
-    link_type: impl LinkTypeFilterExt,
-    link_tag: Option<LinkTag>,
-) -> ExternResult<Option<Vec<Link>>> {
-    let links = get_links(base, link_type, link_tag)?;
-    if links.len() == 0 {
-        return Ok(None);
-    }
-    Ok(Some(links))
-}
 
 fn delete_sphere_hash_link(sphere_hash: EntryHash, target_hash: ActionHash) -> ExternResult<bool> {
     let replaceable_sphere_links: Vec<Vec<Link>> =
@@ -437,9 +426,6 @@ fn orbit_level_links(sphere_hash: EntryHash, level: u8) -> ExternResult<Option<V
 }
 fn parent_to_child_links(parent_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
     get_links_from_base(parent_hash, LinkTypes::OrbitParentToChild, None)
-}
-fn sphere_to_orbit_links(sphere_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
-    get_links_from_base(sphere_hash, LinkTypes::SphereToOrbit, None)
 }
 fn _orbit_prefix_path_links(path_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
     get_links_from_base(path_hash, LinkTypes::OrbitsPrefixPath, None)

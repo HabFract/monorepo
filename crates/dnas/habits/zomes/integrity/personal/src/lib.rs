@@ -22,7 +22,7 @@ pub enum EntryTypes {
 #[derive(Serialize, Deserialize)]
 #[hdk_link_types]
 pub enum LinkTypes {
-    SpheresPrefixPath,
+    SpheresAnchor,
     SphereUpdates,
     AgentToSphere,
     AgentToOrbit,

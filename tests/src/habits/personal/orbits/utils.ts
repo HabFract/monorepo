@@ -11,6 +11,15 @@ export async function setupSphere(callZomeAlice) {
 
   return new EntryRecord<Sphere>(createSphereResponse).entryHash;
 }
+export async function setupSphereAsEntryRecord(callZomeAlice, opts) {
+  const createSphereResponse = await callZomeAlice(
+    "personal",
+    "create_my_sphere",
+    aSphere(opts)
+  );
+
+  return new EntryRecord<Sphere>(createSphereResponse);
+}
 export async function setupHierarchy(callZomeAlice) {
     // Sphere
     const hash = await setupSphere(callZomeAlice);
