@@ -49,7 +49,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
         currentOrbitTree.render();
       }
     }
-  }, [data])
+  }, [data, breadthIndex])
 
   useEffect(() => {
     if (json && !currentOrbitTree?._hasRendered) {
