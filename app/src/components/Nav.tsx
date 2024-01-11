@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Sphere, SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
 import { DarkThemeToggle } from "flowbite-react";
 import { useAtom } from "jotai";
-import { currentSphere } from "../state/currentSphere";
+import { currentSphere } from "../state/currentSphereHierarchy";
 import { extractEdges } from "../graphql/utils";
 import { ActionHashB64 } from "@holochain/client";
 

@@ -4,8 +4,8 @@ import "./vis.css";
 
 import { Margins } from '../types';
 import { select } from 'd3';
-import { useAtom } from 'jotai';
-import { SphereHashes, currentSphere } from '../../../state/currentSphere';
+import { useAtom, useAtomValue } from 'jotai';
+import { HierarchyBounds, SphereHashes, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchy';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 const defaultMargins: Margins = {
@@ -50,19 +50,12 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
     
     const [breadthIndex, setBreadthIndex] = useState<number>(0);
     const [selectedSphere] = useAtom(currentSphere);
-    
+
     useEffect(() => {
       if(document.querySelector(`#${mountingDivId} #${svgId}`)) return
       appendSvg(mountingDivId, svgId);
     }, []);
 
-    const incrementBreadth = () => {
-      setBreadthIndex(1)
-    }
-    const decrementBreadth = () => {
-      setBreadthIndex(0)
-      console.log('breadthIndex :>> ', breadthIndex);
-    }
     return (
       <>
         <Component
@@ -73,13 +66,28 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
           breadthIndex={breadthIndex}
           render={(currentVis: any) => {
             currentVis?.render();
+            const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
+            const incrementBreadth = () => {
+              if(hierarchyBounds && hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]) {
+                const newIndex = (breadthIndex + 1) <= hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxBreadth ? breadthIndex + 1 : breadthIndex;
+                setBreadthIndex(newIndex)
+              }
+            }
+            const decrementBreadth = () => {
+              setBreadthIndex(Math.max.apply(null, [0, breadthIndex - 1]))
+            }
+            
+            console.log('breadthIndex :>> ', breadthIndex);
+            const maxBreadth = hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxBreadth;
             return (
-              <><div id="vis-root" className="h-full"></div></>
+              <>
+                {breadthIndex !== 0 && <LeftOutlined className='fixed left-2 text-3xl text-white' style={{top: "48vh"}} onClick={decrementBreadth} />}
+                <div id="vis-root" className="h-full"></div>
+                {maxBreadth && breadthIndex < maxBreadth && <RightOutlined className='fixed right-2 text-3xl text-white' style={{top: "48vh"}}  onClick={incrementBreadth} />}
+              </>
             )
           }}
         ></Component>
-        <LeftOutlined className='fixed left-2 text-3xl text-white' style={{top: "48vh"}} onClick={decrementBreadth} />
-        <RightOutlined className='fixed right-2 text-3xl text-white' style={{top: "48vh"}}  onClick={incrementBreadth} />
       </>
     );
   }

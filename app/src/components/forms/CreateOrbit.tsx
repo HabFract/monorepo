@@ -12,7 +12,7 @@ import { extractEdges } from '../../graphql/utils';
 import { CustomErrorLabel } from './CreateSphere';
 import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { currentSphere } from '../../state/currentSphere';
+import { currentSphere } from '../../state/currentSphereHierarchy';
 import { useAtom } from 'jotai';
 
 // Define the validation schema using Yup
