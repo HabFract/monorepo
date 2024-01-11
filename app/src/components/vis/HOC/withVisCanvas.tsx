@@ -56,6 +56,18 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
       appendSvg(mountingDivId, svgId);
     }, []);
 
+    const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
+    const incrementBreadth = () => {
+      if(hierarchyBounds && hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]) {
+        const newIndex = (breadthIndex + 1) <= hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxBreadth ? breadthIndex + 1 : breadthIndex;
+        setBreadthIndex(newIndex)
+      }
+    }
+    const decrementBreadth = () => {
+      setBreadthIndex(Math.max.apply(null, [0, breadthIndex - 1]))
+    }
+    
+    const maxBreadth = hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxBreadth;
     return (
       <>
         <Component
@@ -66,19 +78,6 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
           breadthIndex={breadthIndex}
           render={(currentVis: any) => {
             currentVis?.render();
-            const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
-            const incrementBreadth = () => {
-              if(hierarchyBounds && hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]) {
-                const newIndex = (breadthIndex + 1) <= hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxBreadth ? breadthIndex + 1 : breadthIndex;
-                setBreadthIndex(newIndex)
-              }
-            }
-            const decrementBreadth = () => {
-              setBreadthIndex(Math.max.apply(null, [0, breadthIndex - 1]))
-            }
-            
-            console.log('breadthIndex :>> ', breadthIndex);
-            const maxBreadth = hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxBreadth;
             return (
               <>
                 {breadthIndex !== 0 && <LeftOutlined className='fixed left-2 text-3xl text-white' style={{top: "48vh"}} onClick={decrementBreadth} />}

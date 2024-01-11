@@ -1348,6 +1348,7 @@ export default class Visualization implements IVisualization {
   }, 800);
 
   render() {
+    debugger;
     if (this.rootData.data.name == "Live long and prosper") return;
     if (this.noCanvas()) {
       this._canvas = select(`#${this._svgId}`)
@@ -1361,7 +1362,7 @@ export default class Visualization implements IVisualization {
       this.calibrateViewPortAttrs();
       this.calibrateViewBox();
       this.setdXdY();
-      // this.setZoomBehaviour();
+      this.setZoomBehaviour();
     }
 
     if (
