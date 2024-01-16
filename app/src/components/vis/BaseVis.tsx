@@ -585,8 +585,20 @@ export default class Visualization implements IVisualization {
     select(".canvas")?.remove();
   }
 
-  clearCanvas() : void {
-    select(".canvas").selectAll("*").remove();
+  clearCanvas(saveLinks: boolean) : void {
+    select(".canvas").selectAll(saveLinks ? "*:not(g.links):not( path.link):not(g.links:last-of-type)" : "*").remove();
+    select(".canvas").selectAll("g.links + g.links").remove();
+  }
+
+  translateLinks([dx, dy, breadth]: number[]) : void {
+    const strokeWidth = 3;
+console.log('dx, dy, breadth :>> ', dx, dy, breadth);
+
+    const fullWidth = (this._viewConfig!.dx as number * (this._viewConfig!.levelsWide as number)) / breadth;
+    console.log('object :>> ', fullWidth) 
+    const x = dx == 0 ? fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any : -(fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any);
+    const y = -(this._viewConfig!.dy as number * this._viewConfig.scale) + (this._viewConfig!.nodeRadius as number)  * 2 as any;
+    select(".canvas").selectAll("g.links").attr("transform", "translate(" + (x + strokeWidth) + ", " + (y + strokeWidth) + ")");
   }
 
   resetForExpandedMenu({ justTranslation }) {
@@ -635,7 +647,7 @@ export default class Visualization implements IVisualization {
       +(this.type == VisType.Cluster && this._viewConfig.isSmallScreen()) * 210;
     this._viewConfig.dy =
       this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number);
-
+console.log('this._viewConfig :>> ', this._viewConfig);
     //adjust for taller aspect ratio
     this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 4.25 : 3.5;
     this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3.25 : 3.5;
@@ -780,8 +792,7 @@ export default class Visualization implements IVisualization {
             [this._viewConfig.canvasWidth / 2,
             this._viewConfig.canvasHeight / 2]
           )
-          .separation((a, b) => (a.parent == b.parent ? 3.5 : 1) / a.depth);
-
+          .separation((a, b) => (3));
         this.layout.nodeSize([this._viewConfig.dx as number, this._viewConfig.dy as number]);
         break;
       // case VisType.Cluster:
@@ -1348,7 +1359,6 @@ export default class Visualization implements IVisualization {
   }, 800);
 
   render() {
-    debugger;
     if (this.rootData.data.name == "Live long and prosper") return;
     if (this.noCanvas()) {
       this._canvas = select(`#${this._svgId}`)
@@ -1386,11 +1396,13 @@ export default class Visualization implements IVisualization {
       const isBlankData = this.rootData?.data?.content == "";
       if (isBlankData) {
         console.log("Rendered blank :>> ");
-        this.clearCanvas();
+        this.clearCanvas(false);
         return;
       }
+      const translationNeeded = !!this.rootData._translationCoords;
+      this.clearCanvas(translationNeeded);
+      translationNeeded && this.translateLinks(this.rootData._translationCoords);
 
-      this.clearCanvas();
       // _p("Cleared canvas :>> ");
 
       this.setLayout();

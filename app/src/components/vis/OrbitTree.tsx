@@ -4,16 +4,17 @@ import Vis from "./BaseVis";
 import { VisType } from './types';
 import { hierarchy } from 'd3';
 import { VisComponent } from './HOC/withVisCanvas';
-import { OrbitHierarchyQueryParams, useGetOrbitHierarchyQuery } from '../../graphql/generated';
+import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery, useGetOrbitHierarchyQuery } from '../../graphql/generated';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchy';
-import { useAtom } from 'jotai';
+import { HierarchyBounds, currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchy';
+import { useAtom, useAtomValue } from 'jotai';
 
 export const OrbitTree: ComponentType<VisComponent> = ({
   canvasHeight,
   canvasWidth,
   margin,
   breadthIndex,
+  depthIndex,
   render
 }) => {
   const [_state, transition, params] = useStateTransition(); // Top level state machine and routing
@@ -23,14 +24,15 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   };
   const queryType = params?.orbitEh ? 'whole' : 'partial';
 
-  const queryParams: OrbitHierarchyQueryParams = queryType == 'whole'
-    ? { orbitEntryHashB64: params.orbitEh }
-    : { levelQuery: { sphereHashB64: params.currentSphereHash, orbitLevel: 1 } };
+  const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
+  const [_, setBreadthBounds] = useAtom(setBreadths);
+  const [depthBounds, setDepthBounds] = useAtom(setDepths);
+  
+  const getQueryParams = (customDepth?: number) : OrbitHierarchyQueryParams => queryType == 'whole'
+  ? { orbitEntryHashB64: params.orbitEh }
+  : { levelQuery: { sphereHashB64: params.currentSphereHash, orbitLevel: customDepth || 0 } };
 
-  const [breadthBounds, setBreadthBounds] = useAtom(setBreadths);
-
-  const { data, loading, error } = useGetOrbitHierarchyQuery({ variables: { params: { ...queryParams } } });
-
+  const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery()
   const [json, setJson] = useState<string>(`{"content":"L1R20-","name":"Live long and prosper","children":[{"content":"L2R13-","name":"Be in peak physical condition","children":[{"content":"L3R12-","name":"Have a good exercise routine","children":[{"content":"L4R5-","name":"go for a short walk at least once a day","children":[]},{"content":"L6R11-","name":"Do some weight training","children":[{"content":"L7R8-","name":"3 sets of weights, til failure","children":[]},{"content":"L9R10-","name":"Do 3 sets of calisthenic exercises","children":[]}]}]}]},{"content":"L14R19-","name":"Establish productive work habits","children":[{"content":"L15R16-","name":"Do one 50 minute pomodoro ","children":[]},{"content":"L17R18-","name":"Read more books on computing","children":[]}]}]}`);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<Vis | null>(null);
 
@@ -42,6 +44,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
         parsedData = JSON.parse(parsedData);
       }
       setBreadthBounds(params?.currentSphereHash, [0, queryType == 'whole' ? 100 : parsedData.result.level_trees.length - 1])
+      setDepthBounds(params?.currentSphereHash, [0, 2]) // TODO: unhardcode
       setJson(JSON.stringify(queryType == 'whole' ? parsedData.result : parsedData.result.level_trees))
     }
   }, [data])
@@ -49,6 +52,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   useEffect(() => {
     if (typeof data?.getOrbitHierarchy === 'string' && currentOrbitTree) {
       currentOrbitTree._nextRootData = hierarchy(JSON.parse(json)[breadthIndex]);
+      currentOrbitTree._nextRootData._translationCoords = [breadthIndex, depthIndex, hierarchyBounds[params?.currentSphereHash].maxBreadth + 1];
       currentOrbitTree.render();
     }
   }, [json, breadthIndex])
@@ -68,6 +72,11 @@ export const OrbitTree: ComponentType<VisComponent> = ({
       setCurrentOrbitTree(orbitVis)
     }
   }, [json]);
+
+  useEffect(() => {
+    const query = depthBounds ? {...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereHash] as any).minDepth} : getQueryParams(depthIndex)
+    getHierarchy({ variables: { params: { ...query } } })
+  }, [depthIndex])
 
   return json && render(currentOrbitTree)
 };

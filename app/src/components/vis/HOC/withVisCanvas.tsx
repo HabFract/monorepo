@@ -6,7 +6,7 @@ import { Margins } from '../types';
 import { select } from 'd3';
 import { useAtom, useAtomValue } from 'jotai';
 import { HierarchyBounds, SphereHashes, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchy';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { DownCircleFilled, DownOutlined, LeftOutlined, RightOutlined, UpCircleFilled, UpOutlined } from '@ant-design/icons';
 
 const defaultMargins: Margins = {
   top: (document.body.getBoundingClientRect().height / (document.body.getBoundingClientRect().height > 1025 ? 6 : 2)),
@@ -39,6 +39,7 @@ export type VisComponent = { // e.g. OrbitTree, OrbitCluster
   margin: Margins;
   selectedSphere: SphereHashes;
   breadthIndex: number;
+  depthIndex: number;
   render: (currentVis: any) => JSX.Element;
 }
 
@@ -48,6 +49,7 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
     const mountingDivId = 'vis-root';
     const svgId = 'vis';
     
+    const [depthIndex, setDepthIndex] = useState<number>(0);
     const [breadthIndex, setBreadthIndex] = useState<number>(0);
     const [selectedSphere] = useAtom(currentSphere);
 
@@ -66,8 +68,18 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
     const decrementBreadth = () => {
       setBreadthIndex(Math.max.apply(null, [0, breadthIndex - 1]))
     }
+    const incrementDepth = () => {
+      if(hierarchyBounds && hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]) {
+        const newIndex = (depthIndex + 1) <= hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxDepth ? depthIndex + 1 : depthIndex;
+        setDepthIndex(newIndex)
+      }
+    }
+    const decrementDepth = () => {
+      setDepthIndex(Math.max.apply(null, [0, depthIndex - 1]))
+    }
     
     const maxBreadth = hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxBreadth;
+    const maxDepth = hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxDepth;
     return (
       <>
         <Component
@@ -76,13 +88,16 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
           margin={defaultMargins}
           selectedSphere={selectedSphere}
           breadthIndex={breadthIndex}
+          depthIndex={depthIndex}
           render={(currentVis: any) => {
             currentVis?.render();
             return (
               <>
-                {breadthIndex !== 0 && <LeftOutlined className='fixed left-2 text-3xl text-white' style={{top: "48vh"}} onClick={decrementBreadth} />}
+                {depthIndex !== 0 && <UpOutlined className='fixed top-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={decrementDepth} />}
+                {breadthIndex !== 0 && <LeftOutlined className='fixed left-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}} onClick={decrementBreadth} />}
                 <div id="vis-root" className="h-full"></div>
-                {maxBreadth && breadthIndex < maxBreadth && <RightOutlined className='fixed right-2 text-3xl text-white' style={{top: "48vh"}}  onClick={incrementBreadth} />}
+                {maxBreadth && breadthIndex < maxBreadth && <RightOutlined className='fixed right-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}}  onClick={incrementBreadth} />}
+                {maxDepth && depthIndex < maxDepth && <DownOutlined className='fixed bottom-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={incrementDepth} />}
               </>
             )
           }}
