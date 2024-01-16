@@ -1,5 +1,6 @@
-mutation updateSphere($sphereFields: SphereCreateUpdateParams!) {
-  updateSphere(sphere: $sphereFields) {
-    id
+mutation updateSphere($sphere: SphereUpdateParams!) {
+  updateSphere(sphere: $sphere) {
+    actionHash
+    entryHash
   }
 }

@@ -19,9 +19,10 @@ export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
         createProfile: overrides && overrides.hasOwnProperty('createProfile') ? overrides.createProfile! : anAgentProfile(),
         createSphere: overrides && overrides.hasOwnProperty('createSphere') ? overrides.createSphere! : aCreateResponsePayload(),
         deleteOrbit: overrides && overrides.hasOwnProperty('deleteOrbit') ? overrides.deleteOrbit! : '8c4ff9e4-b0db-409d-ba41-9a0a173bfe93',
+        deleteSphere: overrides && overrides.hasOwnProperty('deleteSphere') ? overrides.deleteSphere! : 'd656573f-6b5f-48b1-b767-997e497a6673',
         updateOrbit: overrides && overrides.hasOwnProperty('updateOrbit') ? overrides.updateOrbit! : aCreateResponsePayload(),
         updateProfile: overrides && overrides.hasOwnProperty('updateProfile') ? overrides.updateProfile! : anAgentProfile(),
-        updateSphere: overrides && overrides.hasOwnProperty('updateSphere') ? overrides.updateSphere! : aSphere(),
+        updateSphere: overrides && overrides.hasOwnProperty('updateSphere') ? overrides.updateSphere! : aCreateResponsePayload(),
     };
 };
 
@@ -52,16 +53,16 @@ export const anOrbitConnection = (overrides?: Partial<OrbitConnection>): OrbitCo
     };
 };
 
-export const anOrbitCreateUpdateParams = (overrides?: Partial<OrbitCreateUpdateParams>): OrbitCreateUpdateParams => {
+export const anOrbitCreateParams = (overrides?: Partial<OrbitCreateParams>): OrbitCreateParams => {
     return {
-        description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'tenetur',
-        endTime: overrides && overrides.hasOwnProperty('endTime') ? overrides.endTime! : 7.66,
+        description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'et',
+        endTime: overrides && overrides.hasOwnProperty('endTime') ? overrides.endTime! : 5.44,
         frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,
-        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'non',
-        parentHash: overrides && overrides.hasOwnProperty('parentHash') ? overrides.parentHash! : 'voluptatibus',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'et',
+        parentHash: overrides && overrides.hasOwnProperty('parentHash') ? overrides.parentHash! : 'rerum',
         scale: overrides && overrides.hasOwnProperty('scale') ? overrides.scale! : Scale.Astro,
-        sphereHash: overrides && overrides.hasOwnProperty('sphereHash') ? overrides.sphereHash! : 'fugiat',
-        startTime: overrides && overrides.hasOwnProperty('startTime') ? overrides.startTime! : 5.37,
+        sphereHash: overrides && overrides.hasOwnProperty('sphereHash') ? overrides.sphereHash! : 'dicta',
+        startTime: overrides && overrides.hasOwnProperty('startTime') ? overrides.startTime! : 1.27,
     };
 };
 
@@ -158,12 +159,12 @@ export const aSphereConnection = (overrides?: Partial<SphereConnection>): Sphere
     };
 };
 
-export const aSphereCreateUpdateParams = (overrides?: Partial<SphereCreateUpdateParams>): SphereCreateUpdateParams => {
+export const aSphereCreateParams = (overrides?: Partial<SphereCreateParams>): SphereCreateParams => {
     return {
-        description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'reiciendis',
-        hashtag: overrides && overrides.hasOwnProperty('hashtag') ? overrides.hashtag! : 'quibusdam',
-        image: overrides && overrides.hasOwnProperty('image') ? overrides.image! : 'est',
-        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'voluptas',
+        description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'nihil',
+        hashtag: overrides && overrides.hasOwnProperty('hashtag') ? overrides.hashtag! : 'perspiciatis',
+        image: overrides && overrides.hasOwnProperty('image') ? overrides.image! : 'officiis',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'perspiciatis',
     };
 };
 
@@ -179,6 +180,16 @@ export const aSphereMetaData = (overrides?: Partial<SphereMetaData>): SphereMeta
         description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'placeat',
         hashtag: overrides && overrides.hasOwnProperty('hashtag') ? overrides.hashtag! : 'facilis',
         image: overrides && overrides.hasOwnProperty('image') ? overrides.image! : 'esse',
+    };
+};
+
+export const aSphereUpdateParams = (overrides?: Partial<SphereUpdateParams>): SphereUpdateParams => {
+    return {
+        description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'quod',
+        hashtag: overrides && overrides.hasOwnProperty('hashtag') ? overrides.hashtag! : 'aut',
+        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 'f8706fe3-f5f1-4881-888f-50f3cf5a30a7',
+        image: overrides && overrides.hasOwnProperty('image') ? overrides.image! : 'voluptates',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'enim',
     };
 };
 

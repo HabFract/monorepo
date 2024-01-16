@@ -7,19 +7,18 @@ import {
 import {
   CreateResponsePayload,
   Orbit,
-  OrbitCreateUpdateParams,
+  OrbitCreateParams,
   OrbitUpdateParams,
 } from "../../generated";
 import {
   ActionHash,
   ActionHashB64,
   Record as HolochainRecord,
-  decodeHashFromBase64,
   encodeHashToBase64,
 } from "@holochain/client";
 import { EntryRecord } from "@holochain-open-dev/utils";
 
-export type createArgs = { orbit: OrbitCreateUpdateParams };
+export type createArgs = { orbit: OrbitCreateParams };
 export type updateArgs = { orbit: OrbitUpdateParams };
 export type createHandler = (
   root: any,

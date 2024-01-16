@@ -43,14 +43,15 @@ export type Mutation = {
   createProfile: AgentProfile;
   createSphere: CreateResponsePayload;
   deleteOrbit: Scalars['ID']['output'];
+  deleteSphere: Scalars['ID']['output'];
   updateOrbit: CreateResponsePayload;
   updateProfile: AgentProfile;
-  updateSphere: Sphere;
+  updateSphere: CreateResponsePayload;
 };
 
 
 export type MutationCreateOrbitArgs = {
-  orbit?: InputMaybe<OrbitCreateUpdateParams>;
+  orbit?: InputMaybe<OrbitCreateParams>;
 };
 
 
@@ -60,12 +61,17 @@ export type MutationCreateProfileArgs = {
 
 
 export type MutationCreateSphereArgs = {
-  sphere?: InputMaybe<SphereCreateUpdateParams>;
+  sphere?: InputMaybe<SphereCreateParams>;
 };
 
 
 export type MutationDeleteOrbitArgs = {
   orbitHash: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteSphereArgs = {
+  sphereHash: Scalars['ID']['input'];
 };
 
 
@@ -80,7 +86,7 @@ export type MutationUpdateProfileArgs = {
 
 
 export type MutationUpdateSphereArgs = {
-  sphere?: InputMaybe<SphereCreateUpdateParams>;
+  sphere?: InputMaybe<SphereUpdateParams>;
 };
 
 export type Node = {
@@ -106,7 +112,7 @@ export type OrbitConnection = {
   pageInfo: PageInfo;
 };
 
-export type OrbitCreateUpdateParams = {
+export type OrbitCreateParams = {
   description?: InputMaybe<Scalars['String']['input']>;
   endTime?: InputMaybe<Scalars['Float']['input']>;
   frequency: Frequency;
@@ -222,7 +228,7 @@ export type SphereConnection = {
   pageInfo: PageInfo;
 };
 
-export type SphereCreateUpdateParams = {
+export type SphereCreateParams = {
   description?: InputMaybe<Scalars['String']['input']>;
   hashtag?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
@@ -242,6 +248,14 @@ export type SphereMetaData = {
   image?: Maybe<Scalars['String']['output']>;
 };
 
+export type SphereUpdateParams = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  hashtag?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
 export type TimeFrame = {
   __typename?: 'TimeFrame';
   endTime?: Maybe<Scalars['Float']['output']>;
@@ -256,7 +270,7 @@ export type UserProfileCreateUpdateParams = {
 };
 
 export type CreateOrbitMutationVariables = Exact<{
-  variables: OrbitCreateUpdateParams;
+  variables: OrbitCreateParams;
 }>;
 
 
@@ -277,18 +291,25 @@ export type UpdateOrbitMutationVariables = Exact<{
 export type UpdateOrbitMutation = { __typename?: 'Mutation', updateOrbit: { __typename?: 'CreateResponsePayload', actionHash: string, entryHash: string } };
 
 export type CreateSphereMutationVariables = Exact<{
-  variables: SphereCreateUpdateParams;
+  variables: SphereCreateParams;
 }>;
 
 
 export type CreateSphereMutation = { __typename?: 'Mutation', createSphere: { __typename?: 'CreateResponsePayload', actionHash: string, entryHash: string } };
 
-export type UpdateSphereMutationVariables = Exact<{
-  sphereFields: SphereCreateUpdateParams;
+export type DeleteSphereMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type UpdateSphereMutation = { __typename?: 'Mutation', updateSphere: { __typename?: 'Sphere', id: string } };
+export type DeleteSphereMutation = { __typename?: 'Mutation', deleteSphere: string };
+
+export type UpdateSphereMutationVariables = Exact<{
+  sphere: SphereUpdateParams;
+}>;
+
+
+export type UpdateSphereMutation = { __typename?: 'Mutation', updateSphere: { __typename?: 'CreateResponsePayload', actionHash: string, entryHash: string } };
 
 export type GetOrbitQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -325,7 +346,7 @@ export type GetSpheresQuery = { __typename?: 'Query', spheres: { __typename?: 'S
 
 
 export const CreateOrbitDocument = gql`
-    mutation createOrbit($variables: OrbitCreateUpdateParams!) {
+    mutation createOrbit($variables: OrbitCreateParams!) {
   createOrbit(orbit: $variables) {
     actionHash
     entryHash
@@ -424,7 +445,7 @@ export type UpdateOrbitMutationHookResult = ReturnType<typeof useUpdateOrbitMuta
 export type UpdateOrbitMutationResult = Apollo.MutationResult<UpdateOrbitMutation>;
 export type UpdateOrbitMutationOptions = Apollo.BaseMutationOptions<UpdateOrbitMutation, UpdateOrbitMutationVariables>;
 export const CreateSphereDocument = gql`
-    mutation createSphere($variables: SphereCreateUpdateParams!) {
+    mutation createSphere($variables: SphereCreateParams!) {
   createSphere(sphere: $variables) {
     actionHash
     entryHash
@@ -457,10 +478,42 @@ export function useCreateSphereMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateSphereMutationHookResult = ReturnType<typeof useCreateSphereMutation>;
 export type CreateSphereMutationResult = Apollo.MutationResult<CreateSphereMutation>;
 export type CreateSphereMutationOptions = Apollo.BaseMutationOptions<CreateSphereMutation, CreateSphereMutationVariables>;
+export const DeleteSphereDocument = gql`
+    mutation deleteSphere($id: ID!) {
+  deleteSphere(sphereHash: $id)
+}
+    `;
+export type DeleteSphereMutationFn = Apollo.MutationFunction<DeleteSphereMutation, DeleteSphereMutationVariables>;
+
+/**
+ * __useDeleteSphereMutation__
+ *
+ * To run a mutation, you first call `useDeleteSphereMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSphereMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSphereMutation, { data, loading, error }] = useDeleteSphereMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteSphereMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSphereMutation, DeleteSphereMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSphereMutation, DeleteSphereMutationVariables>(DeleteSphereDocument, options);
+      }
+export type DeleteSphereMutationHookResult = ReturnType<typeof useDeleteSphereMutation>;
+export type DeleteSphereMutationResult = Apollo.MutationResult<DeleteSphereMutation>;
+export type DeleteSphereMutationOptions = Apollo.BaseMutationOptions<DeleteSphereMutation, DeleteSphereMutationVariables>;
 export const UpdateSphereDocument = gql`
-    mutation updateSphere($sphereFields: SphereCreateUpdateParams!) {
-  updateSphere(sphere: $sphereFields) {
-    id
+    mutation updateSphere($sphere: SphereUpdateParams!) {
+  updateSphere(sphere: $sphere) {
+    actionHash
+    entryHash
   }
 }
     `;
@@ -479,7 +532,7 @@ export type UpdateSphereMutationFn = Apollo.MutationFunction<UpdateSphereMutatio
  * @example
  * const [updateSphereMutation, { data, loading, error }] = useUpdateSphereMutation({
  *   variables: {
- *      sphereFields: // value for 'sphereFields'
+ *      sphere: // value for 'sphere'
  *   },
  * });
  */

@@ -7,7 +7,7 @@ import { Checkbox, Flex } from 'antd';
 import DateInput from './input/DatePicker';
 import { Button, TextInput, Label, Select, Textarea } from 'flowbite-react';
 
-import { Frequency, Orbit, OrbitCreateUpdateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
+import { Frequency, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { CustomErrorLabel } from './CreateSphere';
 import { ActionHashB64 } from '@holochain/client';
@@ -73,7 +73,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
 
   const { data: orbits, loading, error } = useGetOrbitsQuery({ variables: { sphereEntryHashB64: sphereEh } });
 
-  const [orbitValues, _] = useState<OrbitCreateUpdateParams & any>({
+  const [orbitValues, _] = useState<OrbitCreateParams & any>({
     name: '',
     description: '',
     startTime: DateTime.now().ts,
