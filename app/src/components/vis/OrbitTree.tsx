@@ -44,10 +44,11 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   }
 
   useEffect(() => {
-    if(typeof error == 'undefined') return;
-    console.log('typeof error :>> ', typeof error);
+    if(typeof error != 'object') return;
     setIsModalOpen(true)
-    setModalErrorMsg("error")
+    const errorObject = Object.values(error)[1]?.[0];
+    const parsedGuestError = errorObject.stack.match(/Guest\("([\w\s]+)"\)/);
+    setModalErrorMsg(parsedGuestError[1] || "There was an error")
 
   }, [error])
 
