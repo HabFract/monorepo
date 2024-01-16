@@ -10,7 +10,6 @@ type Query {
 
 type Mutation {
   createSphere(sphere: SphereCreateParams): CreateResponsePayload!
-  updateSphere(sphere: SphereUpdateParams): Sphere!
   updateSphere(sphere: SphereUpdateParams): CreateResponsePayload!
   deleteSphere(sphereHash: ID!): ID!
   createOrbit(orbit: OrbitCreateParams): CreateResponsePayload!

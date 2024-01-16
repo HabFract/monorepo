@@ -1,11 +1,12 @@
-import React from 'react';
-import { Formik, Form, Field } from 'formik';
+import React, { useEffect } from 'react';
+import { Formik, Form, Field, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { Button, TextInput, Label, Textarea, Tooltip } from 'flowbite-react';
-import { useCreateSphereMutation } from '../../graphql/generated';
+import { useCreateSphereMutation, useGetSphereQuery, useUpdateSphereMutation } from '../../graphql/generated';
 import { AlertOutlined } from '@ant-design/icons';
 import { ImageUpload } from '../inputs';
 import { useStateTransition } from '../../hooks/useStateTransition';
+import { ActionHashB64 } from '@holochain/client';
 
 
 // Define the validation schema using Yup
@@ -15,6 +16,12 @@ const SphereValidationSchema = Yup.object().shape({
   sphere_image: Yup.string().trim().matches(/^data:((?:\w+\/(?:(?!;).)+)?)((?:;[\w=]*[^;])*),(.+)$/,"Image must be a valid data URI"),
   //TODO: limit to jpg/png?
 });
+
+
+interface CreateSphereProps {
+  editMode: boolean;
+  sphereToEditId?: ActionHashB64;
+}
 
 export const CustomErrorLabel: any = (fieldName: string, errors: object, touched: object) => {
   return (
@@ -27,7 +34,26 @@ export const CustomErrorLabel: any = (fieldName: string, errors: object, touched
       );
 }
 
-const CreateSphere: React.FC = () => {
+const SphereFetcher = ({sphereToEditId}) => {
+  const { setValues } = useFormikContext();
+
+  const {data: getData, error: getError, loading: getLoading } = useGetSphereQuery({
+    variables: {
+      id: sphereToEditId as string
+    },
+  });
+
+  useEffect(() => {
+      const {  name, metadata: {description, image }} = getData!.sphere as any;
+      
+      setValues({
+        name, description, sphere_image: image
+      })
+  }, [getData])
+  return null;
+};
+
+const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEditId}) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
 
   const [addSphere] = useCreateSphereMutation({
@@ -35,10 +61,15 @@ const CreateSphere: React.FC = () => {
       'getSpheres',
     ]
   });
+  const [updateSphere] = useUpdateSphereMutation({
+    refetchQueries: [
+      'getSpheres',
+    ]
+  });
 
   return (
     <div className="form-container create-sphere">
-      <h2 className="form-title">Create New Sphere</h2>
+      <h2 className="form-title">{editMode ? "Update" : "Create"} Sphere</h2>
       <Formik
         initialValues={{
           name: '',
@@ -48,9 +79,13 @@ const CreateSphere: React.FC = () => {
         validationSchema={SphereValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            await addSphere({ variables: { variables: { name: values.name, description: values.description, image: values.sphere_image } } });
+            
+            editMode
+              ? await updateSphere({ variables: { sphere: { id: sphereToEditId as string, name: values.name, description: values.description, image: values.sphere_image } } })
+              : await addSphere({ variables: { variables: { name: values.name, description: values.description, image: values.sphere_image } } })
             setSubmitting(false);
 
+            // transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
             transition('ListSpheres')
           } catch (error) {
             console.error(error);
@@ -59,6 +94,8 @@ const CreateSphere: React.FC = () => {
       >
         {({ errors, touched }) => (
           <Form noValidate={true}>
+            {editMode && <SphereFetcher sphereToEditId={sphereToEditId} />} 
+
             <div className="field">
               <Label htmlFor='name'>Name: <span className="reqd">*</span></Label>
 
@@ -91,7 +128,7 @@ const CreateSphere: React.FC = () => {
               </div>
             </div>
 
-            <Button type="submit" disabled={!!Object.values(errors).length} className="btn-primary">Create</Button>
+            <Button type="submit" disabled={!!Object.values(errors).length} className={editMode ? "btn-warn" : "btn-primary"}>{editMode ? "Update" : "Create"}</Button>
           </Form>
         )}
       </Formik>

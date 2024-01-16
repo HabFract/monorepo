@@ -30,12 +30,7 @@ const OrbitValidationSchema = Yup.object().shape({
   parentHash: Yup.string(),
   archival: Yup.boolean(),
 });
-interface CreateOrbitProps {
-  editMode: boolean;
-  orbitToEditId?: ActionHashB64;
-  sphereEh: string; // Link to a sphere
-  parentOrbitEh: string | undefined; // Link to a parent Orbit to create hierarchies
-}
+
 const OrbitFetcher = ({orbitToEditId}) => {
   const { setValues } = useFormikContext();
 
@@ -55,6 +50,14 @@ const OrbitFetcher = ({orbitToEditId}) => {
   return null;
 };
 
+
+interface CreateOrbitProps {
+  editMode: boolean;
+  orbitToEditId?: ActionHashB64;
+  sphereEh: string; // Link to a sphere
+  parentOrbitEh: string | undefined; // Link to a parent Orbit to create hierarchies
+}
+
 const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEditId, sphereEh, parentOrbitEh }: CreateOrbitProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   const [selectedSphere, setSelectedSphere] = useAtom(currentSphere);
@@ -68,8 +71,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
     refetchQueries: [
       'getOrbits',
     ],
-  }
-  );
+  });
 
   const { data: orbits, loading, error } = useGetOrbitsQuery({ variables: { sphereEntryHashB64: sphereEh } });
 
