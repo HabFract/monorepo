@@ -40,7 +40,7 @@ export type VisComponent = { // e.g. OrbitTree, OrbitCluster
   selectedSphere: SphereHashes;
   breadthIndex: number;
   depthIndex: number;
-  render: (currentVis: any) => JSX.Element;
+  render: (currentVis: any, queryType: string) => JSX.Element;
 }
 
 export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode {
@@ -89,15 +89,16 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
           selectedSphere={selectedSphere}
           breadthIndex={breadthIndex}
           depthIndex={depthIndex}
-          render={(currentVis: any) => {
+          render={(currentVis: any, queryType: string) => {
+            const withTraversal = queryType !== 'whole';
             currentVis?.render();
             return (
-              <>
-                {depthIndex !== 0 && <UpOutlined className='fixed top-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={decrementDepth} />}
-                {breadthIndex !== 0 && <LeftOutlined className='fixed left-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}} onClick={decrementBreadth} />}
+              <> 
+                {withTraversal && depthIndex !== 0 && <UpOutlined className='fixed top-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={decrementDepth} />}
+                {withTraversal && breadthIndex !== 0 && <LeftOutlined className='fixed left-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}} onClick={decrementBreadth} />}
                 <div id="vis-root" className="h-full"></div>
-                {maxBreadth && breadthIndex < maxBreadth && <RightOutlined className='fixed right-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}}  onClick={incrementBreadth} />}
-                {maxDepth && depthIndex < maxDepth && <DownOutlined className='fixed bottom-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={incrementDepth} />}
+                {withTraversal && maxBreadth && breadthIndex < maxBreadth && <RightOutlined className='fixed right-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}}  onClick={incrementBreadth} />}
+                {withTraversal && maxDepth && depthIndex < maxDepth && <DownOutlined className='fixed bottom-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={incrementDepth} />}
               </>
             )
           }}
