@@ -934,7 +934,7 @@ console.log('this._viewConfig :>> ', this._viewConfig);
     this._gTooltip = this._enteringNodes
       .append("g")
       .classed("tooltip", true)
-      .classed("hidden", this.type == VisType.Radial)
+      // .classed("hidden", this.type == VisType.Radial)
       .attr(
         "transform",
         `translate(${this._viewConfig.nodeRadius as number / 10}, ${
@@ -947,37 +947,26 @@ console.log('this._viewConfig :>> ', this._viewConfig);
   }
 
   setButtonGroups() {
-    // this._gButton = this._gCircle
-    //   .append("g")
-    //   .classed("habit-label-dash-button", true)
-    //   .attr(
-    //     "transform",
-    //     (d) =>
-    //       `translate(${
-    //         (this._viewConfig.isSmallScreen() ? -1.25 : -0.98) *
-    //         (this.type == VisType.Radial
-    //           ? this._viewConfig.nodeRadius
-    //           : this._viewConfig.nodeRadius)
-    //       }, ${
-    //         -(this._viewConfig.isSmallScreen() ? 1.5 : 1.1) *
-    //         (this.type == VisType.Radial
-    //           ? d.height / this._viewConfig.nodeRadius +
-    //             1.2 * this._viewConfig.nodeRadius
-    //           : this._viewConfig.nodeRadius)
-    //       }), scale(${
-    //         this._viewConfig.isSmallScreen()
-    //           ? this.type == VisType.Radial
-    //             ? XS_BUTTON_SCALE * 1.15
-    //             : XS_BUTTON_SCALE
-    //           : this.type == VisType.Radial
-    //           ? LG_BUTTON_SCALE / 1.15
-    //           : LG_BUTTON_SCALE
-    //       })` +
-    //       (this.type == VisType.Radial
-    //         ? `, rotate(${450 - ((d.x / 8) * 180) / Math.PI - 90})`
-    //         : "")
-    //   )
-    //   .attr("style", "opacity: 0");
+    this._gButton = this._gCircle
+      .append("g")
+      .classed("habit-label-dash-button", true)
+      .attr(
+        "transform",
+        (d) =>
+          `translate(0, 0), scale(${
+            this._viewConfig.isSmallScreen()
+              ? this.type == VisType.Radial
+                ? XS_BUTTON_SCALE * 1.15
+                : XS_BUTTON_SCALE
+              : this.type == VisType.Radial
+              ? LG_BUTTON_SCALE / 1.15
+              : LG_BUTTON_SCALE
+          })` +
+          (this.type == VisType.Radial
+            ? `, rotate(${450 - ((d.x / 8) * 180) / Math.PI - 90})`
+            : "")
+      )
+      .attr("style", "opacity: 0");
   }
 
   appendCirclesAndLabels() : void {
@@ -1008,10 +997,8 @@ console.log('this._viewConfig :>> ', this._viewConfig);
       .attr("x", 5)
       .attr("y", 20)
       .text((d) => {
-        const words = d.data.name.split(" ").slice(0, 6);
-        return `${words[0] || ""} ${words[1] || ""} ${words[2] || ""} ${
-          words[3] || ""
-        }`;
+        console.log('d :>> ', d);
+        return d.data.name
       })
       .attr("transform", (d) => {
         return this.type == VisType.Radial
@@ -1032,27 +1019,27 @@ console.log('this._viewConfig :>> ', this._viewConfig);
         }`;
       });
 
-    this._enteringNodes
-      .append("g")
-      .attr(
-        "transform",
-        "translate(" +
-          (this.type == VisType.Radial ? -10 : -35) +
-          "," +
-          (this.type == VisType.Tree ? -25 : this.type == VisType.Radial ? -30 : 5) +
-          ") scale( " +
-          this._viewConfig.scale * 1.5 +
-          ") rotate(" +
-          (this.type == VisType.Cluster ? 270 : this.type == VisType.Radial ? 270 : 0) +
-          ")"
-      )
-      .append("path")
-      .attr("class", "expand-arrow")
-      .attr("d", (d) => {
-        return d._children
-          ? "M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"
-          : null;
-      });
+    // this._enteringNodes
+    //   .append("g")
+    //   .attr(
+    //     "transform",
+    //     "translate(" +
+    //       (this.type == VisType.Radial ? -10 : -35) +
+    //       "," +
+    //       (this.type == VisType.Tree ? -25 : this.type == VisType.Radial ? -30 : 5) +
+    //       ") scale( " +
+    //       this._viewConfig.scale * 1.5 +
+    //       ") rotate(" +
+    //       (this.type == VisType.Cluster ? 270 : this.type == VisType.Radial ? 270 : 0) +
+    //       ")"
+    //   )
+    //   .append("path")
+    //   .attr("class", "expand-arrow")
+    //   .attr("d", (d) => {
+    //     return d._children
+    //       ? "M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"
+    //       : null;
+    //   });
   }
   appendButtons() {
     const delBtnG = this._gButton.append("g");
@@ -1422,7 +1409,8 @@ console.log('this._viewConfig :>> ', this._viewConfig);
 
       this.appendCirclesAndLabels();
       this.appendLabels();
-      // this.appendButtons();
+      this.appendButtons();
+      
       if (!!this.activeNode) {
         // this?.isNewActiveNode &&
         //   this.zoomBase().selectAll(".active-circle").remove();

@@ -82,7 +82,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
                 <span>Add Orbit</span>
               </Button>}
 
-              <Button className="btn responsive btn-primary w-full" size="sm">
+              <Button className="btn responsive btn-primary w-full" size="sm" onClick={() => transition('Vis', {currentSphereHash: sphere.eH})}>
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>
               </Button>

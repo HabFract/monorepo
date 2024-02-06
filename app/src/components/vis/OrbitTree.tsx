@@ -60,14 +60,16 @@ export const OrbitTree: ComponentType<VisComponent> = ({
         parsedData = JSON.parse(parsedData);
       }
       setBreadthBounds(params?.currentSphereHash, [0, queryType == 'whole' ? 100 : parsedData.result.level_trees.length - 1])
-      setDepthBounds(params?.currentSphereHash, [0, 2]) // TODO: unhardcode
       setJson(JSON.stringify(queryType == 'whole' ? parsedData.result : parsedData.result.level_trees))
     }
   }, [data])
 
   useEffect(() => {
     if (!error && typeof data?.getOrbitHierarchy === 'string' && currentOrbitTree) {
+
       currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json));
+      console.log('hierarchyData.depth :>> ', currentOrbitTree._nextRootData);
+      setDepthBounds(params?.currentSphereHash, [0, 2]);
       currentOrbitTree._nextRootData._translationCoords = [breadthIndex, depthIndex, hierarchyBounds[params?.currentSphereHash].maxBreadth + 1];
       currentOrbitTree.render();
     }
