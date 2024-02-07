@@ -62,4 +62,4 @@ export const AppTransitions: StateTransitions<AppState> = {
   ListSpheres: ['Home', ...lists, ...forms, 'Vis'],
   CreateOrbit: ['Home', ...lists, ...forms, 'Vis'],
   ListOrbits: ['Home', ...lists, ...forms,, 'Vis'],
-  }
+}

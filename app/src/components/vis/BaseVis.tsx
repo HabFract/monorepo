@@ -1346,7 +1346,7 @@ console.log('this._viewConfig :>> ', this._viewConfig);
   }, 800);
 
   render() {
-    if (this.rootData.data.name == "Live long and prosper") return;
+    debugger;
     if (this.noCanvas()) {
       this._canvas = select(`#${this._svgId}`)
       .append("g")

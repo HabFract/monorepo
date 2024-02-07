@@ -1,4 +1,3 @@
-import { AgentProfile, CreateResponsePayload, Mutation, Orbit, Frequency, Scale, OrbitConnection, OrbitCreateParams, OrbitEdge, OrbitHierarchyQueryParams, OrbitMetaData, OrbitUpdateParams, PageInfo, Profile, ProfileFields, Query, QueryParamsLevel, Sphere, SphereConnection, SphereCreateParams, SphereEdge, SphereMetaData, SphereUpdateParams, TimeFrame, UserProfileCreateUpdateParams } from ".";
 
 export const anAgentProfile = (overrides?: Partial<AgentProfile>): AgentProfile => {
     return {
@@ -27,7 +26,7 @@ export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
     };
 };
 
-export const aNode = (overrides?: Partial<Node & {eH: any, id: any}>): any => {
+export const aNode = (overrides?: Partial<Node>): Node => {
     return {
         eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'iure',
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '95bb2f34-6c86-495f-bfdc-f25b025cdba5',

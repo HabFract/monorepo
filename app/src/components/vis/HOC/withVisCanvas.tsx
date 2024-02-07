@@ -24,6 +24,7 @@ const d3SetupCanvas = function () {
 };
 
 const appendSvg = (mountingDivId: string, divId: string) : void => {
+  debugger;
   select(`#${divId}`).empty() &&
     select(`#${mountingDivId}`)
       .append("svg")

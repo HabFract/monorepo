@@ -29,9 +29,9 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   const [_, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
 
-  const getQueryParams = (customDepth?: number) : OrbitHierarchyQueryParams => queryType == 'whole'
-  ? { orbitEntryHashB64: params.orbitEh }
-  : { levelQuery: { sphereHashB64: params.currentSphereHash, orbitLevel: customDepth || 0 } };
+  const getQueryParams = (customDepth?: number): OrbitHierarchyQueryParams => queryType == 'whole'
+    ? { orbitEntryHashB64: params.orbitEh }
+    : { levelQuery: { sphereHashB64: params.currentSphereHash, orbitLevel: customDepth || 0 } };
 
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery()
   const [json, setJson] = useState<string | null>(null);
@@ -43,7 +43,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   }
 
   useEffect(() => {
-    if(typeof error != 'object') return;
+    if (typeof error != 'object') return;
     setIsModalOpen(true)
     const errorObject = Object.values(error)[1]?.[0];
     const parsedGuestError = errorObject.stack.match(/Guest\("([\w\s]+)"\)/);
@@ -54,8 +54,6 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   useEffect(() => {
     if (!error && typeof data?.getOrbitHierarchy === 'string') {
       let parsedData = JSON.parse(data.getOrbitHierarchy);
-      console.log('Fetched data:', parsedData);
-      console.log('data.getOrbitHierarchy :>> ', data.getOrbitHierarchy);
       // Continue parsing if the result is still a string
       while (typeof parsedData === 'string') {
         parsedData = JSON.parse(parsedData);
@@ -63,37 +61,25 @@ export const OrbitTree: ComponentType<VisComponent> = ({
       setBreadthBounds(params?.currentSphereHash, [0, queryType == 'whole' ? 100 : parsedData.result.level_trees.length - 1])
       const jsonResult = JSON.stringify(queryType == 'whole' ? parsedData.result : parsedData.result.level_trees);
       setJson(jsonResult);
-      const currentTreeJson = getJsonDerivation(jsonResult);
-      const hierarchyData = hierarchy(currentTreeJson);
-      const orbitVis = new Vis(
-        VisType.Tree,
-        'vis',
-        hierarchyData,
-        canvasHeight,
-        canvasWidth,
-        margin
-      );
-      setCurrentOrbitTree(orbitVis);
-    orbitVis.render();
+console.log('json, data :>> ', json, data);
     }
   }, [data])
 
   useEffect(() => {
     if (!error && typeof data?.getOrbitHierarchy === 'string' && currentOrbitTree) {
 
-      currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json));
+      currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string));
       console.log('hierarchyData.depth :>> ', currentOrbitTree._nextRootData);
       setDepthBounds(params?.currentSphereHash, [0, 2]);
       currentOrbitTree._nextRootData._translationCoords = [breadthIndex, depthIndex, hierarchyBounds[params?.currentSphereHash].maxBreadth + 1];
       currentOrbitTree.render();
+      console.log('currentOrbitTree :>> ', currentOrbitTree);
     }
   }, [json, breadthIndex])
 
   useEffect(() => {
     if (!error && json && !currentOrbitTree) {
-      const currentTreeJson = getJsonDerivation(json); 
-      console.log('Preparing to render with json:', currentTreeJson);
-      console.log('currentTreeJson :>> ', currentTreeJson);
+      const currentTreeJson = getJsonDerivation(json);
       const hierarchyData = hierarchy(currentTreeJson);
       const orbitVis = new Vis(
         VisType.Tree,
@@ -108,53 +94,51 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   }, [json]);
 
   useEffect(() => {
-    if(error || isModalOpen) return;
+    if (error || isModalOpen) return;
 
-    const query = depthBounds ? {...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereHash] as any).minDepth} : getQueryParams(depthIndex)
-    console.log('{ variables: { params: { ...query }} } :>> ', { variables: { params: { ...query }} });
-    getHierarchy({ variables: { params: { ...query }} })
+    const query = depthBounds ? { ...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereHash] as any).minDepth } : getQueryParams(depthIndex)
+    getHierarchy({ variables: { params: { ...query } } })
   }, [depthIndex])
 
-  console.log('Rendering conditions:', !error, json, currentOrbitTree);
-return (<>{!error && json && currentOrbitTree && render(currentOrbitTree, queryType)}
+  return (<>{!error && json && currentOrbitTree && render(currentOrbitTree, queryType)}
     {isModalOpen && (
-        <Modal show={isModalOpen} onClose={toggleModal}>
-          <Modal.Header>
-            You are unable to visualise right now...
-          </Modal.Header>
-          <Modal.Body>
-            { modalErrorMsg }
-            <Formik
-              initialValues={{
+      <Modal show={isModalOpen} onClose={toggleModal}>
+        <Modal.Header>
+          You are unable to visualise right now...
+        </Modal.Header>
+        <Modal.Body>
+          {modalErrorMsg}
+          <Formik
+            initialValues={{
 
-              }}
-              onSubmit={(_values) => {
-                toggleModal();
-              }}
-            >
-              {({ handleSubmit }) => (
-                <Form onSubmit={handleSubmit}>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex flex-col">
-                        <label className='text-xl lowercase capitalize'>
-                        </label>
-                        <label className='text-xl lowercase capitalize'>
-                        </label>
-                      </div>
+            }}
+            onSubmit={(_values) => {
+              toggleModal();
+            }}
+          >
+            {({ handleSubmit }) => (
+              <Form onSubmit={handleSubmit}>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex flex-col">
+                      <label className='text-xl lowercase capitalize'>
+                      </label>
+                      <label className='text-xl lowercase capitalize'>
+                      </label>
                     </div>
                   </div>
-                  <div className="mt-4">
-                    <button type="submit" className="btn btn-primary">
-                      Ok
-                    </button>
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          </Modal.Body>
-        </Modal>
-      )}
+                </div>
+                <div className="mt-4">
+                  <button type="submit" className="btn btn-primary">
+                    Ok
+                  </button>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </Modal.Body>
+      </Modal>
+    )}
   </>)
 };
 
