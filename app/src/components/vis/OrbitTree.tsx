@@ -22,21 +22,21 @@ export const OrbitTree: ComponentType<VisComponent> = ({
 
   const [modalErrorMsg, setModalErrorMsg] = useState<string>("");
   const toggleModal = () => setIsModalOpen(!isModalOpen);
-  
+
   const queryType = params?.orbitEh ? 'whole' : 'partial';
-  
+
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [_, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
-  
+
   const getQueryParams = (customDepth?: number) : OrbitHierarchyQueryParams => queryType == 'whole'
   ? { orbitEntryHashB64: params.orbitEh }
   : { levelQuery: { sphereHashB64: params.currentSphereHash, orbitLevel: customDepth || 0 } };
-  
+
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery()
   const [json, setJson] = useState<string | null>(null);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<Vis | null>(null);
-  
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(!!error || (!params?.orbitEh && !params?.currentSphereHash) || !!(currentOrbitTree && !currentOrbitTree?.rootData));
   const getJsonDerivation = (json: string) => { // Distinguish when it is the starter data (temp) or a whole sphere tree, or an array of trees
     return (queryType == 'whole' || json.search("Live long and prosper") !== -1) ? JSON.parse(json) : JSON.parse(json)[breadthIndex]
@@ -54,6 +54,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   useEffect(() => {
     if (!error && typeof data?.getOrbitHierarchy === 'string') {
       let parsedData = JSON.parse(data.getOrbitHierarchy);
+      console.log('Fetched data:', parsedData);
       console.log('data.getOrbitHierarchy :>> ', data.getOrbitHierarchy);
       // Continue parsing if the result is still a string
       while (typeof parsedData === 'string') {
@@ -78,6 +79,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   useEffect(() => {
     if (!error && json && !currentOrbitTree?._hasRendered) {
       const currentTreeJson = getJsonDerivation(json); 
+      console.log('Preparing to render with json:', currentTreeJson);
       console.log('currentTreeJson :>> ', currentTreeJson);
       const hierarchyData = hierarchy(currentTreeJson);
       const orbitVis = new Vis(
@@ -99,8 +101,9 @@ export const OrbitTree: ComponentType<VisComponent> = ({
     console.log('{ variables: { params: { ...query }} } :>> ', { variables: { params: { ...query }} });
     getHierarchy({ variables: { params: { ...query }} })
   }, [depthIndex])
-  
-  return (<>{!error && json && currentOrbitTree && render(currentOrbitTree, queryType)}
+
+  console.log('Rendering conditions:', !error, json, currentOrbitTree);
+return (<>{!error && json && currentOrbitTree && render(currentOrbitTree, queryType)}
     {isModalOpen && (
         <Modal show={isModalOpen} onClose={toggleModal}>
           <Modal.Header>
@@ -110,7 +113,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
             { modalErrorMsg }
             <Formik
               initialValues={{
-                
+
               }}
               onSubmit={(_values) => {
                 toggleModal();
