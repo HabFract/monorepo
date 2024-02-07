@@ -61,7 +61,19 @@ export const OrbitTree: ComponentType<VisComponent> = ({
         parsedData = JSON.parse(parsedData);
       }
       setBreadthBounds(params?.currentSphereHash, [0, queryType == 'whole' ? 100 : parsedData.result.level_trees.length - 1])
-      setJson(JSON.stringify(queryType == 'whole' ? parsedData.result : parsedData.result.level_trees))
+      const jsonResult = JSON.stringify(queryType == 'whole' ? parsedData.result : parsedData.result.level_trees);
+      setJson(jsonResult);
+      const currentTreeJson = getJsonDerivation(jsonResult);
+      const hierarchyData = hierarchy(currentTreeJson);
+      const orbitVis = new Vis(
+        VisType.Tree,
+        'vis',
+        hierarchyData,
+        canvasHeight,
+        canvasWidth,
+        margin
+      );
+      setCurrentOrbitTree(orbitVis);
     }
   }, [data])
 
@@ -77,7 +89,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   }, [json, breadthIndex])
 
   useEffect(() => {
-    if (!error && json && !currentOrbitTree?._hasRendered) {
+    if (!error && json && currentOrbitTree && !currentOrbitTree?._hasRendered) {
       const currentTreeJson = getJsonDerivation(json); 
       console.log('Preparing to render with json:', currentTreeJson);
       console.log('currentTreeJson :>> ', currentTreeJson);
