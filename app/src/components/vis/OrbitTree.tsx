@@ -1,12 +1,11 @@
 import React, { ComponentType, useEffect, useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
 import Vis from "./BaseVis";
 import { VisType } from './types';
 import { hierarchy } from 'd3';
 import { VisComponent } from './HOC/withVisCanvas';
 import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery, useGetOrbitHierarchyQuery } from '../../graphql/generated';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { HierarchyBounds, currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
+import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 import { useAtom, useAtomValue } from 'jotai';
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
@@ -37,7 +36,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery()
   const [json, setJson] = useState<string>(`{"content":"L1R20-","name":"Live long and prosper","children":[{"content":"L2R13-","name":"Be in peak physical condition","children":[{"content":"L3R12-","name":"Have a good exercise routine","children":[{"content":"L4R5-","name":"go for a short walk at least once a day","children":[]},{"content":"L6R11-","name":"Do some weight training","children":[{"content":"L7R8-","name":"3 sets of weights, til failure","children":[]},{"content":"L9R10-","name":"Do 3 sets of calisthenic exercises","children":[]}]}]}]},{"content":"L14R19-","name":"Establish productive work habits","children":[{"content":"L15R16-","name":"Do one 50 minute pomodoro ","children":[]},{"content":"L17R18-","name":"Read more books on computing","children":[]}]}]}`);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<Vis | null>(null);
-
+  
   const [isModalOpen, setIsModalOpen] = useState<boolean>(!!error || (!params?.orbitEh && !params?.currentSphereHash) || !!(currentOrbitTree && !currentOrbitTree?.rootData));
   const getJsonDerivation = (json: string) => { // Distinguish when it is the starter data (temp) or a whole sphere tree, or an array of trees
     return (queryType == 'whole' || json.search("Live long and prosper") !== -1) ? JSON.parse(json) : JSON.parse(json)[breadthIndex]
@@ -55,6 +54,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   useEffect(() => {
     if (!error && typeof data?.getOrbitHierarchy === 'string') {
       let parsedData = JSON.parse(data.getOrbitHierarchy);
+      console.log('data.getOrbitHierarchy :>> ', data.getOrbitHierarchy);
       // Continue parsing if the result is still a string
       while (typeof parsedData === 'string') {
         parsedData = JSON.parse(parsedData);
@@ -78,6 +78,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   useEffect(() => {
     if (!error && json && !currentOrbitTree?._hasRendered) {
       const currentTreeJson = getJsonDerivation(json); 
+      console.log('currentTreeJson :>> ', currentTreeJson);
       const hierarchyData = hierarchy(currentTreeJson);
       const orbitVis = new Vis(
         VisType.Tree,
@@ -95,6 +96,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
     if(error || isModalOpen) return;
 
     const query = depthBounds ? {...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereHash] as any).minDepth} : getQueryParams(depthIndex)
+    console.log('{ variables: { params: { ...query }} } :>> ', { variables: { params: { ...query }} });
     getHierarchy({ variables: { params: { ...query }} })
   }, [depthIndex])
   
