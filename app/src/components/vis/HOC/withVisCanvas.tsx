@@ -5,10 +5,11 @@ import "./vis.css";
 import { Margins, VisComponent } from '../types';
 import { select } from 'd3';
 import { useAtom, useAtomValue } from 'jotai';
-import { useIndexControls } from '../../../hooks/useIndexControls';
-import { HierarchyBounds, SphereHashes, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
+import { useNodeTraversal } from '../../../hooks/useNodeTraversal';
+import { HierarchyBounds, SphereHierarchyBounds, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
 import { DownOutlined, LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
 import { VisParams } from '../types';
+import { EntryHashB64 } from '@holochain/client';
 
 const defaultMargins: Margins = {
   top: (document.body.getBoundingClientRect().height / (document.body.getBoundingClientRect().height > 1025 ? 6 : 2)),
@@ -17,7 +18,7 @@ const defaultMargins: Margins = {
   left: 0,
 };
 
-const d3SetupCanvas = function () {
+const getCanvasDimensions = function () {
   const { height, width } = document.body.getBoundingClientRect();
   const canvasHeight = height - defaultMargins.top - defaultMargins.bottom;
   const canvasWidth = width - defaultMargins.right - defaultMargins.left;
@@ -39,42 +40,29 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
   const ComponentWithVis: React.FC<VisParams> = (_visParams: VisParams) => {
     const mountingDivId = 'vis-root'; // Declared at the router level
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
-    const { canvasHeight, canvasWidth } = d3SetupCanvas()
     
-    const [depthIndex, setDepthIndex] = useState<number>(0);
-    const [breadthIndex, setBreadthIndex] = useState<number>(0);
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
-    const [selectedSphere] = useAtom(currentSphere);
-
     useEffect(() => {
       if(document.querySelector(`#${mountingDivId} #${svgId}`)) return
       const appended = !!appendSvg(mountingDivId, svgId);
       setAppendedSvg(appended)
-      console.log('appended :>> ', appended);
     }, []);
-
-    const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
-    const incrementBreadth = () => {
-      if(hierarchyBounds && hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]) {
-        const newIndex = (breadthIndex + 1) <= hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxBreadth ? breadthIndex + 1 : breadthIndex;
-        setBreadthIndex(newIndex)
-      }
-    }
-    const decrementBreadth = () => {
-      setBreadthIndex(Math.max.apply(null, [0, breadthIndex - 1]))
-    }
-    const incrementDepth = () => {
-      if(hierarchyBounds && hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]) {
-        const newIndex = (depthIndex + 1) <= hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxDepth ? depthIndex + 1 : depthIndex;
-        setDepthIndex(newIndex)
-      }
-    }
-    const decrementDepth = () => {
-      setDepthIndex(Math.max.apply(null, [0, depthIndex - 1]))
-    }
+    const { canvasHeight, canvasWidth } = getCanvasDimensions()
     
-    const maxBreadth = hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxBreadth;
-    const maxDepth = hierarchyBounds[selectedSphere.entryHash as keyof HierarchyBounds]?.maxDepth;
+    const [selectedSphere] = useAtom(currentSphere);
+    const sphereHierarchyBounds : SphereHierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
+    const { depthIndex, 
+            setDepthIndex, 
+            breadthIndex, 
+            setBreadthIndex, 
+            incrementBreadth, 
+            decrementBreadth, 
+            incrementDepth, 
+            decrementDepth,
+            maxBreadth,
+            maxDepth
+          } = useNodeTraversal(sphereHierarchyBounds[selectedSphere!.entryHash as keyof SphereHierarchyBounds] as HierarchyBounds, selectedSphere.entryHash as EntryHashB64);
+
     return (
       <>
         <Component
@@ -102,5 +90,5 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
       </>
     );
   }
-  return <ComponentWithVis />
+  return <ComponentWithVis  />
 }
