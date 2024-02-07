@@ -3,7 +3,7 @@ import { CreateProfile, CreateSphere, CreateOrbit } from "./components/forms";
 import { ListOrbits, ListSpheres } from "./components/lists";
 import { withVisCanvas } from "./components/vis/HOC/withVisCanvas";
 import OrbitTree from "./components/vis/OrbitTree";
-import { StateTransitions } from "./stateMachine";
+import { StateTransitions } from "./state/stateMachine";
 
 export type AppState = // Currently just for routing in the state machine
   | 'Boot'
@@ -37,12 +37,12 @@ export const routes: Routes = {
   Vis: (() : ReactNode => (withVisCanvas(OrbitTree)))(),
   Home: <p>Welcome Home</p>,
   Onboarding1: <CreateProfile editMode={false} />,
-  Onboarding2: <CreateSphere />,
+  Onboarding2: <CreateSphere editMode={false} />,
   Onboarding3: <CreateProfile editMode={false} />,
   Onboarding4: <CreateProfile editMode={false} />,
-  CreateSphere: <CreateSphere />,
+  CreateSphere: <CreateSphere editMode={false} />,
   ListSpheres: <ListSpheres />,
-  CreateOrbit: <CreateOrbit />,
+  CreateOrbit: <CreateOrbit editMode={false} />,
   ListOrbits: <ListOrbits />,
 };
 

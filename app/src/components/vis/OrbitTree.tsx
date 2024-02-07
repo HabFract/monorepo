@@ -6,7 +6,7 @@ import { hierarchy } from 'd3';
 import { VisComponent } from './HOC/withVisCanvas';
 import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery, useGetOrbitHierarchyQuery } from '../../graphql/generated';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { HierarchyBounds, currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchy';
+import { HierarchyBounds, currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 import { useAtom, useAtomValue } from 'jotai';
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';

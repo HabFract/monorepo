@@ -5,7 +5,7 @@ import "./vis.css";
 import { Margins } from '../types';
 import { select } from 'd3';
 import { useAtom, useAtomValue } from 'jotai';
-import { HierarchyBounds, SphereHashes, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchy';
+import { HierarchyBounds, SphereHashes, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
 import { DownCircleFilled, DownOutlined, LeftOutlined, RightOutlined, UpCircleFilled, UpOutlined } from '@ant-design/icons';
 
 const defaultMargins: Margins = {

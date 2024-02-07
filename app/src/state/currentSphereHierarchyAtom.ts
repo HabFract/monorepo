@@ -1,5 +1,5 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { atom, useSetAtom } from "jotai";
+import { atom } from "jotai";
 
 export interface SphereHashes {
   entryHash?: EntryHashB64;
@@ -20,9 +20,6 @@ export interface SphereHierarchyBounds {
 export const currentSphere = atom<SphereHashes>({ entryHash: "",  actionHash: "", });
 
 export const currentSphereHierarchyBounds = atom<SphereHierarchyBounds>({});
-
-
-// const setBounds = useSetAtom(currentSphereHierarchyBounds);
 
 export const setDepths = atom(
     null,
