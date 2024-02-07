@@ -10,7 +10,7 @@ type SphereCardProps = {
   isHeader: boolean;
   orbitScales: Scale[];
   transition: (newState: string, params?: object) => void
-  runDelete: () => void
+  runDelete?: () => void
 };
 
 function calculateSpherePercentages(counts: object) : any {

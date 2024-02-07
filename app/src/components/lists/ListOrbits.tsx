@@ -16,7 +16,7 @@ interface ListOrbitsProps {
   sphereHash?: string; // Optional prop to filter orbits by sphere
 }
 
-const ListOrbits: React.FC = ({ sphereHash }: ListOrbitsProps) => {
+const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   
   const { loading: loadingSphere, data: dataSphere } = useGetSphereQuery({

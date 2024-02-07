@@ -1,12 +1,12 @@
 
 import { anOrbitConnection } from './../../../app/src/graphql/generated/mocks-types-fixed';
-import { GetOrbitsDocument, Frequency, Scale } from './../../../app/src/graphql/generated/index';
+import { GetOrbitsDocument, Frequency, Scale, DeleteOrbitDocument, GetSphereDocument } from './../../../app/src/graphql/generated/index';
 
 export const ORBITS_MOCKS = [
   {
     request: {
       query: GetOrbitsDocument,
-      variables: { sphereEntryHashB64: "SGVhbHRoMQ==" }, // Base64 for "Health and Fitness" sphere id
+      variables: { sphereEntryHashB64: "SGVhbHRoMQ==e" }, // Base64 for "Health and Fitness" sphere id
     },
     result: {
       data: {
@@ -88,6 +88,40 @@ export const ORBITS_MOCKS = [
             },
           ],
         }),
+      },
+    },
+  },
+  {
+    request: {
+      query: DeleteOrbitDocument,
+      variables: {
+        id: "R28gZm9yIGEgd2Fsay=="
+      },
+    },
+    result: {
+      data: {
+      },
+    },
+  },
+  {
+    request: {
+      query: GetSphereDocument,
+      variables: {
+        id: "SGVhbHRoMQ==e"
+      },
+    },
+    result: {
+      data: {
+        sphere: {
+          id: "SGVhbHRoMQ==e",
+          eH: "SGVhbHRoMQ==e",          
+          name: "ABC",
+          hashtag: "ABC",
+          metadata: {
+            description: "ABC",
+            image: "ABC",
+          }
+        }
       },
     },
   }
