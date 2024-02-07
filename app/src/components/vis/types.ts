@@ -8,6 +8,11 @@ export type VisParams = {
   currentSphereHash: EntryHashB64
 }
 
+export enum VisCoverage {
+  Partial = "partial",
+  Complete = "complete"
+}
+
 export type VisComponent = { // e.g. OrbitTree, OrbitCluster
   canvasHeight: number;
   canvasWidth: number;
