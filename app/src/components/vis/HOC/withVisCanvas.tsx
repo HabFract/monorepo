@@ -5,6 +5,7 @@ import "./vis.css";
 import { Margins, VisComponent } from '../types';
 import { select } from 'd3';
 import { useAtom, useAtomValue } from 'jotai';
+import { useIndexControls } from '../../../hooks/useIndexControls';
 import { HierarchyBounds, SphereHashes, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
 import { DownOutlined, LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
 import { VisParams } from '../types';
