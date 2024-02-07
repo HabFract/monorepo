@@ -34,7 +34,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   : { levelQuery: { sphereHashB64: params.currentSphereHash, orbitLevel: customDepth || 0 } };
   
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery()
-  const [json, setJson] = useState<string>(`{"content":"L1R20-","name":"Live long and prosper","children":[{"content":"L2R13-","name":"Be in peak physical condition","children":[{"content":"L3R12-","name":"Have a good exercise routine","children":[{"content":"L4R5-","name":"go for a short walk at least once a day","children":[]},{"content":"L6R11-","name":"Do some weight training","children":[{"content":"L7R8-","name":"3 sets of weights, til failure","children":[]},{"content":"L9R10-","name":"Do 3 sets of calisthenic exercises","children":[]}]}]}]},{"content":"L14R19-","name":"Establish productive work habits","children":[{"content":"L15R16-","name":"Do one 50 minute pomodoro ","children":[]},{"content":"L17R18-","name":"Read more books on computing","children":[]}]}]}`);
+  const [json, setJson] = useState<string | null>(null);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<Vis | null>(null);
   
   const [isModalOpen, setIsModalOpen] = useState<boolean>(!!error || (!params?.orbitEh && !params?.currentSphereHash) || !!(currentOrbitTree && !currentOrbitTree?.rootData));
@@ -100,7 +100,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
     getHierarchy({ variables: { params: { ...query }} })
   }, [depthIndex])
   
-  return (<>{!error && json && render(currentOrbitTree, queryType)}
+  return (<>{!error && json && currentOrbitTree && render(currentOrbitTree, queryType)}
     {isModalOpen && (
         <Modal show={isModalOpen} onClose={toggleModal}>
           <Modal.Header>
