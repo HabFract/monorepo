@@ -9,6 +9,7 @@ import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../stat
 import { useAtom, useAtomValue } from 'jotai';
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
+import { EntryHashB64 } from '@holochain/client';
 
 export const OrbitTree: ComponentType<VisComponent> = ({
   canvasHeight,
@@ -61,7 +62,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
       setBreadthBounds(params?.currentSphereHash, [0, queryType == 'whole' ? 100 : parsedData.result.level_trees.length - 1])
       const jsonResult = JSON.stringify(queryType == 'whole' ? parsedData.result : parsedData.result.level_trees);
       setJson(jsonResult);
-console.log('json, data :>> ', json, data);
+      console.log('json, data :>> ', json, data);
     }
   }, [data])
 
@@ -69,11 +70,9 @@ console.log('json, data :>> ', json, data);
     if (!error && typeof data?.getOrbitHierarchy === 'string' && currentOrbitTree) {
 
       currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string));
-      console.log('hierarchyData.depth :>> ', currentOrbitTree._nextRootData);
       setDepthBounds(params?.currentSphereHash, [0, 2]);
       currentOrbitTree._nextRootData._translationCoords = [breadthIndex, depthIndex, hierarchyBounds[params?.currentSphereHash].maxBreadth + 1];
       currentOrbitTree.render();
-      console.log('currentOrbitTree :>> ', currentOrbitTree);
     }
   }, [json, breadthIndex])
 

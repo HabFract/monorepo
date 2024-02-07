@@ -1,4 +1,22 @@
+import { EntryHashB64 } from "@holochain/client";
 import { ReactNode } from "react";
+import { SphereHashes } from "../../state/currentSphereHierarchyAtom";
+
+export type VisParams = {
+  orbitEh: EntryHashB64
+} | {
+  currentSphereHash: EntryHashB64
+}
+
+export type VisComponent = { // e.g. OrbitTree, OrbitCluster
+  canvasHeight: number;
+  canvasWidth: number;
+  margin: Margins;
+  selectedSphere: SphereHashes;
+  breadthIndex: number;
+  depthIndex: number;
+  render: (currentVis: any, queryType: string) => JSX.Element;
+}
 
 export interface EventHandlers {
   handlePrependNode: () => void;

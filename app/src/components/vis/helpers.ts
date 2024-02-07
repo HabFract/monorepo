@@ -78,10 +78,7 @@ export const updateVisRootData = (
   visObject,
   currentHierarchy,
 ) => {
-  debugger;
   const visHasRenders = typeof visObject == 'object' && !visObject.firstRender();
-  console.log('visHasRenders :>> ', visHasRenders);
-  debugger;
   // Check if the hierarchy in the store is a new one (a new tree needs rendering)
   // either because of a different node set/relationships
   // or because node values changed
