@@ -74,6 +74,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
         margin
       );
       setCurrentOrbitTree(orbitVis);
+    orbitVis.render();
     }
   }, [data])
 
@@ -89,7 +90,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   }, [json, breadthIndex])
 
   useEffect(() => {
-    if (!error && json && currentOrbitTree && !currentOrbitTree?._hasRendered) {
+    if (!error && json && !currentOrbitTree) {
       const currentTreeJson = getJsonDerivation(json); 
       console.log('Preparing to render with json:', currentTreeJson);
       console.log('currentTreeJson :>> ', currentTreeJson);
