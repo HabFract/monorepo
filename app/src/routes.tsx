@@ -1,8 +1,8 @@
-import { Component, ReactNode } from "react";
 import { CreateProfile, CreateSphere, CreateOrbit } from "./components/forms";
 import { ListOrbits, ListSpheres } from "./components/lists";
-import { VisComponent, withVisCanvas } from "./components/vis/HOC/withVisCanvas";
+
 import OrbitTree from "./components/vis/OrbitTree";
+import { renderVis } from "./components/vis/helpers";
 import { StateTransitions } from "./state/stateMachine";
 
 export type AppState = // Currently just for routing in the state machine
@@ -31,9 +31,6 @@ export const initialState: AppStateStore = { // Home route
   currentState: "Home",
   params: {}
 }
-
-// Helper function to return a ReactNode that is a combination of the Vis component, wrapped by the withCanvas higher order component, contained by a mounting div
-const renderVis = (visComponent: React.ComponentType<VisComponent>) : ReactNode => <div id="vis-root" className="h-full">{(withVisCanvas(visComponent))}</div>
 
 export const routes: Routes = {
   Boot: <p>Loading</p>,

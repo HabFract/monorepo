@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { Button, TextInput, Label, Textarea, Tooltip } from 'flowbite-react';
 import { useCreateSphereMutation, useGetSphereQuery, useUpdateSphereMutation } from '../../graphql/generated';
 import { AlertOutlined } from '@ant-design/icons';
-import { ImageUpload } from '../inputs';
+import { ImageUpload } from './input';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { ActionHashB64 } from '@holochain/client';
 

@@ -1,11 +1,21 @@
 import { EntryHashB64 } from "@holochain/client";
-import { ReactNode } from "react";
 import { SphereHashes } from "../../state/currentSphereHierarchyAtom";
+import BaseVisualization from "./BaseVis";
 
-export type VisParams = {
-  orbitEh: EntryHashB64
+export type WithVisCanvasProps = { // Passed to the finite state machine which renders the HOC
+  orbitEh: EntryHashB64 // For partial VisCoverage
 } | {
-  currentSphereHash: EntryHashB64
+  currentSphereHash: EntryHashB64 // For complete VisCoverage
+}
+
+export type VisProps = { // for e.g. OrbitTree, OrbitCluster
+  canvasHeight: number;
+  canvasWidth: number;
+  margin: Margins;
+  selectedSphere: SphereHashes;
+  breadthIndex: number;
+  depthIndex: number;
+  render: (currentVis: BaseVisualization, queryType: VisCoverage) => React.ReactNode;
 }
 
 export enum VisCoverage {
@@ -13,15 +23,7 @@ export enum VisCoverage {
   Complete = "complete"
 }
 
-export type VisComponent = { // e.g. OrbitTree, OrbitCluster
-  canvasHeight: number;
-  canvasWidth: number;
-  margin: Margins;
-  selectedSphere: SphereHashes;
-  breadthIndex: number;
-  depthIndex: number;
-  render: (currentVis: any, queryType: string) => JSX.Element;
-}
+// BaseVisualization class property types/interfaces
 
 export interface EventHandlers {
   handlePrependNode: () => void;
@@ -80,7 +82,7 @@ export enum VisType {
   Radial = "Radial"
 }
 
-// Now define the interface for the Visualization class
+// Now define the interface to be implemented by the BaseVisualization class
 export interface IVisualization {
   type: VisType;
   _svgId: string;
@@ -91,16 +93,4 @@ export interface IVisualization {
   expand: () => void;
   collapse: () => void;
   _hasRendered: boolean;
-}
-
-export interface Hierarchy {
-  id: number;
-  hier: object;
-}
-
-export interface VisProps {
-  canvasHeight: number;
-  canvasWidth?: number;
-  margin: Margins;
-  render: (_:any) => ReactNode;
 }

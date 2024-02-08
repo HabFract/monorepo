@@ -6,6 +6,11 @@ import {
   noNodeCol,
 } from "./constants";
 
+// Helper function to return a ReactNode that is a combination of the Vis component, wrapped by the withCanvas higher order component, contained by a mounting div
+export const renderVis = (visComponent: React.ComponentType<VisProps>) : ReactNode => <>
+  <div id="vis-root" className="h-full"></div>{(withVisCanvas(visComponent))}
+</>
+
 export const isTouchDevice = () => {
   return (
     "ontouchstart" in window ||
@@ -35,7 +40,9 @@ export const debounce = function (func, delay) {
 
 import { select } from "d3";
 // import { selectInUnpersisted } from "features/habitDate/selectors";
-import { ViewConfig, VisType, ZoomConfig } from "./types";
+import { ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
+import { ReactNode } from "react";
+import { withVisCanvas } from "./HOC/withVisCanvas";
 
 // General helpers
 

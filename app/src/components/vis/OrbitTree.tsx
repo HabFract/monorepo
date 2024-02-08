@@ -1,6 +1,6 @@
 import React, { ComponentType, useEffect, useState } from 'react';
-import Vis from "./BaseVis";
-import { VisComponent, VisCoverage, VisType } from './types';
+import BaseVisualization from "./BaseVis";
+import { VisProps, VisCoverage, VisType } from './types';
 import { hierarchy } from 'd3';
 
 import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
@@ -10,7 +10,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
 
-export const OrbitTree: ComponentType<VisComponent> = ({
+export const OrbitTree: ComponentType<VisProps> = ({
   canvasHeight,
   canvasWidth,
   margin,
@@ -20,7 +20,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
 }) => {
   // Top level state machine and routing
   const [_state, transition, params] = useStateTransition();
-
+  
   // Does this vis cover the whole tree, or just a window over the whole tree?
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;
 
@@ -39,7 +39,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
   // Query hook, parsed JSON state, and Vis object state
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery()
   const [json, setJson] = useState<string | null>(null);
-  const [currentOrbitTree, setCurrentOrbitTree] = useState<Vis | null>(null);
+  const [currentOrbitTree, setCurrentOrbitTree] = useState<BaseVisualization | null>(null);
 
   // Modal state, set to open when there is an error or if initial Visualisation is not possible
   const [modalErrorMsg, setModalErrorMsg] = useState<string>("");
@@ -57,7 +57,7 @@ export const OrbitTree: ComponentType<VisComponent> = ({
     if (!error && json && !currentOrbitTree) {
       const currentTreeJson = getJsonDerivation(json);
       const hierarchyData = hierarchy(currentTreeJson);
-      const orbitVis = new Vis(
+      const orbitVis = new BaseVisualization(
         VisType.Tree,
         'vis',
         hierarchyData,

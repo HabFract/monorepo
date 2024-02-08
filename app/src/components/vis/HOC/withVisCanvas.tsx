@@ -2,13 +2,13 @@ import React, { ComponentType, ReactNode, useEffect, useState } from 'react'
 
 import "./vis.css";
 
-import { Margins, VisComponent } from '../types';
+import { Margins, VisProps, VisCoverage } from '../types';
 import { select } from 'd3';
 import { useAtom, useAtomValue } from 'jotai';
 import { useNodeTraversal } from '../../../hooks/useNodeTraversal';
 import { HierarchyBounds, SphereHierarchyBounds, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
 import { DownOutlined, LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
-import { VisParams } from '../types';
+import { WithVisCanvasProps } from '../types';
 import { EntryHashB64 } from '@holochain/client';
 
 const defaultMargins: Margins = {
@@ -36,8 +36,8 @@ const appendSvg = (mountingDivId: string, divId: string) => {
       .attr("style", "pointer-events: all");
 };
 
-export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode {
-  const ComponentWithVis: React.FC<VisParams> = (_visParams: VisParams) => {
+export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
+  const ComponentWithVis: React.FC<WithVisCanvasProps> = (_visParams: WithVisCanvasProps) => {
     const mountingDivId = 'vis-root'; // Declared at the router level
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
     
@@ -51,6 +51,7 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
     
     const [selectedSphere] = useAtom(currentSphere);
     const sphereHierarchyBounds : SphereHierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
+    console.log('sphereHierarchyBounds, selectedSphere :>> ', sphereHierarchyBounds, selectedSphere);
     const { depthIndex, 
             setDepthIndex, 
             breadthIndex, 
@@ -72,17 +73,20 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
           selectedSphere={selectedSphere}
           breadthIndex={breadthIndex}
           depthIndex={depthIndex}
-          render={(currentVis: any, queryType: string) => {
-            const withTraversal = queryType !== 'whole';
-            appendedSvg && currentVis?.render();
+          render={(currentVis: any, queryType: VisCoverage) => {
+            // Determine need for traversal controld
+            const withTraversal = queryType == VisCoverage.Partial;
 
+            // Trigger the Vis object render function only once the SVG is appended to the DOM
+            appendedSvg && currentVis?.render();
+console.log('withTraversal, depthIndex, breadthIndex :>> ', queryType, withTraversal, depthIndex, breadthIndex, maxBreadth, maxDepth);
             return (
               <> 
-                {withTraversal && depthIndex !== 0 && <UpOutlined className='fixed top-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={decrementDepth} />}
-                {withTraversal && breadthIndex !== 0 && <LeftOutlined className='fixed left-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}} onClick={decrementBreadth} />}
+                {!!(withTraversal && depthIndex !== 0) && <UpOutlined className='fixed top-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={decrementDepth} />}
+                {!!(withTraversal && breadthIndex !== 0) && <LeftOutlined className='fixed left-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}} onClick={decrementBreadth} />}
                 
-                {withTraversal && maxBreadth && breadthIndex < maxBreadth && <RightOutlined className='fixed right-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}}  onClick={incrementBreadth} />}
-                {withTraversal && maxDepth && depthIndex < maxDepth && <DownOutlined className='fixed bottom-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={incrementDepth} />}
+                {!!(withTraversal && maxBreadth && breadthIndex < maxBreadth) && <RightOutlined className='fixed right-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}}  onClick={incrementBreadth} />}
+                {!!(withTraversal && maxDepth && depthIndex < maxDepth) && <DownOutlined className='fixed bottom-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={incrementDepth} />}
               </>
             )
           }}
@@ -90,5 +94,6 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
       </>
     );
   }
+  //@ts-ignore
   return <ComponentWithVis  />
 }

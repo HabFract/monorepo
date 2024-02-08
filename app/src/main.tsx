@@ -20,7 +20,6 @@ export const AppMachine = new StateMachine<AppState, AppStateStore>(initialState
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
-
 const client = await connect({} as ClientOptions);
 
 async function renderComponent(component: React.ReactNode) {

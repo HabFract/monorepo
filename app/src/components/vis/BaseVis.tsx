@@ -82,7 +82,7 @@ import {
 import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
 
 
-export default class Visualization implements IVisualization {
+export default class BaseVisualization implements IVisualization {
   type: VisType;
   _svgId: string;
   _canvas: any;
@@ -1456,8 +1456,8 @@ console.log('this._viewConfig :>> ', this._viewConfig);
 
 export function accumulateTree(json, thisArg) {
   try {
-    Visualization.sumHierarchyData.call(null, json);
-    Visualization.accumulateNodeValues.call(thisArg, json);
+    BaseVisualization.sumHierarchyData.call(null, json);
+    BaseVisualization.accumulateNodeValues.call(thisArg, json);
     // TODO memoise
   } catch (error) {
     console.error("Could not manipulate tree: ", error);
