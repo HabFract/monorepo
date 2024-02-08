@@ -51,7 +51,6 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
     
     const [selectedSphere] = useAtom(currentSphere);
     const sphereHierarchyBounds : SphereHierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
-    console.log('sphereHierarchyBounds, selectedSphere :>> ', sphereHierarchyBounds, selectedSphere);
     const { depthIndex, 
             setDepthIndex, 
             breadthIndex, 

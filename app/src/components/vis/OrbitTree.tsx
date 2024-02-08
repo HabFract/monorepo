@@ -87,8 +87,8 @@ export const OrbitTree: ComponentType<VisProps> = ({
         parsedData = JSON.parse(parsedData);
       }
       // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
+      setDepthBounds(params?.currentSphereHash, [0, 2]);
       setBreadthBounds(params?.currentSphereHash, [0, visCoverage == VisCoverage.Complete ? 100 : parsedData.result.level_trees.length - 1])
-
       // Depending on query type, set the state of the parsed JSON to the relevant part of the payload
       setJson(JSON.stringify(visCoverage == VisCoverage.Complete ? parsedData.result : parsedData.result.level_trees));
     }
@@ -104,7 +104,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
       currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string));
 
       // TODO: set actual depth bounds and perhaps use the translation coords
-      setDepthBounds(params?.currentSphereHash, [0, 2]);
+
       currentOrbitTree._nextRootData._translationCoords = [breadthIndex, depthIndex, hierarchyBounds[params?.currentSphereHash].maxBreadth + 1];
 
       currentOrbitTree.render();

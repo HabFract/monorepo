@@ -7,8 +7,8 @@ export const useNodeTraversal = (hierarchyBounds: HierarchyBounds, selectedSpher
   const [breadthIndex, setBreadthIndex] = useState<number>(0);
 
   const incrementBreadth = () => {
-    if (hierarchyBounds && hierarchyBounds[selectedSphereHash]) {
-      const newIndex = (breadthIndex + 1) <= hierarchyBounds[selectedSphereHash].maxBreadth ? breadthIndex + 1 : breadthIndex;
+    if (hierarchyBounds) {
+      const newIndex = (breadthIndex + 1) <= hierarchyBounds.maxBreadth ? breadthIndex + 1 : breadthIndex;
       setBreadthIndex(newIndex);
     }
   };
@@ -18,8 +18,8 @@ export const useNodeTraversal = (hierarchyBounds: HierarchyBounds, selectedSpher
   };
 
   const incrementDepth = () => {
-    if (hierarchyBounds && hierarchyBounds[selectedSphereHash]) {
-      const newIndex = (depthIndex + 1) <= hierarchyBounds[selectedSphereHash].maxDepth ? depthIndex + 1 : depthIndex;
+    if (hierarchyBounds) {
+      const newIndex = (depthIndex + 1) <= hierarchyBounds.maxDepth ? depthIndex + 1 : depthIndex;
       setDepthIndex(newIndex);
     }
   };
@@ -27,7 +27,6 @@ export const useNodeTraversal = (hierarchyBounds: HierarchyBounds, selectedSpher
   const decrementDepth = () => {
     setDepthIndex(depthIndex > 0 ? depthIndex - 1 : 0);
   };
-  
   const maxBreadth = hierarchyBounds?.maxBreadth;
   const maxDepth = hierarchyBounds?.maxDepth;
 
