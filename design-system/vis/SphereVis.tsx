@@ -20,7 +20,7 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
         series: [series.Sub, series.Atom, series.Astro],
         colors: ["rgba(64, 169, 255, 0.5)", "rgba(107,125,127, 0.9)","rgba(189, 16, 224, 0.3)"],
         chart: {
-          width: 'auto',
+          width: "auto",
           height: "100%",
           type: "pie",
         },
@@ -52,7 +52,7 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
         }
       }
     }
-    if(typeof  pieChart?.current === "undefined" || (pieChart.current as HTMLElement)!.children?.length > 0) return;
+    if(typeof pieChart?.current === "undefined" || (pieChart.current as HTMLElement)!.children?.length > 0) return;
     const chart = new ApexCharts(pieChart.current, getChartOptions());
     chart.render();
   }, [])

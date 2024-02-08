@@ -44,6 +44,11 @@ nav.side-nav.collaped-vertical + .page-container .sphere-card.list-header button
   background-position-x: -1px;
 }
 
+.ant-menu-item-icon, .ant-menu-item-icon.selected, .ant-menu-submenu-title img {
+  height: 68px !important;
+  object-fit: cover;
+}
+
 /* Vertical collapse button */
 .toggle-vertical-collapse {
   @apply bg-transparent border-0 text-off-white text-sm h-10;
@@ -91,7 +96,7 @@ nav.side-nav.collaped-vertical + .page-container .sphere-card.list-header button
 }
 
 .main-actions-menu {
-  @apply flex flex-col overflow-hidden items-center mb-4 gap-2;
+  @apply flex flex-col items-center mb-4 gap-2;
   border-radius: 1rem;
 }
 
@@ -104,7 +109,7 @@ ul[role="menu"] li:hover {
   @apply bg-nav-bg text-info;
 }
 ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
-  border: 4px solid;
+  border: 3px solid;
   border-color:rgba(80, 227, 194, 0.8) !important;
 }
 
@@ -115,7 +120,8 @@ ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
 }
 .ant-menu span[role="img"] {
   /* icon */
-  font-size: 1.5rem !important;
+  font-size: 1.25rem !important;
+  max-height: 40px;
   color:rgba(80, 227, 194, 0.8) !important;
   margin-left: -.25rem !important;
   box-shadow: 2px 4px 18px rgba(54, 25, 91, .5) !important;
@@ -170,7 +176,7 @@ button[data-testid="dark-theme-toggle"] svg {
 
 .ant-menu-submenu-title[role="menuitem"] {
   height: 3rem !important;
-  border-radius: 100%;
+  border-radius: 1.75rem;
   margin: 8px !important;
   padding: 0 !important;
   transition: .5s all ease-in;
@@ -217,7 +223,9 @@ button[data-testid="dark-theme-toggle"] svg {
 ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] img{
   transition: .3s all cubic-bezier(1, 0.13, 0.13, 1);
   width: 3rem;
-  border-radius: 100%;
+  border-radius: 2.5rem;
+  object-fit: scale-down;
+  padding: .25rem;
 }
 
 ul.ant-menu-inline .ant-menu-submenu-open .ant-menu-submenu-title[role="menuitem"] img{

@@ -592,10 +592,9 @@ export default class BaseVisualization implements IVisualization {
 
   translateLinks([dx, dy, breadth]: number[]) : void {
     const strokeWidth = 3;
-console.log('dx, dy, breadth :>> ', dx, dy, breadth);
 
     const fullWidth = (this._viewConfig!.dx as number * (this._viewConfig!.levelsWide as number)) / breadth;
-    console.log('object :>> ', fullWidth) 
+
     const x = dx == 0 ? fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any : -(fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any);
     const y = -(this._viewConfig!.dy as number * this._viewConfig.scale) + (this._viewConfig!.nodeRadius as number)  * 2 as any;
     select(".canvas").selectAll("g.links").attr("transform", "translate(" + (x + strokeWidth) + ", " + (y + strokeWidth) + ")");

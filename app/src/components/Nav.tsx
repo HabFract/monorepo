@@ -48,7 +48,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
     setCollapsed(false);
   };
   const removeOtherActiveNavItemStates = () => {
-    console.log('object :>> ', );
+    console.log('removed other active nav item states :>> ', );
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
