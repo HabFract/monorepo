@@ -592,12 +592,16 @@ export default class BaseVisualization implements IVisualization {
 
   translateLinks([dx, dy, breadth]: number[]) : void {
     const strokeWidth = 3;
-
+    const breadthToIndexRatio = (dx+1)/ breadth;
+    
+    const middleIndex = (breadth % 2 == 0) ? breadth / 2 : (breadth / 2 + 0.5);
+    const middleElement = dx == middleIndex;
+    
+    console.log('dx :>> ', middleElement,  dx, breadthToIndexRatio);
     const fullWidth = (this._viewConfig!.dx as number * (this._viewConfig!.levelsWide as number)) / breadth;
-
-    const x = dx == 0 ? fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any : -(fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any);
+    const x = breadthToIndexRatio < 0.5 ? (fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any) : -(fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any);
     const y = -(this._viewConfig!.dy as number * this._viewConfig.scale) + (this._viewConfig!.nodeRadius as number)  * 2 as any;
-    select(".canvas").selectAll("g.links").attr("transform", "translate(" + (x + strokeWidth) + ", " + (y + strokeWidth) + ")");
+    select(".canvas").selectAll("g.links").attr("transform", "translate(" + -breadth * (x + strokeWidth) + ", " + (y + strokeWidth) + ")");
   }
 
   resetForExpandedMenu({ justTranslation }) {
