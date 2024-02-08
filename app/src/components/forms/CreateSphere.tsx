@@ -128,7 +128,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
               </div>
             </div>
 
-            <Button type="submit" disabled={!!Object.values(errors).length} className={editMode ? "btn-warn" : "btn-primary"}>{editMode ? "Update" : "Create"}</Button>
+            <Button type="submit" disabled={!!Object.values(errors).length || Object.values(touched).filter(value => value).length < 1} className={editMode ? "btn-warn" : "btn-primary"}>{editMode ? "Update" : "Create"}</Button>
           </Form>
         )}
       </Formik>

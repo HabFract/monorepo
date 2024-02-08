@@ -50,7 +50,6 @@ const OrbitFetcher = ({orbitToEditId}) => {
   return null;
 };
 
-
 interface CreateOrbitProps {
   editMode: boolean;
   orbitToEditId?: ActionHashB64;
@@ -59,8 +58,8 @@ interface CreateOrbitProps {
 }
 
 const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEditId, sphereEh, parentOrbitEh }: CreateOrbitProps) => {
-  const [state, transition] = useStateTransition(); // Top level state machine and routing
-  const [selectedSphere, setSelectedSphere] = useAtom(currentSphere);
+  const [_state, transition] = useStateTransition(); // Top level state machine and routing
+  const [selectedSphere, _setSelectedSphere] = useAtom(currentSphere);
 
   const [addOrbit] = useCreateOrbitMutation({
     refetchQueries: [
@@ -232,7 +231,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
               </div>
             </Flex>
 
-            <Button type="submit" disabled={!!Object.values(errors).length || (Object.values(touched).filter(value => value).length < 1)} className={editMode ? "btn-warn" : "btn-primary"}>{editMode ? "Update" : "Create"}</Button>
+            <Button type="submit" disabled={!!Object.values(errors).length || !!(Object.values(touched).filter(value => value).length < 1)} className={editMode ? "btn-warn" : "btn-primary"}>{editMode ? "Update" : "Create"}</Button>
           </Form>
         )}
       </Formik>
