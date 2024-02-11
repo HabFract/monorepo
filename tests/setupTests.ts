@@ -1,8 +1,8 @@
-
+//@ts-ignore
 window.ResizeObserver = require('resize-observer-polyfill')
 
 const mockUseStateTransitionResponse = ['Home', jest.fn(() => {}), {
-  orbitEh: 'uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX6l-ncJWu',
+  orbitEh: 'R28gZm9yIGEgd2Fsay==',
   currentSphereHash: 'abc',
 }];
 
