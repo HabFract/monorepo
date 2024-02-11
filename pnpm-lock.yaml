@@ -183,6 +183,9 @@ importers:
       jotai:
         specifier: ^2.5.1
         version: 2.6.1(@types/react@18.2.37)(react@18.2.0)
+      jotai-minidb:
+        specifier: ^0.0.7
+        version: 0.0.7(jotai@2.6.1)
       js-base64:
         specifier: ^3.7.5
         version: 3.7.5
@@ -4976,6 +4979,11 @@ packages:
   /@repeaterjs/repeater@3.0.5:
     resolution: {integrity: sha512-l3YHBLAol6d/IKnB9LhpD0cEZWAoe3eFKUyTYWmFmCO2Q/WOckxLQAUyMZWwZV2M/m3+4vgRoaolFqaII82/TA==}
     dev: true
+
+  /@rocicorp/resolver@1.0.1:
+    resolution: {integrity: sha512-9+IK9C/du8Nrqn3LaKBxJwV4H2HyIpa7HlTuc4eQ938lL4faxN6TuQV+IpvX6PxQeR14X7yMtz1f9dfiS5fvlw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dev: false
 
   /@rollup/plugin-graphql@2.0.4(graphql@16.8.1):
     resolution: {integrity: sha512-TfaqbbK71VHodCDCoRbPnv2+Tsnlvad2OsGEviURHFl+ZBUyf5wfXgXc9RqZ+xKxSl87Z3YbPhD0z6eWYjuByw==}
@@ -10580,6 +10588,10 @@ packages:
       safer-buffer: 2.1.2
     dev: true
 
+  /idb-keyval@6.2.1:
+    resolution: {integrity: sha512-8Sb3veuYCyrZL+VBt9LJfZjLUPWVvqn8tG28VqYNFCo43KHcKuq+b4EiXGeuaLAQWL2YmyDgMp2aSpH9JHsEQg==}
+    dev: false
+
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
 
@@ -11640,6 +11652,16 @@ packages:
   /jose@5.2.0:
     resolution: {integrity: sha512-oW3PCnvyrcm1HMvGTzqjxxfnEs9EoFOFWi2HsEGhlFVOXxTE3K9GKWVMFoFw06yPUqwpvEWic1BmtUZBI/tIjw==}
     dev: true
+
+  /jotai-minidb@0.0.7(jotai@2.6.1):
+    resolution: {integrity: sha512-xBhifgFy6+PmGqN9Hi2HPTJ64MC/VLyxA9y0b/qZYZ2ZDHctXeoDhzNldg6tb4rpjcZ7OzVk8WDFaUjzFHt1xw==}
+    peerDependencies:
+      jotai: '>=1.10.0'
+    dependencies:
+      '@rocicorp/resolver': 1.0.1
+      idb-keyval: 6.2.1
+      jotai: 2.6.1(@types/react@18.2.37)(react@18.2.0)
+    dev: false
 
   /jotai@2.6.1(@types/react@18.2.37)(react@18.2.0):
     resolution: {integrity: sha512-GLQtAnA9iEKRMXnyCjf1azIxfQi5JausX2EI5qSlb59j4i73ZEyV/EXPDEAQj4uQNZYEefi3degv/Pw3+L/Dtg==}

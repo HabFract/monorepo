@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { listSortFilterAtom } from '../../state/listSortFilterAtom';
+import nodeStore from '../../state/jotaiKeyValueStore';
 import './common.css';
 
 import PageHeader from '../PageHeader';
@@ -8,7 +9,7 @@ import ListSortFilter from './ListSortFilter';
 
 import OrbitCard from '../../../../design-system/cards/OrbitCard';
 import SphereCard from '../../../../design-system/cards/SphereCard';
-import { Orbit, useDeleteOrbitMutation, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSphereLazyQuery, useGetSphereQuery } from '../../graphql/generated';
+import { Orbit, OrbitEdge, useDeleteOrbitMutation, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSphereLazyQuery, useGetSphereQuery } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { useStateTransition } from '../../hooks/useStateTransition';
 
@@ -18,6 +19,17 @@ interface ListOrbitsProps {
 
 const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
+  
+  const db = useAtomValue(nodeStore.entries);
+  const setMany = useSetAtom(nodeStore.setMany)
+  const mapToCacheObject = (orbit: Orbit) => ({
+    id: orbit.id,
+    name: orbit.name,
+    scale: orbit.scale,
+    description: orbit.metadata?.description,
+    startTime: orbit.metadata?.timeframe.startTime,
+    endTime: orbit.metadata?.timeframe.endTime,
+  })
   
   const { loading: loadingSphere, data: dataSphere } = useGetSphereQuery({
     variables: { id: sphereHash as string },
@@ -40,8 +52,22 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
       getOrbits();
     }
   }, [dataSphere, loadingSphere]);
+
+  useEffect(() => {
+    if (data) {
+      let orbits: Orbit[] = extractEdges(data.orbits);
+      const indexedOrbitData = Object.entries(orbits.map(mapToCacheObject))
+        .map(([_idx, value]) => {
+          return [sphereEh + '___' + value.id, value]
+        })
+        // NOTE: this is provisionally using the convention {{SPHERE_AH}}___{{ORBIT_AH}}
+        // and may need to be adapted once WIN records are also cached.
+        
+      setMany(indexedOrbitData);
+    }
+  }, [data]);
+
   const [listSortFilter] = useAtom(listSortFilterAtom);
-  
   const scaleValues = { Sub: 1, Atom: 2, Astro: 3 };
   
   if (loadingOrbits || loadingSphere) return <p>Loading...</p>;
