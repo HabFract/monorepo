@@ -4,9 +4,9 @@ import { zoom } from "d3-zoom";
 import { linkVertical, linkHorizontal } from "d3-shape";
 import { tree, hierarchy } from "d3-hierarchy";
 import { easeCubic, easePolyIn, easeLinear } from "d3-ease";
-import { legendColor } from "d3-svg-legend";
 import { TreeLayout } from "d3-hierarchy";
 import { legendColor } from "d3-svg-legend";
+
 import Hammer from "hammerjs";
 import propagating from "propagating-hammerjs";
 import _ from "lodash";
@@ -642,7 +642,6 @@ export default class BaseVisualization implements IVisualization {
       +(this.type == VisType.Cluster && this._viewConfig.isSmallScreen()) * 210;
     this._viewConfig.dy =
       this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number);
-console.log('this._viewConfig :>> ', this._viewConfig);
     //adjust for taller aspect ratio
     this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 4.25 : 3.5;
     this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3.25 : 3.5;
@@ -863,6 +862,7 @@ console.log('this._viewConfig :>> ', this._viewConfig);
           ? "the-node solid active"
           : "the-node solid";
       })
+      .attr("data-testid", (d, i) => "test-node")
       .style("fill", (d) => {
         return nodeStatusColours(d);
       })

@@ -1,7 +1,7 @@
 import React, { ComponentType, useEffect, useState } from 'react';
 import BaseVisualization from "./BaseVis";
 import { VisProps, VisCoverage, VisType } from './types';
-import { hierarchy } from 'd3';
+import { hierarchy } from "d3-hierarchy";
 
 import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
 import { useStateTransition } from '../../hooks/useStateTransition';

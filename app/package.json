@@ -20,8 +20,6 @@
     "@graphql-tools/schema": "^10.0.2",
     "@holochain-open-dev/utils": "^0.16.3",
     "@holochain/client": "^0.16.7",
-    "d3": "^7.8.5",
-    "d3-svg-legend": "^2.25.6",
     "deep-for-each": "^3.0.0",
     "fecha": "^4.2.3",
     "graphql": "^16.8.1",

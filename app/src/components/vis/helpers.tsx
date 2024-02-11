@@ -38,7 +38,7 @@ export const debounce = function (func, delay) {
 };
 
 
-import { select } from "d3";
+import { select } from "d3-selection";
 // import { selectInUnpersisted } from "features/habitDate/selectors";
 import { ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
 import { ReactNode } from "react";

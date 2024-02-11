@@ -3,7 +3,7 @@ import React, { ComponentType, ReactNode, useEffect, useState } from 'react'
 import "./vis.css";
 
 import { Margins, VisProps, VisCoverage } from '../types';
-import { select } from 'd3';
+import { select } from "d3-selection";
 import { useAtom, useAtomValue } from 'jotai';
 import { useNodeTraversal } from '../../../hooks/useNodeTraversal';
 import { HierarchyBounds, SphereHierarchyBounds, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
@@ -32,6 +32,7 @@ const appendSvg = (mountingDivId: string, divId: string) => {
       .append("svg")
       .attr("id", `${divId}`)
       .attr("width", "100%")
+      .attr("data-testid", "svg")
       .attr("height", "100%")
       .attr("style", "pointer-events: all");
 };

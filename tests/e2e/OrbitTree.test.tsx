@@ -1,23 +1,25 @@
 import React from 'react';
 
 import '@testing-library/jest-dom'
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, screen } from '@testing-library/react';
 
 import OrbitTree from '../../app/src/components/vis/OrbitTree';
 
 import { HIERARCHY_MOCKS } from './mocks/hierarchy';
 import { MockedProvider } from '@apollo/client/testing';
 import { renderVis } from '../../app/src/components/vis/helpers';
+import { useGetOrbitHierarchyQuery } from '../../app/src/graphql/generated';
 
 const Tree = renderVis(OrbitTree);
 
-test('renders an orbit tree', async () => {
-  const { getByText } = render(
+test('renders an orbit tree vis with a node', async () => {
+  const { container } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
       {(Tree)}
     </MockedProvider>
   );
   await waitFor(() => {
-    expect(getByText('Spheres List')).toBeInTheDocument();
+    expect(screen.getByTestId("test-node")).toBeInTheDocument();
+    expect(screen.getByTestId("svg")).toBeInTheDocument();
   });
 });

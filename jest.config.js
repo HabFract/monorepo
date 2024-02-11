@@ -1,7 +1,14 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 
-const esModules = ['d3', 'd3-svg-legend'].join('|');
+const path = require('path');
 
+const esModules = ['d3-selection', 'd3-array', 'd3-scale', 'd3-path', 'd3-zoom', 'd3-shape', 'd3-hierarchy', 'd3-ease']
+
+const moduleNameMappers = esModules.reduce((acc, pkg) => {
+	acc[`^${pkg}$`] = path.join(require.resolve(pkg), `../../dist/${pkg}.min.js`);
+	return acc;
+}, {});
+console.log('moduleNameMappers', `<rootDir>/node_modules/(?!${esModules.join('|')}|internmap|d3-delaunay|delaunator|robust-predicates)`)
 module.exports = {
   preset: 'ts-jest',
   roots: ['<rootDir>/tests'],
@@ -12,10 +19,15 @@ module.exports = {
     "^.+\\.ts?$":  ['ts-jest'],
     "^.+\\.tsx?$":  ['ts-jest'],
     "\\.(gql|graphql)$": "jest-transform-graphql",
-    '^d3$': ['ts-jest'],
+    '^d3-scale$': ['ts-jest'],
   },
-  transformIgnorePatterns: ['app/node_modules/(?!(d3.*)/)'],
-  moduleNameMapper: { "\\.(css|less|graphql)$": "<rootDir>/tests/styleMock.js" },
+  transformIgnorePatterns: [
+    '/node_modules/(?!d3-*)'
+  ],
+  moduleNameMapper: {
+    "\\.(css|less|graphql)$": "<rootDir>/tests/styleMock.js",
+    ...moduleNameMappers
+  },
   moduleFileExtensions: [
     "ts",
     "tsx",
