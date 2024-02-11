@@ -8,7 +8,7 @@ const moduleNameMappers = esModules.reduce((acc, pkg) => {
 	acc[`^${pkg}$`] = path.join(require.resolve(pkg), `../../dist/${pkg}.min.js`);
 	return acc;
 }, {});
-console.log('moduleNameMappers', `<rootDir>/node_modules/(?!${esModules.join('|')}|internmap|d3-delaunay|delaunator|robust-predicates)`)
+
 module.exports = {
   preset: 'ts-jest',
   roots: ['<rootDir>/tests'],

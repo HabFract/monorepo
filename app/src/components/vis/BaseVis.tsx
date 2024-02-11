@@ -992,7 +992,6 @@ export default class BaseVisualization implements IVisualization {
       .attr("x", 5)
       .attr("y", 20)
       .text((d) => {
-        console.log('d :>> ', d);
         return d.data.name
       })
       .attr("transform", (d) => {

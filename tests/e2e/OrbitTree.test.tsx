@@ -12,13 +12,20 @@ import { useGetOrbitHierarchyQuery } from '../../app/src/graphql/generated';
 
 const Tree = renderVis(OrbitTree);
 
-test('renders an orbit tree vis with a node', async () => {
-  const { container } = render(
+test('renders a loading state, then an orbit tree vis with a node', async () => {
+  const { getByText } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
       {(Tree)}
     </MockedProvider>
   );
+
   await waitFor(() => {
+    expect(getByText('Loading!')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    
+    // screen.debug()
     expect(screen.getByTestId("test-node")).toBeInTheDocument();
     expect(screen.getByTestId("svg")).toBeInTheDocument();
   });
