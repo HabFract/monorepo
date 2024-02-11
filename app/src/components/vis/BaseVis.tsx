@@ -1,19 +1,11 @@
-import {
-  select,
-  scaleOrdinal,
-  scaleLinear,
-  zoom,
-  linkVertical,
-  linkRadial,
-  linkHorizontal,
-  tree,
-  cluster,
-  easeCubic,
-  easePolyIn,
-  easeLinear,
-  hierarchy,
-  TreeLayout,
-} from "d3";
+import { select } from "d3-selection";
+import { scaleOrdinal, scaleLinear } from "d3-scale";
+import { zoom } from "d3-zoom";
+import { linkVertical, linkHorizontal } from "d3-shape";
+import { tree, hierarchy } from "d3-hierarchy";
+import { easeCubic, easePolyIn, easeLinear } from "d3-ease";
+import { legendColor } from "d3-svg-legend";
+import { TreeLayout } from "d3-hierarchy";
 import { legendColor } from "d3-svg-legend";
 import Hammer from "hammerjs";
 import propagating from "propagating-hammerjs";
