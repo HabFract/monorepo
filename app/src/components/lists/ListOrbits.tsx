@@ -74,7 +74,7 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
 
   return (
     <div className='layout orbits'>
-      <PageHeader title="Orbit List" />
+      <PageHeader title="Orbits Breakdown " />
       <ListSortFilter label={'for the Sphere:'} />
       {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} transition={transition} orbitScales={orbits.map((orbit: Orbit) => orbit?.scale)} />}
       <div className="orbits-list">

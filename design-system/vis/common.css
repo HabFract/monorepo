@@ -8,8 +8,8 @@ label {
 }
 
 .sphere-pie-label {    
-  padding-left: 1rem;
-  margin-top: -1.5rem;
+  /* padding-left: 1rem;
+  margin-top: -1.5rem; */
 }
 
 div[role="progressbar"] > div > div {
@@ -30,14 +30,17 @@ div[role="progressbar"] > div.astro > div {
   overflow: inherit;
 }
 
+.apexcharts-pie-area {
+  transform: rotate(90deg) translate(-10%,-40%) !important;
+}
+
 @media screen and (min-width: 420px) {
   .sphere-pie svg {
     @apply -ml-2;
   }
 
   .sphere-pie-label {    
-    padding-left: 3rem;
-    margin-top: -1.5rem;
+    padding-left: 50%;
   }
 }
 @media screen and (min-width: 1280px) {

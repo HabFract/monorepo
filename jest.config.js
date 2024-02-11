@@ -9,12 +9,12 @@ module.exports = {
   setupFilesAfterEnv: ['@testing-library/jest-dom'],
   setupFiles: ['./tests/setupTests.ts'],
   transform: {
-    "^.+\\.ts?$": "ts-jest",
-    "^.+\\.tsx?$": "ts-jest",
+    "^.+\\.ts?$":  ['ts-jest'],
+    "^.+\\.tsx?$":  ['ts-jest'],
     "\\.(gql|graphql)$": "jest-transform-graphql",
-    "d3": "ts-jest"
+    '^d3$': ['ts-jest'],
   },
-  transformIgnorePatterns: ["<rootDir>/node_modules/.pnpm/d3@7.8.5/node_modules/.*", `<rootDir>/node_modules/.pnpm/d3@7.8.5/node_modules/(?!${esModules})`],
+  transformIgnorePatterns: ['app/node_modules/(?!(d3.*)/)'],
   moduleNameMapper: { "\\.(css|less|graphql)$": "<rootDir>/tests/styleMock.js" },
   moduleFileExtensions: [
     "ts",
@@ -24,4 +24,6 @@ module.exports = {
     "json",
     "node"
   ],
+  
+  testPathIgnorePatterns: ['./dist']
 };

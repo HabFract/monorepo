@@ -17,10 +17,6 @@ nav + main.page-container.nav-collapsed {
   padding-left: 0 !important;
 }
 
-nav + main.page-container.nav-collapsed .spheres-list {
-  padding-left: 72px !important;
-}
-
 nav + main.page-container.nav-collapsed .sphere-card .row-c-around {
   align-items: flex-start;
 }
@@ -29,7 +25,7 @@ nav + main.page-container.nav-collapsed .sphere-card .row-c-around .sphere-actio
   margin-left: 2.5rem;
 }
 nav + main.page-container.nav-collapsed .sphere-card .row-c-around #pie-chart {
-  padding-left: 1.25rem;
+  padding-left: 15%;
 }
 
 nav + main.page-container.nav-collapsed .sphere-card.list-header {

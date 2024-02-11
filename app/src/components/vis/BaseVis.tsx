@@ -597,7 +597,7 @@ export default class BaseVisualization implements IVisualization {
     const middleIndex = (breadth % 2 == 0) ? breadth / 2 : (breadth / 2 + 0.5);
     const middleElement = dx == middleIndex;
     
-    console.log('dx :>> ', middleElement,  dx, breadthToIndexRatio);
+    console.log('dx :>> ', middleElement, dx, breadthToIndexRatio);
     const fullWidth = (this._viewConfig!.dx as number * (this._viewConfig!.levelsWide as number)) / breadth;
     const x = breadthToIndexRatio < 0.5 ? (fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any) : -(fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any);
     const y = -(this._viewConfig!.dy as number * this._viewConfig.scale) + (this._viewConfig!.nodeRadius as number)  * 2 as any;

@@ -13,6 +13,6 @@ test('renders an orbit list', async () => {
     </MockedProvider>
   );
   await waitFor(() => {
-    expect(getByText('Orbit List')).toBeInTheDocument();
+    expect(getByText('Orbits Breakdown')).toBeInTheDocument();
   });
 });

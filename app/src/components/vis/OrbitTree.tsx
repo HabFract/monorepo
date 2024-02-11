@@ -104,7 +104,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
       currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string));
 
       // TODO: set actual depth bounds and perhaps use the translation coords
-
+console.log('currentOrbitTree.rootData._translationCoords :>> ', currentOrbitTree.rootData._translationCoords);
       currentOrbitTree._nextRootData._translationCoords = [breadthIndex, depthIndex, hierarchyBounds[params?.currentSphereHash].maxBreadth + 1];
 
       currentOrbitTree.render();
