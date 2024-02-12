@@ -12,6 +12,7 @@ import SphereCard from '../../../../design-system/cards/SphereCard';
 import { Orbit, OrbitEdge, useDeleteOrbitMutation, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSphereLazyQuery, useGetSphereQuery } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { useStateTransition } from '../../hooks/useStateTransition';
+import { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes } from '../vis/BaseVis';
 
 interface ListOrbitsProps {
   sphereHash?: string; // Optional prop to filter orbits by sphere
@@ -55,14 +56,25 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
 
   useEffect(() => {
     if (data) {
+      // Cache the necessary details to be available for the BaseVisualization
       let orbits: Orbit[] = extractEdges(data.orbits);
-      const indexedOrbitData = Object.entries(orbits.map(mapToCacheObject))
-        .map(([_idx, value]) => {
-          return [sphereEh + '___' + value.id, value]
-        })
-        // NOTE: this is provisionally using the convention {{SPHERE_AH}}___{{ORBIT_AH}}
+      let indexedOrbitData = Object.entries(orbits.map(mapToCacheObject))
+      .map(([_idx, value]) => {
+        return [value.id, value]
+      })
+      let indexedSphereData : SphereNodeDetailsCache = {};
+      indexedSphereData = indexedOrbitData.reduce((cacheObject, [id, entry], idx) => {
+        if(idx == 0) {
+          cacheObject[sphereEh as keyof SphereNodeDetailsCache] = { [id as string]: entry as OrbitNodeDetails }        
+        }
+        cacheObject[sphereEh as keyof SphereNodeDetailsCache] = {...cacheObject[sphereEh as keyof SphereNodeDetailsCache], [id as string]: entry as OrbitNodeDetails }
+          
+        return cacheObject
+      }, indexedSphereData)
+
+        // NOTE: this is provisionally using the structure { {SPHERE_AH} : { {ORBIT_AH} : {DETAILS} } }
         // and may need to be adapted once WIN records are also cached.
-      setMany(indexedOrbitData as any);
+      setMany(indexedOrbitData);
     }
   }, [data]);
   

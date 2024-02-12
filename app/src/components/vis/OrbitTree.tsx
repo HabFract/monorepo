@@ -2,11 +2,13 @@ import React, { ComponentType, useEffect, useState } from 'react';
 import BaseVisualization from "./BaseVis";
 import { VisProps, VisCoverage, VisType } from './types';
 import { hierarchy } from "d3-hierarchy";
-
 import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
-import { useStateTransition } from '../../hooks/useStateTransition';
-import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
+
 import { useAtom, useAtomValue } from 'jotai';
+import { useStateTransition } from '../../hooks/useStateTransition';
+import nodeStore from '../../state/jotaiKeyValueStore';
+import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
+
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
 
@@ -19,7 +21,9 @@ export const OrbitTree: ComponentType<VisProps> = ({
   render
 }) => {
   // Top level state machine and routing
-  const [_state, transition, params] = useStateTransition();
+  const [_state, _transition, params] = useStateTransition();
+
+  const nodeDetails = useAtomValue(nodeStore.entries);
   
   // Does this vis cover the whole tree, or just a window over the whole tree?
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;
@@ -57,13 +61,15 @@ export const OrbitTree: ComponentType<VisProps> = ({
     if (!error && json && !currentOrbitTree) {
       const currentTreeJson = getJsonDerivation(json);
       const hierarchyData = hierarchy(currentTreeJson);
+      console.log('nodeDetails :>> ', nodeDetails);
       const orbitVis = new BaseVisualization(
         VisType.Tree,
         'vis',
         hierarchyData,
         canvasHeight,
         canvasWidth,
-        margin
+        margin,
+        nodeDetails
       );
       setCurrentOrbitTree(orbitVis)
     }

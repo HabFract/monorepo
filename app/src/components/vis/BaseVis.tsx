@@ -72,7 +72,25 @@ import {
   XS_NODE_RADIUS,
 } from "./constants";
 import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
+import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { Scale } from "../../graphql/generated";
 
+export interface OrbitNodeDetails {
+  id: ActionHashB64
+  description?: string;
+  name: string
+  scale: Scale
+  startTime: number
+  endTime: number;
+}
+
+export type SphereOrbitNodes = {
+  [key: EntryHashB64]: OrbitNodeDetails
+}
+
+export type SphereNodeDetailsCache = {
+  [key: EntryHashB64]: SphereOrbitNodes
+}
 
 export default class BaseVisualization implements IVisualization {
   type: VisType;
@@ -80,8 +98,9 @@ export default class BaseVisualization implements IVisualization {
   _canvas: any;
   _manager: any;
   zoomer: any;
-  rootData: any; // Replace 'any' with a more specific type representing the input tree structure
-  _nextRootData: any; // Replace 'any' with a more specific type representing the input tree structure
+  rootData: any;
+  nodeDetails: SphereOrbitNodes;
+  _nextRootData: any;
   layout!: TreeLayout<unknown>;
   _viewConfig: ViewConfig;
   _zoomConfig: ZoomConfig;
@@ -104,10 +123,11 @@ export default class BaseVisualization implements IVisualization {
   _gButton: any;
   _enteringLinks: any;
 
-  constructor(type, svgId, inputTree, canvasHeight, canvasWidth, margin: Margins) {
+  constructor(type, svgId, inputTree, canvasHeight, canvasWidth, margin: Margins, nodeDetails: SphereOrbitNodes) {
     this.type = type;
     this._svgId = svgId;
     this.rootData = inputTree;
+    this.nodeDetails = nodeDetails;
     
     this._viewConfig = {
       scale: type == VisType.Radial ? BASE_SCALE / 2 : BASE_SCALE,
