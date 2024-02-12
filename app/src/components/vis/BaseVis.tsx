@@ -142,9 +142,9 @@ export default class BaseVisualization implements IVisualization {
           { defaultView: this._viewConfig.defaultView, levelsWide: this._viewConfig.levelsWide });
         return typeof this._zoomConfig.previousRenderZoom?.node?.x !==
           "undefined"
-          ? initialX +
+          ? initialX + this._viewConfig.margin.left +
               (newXTranslate(this.type, this._viewConfig, this._zoomConfig) as number)
-          : initialX;
+          : initialX + this._viewConfig.margin.left;
       },
       defaultCanvasTranslateY: () => {
         const initialY = getInitialYTranslate.call(
@@ -161,7 +161,7 @@ export default class BaseVisualization implements IVisualization {
                 this._viewConfig,
                 this._zoomConfig
               ) as number
-          : initialY;
+          : initialY + this._viewConfig.margin.top;
       },
       isSmallScreen: function () {
         return this.canvasWidth < 1025;
@@ -260,14 +260,15 @@ export default class BaseVisualization implements IVisualization {
         // }
       },
       handleMouseEnter: function ({ target: d }) {
-        // this.currentTooltip = select(d).selectAll("g.tooltip");
-        // this.currentTooltip.transition().duration(450).style("opacity", "1");
-        // this.currentButton = select(d).selectAll("g.habit-label-dash-button");
-        // this.currentButton
-        //   .transition()
-        //   .delay(100)
-        //   .duration(450)
-        //   .style("opacity", "1");
+        this.currentTooltip = select(d).selectAll("g.tooltip");
+        console.log('this.currentTooltip :>> ', this.currentTooltip);
+        this.currentTooltip.transition().duration(450).style("opacity", "1");
+        this.currentButton = select(d).selectAll("g.habit-label-dash-button");
+        this.currentButton
+          .transition()
+          .delay(100)
+          .duration(450)
+          .style("opacity", "1");
       },
       handleMouseLeave: function (e) {
         // const g = select(e.target);
@@ -949,16 +950,31 @@ export default class BaseVisualization implements IVisualization {
     this._gTooltip = this._enteringNodes
       .append("g")
       .classed("tooltip", true)
+        .append("foreignObject")
+        .attr("x", "-295")
+        .attr("y", "-45")
+        .attr("width", "550")
+        .attr("height", "550")
+        .html((d) => {
+          console.log('this.nodeDetails :>> ', this.nodeDetails);
+          console.log('d.data.content :>> ', d.data.content);
+          return `<div class="tooltip-inner">
+          <h2>Name:</h2>
+          <p>Hello</p>
+          <h2>Description:</h2>
+          <p>Hello</p>
+        </div>`
+        });
       // .classed("hidden", this.type == VisType.Radial)
-      .attr(
-        "transform",
-        `translate(${this._viewConfig.nodeRadius as number / 10}, ${
-          this._viewConfig.nodeRadius
-        }), scale(${
-          this._viewConfig.isSmallScreen() ? XS_LABEL_SCALE : LG_LABEL_SCALE
-        })`
-      )
-      .attr("opacity", (d) => this.activeOrNonActiveOpacity(d, "0"));
+      // .attr(
+      //   "transform",
+      //   `translate(${this._viewConfig.nodeRadius as number / 10}, ${
+      //     this._viewConfig.nodeRadius
+      //   }), scale(${
+      //     this._viewConfig.isSmallScreen() ? XS_LABEL_SCALE : LG_LABEL_SCALE
+      //   })`
+      // )
+      // .attr("opacity", (d) => "1");//this.activeOrNonActiveOpacity(d, "0"));
   }
 
   setButtonGroups() {

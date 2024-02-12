@@ -106,7 +106,7 @@ export const updateVisRootData = (
 
 export const getInitialXTranslate = ({ levelsWide, defaultView }) => {
   const [_x, _y, w, _h] = defaultView.split` `;
-  return w / levelsWide / 1.5;
+  return w / levelsWide / 1.5 ;
 };
 
 export const getInitialYTranslate = (
@@ -116,7 +116,7 @@ export const getInitialYTranslate = (
   const [_x, _y, _w, h] = defaultView.split` `;
   switch (type) {
     default:
-      return (h / levelsHigh) * 1.5;
+      return (h / levelsHigh);
   }
 };
 

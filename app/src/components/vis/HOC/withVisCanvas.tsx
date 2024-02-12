@@ -12,10 +12,10 @@ import { WithVisCanvasProps } from '../types';
 import { EntryHashB64 } from '@holochain/client';
 
 const defaultMargins: Margins = {
-  top: (document.body.getBoundingClientRect().height / (document.body.getBoundingClientRect().height > 1025 ? 6 : 2)),
+  top: -1000,
   right: 0,
   bottom: 0,
-  left: 0,
+  left: -30,
 };
 
 const getCanvasDimensions = function () {

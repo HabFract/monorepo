@@ -5,7 +5,7 @@ export const parentPositiveBorderCol = "rgba(80, 227, 194, 0.4)";
 export const noNodeCol = "#888";
 export const neutralCol = "#DADECD";
 
-export const BASE_SCALE = 2.5;
+export const BASE_SCALE = 3.2;
 export const FOCUS_MODE_SCALE = 3;
 export const XS_LABEL_SCALE = 1.5;
 export const LG_LABEL_SCALE = 2.5;
