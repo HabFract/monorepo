@@ -62,11 +62,10 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
         })
         // NOTE: this is provisionally using the convention {{SPHERE_AH}}___{{ORBIT_AH}}
         // and may need to be adapted once WIN records are also cached.
-        
-      setMany(indexedOrbitData);
+      setMany(indexedOrbitData as any);
     }
   }, [data]);
-
+  
   const [listSortFilter] = useAtom(listSortFilterAtom);
   const scaleValues = { Sub: 1, Atom: 2, Astro: 3 };
   

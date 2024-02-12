@@ -347,7 +347,7 @@ export default class BaseVisualization implements IVisualization {
     event && event.target?.closest(".the-node")?.classList?.toggle("active");
 
     // this.render();
-    this.activateNodeAnimation();
+    // this.activateNodeAnimation();
     return this.activeNode;
   }
 
@@ -1265,36 +1265,36 @@ export default class BaseVisualization implements IVisualization {
     gLegend.call(legend as any);
   }
 
-  setNodeAnimationGroups() {
-    this.gCirclePulse = this._canvas?.selectAll(
-      "g.the-node.solid.active g.node-subgroup"
-    );
+  // setNodeAnimationGroups() {
+  //   this.gCirclePulse = this._canvas?.selectAll(
+  //     "g.the-node.solid.active g.node-subgroup"
+  //   );
 
-    this.gCirclePulse.pulseScale = scaleLinear()
-      // .range(["#1a140e", "#5568d2", "#3349c1"])
-      .domain([0, 3 * (this._viewConfig.nodeRadius as number)]);
+  //   this.gCirclePulse.pulseScale = scaleLinear()
+  //     // .range(["#1a140e", "#5568d2", "#3349c1"])
+  //     .domain([0, 3 * (this._viewConfig.nodeRadius as number)]);
 
-    this.gCirclePulse.pulseData = [
-      0,
-      this._viewConfig.nodeRadius,
-      this._viewConfig.nodeRadius as number * 2,
-    ];
+  //   this.gCirclePulse.pulseData = [
+  //     0,
+  //     this._viewConfig.nodeRadius,
+  //     this._viewConfig.nodeRadius as number * 2,
+  //   ];
 
-    this.gCirclePulse.pulseCircles = this.gCirclePulse
-      .insert("g", ".habit-label-dash-button")
-      .classed("active-circle", true)
-      .attr("stroke-opacity", "0.8")
-      .selectAll("circle")
-      .data(this.gCirclePulse.pulseData)
-      .enter()
-      .insert("circle", ".habit-label-dash-button")
-      .attr("r", function (d) {
-        return d;
-      })
-      .attr("fill", "none")
-      .style("stroke-width", "4")
-      .style("stroke", this.gCirclePulse.pulseScale);
-  }
+  //   this.gCirclePulse.pulseCircles = this.gCirclePulse
+  //     .insert("g", ".habit-label-dash-button")
+  //     .classed("active-circle", true)
+  //     .attr("stroke-opacity", "0.8")
+  //     .selectAll("circle")
+  //     .data(this.gCirclePulse.pulseData)
+  //     .enter()
+  //     .insert("circle", ".habit-label-dash-button")
+  //     .attr("r", function (d) {
+  //       return d;
+  //     })
+  //     .attr("fill", "none")
+  //     .style("stroke-width", "4")
+  //     .style("stroke", this.gCirclePulse.pulseScale);
+  // }
 
   activateNodeAnimation = debounce(() => {
     // https://stackoverflow.com/questions/45349849/concentric-emanating-circles-d3
@@ -1302,7 +1302,7 @@ export default class BaseVisualization implements IVisualization {
 
     // _p("animated node", this.activeNode, "!");
     this.zoomBase().selectAll(".active-circle").remove();
-    this.setNodeAnimationGroups();
+    // this.setNodeAnimationGroups();
 
     let data = this.gCirclePulse.pulseData
       .map((d) => {
@@ -1423,7 +1423,7 @@ export default class BaseVisualization implements IVisualization {
           console.error("No active habits for this date");
         }
       }
-      this.activateNodeAnimation();
+      // this.activateNodeAnimation();
       // console.log("Appended SVG elements... :>>");
       this.eventHandlers.handleNodeZoom.call(this, null, this.activeNode);
       // console.log("this.activeNode", this.activeNode);

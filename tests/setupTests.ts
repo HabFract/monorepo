@@ -1,6 +1,14 @@
 //@ts-ignore
 window.ResizeObserver = require('resize-observer-polyfill')
 
+function channelMock() {}
+channelMock.prototype.onmessage = function () {}
+channelMock.prototype.postMessage = function (data) {
+  this.onmessage({ data })
+}
+//@ts-ignore
+window.BroadcastChannel = channelMock
+
 const mockUseStateTransitionResponse = ['Home', jest.fn(() => {}), {
   orbitEh: 'R28gZm9yIGEgd2Fsay==',
   currentSphereHash: 'abc',
@@ -14,9 +22,10 @@ jest.mock('../app/src/hooks/useStateTransition.ts', () => {
   }
 })
 
-module.exports = {}
 jest.mock('d3-scale', () => ({
-  scaleLinear: () => null,
+  scaleLinear: () => ({
+    domain: () => (() => {}), // Chain other methods as needed
+  }),
   scaleOrdinal: () => null,
   
   }));

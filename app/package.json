@@ -26,8 +26,6 @@
     "graphql-scalars": "^1.22.4",
     "hammerjs": "^2.0.8",
     "is-object": "^1.0.2",
-    "jotai": "^2.5.1",
-    "jotai-minidb": "^0.0.7",
     "js-base64": "^3.7.5",
     "lodash": "^4.17.21",
     "luxon": "^3.4.4",

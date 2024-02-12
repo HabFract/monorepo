@@ -62,6 +62,12 @@ importers:
       graphql-tag:
         specifier: ^2.12.6
         version: 2.12.6(graphql@16.8.1)
+      jotai:
+        specifier: ^2.5.1
+        version: 2.6.1(@types/react@18.2.37)(react@18.2.0)
+      jotai-minidb:
+        specifier: ^0.0.7
+        version: 0.0.7(jotai@2.6.1)
       postcss:
         specifier: ^8.4.31
         version: 8.4.31
@@ -117,6 +123,9 @@ importers:
       dotenv-cli:
         specifier: ^7.3.0
         version: 7.3.0
+      fake-indexeddb:
+        specifier: ^5.0.2
+        version: 5.0.2
       jest:
         specifier: ^29.7.0
         version: 29.7.0
@@ -180,12 +189,6 @@ importers:
       is-object:
         specifier: ^1.0.2
         version: 1.0.2
-      jotai:
-        specifier: ^2.5.1
-        version: 2.6.1(@types/react@18.2.37)(react@18.2.0)
-      jotai-minidb:
-        specifier: ^0.0.7
-        version: 0.0.7(jotai@2.6.1)
       js-base64:
         specifier: ^3.7.5
         version: 3.7.5
@@ -9610,6 +9613,11 @@ packages:
       yauzl: 2.10.0
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /fake-indexeddb@5.0.2:
+    resolution: {integrity: sha512-cB507r5T3D55DfclY01GLkninZLfU7HXV/mhVRTnTRm5k2u+fY7Fof2dBkr80p5t7G7dlA/G5dI87QiMdPpMCQ==}
+    engines: {node: '>=18'}
     dev: true
 
   /fast-decode-uri-component@1.0.1:

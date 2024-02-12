@@ -12,14 +12,15 @@ const moduleNameMappers = esModules.reduce((acc, pkg) => {
 module.exports = {
   preset: 'ts-jest',
   roots: ['<rootDir>/tests'],
-  testEnvironment: 'jsdom',
+  testEnvironment: './tests/fixJsDomEnv.ts',
   setupFilesAfterEnv: ['@testing-library/jest-dom'],
-  setupFiles: ['./tests/setupTests.ts'],
+  setupFiles: ['./tests/setupTests.ts', "fake-indexeddb/auto"],
   transform: {
     "^.+\\.ts?$":  ['ts-jest'],
     "^.+\\.tsx?$":  ['ts-jest'],
     "\\.(gql|graphql)$": "jest-transform-graphql",
     '^d3-scale$': ['ts-jest'],
+    '^jotai-minidb$': ['ts-jest'],
   },
   transformIgnorePatterns: [
     '/node_modules/(?!d3-*)'
