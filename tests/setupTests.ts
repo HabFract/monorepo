@@ -2,7 +2,7 @@ import { QueryParamsLevel } from "../app/src/graphql/generated"
 import { SPHERE_ID } from "./e2e/mocks/spheres"
 
 
-import { atom } from 'jotai';
+import { atom, PrimitiveAtom } from 'jotai';
 
 //@ts-ignore
 window.ResizeObserver = require('resize-observer-polyfill')
@@ -58,6 +58,7 @@ jest.mock('d3-zoom', () => ({
 // Mock atoms for setting hierarchy bounds
 const mockBreadthBoundsAtom = atom({});
 const mockDepthBoundsAtom = atom({});
+const mockCurrentSphereAtom: PrimitiveAtom<SphereHashes> = atom({ entryHash: SPHERE_ID, actionHash: "" });
 
 // Mock setters for hierarchy bounds
 const mockSetBreadthBounds = jest.fn();
@@ -66,6 +67,7 @@ const mockSetDepthBounds = jest.fn();
 jest.mock('../app/src/state/currentSphereHierarchyAtom.ts', () => ({
   setBreadths: (sphereHash: string, bounds: number[]) => mockSetBreadthBounds(sphereHash, bounds),
   setDepths: (sphereHash: string, bounds: number[]) => mockSetDepthBounds(sphereHash, bounds),
+  currentSphere: mockCurrentSphereAtom,
   currentSphereHierarchyBounds: atom((get) => {
     return {
       [SPHERE_ID]: {
