@@ -16,4 +16,22 @@ export const HIERARCHY_PARENT_ONE_CHILD_MOCKS = [
       },
     },
   },
+  {
+    request: {
+      query: GetOrbitHierarchyDocument,
+      variables: {
+        params: {
+          levelQuery: {
+            sphereHashB64: 'parent-one-child',
+            orbitLevel: 0,
+          },
+        }
+      },
+    },
+    result: {
+      data: {
+        getOrbitHierarchy: `{"content":"parent","name":"Parent Node","children":[{"content":"child1","name":"Child Node 1","children":[]}]}`,
+      },
+    },
+  },
 ];
