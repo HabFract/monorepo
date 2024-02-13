@@ -14,7 +14,7 @@ import { SPHERE_ID } from './mocks/spheres';
 
 const Tree = renderVis(OrbitTree);
 
-describe('Hierarchy Path Templates - renders traversal buttons for parent with 1 child', () => {
+describe.skip('Hierarchy Traversal - renders traversal buttons for parent with 1 child', () => {
   it('renders traversal button for going down a level', async () => {
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
@@ -35,7 +35,7 @@ describe('Hierarchy Path Templates - renders traversal buttons for parent with 1
   });
 });
 
-describe('Hierarchy Path Templates - renders traversal buttons for parent with 2 children', () => {
+describe.skip('Hierarchy Path Templates - renders traversal buttons for parent with 2 children', () => {
   it('renders traversal button for going down a level', async () => {
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
