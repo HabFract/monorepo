@@ -11,16 +11,21 @@ window.BroadcastChannel = channelMock
 
 const mockUseStateTransitionResponse = ['Home', jest.fn(() => {}), {
   // orbitEh: 'R28gZm9yIGEgd2Fsay==',
-  currentSphereHash: 'SGVhbHRoMQ==e',
+  currentSphereHash: SPHERE_ID,
 }];
 
-jest.mock('../app/src/hooks/useStateTransition.ts', () => {
-  return {
-    useStateTransition: () => {
-      return mockUseStateTransitionResponse;
-    },
-  }
-})
+let mockUseStateTransitionResponse = ['Home', jest.fn(() => {}), {
+  currentSphereHash: SPHERE_ID,
+}];
+
+function setMockUseStateTransitionResponse(response) {
+  mockUseStateTransitionResponse = response;
+}
+
+jest.mock('../app/src/hooks/useStateTransition.ts', () => ({
+  useStateTransition: () => mockUseStateTransitionResponse,
+  setMockUseStateTransitionResponse,
+}));
 
 jest.mock('d3-scale', () => ({
   scaleLinear: () => ({
