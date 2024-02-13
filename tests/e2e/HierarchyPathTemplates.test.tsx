@@ -19,7 +19,15 @@ describe('Hierarchy Path Templates - renders path for parent with 1 child', () =
   );
 
   it('renders path for parent with one child', () => {
-    // Test implementation will go here
+    const { getByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
+          {(Tree)}
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('path-parent-one-child')).toBeInTheDocument();
+    });
   });
 });
 
@@ -31,6 +39,14 @@ describe('Hierarchy Path Templates - renders path for parent with 2 children', (
   );
 
   it('renders path for parent with one child', () => {
-    // Test implementation will go here
+    const { getByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
+          {(Tree)}
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('path-parent-one-child')).toBeInTheDocument();
+    });
   });
 });
