@@ -16,7 +16,7 @@ const Tree = renderVis(OrbitTree);
 
 describe('Hierarchy Path Templates - renders path for parent with 1 child', () => {
   it('renders traversal button for going down a level', async () => {
-    const { getByTestId } = render(
+    const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
         <TestProvider initialValues={[
           [currentSphere, { entryHash: SPHERE_ID, actionHash: SPHERE_ID }],
@@ -29,25 +29,8 @@ describe('Hierarchy Path Templates - renders path for parent with 1 child', () =
     await waitFor(() => {
       expect(getByTestId('traversal-button-down')).toBeInTheDocument();
     });
+    expect(queryByTestId('traversal-button-left')).not.toBeInTheDocument();
+    expect(queryByTestId('traversal-button-right')).not.toBeInTheDocument();
+    expect(queryByTestId('traversal-button-up')).not.toBeInTheDocument();
   });
 });
-
-// describe('Hierarchy Path Templates - renders path for parent with 2 children', () => {
-//   const { getByText } = render(
-//     <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-//         {(Tree)}
-//     </MockedProvider>
-//   );
-
-//   it('renders path for parent with one child', async () => {
-//     const { getByTestId } = render(
-//       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
-//           {(Tree)}
-//       </MockedProvider>
-//     );
-
-//     await waitFor(() => {
-//       expect(getByTestId('path-parent-one-child')).toBeInTheDocument();
-//     });
-//   });
-// });

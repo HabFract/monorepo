@@ -79,14 +79,14 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
 
             // Trigger the Vis object render function only once the SVG is appended to the DOM
             appendedSvg && currentVis?.render();
-console.log('withTraversal, depthIndex, breadthIndex :>> ', queryType, withTraversal, depthIndex, breadthIndex, maxBreadth, maxDepth);
+// console.log('withTraversal, depthIndex, breadthIndex :>> ', queryType, withTraversal, depthIndex, breadthIndex, maxBreadth, maxDepth);
             return (
               <> 
-                {!!(withTraversal && depthIndex !== 0) && <UpOutlined className='fixed top-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={decrementDepth} />}
-                {!!(withTraversal && breadthIndex !== 0) && <LeftOutlined className='fixed left-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}} onClick={decrementBreadth} />}
+                {!!(withTraversal && depthIndex !== 0) && <UpOutlined data-testid={"traversal-button-up"} className='fixed top-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={decrementDepth} />}
+                {!!(withTraversal && breadthIndex !== 0) && <LeftOutlined data-testid={"traversal-button-left"} className='fixed left-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}} onClick={decrementBreadth} />}
                 
-                {!!(withTraversal && maxBreadth && breadthIndex < maxBreadth) && <RightOutlined className='fixed right-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}}  onClick={incrementBreadth} />}
-                {!!(withTraversal && maxDepth && depthIndex < maxDepth) && <DownOutlined className='fixed bottom-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={incrementDepth} />}
+                {!!(withTraversal && maxBreadth && breadthIndex < maxBreadth) && <RightOutlined data-testid={"traversal-button-right"} className='fixed right-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "48vh"}}  onClick={incrementBreadth} />}
+                {!!(withTraversal && maxDepth && depthIndex < maxDepth) && <DownOutlined data-testid={"traversal-button-down"} className='fixed bottom-2 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "48vw"}}  onClick={incrementDepth} />}
               </>
             )
           }}
