@@ -8,7 +8,7 @@ import { fireEvent, render, waitFor } from '@testing-library/react';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
 import { TestProvider } from '../utils-frontend';
-import { currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../app/src/state/currentSphereHierarchyAtom';
+import { currentSphere } from '../../app/src/state/currentSphereHierarchyAtom';
 import { SPHERE_ID } from './mocks/spheres';
 
 

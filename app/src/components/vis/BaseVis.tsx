@@ -29,6 +29,7 @@ import _ from "lodash";
 // const { createHabitDate, updateHabitDateForNode } = HabitDateSlice.actions;
 // import hierarchySlice from "features/hierarchy/reducer";
 // import { selectCurrentDateId, selectCurrentDate } from "../space/slice";
+import { ONE_CHILD, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT, THREE_CHILDREN } from './PathTemplates/test';
 
 import {
   expand,
@@ -605,25 +606,57 @@ export default class BaseVisualization implements IVisualization {
 
   translateLinks([dx, dy, breadth]: number[]) : void {
     const indexToBreadthRatio = (dx+1) / (breadth);
-    console.log('debug breadth :>> ', breadth);
     const middleIndex = (breadth + 1) / 2;
     const isMiddleElement = (dx + 1) == middleIndex;
     const isChildElement = dy > 0; 
     
-    console.log('debug isMiddleElement, isChildElement, :>> ', isMiddleElement, isChildElement,);
-    console.log('debug dx dy ratio :>> ', dx, dy, indexToBreadthRatio);
-    const dxScaled = this._viewConfig!.dx as number / this._viewConfig.scale;
-    const fullWidth = (dxScaled * (this._viewConfig!.levelsWide as number)) * 2;
-    console.log('debug dxScaled, levelsWide, fullWidth, noderadius :>> ', dxScaled, this._viewConfig!.levelsWide, fullWidth, (this._viewConfig!.nodeRadius as number));
-//     + (this._viewConfig!.nodeRadius as number)  * 2 as any
-// + (this._viewConfig!.nodeRadius as number)  * 2 as any
-    const x = isMiddleElement ? 0 : indexToBreadthRatio > 0.5 ? (fullWidth) : -(fullWidth);
-    const y = -(this._viewConfig!.dy as number);
-    console.log('x :>> ', x);
-    if(isChildElement) {
-      select(".canvas").selectAll("g.links").attr("transform", "translate(" + (x) + ", " + (y) + ")")
+//     console.log('debug isMiddleElement, isChildElement, :>> ', isMiddleElement, isChildElement,);
+//     console.log('debug dx dy ratio :>> ', dx, dy, indexToBreadthRatio);
+//     const dxScaled = this._viewConfig!.dx as number / this._viewConfig.scale;
+//     const fullWidth = (dxScaled * (this._viewConfig!.levelsWide as number)) * 2;
+//     console.log('debug dxScaled, levelsWide, fullWidth, noderadius :>> ', dxScaled, this._viewConfig!.levelsWide, fullWidth, (this._viewConfig!.nodeRadius as number));
+// //     + (this._viewConfig!.nodeRadius as number)  * 2 as any
+// // + (this._viewConfig!.nodeRadius as number)  * 2 as any
+//     const x = isMiddleElement ? 0 : indexToBreadthRatio > 0.5 ? (fullWidth) : -(fullWidth);
+//     const y = -(this._viewConfig!.dy as number);
+    const [path, dataTestId] = determinePathFragment(dx, dy, breadth);
+
+    select(".canvas").selectAll("g.links *").remove();
+    if(!!path) {
+      console.log('path :>> ', path);
+      select(".canvas").selectAll("g.links").append('path')
+        .attr("d", path)
+        .classed("link", true)
+        .attr("stroke-width", "3")
+        .attr("stroke-opacity", "0.3")
+        .attr("data-testid", dataTestId);
+      const newPath = select(".canvas").selectAll("g.links path")
+      const {width, height} = newPath._groups[0][0].getBoundingClientRect();
+      const xTranslation = (width) * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number)/ 2; 
+      const yTranslation = (height) * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number)/ 2; 
+      // const a = pathWidth?.getBoundingClientRect();
+      console.log('pathWidth :>> ', width, height, xTranslation);
+      select(".canvas").selectAll("g.links")
+        .attr("transform", `translate(${xTranslation},${-yTranslation})`)
     } else {
-      console.log('object :>> ', select(".canvas").selectAll("g.links:first-child").remove());
+      select(".canvas").selectAll("g.links").remove();
+    }
+
+    // Helper function to determine the SVG path fragment based on node position
+    function determinePathFragment(dx: number, dy: number, breadth: number) : any {
+      if (dy === 0) {
+        // Root node logic
+        return [false, 'none']; // No path needed
+      } else {
+        // Child node logic
+        if (breadth === 1) {
+          return [ONE_CHILD, 'path-parent-one-child']; 
+        } else if (breadth == 2) {
+          return [TWO_CHILDREN_LEFT, 'path-parent-two-children']; 
+        } else if (breadth == 3) {
+          return [THREE_CHILDREN, 'path-parent-three-children']; 
+        }
+      }
     }
   }
 
