@@ -7,7 +7,7 @@ import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../
 import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import nodeStore from '../../state/jotaiKeyValueStore';
-import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
+import { currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
@@ -24,6 +24,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const [_state, _transition, params] = useStateTransition();
 
   const nodeDetails = useAtomValue(nodeStore.entries);
+  const [selectedSphere] = useAtom(currentSphere);
   
   // Does this vis cover the whole tree, or just a window over the whole tree?
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;
@@ -61,7 +62,8 @@ export const OrbitTree: ComponentType<VisProps> = ({
     if (!error && json && !currentOrbitTree) {
       const currentTreeJson = getJsonDerivation(json);
       const hierarchyData = hierarchy(currentTreeJson);
-      console.log('nodeDetails :>> ', nodeDetails);
+      console.log('[params?.currentSphereHash] :>> ', nodeDetails, selectedSphere.actionHash);
+      
       const orbitVis = new BaseVisualization(
         VisType.Tree,
         'vis',

@@ -47,6 +47,7 @@ export default {
         "hover-text": "#FDFEFE"
       },
       // "secondary": {
+        // rgba(255, 23, 132, 0.7)
       //   "DEFAULT": "#9B59B6",
       //   "extra-transparent": "rgba(155, 89, 182, 0.25)",
       //   "transparent": "rgba(155, 89, 182, 0.5)",

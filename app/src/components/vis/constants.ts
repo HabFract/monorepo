@@ -16,4 +16,4 @@ export const LG_NODE_RADIUS = 70;
 export const XS_LEVELS_HIGH = 4;
 export const LG_LEVELS_HIGH = 6;
 export const XS_LEVELS_WIDE = 4;
-export const LG_LEVELS_WIDE = 2
+export const LG_LEVELS_WIDE = 4;

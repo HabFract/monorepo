@@ -604,17 +604,27 @@ export default class BaseVisualization implements IVisualization {
   }
 
   translateLinks([dx, dy, breadth]: number[]) : void {
-    const strokeWidth = 3;
-    const breadthToIndexRatio = (dx+1)/ breadth;
+    const indexToBreadthRatio = (dx+1) / (breadth);
+    console.log('debug breadth :>> ', breadth);
+    const middleIndex = (breadth + 1) / 2;
+    const isMiddleElement = (dx + 1) == middleIndex;
+    const isChildElement = dy > 0; 
     
-    const middleIndex = (breadth % 2 == 0) ? breadth / 2 : (breadth / 2 + 0.5);
-    const middleElement = dx == middleIndex;
-    
-    console.log('dx :>> ', middleElement, dx, breadthToIndexRatio);
-    const fullWidth = (this._viewConfig!.dx as number * (this._viewConfig!.levelsWide as number)) / breadth;
-    const x = breadthToIndexRatio < 0.5 ? (fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any) : -(fullWidth + (this._viewConfig!.nodeRadius as number)  * 2 as any);
-    const y = -(this._viewConfig!.dy as number * this._viewConfig.scale) + (this._viewConfig!.nodeRadius as number)  * 2 as any;
-    select(".canvas").selectAll("g.links").attr("transform", "translate(" + -breadth * (x + strokeWidth) + ", " + (y + strokeWidth) + ")");
+    console.log('debug isMiddleElement, isChildElement, :>> ', isMiddleElement, isChildElement,);
+    console.log('debug dx dy ratio :>> ', dx, dy, indexToBreadthRatio);
+    const dxScaled = this._viewConfig!.dx as number / this._viewConfig.scale;
+    const fullWidth = (dxScaled * (this._viewConfig!.levelsWide as number)) * 2;
+    console.log('debug dxScaled, levelsWide, fullWidth, noderadius :>> ', dxScaled, this._viewConfig!.levelsWide, fullWidth, (this._viewConfig!.nodeRadius as number));
+//     + (this._viewConfig!.nodeRadius as number)  * 2 as any
+// + (this._viewConfig!.nodeRadius as number)  * 2 as any
+    const x = isMiddleElement ? 0 : indexToBreadthRatio > 0.5 ? (fullWidth) : -(fullWidth);
+    const y = -(this._viewConfig!.dy as number);
+    console.log('x :>> ', x);
+    if(isChildElement) {
+      select(".canvas").selectAll("g.links").attr("transform", "translate(" + (x) + ", " + (y) + ")")
+    } else {
+      console.log('object :>> ', select(".canvas").selectAll("g.links:first-child").remove());
+    }
   }
 
   resetForExpandedMenu({ justTranslation }) {
@@ -954,15 +964,18 @@ export default class BaseVisualization implements IVisualization {
         .attr("x", "-295")
         .attr("y", "-45")
         .attr("width", "550")
+        .style("overflow", "visible")
         .attr("height", "550")
         .html((d) => {
           console.log('this.nodeDetails :>> ', this.nodeDetails);
           console.log('d.data.content :>> ', d.data.content);
           return `<div class="tooltip-inner">
+          <div class="content">
           <h2>Name:</h2>
           <p>Hello</p>
           <h2>Description:</h2>
           <p>Hello</p>
+          </div>
         </div>`
         });
       // .classed("hidden", this.type == VisType.Radial)
@@ -978,26 +991,38 @@ export default class BaseVisualization implements IVisualization {
   }
 
   setButtonGroups() {
-    this._gButton = this._gCircle
+    this._gButton = this._gTooltip.select(".tooltip-inner")
       .append("g")
-      .classed("habit-label-dash-button", true)
-      .attr(
-        "transform",
-        (d) =>
-          `translate(0, 0), scale(${
-            this._viewConfig.isSmallScreen()
-              ? this.type == VisType.Radial
-                ? XS_BUTTON_SCALE * 1.15
-                : XS_BUTTON_SCALE
-              : this.type == VisType.Radial
-              ? LG_BUTTON_SCALE / 1.15
-              : LG_BUTTON_SCALE
-          })` +
-          (this.type == VisType.Radial
-            ? `, rotate(${450 - ((d.x / 8) * 180) / Math.PI - 90})`
-            : "")
-      )
-      .attr("style", "opacity: 0");
+      .classed("tooltip-actions", true)
+        .append("foreignObject")
+        .attr("width", "550")
+        .style("overflow", "visible")
+        .attr("height", "550")
+        .html((d) => {
+          return `<div class="buttons">
+          <button class="tooltip-action-button higher-button"></button>
+          <button class="tooltip-action-button checkbox-button"></button>
+          <button class="tooltip-action-button lower-button"></button>
+        </div>`
+      });
+      // .classed("habit-label-dash-button", true)
+      // .attr(
+      //   "transform",
+      //   (d) =>
+      //     `translate(0, 0), scale(${
+      //       this._viewConfig.isSmallScreen()
+      //         ? this.type == VisType.Radial
+      //           ? XS_BUTTON_SCALE * 1.15
+      //           : XS_BUTTON_SCALE
+      //         : this.type == VisType.Radial
+      //         ? LG_BUTTON_SCALE / 1.15
+      //         : LG_BUTTON_SCALE
+      //     })` +
+      //     (this.type == VisType.Radial
+      //       ? `, rotate(${450 - ((d.x / 8) * 180) / Math.PI - 90})`
+      //       : "")
+      // )
+      // .attr("style", "opacity: 0");
   }
 
   appendCirclesAndLabels() : void {
@@ -1080,54 +1105,54 @@ export default class BaseVisualization implements IVisualization {
       .attr("display", (d) => (d.depth === 0 ? "none" : "initial"))
       .on("click", this.eventHandlers.handleDeleteNode.bind(this));
 
-      this._gButton
-        .append("rect")
-        .attr("rx", 15)
-        .attr("y", -30)
-        .attr("width", 90)
-        .attr("height", 30)
-        .on("click", (e) => {
-          e.stopPropagation();
-        });
-      this._gButton
-        .append("text")
-        .attr("x", 15)
-        .attr("y", (d) => (d.parent ? -8 : -5))
-        .text((d) => "DIVIDE")
-        .on("click", (e, n) => {
-          if (
-            // isTouchDevice() ||
-            select(e?.target?.parentNode).attr("style").match("opacity: 0")
-          )
-            return e.stopPropagation();
-          this.setCurrentHabit(n);
-          this.eventHandlers.handleAppendNode.call(this);
-        });
-      this._gButton
-        .append("rect")
-        .attr("style", (d) => (d.parent ? "opacity: 0" : "opacity: 1"))
-        .attr("rx", 15)
-        .attr("y", -55)
-        .attr("width", 90)
-        .attr("height", 30)
-        .on("click", (e) => {
-          e.stopPropagation();
-        });
-      this._gButton
-        .append("text")
-        .attr("style", (d) => (d.parent ? "opacity: 0" : "opacity: 1"))
-        .attr("x", 12)
-        .attr("y", -30)
-        .text("EXPAND")
-        .on("click", (e, n) => {
-          if (
-            // isTouchDevice() ||
-            select(e?.target?.parentNode).attr("style").match("opacity: 0")
-          )
-            return e.stopPropagation();
-          this.setCurrentHabit(n);
-          // this.eventHandlers.handlePrependNode.call(this, e, n);
-        });
+      // this._gButton
+      //   .append("rect")
+      //   .attr("rx", 15)
+      //   .attr("y", -30)
+      //   .attr("width", 90)
+      //   .attr("height", 30)
+      //   .on("click", (e) => {
+      //     e.stopPropagation();
+      //   });
+      // this._gButton
+      //   .append("text")
+      //   .attr("x", 15)
+      //   .attr("y", (d) => (d.parent ? -8 : -5))
+      //   .text((d) => "DIVIDE")
+      //   .on("click", (e, n) => {
+      //     if (
+      //       // isTouchDevice() ||
+      //       select(e?.target?.parentNode).attr("style").match("opacity: 0")
+      //     )
+      //       return e.stopPropagation();
+      //     this.setCurrentHabit(n);
+      //     this.eventHandlers.handleAppendNode.call(this);
+      //   });
+      // this._gButton
+      //   .append("rect")
+      //   .attr("style", (d) => (d.parent ? "opacity: 0" : "opacity: 1"))
+      //   .attr("rx", 15)
+      //   .attr("y", -55)
+      //   .attr("width", 90)
+      //   .attr("height", 30)
+      //   .on("click", (e) => {
+      //     e.stopPropagation();
+      //   });
+      // this._gButton
+      //   .append("text")
+      //   .attr("style", (d) => (d.parent ? "opacity: 0" : "opacity: 1"))
+      //   .attr("x", 12)
+      //   .attr("y", -30)
+      //   .text("EXPAND")
+      //   .on("click", (e, n) => {
+      //     if (
+      //       // isTouchDevice() ||
+      //       select(e?.target?.parentNode).attr("style").match("opacity: 0")
+      //     )
+      //       return e.stopPropagation();
+      //     this.setCurrentHabit(n);
+      //     // this.eventHandlers.handlePrependNode.call(this, e, n);
+      //   });
   }
 
   bindEventHandlers(selection) {
@@ -1417,6 +1442,8 @@ export default class BaseVisualization implements IVisualization {
       }
       const translationNeeded = !!this.rootData._translationCoords;
       this.clearCanvas(translationNeeded);
+      console.log('debug this.rootData._translationCoords :>> ', this.rootData._translationCoords);
+      console.log('debug this.nextrootData._translationCoords :>> ', this?._nextRootData?._translationCoords);
       translationNeeded && this.translateLinks(this.rootData._translationCoords);
 
       // _p("Cleared canvas :>> ");

@@ -13,6 +13,7 @@ import { Orbit, OrbitEdge, useDeleteOrbitMutation, useGetOrbitsLazyQuery, useGet
 import { extractEdges } from '../../graphql/utils';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes } from '../vis/BaseVis';
+import { currentSphere } from '../../state/currentSphereHierarchyAtom';
 
 interface ListOrbitsProps {
   sphereHash?: string; // Optional prop to filter orbits by sphere
@@ -21,7 +22,7 @@ interface ListOrbitsProps {
 const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   
-  const db = useAtomValue(nodeStore.entries);
+  const db = useAtomValue(nodeStore.keys);
   const setMany = useSetAtom(nodeStore.setMany)
   const mapToCacheObject = (orbit: Orbit) => ({
     id: orbit.id,
@@ -48,6 +49,9 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
     fetchPolicy: 'network-only',
     variables: { sphereEntryHashB64: sphereEh },
   });
+  
+  const [selectedSphere] = useAtom(currentSphere);
+  
   useEffect(() => {
     if (sphereEh && dataSphere) {
       getOrbits();
@@ -63,18 +67,19 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
         return [value.id, value]
       })
       let indexedSphereData : SphereNodeDetailsCache = {};
-      indexedSphereData = indexedOrbitData.reduce((cacheObject, [id, entry], idx) => {
+      const entries = indexedOrbitData.reduce((cacheObject, [id, entry], idx) => {
         if(idx == 0) {
-          cacheObject[sphereEh as keyof SphereNodeDetailsCache] = { [id as string]: entry as OrbitNodeDetails }        
+          cacheObject[selectedSphere.actionHash as keyof SphereNodeDetailsCache] = { [id as string]: entry as OrbitNodeDetails }        
         }
-        cacheObject[sphereEh as keyof SphereNodeDetailsCache] = {...cacheObject[sphereEh as keyof SphereNodeDetailsCache], [id as string]: entry as OrbitNodeDetails }
+        cacheObject[selectedSphere.actionHash as keyof SphereNodeDetailsCache][id as string] = entry as OrbitNodeDetails;
           
         return cacheObject
       }, indexedSphereData)
 
         // NOTE: this is provisionally using the structure { {SPHERE_AH} : { {ORBIT_AH} : {DETAILS} } }
         // and may need to be adapted once WIN records are also cached.
-      setMany(indexedOrbitData);
+      setMany(entries);
+      console.log('db :>> ', db);
     }
   }, [data]);
   

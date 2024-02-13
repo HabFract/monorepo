@@ -86,3 +86,69 @@ body[class^="scroll"] .controls-div {
 g.tooltip rect:first-of-type {
   fill: #6B7D7F !important;
 }
+
+.tooltip-inner .content {
+  padding: 1rem 1.5rem  ;
+  color: #fefefe;
+  background: linear-gradient(180deg, #576468 0%, rgba(0,212,255,0) 11rem);
+  border-radius: 32px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  opacity: 1;
+  margin-top: 10px;
+} 
+
+.buttons, .tooltip-inner {
+  cursor: initial;
+}
+
+.buttons button:hover {
+  outline: 8px solid rgba(255, 23, 132, 0.7);
+}
+
+.tooltip-action-button {
+  border-radius: 100%;
+  background-repeat: no-repeat;
+  height: 6rem;
+  width: 6rem;
+  background-size: cover !important;
+}
+.higher-button {
+  background: url(assets/higher-scale-icon.svg);
+}
+.checkbox-button {
+  background: url(assets/checkbox-checked.svg);
+  background-repeat: no-repeat !important;
+}
+.lower-button {
+  background: url(assets/lower-scale-icon.svg);
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.tooltip-actions {
+  position: absolute;
+  right: -9rem;
+  width: 8rem;
+  height: 16rem;
+  top: -6.85rem;
+  padding: 0.5rem;
+}
+.tooltip-actions .buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tooltip-inner {
+  background: url(assets/line-corner-vector-2.svg);
+  background-position: top right;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 100%;
+  width: 100%;
+  padding-top: 50%;
+  padding-left: 4%;padding-right: 3px;
+  font-size: 2rem;
+  margin-left: 0rem;
+}
