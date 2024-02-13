@@ -76,3 +76,28 @@ jest.mock('../app/src/state/currentSphereHierarchyAtom.ts', () => ({
     };
   }),
 }));
+import { atom } from 'jotai';
+
+// Mock atoms for setting hierarchy bounds
+const mockBreadthBoundsAtom = atom({});
+const mockDepthBoundsAtom = atom({});
+
+// Mock setters for hierarchy bounds
+const mockSetBreadthBounds = jest.fn();
+const mockSetDepthBounds = jest.fn();
+
+jest.mock('../app/src/state/currentSphereHierarchyAtom.ts', () => ({
+  setBreadths: (sphereHash: string, bounds: number[]) => mockSetBreadthBounds(sphereHash, bounds),
+  setDepths: (sphereHash: string, bounds: number[]) => mockSetDepthBounds(sphereHash, bounds),
+  currentSphereHierarchyBounds: atom((get) => {
+    const sphereHash = get(mockBreadthBoundsAtom);
+    return {
+      [sphereHash]: {
+        minDepth: 0,
+        maxDepth: 1,
+        minBreadth: 0,
+        maxBreadth: 0,
+      },
+    };
+  }),
+}));
