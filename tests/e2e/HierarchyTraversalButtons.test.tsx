@@ -14,8 +14,8 @@ import { SPHERE_ID } from './mocks/spheres';
 
 const Tree = renderVis(OrbitTree);
 
-describe.skip('Hierarchy Path Templates - renders traversal buttons for parent with 1 child', () => {
-  it.skip('renders traversal button for going down a level', async () => {
+describe('Hierarchy Path Templates - renders traversal buttons for parent with 1 child', () => {
+  it('renders traversal button for going down a level', async () => {
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
         <TestProvider initialValues={[
@@ -33,11 +33,10 @@ describe.skip('Hierarchy Path Templates - renders traversal buttons for parent w
     expect(queryByTestId('traversal-button-right')).not.toBeInTheDocument();
     expect(queryByTestId('traversal-button-up')).not.toBeInTheDocument();
   });
-
 });
 
 describe('Hierarchy Path Templates - renders traversal buttons for parent with 2 children', () => {
-  it.skip('renders traversal button for going down a level', async () => {
+  it('renders traversal button for going down a level', async () => {
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
         <TestProvider initialValues={[
@@ -56,8 +55,8 @@ describe('Hierarchy Path Templates - renders traversal buttons for parent with 2
     expect(queryByTestId('traversal-button-up')).not.toBeInTheDocument();
   });
 
-  it('renders traversal button for going right', async () => {
-    const { getByTestId } = render(
+  it('given the down button was clicked, it renders traversal buttons for going right/up', async () => {
+    const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
         <TestProvider initialValues={[
           [currentSphere, { entryHash: SPHERE_ID, actionHash: SPHERE_ID }],
@@ -74,6 +73,37 @@ describe('Hierarchy Path Templates - renders traversal buttons for parent with 2
 
     await waitFor(() => {
       expect(getByTestId('traversal-button-right')).toBeInTheDocument();
+      expect(getByTestId('traversal-button-up')).toBeInTheDocument();
     });
+    expect(queryByTestId('traversal-button-left')).not.toBeInTheDocument();
+    // expect(queryByTestId('traversal-button-down')).not.toBeInTheDocument(); //TODO: fix levels window/depth upper bounds
+  });
+
+  it('given the down button was clicked, and then the right button was clicked, it renders traversal buttons for going left/up', async () => {
+    const { getByTestId, queryByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
+        <TestProvider initialValues={[
+          [currentSphere, { entryHash: SPHERE_ID, actionHash: SPHERE_ID }],
+        ]}>
+          {(Tree)}
+        </TestProvider>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      const traversalButton = getByTestId('traversal-button-down');
+      fireEvent.click(traversalButton);
+    });
+    await waitFor(() => {
+      const traversalButton = getByTestId('traversal-button-right');
+      fireEvent.click(traversalButton);
+    });
+
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-left')).toBeInTheDocument();
+      expect(getByTestId('traversal-button-up')).toBeInTheDocument();
+    });
+    expect(queryByTestId('traversal-button-right')).not.toBeInTheDocument();
+    // expect(queryByTestId('traversal-button-down')).not.toBeInTheDocument(); //TODO: fix levels window/depth upper bounds
   });
 });
