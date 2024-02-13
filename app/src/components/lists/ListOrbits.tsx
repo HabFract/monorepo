@@ -78,7 +78,7 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
 
         // NOTE: this is provisionally using the structure { {SPHERE_AH} : { {ORBIT_AH} : {DETAILS} } }
         // and may need to be adapted once WIN records are also cached.
-      setMany(entries);
+      setMany(entries as any);
       console.log('db :>> ', db);
     }
   }, [data]);

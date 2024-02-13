@@ -1,3 +1,7 @@
+import { QueryParamsLevel } from "../app/src/graphql/generated"
+import { SPHERE_ID } from "./e2e/mocks/spheres"
+
+
 //@ts-ignore
 window.ResizeObserver = require('resize-observer-polyfill')
 
@@ -9,17 +13,18 @@ channelMock.prototype.postMessage = function (data) {
 //@ts-ignore
 window.BroadcastChannel = channelMock
 
-const mockUseStateTransitionResponse = ['Home', jest.fn(() => {}), {
+
+// Mocking the top level state machine for component params
+const initialState = {
+  // orbitEh: 'R28gZm9yIGEgd2Fsay==',
+  currentSphereHash: SPHERE_ID,
+}
+let mockUseStateTransitionResponse = ['Home', jest.fn(() => {}), {
   // orbitEh: 'R28gZm9yIGEgd2Fsay==',
   currentSphereHash: SPHERE_ID,
 }];
-
-let mockUseStateTransitionResponse = ['Home', jest.fn(() => {}), {
-  currentSphereHash: SPHERE_ID,
-}];
-
-function setMockUseStateTransitionResponse(response) {
-  mockUseStateTransitionResponse = response;
+export function setMockUseStateTransitionResponse(params: typeof initialState) {
+  mockUseStateTransitionResponse = ['Home', jest.fn(() => {}), params];
 }
 
 jest.mock('../app/src/hooks/useStateTransition.ts', () => ({

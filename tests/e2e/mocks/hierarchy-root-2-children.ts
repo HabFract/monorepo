@@ -1,6 +1,7 @@
 import {
   GetOrbitHierarchyDocument,
 } from "../../../app/src/graphql/generated/index";
+import { SPHERE_ID } from "./spheres";
 
 
 export const HIERARCHY_ROOT_TWO_CHILDREN_MOCKS = [
@@ -27,7 +28,7 @@ export const HIERARCHY_ROOT_TWO_CHILDREN_MOCKS = [
       variables: {
         params: {
           levelQuery: {
-            sphereHashB64: 'SGVhbHRoMQ==e',
+            sphereHashB64: SPHERE_ID,
             orbitLevel: 0,
           },
         }

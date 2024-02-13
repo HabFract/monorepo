@@ -14,6 +14,9 @@ import OrbitTree from '../../app/src/components/vis/OrbitTree';
 import { HIERARCHY_MOCKS } from './mocks/hierarchy-root-only';
 import { ORBITS_MOCKS } from './mocks/orbits';
 import { MockedProvider } from '@apollo/client/testing';
+import { setMockUseStateTransitionResponse } from '../setupTests';
+import { QueryParamsLevel } from '../../app/src/graphql/generated';
+import { SPHERE_ID } from './mocks/spheres';
 
 
 const Tree = renderVis(OrbitTree);
@@ -77,6 +80,8 @@ const mockedCacheEntries = [
 ]
 
 test('renders a loading state, then an orbit tree vis with a node', async () => {
+  setMockUseStateTransitionResponse({currentSphereHash: SPHERE_ID})
+  
   const { getByText } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
       <TestProvider initialValues={[[nodeStore.setMany, mockedCacheEntries]]}>

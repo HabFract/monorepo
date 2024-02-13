@@ -967,8 +967,8 @@ export default class BaseVisualization implements IVisualization {
         .style("overflow", "visible")
         .attr("height", "550")
         .html((d) => {
-          console.log('this.nodeDetails :>> ', this.nodeDetails);
-          console.log('d.data.content :>> ', d.data.content);
+          // console.log('this.nodeDetails :>> ', this.nodeDetails);
+          // console.log('d.data.content :>> ', d.data.content);
           return `<div class="tooltip-inner">
           <div class="content">
           <h2>Name:</h2>

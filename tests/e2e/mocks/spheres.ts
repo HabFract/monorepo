@@ -1,6 +1,8 @@
 import { GetSpheresDocument, CreateSphereDocument, DeleteSphereDocument } from './../../../app/src/graphql/generated/index';
 import { aSphere, aSphereConnection, aSphereEdge } from './../../../app/src/graphql/generated/mocks-types-fixed';
 
+export const SPHERE_ID = 'SGVhbHRoMQ==e';
+
 export const SPHERES_MOCKS = [{
   request: {
     query: GetSpheresDocument,

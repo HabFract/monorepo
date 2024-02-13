@@ -9,6 +9,7 @@ import {
   aSphereConnection,
   aSphereEdge,
 } from "../../../app/src/graphql/generated/mocks-types-fixed";
+import { SPHERE_ID } from "./spheres";
 
 // const getQueryParams = (customDepth?: number) : OrbitHierarchyQueryParams => queryType == 'whole'
 // ? { orbitEntryHashB64: params.orbitEh }
@@ -36,7 +37,7 @@ export const HIERARCHY_MOCKS = [
       variables: {
         params: {
           levelQuery: {
-            sphereHashB64: 'SGVhbHRoMQ==e',
+            sphereHashB64: SPHERE_ID,
             orbitLevel: 0,
           },
         }

@@ -63,7 +63,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
       const currentTreeJson = getJsonDerivation(json);
       const hierarchyData = hierarchy(currentTreeJson);
       console.log('[params?.currentSphereHash] :>> ', nodeDetails, selectedSphere.actionHash);
-      
+      console.log('nodeDetails :>> ', nodeDetails);
       const orbitVis = new BaseVisualization(
         VisType.Tree,
         'vis',
@@ -71,7 +71,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
         canvasHeight,
         canvasWidth,
         margin,
-        nodeDetails
+        nodeDetails as any
       );
       setCurrentOrbitTree(orbitVis)
     }
@@ -112,7 +112,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
       currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string));
 
       // TODO: set actual depth bounds and perhaps use the translation coords
-console.log('currentOrbitTree.rootData._translationCoords :>> ', currentOrbitTree.rootData._translationCoords);
+      
       currentOrbitTree._nextRootData._translationCoords = [breadthIndex, depthIndex, hierarchyBounds[params?.currentSphereHash].maxBreadth + 1];
 
       currentOrbitTree.render();
