@@ -35,4 +35,22 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
       },
     },
   },
+  {
+    request: {
+      query: GetOrbitHierarchyDocument,
+      variables: {
+        params: {
+          levelQuery: {
+            sphereHashB64: SPHERE_ID,
+            orbitLevel: 1,
+          },
+        }
+      },
+    },
+    result: {
+      data: {
+        getOrbitHierarchy: `{"result": { "level_trees": [{"content":"R28gZm9yIGEgd2Fsay==1","name":"Child Node 1","children":[]}]}}`,
+      },
+    },
+  },
 ];
