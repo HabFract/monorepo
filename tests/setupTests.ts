@@ -10,8 +10,8 @@ channelMock.prototype.postMessage = function (data) {
 window.BroadcastChannel = channelMock
 
 const mockUseStateTransitionResponse = ['Home', jest.fn(() => {}), {
-  orbitEh: 'R28gZm9yIGEgd2Fsay==',
-  currentSphereHash: 'abc',
+  // orbitEh: 'R28gZm9yIGEgd2Fsay==',
+  currentSphereHash: 'SGVhbHRoMQ==e',
 }];
 
 jest.mock('../app/src/hooks/useStateTransition.ts', () => {

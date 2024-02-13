@@ -22,7 +22,7 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
       variables: {
         params: {
           levelQuery: {
-            sphereHashB64: 'abc',
+            sphereHashB64: 'SGVhbHRoMQ==e',
             orbitLevel: 0,
           },
         }
