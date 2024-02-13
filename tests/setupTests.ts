@@ -1,4 +1,5 @@
 import { QueryParamsLevel } from "../app/src/graphql/generated"
+import { SphereHashes } from "../app/src/state/currentSphereHierarchyAtom";
 import { SPHERE_ID } from "./e2e/mocks/spheres"
 
 
