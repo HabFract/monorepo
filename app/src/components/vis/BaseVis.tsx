@@ -632,7 +632,7 @@ export default class BaseVisualization implements IVisualization {
         .attr("data-testid", dataTestId);
       const newPath = select(".canvas").selectAll("g.links path")
       const {width, height} = newPath._groups[0][0].getBoundingClientRect();
-      const xTranslation = (indexToBreadthRatio > 0.5 ? -1 : 1)*(width * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number / 2)); 
+      const xTranslation = isMiddleElement ? 0 : (indexToBreadthRatio > 0.5 ? -1 : 1)*(width * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number / 2)); 
       const yTranslation = (height) * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number)/ 2; 
       // const a = pathWidth?.getBoundingClientRect();
       console.log('pathWidth :>> ', width, height, xTranslation);
