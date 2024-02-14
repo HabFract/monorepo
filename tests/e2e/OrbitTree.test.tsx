@@ -38,7 +38,7 @@ test('renders a loading state, then an orbit tree vis with a node', async () => 
   });
 });
 
-test.skip('renders details about the orbit', async () => {
+test('renders details about the orbit', async () => {
   const { getByText } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
       {(Tree)}

@@ -1,5 +1,5 @@
 import React, { ComponentType, useEffect, useState } from 'react';
-import BaseVisualization from "./BaseVis";
+import BaseVisualization, { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes } from "./BaseVis";
 import { VisProps, VisCoverage, VisType } from './types';
 import { hierarchy } from "d3-hierarchy";
 import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
@@ -23,8 +23,9 @@ export const OrbitTree: ComponentType<VisProps> = ({
   // Top level state machine and routing
   const [_state, _transition, params] = useStateTransition();
 
-  const nodeDetails = useAtomValue(nodeStore.entries);
+  // Get sphere and sphere orbit nodes details
   const [selectedSphere] = useAtom(currentSphere);
+  const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeStore.entries));
   
   // Does this vis cover the whole tree, or just a window over the whole tree?
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;
@@ -41,7 +42,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   // Helper to determine which part of the returned query data should be used in the Vis object
   const getJsonDerivation = (json: string) => visCoverage == VisCoverage.Complete ? JSON.parse(json) : JSON.parse(json)[breadthIndex]
 
-  // Query hook, parsed JSON state, and Vis object state
+  // GQL Query hook, parsed JSON state, and Vis object state
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery()
   const [json, setJson] = useState<string | null>(null);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<BaseVisualization | null>(null);
@@ -62,8 +63,8 @@ export const OrbitTree: ComponentType<VisProps> = ({
     if (!error && json && !currentOrbitTree) {
       const currentTreeJson = getJsonDerivation(json);
       const hierarchyData = hierarchy(currentTreeJson);
-      console.log('[params?.currentSphereHash] :>> ', nodeDetails, selectedSphere.actionHash);
-      console.log('nodeDetails :>> ', nodeDetails);
+      
+      const sphereNodeDetails: SphereOrbitNodes = nodeDetailsCache[selectedSphere!.actionHash as keyof SphereNodeDetailsCache] || {}
       const orbitVis = new BaseVisualization(
         VisType.Tree,
         'vis',
@@ -71,7 +72,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
         canvasHeight,
         canvasWidth,
         margin,
-        nodeDetails as any
+        sphereNodeDetails
       );
       setCurrentOrbitTree(orbitVis)
     }

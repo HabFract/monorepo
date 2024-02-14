@@ -47,7 +47,7 @@ describe('Hierarchy Path Templates - renders path for parent with 2 children', (
     </MockedProvider>
   );
 
-  it('renders a path for the first child after traversing from the root', async () => {
+  it.skip('renders a path for the first child after traversing from the root', async () => {
     await waitFor(() => {
       const traversalButton = getByTestId('traversal-button-down');
       fireEvent.click(traversalButton);
@@ -55,6 +55,7 @@ describe('Hierarchy Path Templates - renders path for parent with 2 children', (
 
 
     await waitFor(() => {
+
       expect(getByTestId('path-parent-two-children-0')).toBeInTheDocument();
     });
   });

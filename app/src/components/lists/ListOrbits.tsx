@@ -72,13 +72,12 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
           cacheObject[selectedSphere.actionHash as keyof SphereNodeDetailsCache] = { [id as string]: entry as OrbitNodeDetails }        
         }
         cacheObject[selectedSphere.actionHash as keyof SphereNodeDetailsCache][id as string] = entry as OrbitNodeDetails;
-          
         return cacheObject
       }, indexedSphereData)
 
         // NOTE: this is provisionally using the structure { {SPHERE_AH} : { {ORBIT_AH} : {DETAILS} } }
         // and may need to be adapted once WIN records are also cached.
-      setMany(entries as any);
+      setMany(Object.entries(entries));
       console.log('db :>> ', db);
     }
   }, [data]);

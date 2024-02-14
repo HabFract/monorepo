@@ -139,7 +139,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           mode="inline"
-          items={createSphereMenuItems({spheres: spheres.spheres as any, onClick: () => {debugger;closeMenu()}})}
+          items={createSphereMenuItems({spheres: spheres.spheres as any, onClick: () => {closeMenu()}})}
         />}
         <div className={"main-actions-menu"}>
           <Menu
