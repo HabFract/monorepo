@@ -10,6 +10,11 @@ g.nodes {
   stroke-width: 4px;
 }
 
+.node-subgroup {
+  transform: scale(3) translate(-78px, -61px);
+  filter: brightness(1.5);
+}
+
 .instruct-legend .cell:nth-child(3) circle,
 .legend-svg .cell:nth-child(3) circle {
   fill: #edd837;
@@ -98,6 +103,15 @@ g.tooltip rect:first-of-type {
   margin-top: 10px;
 } 
 
+.tooltip-inner .content span.title {
+  text-transform: uppercase;
+  @apply font-sans font-semibold tracking-wider;
+}
+
+.tooltip-inner .content p {
+  @apply font-medium tracking-normal mb-2;
+}
+
 .buttons, .tooltip-inner {
   cursor: initial;
 }
@@ -142,12 +156,13 @@ g.tooltip rect:first-of-type {
 
 .tooltip-inner {
   background: url(assets/line-corner-vector-2.svg);
-  background-position: top right;
+  background-position: right;
+  background-position-y: .5rem;
   background-size: contain;
   background-repeat: no-repeat;
   height: 100%;
   width: 100%;
-  padding-top: 50%;
+  padding-top: calc(50% + .5rem);
   padding-left: 4%;padding-right: 3px;
   font-size: 2rem;
   margin-left: 0rem;

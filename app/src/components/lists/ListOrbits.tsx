@@ -26,6 +26,7 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
   const setMany = useSetAtom(nodeStore.setMany)
   const mapToCacheObject = (orbit: Orbit) => ({
     id: orbit.id,
+    eH: orbit.eH,
     name: orbit.name,
     scale: orbit.scale,
     description: orbit.metadata?.description,
@@ -68,17 +69,17 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
       })
       let indexedSphereData : SphereNodeDetailsCache = {};
       const entries = indexedOrbitData.reduce((cacheObject, [id, entry], idx) => {
+        const indexKey = (entry as any).eH as string; // Key by entry hash, since the hierarchy content CURRENTLY references entry hashes and not action hashes // TODO: revise if this needs changing.
         if(idx == 0) {
-          cacheObject[selectedSphere.actionHash as keyof SphereNodeDetailsCache] = { [id as string]: entry as OrbitNodeDetails }        
+          cacheObject[selectedSphere.actionHash as keyof SphereNodeDetailsCache] = { [indexKey]: entry as OrbitNodeDetails }        
         }
-        cacheObject[selectedSphere.actionHash as keyof SphereNodeDetailsCache][id as string] = entry as OrbitNodeDetails;
+        cacheObject[selectedSphere.actionHash as keyof SphereNodeDetailsCache][indexKey] = entry as OrbitNodeDetails;
         return cacheObject
       }, indexedSphereData)
 
         // NOTE: this is provisionally using the structure { {SPHERE_AH} : { {ORBIT_AH} : {DETAILS} } }
         // and may need to be adapted once WIN records are also cached.
       setMany(Object.entries(entries));
-      console.log('db :>> ', db);
     }
   }, [data]);
   
