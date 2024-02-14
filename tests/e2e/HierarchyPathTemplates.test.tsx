@@ -55,12 +55,7 @@ describe('Hierarchy Path Templates - renders path for parent with 2 children', (
 
 
     await waitFor(() => {
-      expect(getByTestId('path-parent-one-child')).toBeInTheDocument();
+      expect(getByTestId('path-parent-two-children-0')).toBeInTheDocument();
     });
-  
-  
-    // await waitFor(() => {
-    //   expect(getByTestId('path-parent-two-children')).toBeInTheDocument();
-    // });
   });
 });

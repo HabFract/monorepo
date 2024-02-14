@@ -632,7 +632,7 @@ export default class BaseVisualization implements IVisualization {
         .attr("data-testid", dataTestId);
       const newPath = select(".canvas").selectAll("g.links path")
       const {width, height} = newPath._groups[0][0].getBoundingClientRect();
-      const xTranslation = (width) * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number)/ 2; 
+      const xTranslation = (indexToBreadthRatio > 0.5 ? -1 : 1)*(width * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number / 2)); 
       const yTranslation = (height) * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number)/ 2; 
       // const a = pathWidth?.getBoundingClientRect();
       console.log('pathWidth :>> ', width, height, xTranslation);
@@ -652,7 +652,7 @@ export default class BaseVisualization implements IVisualization {
         if (breadth === 1) {
           return [ONE_CHILD, 'path-parent-one-child']; 
         } else if (breadth == 2) {
-          return [TWO_CHILDREN_LEFT, 'path-parent-two-children']; 
+          return [dx == 0 ? TWO_CHILDREN_LEFT : TWO_CHILDREN_RIGHT, 'path-parent-two-children' + dx]; 
         } else if (breadth == 3) {
           return [THREE_CHILDREN, 'path-parent-three-children']; 
         }
