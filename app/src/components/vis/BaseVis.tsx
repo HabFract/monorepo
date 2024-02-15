@@ -624,7 +624,6 @@ export default class BaseVisualization implements IVisualization {
 
     select(".canvas").selectAll("g.links *").remove();
     if(!!path) {
-      console.log('path :>> ', path);
       select(".canvas").selectAll("g.links").append('path')
         .attr("d", path)
         .classed("link", true)
@@ -634,13 +633,16 @@ export default class BaseVisualization implements IVisualization {
       const newPath = select(".canvas").selectAll("g.links path")
       const {width, height} = newPath._groups[0][0].getBoundingClientRect();
       const xTranslation = isMiddleElement ? 0 : (indexToBreadthRatio > 0.5 ? -1 : 1)*(width * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number / 2)); 
+      
+      console.log('height *  :>> ', height * this._viewConfig.scale);
+      console.log('height *  :>> ', this._viewConfig.margin);
       const yTranslation = (height) * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number)/ 2; 
       // const a = pathWidth?.getBoundingClientRect();
       console.log('pathWidth :>> ', width, height, xTranslation);
       select(".canvas").selectAll("g.links")
         .attr("transform", `translate(${xTranslation},${-yTranslation})`)
     } else {
-      select(".canvas").selectAll("g.links").remove();
+      // select(".canvas").selectAll("g.links").remove();
     }
 
     // Helper function to determine the SVG path fragment based on node position
@@ -1013,7 +1015,6 @@ export default class BaseVisualization implements IVisualization {
         .style("overflow", "visible")
         .attr("height", "550")
         .html((d) => {
-          console.log('name :>> ', this.nodeDetails);
         if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
           const {name, description, scale} = this.nodeDetails[d.data.content];
           return `<div class="tooltip-inner">
