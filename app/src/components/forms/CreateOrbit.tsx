@@ -7,13 +7,15 @@ import { Checkbox, Flex } from 'antd';
 import DateInput from './input/DatePicker';
 import { Button, TextInput, Label, Select, Textarea } from 'flowbite-react';
 
+import nodeStore from '../../state/jotaiKeyValueStore';
+
 import { Frequency, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { CustomErrorLabel } from './CreateSphere';
 import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { currentSphere } from '../../state/currentSphereHierarchyAtom';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -74,6 +76,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
 
   const { data: orbits, loading, error } = useGetOrbitsQuery({ variables: { sphereEntryHashB64: sphereEh } });
 
+  const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeStore.entries));
+  
   const [orbitValues, _] = useState<OrbitCreateParams & any>({
     name: '',
     description: '',
@@ -174,17 +178,22 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
               <Label htmlFor='scale'>Scale: <span className="reqd">*</span></Label>
               <div className="flex flex-col gap-2">
                 <Field name="scale" >
-                  {({ field }) => (
+                  {({ field }) => {
+                    const cannotBeAstro = values.parentHash !== 'root';
+                    return (
                     <Select
                       {...field}
                       color={errors.scale && touched.scale ? "invalid" : "default"}
                     >
-                      {Object.values(Scale).map((scale, i) =>
-                        <option key={i} value={scale}>{scale}</option>
+                      {Object.values(Scale).sort((a: any, b: any) => a - b).map((scale, i) => {
+                        return cannotBeAstro && scale == 'Astro'
+                          ? null
+                          : <option key={i} value={scale}>{scale}</option>
+                        }
                       )
                       }
                     </Select>
-                  )}
+                  )}}
                 </Field>
                 {CustomErrorLabel('scale', errors, touched)}
               </div>

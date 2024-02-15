@@ -209,9 +209,9 @@ export type QueryParamsLevel = {
 };
 
 export enum Scale {
-  Astro = 'Astro',
+  Sub = 'Sub',
   Atom = 'Atom',
-  Sub = 'Sub'
+  Astro = 'Astro',
 }
 
 export type Sphere = Node & {
