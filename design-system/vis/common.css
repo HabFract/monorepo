@@ -34,6 +34,19 @@ div[role="progressbar"] > div.astro > div {
   transform: rotate(90deg) translate(-10%,-40%) !important;
 }
 
+/* Flowbite modal overrides */
+/* Header */
+[data-testid="modal-overlay"] > div > div > div:first-child {
+  padding: 1rem !important;
+  display: flex;
+  align-items: center;
+}
+
+[data-testid="modal-overlay"] > div,
+[data-testid="modal-overlay"] > div > div > div:last-child {
+  padding: 0 !important;
+}
+
 @media screen and (min-width: 420px) {
   .sphere-pie svg {
     @apply -ml-2;
@@ -42,6 +55,21 @@ div[role="progressbar"] > div.astro > div {
   .sphere-pie-label {    
     padding-left: 50%;
   }
+
+  /* Flowbite modal overrides */
+  [data-testid="modal-overlay"] > div {
+    height: 90vh;
+    @apply p-4;
+    
+  }
+  [data-testid="modal-overlay"] > div > div {
+    height: 100%;
+    overflow: hidden;
+  }
+  [data-testid="modal-overlay"] > div > div > div:last-child {
+    height: 100%;
+  }
+
 }
 @media screen and (min-width: 1280px) {
   .orbit-vis {

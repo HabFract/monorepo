@@ -14,7 +14,7 @@ import { SPHERE_ID } from './mocks/spheres';
 
 const Tree = renderVis(OrbitTree);
 
-describe.skip('Hierarchy Traversal - renders traversal buttons for parent with 1 child', () => {
+describe('Hierarchy Traversal - renders traversal buttons for parent with 1 child', () => {
   it('renders traversal button for going down a level', async () => {
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
@@ -35,7 +35,7 @@ describe.skip('Hierarchy Traversal - renders traversal buttons for parent with 1
   });
 });
 
-describe.skip('Hierarchy Path Templates - renders traversal buttons for parent with 2 children', () => {
+describe('Hierarchy Path Templates - renders traversal buttons for parent with 2 children', () => {
   it('renders traversal button for going down a level', async () => {
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
@@ -91,7 +91,7 @@ describe.skip('Hierarchy Path Templates - renders traversal buttons for parent w
     );
 
     await waitFor(() => {
-      const traversalButton = getByTestId('traversal-button-down');
+      const traversalButton = getByTestId('traversal-button-down-left');
       fireEvent.click(traversalButton);
     });
     await waitFor(() => {

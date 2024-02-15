@@ -54,12 +54,13 @@ const OrbitFetcher = ({orbitToEditId}) => {
 
 interface CreateOrbitProps {
   editMode: boolean;
+  inModal: boolean;
   orbitToEditId?: ActionHashB64;
   sphereEh: string; // Link to a sphere
   parentOrbitEh: string | undefined; // Link to a parent Orbit to create hierarchies
 }
 
-const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEditId, sphereEh, parentOrbitEh }: CreateOrbitProps) => {
+const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, parentOrbitEh }: CreateOrbitProps) => {
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
   const [selectedSphere, _setSelectedSphere] = useAtom(currentSphere);
 
@@ -90,7 +91,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
   });
   return (
     <div className="form-container">
-      <h2 className="form-title">{editMode ? "Update" : "Create"} Orbit</h2>
+      {!inModal && <h2 className="form-title">{editMode ? "Update" : "Create"} Orbit</h2>}
       <Formik
         initialValues={orbitValues}
         validationSchema={OrbitValidationSchema}

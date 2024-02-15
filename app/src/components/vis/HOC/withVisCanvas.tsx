@@ -10,6 +10,8 @@ import { HierarchyBounds, SphereHierarchyBounds, currentSphere, currentSphereHie
 import { DownOutlined, LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
 import { WithVisCanvasProps } from '../types';
 import { EntryHashB64 } from '@holochain/client';
+import { Modal } from 'flowbite-react';
+import { CreateOrbit } from '../../forms';
 
 const defaultMargins: Margins = {
   top: -1100,
@@ -50,6 +52,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
     }, []);
     const { canvasHeight, canvasWidth } = getCanvasDimensions()
     
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedSphere] = useAtom(currentSphere);
     const sphereHierarchyBounds : SphereHierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
     const { depthIndex, 
@@ -76,9 +79,11 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
           render={(currentVis: any, queryType: VisCoverage) => {
             // Determine need for traversal controld
             const withTraversal = queryType == VisCoverage.Partial;
-
+            if(appendedSvg) {
+              currentVis.modalOpen = setIsModalOpen;
+              currentVis?.render();
+            }
             // Trigger the Vis object render function only once the SVG is appended to the DOM
-            appendedSvg && currentVis?.render();
             const onlyChild = currentVis.rootData?.data?.children && currentVis.rootData.data?.children.length ==1;
             // console.log('currentVis.rootData :>> ', currentVis.rootData);
 // console.log('withTraversal, depthIndex, breadthIndex :>> ', queryType, withTraversal, depthIndex, breadthIndex, maxBreadth, maxDepth);
@@ -91,6 +96,16 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                 {!!(withTraversal && maxDepth && depthIndex < maxDepth && onlyChild) && <DownOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "46vw", bottom: "43vh"}}  onClick={incrementDepth} />}
                 {!!(withTraversal && maxDepth && depthIndex < maxDepth && !onlyChild) && <DownOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{left: "12vw", bottom: "45vh", transform: "rotate(45deg)"}}  onClick={incrementDepth} />}
                 {/* {!!(withTraversal && maxDepth && depthIndex < maxDepth && !onlyChild) && <DownOutlined data-testid={"traversal-button-down-right"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "12vw", bottom: "45vh", transform: "rotate(-45deg)"}}  onClick={() => {console.log('maxBreadth, setBreadthIndex :>> ', currentVis.rootData.data.children.length-1, setBreadthIndex); incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length-1);}} />} */}
+                {
+                  <Modal show={isModalOpen} onClose={() => {setIsModalOpen(false)}}>
+                    <Modal.Header>
+                      Create Orbit
+                    </Modal.Header>
+                    <Modal.Body>
+                      <CreateOrbit editMode={false} inModal={true} sphereEh='abx' parentOrbitEh='abx'></CreateOrbit>
+                      </Modal.Body>
+                  </Modal>
+                }
               </>
             )
           }}

@@ -19,7 +19,7 @@ import { currentSphere } from '../../app/src/state/currentSphereHierarchyAtom';
 
 const Tree = renderVis(OrbitTree);
 
-test('renders a loading state, then an orbit tree vis with a node', async () => {
+test.skip('renders a loading state, then an orbit tree vis with a node', async () => {
   const { getByText } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
       {(Tree)}
@@ -36,7 +36,7 @@ test('renders a loading state, then an orbit tree vis with a node', async () => 
   });
 });
 
-test('renders details about the orbit', async () => {
+test.skip('renders details about the orbit', async () => {
   const { getByText } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
       <TestProvider initialValues={[

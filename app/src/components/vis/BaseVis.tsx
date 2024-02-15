@@ -104,6 +104,7 @@ export default class BaseVisualization implements IVisualization {
   nodeDetails: SphereOrbitNodes;
   sphereHash: ActionHashB64;
   globalStateTransition: Function;
+  modalOpen?: Function;
   _nextRootData: any;
   layout!: TreeLayout<unknown>;
   _viewConfig: ViewConfig;
@@ -184,10 +185,10 @@ export default class BaseVisualization implements IVisualization {
 
     this.eventHandlers = {
       handlePrependNode: function () {
-        // store.dispatch(toggleConfirm({ type: "Prepend" }));
+        this.modalOpen(true);
       },
       handleAppendNode: function () {
-        // store.dispatch(toggleConfirm({ type: "Append" }));
+        this.modalOpen(true);
       },
       handleDeleteNode: function (_, node) {
         // this.setCurrentHabit(node);
@@ -267,7 +268,7 @@ export default class BaseVisualization implements IVisualization {
       },
       handleMouseEnter: function ({ target: d }) {
         this.currentTooltip = select(d).selectAll("g.tooltip");
-        console.log('this.currentTooltip :>> ', this.currentTooltip);
+        
         this.currentTooltip.transition().duration(450).style("opacity", "1");
         this.currentButton = select(d).selectAll("g.habit-label-dash-button");
         this.currentButton
@@ -1280,9 +1281,10 @@ export default class BaseVisualization implements IVisualization {
             break;
         
           case e.target.classList.contains('lower-button'):
+            console.log('thi :>> ', !d?.data?.content || !this.nodeDetails[d.data.content]);
             if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
-            console.log('this.sphereHash :>> ', this.sphereHash);
-            this.globalStateTransition('CreatOrbit', { sphereEh: this.sphereHash })
+            // this.globalStateTransition('CreateOrbit', { sphereEh: this.sphereHash })
+            this.eventHandlers.handleAppendNode.call(this)
             break;
         
           default:

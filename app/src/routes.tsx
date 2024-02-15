@@ -42,7 +42,7 @@ export const routes: Routes = {
   Onboarding4: <CreateProfile editMode={false} />,
   CreateSphere: <CreateSphere editMode={false} />,
   ListSpheres: <ListSpheres />,
-  CreateOrbit: <CreateOrbit editMode={false} />,
+  CreateOrbit: <CreateOrbit editMode={false} inModal={false} sphereEh="" parentOrbitEh="" />,
   ListOrbits: <ListOrbits />,
 };
 
