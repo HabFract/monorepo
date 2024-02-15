@@ -14,15 +14,15 @@ import { ORBITS_MOCKS } from './mocks/orbits';
 import { MockedProvider } from '@apollo/client/testing';
 import { TestProvider } from '../utils-frontend';
 import { mockedCacheEntries } from './mocks/cache';
+import { SPHERE_ID } from './mocks/spheres';
+import { currentSphere } from '../../app/src/state/currentSphereHierarchyAtom';
 
 const Tree = renderVis(OrbitTree);
 
 test('renders a loading state, then an orbit tree vis with a node', async () => {
   const { getByText } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
-      <TestProvider initialValues={[[nodeStore.setMany, mockedCacheEntries]]}>
-        {(Tree)}
-      </TestProvider>
+      {(Tree)}
     </MockedProvider>
   );
 
@@ -31,8 +31,6 @@ test('renders a loading state, then an orbit tree vis with a node', async () => 
   });
 
   await waitFor(() => {
-    
-    // screen.debug()
     expect(screen.getByTestId("test-node")).toBeInTheDocument();
     expect(screen.getByTestId("svg")).toBeInTheDocument();
   });
@@ -41,7 +39,11 @@ test('renders a loading state, then an orbit tree vis with a node', async () => 
 test('renders details about the orbit', async () => {
   const { getByText } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
-      {(Tree)}
+      <TestProvider initialValues={[
+        [currentSphere, { entryHash: SPHERE_ID, actionHash: SPHERE_ID }],
+      ]}>
+        {(Tree)}
+      </TestProvider>
     </MockedProvider>
   );
 

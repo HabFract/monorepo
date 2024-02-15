@@ -1,5 +1,6 @@
 import { QueryParamsLevel } from "../app/src/graphql/generated"
 import { SphereHashes } from "../app/src/state/currentSphereHierarchyAtom";
+import { mockedCacheEntries } from "./e2e/mocks/cache";
 import { SPHERE_ID } from "./e2e/mocks/spheres"
 
 
@@ -34,6 +35,16 @@ jest.mock('../app/src/hooks/useStateTransition.ts', () => ({
   useStateTransition: () => mockUseStateTransitionResponse,
   setMockUseStateTransitionResponse,
 }));
+
+
+let mockNodeDetailsCache = mockedCacheEntries;
+
+export function setMockNodeDetailsCache(params: typeof mockedCacheEntries) {
+  mockNodeDetailsCache = params;
+}
+jest.mock('../app/src/state/jotaiKeyValueStore.ts', () => (
+  {entries: atom(mockNodeDetailsCache)}
+));
 
 jest.mock('d3-scale', () => ({
   scaleLinear: () => ({

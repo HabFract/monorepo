@@ -65,9 +65,9 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
       // Cache the necessary details to be available for the BaseVisualization
       let orbits: Orbit[] = extractEdges(data.orbits);
       let indexedOrbitData = Object.entries(orbits.map(mapToCacheObject))
-      .map(([_idx, value]) => {
-        return [value.id, value]
-      })
+        .map(([_idx, value]) => {
+          return [value.id, value]
+        })
       let indexedSphereData : SphereNodeDetailsCache = {};
       const entries = indexedOrbitData.reduce((cacheObject, [id, entry], idx) => {
         const indexKey = (entry as any).eH as string; // Key by entry hash, since the hierarchy content CURRENTLY references entry hashes and not action hashes // TODO: revise if this needs changing.

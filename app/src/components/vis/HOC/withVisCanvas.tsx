@@ -80,7 +80,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
             // Trigger the Vis object render function only once the SVG is appended to the DOM
             appendedSvg && currentVis?.render();
             const onlyChild = currentVis.rootData?.data?.children && currentVis.rootData.data?.children.length ==1;
-            console.log('currentVis.rootData :>> ', currentVis.rootData);
+            // console.log('currentVis.rootData :>> ', currentVis.rootData);
 // console.log('withTraversal, depthIndex, breadthIndex :>> ', queryType, withTraversal, depthIndex, breadthIndex, maxBreadth, maxDepth);
             return (
               <> 
