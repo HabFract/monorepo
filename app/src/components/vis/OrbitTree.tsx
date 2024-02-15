@@ -11,6 +11,7 @@ import { currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } f
 
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
+import { transition } from 'd3';
 
 export const OrbitTree: ComponentType<VisProps> = ({
   canvasHeight,
@@ -21,7 +22,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   render
 }) => {
   // Top level state machine and routing
-  const [_state, _transition, params] = useStateTransition();
+  const [_state, transition, params] = useStateTransition();
 
   // Get sphere and sphere orbit nodes details
   const [selectedSphere] = useAtom(currentSphere);
@@ -73,7 +74,9 @@ export const OrbitTree: ComponentType<VisProps> = ({
         canvasHeight,
         canvasWidth,
         margin,
-        sphereNodeDetails as any
+        sphereNodeDetails as any,
+        transition,
+        selectedSphere.actionHash as any
       );
       setCurrentOrbitTree(orbitVis)
     }

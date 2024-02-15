@@ -179,7 +179,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
               <div className="flex flex-col gap-2">
                 <Field name="scale" >
                   {({ field }) => {
-                    const cannotBeAstro = values.parentHash !== 'root';
+                    const cannotBeAstro = values.parentHash !== '' && values.parentHash !== 'root';
                     return (
                     <Select
                       {...field}

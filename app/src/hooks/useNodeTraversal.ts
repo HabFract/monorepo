@@ -25,8 +25,8 @@ export const useNodeTraversal = (hierarchyBounds: HierarchyBounds, selectedSpher
   };
 
   const decrementDepth = () => {
-    setBreadthIndex(0);
     setDepthIndex(depthIndex > 0 ? depthIndex - 1 : 0);
+    setBreadthIndex(0);
   };
   const maxBreadth = hierarchyBounds?.maxBreadth;
   const maxDepth = hierarchyBounds?.maxDepth;
