@@ -32,6 +32,7 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
     description: orbit.metadata?.description,
     startTime: orbit.metadata?.timeframe.startTime,
     endTime: orbit.metadata?.timeframe.endTime,
+    checked: false
   })
   
   const { loading: loadingSphere, data: dataSphere } = useGetSphereQuery({

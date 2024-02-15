@@ -1,6 +1,8 @@
+import { SPHERE_ID } from "./spheres";
+
 export const mockedCacheEntries = [
   [
-    'SGVhbHRoMQ==e___R28gZm9yIGEgd2Fsay==',
+    SPHERE_ID,
     {
       id: 'R28gZm9yIGEgd2Fsay==',
       name: 'Go for a walk',
@@ -11,7 +13,7 @@ export const mockedCacheEntries = [
     }
   ],
   [
-    'SGVhbHRoMQ==e___TGlmdCB3ZWlnaHRz',
+    SPHERE_ID,
     {
       id: 'TGlmdCB3ZWlnaHRz',
       name: 'Lift weights',
@@ -22,7 +24,7 @@ export const mockedCacheEntries = [
     }
   ],
   [
-    'SGVhbHRoMQ==e___TWFrZSBhIGhlYWx0aHkgbWVhbA==',
+    SPHERE_ID,
     {
       id: 'TWFrZSBhIGhlYWx0aHkgbWVhbA==',
       name: 'Make a healthy meal',
@@ -33,7 +35,7 @@ export const mockedCacheEntries = [
     }
   ],
   [
-    'SGVhbHRoMQ==e___UHJhY3RpY2UgeW9nYQ==',
+    SPHERE_ID,
     {
       id: 'UHJhY3RpY2UgeW9nYQ==',
       name: 'Practice yoga',

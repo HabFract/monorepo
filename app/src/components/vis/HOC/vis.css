@@ -12,7 +12,20 @@ g.nodes {
 
 .node-subgroup {
   transform: scale(3) translate(-78px, -61px);
-  filter: brightness(1.5);
+  /* filter: brightness(1.5); */
+}
+
+.node-subgroup > * {
+  filter: saturate(0.45)
+}
+
+.node-subgroup > *:first-child {
+  filter: initial;
+  fill: #3c3c3c;
+  opacity: 1;
+}
+.node-subgroup.checked > *:first-child {
+  fill: #a6d71c;
 }
 
 .instruct-legend .cell:nth-child(3) circle,
@@ -131,9 +144,16 @@ g.tooltip rect:first-of-type {
   background: url(assets/higher-scale-icon.svg);
 }
 .checkbox-button {
-  background: url(assets/checkbox-checked.svg);
+  background: url(assets/checkbox-empty.svg);
   background-repeat: no-repeat !important;
 }
+.buttons button:focus, .buttons button:focus-visible {
+  outline: 6px solid #91caff
+}
+.checkbox-button.checked {
+  background: url(assets/checkbox-checked.svg);
+}
+
 .lower-button {
   background: url(assets/lower-scale-icon.svg);
   background-position: center !important;
@@ -155,7 +175,7 @@ g.tooltip rect:first-of-type {
 }
 
 .tooltip-inner {
-  background: url(assets/line-corner-vector-2.svg);
+  background: url(assets/line-corner-vector-3.svg);
   background-position: right;
   background-position-y: .5rem;
   background-size: contain;

@@ -83,6 +83,7 @@ export interface OrbitNodeDetails {
   scale: Scale
   startTime: number
   endTime: number;
+  checked: boolean;
 }
 
 export type SphereOrbitNodes = {
@@ -991,9 +992,16 @@ export default class BaseVisualization implements IVisualization {
       .append("g")
       .classed("node-subgroup", true)
       .attr("stroke-width", "0")
+      .classed("checked", (d) => {
+        if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
+        const {checked} = this.nodeDetails[d.data.content];
+        return checked
+      })
       .attr("style", (d) => {
+        if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
         const {scale} = this.nodeDetails[d.data.content];
-        return scale == 'Astro' ? "filter: saturate(0.45)" : "filter: brightness(1.25)"
+        // return scale == 'Astro' ? "filter: saturate(0.45)" : "filter: brightness(1.25)"
+
       });
     this._gTooltip = this._enteringNodes
       .append("g")
@@ -1005,6 +1013,8 @@ export default class BaseVisualization implements IVisualization {
         .style("overflow", "visible")
         .attr("height", "550")
         .html((d) => {
+          console.log('name :>> ', this.nodeDetails);
+        if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
           const {name, description, scale} = this.nodeDetails[d.data.content];
           return `<div class="tooltip-inner">
           <div class="content">
@@ -1036,9 +1046,11 @@ export default class BaseVisualization implements IVisualization {
         .style("overflow", "visible")
         .attr("height", "550")
         .html((d) => {
+          if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
+          const { checked, scale } = this.nodeDetails[d.data.content];
           return `<div class="buttons">
-          <button class="tooltip-action-button higher-button"></button>
-          <button class="tooltip-action-button checkbox-button"></button>
+          <button class="tooltip-action-button higher-button ${scale !== 'Astro' ? 'checked' : ''}"></button>
+          <button class="tooltip-action-button checkbox-button ${checked ? 'checked' : ''}"></button>
           <button class="tooltip-action-button lower-button"></button>
         </div>`
       });
@@ -1065,11 +1077,12 @@ export default class BaseVisualization implements IVisualization {
   appendCirclesAndLabels() : void {
     this._gCircle
       .html((d) => {
+        if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
         const {scale} = this.nodeDetails[d.data.content];
         switch (scale) {
           case 'Astro':
             return `
-            <circle cx="76.7949" cy="70.625" r="67.5" fill="white" fill-opacity="0.3"/>
+            <circle cx="76.7949" cy="70.625" r="65.5" fill-opacity="1"/>
             <circle cx="76.7949" cy="70.625" r="55.5" fill="#89BFF2" stroke="#004955" stroke-width="6"/>
             <mask id="mask0_348_25124" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="24" y="18" width="106" height="106">
             <circle cx="76.7949" cy="70.625" r="52.5" fill="#D2E1FB"/>
@@ -1100,7 +1113,7 @@ export default class BaseVisualization implements IVisualization {
             `
             
           case 'Atom':
-          return `<ellipse cx="77.7602" cy="67.5" rx="67.5" ry="67.5" fill="#B341FF" fill-opacity="0.3"/>
+          return `<ellipse cx="77.7602" cy="67.5" rx="65.5" ry="67.5" fill-opacity="1"/>
           <path d="M133.26 67.5C133.26 98.1518 108.412 123 77.7597 123C47.1079 123 22.2598 98.1518 22.2598 67.5C22.2598 36.8482 47.1079 12 77.7597 12C108.412 12 133.26 36.8482 133.26 67.5Z" fill="#8C12DC" stroke="#004955" stroke-width="6"/>
           <mask id="mask0_348_24970" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="25" y="15" width="106" height="105">
           <ellipse cx="77.7597" cy="67.5" rx="52.5" ry="52.5" fill="#B341FF"/>
@@ -1248,24 +1261,37 @@ export default class BaseVisualization implements IVisualization {
     selection
       .on("contextmenu", this.eventHandlers.rgtClickOrDoubleTap)
       .on("click", (e, d) => {
-        // if (isTouchDevice()) return;
-
-        if (e.target.tagName !== "circle") return;
+        if (e.target.tagName !== "BUTTON") return;
 
         this.eventHandlers.handleNodeFocus.call(this, e, d);
-
-        if (!this._gLink.attr("transform"))
-          // If it is not a radial vis
-          this.eventHandlers.handleNodeZoom.call(this, e, d, false);
+        switch (true) {
+          case e.target.classList.contains('checkbox-button'):
+            if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
+            const {checked} = this.nodeDetails[d.data.content];
+            this.nodeDetails[d.data.content].checked = !checked;
+            e.target.classList.toggle('checked');
+            e.target.closest('.the-node').firstChild.classList.toggle('checked');
+            break;
+        
+          case e.target.classList.contains('checkbox-button'):
+            if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
+            break;
+        
+          default:
+            break;
+        }
+        // if (!this._gLink.attr("transform"))
+        //   // If it is not a radial vis
+        //   this.eventHandlers.handleNodeZoom.call(this, e, d, false);
       })
-      .on("touchstart", this.eventHandlers.handleHover.bind(this), {
-        passive: true,
-      })
-      .on("mouseleave", this.eventHandlers.handleMouseLeave.bind(this))
-      .on(
-        "mouseenter",
-        debounce(this.eventHandlers.handleMouseEnter.bind(this), 450)
-      );
+      // .on("touchstart", this.eventHandlers.handleHover.bind(this), {
+      //   passive: true,
+      // })
+      // .on("mouseleave", this.eventHandlers.handleMouseLeave.bind(this))
+      // .on(
+      //   "mouseenter",
+      //   debounce(this.eventHandlers.handleMouseEnter.bind(this), 450)
+      // );
   }
 
   bindMobileEventHandlers(selection) {

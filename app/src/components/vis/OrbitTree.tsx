@@ -63,8 +63,9 @@ export const OrbitTree: ComponentType<VisProps> = ({
     if (!error && json && !currentOrbitTree) {
       const currentTreeJson = getJsonDerivation(json);
       const hierarchyData = hierarchy(currentTreeJson);
-      
-      const sphereNodeDetails: SphereOrbitNodes = nodeDetailsCache[selectedSphere!.actionHash as keyof SphereNodeDetailsCache] || {}
+      console.log('nodeDetailsCache :>> ', nodeDetailsCache);
+      console.log('selectedSphere!.actionHash :>> ', selectedSphere!.actionHash);
+      const sphereNodeDetails = nodeDetailsCache[selectedSphere!.actionHash as any] || {}
       const orbitVis = new BaseVisualization(
         VisType.Tree,
         'vis',
@@ -72,7 +73,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
         canvasHeight,
         canvasWidth,
         margin,
-        sphereNodeDetails
+        sphereNodeDetails as any
       );
       setCurrentOrbitTree(orbitVis)
     }
