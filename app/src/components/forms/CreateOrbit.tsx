@@ -65,20 +65,19 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
   const [selectedSphere, _setSelectedSphere] = useAtom(currentSphere);
 
   // Used to dictate onward routing
-  const originPage : AppState = !!parentOrbitEh ? 'Vis' : 'ListOrbits'; 
-console.log('selectedSphere.entryHash :>> ', selectedSphere.entryHash);
+  const originPage : AppState = !!parentOrbitEh ? 'Vis' : 'ListOrbits';
 
   const [addOrbit] = useCreateOrbitMutation({
     refetchQueries: () => [
       // {
       //   query: GetOrbitsDocument,
       // },
-      // {
-      //   query: GetOrbitHierarchyDocument,
-      //   variables: { 
-      //     params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 0 } },
-      //   },
-      // }
+      {
+        query: GetOrbitHierarchyDocument,
+        variables: { 
+          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 0 } },
+        },
+      }
     ],
   });
   const [updateOrbit] = useUpdateOrbitMutation({
