@@ -7,13 +7,14 @@ import { Checkbox, Flex } from 'antd';
 import DateInput from './input/DatePicker';
 import { Button, TextInput, Label, Select, Textarea } from 'flowbite-react';
 
-import { Frequency, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
+import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { CustomErrorLabel } from './CreateSphere';
-import { ActionHashB64 } from '@holochain/client';
+import { ActionHashB64, decodeHashFromBase64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { currentSphere } from '../../state/currentSphereHierarchyAtom';
 import { useAtom, useAtomValue } from 'jotai';
+import { AppState } from '../../routes';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -62,10 +63,20 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
   const [selectedSphere, _setSelectedSphere] = useAtom(currentSphere);
 
+  // Used to dictate onward routing
+  const originPage : AppState = !!parentOrbitEh ? 'Vis' : 'ListOrbits'; 
+
   const [addOrbit] = useCreateOrbitMutation({
-    refetchQueries: [
-      'getOrbits',
-    ]
+    refetchQueries: () => [{
+        query: GetOrbitsDocument,
+      },
+      {
+        query: GetOrbitHierarchyDocument,
+        variables: { 
+          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 0 } },
+        },
+      }
+    ],
   });
   const [updateOrbit] = useUpdateOrbitMutation({
     refetchQueries: [
@@ -100,7 +111,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
               : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
             setSubmitting(false);
 
-            transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
+            originPage == 'Vis' ? transition('Vis', { currentSphereHash: selectedSphere.actionHash }) : transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
           } catch (error) {
             console.error(error);
           }

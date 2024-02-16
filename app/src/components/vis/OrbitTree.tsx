@@ -11,7 +11,6 @@ import { currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } f
 
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
-import { transition } from 'd3';
 
 export const OrbitTree: ComponentType<VisProps> = ({
   canvasHeight,

@@ -80,17 +80,6 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       },
     }
   ) => {
-    console.log('args ', {
-      name,
-      sphereHash,
-      parentHash,
-      metadata: {
-        timeframe: { startTime, endTime },
-        description,
-      },
-      frequency,
-      scale,
-    });
     const rawRecord = await runCreate({
       name,
       sphereHash,

@@ -57,7 +57,7 @@ export const AppTransitions: StateTransitions<AppState> = {
   Onboarding4: ['Onboarding3', 'Home'],
 
   Home: [...forms, ...lists, 'Vis'],
-  Vis: ['Home', ...forms, ...lists],
+  Vis: ['Home', ...forms, ...lists, 'Vis'],
   CreateSphere: ['Home', ...lists, ...forms, 'Vis'],
   ListSpheres: ['Home', ...lists, ...forms, 'Vis'],
   CreateOrbit: ['Home', ...lists, ...forms, 'Vis'],

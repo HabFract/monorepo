@@ -27,10 +27,6 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     sphere: async (_, args): Promise<Partial<Sphere>> => {
       const rawRecord = await read(args.id)
       const entryRecord = new EntryRecord<Sphere>(rawRecord);
-      console.log('args :>> ', {
-        ...entryRecord.entry,
-        id: encodeHashToBase64(entryRecord.actionHash),
-      });
       return {
         ...entryRecord.entry,
         id: encodeHashToBase64(entryRecord.actionHash),
@@ -38,11 +34,11 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       }
     },
 
-    spheres: async (): Promise<Partial<SphereConnection>> => {
-      const rawRecords: Sphere[] = await readAll(null);
+    spheres: async () : Promise<Partial<SphereConnection>> => {
+      const rawRecords : Sphere[] = await readAll(null);
       console.log('get_all_my_sphere payload :>> ', rawRecords);
-
-      if (typeof rawRecords !== 'object' || !rawRecords?.length) return Promise.resolve(createEdges([]) as unknown as SphereConnection)
+      
+      if(typeof rawRecords !== 'object' || !rawRecords?.length) return Promise.resolve(createEdges([]) as unknown as SphereConnection)
 
       const entryRecords = rawRecords!.map((record: any) => new EntryRecord<Sphere>(record));
 
