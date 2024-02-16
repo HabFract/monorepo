@@ -27,7 +27,7 @@ export enum VisCoverage {
 
 export interface EventHandlers {
   handlePrependNode: () => void;
-  handleAppendNode: () => void;
+  handleAppendNode: ({parentOrbitEh} : {parentOrbitEh: EntryHashB64}) => void;
   handleDeleteNode: (event: any, node: any) => void; // Replace 'any' with specific event and node types
   rgtClickOrDoubleTap: (event: any, d: any) => void; // Replace 'any' with specific event and node types
   handleNodeZoom: (event: any, node: any, forParent?: boolean) => void; // Replace 'any' with specific event and node types

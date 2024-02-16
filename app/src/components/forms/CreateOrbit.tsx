@@ -7,8 +7,6 @@ import { Checkbox, Flex } from 'antd';
 import DateInput from './input/DatePicker';
 import { Button, TextInput, Label, Select, Textarea } from 'flowbite-react';
 
-import nodeStore from '../../state/jotaiKeyValueStore';
-
 import { Frequency, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { CustomErrorLabel } from './CreateSphere';
@@ -77,8 +75,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
 
   const { data: orbits, loading, error } = useGetOrbitsQuery({ variables: { sphereEntryHashB64: sphereEh } });
 
-  const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeStore.entries));
-  
   const [orbitValues, _] = useState<OrbitCreateParams & any>({
     name: '',
     description: '',
@@ -87,7 +83,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
     frequency: Frequency.Day,
     scale: Scale.Astro,
     archival: false,
-    parentHash: ''
+    parentHash: parentOrbitEh ||''
   });
   return (
     <div className="form-container">
@@ -131,7 +127,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             </div>
 
 
-            <div className="field">
+            {!parentOrbitEh && <div className="field">
               <Label htmlFor='parentHash'>Parent Orbit: <span className="reqd">*</span></Label>
 
               <div className="flex flex-col gap-2">
@@ -152,7 +148,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
               </Field>
                 {CustomErrorLabel('parentHash', errors, touched)}
               </div>
-            </div>
+            </div>}
 
             <div className="field">
               <Label htmlFor='frequency'>Frequency: <span className="reqd">*</span>

@@ -78,6 +78,7 @@ import { Scale } from "../../graphql/generated";
 
 export interface OrbitNodeDetails {
   id: ActionHashB64
+  eH?: EntryHashB64;
   description?: string;
   name: string
   scale: Scale
@@ -105,6 +106,7 @@ export default class BaseVisualization implements IVisualization {
   sphereHash: ActionHashB64;
   globalStateTransition: Function;
   modalOpen?: Function;
+  modalParentOrbitEh?: Function;
   _nextRootData: any;
   layout!: TreeLayout<unknown>;
   _viewConfig: ViewConfig;
@@ -187,8 +189,9 @@ export default class BaseVisualization implements IVisualization {
       handlePrependNode: function () {
         this.modalOpen(true);
       },
-      handleAppendNode: function () {
+      handleAppendNode: function ({parentOrbitEh}) {
         this.modalOpen(true);
+        this.modalParentOrbitEh(parentOrbitEh)
       },
       handleDeleteNode: function (_, node) {
         // this.setCurrentHabit(node);
@@ -1281,10 +1284,8 @@ export default class BaseVisualization implements IVisualization {
             break;
         
           case e.target.classList.contains('lower-button'):
-            console.log('thi :>> ', !d?.data?.content || !this.nodeDetails[d.data.content]);
             if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
-            // this.globalStateTransition('CreateOrbit', { sphereEh: this.sphereHash })
-            this.eventHandlers.handleAppendNode.call(this)
+            this.eventHandlers.handleAppendNode.call(this, {parentOrbitEh: this.nodeDetails[d.data.content].eH})
             break;
         
           default:
@@ -1375,9 +1376,9 @@ export default class BaseVisualization implements IVisualization {
           if (buttonTransitioning) return ev.srcEvent.stopPropagation();
           this.setCurrentHabit(node.data);
 
-          target.textContent == "DIVIDE"
-            ? this.eventHandlers.handleAppendNode.call(this)
-            : this.eventHandlers.handlePrependNode.call(this);
+          // target.textContent == "DIVIDE"
+          //   ? this.eventHandlers.handleAppendNode.call(this)
+          //   : this.eventHandlers.handlePrependNode.call(this);
           break;
         default:
           let parentNodeGroup = _.find(this._enteringNodes._groups[0], (n) => {

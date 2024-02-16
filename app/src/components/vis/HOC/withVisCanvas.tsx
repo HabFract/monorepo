@@ -52,7 +52,9 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
     }, []);
     const { canvasHeight, canvasWidth } = getCanvasDimensions()
     
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [currentParentOrbitEh, setCurrentParentOrbitEh] = useState<EntryHashB64>();
+
     const [selectedSphere] = useAtom(currentSphere);
     const sphereHierarchyBounds : SphereHierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
     const { depthIndex, 
@@ -80,12 +82,16 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
             // Determine need for traversal controld
             const withTraversal = queryType == VisCoverage.Partial;
             if(appendedSvg) {
+              // Pass through setState handlers for the modal opening and current append/prepend Node parent entry hash
               currentVis.modalOpen = setIsModalOpen;
+              currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
+              
               currentVis?.render();
             }
+            
             // Trigger the Vis object render function only once the SVG is appended to the DOM
             const onlyChild = currentVis.rootData?.data?.children && currentVis.rootData.data?.children.length ==1;
-            // console.log('currentVis.rootData :>> ', currentVis.rootData);
+// console.log('currentVis.rootData :>> ', currentVis.rootData);
 // console.log('withTraversal, depthIndex, breadthIndex :>> ', queryType, withTraversal, depthIndex, breadthIndex, maxBreadth, maxDepth);
             return (
               <> 
@@ -95,17 +101,16 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                 {!!(withTraversal && maxBreadth && breadthIndex < maxBreadth) && <RightOutlined data-testid={"traversal-button-right"} className='fixed right-1 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "29vh"}}  onClick={incrementBreadth} />}
                 {!!(withTraversal && maxDepth && depthIndex < maxDepth && onlyChild) && <DownOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "46vw", bottom: "43vh"}}  onClick={incrementDepth} />}
                 {!!(withTraversal && maxDepth && depthIndex < maxDepth && !onlyChild) && <DownOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{left: "12vw", bottom: "45vh", transform: "rotate(45deg)"}}  onClick={incrementDepth} />}
-                {/* {!!(withTraversal && maxDepth && depthIndex < maxDepth && !onlyChild) && <DownOutlined data-testid={"traversal-button-down-right"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "12vw", bottom: "45vh", transform: "rotate(-45deg)"}}  onClick={() => {console.log('maxBreadth, setBreadthIndex :>> ', currentVis.rootData.data.children.length-1, setBreadthIndex); incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length-1);}} />} */}
-                {
-                  <Modal show={isModalOpen} onClose={() => {setIsModalOpen(false)}}>
-                    <Modal.Header>
-                      Create Orbit
-                    </Modal.Header>
-                    <Modal.Body>
-                      <CreateOrbit editMode={false} inModal={true} sphereEh='abx' parentOrbitEh='abx'></CreateOrbit>
-                      </Modal.Body>
-                  </Modal>
-                }
+              {/* {!!(withTraversal && maxDepth && depthIndex < maxDepth && !onlyChild) && <DownOutlined data-testid={"traversal-button-down-right"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "12vw", bottom: "45vh", transform: "rotate(-45deg)"}}  onClick={() => {console.log('maxBreadth, setBreadthIndex :>> ', currentVis.rootData.data.children.length-1, setBreadthIndex); incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length-1);}} />} */}
+
+                <Modal show={isModalOpen} onClose={() => {setIsModalOpen(false)}}>
+                  <Modal.Header>
+                    Create Orbit
+                  </Modal.Header>
+                  <Modal.Body>
+                    <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh}></CreateOrbit>
+                  </Modal.Body>
+                </Modal>
               </>
             )
           }}
