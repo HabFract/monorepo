@@ -136,6 +136,7 @@ export default class BaseVisualization implements IVisualization {
     this.rootData = inputTree;
     this.nodeDetails = nodeDetails;
     this.sphereHash = sphereHash;
+    this.modalIsOpen = false;
     this.globalStateTransition = globalStateTransition;
     
     this._viewConfig = {
@@ -191,6 +192,7 @@ export default class BaseVisualization implements IVisualization {
       },
       handleAppendNode: function ({parentOrbitEh}) {
         this.modalOpen(true);
+        this.modalIsOpen = true;
         this.modalParentOrbitEh(parentOrbitEh)
       },
       handleDeleteNode: function (_, node) {

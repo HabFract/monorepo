@@ -43,7 +43,6 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
   const ComponentWithVis: React.FC<WithVisCanvasProps> = (_visParams: WithVisCanvasProps) => {
     const mountingDivId = 'vis-root'; // Declared at the router level
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
-    
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
     useEffect(() => {
       if(document.querySelector(`#${mountingDivId} #${svgId}`)) return
@@ -54,7 +53,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
     
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [currentParentOrbitEh, setCurrentParentOrbitEh] = useState<EntryHashB64>();
-
+    
     const [selectedSphere] = useAtom(currentSphere);
     const sphereHierarchyBounds : SphereHierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
     const { depthIndex, 
@@ -80,6 +79,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
           depthIndex={depthIndex}
           render={(currentVis: any, queryType: VisCoverage) => {
             // Determine need for traversal controld
+            
             const withTraversal = queryType == VisCoverage.Partial;
             if(appendedSvg) {
               // Pass through setState handlers for the modal opening and current append/prepend Node parent entry hash
@@ -108,7 +108,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                     Create Orbit
                   </Modal.Header>
                   <Modal.Body>
-                    <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh}></CreateOrbit>
+                    <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh} onCreateSuccess={() => setIsModalOpen(false)}></CreateOrbit>
                   </Modal.Body>
                 </Modal>
               </>

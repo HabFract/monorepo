@@ -10,10 +10,10 @@ import { Button, TextInput, Label, Select, Textarea } from 'flowbite-react';
 import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { CustomErrorLabel } from './CreateSphere';
-import { ActionHashB64, decodeHashFromBase64 } from '@holochain/client';
+import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { currentSphere } from '../../state/currentSphereHierarchyAtom';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 import { AppState } from '../../routes';
 
 // Define the validation schema using Yup
@@ -54,28 +54,31 @@ const OrbitFetcher = ({orbitToEditId}) => {
 interface CreateOrbitProps {
   editMode: boolean;
   inModal: boolean;
+  onCreateSuccess?: Function;
   orbitToEditId?: ActionHashB64;
   sphereEh: string; // Link to a sphere
   parentOrbitEh: string | undefined; // Link to a parent Orbit to create hierarchies
 }
 
-const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, parentOrbitEh }: CreateOrbitProps) => {
+const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, parentOrbitEh, onCreateSuccess }: CreateOrbitProps) => {
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
   const [selectedSphere, _setSelectedSphere] = useAtom(currentSphere);
 
   // Used to dictate onward routing
   const originPage : AppState = !!parentOrbitEh ? 'Vis' : 'ListOrbits'; 
+console.log('selectedSphere.entryHash :>> ', selectedSphere.entryHash);
 
   const [addOrbit] = useCreateOrbitMutation({
-    refetchQueries: () => [{
-        query: GetOrbitsDocument,
-      },
-      {
-        query: GetOrbitHierarchyDocument,
-        variables: { 
-          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 0 } },
-        },
-      }
+    refetchQueries: () => [
+      // {
+      //   query: GetOrbitsDocument,
+      // },
+      // {
+      //   query: GetOrbitHierarchyDocument,
+      //   variables: { 
+      //     params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 0 } },
+      //   },
+      // }
     ],
   });
   const [updateOrbit] = useUpdateOrbitMutation({
@@ -110,8 +113,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
               ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
               : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
             setSubmitting(false);
-
-            originPage == 'Vis' ? transition('Vis', { currentSphereHash: selectedSphere.actionHash }) : transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
+            if(typeof onCreateSuccess !== 'undefined') {
+              onCreateSuccess!.call(this)
+            }
+            originPage == 'Vis' ? transition('Vis', { currentSphereHash: selectedSphere.entryHash }) : transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
           } catch (error) {
             console.error(error);
           }
