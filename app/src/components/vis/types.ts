@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { EntryHashB64 } from "@holochain/client";
 import { SphereHashes } from "../../state/currentSphereHierarchyAtom";
 import BaseVisualization from "./BaseVis";
@@ -27,7 +28,7 @@ export enum VisCoverage {
 
 export interface EventHandlers {
   handlePrependNode: () => void;
-  handleAppendNode: ({parentOrbitEh} : {parentOrbitEh: EntryHashB64}) => void;
+  handleAppendNode: ({ parentOrbitEh }: { parentOrbitEh: EntryHashB64 }) => void;
   handleDeleteNode: (event: any, node: any) => void; // Replace 'any' with specific event and node types
   rgtClickOrDoubleTap: (event: any, d: any) => void; // Replace 'any' with specific event and node types
   handleNodeZoom: (event: any, node: any, forParent?: boolean) => void; // Replace 'any' with specific event and node types
@@ -73,7 +74,7 @@ export interface ZoomConfig {
     scale?: number;
   };
   zoomedInView: () => boolean;
-  globalZoomScale? : number;
+  globalZoomScale?: number;
 }
 
 export enum VisType {

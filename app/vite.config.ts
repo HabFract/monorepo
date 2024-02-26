@@ -5,18 +5,21 @@ import graphql from '@rollup/plugin-graphql';
 
 // https://vitejs.dev/config/
 export default ({ mode }) => {
-  process.env = {...process.env, ...loadEnv(mode, process.cwd())};
+  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
 
-    return defineConfig({
-      plugins: [react(),
-        nodePolyfills(),
-        graphql()
-      ],
-      define: {
-        "process.env": {},
-      },
-      server: {
-          port: parseInt(process.env.VITE_UI_PORT),
-      },
-    })
+  return defineConfig({
+    build: {
+      target: 'esnext'
+    },
+    plugins: [react(),
+    nodePolyfills(),
+    graphql()
+    ],
+    define: {
+      "process.env": {},
+    },
+    server: {
+      port: parseInt(process.env.VITE_UI_PORT),
+    },
+  })
 }

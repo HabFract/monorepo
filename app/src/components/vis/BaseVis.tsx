@@ -1277,15 +1277,14 @@ export default class BaseVisualization implements IVisualization {
         switch (true) {
           case e.target.classList.contains('checkbox-button'):
             if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
-            const {checked} = this.nodeDetails[d.data.content];
-            this.nodeDetails[d.data.content].checked = !checked;
+            this.nodeDetails[d.data.content].checked = !this.nodeDetails[d.data.content];
             e.target.classList.toggle('checked');
             e.target.closest('.the-node').firstChild.classList.toggle('checked');
             break;
         
           case e.target.classList.contains('lower-button'):
             if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
-            this.eventHandlers.handleAppendNode.call(this, {parentOrbitEh: this.nodeDetails[d.data.content].eH})
+            this.eventHandlers.handleAppendNode.call(this, {parentOrbitEh: this.nodeDetails[d.data.content].eH as string})
             break;
         
           default:

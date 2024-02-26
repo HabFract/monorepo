@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run stop:backend-services; dotenv -- concurrently \"npm run start:backend-services && npm run build:backend && npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
-    "dev": "npm run stop:backend-services; dotenv -- concurrently \"npm run start:backend-services && npm run build:backend && npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
+    "start": "dotenv -- concurrently \"npm run start:backend-services && npm run build:backend && npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
+    "dev": "dotenv -- concurrently \"npm run start:backend-services\" \"npm run build:backend && npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
     "test": "npm run test:zomes; npm run test:ui",
     "test:ui": "node node_modules/jest/bin/jest.js --config jest.config.js ",
     "build:frontend": "cd app && npm run generate && npm run build",
@@ -14,7 +14,6 @@
     "build:backend": "cd crates && npm run build",
     "start:backend-dev": "cd crates && npm run start:holochain-single",
     "test:zomes": "cd tests && npm run test",
-    "stop:backend-services": "cd crates && npm run stop:local-services ",
     "start:backend-services": "cd crates && npm run start:precheck ",
     "check-env": "test ! -f .env && cp .env.example .env && cp .env crates/.env; exit 0",
     "postinstall": "npm run check-env"
@@ -53,6 +52,7 @@
     "@babel/preset-env": "^7.23.9",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@holochain/hc-spin": "^0.200.10",
     "@jest/globals": "^29.7.0",
     "@playlyfe/gql": "^2.6.2",
     "@rollup/plugin-graphql": "^2.0.4",
