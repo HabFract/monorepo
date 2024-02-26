@@ -1,5 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom';
+import { expect, describe, test, it } from '@jest/globals';
 
 import { MockedProvider } from '@apollo/client/testing';
 import OrbitTree from '../../app/src/components/vis/OrbitTree';
@@ -13,7 +14,7 @@ import { SPHERE_ID } from './mocks/spheres';
 
 const Tree = renderVis(OrbitTree);
 
-describe.skip('Hierarchy Path Templates - renders path for parent with 1 child', () => {
+describe('Hierarchy Path Templates - renders path for parent with 1 child', () => {
   const { getByTestId } = render(
     <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
       <TestProvider initialValues={[
@@ -31,7 +32,7 @@ describe.skip('Hierarchy Path Templates - renders path for parent with 1 child',
 
 
     await waitFor(() => {
-      expect(getByTestId('path-parent-one-child')).toBeInTheDocument();
+      expect(getByTestId('path-parent-one-child')).toBeTruthy();
     });
   });
 });
@@ -56,7 +57,7 @@ describe('Hierarchy Path Templates - renders path for parent with 2 children', (
 
     await waitFor(() => {
 
-      expect(getByTestId('path-parent-two-children-0')).toBeInTheDocument();
+      expect(getByTestId('path-parent-two-children-0')).toBeTruthy();
     });
   });
 });

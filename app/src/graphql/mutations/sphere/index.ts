@@ -14,6 +14,7 @@ import { EntryRecord } from "@holochain-open-dev/utils";
 import {
   ActionHash,
   ActionHashB64,
+  EntryHashB64,
   Record as HolochainRecord,
   encodeHashToBase64,
 } from "@holochain/client";
@@ -34,7 +35,7 @@ export type deleteHandler = (
 ) => Promise<ActionHashB64>;
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
-  const runCreate = mapZomeFn<Omit<Sphere, "id">, HolochainRecord>(
+  const runCreate = mapZomeFn<Omit<Sphere & {eH: EntryHashB64}, "id" | "eH">, HolochainRecord>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,

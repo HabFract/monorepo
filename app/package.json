@@ -15,8 +15,6 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.6",
-    "@dicebear/collection": "^5.3.5",
-    "@dicebear/core": "^5.3.5",
     "@graphql-tools/schema": "^10.0.2",
     "@holochain-open-dev/utils": "^0.16.3",
     "@holochain/client": "^0.16.7",
@@ -53,7 +51,6 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "graphql-codegen-typescript-mock-data": "^3.7.1",
     "rc-picker": "4.0.0-alpha.9",
-    "typescript": "^5.0.2",
     "vite": "^4.5.0"
   }
 }

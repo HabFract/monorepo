@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+import App from './App'
 import './index.css'
-import { StateMachine } from './state/stateMachine.ts'
-import { StateMachineContext } from './contexts/state-machine.ts'
+import { StateMachine } from './state/stateMachine'
+import { StateMachineContext } from './contexts/state-machine'
 import { ApolloProvider } from '@apollo/client'
-import { MyProfileProvider } from './contexts/myProfile.tsx'
-import { AppState, AppStateStore, AppTransitions, initialState, routes } from './routes.tsx'
-import connect, { ClientOptions } from './graphql/client.ts'
+import { MyProfileProvider } from './contexts/myProfile'
+import { AppState, AppStateStore, AppTransitions, initialState, routes } from './routes'
+import connect, { ClientOptions } from './graphql/client'
 
 /*
 

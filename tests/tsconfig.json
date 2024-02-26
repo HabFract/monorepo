@@ -3,9 +3,11 @@
     "target": "ES2017",
     "module": "ESNext",
     "lib": ["es2019"],
+    "outDir": "dist",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true
-  }
+  },
+  "exclude": ["**/*.test.tsx"]
 }

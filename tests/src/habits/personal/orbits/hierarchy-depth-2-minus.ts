@@ -92,7 +92,7 @@ export default () => {
     });
   });
 
-  test.skip("Orbit Hierarchy Sad Path - Depth <= 2", async (t) => {
+  test("Orbit Hierarchy Sad Path - Depth <= 2", async (t) => {
     await runScenario(async (scenario) => {
       const {
         alice,

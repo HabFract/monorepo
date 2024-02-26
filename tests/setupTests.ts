@@ -46,6 +46,13 @@ jest.mock('../app/src/state/jotaiKeyValueStore.ts', () => (
   {entries: atom(mockNodeDetailsCache)}
 ));
 
+jest.mock('@dicebear/core', () => ({
+  createAvatar: () => null,
+}));
+jest.mock('@dicebear/collection', () => ({
+  icons: null,
+}));
+
 jest.mock('d3-scale', () => ({
   scaleLinear: () => ({
     domain: () => (() => {}), // Chain other methods as needed

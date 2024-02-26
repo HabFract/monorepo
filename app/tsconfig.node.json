@@ -1,10 +1,9 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "composite": true,
-    "skipLibCheck": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+    "module": "CommonJS",
+    "target": "ES2019"
   },
-  "include": ["vite.config.ts"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/__tests__/*"]
 }

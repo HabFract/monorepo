@@ -1,9 +1,9 @@
-import { useAtom } from 'jotai'
+import { Atom, useAtom } from 'jotai'
 import store from '../state/jotaiKeyValueStore'
 import { useEffect, useState } from 'react';
 
 export default function useCachedGraphQLQuery(useGeneratedQueryHook, queryOptions) {
-  const [db, setDb] = useAtom(store);
+  const [db, setDb] = useAtom(store.entries as Atom<any>);
   const { data, error, loading } = useGeneratedQueryHook(queryOptions);
   const cacheKey = JSON.stringify({ query: queryOptions.query, variables: queryOptions.variables });
 
@@ -14,7 +14,7 @@ export default function useCachedGraphQLQuery(useGeneratedQueryHook, queryOption
     if (data) {
       console.log('data :>> ', cacheKey, data);
       // Update cache with new data
-      setDb((prevDb) => ({
+      (setDb as any)((prevDb) => ({
         ...prevDb,
         [cacheKey]: data,
       }));

@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "composite": true,
+    "outDir": "dist",
+
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
@@ -7,9 +10,15 @@
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "allowJs": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+
+    /* Linting */
+    "strict": true,
+    "useDefineForClassFields": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noImplicitThis": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true
   },
-  "exclude": [
-    "node_modules"
-  ]
 }

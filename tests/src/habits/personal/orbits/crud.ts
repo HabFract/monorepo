@@ -182,7 +182,7 @@ export default () => {
     });
   });
 
-  test.skip("Orbit CRUD - Sad path", async (t) => {
+  test("Orbit CRUD - Sad path", async (t) => {
     await runScenario(async (scenario) => {
       const {
         alice,
