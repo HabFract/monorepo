@@ -22,3 +22,9 @@ If you get errors, check the output tab of your console under 'GraphQL - monorep
 ## Tests:
 
 In a nix shell, run `pnpm test` from the workspace root.
+
+## Production:
+
+1. Open nix shell: `nix develop`
+2. Build: `pnpm run build:frontend`
+3. Run: `pnpm start`
