@@ -105,7 +105,7 @@ export default class BaseVisualization implements IVisualization {
   nodeDetails: SphereOrbitNodes;
   sphereHash: ActionHashB64;
   globalStateTransition: Function;
-  modalOpen?: Function;
+  modalIsOpen?: boolean;
   modalParentOrbitEh?: Function;
   _nextRootData: any;
   layout!: TreeLayout<unknown>;
