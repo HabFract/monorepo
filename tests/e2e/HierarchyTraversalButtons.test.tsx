@@ -8,22 +8,18 @@ import { renderVis } from '../../app/src/components/vis/helpers';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
-import { TestProvider } from '../utils-frontend';
-import { currentSphere } from '../../app/src/state/currentSphereHierarchyAtom';
-import { SPHERE_ID } from './mocks/spheres';
+import { WithCurrentSphereMockedAtom } from '../utils-frontend';
 
+describe('Hierarchy Traversal - renders traversal buttons for parent with 1 child', () => {
+  let Tree;
+  beforeEach(() => {
+    Tree = renderVis(OrbitTree);
+  });
 
-const Tree = renderVis(OrbitTree);
-
-describe.skip('Hierarchy Traversal - renders traversal buttons for parent with 1 child', () => {
   it('renders traversal button for going down a level', async () => {
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
-        <TestProvider initialValues={[
-          [currentSphere, { entryHash: SPHERE_ID, actionHash: SPHERE_ID }],
-        ]}>
-          {(Tree)}
-        </TestProvider>
+        {WithCurrentSphereMockedAtom(Tree)}
       </MockedProvider>
     );
 
@@ -31,26 +27,30 @@ describe.skip('Hierarchy Traversal - renders traversal buttons for parent with 1
       expect(getByTestId('traversal-button-down')).toBeTruthy();
     });
     expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-up')).not.toBeTruthy();
   });
 });
 
-describe.skip('Hierarchy Path Templates - renders traversal buttons for parent with 2 children', () => {
+describe('Hierarchy Path Templates - renders traversal buttons for parent with 2 children', () => {
+  let Tree;
+  beforeEach(() => {
+    Tree = renderVis(OrbitTree);
+  });
+
   it('renders traversal button for going down a level', async () => {
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        <TestProvider initialValues={[
-          [currentSphere, { entryHash: SPHERE_ID, actionHash: SPHERE_ID }],
-        ]}>
-          {(Tree)}
-        </TestProvider>
+        {WithCurrentSphereMockedAtom(Tree)}
       </MockedProvider>
     );
 
     await waitFor(() => {
-      expect(getByTestId('traversal-button-down')).toBeTruthy();
+      expect(getByTestId('traversal-button-down-left')).toBeTruthy();
     });
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-up')).not.toBeTruthy();
@@ -59,16 +59,12 @@ describe.skip('Hierarchy Path Templates - renders traversal buttons for parent w
   it('given the down button was clicked, it renders traversal buttons for going right/up', async () => {
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        <TestProvider initialValues={[
-          [currentSphere, { entryHash: SPHERE_ID, actionHash: SPHERE_ID }],
-        ]}>
-          {(Tree)}
-        </TestProvider>
+        {WithCurrentSphereMockedAtom(Tree)}
       </MockedProvider>
     );
 
     await waitFor(() => {
-      const traversalButton = getByTestId('traversal-button-down');
+      const traversalButton = getByTestId('traversal-button-down-left');
       fireEvent.click(traversalButton);
     });
 
@@ -77,17 +73,15 @@ describe.skip('Hierarchy Path Templates - renders traversal buttons for parent w
       expect(getByTestId('traversal-button-up')).toBeTruthy();
     });
     expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
+    // expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
     // expect(queryByTestId('traversal-button-down')).not.toBeTruthy(); //TODO: fix levels window/depth upper bounds
   });
 
   it('given the down button was clicked, and then the right button was clicked, it renders traversal buttons for going left/up', async () => {
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        <TestProvider initialValues={[
-          [currentSphere, { entryHash: SPHERE_ID, actionHash: SPHERE_ID }],
-        ]}>
-          {(Tree)}
-        </TestProvider>
+        {WithCurrentSphereMockedAtom(Tree)}
       </MockedProvider>
     );
 
@@ -105,6 +99,8 @@ describe.skip('Hierarchy Path Templates - renders traversal buttons for parent w
       expect(getByTestId('traversal-button-up')).toBeTruthy();
     });
     expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
+    // expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
     // expect(queryByTestId('traversal-button-down')).not.toBeTruthy(); //TODO: fix levels window/depth upper bounds
   });
 });

@@ -1,74 +1,81 @@
-import { QueryParamsLevel } from "../app/src/graphql/generated"
-import { SphereHashes } from "../app/src/state/currentSphereHierarchyAtom";
 import { mockedCacheEntries } from "./e2e/mocks/cache";
-import { SPHERE_ID } from "./e2e/mocks/spheres"
+import { SPHERE_ID } from "./e2e/mocks/spheres";
 
-
-import { atom, PrimitiveAtom } from 'jotai';
+import { atom } from "jotai";
 
 //@ts-ignore
-window.ResizeObserver = require('resize-observer-polyfill')
+window.ResizeObserver = require("resize-observer-polyfill");
 
 function channelMock() {}
-channelMock.prototype.onmessage = function () {}
+channelMock.prototype.onmessage = function () {};
 channelMock.prototype.postMessage = function (data) {
-  this.onmessage({ data })
-}
+  this.onmessage({ data });
+};
 //@ts-ignore
-window.BroadcastChannel = channelMock
+window.BroadcastChannel = channelMock;
 
-
-// Mocking the top level state machine for component params
+/* 
+/ Mocking the top level state machine for component params
+*/
 const initialState = {
   // orbitEh: 'R28gZm9yIGEgd2Fsay==',
   currentSphereHash: SPHERE_ID,
-}
-let mockUseStateTransitionResponse = ['Home', jest.fn(() => {}), {
-  // orbitEh: 'R28gZm9yIGEgd2Fsay==',
-  currentSphereHash: SPHERE_ID,
-}];
+};
+let mockUseStateTransitionResponse = [
+  "Home",
+  jest.fn(() => {}),
+  initialState,
+];
 export function setMockUseStateTransitionResponse(params: typeof initialState) {
-  mockUseStateTransitionResponse = ['Home', jest.fn(() => {}), params];
+  mockUseStateTransitionResponse = ["Home", jest.fn(() => {}), params];
 }
 
-jest.mock('../app/src/hooks/useStateTransition.ts', () => ({
+jest.mock("../app/src/hooks/useStateTransition", () => ({
   useStateTransition: () => mockUseStateTransitionResponse,
   setMockUseStateTransitionResponse,
 }));
 
-
+/* 
+/ Mocking the jotai indexdb store for node details in the vis
+*/
 let mockNodeDetailsCache = mockedCacheEntries;
+let mockNodeDetailsCacheKeys: string[] = Object.keys(Object.fromEntries(mockNodeDetailsCache));
 
 export function setMockNodeDetailsCache(params: typeof mockedCacheEntries) {
   mockNodeDetailsCache = params;
+  mockNodeDetailsCacheKeys = Object.keys(Object.fromEntries(mockNodeDetailsCache));
 }
-jest.mock('../app/src/state/jotaiKeyValueStore.ts', () => (
-  {entries: atom(mockNodeDetailsCache)}
-));
+jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
+  entries: atom(mockNodeDetailsCache),
+  keys: atom(mockNodeDetailsCacheKeys),
+  setMany: atom(  null, // it's a convention to pass `null` for the first argument
+  (get, set, update) => { mockNodeDetailsCache = mockedCacheEntries}),
+}));
 
-jest.mock('@dicebear/core', () => ({
+// Mock ES6 modules that cause problems
+
+jest.mock("@dicebear/core", () => ({
   createAvatar: () => null,
 }));
-jest.mock('@dicebear/collection', () => ({
+jest.mock("@dicebear/collection", () => ({
   icons: null,
 }));
 
-jest.mock('d3-scale', () => ({
+jest.mock("d3-scale", () => ({
   scaleLinear: () => ({
-    domain: () => (() => {}), // Chain other methods as needed
+    domain: () => () => {}, // Chain other methods as needed
   }),
   scaleOrdinal: () => null,
-  
-  }));
-jest.mock('d3-svg-legend', () => ({
+}));
+jest.mock("d3-svg-legend", () => ({
   legendColor: () => null,
 }));
-jest.mock('d3-zoom', () => ({
+jest.mock("d3-zoom", () => ({
   zoom: () => ({
     apply: () => false,
     call: () => false,
     scaleExtent: () => ({
-      on: () => (() => {}), // Chain other methods as needed
+      on: () => () => {}, // Chain other methods as needed
     }),
     // Mock other D3 methods as needed
   }),

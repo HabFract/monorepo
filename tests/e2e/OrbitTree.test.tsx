@@ -4,9 +4,6 @@ import { expect, describe, test, it } from '@jest/globals';
 
 import { render, waitFor, screen } from '@testing-library/react';
 
-import nodeStore from '../../app/src/state/jotaiKeyValueStore';
-
-
 import { renderVis } from '../../app/src/components/vis/helpers';
 import OrbitTree from '../../app/src/components/vis/OrbitTree';
 

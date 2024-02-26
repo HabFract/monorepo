@@ -98,6 +98,8 @@ export const OrbitTree: ComponentType<VisProps> = ({
       while (typeof parsedData === 'string') {
         parsedData = JSON.parse(parsedData);
       }
+      console.log('parsedData :>> ', parsedData.result.level_trees);
+      debugger;
       // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
       setDepthBounds(params?.currentSphereHash, [0, 2]);
       setBreadthBounds(params?.currentSphereHash, [0, visCoverage == VisCoverage.Complete ? 100 : parsedData.result.level_trees.length - 1])

@@ -28,7 +28,7 @@ export const HIERARCHY_ROOT_TWO_CHILDREN_MOCKS = [
         params: {
           levelQuery: {
             sphereHashB64: SPHERE_ID,
-            orbitLevel: 0,
+            orbitLevel: 1,
           },
         }
       },
@@ -53,7 +53,7 @@ export const HIERARCHY_ROOT_TWO_CHILDREN_MOCKS = [
     },
     result: {
       data: {
-        getOrbitHierarchy: "{\"result\":{\"level_trees\":[{\"content\":\"uhCEkx2SQRKUrAZv7oMVcNvaaF5-jn2Tsewap6zXNlM_1k7kkbU5h\",\"name\":\"uhCEkx2SQRKUrAZv7oMVcNvaaF5-jn2Tsewap6zXNlM_1k7kkbU5h\",\"children\":[]},{\"content\":\"uhCEkqfZsLqgYny0reZuRIEW-KSeqoAYvdkSBx5oNJXU9Etka6CYc\",\"name\":\"uhCEkqfZsLqgYny0reZuRIEW-KSeqoAYvdkSBx5oNJXU9Etka6CYc\",\"children\":[]}]}}",
+        getOrbitHierarchy: "{\"result\":{\"level_trees\":[{\"content\":\"uhCEkx2SQRKUrAZv7oMVcNvaaF5-jn2Tsewap6zXNlM_1k7kkbU5h\",\"name\":\"uhCEkx2SQRKUrAZv7oMVcNvaaF5-jn2Tsewap6zXNlM_1k7kkbU5h\",\"children\":[]},{\"content\":\"uhCEkqfZsLqgYny0reZuRIEW-KSeqoAYvdkSBx5oNJXU9Etka6CYc\",\"name\":\"uhCEkqfZsLqgYny0reZuRIEW-KSeqoAYvdkSBx5oNJXU9Etka6CYc\",\"children\":[]}]  }}",
       },
     },
   },

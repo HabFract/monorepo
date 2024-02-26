@@ -21,7 +21,7 @@ interface ListOrbitsProps {
 
 const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
-  
+
   const db = useAtomValue(nodeStore.keys);
   const setMany = useSetAtom(nodeStore.setMany)
   const mapToCacheObject = (orbit: Orbit) => ({
