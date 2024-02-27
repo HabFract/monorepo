@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "npm run launch:happ",
-    "launch:happ": "npm run start:precheck; dotenv npm:start:prod",
+    "launch:happ": "npm run start:precheck; dotenv npm run start:prod",
 
     "build": "npm run build:happ && hc web-app pack workdir",
     "build:happ": "npm run build:dnas && hc app pack ./workdir",
