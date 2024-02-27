@@ -29,7 +29,7 @@ import _ from "lodash";
 // const { createHabitDate, updateHabitDateForNode } = HabitDateSlice.actions;
 // import hierarchySlice from "features/hierarchy/reducer";
 // import { selectCurrentDateId, selectCurrentDate } from "../space/slice";
-import { ONE_CHILD, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT, THREE_CHILDREN } from './PathTemplates/test';
+import { ONE_CHILD, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT, THREE_CHILDREN } from './PathTemplates/paths';
 
 import {
   expand,
