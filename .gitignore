@@ -26,5 +26,3 @@ dist-ssr
 *.sw?
 **/node_modules/
 .aider*
-
-ui.zip
