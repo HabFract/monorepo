@@ -49,8 +49,6 @@ jobs:
           version: 8
           run_install: |
             - recursive: true
-              args: [--frozen-lockfile, --strict-peer-dependencies]
-            - args: [--global, prettier, typescript]
             
       - name: Install JS packages
         run: nix develop -c $SHELL -c "pnpm i"
