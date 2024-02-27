@@ -7,13 +7,13 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
       query: GetOrbitHierarchyDocument,
       variables: {
         params: {
-          orbitEntryHashB64: SPHERE_ID
+          orbitEntryHashB64: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX6l-ncJWu"
         },
       },
     },
     result: {
       data: {
-        getOrbitHierarchy: `{"result": {"content":"uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX6l-ncJWu","name":"Parent Node","children":[{"content":"R28gZm9yIGEgd2Fsay==1","name":"Child Node 1","children":[]}]}}`,
+        getOrbitHierarchy: `{"result": {"content":"uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX6l-ncJWu","name":"Parent Node","children":[{"content":"R28gZm9yIGEgd2Fsay==1","name":"Child Node 1 of 1","children":[]}]}}`,
       },
     },
   },
@@ -31,7 +31,7 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
     },
     result: {
       data: {
-        getOrbitHierarchy: `{"result": { "level_trees": [{"content":"uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX6l-ncJWu","name":"Parent Node","children":[{"content":"R28gZm9yIGEgd2Fsay==1","name":"Child Node 1","children":[]}]}]}}`,
+        getOrbitHierarchy: `{"result": { "level_trees": [{"content":"uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX6l-ncJWu","name":"Parent Node","children":[{"content":"R28gZm9yIGEgd2Fsay==1","name":"Child Node 1 of 1 traversal","children":[]}]}]}}`,
       },
     },
   },
@@ -49,7 +49,7 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
     },
     result: {
       data: {
-        getOrbitHierarchy: `{"result": { "level_trees": [{"content":"R28gZm9yIGEgd2Fsay==1","name":"Child Node 1","children":[]}]}}`,
+        getOrbitHierarchy: `{"result": { "level_trees": [{"content":"R28gZm9yIGEgd2Fsay==1","name":"Child Node 1 of 1 traversal","children":[]},]}}`,
       },
     },
   },
