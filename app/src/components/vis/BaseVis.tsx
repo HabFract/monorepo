@@ -665,7 +665,7 @@ export default class BaseVisualization implements IVisualization {
         if (breadth === 1) {
           return [ONE_CHILD, 'path-parent-one-child']; 
         } else if (breadth == 2) {
-          return [dx == 0 ? TWO_CHILDREN_LEFT : TWO_CHILDREN_RIGHT, 'path-parent-two-children' + dx]; 
+          return [dx == 0 ? TWO_CHILDREN_LEFT : TWO_CHILDREN_RIGHT, 'path-parent-two-children-' + dx]; 
         } else if (breadth == 3) {
           return [THREE_CHILDREN, 'path-parent-three-children']; 
         }

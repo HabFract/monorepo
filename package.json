@@ -7,7 +7,7 @@
     "start": "dotenv -- concurrently \"npm run start:backend-services\" \"npm run build:backend && npm run start:backend-prod\"",
     "dev": "dotenv -- concurrently \"npm run start:backend-services\" \"npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
     "test": "npm run test:zomes; npm run test:ui",
-    "test:ui": "node node_modules/jest/bin/jest.js --config jest.config.js ",
+    "test:ui": "node node_modules/jest/bin/jest.js --config jest.config.js --silent=true",
     "test:ui-watch-current": "node node_modules/jest/bin/jest.js  -t CURRENT --watch --config jest.config.js ",
     "build:frontend": "cd app && npm run generate && npm run build",
     "start:frontend": "cd app && npm run start",

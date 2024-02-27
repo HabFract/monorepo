@@ -10,7 +10,7 @@ import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
 import { WithCurrentSphereMockedAtom } from '../utils-frontend';
 
-describe('Hierarchy Path Templates - renders path for parent with 1 child', () => {
+describe('Hierarchy Path Templates - after traversing down, it renders path an only child', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
@@ -19,7 +19,7 @@ describe('Hierarchy Path Templates - renders path for parent with 1 child', () =
     Tree = undefined;
   });
 
-  it('renders a path for the only child after traversing from the root', async () => {
+  it('CURRENT renders a path for the only child after traversing from the root', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
           {WithCurrentSphereMockedAtom(Tree)}
@@ -37,7 +37,7 @@ describe('Hierarchy Path Templates - renders path for parent with 1 child', () =
   });
 });
 
-describe('Hierarchy Path Templates - renders traversal buttons for parent with 2 children', () => {
+describe('Hierarchy Path Templates - after traversing down-left, it renders a path for the first child after traversing from the root', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
@@ -46,7 +46,7 @@ describe('Hierarchy Path Templates - renders traversal buttons for parent with 2
     Tree = undefined;
   });
   
-  it('CURRENT', async () => {
+  it('renders a path for the first child after traversing from the root', async () => {
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
         {WithCurrentSphereMockedAtom(Tree)}
@@ -59,7 +59,7 @@ describe('Hierarchy Path Templates - renders traversal buttons for parent with 2
     });
     
     await waitFor(() => {
-      expect(queryByTestId('path-parent-two-children-0')).toBeTruthy();
+      expect(getByTestId('path-parent-two-children-0')).toBeTruthy();
     });
   });
 });

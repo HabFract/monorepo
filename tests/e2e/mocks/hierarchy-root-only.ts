@@ -1,19 +1,10 @@
 import {
-  GetSpheresDocument,
-  CreateSphereDocument,
-  DeleteSphereDocument,
   GetOrbitHierarchyDocument,
 } from "../../../app/src/graphql/generated/index";
-import {
-  aSphere,
-  aSphereConnection,
-  aSphereEdge,
-} from "../../../app/src/graphql/generated/mocks-types-fixed";
 import { SPHERE_ID } from "./spheres";
 
-// const getQueryParams = (customDepth?: number) : OrbitHierarchyQueryParams => queryType == 'whole'
-// ? { orbitEntryHashB64: params.orbitEh }
-// : { levelQuery: { sphereHashB64: params.currentSphereHash, orbitLevel: customDepth || 0 } };
+// NOTE: In order for the Orbit Details to render on the visualisaiton, the content field of each node should match the id field in the cache.
+// This is not always relevant, but useful to know.
 
 export const HIERARCHY_MOCKS = [
   {
