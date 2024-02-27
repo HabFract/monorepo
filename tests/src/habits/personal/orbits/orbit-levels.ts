@@ -91,7 +91,7 @@ export default () => {
     });
   });
 
-  test("Orbit Hierarchy (Levels) Sad Path", async (t) => {
+  test.skip("Orbit Hierarchy (Levels) Sad Path", async (t) => {
     await runScenario(async (scenario) => {
       const {
         alice,

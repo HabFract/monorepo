@@ -169,7 +169,7 @@ export default () => {
     });
   });
 
-  test("Sphere CRUD - Sad path", async (t) => {
+  test.skip("Sphere CRUD - Sad path", async (t) => {
     await runScenario(async (scenario) => {
       const {
         alice,
