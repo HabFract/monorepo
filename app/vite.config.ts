@@ -19,7 +19,7 @@ export default ({ mode }) => {
       "process.env": {},
     },
     server: {
-      port: parseInt(process.env.VITE_UI_PORT),
+      port: parseInt(process.env.VITE_UI_PORT as string),
     },
   })
 }
