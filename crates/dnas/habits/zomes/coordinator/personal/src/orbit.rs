@@ -243,13 +243,15 @@ pub fn get_all_my_sphere_orbits(
 pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serde_json::Value> {
     // Query based on orbit entry hash only, or it could be a recursive call from a levels query
     if let Some(entry_hash) = input.orbit_entry_hash_b64 {
+        // Set an empty hashset to be used for either arm of the match
+        let mut filtered_descendant_hashes = HashSet::new();
+
         match input.level_query {
             // If we have both types of query, it must mean that this was a recursive call and we need to limit responses to a window of 3 levels
             Some(HierarchyLevelQueryInput {
                 orbit_level,
                 sphere_hash_b64,
             }) => {
-                let mut filtered_descendant_hashes = HashSet::new();
                 let lower_bound =
                     orbit_level.expect("Level has been checked higher up the call stack");
                 let levels_range: RangeInclusive<u8> = lower_bound..=(lower_bound.clone() + 2);
@@ -263,46 +265,27 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
                         range: levels_range,
                     }),
                 );
-
-                let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?;
-                let filter = ChainQueryFilter::new()
-                    .entry_hashes(filtered_descendant_hashes)
-                    .entry_type(orbit_entry_type)
-                    .include_entries(true);
-                let selected_orbits = query(filter)?;
-
-                let maybe_node_hashmap = build_tree(&selected_orbits);
-                if let Ok(hashmap) = maybe_node_hashmap {
-                    Ok(hashmap.get(&entry_hash).unwrap().borrow().to_json())
-                } else {
-                    Err(wasm_error!(WasmErrorInner::Guest(
-                        "Could not build tree from the given Orbit hash".to_string()
-                    )))
-                }
             }
             // Otherwise, just return the whole tree (turtles all the way down)
             None => {
-                let mut all_descendant_hashes = HashSet::new();
-                insert_descendants(entry_hash.clone().into(), &mut all_descendant_hashes, None);
-
-                let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?;
-                let filter = ChainQueryFilter::new()
-                    .entry_hashes(all_descendant_hashes)
-                    .entry_type(orbit_entry_type)
-                    .include_entries(true);
-                let selected_orbits = query(filter)?;
-
-                let maybe_node_hashmap = build_tree(&selected_orbits);
-                if let Ok(hashmap) = maybe_node_hashmap {
-                    Ok(hashmap.get(&entry_hash).unwrap().borrow().to_json())
-                } else {
-                    Err(wasm_error!(WasmErrorInner::Guest(
-                        "Could not build tree from the given Orbit hash".to_string()
-                    )))
-                }
+                insert_descendants(entry_hash.clone().into(), &mut filtered_descendant_hashes, None);
             }
         }
+        let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?;
+        let filter = ChainQueryFilter::new()
+            .entry_hashes(filtered_descendant_hashes)
+            .entry_type(orbit_entry_type)
+            .include_entries(true);
+        let selected_orbits = query(filter)?;
 
+        let maybe_node_hashmap = build_tree(&selected_orbits);
+        if let Ok(hashmap) = maybe_node_hashmap {
+            Ok(hashmap.get(&entry_hash).unwrap().borrow().to_json())
+        } else {
+            Err(wasm_error!(WasmErrorInner::Guest(
+                "Could not build tree from the given Orbit hash".to_string()
+            )))
+        }
     // The base of a levels query, which will recursively call and match the arm above
     } else if let Some(HierarchyLevelQueryInput {
         orbit_level,
