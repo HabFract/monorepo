@@ -74,7 +74,7 @@ export async function setupHierarchy5(callZomeAlice) {
     const l42 = (await createOrbitChildren(callZomeAlice, sphereHash as string, l32 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
     const l43 = (await createOrbitChildren(callZomeAlice, sphereHash as string, l34 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
 
-    return  [sphereHash, rootHash, l11, l12, l20, l21, l22, l23, l30, l31, l32, l34,...l40, ...l41, ...l42, ...l43]
+    return  [sphereHash, rootHash, l11, l12, l20, l21, l22, l23, l30, l31, l32, l34, ...l40, ...l41, ...l42, ...l43]
 }
 
 export function serializeAsyncActions<T>(actions: Array<() => Promise<T>>) {
