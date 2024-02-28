@@ -1,7 +1,7 @@
 import { pause, runScenario } from "@holochain/tryorama";
 import pkg from "tape-promise/tape";
 import { setUpAliceandBob } from "../../../../utils";
-import { anOrbit, aSphere, createOrbitChildren, serializeAsyncActions, setupHierarchy3, setupHierarchy4, setupSphere } from './utils';
+import { anOrbit, aSphere, createOrbitChildren, serializeAsyncActions, setupHierarchy3, setupHierarchy4, setupHierarchy5, setupSphere } from './utils';
 import { encodeHashToBase64 } from "@holochain/client";
 import { Orbit } from "../../../../../app/src/graphql/generated";
 const { test } = pkg;
@@ -109,14 +109,14 @@ export default () => {
         await pause(pauseDuration);
 
         // 1. Given a Sphere has been created and we know its hash, and a balanced hierarchy of depth 4 has been created,
-        const [sphereHash, l0, l10, l11, l20, l21, l22, l23, l30, l31, l32, l33 ] = await setupHierarchy4(callZomeAlice);
+        const [sphereHash4, l0, l10, l11, l20, l21, l22, l23, l30, l31, l32, l33 ] = await setupHierarchy4(callZomeAlice);
         t.ok(l0 && l10 && l11 && l20 && l21 && l22 && l23 && l30 && l31 && l32 && l33, 'A hierarchy of depth 4 has been created,');
         
         // When I try to get a hierarchy from level 0
         const level0HierarchyResponse = await callZomeAlice(
           "personal",
           "get_orbit_hierarchy_json",
-          {levelQuery: {orbitLevel: 0, sphereHashB64: sphereHash}}
+          {levelQuery: {orbitLevel: 0, sphereHashB64: sphereHash4}}
         );
         t.ok(level0HierarchyResponse, 'and a query to level 0 returned JSON,');
         t.equal(level0HierarchyResponse.level_trees.length, 1, 'returns an array of length 1.');
@@ -124,6 +124,10 @@ export default () => {
         t.equal(level0HierarchyResponse.level_trees[0].children[0].children[0].children.length, 0, 'with a depth of 3, as the tree is balanced and depth first traversal to the 3rd level produced a leaf node.');
         // And the one element of the array has a depth of 3, not 4.
 
+        // 2. Given a Sphere has been created and we know its hash, and a balanced hierarchy of depth 5 has been created,
+        const [sphereHash5, l05, l105, l115, l205, l215, l225, l235, l305, l315, l325, l335, l40, l41, l42, l43 ] = await setupHierarchy5(callZomeAlice);
+        t.ok(l05 && l105 && l115 && l205 && l215 && l225 && l235 && l305 && l315 && l325 && l335 && l40 && l41 && l42 && l43, 'A hierarchy of depth 5 has been created,');
+        
         await pause(pauseDuration);
         
 

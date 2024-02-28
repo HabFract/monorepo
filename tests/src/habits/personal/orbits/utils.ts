@@ -56,14 +56,25 @@ export async function setupHierarchy3(callZomeAlice) {
 }
 
 export async function setupHierarchy4(callZomeAlice) {
-  const [sphereHash, rootHash, c0, c1, c0_0, c0_1, c1_0, c1_1] = await setupHierarchy3(callZomeAlice);
+  const [sphereHash, rootHash, l11, l12, l20, l21, l22, l23] = await setupHierarchy3(callZomeAlice);
     // L3
-    const l30 = (await createOrbitChildren(callZomeAlice, sphereHash as string, c0_0 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
-    const l31 = (await createOrbitChildren(callZomeAlice, sphereHash as string, c0_1 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
-    const l32 = (await createOrbitChildren(callZomeAlice, sphereHash as string, c1_0 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
-    const l33 = (await createOrbitChildren(callZomeAlice, sphereHash as string, c1_1 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+    const l30 = (await createOrbitChildren(callZomeAlice, sphereHash as string, l20 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+    const l31 = (await createOrbitChildren(callZomeAlice, sphereHash as string, l21 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+    const l32 = (await createOrbitChildren(callZomeAlice, sphereHash as string, l22 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+    const l33 = (await createOrbitChildren(callZomeAlice, sphereHash as string, l23 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
 
-    return  [sphereHash, rootHash, c0, c1, c0_0, c0_1, c1_0, c1_1, ...l30,  ...l31,  ...l32,  ...l33 ]
+    return  [sphereHash, rootHash, l11, l12, l20, l21, l22, l23, ...l30,  ...l31,  ...l32,  ...l33 ]
+}
+
+export async function setupHierarchy5(callZomeAlice) {
+  const [sphereHash, rootHash, l11, l12, l20, l21, l22, l23, l30, l31, l32, l34] = await setupHierarchy4(callZomeAlice);
+    // L4
+    const l40 = (await createOrbitChildren(callZomeAlice, sphereHash as string, l30 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+    const l41 = (await createOrbitChildren(callZomeAlice, sphereHash as string, l31 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+    const l42 = (await createOrbitChildren(callZomeAlice, sphereHash as string, l32 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+    const l43 = (await createOrbitChildren(callZomeAlice, sphereHash as string, l34 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+
+    return  [sphereHash, rootHash, l11, l12, l20, l21, l22, l23, l30, l31, l32, l34,...l40, ...l41, ...l42, ...l43]
 }
 
 export function serializeAsyncActions<T>(actions: Array<() => Promise<T>>) {
