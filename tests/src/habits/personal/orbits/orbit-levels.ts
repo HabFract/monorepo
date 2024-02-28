@@ -63,6 +63,8 @@ export default () => {
         t.ok(level0HierarchyResponse, 'and a query to level 0 returned JSON,');
         t.equal(level0HierarchyResponse.level_trees.length, 1, 'returns an array of length 1.');
         // Then it returns an array of 1 hierarchy.
+        t.deepEqual(level0HierarchyResponse.level_trees[0], rootHierarchyResponse)
+        // And the root orbitEntryHash hierarchy reponse is the same as the only element of the array
 
         // And When I try to get a hierarchy from level 1
         const level1HierarchyResponse = await callZomeAlice(
@@ -74,7 +76,7 @@ export default () => {
         t.equal(level1HierarchyResponse.level_trees.length, 2, 'returns an array of length 2.');
         // Then it returns an array of 2 hierarchies, 
 
-        // And When I try to get a hierarchy from level 1
+        // And When I try to get a hierarchy from level 2
         const level2HierarchyResponse = await callZomeAlice(
           "personal",
           "get_orbit_hierarchy_json",
@@ -83,7 +85,6 @@ export default () => {
         t.ok(level2HierarchyResponse, 'and a query to level 2 returned JSON,');
         t.equal(level2HierarchyResponse.level_trees.length, 4, 'returns an array of length 4.');
         // Then it returns an array of 4 hierarchies.
-        
       } catch (e) {
         t.ok(null);
       }
