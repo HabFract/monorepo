@@ -104,7 +104,7 @@ export default () => {
         });
       };
       try {
-        const pauseDuration = 2000;
+        const pauseDuration = 1000;
         await scenario.shareAllAgents();
         await pause(pauseDuration);
 
@@ -112,8 +112,20 @@ export default () => {
         const [sphereHash, l0, l10, l11, l20, l21, l22, l23, l30, l31, l32, l33 ] = await setupHierarchy4(callZomeAlice);
         t.ok(l0 && l10 && l11 && l20 && l21 && l22 && l23 && l30 && l31 && l32 && l33, 'A hierarchy of depth 4 has been created,');
         
+        // When I try to get a hierarchy from level 0
+        const level0HierarchyResponse = await callZomeAlice(
+          "personal",
+          "get_orbit_hierarchy_json",
+          {levelQuery: {orbitLevel: 0, sphereHashB64: sphereHash}}
+        );
+        t.ok(level0HierarchyResponse, 'and a query to level 0 returned JSON,');
+        t.equal(level0HierarchyResponse.level_trees.length, 1, 'returns an array of length 1.');
+        // Then it returns an array of 1 hierarchy.
+        t.equal(level0HierarchyResponse.level_trees[0].children[0].children[0].children.length, 0, 'with a depth of 3, as the tree is balanced and depth first traversal to the 3rd level produced a leaf node.');
+        // And the one element of the array has a depth of 3, not 4.
+
         await pause(pauseDuration);
-        // ).map(eR => encodeHashToBase64(eR.entryHash))
+        
 
       } catch (e) {
         t.ok(null);
