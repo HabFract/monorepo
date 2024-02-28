@@ -102,6 +102,9 @@ importers:
       '@dicebear/core':
         specifier: ^5.3.5
         version: 5.3.5
+      '@holochain-playground/cli':
+        specifier: ^0.2.0
+        version: 0.2.0
       '@holochain/hc-spin':
         specifier: ^0.200.10
         version: 0.200.10
@@ -3808,6 +3811,11 @@ packages:
       - bufferutil
       - utf-8-validate
     dev: false
+
+  /@holochain-playground/cli@0.2.0:
+    resolution: {integrity: sha512-74+zAbjbobmb9ycYHQTPLzhoE9geWd6D+BcNo1QUIrZa6d8yX4f9yV7U2ZHyNw1D+vV6IJ0QhCIzVKVzFat9GA==}
+    hasBin: true
+    dev: true
 
   /@holochain/client@0.16.7:
     resolution: {integrity: sha512-wCFm71HUnZ9vxmuguqKqDOhqjE5Qq5e8bM4q9W1ginel3UAZF3LmYym5Ny4pOG2aqf2tD5mpf7xTZjBxPDGnjA==}
