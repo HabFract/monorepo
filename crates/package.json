@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "npm run launch:happ",
-    "launch:happ": "npm run start:precheck; dotenv npm:start:prod",
+    "launch:happ": "npm run start:precheck; dotenv npm run start:prod",
 
     "build": "npm run build:happ && hc web-app pack workdir",
     "build:happ": "npm run build:dnas && hc app pack ./workdir",
@@ -15,7 +15,7 @@
     "start:electron": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc-spin -n $AGENTS ./workdir/habit_fract.happ --ui-path ../app/dist --app-id habit_fract --bootstrap-url http://127.0.0.1:$BOOTSTRAP_PORT --signaling-url ws://127.0.0.1:$SIGNAL_PORT",
 
     "generate:dev": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc s --piped -f $VITE_ADMIN_PORT generate workdir/habit_fract.happ -a habit_fract network --bootstrap http://127.0.0.1:$BOOTSTRAP_PORT webrtc ws://127.0.0.1:$SIGNAL_PORT",
-    "start:dev": "npm run generate:dev; RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc s --piped -f $VITE_ADMIN_PORT run -l -p $VITE_APP_PORT",
+    "start:dev": "dotenv concurrently -- \"npm run generate:dev; RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc s --piped -f $VITE_ADMIN_PORT run -l -p $VITE_APP_PORT\" \"holochain-playground\"",
     "start:prod": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc launch --piped -n $AGENTS workdir/habit_fract.happ --ui-path ../app/dist network --bootstrap http://127.0.0.1:$BOOTSTRAP_PORT webrtc ws://127.0.0.1:$SIGNAL_PORT",
 
     "clean": "npm run clean:sandbox; npm run clean:build && npm run clean:modules",
