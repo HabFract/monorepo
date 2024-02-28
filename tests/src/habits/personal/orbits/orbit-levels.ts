@@ -1,24 +1,13 @@
-import { Orbit, Sphere } from './../../../../../app/src/graphql/generated/index';
-import { EntryRecord } from '@holochain-open-dev/utils';
-import {
-  DnaSource,
-  Record,
-  ActionHash,
-  EntryHash,
-  AppEntryDef,
-  Create,
-  AgentPubKey,
-  encodeHashToBase64,
-} from "@holochain/client";
-
 import { pause, runScenario } from "@holochain/tryorama";
 import pkg from "tape-promise/tape";
 import { setUpAliceandBob } from "../../../../utils";
-import { anOrbit, aSphere, setupHierarchy, setupSphere } from './utils';
+import { anOrbit, aSphere, createOrbitChildren, serializeAsyncActions, setupHierarchy3, setupHierarchy4, setupSphere } from './utils';
+import { encodeHashToBase64 } from "@holochain/client";
+import { Orbit } from "../../../../../app/src/graphql/generated";
 const { test } = pkg;
 
 export default () => {
-  test("Orbit Hierarchy (Levels) Happy Path", async (t) => {
+  test("Orbit Hierarchy (Levels) Happy Path Depth upto 3", async (t) => {
     await runScenario(async (scenario) => {
       const {
         alice,
@@ -46,7 +35,7 @@ export default () => {
         await pause(pauseDuration);
 
         // 1. Given a Sphere has been created and we know its hash, and a balanced hierarchy of depth 3 has been created,
-        const [sphereHash, rootHash, c0, c1, c0_0, c0_1, c1_0, c1_1] = await setupHierarchy(callZomeAlice);
+        const [sphereHash, rootHash, c0, c1, c0_0, c0_1, c1_0, c1_1] = await setupHierarchy3(callZomeAlice);
         t.ok(rootHash && c0 && c1 && c0_0 && c0_1 && c1_0 && c1_1, 'A hierarchy of depth 3 has been created,');
         const rootHierarchyResponse = await callZomeAlice(
           "personal",
@@ -92,7 +81,48 @@ export default () => {
     });
   });
 
-  test.skip("Orbit Hierarchy (Levels) Sad Path", async (t) => {
+  test.only("Orbit Hierarchy (Levels) Happy Path Depth upto 5", async (t) => {
+    await runScenario(async (scenario) => {
+      const {
+        alice,
+        bob,
+        cleanup,
+        alice_agent_key,
+        bob_agent_key,
+        habits_cell_alice,
+        habits_cell_bob,
+      } = await setUpAliceandBob();
+
+      const callZomeAlice = async (zome_name, fn_name, payload) => {
+        return await alice.callZome({
+          cap_secret: null,
+          cell_id: habits_cell_alice,
+          zome_name,
+          fn_name,
+          payload,
+          provenance: alice_agent_key,
+        });
+      };
+      try {
+        const pauseDuration = 2000;
+        await scenario.shareAllAgents();
+        await pause(pauseDuration);
+
+        // 1. Given a Sphere has been created and we know its hash, and a balanced hierarchy of depth 4 has been created,
+        const [sphereHash, l0, l10, l11, l20, l21, l22, l23, l30, l31, l32, l33 ] = await setupHierarchy4(callZomeAlice);
+        t.ok(l0 && l10 && l11 && l20 && l21 && l22 && l23 && l30 && l31 && l32 && l33, 'A hierarchy of depth 4 has been created,');
+        
+        await pause(pauseDuration);
+        // ).map(eR => encodeHashToBase64(eR.entryHash))
+
+      } catch (e) {
+        t.ok(null);
+      }
+      await cleanup();
+    });
+  });
+
+  test.skip("Orbit Hierarchy (Levels) Sad Path Depth upto 3", async (t) => {
     await runScenario(async (scenario) => {
       const {
         alice,
@@ -128,8 +158,9 @@ export default () => {
           {orbitEntryHashB64: null}
           );
         // And an Orbit hierarchy was returned
-        console.log('orbitHierarchyResponse2 :>> ', orbitHierarchyResponse);
+        
         t.ok(orbitHierarchyResponse, 'a hierarchy can not be generated');
+
       } catch (e) {
         t.ok(null);
       }

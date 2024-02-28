@@ -20,7 +20,7 @@ export async function setupSphereAsEntryRecord(callZomeAlice, opts) {
 
   return new EntryRecord<Sphere>(createSphereResponse);
 }
-export async function setupHierarchy(callZomeAlice) {
+export async function setupHierarchy3(callZomeAlice) {
     // Sphere
     const hash = await setupSphere(callZomeAlice);
     
@@ -53,6 +53,22 @@ export async function setupHierarchy(callZomeAlice) {
     const l21 = (await createOrbitChildren(callZomeAlice, encodeHashToBase64(hash), orbitHash3, 2)).map(eR => encodeHashToBase64(eR.entryHash))
 
     return [hash, orbitHash, orbitHash2, orbitHash3, ...l20, ...l21]
+}
+
+export async function setupHierarchy4(callZomeAlice) {
+  const [sphereHash, rootHash, c0, c1, c0_0, c0_1, c1_0, c1_1] = await setupHierarchy3(callZomeAlice);
+    // L3
+    const l30 = (await createOrbitChildren(callZomeAlice, sphereHash as string, c0_0 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+    const l31 = (await createOrbitChildren(callZomeAlice, sphereHash as string, c0_1 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+    const l32 = (await createOrbitChildren(callZomeAlice, sphereHash as string, c1_0 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+    const l33 = (await createOrbitChildren(callZomeAlice, sphereHash as string, c1_1 as string, 1)).map(eR => encodeHashToBase64(eR.entryHash))
+
+    return  [sphereHash, rootHash, c0, c1, c0_0, c0_1, c1_0, c1_1, ...l30,  ...l31,  ...l32,  ...l33 ]
+}
+
+export function serializeAsyncActions<T>(actions: Array<() => Promise<T>>) {
+  let actionFiber = Promise.resolve({}) as Promise<T>;
+  actionFiber = actions.reduce((chain: Promise<T>, curr) => chain.then(curr), actionFiber);
 }
 
 export async function createOrbitChildren(callZome: Function, sphereHash: string, parentHash: string, number: number): Promise<EntryRecord<Orbit>[]> {

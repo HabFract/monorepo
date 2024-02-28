@@ -122,7 +122,7 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
         WasmErrorInner::Guest(String::from("Could not find the newly created Orbit"))
     ))?;
 
-    debug!("----First RECORD is created : ----");
+    // debug!("----First RECORD is created : ----");
     // Create path links for name querying
     let path = prefix_path(orbit.name.clone())?;
     path.ensure()?;
@@ -140,7 +140,7 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
         (),
     )?;
 
-    debug!("----First LINKS created : ----");
+    // debug!("----First LINKS created : ----");
     // Create Orbit parent link
     if let Some(parent_hash) = orbit.parent_hash {
         create_link(
@@ -156,13 +156,13 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
             None,
         )?;
 
-        debug!("----Sphere LINKS queried : ---- {:#?}", sphere_level_links.clone());
+        // debug!("----Sphere LINKS queried : ---- {:#?}", sphere_level_links.clone());
         if let Some(links) = sphere_level_links {
             let mut parent_level_link = links
                 .into_iter()
                 .filter(|link| link.clone().target == parent_hash.clone().into());
 
-        debug!("---- PARENT LEVEL LINKS: ---- {:#?}", parent_level_link.clone());
+        // debug!("---- PARENT LEVEL LINKS: ---- {:#?}", parent_level_link.clone());
             match parent_level_link.next() {
                 Some(link) => {
                     let new_link_level = link.tag.0[0] + 1;
@@ -270,8 +270,6 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
         sphere_hash_b64,
     }) = input.level_query
     {
-        debug!("---- RETRIEVED LEVEL LINKS: ---- {:#?}", orbit_level.clone());
-        debug!("---- RETRIEVED LEVEL LINKS: ---- {:#?}", sphere_hash_b64.clone());
         if let Some(hash) = sphere_hash_b64 { // we have a sphere hash
             if let Some(level) = orbit_level { // and a level to query
                 if let Some(links) = orbit_level_links(hash.into(), level)? { // so get the linked orbit entry hashes
