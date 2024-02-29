@@ -121,14 +121,15 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
           }
         }}
         >
-        {({ values, errors, touched }) => (
+        {({ values, errors, touched, setFieldTouched, handleChange }) => (
           <Form noValidate={true}>
             {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
             <div className="field">
               <Label htmlFor='name'>Name: <span className="reqd">*</span></Label>
 
               <div className="flex flex-col gap-2">
-                <Field as={TextInput} color={"default"} sizing="lg" autoComplete={'off'} type="text" name="name" id="name" required />
+                <Field as={TextInput} color={"default"} sizing="lg" autoComplete={'off'} type="text" name="name" id="name" required
+                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }} />
                 {CustomErrorLabel('name', errors, touched)}
               </div>
             </div>
@@ -136,7 +137,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             <div className="field">
               <Label htmlFor='description'>Description:</Label>
               <div className="flex flex-col gap-2">
-                <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" id="description" />
+                <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" id="description"
+                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }} />
                 {CustomErrorLabel('description', errors, touched)}
               </div>
             </div>
