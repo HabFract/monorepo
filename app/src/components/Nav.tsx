@@ -101,7 +101,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
 
       case !!e.key.match(/list\-orbits/):
         const sphereId = e.key.split('list-orbits-')[1];
-        transition('ListOrbits', { sphereHash: sphereId })
+        transition('ListOrbits', { sphereAh: sphereId })
         break;
 
       default:

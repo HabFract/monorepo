@@ -85,7 +85,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
               : await addSphere({ variables: { variables: { name: values.name, description: values.description, image: values.sphere_image } } })
             setSubmitting(false);
 
-            // transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
+            // transition('ListOrbits', { sphereAh: selectedSphere.actionHash })
             transition('ListSpheres')
           } catch (error) {
             console.error(error);
