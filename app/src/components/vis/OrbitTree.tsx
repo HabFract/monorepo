@@ -6,7 +6,7 @@ import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import nodeStore from '../../state/jotaiKeyValueStore';
+import miniDB from '../../state/jotaiKeyValueStore';
 import { currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 
 import { Modal } from 'flowbite-react';
@@ -25,7 +25,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const [_state, transition, params] = useStateTransition();
 
   // Get sphere and sphere orbit nodes details
-  const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeStore.entries));
+  const nodeDetailsCache =  Object.fromEntries(useAtomValue(miniDB.entries));
   
   // Does this vis cover the whole tree, or just a window over the whole tree?
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;

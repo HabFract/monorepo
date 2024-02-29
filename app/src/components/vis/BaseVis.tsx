@@ -81,13 +81,13 @@ import db, { mapToCacheObject, store } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
 
 export interface OrbitNodeDetails {
-  id: ActionHashB64
+  id: ActionHashB64;
   eH?: EntryHashB64;
   description?: string;
-  name: string
-  scale: Scale
-  startTime: number
-  endTime: number;
+  name: string;
+  scale: Scale;
+  startTime?: number;
+  endTime?: number;
   checked: boolean;
 }
 
