@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Formik, Form, Field, useFormikContext } from 'formik';
 import * as Yup from 'yup';
-import { Button, TextInput, Label, Textarea, Tooltip } from 'flowbite-react';
+import { Button, TextInput, Label, Textarea } from 'flowbite-react';
 import { useCreateSphereMutation, useGetSphereQuery, useUpdateSphereMutation } from '../../graphql/generated';
 import { AlertOutlined } from '@ant-design/icons';
 import { ImageUpload } from './input';
