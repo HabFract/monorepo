@@ -115,7 +115,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             if(typeof onCreateSuccess !== 'undefined') {
               onCreateSuccess!.call(this)
             }
-            originPage == 'Vis' ? transition('Vis', { currentSphereHash: selectedSphere.entryHash }) : transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
+            originPage == 'Vis' ? transition('Vis', { currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash }) : transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
           } catch (error) {
             console.error(error);
           }

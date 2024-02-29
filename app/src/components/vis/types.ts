@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { SphereHashes } from "../../state/currentSphereHierarchyAtom";
 import BaseVisualization from "./BaseVis";
 
 export type WithVisCanvasProps = { // Passed to the finite state machine which renders the HOC
   orbitEh: EntryHashB64 // For partial VisCoverage
 } | {
-  currentSphereHash: EntryHashB64 // For complete VisCoverage
+  currentSphereEhB64: EntryHashB64, // For complete VisCoverage
+  currentSphereAhB64: ActionHashB64 
 }
 
 export type VisProps = { // for e.g. OrbitTree, OrbitCluster

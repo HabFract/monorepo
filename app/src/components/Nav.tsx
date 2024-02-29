@@ -83,7 +83,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
 
     switch (true) {
       case e.key == 'vis':
-        transition('Vis', {currentSphereHash: selectedSphere.entryHash})
+        transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})
         break;
 
       case e.key == 'add-sphere':

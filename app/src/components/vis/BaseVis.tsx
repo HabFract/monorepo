@@ -74,7 +74,10 @@ import {
 } from "./constants";
 import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { Scale } from "../../graphql/generated";
+import { GetOrbitsDocument, Scale } from "../../graphql/generated";
+import { client } from "../../main";
+import db, { mapToCacheObject, myStore } from "../../state/jotaiKeyValueStore";
+import { extractEdges } from "../../graphql/utils";
 
 export interface OrbitNodeDetails {
   id: ActionHashB64
@@ -103,7 +106,8 @@ export default class BaseVisualization implements IVisualization {
   zoomer: any;
   rootData: any;
   nodeDetails: SphereOrbitNodes;
-  sphereHash: ActionHashB64;
+  sphereEh: EntryHashB64;
+  sphereAh: ActionHashB64;
   globalStateTransition: Function;
   modalIsOpen?: boolean;
   modalParentOrbitEh?: Function;
@@ -130,12 +134,13 @@ export default class BaseVisualization implements IVisualization {
   _gButton: any;
   _enteringLinks: any;
 
-  constructor(type, svgId, inputTree, canvasHeight, canvasWidth, margin: Margins, nodeDetails: SphereOrbitNodes, globalStateTransition, sphereHash: ActionHashB64) {
+  constructor(type, svgId, inputTree, canvasHeight, canvasWidth, margin: Margins, globalStateTransition, sphereEh: EntryHashB64, sphereAh: ActionHashB64, nodeDetails: SphereOrbitNodes) {
     this.type = type;
     this._svgId = svgId;
     this.rootData = inputTree;
     this.nodeDetails = nodeDetails;
-    this.sphereHash = sphereHash;
+    this.sphereEh = sphereEh;
+    this.sphereAh = sphereAh;
     this.modalIsOpen = false;
     this.globalStateTransition = globalStateTransition;
     
@@ -1218,55 +1223,28 @@ export default class BaseVisualization implements IVisualization {
       .attr("fill", "#e06a58")
       .attr("display", (d) => (d.depth === 0 ? "none" : "initial"))
       .on("click", this.eventHandlers.handleDeleteNode.bind(this));
+  }
 
-      // this._gButton
-      //   .append("rect")
-      //   .attr("rx", 15)
-      //   .attr("y", -30)
-      //   .attr("width", 90)
-      //   .attr("height", 30)
-      //   .on("click", (e) => {
-      //     e.stopPropagation();
-      //   });
-      // this._gButton
-      //   .append("text")
-      //   .attr("x", 15)
-      //   .attr("y", (d) => (d.parent ? -8 : -5))
-      //   .text((d) => "DIVIDE")
-      //   .on("click", (e, n) => {
-      //     if (
-      //       // isTouchDevice() ||
-      //       select(e?.target?.parentNode).attr("style").match("opacity: 0")
-      //     )
-      //       return e.stopPropagation();
-      //     this.setCurrentHabit(n);
-      //     this.eventHandlers.handleAppendNode.call(this);
-      //   });
-      // this._gButton
-      //   .append("rect")
-      //   .attr("style", (d) => (d.parent ? "opacity: 0" : "opacity: 1"))
-      //   .attr("rx", 15)
-      //   .attr("y", -55)
-      //   .attr("width", 90)
-      //   .attr("height", 30)
-      //   .on("click", (e) => {
-      //     e.stopPropagation();
-      //   });
-      // this._gButton
-      //   .append("text")
-      //   .attr("style", (d) => (d.parent ? "opacity: 0" : "opacity: 1"))
-      //   .attr("x", 12)
-      //   .attr("y", -30)
-      //   .text("EXPAND")
-      //   .on("click", (e, n) => {
-      //     if (
-      //       // isTouchDevice() ||
-      //       select(e?.target?.parentNode).attr("style").match("opacity: 0")
-      //     )
-      //       return e.stopPropagation();
-      //     this.setCurrentHabit(n);
-      //     // this.eventHandlers.handlePrependNode.call(this, e, n);
-      //   });
+  async refetchOrbits() {
+    const variables = { sphereEntryHashB64: this.sphereEh };
+    let data;
+    try {
+      data = await client.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only'} )
+    } catch (error) {
+      console.error(error);
+      this.modalIsOpen = true;
+    }
+    console.log('data :>> ', data?.data?.orbits);
+    console.log('data.data.orbits.map(mapToCacheObject) :>> ', extractEdges(data.data.orbits));
+    console.log('object :>> ', extractEdges(data.data.orbits).map(mapToCacheObject as any));
+    debugger;
+  }
+
+  async cacheOrbits(orbitEntries: SphereNodeDetailsCache) {
+    myStore.sub(db.setMany, () => {
+      console.log('countAtom value is changed to', myStore.get(db.entries))
+    })
+    myStore.set(db.setMany, Object.entries(orbitEntries))
   }
 
   bindEventHandlers(selection) {
@@ -1282,6 +1260,7 @@ export default class BaseVisualization implements IVisualization {
             this.nodeDetails[d.data.content].checked = !this.nodeDetails[d.data.content];
             e.target.classList.toggle('checked');
             e.target.closest('.the-node').firstChild.classList.toggle('checked');
+            this.refetchOrbits()
             break;
         
           case e.target.classList.contains('lower-button'):

@@ -5,9 +5,10 @@ import './index.css'
 import { StateMachine } from './state/stateMachine'
 import { StateMachineContext } from './contexts/state-machine'
 import { ApolloProvider } from '@apollo/client'
-import { MyProfileProvider } from './contexts/myProfile'
 import { AppState, AppStateStore, AppTransitions, initialState, routes } from './routes'
 import connect, { ClientOptions } from './graphql/client'
+import { Provider } from 'jotai'
+import { myStore } from './state/jotaiKeyValueStore'
 
 /*
 
@@ -16,23 +17,29 @@ Application State Management (Courtesy of Ada Burrows for hREA playspace)
 
 */
 
+const WithCacheStore = (component: React.ReactNode) => {
+  return (<Provider store={myStore}>
+    {component}
+  </Provider>)
+};
+
 export const AppMachine = new StateMachine<AppState, AppStateStore>(initialState, AppTransitions);
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
-const client = await connect({} as ClientOptions);
+export const client = await connect({} as ClientOptions);
 
 async function renderComponent(component: React.ReactNode) {
   root.render(
     <React.StrictMode>
       <ApolloProvider client={client}>
-        <MyProfileProvider>
+        {/* <MyProfileProvider> */}
           <StateMachineContext.Provider value={AppMachine as any}>
             <App>
-              {component}
+              {WithCacheStore(component)}
             </App>
           </StateMachineContext.Provider>
-        </MyProfileProvider>
+        {/* </MyProfileProvider> */}
       </ApolloProvider>
     </React.StrictMode>,
   );

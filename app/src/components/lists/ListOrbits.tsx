@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, getDefaultStore, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { listSortFilterAtom } from '../../state/listSortFilterAtom';
-import nodeStore from '../../state/jotaiKeyValueStore';
+import nodeStore, { myStore } from '../../state/jotaiKeyValueStore';
 import './common.css';
 
 import PageHeader from '../PageHeader';
@@ -9,31 +9,18 @@ import ListSortFilter from './ListSortFilter';
 
 import OrbitCard from '../../../../design-system/cards/OrbitCard';
 import SphereCard from '../../../../design-system/cards/SphereCard';
-import { Orbit, OrbitEdge, useDeleteOrbitMutation, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSphereLazyQuery, useGetSphereQuery } from '../../graphql/generated';
+import { Orbit, useDeleteOrbitMutation, useGetOrbitsLazyQuery, useGetSphereQuery } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes } from '../vis/BaseVis';
-import { currentSphere } from '../../state/currentSphereHierarchyAtom';
+import { OrbitNodeDetails, SphereNodeDetailsCache } from '../vis/BaseVis';
+import { mapToCacheObject } from '../../state/jotaiKeyValueStore';
 
 interface ListOrbitsProps {
   sphereHash?: string; // Optional prop to filter orbits by sphere
 }
 
 const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) => {
-  const [state, transition] = useStateTransition(); // Top level state machine and routing
-
-  const db = useAtomValue(nodeStore.keys);
-  const setMany = useSetAtom(nodeStore.setMany)
-  const mapToCacheObject = (orbit: Orbit) => ({
-    id: orbit.id,
-    eH: orbit.eH,
-    name: orbit.name,
-    scale: orbit.scale,
-    description: orbit.metadata?.description,
-    startTime: orbit.metadata?.timeframe.startTime,
-    endTime: orbit.metadata?.timeframe.endTime,
-    checked: false
-  })
+  const [_state, transition] = useStateTransition(); // Top level state machine and routing
   
   const { loading: loadingSphere, data: dataSphere } = useGetSphereQuery({
     variables: { id: sphereHash as string },
@@ -51,8 +38,6 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
     fetchPolicy: 'network-only',
     variables: { sphereEntryHashB64: sphereEh },
   });
-  
-  const [selectedSphere] = useAtom(currentSphere);
   
   useEffect(() => {
     if (sphereEh && dataSphere) {
@@ -72,15 +57,16 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
       const entries = indexedOrbitData.reduce((cacheObject, [id, entry], idx) => {
         const indexKey = (entry as any).eH as string; // Key by entry hash, since the hierarchy content CURRENTLY references entry hashes and not action hashes // TODO: revise if this needs changing.
         if(idx == 0) {
-          cacheObject[selectedSphere.actionHash as keyof SphereNodeDetailsCache] = { [indexKey]: entry as OrbitNodeDetails }        
+          
+          cacheObject[sphereHash as keyof SphereNodeDetailsCache] = { [indexKey]: entry as OrbitNodeDetails }        
         }
-        cacheObject[selectedSphere.actionHash as keyof SphereNodeDetailsCache][indexKey] = entry as OrbitNodeDetails;
+        cacheObject[sphereHash as keyof SphereNodeDetailsCache][indexKey] = entry as OrbitNodeDetails;
         return cacheObject
       }, indexedSphereData)
 
         // NOTE: this is provisionally using the structure { {SPHERE_AH} : { {ORBIT_AH} : {DETAILS} } }
         // and may need to be adapted once WIN records are also cached.
-      setMany(Object.entries(entries));
+        myStore.set(nodeStore.setMany, Object.entries(entries));
     }
   }, [data]);
   

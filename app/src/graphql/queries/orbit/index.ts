@@ -45,8 +45,9 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     },
 
     getOrbitHierarchy: async (_, args): Promise<String> => {
+      console.log('args.params :>> ', args.params);
       const maybeJson = await getHierarchyForOrbit(args.params);
-      
+      console.log('maybeJson :>> ', maybeJson);
       const json = JSON.stringify({result: maybeJson})
       return Promise.resolve(JSON.stringify(json) || "")
     },

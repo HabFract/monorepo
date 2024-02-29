@@ -19,8 +19,10 @@ window.BroadcastChannel = channelMock;
 */
 const initialState = {
   // orbitEh: 'R28gZm9yIGEgd2Fsay==',
-  currentSphereHash: SPHERE_ID,
+  currentSphereEhB64: SPHERE_ID,
+  currentSphereAhB64: SPHERE_ID,
 };
+
 let mockUseStateTransitionResponse = [
   "Home",
   jest.fn(() => {}),
