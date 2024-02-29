@@ -92,7 +92,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
           }
         }}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, setFieldTouched, handleChange }) => (
           <Form noValidate={true}>
             {editMode && <SphereFetcher sphereToEditId={sphereToEditId} />} 
 
@@ -100,7 +100,8 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
               <Label htmlFor='name'>Name: <span className="reqd">*</span></Label>
 
               <div className="flex flex-col gap-2">
-                <Field as={TextInput} color={"default"} sizing="lg" autoComplete={'off'} type="text" name="name" id="name" required />
+                <Field as={TextInput} color={"default"} sizing="lg" autoComplete={'off'} type="text" name="name" id="name" required
+                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }} />
                 {CustomErrorLabel('name', errors, touched)}
               </div>
             </div>
@@ -108,7 +109,8 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
             <div className="field">
               <Label htmlFor='description'>Description:</Label>
               <div className="flex flex-col gap-2">
-                <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" id="description" />
+                <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" id="description"
+                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}/>
                 {CustomErrorLabel('description', errors, touched)}
               </div>
             </div>
@@ -116,7 +118,8 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
             {/* <div className="field">
               <Label htmlFor='hashtag' disabled>Hashtag:</Label>
               <div className="flex flex-col gap-2">
-                <Field as={TextInput} disabled color={"disabled"} sizing="lg" autoComplete={'off'} type="text" name="hashtag" id="hashtag" />
+                <Field as={TextInput} disabled color={"disabled"} sizing="lg" autoComplete={'off'} type="text" name="hashtag" id="hashtag"
+                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }} />
                 {CustomErrorLabel('hashtag', errors, touched)}
               </div>
             </div> */}
@@ -128,7 +131,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
               </div>
             </div>
 
-            <Button type="submit" disabled={!!Object.values(errors).length || Object.values(touched).filter(value => value).length < 1} className={editMode ? "btn-warn" : "btn-primary"}>{editMode ? "Update" : "Create"}</Button>
+            <Button type="submit" disabled={Object.values(errors).length > 0 || Object.values(touched).filter(value => value).length < 1} className={editMode ? "btn-warn" : "btn-primary"}>{editMode ? "Update" : "Create"}</Button>
           </Form>
         )}
       </Formik>
