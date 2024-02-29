@@ -12,92 +12,17 @@ import { legendColor } from "d3-svg-legend";
 // import propagating from "propagating-hammerjs";
 import _ from "lodash";
 
-// import { selectCurrentNodeByMptt } from "features/node/selectors";
-// import {
-//   selectCurrentHabit,
-//   selectCurrentHabitByMptt,
-//   selectStoredHabits,
-// } from "features/habit/selectors";
-// import { fetchHabitDatesREST } from "features/habitDate/actions";
-// import { selectCurrentHabitDate } from "features/habitDate/selectors";
-// import UISlice from "features/ui/reducer";
-// const { toggleConfirm } = UISlice.actions;
-// import HabitSlice from "features/habit/reducer";
-// const { updateCurrentHabit } = HabitSlice.actions;
-// import NodeSlice from "features/node/reducer";
-// const { updateCurrentNode } = NodeSlice.actions;
-// import HabitDateSlice from "features/habitDate/reducer";
-// const { createHabitDate, updateHabitDateForNode } = HabitDateSlice.actions;
-// import hierarchySlice from "features/hierarchy/reducer";
-// import { selectCurrentDateId, selectCurrentDate } from "../space/slice";
 import { ONE_CHILD, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT, THREE_CHILDREN } from './PathTemplates/paths';
 
-import {
-  expand,
-  collapse,
-  nodeWithoutHabitDate,
-  contentEqual,
-  nodeStatusColours,
-  parseTreeValues,
-  cumulativeValue,
-  outOfBoundsNode,
-  oppositeStatus,
-  getColor,
-  isALeaf,
-  hierarchyStateHasChanged,
-  getInitialXTranslate,
-  getInitialYTranslate,
-  newXTranslate,
-  newYTranslate,
-  debounce,
-} from "./helpers";
-// import { debounce, console.error, isTouchDevice } from "app/helpers";
+import { expand, collapse, contentEqual, nodeStatusColours, parseTreeValues, cumulativeValue, outOfBoundsNode, getInitialXTranslate, getInitialYTranslate, newXTranslate, newYTranslate, debounce } from "./helpers";
 
-import {
-  positiveCol,
-  negativeCol,
-  noNodeCol,
-  neutralCol,
-  parentPositiveBorderCol,
-  positiveColLighter,
-  BASE_SCALE,
-  FOCUS_MODE_SCALE,
-  LG_BUTTON_SCALE,
-  LG_LABEL_SCALE,
-  LG_LEVELS_HIGH,
-  LG_LEVELS_WIDE,
-  LG_NODE_RADIUS,
-  XS_BUTTON_SCALE,
-  XS_LABEL_SCALE,
-  XS_LEVELS_HIGH,
-  XS_LEVELS_WIDE,
-  XS_NODE_RADIUS,
-} from "./constants";
+import { positiveCol, negativeCol, noNodeCol, neutralCol, parentPositiveBorderCol, positiveColLighter, BASE_SCALE, FOCUS_MODE_SCALE, LG_BUTTON_SCALE, LG_LABEL_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_BUTTON_SCALE, XS_LABEL_SCALE, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS, } from "./constants";
 import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { GetOrbitsDocument, Scale } from "../../graphql/generated";
+import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
 import { client } from "../../main";
-import db, { mapToCacheObject, store } from "../../state/jotaiKeyValueStore";
+import store, { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes, mapToCacheObject } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
-
-export interface OrbitNodeDetails {
-  id: ActionHashB64;
-  eH?: EntryHashB64;
-  description?: string;
-  name: string;
-  scale: Scale;
-  startTime?: number;
-  endTime?: number;
-  checked: boolean;
-}
-
-export type SphereOrbitNodes = {
-  [key: EntryHashB64]: OrbitNodeDetails
-}
-
-export type SphereNodeDetailsCache = {
-  [key: EntryHashB64]: SphereOrbitNodes
-}
 
 export default class BaseVisualization implements IVisualization {
   type: VisType;
@@ -1231,21 +1156,20 @@ export default class BaseVisualization implements IVisualization {
     let data;
     try {
       data = await client.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only'} )
+      if(data?.data?.orbits) {
+        const orbits = (extractEdges(data.data.orbits) as Orbit[]);
+        const indexedOrbitData : Array<[ActionHashB64, OrbitNodeDetails]> = Object.entries(orbits.map(mapToCacheObject))
+          .map(([_idx, value]) => [value.id, value]);
+        this.cacheOrbits(indexedOrbitData);
+      }  
     } catch (error) {
       console.error(error);
-      this.modalIsOpen = true;
     }
-    console.log('data :>> ', data?.data?.orbits);
-    console.log('data.data.orbits.map(mapToCacheObject) :>> ', extractEdges(data.data.orbits));
-    console.log('object :>> ', extractEdges(data.data.orbits).map(mapToCacheObject as any));
-    debugger;
   }
 
-  async cacheOrbits(orbitEntries: SphereNodeDetailsCache) {
-    store.sub(db.setMany, () => {
-      console.log('countAtom value is changed to', store.get(db.entries))
-    })
-    store.set(db.setMany, Object.entries(orbitEntries))
+  async cacheOrbits(orbitEntries: Array<[ActionHashB64, OrbitNodeDetails]>) {
+    store.set(miniDb.setMany, Object.fromEntries(orbitEntries) as any)
+    console.log('Sphere orbits fetched and cached!')
   }
 
   bindEventHandlers(selection) {

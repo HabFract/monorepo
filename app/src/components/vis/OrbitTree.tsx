@@ -7,7 +7,7 @@ import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import miniDB from '../../state/jotaiKeyValueStore';
-import { currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
+import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';

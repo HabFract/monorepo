@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 import { useGetSphereQuery, useGetOrbitsLazyQuery, Orbit, Sphere } from '../graphql/generated';
 import { extractEdges } from '../graphql/utils';
-import { mapToCacheObject } from '../state/jotaiKeyValueStore';
+import { OrbitNodeDetails, SphereNodeDetailsCache, mapToCacheObject } from '../state/jotaiKeyValueStore';
 import miniDB, { nodeCacheStore } from '../state/jotaiKeyValueStore';
 import { ActionHashB64 } from '@holochain/client';
-import { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes } from '../components/vis/BaseVis';
 
 interface UseFetchAndCacheSphereOrbitsProps {
   sphereAh?: ActionHashB64;
