@@ -1,10 +1,9 @@
-import { jest } from '@jest/globals'
+import { jest } from "@jest/globals";
 
-import { TextEncoder, TextDecoder } from 'util'
-global.TextEncoder = TextEncoder
+import { TextEncoder, TextDecoder } from "util";
+global.TextEncoder = TextEncoder;
 //@ts-ignore
-global.TextDecoder = TextDecoder
-
+global.TextDecoder = TextDecoder;
 
 import { mockedCacheEntries } from "./e2e/mocks/cache";
 import { SPHERE_ID } from "./e2e/mocks/spheres";
@@ -31,11 +30,7 @@ const initialState = {
   currentSphereAhB64: SPHERE_ID,
 };
 
-let mockUseStateTransitionResponse = [
-  "Home",
-  jest.fn(() => {}),
-  initialState,
-];
+let mockUseStateTransitionResponse = ["Home", jest.fn(() => {}), initialState];
 export function setMockUseStateTransitionResponse(params: typeof initialState) {
   mockUseStateTransitionResponse = ["Home", jest.fn(() => {}), params];
 }
@@ -49,54 +44,16 @@ jest.mock("../app/src/hooks/useStateTransition", () => ({
 / Mocking the jotai indexdb store for node details in the vis
 */
 let mockNodeDetailsCache = mockedCacheEntries;
-let mockNodeDetailsCacheKeys: string[] = Object.keys(Object.fromEntries(mockNodeDetailsCache));
+let mockNodeDetailsCacheKeys: string[] = Object.keys(
+  Object.fromEntries(mockNodeDetailsCache)
+);
 
 export function setMockNodeDetailsCache(params: typeof mockedCacheEntries) {
   mockNodeDetailsCache = params;
-  mockNodeDetailsCacheKeys = Object.keys(Object.fromEntries(mockNodeDetailsCache));
+  mockNodeDetailsCacheKeys = Object.keys(
+    Object.fromEntries(mockNodeDetailsCache)
+  );
 }
-
-jest.mock("../app/src/constants", () => ({
-  APP_WS_PORT: 1234,
-  ADMIN_WS_PORT: 4321,
-  HAPP_DNA_NAME: "habits"
-}
-));
-
-jest.mock("../app/src/main", () => ({
-    client: () => ({
-      query: () => {}
-    }) 
-  }
-));
-
-jest.mock("@holochain/client", () => ({
-  AdminWebsocket: {
-    appInfo: () => {},
-    connect: () => Promise.resolve({
-      authorizeSigningCredentials: () => {}
-    }) 
-  },
-  AppWebsocket: {
-    appInfo: () => {},
-    connect: () => Promise.resolve({
-      appInfo: () => ({cell_info: { habits:  [{provisioned: true}]}})
-    }) , // Chain other methods as needed
-  },
-  AppSignalCb: null,
-}
-));
-jest.mock("@holochain-open-dev/utils", () => ({
-  EntryRecord: null,
-}
-));
-jest.mock("@msgpack/msgpack", () => ({
-  decode: {
-    TextEncoder: () => ({}), // Chain other methods as needed
-  },
-}
-));
-
 
 jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
   entries: atom(mockNodeDetailsCache),
@@ -114,11 +71,50 @@ jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
     endTime: orbit.metadata?.timeframe.endTime,
     checked: false
   }),
-  setMany: atom(  null, // it's a convention to pass `null` for the first argument
-  (get, set, update) => { mockNodeDetailsCache = mockedCacheEntries}),
+}));
+
+
+jest.mock("../app/src/constants", () => ({
+  APP_WS_PORT: 1234,
+  ADMIN_WS_PORT: 4321,
+  HAPP_DNA_NAME: "habits",
+}));
+
+jest.mock("../app/src/main", () => ({
+  client: () => ({
+    query: () => {},
+  }),
+}));
+
+jest.mock("@holochain/client", () => ({
+  AdminWebsocket: {
+    appInfo: () => {},
+    connect: () =>
+      Promise.resolve({
+        authorizeSigningCredentials: () => {},
+      }),
+  },
+  AppWebsocket: {
+    appInfo: () => {},
+    connect: () =>
+      Promise.resolve({
+        appInfo: () => ({ cell_info: { habits: [{ provisioned: true }] } }),
+      }), // Chain other methods as needed
+  },
+  AppSignalCb: null,
 }));
 
 // Mock ES6 modules that cause problems
+
+jest.mock("@holochain-open-dev/utils", () => ({
+  EntryRecord: null,
+}));
+
+jest.mock("@msgpack/msgpack", () => ({
+  decode: {
+    TextEncoder: () => ({}), // Chain other methods as needed
+  },
+}));
 
 jest.mock("antd", () => ({
   DatePicker: {
