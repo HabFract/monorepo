@@ -1,7 +1,4 @@
-import React, { useEffect } from 'react';
-import { atom, getDefaultStore, useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { listSortFilterAtom } from '../../state/listSortFilterAtom';
-import miniDB, { store } from '../../state/jotaiKeyValueStore';
+import React from 'react';
 import './common.css';
 
 import PageHeader from '../PageHeader';

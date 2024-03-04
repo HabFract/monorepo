@@ -1,6 +1,5 @@
-import { useAtom } from 'jotai';
 import { listSortFilterAtom } from '../../state/listSortFilterAtom';
-import { Scale, Sphere, useDeleteSphereMutation, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSpheresQuery } from '../../graphql/generated';
+import { Sphere, useDeleteSphereMutation, useGetSpheresQuery } from '../../graphql/generated';
 
 import './common.css';
 
@@ -9,6 +8,7 @@ import ListSortFilter from './ListSortFilter';
 import SphereCard from '../../../../design-system/cards/SphereCard';
 import { extractEdges } from '../../graphql/utils';
 import { useStateTransition } from '../../hooks/useStateTransition';
+import { store } from '../../state/jotaiKeyValueStore';
 
 function ListSpheres() {
   const [runDelete, { loading: loadingDelete, error: errorDelete, data: dataDelete }] = useDeleteSphereMutation({
@@ -19,7 +19,7 @@ function ListSpheres() {
 
   const { loading, error, data } = useGetSpheresQuery();
 
-  const [listSortFilter] = useAtom(listSortFilterAtom);
+  const listSortFilter = store.get(listSortFilterAtom);
 
   const sortSpheres = (a: Sphere, b: Sphere) => {
     let propertyA;

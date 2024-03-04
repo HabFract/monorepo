@@ -3,17 +3,17 @@ import { Formik, Form, Field } from 'formik';
 import { SortDescendingOutlined, SortAscendingOutlined, FilterOutlined } from '@ant-design/icons';
 import { Modal, Radio } from 'flowbite-react';
 import './common.css';
-import { useAtom } from 'jotai';
 import { SortCriteria, SortOrder, listSortFilterAtom } from '../../state/listSortFilterAtom';
+import { store } from '../../state/jotaiKeyValueStore';
 
 const ListSortFilter = ({label} : {label: string}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const [listSortFilter, setListSortFilter] = useAtom(listSortFilterAtom)
+  const listSortFilter = store.get(listSortFilterAtom)
 
   const toggleSortOrder = () => {
-    setListSortFilter({
+    store.set(listSortFilterAtom, {
       ...listSortFilter,
       sortOrder: listSortFilter.sortOrder === SortOrder.GreatestToLowest ? SortOrder.LowestToGreatest : SortOrder.GreatestToLowest
     });
@@ -53,11 +53,11 @@ const ListSortFilter = ({label} : {label: string}) => {
                       <label className="block mb-2 text-xl">Sort by:</label>
                       <div className="flex flex-col">
                         <label className='text-xl lowercase capitalize'>
-                          <Field className="text-primary m-2 p-2" onChange={(e: any) => setListSortFilter({...listSortFilter, sortCriteria: e.currentTarget.value})} checked={listSortFilter.sortCriteria==SortCriteria.Name} type="radio" name="sortCriteria" value={SortCriteria.Name} as={Radio} />
+                          <Field className="text-primary m-2 p-2" onChange={(e: any) => store.set(listSortFilterAtom, {...listSortFilter, sortCriteria: e.currentTarget.value})} checked={listSortFilter.sortCriteria==SortCriteria.Name} type="radio" name="sortCriteria" value={SortCriteria.Name} as={Radio} />
                           Name
                         </label>
                         <label className='text-xl lowercase capitalize'>
-                          <Field className="text-primary m-2 p-2" onChange={(e: any) => setListSortFilter({...listSortFilter, sortCriteria: e.currentTarget.value})} checked={listSortFilter.sortCriteria==SortCriteria.Scale} type="radio" name="sortCriteria" value={SortCriteria.Scale} as={Radio} />
+                          <Field className="text-primary m-2 p-2" onChange={(e: any) => store.set(listSortFilterAtom, {...listSortFilter, sortCriteria: e.currentTarget.value})} checked={listSortFilter.sortCriteria==SortCriteria.Scale} type="radio" name="sortCriteria" value={SortCriteria.Scale} as={Radio} />
                           Scale
                         </label>
                       </div>

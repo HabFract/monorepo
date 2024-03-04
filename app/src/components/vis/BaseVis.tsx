@@ -23,6 +23,7 @@ import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
 import { client } from "../../main";
 import miniDb, { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
+import { ThemeProvider } from "flowbite-react/lib/esm/components/Flowbite/ThemeContext";
 
 export default class BaseVisualization implements IVisualization {
   type: VisType;
@@ -1191,6 +1192,8 @@ export default class BaseVisualization implements IVisualization {
             e.target.classList.toggle('checked');
             e.target.closest('.the-node').firstChild.classList.toggle('checked');
             this.refetchOrbits()
+            this.cacheOrbits()
+            this.render();
             break;
         
           case e.target.classList.contains('lower-button'):

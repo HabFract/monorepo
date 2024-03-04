@@ -91,8 +91,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
             
             // Trigger the Vis object render function only once the SVG is appended to the DOM
             const onlyChild = currentVis.rootData?.data?.children && currentVis.rootData.data?.children.length ==1;
-// console.log('currentVis.rootData :>> ', currentVis.rootData);
-// console.log('withTraversal, depthIndex, breadthIndex :>> ', queryType, withTraversal, depthIndex, breadthIndex, maxBreadth, maxDepth);
+            
             return (
               <> 
                 {!!(withTraversal && depthIndex !== 0) && <UpOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "46vw", top: "14vh"}}  onClick={decrementDepth} />}

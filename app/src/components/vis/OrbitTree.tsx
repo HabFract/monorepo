@@ -4,7 +4,7 @@ import { VisProps, VisCoverage, VisType } from './types';
 import { hierarchy } from "d3-hierarchy";
 import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
 
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import miniDB, { SphereOrbitNodes } from '../../state/jotaiKeyValueStore';
 import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
