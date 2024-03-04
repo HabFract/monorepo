@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { atom, getDefaultStore, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { listSortFilterAtom } from '../../state/listSortFilterAtom';
-import nodeStore, { myStore } from '../../state/jotaiKeyValueStore';
+import nodeStore, { store } from '../../state/jotaiKeyValueStore';
 import './common.css';
 
 import PageHeader from '../PageHeader';
@@ -66,7 +66,7 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereHash }: ListOrbitsProps) 
 
         // NOTE: this is provisionally using the structure { {SPHERE_AH} : { {ORBIT_AH} : {DETAILS} } }
         // and may need to be adapted once WIN records are also cached.
-        myStore.set(nodeStore.setMany, Object.entries(entries));
+        store.set(nodeStore.setMany, Object.entries(entries));
     }
   }, [data]);
   

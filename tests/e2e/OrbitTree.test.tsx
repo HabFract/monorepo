@@ -1,10 +1,10 @@
 import React from 'react';
 import '@testing-library/jest-dom'
 import { expect, describe, test, it } from '@jest/globals';
-
 import { render, waitFor, screen } from '@testing-library/react';
 
 import { renderVis } from '../../app/src/components/vis/helpers';
+
 import OrbitTree from '../../app/src/components/vis/OrbitTree';
 
 import { HIERARCHY_MOCKS } from './mocks/hierarchy-root-only';
@@ -16,6 +16,7 @@ import { SPHERE_ID } from './mocks/spheres';
 import { currentSphere } from '../../app/src/state/currentSphereHierarchyAtom';
 
 const Tree = renderVis(OrbitTree);
+
 
 test('renders a loading state, then an orbit tree vis with a node', async () => {
   const { getByText } = render(

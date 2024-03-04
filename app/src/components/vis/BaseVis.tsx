@@ -9,8 +9,7 @@ import { easeCubic, easePolyIn, easeLinear } from "d3-ease";
 import { TreeLayout } from "d3-hierarchy";
 import { legendColor } from "d3-svg-legend";
 
-import Hammer from "hammerjs";
-import propagating from "propagating-hammerjs";
+// import propagating from "propagating-hammerjs";
 import _ from "lodash";
 
 // import { selectCurrentNodeByMptt } from "features/node/selectors";
@@ -78,7 +77,7 @@ import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Scale } from "../../graphql/generated";
 import { client } from "../../main";
-import db, { mapToCacheObject, myStore } from "../../state/jotaiKeyValueStore";
+import db, { mapToCacheObject, store } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
 
 export interface OrbitNodeDetails {
@@ -1243,10 +1242,10 @@ export default class BaseVisualization implements IVisualization {
   }
 
   async cacheOrbits(orbitEntries: SphereNodeDetailsCache) {
-    myStore.sub(db.setMany, () => {
-      console.log('countAtom value is changed to', myStore.get(db.entries))
+    store.sub(db.setMany, () => {
+      console.log('countAtom value is changed to', store.get(db.entries))
     })
-    myStore.set(db.setMany, Object.entries(orbitEntries))
+    store.set(db.setMany, Object.entries(orbitEntries))
   }
 
   bindEventHandlers(selection) {
@@ -1287,103 +1286,103 @@ export default class BaseVisualization implements IVisualization {
       // );
   }
 
-  bindMobileEventHandlers(selection) {
-    this._manager = propagating(
-      new Hammer.Manager(document.body, { domEvents: true })
-    );
-    // Create a recognizer
-    const singleTap = new Hammer.Tap({ event: "singletap" });
-    const doubleTap = new Hammer.Tap({
-      event: "doubletap",
-      taps: 2,
-      interval: 800,
-    });
-    this._manager.add([doubleTap, singleTap]);
-    doubleTap.recognizeWith(singleTap);
-    singleTap.requireFailure(doubleTap);
-    //----------------------
-    // Mobile device events
-    //----------------------
-    selection.selectAll(".node-subgroup").on("touchstart", (e) => {
-      this._manager.set({ inputTarget: e.target });
-    });
+  // bindMobileEventHandlers(selection) {
+  //   this._manager = propagating(
+  //     new Hammer.Manager(document.body, { domEvents: true })
+  //   );
+  //   // Create a recognizer
+  //   const singleTap = new Hammer.Tap({ event: "singletap" });
+  //   const doubleTap = new Hammer.Tap({
+  //     event: "doubletap",
+  //     taps: 2,
+  //     interval: 800,
+  //   });
+  //   this._manager.add([doubleTap, singleTap]);
+  //   doubleTap.recognizeWith(singleTap);
+  //   singleTap.requireFailure(doubleTap);
+  //   //----------------------
+  //   // Mobile device events
+  //   //----------------------
+  //   selection.selectAll(".node-subgroup").on("touchstart", (e) => {
+  //     this._manager.set({ inputTarget: e.target });
+  //   });
 
-    this._manager.on("doubletap", (ev) => {
-      ev.srcEvent.preventDefault();
-      ev.srcEvent.stopPropagation();
-      // if (!isTouchDevice()) return;
+  //   this._manager.on("doubletap", (ev) => {
+  //     ev.srcEvent.preventDefault();
+  //     ev.srcEvent.stopPropagation();
+  //     // if (!isTouchDevice()) return;
 
-      const target = ev.firstTarget;
-      if (!target || target?.tagName !== "circle") return;
+  //     const target = ev.firstTarget;
+  //     if (!target || target?.tagName !== "circle") return;
 
-      ev.srcEvent.stopPropagation();
+  //     ev.srcEvent.stopPropagation();
 
-      let node = target?.__data__;
-      if (typeof node == "number") {
-        node = ev.target.parentNode?.__data__;
-      }
-      try {
-        this.eventHandlers.rgtClickOrDoubleTap.call(this, ev.srcEvent, node);
-      } catch (error) {
-        console.log("Problem with mobile doubletap: ", error);
-      }
-    });
+  //     let node = target?.__data__;
+  //     if (typeof node == "number") {
+  //       node = ev.target.parentNode?.__data__;
+  //     }
+  //     try {
+  //       this.eventHandlers.rgtClickOrDoubleTap.call(this, ev.srcEvent, node);
+  //     } catch (error) {
+  //       console.log("Problem with mobile doubletap: ", error);
+  //     }
+  //   });
 
-    this._manager.on("singletap", (ev) => {
-      ev.srcEvent.preventDefault();
-      if (
-        // !isTouchDevice() ||
-        ev.srcEvent.timeStamp === this.currentEventTimestamp || // Guard clause for callback firing twice
-        select(`#${this._svgId}`).empty() // Guard clause for wrong vis element
-      )
-        return;
-      this.currentEventTimestamp = ev.srcEvent.timeStamp;
+  //   this._manager.on("singletap", (ev) => {
+  //     ev.srcEvent.preventDefault();
+  //     if (
+  //       // !isTouchDevice() ||
+  //       ev.srcEvent.timeStamp === this.currentEventTimestamp || // Guard clause for callback firing twice
+  //       select(`#${this._svgId}`).empty() // Guard clause for wrong vis element
+  //     )
+  //       return;
+  //     this.currentEventTimestamp = ev.srcEvent.timeStamp;
 
-      let target = ev.target;
-      const node = target?.__data__;
-      if (!target || !node) return;
+  //     let target = ev.target;
+  //     const node = target?.__data__;
+  //     if (!target || !node) return;
 
-      switch (ev?.target?.tagName) {
-        // Delete button is currently the only path
-        case "path":
-          this.eventHandlers.handleDeleteNode.call(this, ev, node.data);
-          break;
-        //@ts-ignore
-        case "rect":
-          if (target.parentNode.classList.contains("tooltip")) return; // Stop label from triggering
-        // Append or prepend are currently the only text
-        case "text":
-          const buttonTransitioning =
-            select(target.parentNode).attr("style") === "opacity: 0";
-          if (buttonTransitioning) return ev.srcEvent.stopPropagation();
-          this.setCurrentHabit(node.data);
+  //     switch (ev?.target?.tagName) {
+  //       // Delete button is currently the only path
+  //       case "path":
+  //         this.eventHandlers.handleDeleteNode.call(this, ev, node.data);
+  //         break;
+  //       //@ts-ignore
+  //       case "rect":
+  //         if (target.parentNode.classList.contains("tooltip")) return; // Stop label from triggering
+  //       // Append or prepend are currently the only text
+  //       case "text":
+  //         const buttonTransitioning =
+  //           select(target.parentNode).attr("style") === "opacity: 0";
+  //         if (buttonTransitioning) return ev.srcEvent.stopPropagation();
+  //         this.setCurrentHabit(node.data);
 
-          // target.textContent == "DIVIDE"
-          //   ? this.eventHandlers.handleAppendNode.call(this)
-          //   : this.eventHandlers.handlePrependNode.call(this);
-          break;
-        default:
-          let parentNodeGroup = _.find(this._enteringNodes._groups[0], (n) => {
-            return n?.__data__?.data?.content == node?.data?.content;
-          });
-          target = parentNodeGroup;
-          try {
-            this.eventHandlers.handleMouseEnter.call(this, ev);
-            this.eventHandlers.handleNodeFocus.call(this, ev.srcEvent, node);
-            if (!this._gLink.attr("transform"))
-              this.eventHandlers.handleNodeZoom.call(
-                this,
-                ev.srcEvent,
-                node,
-                false
-              );
-            break;
-          } catch (error) {
-            console.error(error);
-          }
-      }
-    });
-  }
+  //         // target.textContent == "DIVIDE"
+  //         //   ? this.eventHandlers.handleAppendNode.call(this)
+  //         //   : this.eventHandlers.handlePrependNode.call(this);
+  //         break;
+  //       default:
+  //         let parentNodeGroup = _.find(this._enteringNodes._groups[0], (n) => {
+  //           return n?.__data__?.data?.content == node?.data?.content;
+  //         });
+  //         target = parentNodeGroup;
+  //         try {
+  //           this.eventHandlers.handleMouseEnter.call(this, ev);
+  //           this.eventHandlers.handleNodeFocus.call(this, ev.srcEvent, node);
+  //           if (!this._gLink.attr("transform"))
+  //             this.eventHandlers.handleNodeZoom.call(
+  //               this,
+  //               ev.srcEvent,
+  //               node,
+  //               false
+  //             );
+  //           break;
+  //         } catch (error) {
+  //           console.error(error);
+  //         }
+  //     }
+  //   });
+  // }
 
   bindLegendEventHandler() {
     // let infoCell = document.querySelector(".help-svg");
@@ -1600,8 +1599,8 @@ export default class BaseVisualization implements IVisualization {
       // console.log("this.activeNode", this.activeNode);
       // console.log("this.activeNode.isNewActive", this.isNewActiveNode);
 
-      this._viewConfig.isSmallScreen() &&
-        this.bindMobileEventHandlers(this._enteringNodes);
+      // this._viewConfig.isSmallScreen() &&
+      //   this.bindMobileEventHandlers(this._enteringNodes);
 
       this._canvas.attr(
         "transform",

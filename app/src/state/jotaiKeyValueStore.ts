@@ -4,12 +4,12 @@ import { Orbit } from '../graphql/generated'
 
 const dbAtom = new MiniDb()
 
-export const myStore = createStore()
+export const store = createStore()
 
 const db = atom(dbAtom.setMany);
 
-export const unsub = myStore.sub(db, () => {
-  console.log('countAtom value is changed to', myStore.get(db))
+export const unsub = store.sub(db, () => {
+  console.log('countAtom value is changed to', store.get(db))
 })
 
 export const mapToCacheObject = (orbit: Orbit) => ({

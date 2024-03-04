@@ -122,8 +122,7 @@ export async function sniffHolochainAppCells(
   const dnas: object = (
     appInfo['cell_info']
     );
-  console.log('dnas :>> ', dnas);
-
+    
   const dnaMappings = {[HAPP_DNA_NAME]: dnas[HAPP_DNA_NAME][0]['provisioned']};
   // console.info('Connecting to detected Holochain cells:', dnaMappings)
 

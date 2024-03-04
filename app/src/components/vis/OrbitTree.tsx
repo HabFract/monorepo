@@ -59,7 +59,6 @@ export const OrbitTree: ComponentType<VisProps> = ({
   }
 
   const instantiateVisObject = () => {
-    debugger;
     if (!error && json && !currentOrbitTree) {
       const currentTreeJson = getJsonDerivation(json);
       const hierarchyData = hierarchy(currentTreeJson);
