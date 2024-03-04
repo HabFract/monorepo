@@ -1170,7 +1170,7 @@ export default class BaseVisualization implements IVisualization {
   async cacheOrbits(orbitEntries: Array<[ActionHashB64, OrbitNodeDetails]>) {
     try {
       store.set(miniDb.setMany, orbitEntries)
-
+      this.nodeDetails = Object.entries(orbitEntries);
       console.log('Sphere orbits fetched and cached!')
     } catch (error) {
       console.error('error :>> ', error);
@@ -1455,18 +1455,15 @@ export default class BaseVisualization implements IVisualization {
 
     if (
       this.firstRender() ||
-      this.hasNewHierarchyData() ||
-      this.isNewActiveNode ||
-      this.isCollapsed ||
-      this.isExpanded
+      this.hasNewHierarchyData()
     ) {
       // First render OR New hierarchy needs to be rendered
 
       // Update the current day's rootData
-      if (this.hasNextData()) this.rootData = this._nextRootData;
-      if (this.hasSummedData()) delete this._nextRootData;
-
-      if (!this.activeNode) console.log("Need new active node", {});
+      if (this.hasNextData()) {
+        this.rootData = this._nextRootData;
+        delete this._nextRootData
+      }
 
       if (this.noCanvas()) return;
 

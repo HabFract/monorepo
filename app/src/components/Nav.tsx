@@ -5,7 +5,7 @@ import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
 import { Sphere, SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
 import { DarkThemeToggle } from "flowbite-react";
-import { currentSphere } from "../state/currentSphereHierarchyAtom";
+import { currentOrbitCoords, currentSphere } from "../state/currentSphereHierarchyAtom";
 import { store } from "../state/jotaiKeyValueStore";
 import { extractEdges } from "../graphql/utils";
 import { ActionHashB64 } from "@holochain/client";
@@ -83,6 +83,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
 
     switch (true) {
       case e.key == 'vis':
+        store.set(currentOrbitCoords, {x: 0, y: 0})
         transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})
         break;
 

@@ -1,5 +1,6 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { atom } from "jotai";
+import { OrbitNodeDetails } from "./jotaiKeyValueStore";
 
 export interface SphereHashes {
   entryHash?: EntryHashB64;
@@ -20,6 +21,8 @@ export interface SphereHierarchyBounds {
 export const currentSphere = atom<SphereHashes>({ entryHash: "",  actionHash: "", });
 
 export const currentOrbitCoords = atom<{x: number, y: number}>({ x:0, y:0 });
+export const currentOrbitId = atom<ActionHashB64 | null>(null);
+export const currentOrbitDetails = atom<OrbitNodeDetails | null>(null);
 
 export const currentSphereHierarchyBounds = atom<SphereHierarchyBounds>({});
 

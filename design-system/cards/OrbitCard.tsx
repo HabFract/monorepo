@@ -7,6 +7,8 @@ import { Button } from 'flowbite-react';
 import { EditOutlined, DeleteOutlined, PieChartOutlined } from '@ant-design/icons'; // Import icons
 import { Orbit } from '../../app/src/graphql/generated';
 import OrbitVis from '../vis/OrbitVis';
+import { currentOrbitCoords } from '../../app/src/state/currentSphereHierarchyAtom';
+import { store } from '../../app/src/state/jotaiKeyValueStore';
 
 type OrbitCardProps = {
   orbit: Orbit;
@@ -44,7 +46,8 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runD
               </Button>
             </div>
             <div className="orbit-actions-vis row-c">
-              <Button className="btn btn-primary" size="sm" onClick={() => {transition('Vis', { orbitEh: orbit.eH })}}>
+              <Button className="btn btn-primary" size="sm" onClick={() => {
+        store.set(currentOrbitCoords, {x: 0, y: 0}); transition('Vis', { orbitEh: orbit.eH })}}>
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>
               </Button>

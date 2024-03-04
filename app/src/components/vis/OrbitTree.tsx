@@ -6,8 +6,8 @@ import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../
 
 import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import miniDB, { SphereOrbitNodes } from '../../state/jotaiKeyValueStore';
-import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
+import miniDB, { SphereOrbitNodes, store } from '../../state/jotaiKeyValueStore';
+import { currentOrbitCoords, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
@@ -17,8 +17,6 @@ export const OrbitTree: ComponentType<VisProps> = ({
   canvasHeight,
   canvasWidth,
   margin,
-  breadthIndex,
-  depthIndex,
   render
 }) => {
   // Top level state machine and routing
@@ -34,13 +32,14 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [_, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
+  const {x, y} = store.get(currentOrbitCoords)
 
   // Helper to form the query parameter object
   const getQueryParams = (customDepth?: number): OrbitHierarchyQueryParams => visCoverage == VisCoverage.Complete
     ? { orbitEntryHashB64: params.orbitEh }
     : { levelQuery: { sphereHashB64: params.currentSphereEhB64, orbitLevel: customDepth || 0 } };
   // Helper to determine which part of the returned query data should be used in the Vis object
-  const getJsonDerivation = (json: string) => visCoverage == VisCoverage.Complete ? JSON.parse(json) : JSON.parse(json)[breadthIndex]
+  const getJsonDerivation = (json: string) => visCoverage == VisCoverage.Complete ? JSON.parse(json) : JSON.parse(json)[x]
 
   // GQL Query hook, parsed JSON state, and Vis object state
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery()
@@ -54,7 +53,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
 
   const fetchHierarchyData = () => {
     if (error || isModalOpen) return;
-    const query = depthBounds ? { ...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereEhB64] as any).minDepth } : getQueryParams(depthIndex)
+    const query = depthBounds ? { ...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereEhB64] as any).minDepth } : getQueryParams(y)
     getHierarchy({ variables: { params: { ...query } } })
   }
 
@@ -96,7 +95,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
     setModalErrorMsg(parsedGuestError[1] || "There was an error")
   }, [error])
 
-  useEffect(fetchHierarchyData, [depthIndex])
+  useEffect(fetchHierarchyData, [y])
 
   useEffect(() => {
     if (!error && typeof data?.getOrbitHierarchy === 'string') {
@@ -120,13 +119,10 @@ export const OrbitTree: ComponentType<VisProps> = ({
       // -- set the _nextRootData property of the vis, 
       // -- trigger a re-render
       currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string));
-      
-      currentOrbitTree._nextRootData._translationCoords = [breadthIndex, depthIndex, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1];
-      
-
+      currentOrbitTree._nextRootData._translationCoords = [x, y, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1];
       currentOrbitTree.render();
     }
-  }, [json, breadthIndex])
+  }, [json, x, y])
 
   return (
     <>
@@ -169,7 +165,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
           </Modal.Body>
         </Modal>
       )}
-      {!error && json && currentOrbitTree && render(currentOrbitTree, visCoverage)}
+      {!error && json && currentOrbitTree && render(currentOrbitTree, visCoverage, x, y, hierarchy(getJsonDerivation(json)))}
     </>
   )
 };

@@ -1,15 +1,19 @@
 import { useState } from 'react';
-import { HierarchyBounds, currentOrbitCoords } from '../state/currentSphereHierarchyAtom';
+import { HierarchyBounds, currentOrbitCoords, currentOrbitDetails } from '../state/currentSphereHierarchyAtom';
 import { EntryHashB64 } from '@holochain/client';
 import { store } from '../state/jotaiKeyValueStore';
 
 export const useNodeTraversal = (hierarchyBounds: HierarchyBounds, selectedSphereHash: EntryHashB64) => {
   const x = store.get(currentOrbitCoords).x;
   const y = store.get(currentOrbitCoords).y;
-  const test = store.sub(currentOrbitCoords, () => { console.log(store.get(currentOrbitCoords)); })
+  // const test = store.sub(currentOrbitCoords, () => { console.log(store.get(currentOrbitCoords)); })
 
   const [depthIndex, setDepthIndex] = useState<number>(x);
   const [breadthIndex, setBreadthIndex] = useState<number>(y);
+
+  const currentOrbitId = store.get(currentOrbitDetails);
+  // console.log('currentOrbitId :>> ', currentOrbitId);
+  // const currentOrbitDetails = store.get(currentOrbitDetails);
 
   store.get(currentOrbitCoords)
 
