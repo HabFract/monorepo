@@ -576,11 +576,7 @@ export default class BaseVisualization implements IVisualization {
       const {width, height} = newPath._groups[0][0].getBoundingClientRect();
       const xTranslation = isMiddleElement ? 0 : (indexToBreadthRatio > 0.5 ? -1 : 1)*(width * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number / 2)); 
       
-      console.log('height *  :>> ', height * this._viewConfig.scale);
-      console.log('height *  :>> ', this._viewConfig.margin);
       const yTranslation = (height) * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number)/ 2; 
-      // const a = pathWidth?.getBoundingClientRect();
-      console.log('pathWidth :>> ', width, height, xTranslation);
       select(".canvas").selectAll("g.links")
         .attr("transform", `translate(${xTranslation},${-yTranslation})`)
     } else {
@@ -600,6 +596,8 @@ export default class BaseVisualization implements IVisualization {
           return [dx == 0 ? TWO_CHILDREN_LEFT : TWO_CHILDREN_RIGHT, 'path-parent-two-children-' + dx]; 
         } else if (breadth == 3) {
           return [THREE_CHILDREN, 'path-parent-three-children']; 
+        } else {
+          return [false, 'none'];
         }
       }
     }
@@ -1172,6 +1170,7 @@ export default class BaseVisualization implements IVisualization {
   async cacheOrbits(orbitEntries: Array<[ActionHashB64, OrbitNodeDetails]>) {
     try {
       store.set(miniDb.setMany, orbitEntries)
+
       console.log('Sphere orbits fetched and cached!')
     } catch (error) {
       console.error('error :>> ', error);
@@ -1192,7 +1191,6 @@ export default class BaseVisualization implements IVisualization {
             e.target.classList.toggle('checked');
             e.target.closest('.the-node').firstChild.classList.toggle('checked');
             this.refetchOrbits()
-            this.cacheOrbits()
             this.render();
             break;
         
@@ -1481,8 +1479,6 @@ export default class BaseVisualization implements IVisualization {
       }
       const translationNeeded = !!this.rootData._translationCoords;
       this.clearCanvas(translationNeeded);
-      console.log('debug this.rootData._translationCoords :>> ', this.rootData._translationCoords);
-      console.log('debug this.nextrootData._translationCoords :>> ', this?._nextRootData?._translationCoords);
       translationNeeded && this.translateLinks(this.rootData._translationCoords);
 
       // _p("Cleared canvas :>> ");

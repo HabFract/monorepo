@@ -23,11 +23,11 @@ export interface OrbitNodeDetails {
 }
 
 export type SphereOrbitNodes = {
-  [key: EntryHashB64]: OrbitNodeDetails
+  [key: ActionHashB64]: OrbitNodeDetails
 }
 
 export type SphereNodeDetailsCache = {
-  [key: EntryHashB64]: SphereOrbitNodes
+  [key: ActionHashB64]: SphereOrbitNodes
 }
 
 export const mapToCacheObject = (orbit: Orbit) : OrbitNodeDetails => ({

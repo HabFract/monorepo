@@ -12,6 +12,7 @@ import { WithVisCanvasProps } from '../types';
 import { EntryHashB64 } from '@holochain/client';
 import { Modal } from 'flowbite-react';
 import { CreateOrbit } from '../../forms';
+import { store } from '../../../state/jotaiKeyValueStore';
 
 const defaultMargins: Margins = {
   top: -1100,
@@ -89,6 +90,8 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
               currentVis?.render();
             }
             
+            const a = store.get(currentSphereHierarchyBounds);
+            console.log('a :>> ', a);
             // Trigger the Vis object render function only once the SVG is appended to the DOM
             const onlyChild = currentVis.rootData?.data?.children && currentVis.rootData.data?.children.length ==1;
             
@@ -96,10 +99,10 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
               <> 
                 {!!(withTraversal && depthIndex !== 0) && <UpOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "46vw", top: "14vh"}}  onClick={decrementDepth} />}
                 {!!(withTraversal && breadthIndex !== 0) && <LeftOutlined data-testid={"traversal-button-left"} className='fixed left-1 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "29vh"}} onClick={decrementBreadth} />}
+                {!!(withTraversal && maxDepth && depthIndex < maxDepth && !onlyChild) && <DownOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{left: "12vw", bottom: "45vh", transform: "rotate(45deg)"}}  onClick={incrementDepth} />}
                 
                 {!!(withTraversal && maxBreadth && breadthIndex < maxBreadth) && <RightOutlined data-testid={"traversal-button-right"} className='fixed right-1 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "29vh"}}  onClick={incrementBreadth} />}
                 {!!(withTraversal && maxDepth && depthIndex < maxDepth && onlyChild) && <DownOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "46vw", bottom: "43vh"}}  onClick={incrementDepth} />}
-                {!!(withTraversal && maxDepth && depthIndex < maxDepth && !onlyChild) && <DownOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{left: "12vw", bottom: "45vh", transform: "rotate(45deg)"}}  onClick={incrementDepth} />}
               {/* {!!(withTraversal && maxDepth && depthIndex < maxDepth && !onlyChild) && <DownOutlined data-testid={"traversal-button-down-right"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "12vw", bottom: "45vh", transform: "rotate(-45deg)"}}  onClick={() => {console.log('maxBreadth, setBreadthIndex :>> ', currentVis.rootData.data.children.length-1, setBreadthIndex); incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length-1);}} />} */}
 
                 <Modal show={isModalOpen} onClose={() => {setIsModalOpen(false)}}>

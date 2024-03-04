@@ -1,34 +1,47 @@
 import { useState } from 'react';
-import { HierarchyBounds } from '../state/currentSphereHierarchyAtom';
+import { HierarchyBounds, currentOrbitCoords } from '../state/currentSphereHierarchyAtom';
 import { EntryHashB64 } from '@holochain/client';
+import { store } from '../state/jotaiKeyValueStore';
 
 export const useNodeTraversal = (hierarchyBounds: HierarchyBounds, selectedSphereHash: EntryHashB64) => {
-  const [depthIndex, setDepthIndex] = useState<number>(0);
-  const [breadthIndex, setBreadthIndex] = useState<number>(0);
+  const x = store.get(currentOrbitCoords).x;
+  const y = store.get(currentOrbitCoords).y;
+  const test = store.sub(currentOrbitCoords, () => { console.log(store.get(currentOrbitCoords)); })
+
+  const [depthIndex, setDepthIndex] = useState<number>(x);
+  const [breadthIndex, setBreadthIndex] = useState<number>(y);
+
+  store.get(currentOrbitCoords)
 
   const incrementBreadth = () => {
     if (hierarchyBounds) {
-      const newIndex = (breadthIndex + 1) <= hierarchyBounds.maxBreadth ? breadthIndex + 1 : breadthIndex;
-      setBreadthIndex(newIndex);
+      const newVal = (breadthIndex + 1) <= hierarchyBounds.maxBreadth ? breadthIndex + 1 : breadthIndex;
+      setBreadthIndex(newVal);
+      store.set(currentOrbitCoords, {x: newVal, y })
     }
   };
 
   const decrementBreadth = () => {
-    setBreadthIndex(breadthIndex > 0 ? breadthIndex - 1 : 0);
+    const newVal = breadthIndex > 0 ? breadthIndex - 1 : 0;
+    setBreadthIndex(newVal);
+    store.set(currentOrbitCoords, {x: newVal, y })
   };
 
   const incrementDepth = () => {
     if (hierarchyBounds) {
-      const newIndex = (depthIndex + 1) <= hierarchyBounds.maxDepth ? depthIndex + 1 : depthIndex;
-      setDepthIndex(newIndex);
+      const newVal = (depthIndex + 1) <= hierarchyBounds.maxDepth ? depthIndex + 1 : depthIndex;
+      setDepthIndex(newVal);
+      setBreadthIndex(0);
+      store.set(currentOrbitCoords, {x: 0, y: newVal })
     }
   };
 
   const decrementDepth = () => {
-    setDepthIndex(depthIndex > 0 ? depthIndex - 1 : 0);
-    setBreadthIndex(0);
+    const newVal = depthIndex > 0 ? depthIndex - 1 : 0
+    setDepthIndex(newVal);
+    store.set(currentOrbitCoords, {x, y: newVal })
   };
-  console.log('hierarchyBounds :>> ', hierarchyBounds);
+  
   const maxBreadth = hierarchyBounds?.maxBreadth;
   const maxDepth = hierarchyBounds?.maxDepth;
   
