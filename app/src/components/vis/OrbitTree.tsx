@@ -98,6 +98,11 @@ export const OrbitTree: ComponentType<VisProps> = ({
   useEffect(fetchHierarchyData, [y])
 
   useEffect(() => {
+    const cacheEntries = nodeDetailsCache[params?.currentSphereAhB64] as SphereOrbitNodes;
+    const byStartTime = (a, b) => {
+      if(!cacheEntries) return 0;
+      return cacheEntries[a.content].startTime - cacheEntries[b.content].startTime
+    }
     if (!error && typeof data?.getOrbitHierarchy === 'string') {
       let parsedData = JSON.parse(data.getOrbitHierarchy);
       // Continue parsing if the result is still a string, this undoes more than one level of JSONification
@@ -107,7 +112,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
       // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
       setBreadthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.Complete ? 100 : parsedData.result.level_trees.length - 1])
       // Depending on query type, set the state of the parsed JSON to the relevant part of the payload
-      setJson(JSON.stringify(visCoverage == VisCoverage.Complete ? parsedData.result : parsedData.result.level_trees));
+      setJson(JSON.stringify(visCoverage == VisCoverage.Complete ? parsedData.result : parsedData.result.level_trees.sort(byStartTime)));
     }
   }, [data])
 
