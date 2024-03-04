@@ -8,7 +8,6 @@ const moduleNameMappers = esModules.reduce((acc, pkg) => {
 }, {});
 
 module.exports = {
-  preset: 'ts-jest/presets/js-with-ts',
   roots: ['<rootDir>/tests'],
   testEnvironment: './tests/fixJsDomEnv.ts',
 
@@ -20,7 +19,7 @@ module.exports = {
     ...moduleNameMappers
   },
   transformIgnorePatterns: [
-    'node_modules/(?!d3-*/)',
+    `node_modules/(?!(${esModules.join("|")}))`,
   ],
   transform: {
     "\\.(gql|graphql)$": "jest-transform-graphql",
