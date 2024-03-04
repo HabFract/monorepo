@@ -23,7 +23,7 @@ const WithCacheStore = (component: React.ReactNode) => {
   </Provider>)
 };
 
-const client = (async() => {
+export const client = (async() => {
   const client = await connect({} as ClientOptions);
 
   const root = ReactDOM.createRoot(document.getElementById('root')!);

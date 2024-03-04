@@ -14,7 +14,7 @@ test('renders an orbit list', async () => {
   
   const { getByText } = render(
     <MockedProvider mocks={ORBITS_MOCKS} addTypename={false}>
-      {WithCurrentSphereMockedAtom( <OrbitList sphereHash={"SGVhbHRoMQ==e"} />)}
+      {WithCurrentSphereMockedAtom( <OrbitList sphereAh={"SGVhbHRoMQ==e"} />)}
     </MockedProvider>
   );
   await waitFor(() => {

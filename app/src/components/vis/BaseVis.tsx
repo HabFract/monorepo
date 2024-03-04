@@ -21,7 +21,7 @@ import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
 import { client } from "../../main";
-import store, { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes, mapToCacheObject } from "../../state/jotaiKeyValueStore";
+import miniDb, { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
 
 export default class BaseVisualization implements IVisualization {
@@ -1155,7 +1155,8 @@ export default class BaseVisualization implements IVisualization {
     const variables = { sphereEntryHashB64: this.sphereEh };
     let data;
     try {
-      data = await client.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only'} )
+      const gql = await client;
+      data = await gql.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only'} )
       if(data?.data?.orbits) {
         const orbits = (extractEdges(data.data.orbits) as Orbit[]);
         const indexedOrbitData : Array<[ActionHashB64, OrbitNodeDetails]> = Object.entries(orbits.map(mapToCacheObject))
@@ -1168,8 +1169,12 @@ export default class BaseVisualization implements IVisualization {
   }
 
   async cacheOrbits(orbitEntries: Array<[ActionHashB64, OrbitNodeDetails]>) {
-    store.set(miniDb.setMany, Object.fromEntries(orbitEntries) as any)
-    console.log('Sphere orbits fetched and cached!')
+    try {
+      store.set(miniDb.setMany, orbitEntries)
+      console.log('Sphere orbits fetched and cached!')
+    } catch (error) {
+      console.error('error :>> ', error);
+    }
   }
 
   bindEventHandlers(selection) {

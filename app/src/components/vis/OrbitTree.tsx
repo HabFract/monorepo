@@ -1,12 +1,12 @@
 import React, { ComponentType, useEffect, useState } from 'react';
-import BaseVisualization, { SphereOrbitNodes } from "./BaseVis";
+import BaseVisualization from "./BaseVis";
 import { VisProps, VisCoverage, VisType } from './types';
 import { hierarchy } from "d3-hierarchy";
 import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import miniDB from '../../state/jotaiKeyValueStore';
+import miniDB, { SphereOrbitNodes } from '../../state/jotaiKeyValueStore';
 import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 
 import { Modal } from 'flowbite-react';

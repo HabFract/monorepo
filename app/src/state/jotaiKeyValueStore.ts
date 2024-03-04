@@ -29,6 +29,7 @@ export type SphereOrbitNodes = {
 export type SphereNodeDetailsCache = {
   [key: EntryHashB64]: SphereOrbitNodes
 }
+
 export const mapToCacheObject = (orbit: Orbit) : OrbitNodeDetails => ({
   id: orbit.id,
   eH: orbit.eH,
