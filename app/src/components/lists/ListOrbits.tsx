@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { useAtom } from 'jotai';
+import { atom, getDefaultStore, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { listSortFilterAtom } from '../../state/listSortFilterAtom';
+import miniDB, { store } from '../../state/jotaiKeyValueStore';
 import './common.css';
 
 import PageHeader from '../PageHeader';
@@ -8,78 +9,38 @@ import ListSortFilter from './ListSortFilter';
 
 import OrbitCard from '../../../../design-system/cards/OrbitCard';
 import SphereCard from '../../../../design-system/cards/SphereCard';
-import { Orbit, useDeleteOrbitMutation, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSphereLazyQuery, useGetSphereQuery } from '../../graphql/generated';
-import { extractEdges } from '../../graphql/utils';
+import { Orbit, useDeleteOrbitMutation } from '../../graphql/generated';
 import { useStateTransition } from '../../hooks/useStateTransition';
+import { useFetchAndCacheSphereOrbits } from '../../hooks/useFetchAndCacheSphereOrbits';
+import { useSortedOrbits } from '../../hooks/useSortedOrbits';
+import { ActionHashB64 } from '@holochain/client';
 
 interface ListOrbitsProps {
-  sphereHash?: string; // Optional prop to filter orbits by sphere
+  sphereAh?: ActionHashB64; // Optional prop to filter orbits by sphere
 }
 
-const ListOrbits: React.FC = ({ sphereHash }: ListOrbitsProps) => {
-  const [state, transition] = useStateTransition(); // Top level state machine and routing
+const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereAh }: ListOrbitsProps) => {
+  const [_state, transition] = useStateTransition(); // Top level state machine and routing
   
-  const { loading: loadingSphere, data: dataSphere } = useGetSphereQuery({
-    variables: { id: sphereHash as string },
-    skip: !sphereHash
-  });
-  const sphereEh = dataSphere?.sphere?.eH;
-
+  // TODO: make a modal on this list page, which is triggered before the following hook. This might be a repeated functionality on different pages so much be better to make a HOC.
   const [runDelete, { loading: loadingDelete, error: errorDelete, data: dataDelete }] = useDeleteOrbitMutation({
     refetchQueries: [
       'getOrbits',
     ],
   });
-  
-  const [getOrbits, { loading: loadingOrbits, error: errorOrbits, data }] = useGetOrbitsLazyQuery({
-    fetchPolicy: 'network-only',
-    variables: { sphereEntryHashB64: sphereEh },
-  });
-  useEffect(() => {
-    if (sphereEh && dataSphere) {
-      getOrbits();
-    }
-  }, [dataSphere, loadingSphere]);
-  const [listSortFilter] = useAtom(listSortFilterAtom);
-  
-  const scaleValues = { Sub: 1, Atom: 2, Astro: 3 };
-  
-  if (loadingOrbits || loadingSphere) return <p>Loading...</p>;
-  if (errorOrbits) return <p>Error : {errorOrbits.message}</p>;
-  if(!data?.orbits) return <></>;
-  
-  const orbits = extractEdges(data.orbits);
-  
-  const sortOrbits = (a: Orbit, b: Orbit) => {
-    let propertyA;
-    let propertyB;
 
-    // If the sortCriteria is 'scale', use the scaleValues for comparison
-    if (listSortFilter.sortCriteria === 'name') {
-      propertyA = a ? a[listSortFilter.sortCriteria as keyof Orbit] : 0
-      propertyB = b ? b[listSortFilter.sortCriteria as keyof Orbit] : 0
-    } else {
-      propertyA = a![listSortFilter.sortCriteria as any];
-      propertyB = b![listSortFilter.sortCriteria as any];
-      propertyA = scaleValues[propertyA] || 0; // Assign a default value if propertyA is undefined
-      propertyB = scaleValues[propertyB] || 0; // Assign a default value if propertyB is undefined
-    }
+  const { loading, error, data } = useFetchAndCacheSphereOrbits({sphereAh});
+  const sortedOrbits : Orbit[] = useSortedOrbits(data?.orbits);
 
-    if (listSortFilter.sortOrder === 'lowestToGreatest') {
-      return propertyA < propertyB ? -1 : propertyA > propertyB ? 1 : 0;
-    } else {
-      return propertyA > propertyB ? -1 : propertyA < propertyB ? 1 : 0;
-    }
-  };
-
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
   return (
     <div className='layout orbits'>
-      <PageHeader title="Orbit List" />
+      <PageHeader title="Orbits Breakdown " />
       <ListSortFilter label={'for the Sphere:'} />
-      {dataSphere && <SphereCard sphere={dataSphere.sphere} isHeader={true} transition={transition} orbitScales={orbits.map((orbit: Orbit) => orbit?.scale)} />}
+      {data?.sphere && <SphereCard sphere={data.sphere} isHeader={true} transition={transition} orbitScales={data.orbits.map((orbit: Orbit) => orbit?.scale)} />}
       <div className="orbits-list">
-        {orbits.sort(sortOrbits)
-          .map((orbit: Orbit) => <OrbitCard key={orbit.id} sphereEh={sphereEh} transition={transition} orbit={orbit} runDelete={() => runDelete({variables: {id: orbit.id}})}/>)}
+        {sortedOrbits.map((orbit: Orbit) => <OrbitCard key={orbit.id} sphereEh={data!.sphere.eH} transition={transition} orbit={orbit} runDelete={() => runDelete({variables: {id: orbit.id}})}/>)}
       </div>
     </div>
   );

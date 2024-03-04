@@ -1,9 +1,9 @@
-import { ReactNode } from "react";
 import { CreateProfile, CreateSphere, CreateOrbit } from "./components/forms";
 import { ListOrbits, ListSpheres } from "./components/lists";
-import { withVisCanvas } from "./components/vis/HOC/withVisCanvas";
+
 import OrbitTree from "./components/vis/OrbitTree";
-import { StateTransitions } from "./stateMachine";
+import { renderVis } from "./components/vis/helpers";
+import { StateTransitions } from "./state/stateMachine";
 
 export type AppState = // Currently just for routing in the state machine
   | 'Boot'
@@ -34,15 +34,15 @@ export const initialState: AppStateStore = { // Home route
 
 export const routes: Routes = {
   Boot: <p>Loading</p>,
-  Vis: (() : ReactNode => (withVisCanvas(OrbitTree)))(),
+  Vis: renderVis(OrbitTree),
   Home: <p>Welcome Home</p>,
   Onboarding1: <CreateProfile editMode={false} />,
-  Onboarding2: <CreateSphere />,
+  Onboarding2: <CreateSphere editMode={false} />,
   Onboarding3: <CreateProfile editMode={false} />,
   Onboarding4: <CreateProfile editMode={false} />,
-  CreateSphere: <CreateSphere />,
+  CreateSphere: <CreateSphere editMode={false} />,
   ListSpheres: <ListSpheres />,
-  CreateOrbit: <CreateOrbit />,
+  CreateOrbit: <CreateOrbit editMode={false} inModal={false} sphereEh="" parentOrbitEh="" />,
   ListOrbits: <ListOrbits />,
 };
 
@@ -57,9 +57,9 @@ export const AppTransitions: StateTransitions<AppState> = {
   Onboarding4: ['Onboarding3', 'Home'],
 
   Home: [...forms, ...lists, 'Vis'],
-  Vis: ['Home', ...forms, ...lists],
+  Vis: ['Home', ...forms, ...lists, 'Vis'],
   CreateSphere: ['Home', ...lists, ...forms, 'Vis'],
   ListSpheres: ['Home', ...lists, ...forms, 'Vis'],
   CreateOrbit: ['Home', ...lists, ...forms, 'Vis'],
   ListOrbits: ['Home', ...lists, ...forms,, 'Vis'],
-  }
+}

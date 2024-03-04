@@ -1,6 +1,6 @@
 .form-container {
   @apply py-2 px-4 text-off-white relative bg-gradient-to-l to-transparent from-secondary-transparent;
-  min-height: 100%;
+  min-height: 100vh;
 }
 
 .form-container h2 {
@@ -147,7 +147,7 @@ span.reqd {
 @media screen and (min-width: 420px) {
   form {
     gap: 1.25rem;
-    @apply py-4 h-8;
+    @apply py-4;
   }
   .field {
       flex-wrap: nowrap;

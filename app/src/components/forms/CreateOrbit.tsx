@@ -7,13 +7,14 @@ import { Checkbox, Flex } from 'antd';
 import DateInput from './input/DatePicker';
 import { Button, TextInput, Label, Select, Textarea } from 'flowbite-react';
 
-import { Frequency, Orbit, OrbitCreateUpdateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
+import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { CustomErrorLabel } from './CreateSphere';
 import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { currentSphere } from '../../state/currentSphere';
+import { currentSphere } from '../../state/currentSphereHierarchyAtom';
 import { useAtom } from 'jotai';
+import { AppState } from '../../routes';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -30,12 +31,7 @@ const OrbitValidationSchema = Yup.object().shape({
   parentHash: Yup.string(),
   archival: Yup.boolean(),
 });
-interface CreateOrbitProps {
-  editMode: boolean;
-  orbitToEditId?: ActionHashB64;
-  sphereEh: string; // Link to a sphere
-  parentOrbitEh: string | undefined; // Link to a parent Orbit to create hierarchies
-}
+
 const OrbitFetcher = ({orbitToEditId}) => {
   const { setValues } = useFormikContext();
 
@@ -55,25 +51,44 @@ const OrbitFetcher = ({orbitToEditId}) => {
   return null;
 };
 
-const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEditId, sphereEh, parentOrbitEh }: CreateOrbitProps) => {
-  const [state, transition] = useStateTransition(); // Top level state machine and routing
-  const [selectedSphere, setSelectedSphere] = useAtom(currentSphere);
+interface CreateOrbitProps {
+  editMode: boolean;
+  inModal: boolean;
+  onCreateSuccess?: Function;
+  orbitToEditId?: ActionHashB64;
+  sphereEh: string; // Link to a sphere
+  parentOrbitEh: string | undefined; // Link to a parent Orbit to create hierarchies
+}
+
+const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, parentOrbitEh, onCreateSuccess }: CreateOrbitProps) => {
+  const [_state, transition] = useStateTransition(); // Top level state machine and routing
+  const [selectedSphere, _setSelectedSphere] = useAtom(currentSphere);
+
+  // Used to dictate onward routing
+  const originPage : AppState = !!parentOrbitEh ? 'Vis' : 'ListOrbits';
 
   const [addOrbit] = useCreateOrbitMutation({
-    refetchQueries: [
-      'getOrbits',
-    ]
+    refetchQueries: () => [
+      // {
+      //   query: GetOrbitsDocument,
+      // },
+      {
+        query: GetOrbitHierarchyDocument,
+        variables: { 
+          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 0 } },
+        },
+      }
+    ],
   });
   const [updateOrbit] = useUpdateOrbitMutation({
     refetchQueries: [
       'getOrbits',
     ],
-  }
-  );
+  });
 
   const { data: orbits, loading, error } = useGetOrbitsQuery({ variables: { sphereEntryHashB64: sphereEh } });
 
-  const [orbitValues, _] = useState<OrbitCreateUpdateParams & any>({
+  const [orbitValues, _] = useState<OrbitCreateParams & any>({
     name: '',
     description: '',
     startTime: DateTime.now().ts,
@@ -81,11 +96,11 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
     frequency: Frequency.Day,
     scale: Scale.Astro,
     archival: false,
-    parentHash: ''
+    parentHash: parentOrbitEh ||''
   });
   return (
     <div className="form-container">
-      <h2 className="form-title">{editMode ? "Update" : "Create"} Orbit</h2>
+      {!inModal && <h2 className="form-title">{editMode ? "Update" : "Create"} Orbit</h2>}
       <Formik
         initialValues={orbitValues}
         validationSchema={OrbitValidationSchema}
@@ -97,21 +112,24 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
               ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
               : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
             setSubmitting(false);
-
-            transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
+            if(typeof onCreateSuccess !== 'undefined') {
+              onCreateSuccess!.call(this)
+            }
+            originPage == 'Vis' ? transition('Vis', { currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash }) : transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
           } catch (error) {
             console.error(error);
           }
         }}
         >
-        {({ values, errors, touched }) => (
+        {({ values, errors, touched, setFieldTouched, handleChange }) => (
           <Form noValidate={true}>
             {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
             <div className="field">
               <Label htmlFor='name'>Name: <span className="reqd">*</span></Label>
 
               <div className="flex flex-col gap-2">
-                <Field as={TextInput} color={"default"} sizing="lg" autoComplete={'off'} type="text" name="name" id="name" required />
+                <Field as={TextInput} color={"default"} sizing="lg" autoComplete={'off'} type="text" name="name" id="name" required
+                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }} />
                 {CustomErrorLabel('name', errors, touched)}
               </div>
             </div>
@@ -119,13 +137,14 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
             <div className="field">
               <Label htmlFor='description'>Description:</Label>
               <div className="flex flex-col gap-2">
-                <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" id="description" />
+                <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" id="description"
+                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }} />
                 {CustomErrorLabel('description', errors, touched)}
               </div>
             </div>
 
 
-            <div className="field">
+            {!parentOrbitEh && <div className="field">
               <Label htmlFor='parentHash'>Parent Orbit: <span className="reqd">*</span></Label>
 
               <div className="flex flex-col gap-2">
@@ -146,7 +165,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
               </Field>
                 {CustomErrorLabel('parentHash', errors, touched)}
               </div>
-            </div>
+            </div>}
 
             <div className="field">
               <Label htmlFor='frequency'>Frequency: <span className="reqd">*</span>
@@ -173,17 +192,22 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
               <Label htmlFor='scale'>Scale: <span className="reqd">*</span></Label>
               <div className="flex flex-col gap-2">
                 <Field name="scale" >
-                  {({ field }) => (
+                  {({ field }) => {
+                    const cannotBeAstro = values.parentHash !== '' && values.parentHash !== 'root';
+                    return (
                     <Select
                       {...field}
                       color={errors.scale && touched.scale ? "invalid" : "default"}
                     >
-                      {Object.values(Scale).map((scale, i) =>
-                        <option key={i} value={scale}>{scale}</option>
+                      {Object.values(Scale).sort((a: any, b: any) => a - b).map((scale, i) => {
+                        return cannotBeAstro && scale == 'Astro'
+                          ? null
+                          : <option key={i} value={scale}>{scale}</option>
+                        }
                       )
                       }
                     </Select>
-                  )}
+                  )}}
                 </Field>
                 {CustomErrorLabel('scale', errors, touched)}
               </div>
@@ -230,7 +254,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, orbitToEdit
               </div>
             </Flex>
 
-            <Button type="submit" disabled={!!Object.values(errors).length || (Object.values(touched).filter(value => value).length < 1)} className={editMode ? "btn-warn" : "btn-primary"}>{editMode ? "Update" : "Create"}</Button>
+            <Button type="submit" disabled={!!Object.values(errors).length || !!(Object.values(touched).filter(value => value).length < 1)} className={editMode ? "btn-warn" : "btn-primary"}>{editMode ? "Update" : "Create"}</Button>
           </Form>
         )}
       </Formik>

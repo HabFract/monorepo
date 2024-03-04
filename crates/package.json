@@ -3,21 +3,20 @@
   "private": true,
   "scripts": {
     "start": "npm run launch:happ",
+    "launch:happ": "npm run start:precheck; dotenv npm run start:prod",
 
     "build": "npm run build:happ && hc web-app pack workdir",
     "build:happ": "npm run build:dnas && hc app pack ./workdir",
     "build:dnas": "npm run build:zomes && hc dna pack ./dnas/habits/workdir",
     "build:zomes": "CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown",
+    
+    "start:precheck": "npm run clean:sandbox && npm run start:local-services",
+    "start:local-services": "hc run-local-services --bootstrap-port $BOOTSTRAP_PORT --signal-port $SIGNAL_PORT",
+    "start:electron": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc-spin -n $AGENTS ./workdir/habit_fract.happ --ui-path ../app/dist --app-id habit_fract --bootstrap-url http://127.0.0.1:$BOOTSTRAP_PORT --signaling-url ws://127.0.0.1:$SIGNAL_PORT",
 
-    "launch:happ": "npm run start:precheck; dotenv -- concurrently npm:start:happ",
-    "start:happ": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc launch --piped -n $AGENTS ./workdir/habit_fract.happ --ui-path ../app/dist network  --bootstrap `cat .bootstrap-path` webrtc `cat .signal-path`",
-
-    "start:precheck": "npm run start:check-local-services; npm run clean:sandbox",
-    "start:check-local-services": "test ! -f .local-services-pid && npm run start:local-services",
-    "start:local-services": "hc run-local-services --bootstrap-address-path .bootstrap-path --signal-address-path .signal-path & echo $! > .local-services-pid && sleep 5",
-    "stop:local-services": "kill `cat .local-services-pid`; rm .local-services-pid; rm .bootstrap-path; rm .signal-path",
-
-    "start:holochain-single": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc s --piped -f=$VITE_ADMIN_PORT generate ./workdir/habit_fract.happ --run $VITE_APP_PORT -a habit_fract network --bootstrap `cat .bootstrap-path` webrtc `cat .signal-path`",
+    "generate:dev": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc s --piped -f $VITE_ADMIN_PORT generate workdir/habit_fract.happ -a habit_fract network --bootstrap http://127.0.0.1:$BOOTSTRAP_PORT webrtc ws://127.0.0.1:$SIGNAL_PORT",
+    "start:dev": "dotenv concurrently -- \"npm run generate:dev; RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc s --piped -f $VITE_ADMIN_PORT run -l -p $VITE_APP_PORT\" \"holochain-playground\"",
+    "start:prod": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc launch --piped -n $AGENTS workdir/habit_fract.happ --ui-path ../app/dist network --bootstrap http://127.0.0.1:$BOOTSTRAP_PORT webrtc ws://127.0.0.1:$SIGNAL_PORT",
 
     "clean": "npm run clean:sandbox; npm run clean:build && npm run clean:modules",
     "clean:happ": "rm workdir/habit_fract.happ; rm workdir/habit_fract.webhapp",

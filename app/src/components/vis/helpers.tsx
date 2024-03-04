@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {
   positiveCol,
   negativeCol,
@@ -5,6 +7,11 @@ import {
   neutralCol,
   noNodeCol,
 } from "./constants";
+
+// Helper function to return a ReactNode that is a combination of the Vis component, wrapped by the withCanvas higher order component, contained by a mounting div
+export const renderVis = (visComponent: React.ComponentType<VisProps>) : ReactNode => <>
+  <div id="vis-root" className="h-full"></div>{(withVisCanvas(visComponent))}
+</>
 
 export const isTouchDevice = () => {
   return (
@@ -33,9 +40,11 @@ export const debounce = function (func, delay) {
 };
 
 
-import { select } from "d3";
+import { select } from "d3-selection";
 // import { selectInUnpersisted } from "features/habitDate/selectors";
-import { ViewConfig, VisType, ZoomConfig } from "./types";
+import { ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
+import { ReactNode } from "react";
+import { withVisCanvas } from "./HOC/withVisCanvas";
 
 // General helpers
 
@@ -78,10 +87,7 @@ export const updateVisRootData = (
   visObject,
   currentHierarchy,
 ) => {
-  debugger;
   const visHasRenders = typeof visObject == 'object' && !visObject.firstRender();
-  console.log('visHasRenders :>> ', visHasRenders);
-  debugger;
   // Check if the hierarchy in the store is a new one (a new tree needs rendering)
   // either because of a different node set/relationships
   // or because node values changed
@@ -102,7 +108,7 @@ export const updateVisRootData = (
 
 export const getInitialXTranslate = ({ levelsWide, defaultView }) => {
   const [_x, _y, w, _h] = defaultView.split` `;
-  return w / levelsWide / 1.5;
+  return w / levelsWide / 1.5 ;
 };
 
 export const getInitialYTranslate = (
@@ -112,7 +118,7 @@ export const getInitialYTranslate = (
   const [_x, _y, _w, h] = defaultView.split` `;
   switch (type) {
     default:
-      return (h / levelsHigh) * 1.5;
+      return (h / levelsHigh);
   }
 };
 

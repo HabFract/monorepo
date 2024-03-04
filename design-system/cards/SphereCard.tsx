@@ -9,7 +9,8 @@ type SphereCardProps = {
   sphere: Sphere;
   isHeader: boolean;
   orbitScales: Scale[];
-  transition: (newState: string, params?: object) => void;
+  transition: (newState: string, params?: object) => void
+  runDelete?: () => void
 };
 
 function calculateSpherePercentages(counts: object) : any {
@@ -40,8 +41,9 @@ function calculateSphereCounts(orbitScales: Scale[]) {
   }, {Sub: 0, Atom: 0, Astro: 0});
 }
 
-const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition } : SphereCardProps) => {
-  const { name, metadata } = sphere;
+const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition, runDelete } : SphereCardProps) => {
+  const { name, metadata, id } = sphere;
+
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
       <header className={"sphere-header card-header"}>
@@ -60,14 +62,14 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
         <div className="row-c-around h-full flex-1">
           <div className="sphere-actions col-c">
             <div className="sphere-actions-crud col-c w-full">
-              <Button className="btn responsive btn-warn w-full" size="sm">
+              <Button className="btn responsive btn-warn w-full" size="sm" onClick={() => {transition('CreateSphere', { editMode: true, sphereToEditId: id })}}>
                 <EditOutlined className="btn-icon" />
                 <span>Edit</span>
               </Button>
-              <Button className="btn responsive btn-danger w-full" size="sm">
+              {!isHeader && <Button className="btn responsive btn-danger w-full" size="sm" onClick={runDelete}>
                 <DeleteOutlined className="btn-icon" />
                 <span>Delete</span>
-              </Button>
+              </Button>}
             </div>
             <div className="sphere-actions-vis col-c">
               {!isHeader && <Button onClick={() => transition('ListOrbits', { sphereHash: sphere.id })} className="btn mt-2 responsive btn-neutral w-full" size="sm">
@@ -80,7 +82,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
                 <span>Add Orbit</span>
               </Button>}
 
-              <Button className="btn responsive btn-primary w-full" size="sm">
+              <Button className="btn responsive btn-primary w-full" size="sm" onClick={() => transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })}>
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>
               </Button>

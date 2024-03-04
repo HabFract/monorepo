@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { listSortFilterAtom } from '../../state/listSortFilterAtom';
-import { Scale, Sphere, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSpheresQuery } from '../../graphql/generated';
+import { Scale, Sphere, useDeleteSphereMutation, useGetOrbitsLazyQuery, useGetOrbitsQuery, useGetSpheresQuery } from '../../graphql/generated';
 
 import './common.css';
 
@@ -11,6 +11,12 @@ import { extractEdges } from '../../graphql/utils';
 import { useStateTransition } from '../../hooks/useStateTransition';
 
 function ListSpheres() {
+  const [runDelete, { loading: loadingDelete, error: errorDelete, data: dataDelete }] = useDeleteSphereMutation({
+    refetchQueries: [
+      'getSpheres',
+    ],
+  });
+
   const { loading, error, data } = useGetSpheresQuery();
 
   const [listSortFilter] = useAtom(listSortFilterAtom);
@@ -48,10 +54,10 @@ function ListSpheres() {
 
   return (
     <div className='layout spheres'>
-      <PageHeader title="Spheres of Action" />
+      <PageHeader title="Spheres List" />
       <ListSortFilter label='' />
       <div className="spheres-list">
-        {sortedSpheres.map((sphere : Sphere) => <SphereCard key={sphere.id} sphere={sphere} transition={transition} isHeader={false} orbitScales={[]}/>)//orbits.map((orbit: Orbit) => orbit?.scale)}/>)}
+        {sortedSpheres.map((sphere : Sphere) => <SphereCard key={sphere.id} sphere={sphere} transition={transition} isHeader={false} orbitScales={[]} runDelete={() => runDelete({variables: {id: sphere.id}})}/>)//orbits.map((orbit: Orbit) => orbit?.scale)}/>)}
 }</div>
     </div>
   );

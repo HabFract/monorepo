@@ -5,18 +5,28 @@
 
 #root {
   @apply bg-dark-gray;
-  --onboarding-progress-bar-height: 48px  ;
+  --onboarding-progress-bar-height: 48px;
 }
 
 .page-container {
-  @apply bg-dark-gray overflow-auto fixed w-full h-full inset-y-0 left-0  ;
+  @apply bg-dark-gray overflow-auto fixed w-full h-full inset-y-0 left-0;
+  overflow-x: hidden;
 }
-
 
 nav + main.page-container.nav-collapsed {
   padding-left: 0 !important;
 }
 
+nav + main.page-container.nav-collapsed .sphere-card .row-c-around {
+  align-items: flex-start;
+}
+nav + main.page-container.nav-collapsed .sphere-card .row-c-around .sphere-actions {
+  @apply py-1;
+  margin-left: 2.5rem;
+}
+nav + main.page-container.nav-collapsed .sphere-card .row-c-around #pie-chart {
+  padding-left: 25%;
+}
 
 nav + main.page-container.nav-collapsed .sphere-card.list-header {
   width: 100%;

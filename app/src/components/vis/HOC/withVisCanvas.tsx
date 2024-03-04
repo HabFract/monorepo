@@ -2,20 +2,25 @@ import React, { ComponentType, ReactNode, useEffect, useState } from 'react'
 
 import "./vis.css";
 
-import { Margins } from '../types';
-import { select } from 'd3';
-import { useAtom } from 'jotai';
-import { SphereHashes, currentSphere } from '../../../state/currentSphere';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Margins, VisProps, VisCoverage } from '../types';
+import { select } from "d3-selection";
+import { useAtom, useAtomValue } from 'jotai';
+import { useNodeTraversal } from '../../../hooks/useNodeTraversal';
+import { HierarchyBounds, SphereHierarchyBounds, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
+import { DownOutlined, LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
+import { WithVisCanvasProps } from '../types';
+import { EntryHashB64 } from '@holochain/client';
+import { Modal } from 'flowbite-react';
+import { CreateOrbit } from '../../forms';
 
 const defaultMargins: Margins = {
-  top: (document.body.getBoundingClientRect().height / (document.body.getBoundingClientRect().height > 1025 ? 6 : 2)),
+  top: -1100,
   right: 0,
   bottom: 0,
-  left: 0,
+  left: -30,
 };
 
-const d3SetupCanvas = function () {
+const getCanvasDimensions = function () {
   const { height, width } = document.body.getBoundingClientRect();
   const canvasHeight = height - defaultMargins.top - defaultMargins.bottom;
   const canvasWidth = width - defaultMargins.right - defaultMargins.left;
@@ -23,46 +28,46 @@ const d3SetupCanvas = function () {
   return { canvasHeight, canvasWidth };
 };
 
-const appendSvg = (mountingDivId: string, divId: string) : void => {
-  select(`#${divId}`).empty() &&
+const appendSvg = (mountingDivId: string, divId: string) => {
+  return select(`#${divId}`).empty() &&
     select(`#${mountingDivId}`)
       .append("svg")
       .attr("id", `${divId}`)
       .attr("width", "100%")
+      .attr("data-testid", "svg")
       .attr("height", "100%")
       .attr("style", "pointer-events: all");
 };
 
-export type VisComponent = { // e.g. OrbitTree, OrbitCluster
-  canvasHeight: number;
-  canvasWidth: number;
-  margin: Margins;
-  selectedSphere: SphereHashes;
-  breadthIndex: number;
-  render: (currentVis: any) => JSX.Element;
-}
-
-export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode {
-  const ComponentWithVis: React.FC<any> = (hocProps: VisComponent) => {
-    const { canvasHeight, canvasWidth } = d3SetupCanvas()
-    const mountingDivId = 'vis-root';
-    const svgId = 'vis';
-    
-    const [breadthIndex, setBreadthIndex] = useState<number>(0);
-    const [selectedSphere] = useAtom(currentSphere);
-    
+export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
+  const ComponentWithVis: React.FC<WithVisCanvasProps> = (_visParams: WithVisCanvasProps) => {
+    const mountingDivId = 'vis-root'; // Declared at the router level
+    const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
+    const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
     useEffect(() => {
       if(document.querySelector(`#${mountingDivId} #${svgId}`)) return
-      appendSvg(mountingDivId, svgId);
+      const appended = !!appendSvg(mountingDivId, svgId);
+      setAppendedSvg(appended)
     }, []);
+    const { canvasHeight, canvasWidth } = getCanvasDimensions()
+    
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [currentParentOrbitEh, setCurrentParentOrbitEh] = useState<EntryHashB64>();
+    
+    const [selectedSphere] = useAtom(currentSphere);
+    const sphereHierarchyBounds : SphereHierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
+    const { depthIndex, 
+            setDepthIndex, 
+            breadthIndex, 
+            setBreadthIndex, 
+            incrementBreadth, 
+            decrementBreadth, 
+            incrementDepth, 
+            decrementDepth,
+            maxBreadth,
+            maxDepth
+          } = useNodeTraversal(sphereHierarchyBounds[selectedSphere!.entryHash as keyof SphereHierarchyBounds] as HierarchyBounds, selectedSphere.entryHash as EntryHashB64);
 
-    const incrementBreadth = () => {
-      setBreadthIndex(1)
-    }
-    const decrementBreadth = () => {
-      setBreadthIndex(0)
-      console.log('breadthIndex :>> ', breadthIndex);
-    }
     return (
       <>
         <Component
@@ -71,17 +76,48 @@ export function withVisCanvas(Component: ComponentType<VisComponent>): ReactNode
           margin={defaultMargins}
           selectedSphere={selectedSphere}
           breadthIndex={breadthIndex}
-          render={(currentVis: any) => {
-            currentVis?.render();
+          depthIndex={depthIndex}
+          render={(currentVis: any, queryType: VisCoverage) => {
+            // Determine need for traversal controld
+            
+            const withTraversal = queryType == VisCoverage.Partial;
+            if(appendedSvg) {
+              // Pass through setState handlers for the modal opening and current append/prepend Node parent entry hash
+              currentVis.modalOpen = setIsModalOpen;
+              currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
+              
+              currentVis?.render();
+            }
+            
+            // Trigger the Vis object render function only once the SVG is appended to the DOM
+            const onlyChild = currentVis.rootData?.data?.children && currentVis.rootData.data?.children.length ==1;
+// console.log('currentVis.rootData :>> ', currentVis.rootData);
+// console.log('withTraversal, depthIndex, breadthIndex :>> ', queryType, withTraversal, depthIndex, breadthIndex, maxBreadth, maxDepth);
             return (
-              <><div id="vis-root" className="h-full"></div></>
+              <> 
+                {!!(withTraversal && depthIndex !== 0) && <UpOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "46vw", top: "14vh"}}  onClick={decrementDepth} />}
+                {!!(withTraversal && breadthIndex !== 0) && <LeftOutlined data-testid={"traversal-button-left"} className='fixed left-1 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "29vh"}} onClick={decrementBreadth} />}
+                
+                {!!(withTraversal && maxBreadth && breadthIndex < maxBreadth) && <RightOutlined data-testid={"traversal-button-right"} className='fixed right-1 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "29vh"}}  onClick={incrementBreadth} />}
+                {!!(withTraversal && maxDepth && depthIndex < maxDepth && onlyChild) && <DownOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "46vw", bottom: "43vh"}}  onClick={incrementDepth} />}
+                {!!(withTraversal && maxDepth && depthIndex < maxDepth && !onlyChild) && <DownOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{left: "12vw", bottom: "45vh", transform: "rotate(45deg)"}}  onClick={incrementDepth} />}
+              {/* {!!(withTraversal && maxDepth && depthIndex < maxDepth && !onlyChild) && <DownOutlined data-testid={"traversal-button-down-right"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "12vw", bottom: "45vh", transform: "rotate(-45deg)"}}  onClick={() => {console.log('maxBreadth, setBreadthIndex :>> ', currentVis.rootData.data.children.length-1, setBreadthIndex); incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length-1);}} />} */}
+
+                <Modal show={isModalOpen} onClose={() => {setIsModalOpen(false)}}>
+                  <Modal.Header>
+                    Create Orbit
+                  </Modal.Header>
+                  <Modal.Body>
+                    <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh} onCreateSuccess={() => setIsModalOpen(false)}></CreateOrbit>
+                  </Modal.Body>
+                </Modal>
+              </>
             )
           }}
         ></Component>
-        <LeftOutlined className='fixed left-2 text-3xl text-white' style={{top: "48vh"}} onClick={decrementBreadth} />
-        <RightOutlined className='fixed right-2 text-3xl text-white' style={{top: "48vh"}}  onClick={incrementBreadth} />
       </>
     );
   }
-  return <ComponentWithVis />
+  //@ts-ignore
+  return <ComponentWithVis  />
 }

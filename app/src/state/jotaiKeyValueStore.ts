@@ -1,0 +1,44 @@
+import { Provider, atom, createStore } from 'jotai'
+import { MiniDb } from 'jotai-minidb'
+import { Orbit, Scale } from '../graphql/generated'
+import { ActionHashB64, EntryHashB64 } from '@holochain/client'
+
+const dbAtom = new MiniDb()
+
+export const store = createStore()
+
+export const unsub = store.sub(dbAtom.setMany, () => {
+  console.log('Cache updated with values:', store.get(dbAtom.setMany))
+})
+
+export interface OrbitNodeDetails {
+  id: ActionHashB64;
+  eH?: EntryHashB64;
+  description?: string;
+  name: string;
+  scale: Scale;
+  startTime?: number;
+  endTime?: number;
+  checked: boolean;
+}
+
+export type SphereOrbitNodes = {
+  [key: EntryHashB64]: OrbitNodeDetails
+}
+
+export type SphereNodeDetailsCache = {
+  [key: EntryHashB64]: SphereOrbitNodes
+}
+
+export const mapToCacheObject = (orbit: Orbit) : OrbitNodeDetails => ({
+  id: orbit.id,
+  eH: orbit.eH,
+  name: orbit.name,
+  scale: orbit.scale,
+  description: orbit.metadata?.description || "",
+  startTime: orbit.metadata?.timeframe.startTime,
+  endTime: orbit.metadata?.timeframe.endTime || undefined,
+  checked: false
+})
+
+export default dbAtom;

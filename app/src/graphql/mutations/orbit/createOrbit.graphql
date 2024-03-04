@@ -1,4 +1,4 @@
-mutation createOrbit($variables: OrbitCreateUpdateParams!) {
+mutation createOrbit($variables: OrbitCreateParams!) {
   createOrbit(orbit: $variables) {
     actionHash
     entryHash

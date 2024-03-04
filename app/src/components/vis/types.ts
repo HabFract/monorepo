@@ -1,8 +1,35 @@
-import { ReactNode } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { SphereHashes } from "../../state/currentSphereHierarchyAtom";
+import BaseVisualization from "./BaseVis";
+
+export type WithVisCanvasProps = { // Passed to the finite state machine which renders the HOC
+  orbitEh: EntryHashB64 // For partial VisCoverage
+} | {
+  currentSphereEhB64: EntryHashB64, // For complete VisCoverage
+  currentSphereAhB64: ActionHashB64 
+}
+
+export type VisProps = { // for e.g. OrbitTree, OrbitCluster
+  canvasHeight: number;
+  canvasWidth: number;
+  margin: Margins;
+  selectedSphere: SphereHashes;
+  breadthIndex: number;
+  depthIndex: number;
+  render: (currentVis: BaseVisualization, queryType: VisCoverage) => React.ReactNode;
+}
+
+export enum VisCoverage {
+  Partial = "partial",
+  Complete = "complete"
+}
+
+// BaseVisualization class property types/interfaces
 
 export interface EventHandlers {
   handlePrependNode: () => void;
-  handleAppendNode: () => void;
+  handleAppendNode: ({ parentOrbitEh }: { parentOrbitEh: EntryHashB64 }) => void;
   handleDeleteNode: (event: any, node: any) => void; // Replace 'any' with specific event and node types
   rgtClickOrDoubleTap: (event: any, d: any) => void; // Replace 'any' with specific event and node types
   handleNodeZoom: (event: any, node: any, forParent?: boolean) => void; // Replace 'any' with specific event and node types
@@ -48,7 +75,7 @@ export interface ZoomConfig {
     scale?: number;
   };
   zoomedInView: () => boolean;
-  globalZoomScale? : number;
+  globalZoomScale?: number;
 }
 
 export enum VisType {
@@ -57,7 +84,7 @@ export enum VisType {
   Radial = "Radial"
 }
 
-// Now define the interface for the Visualization class
+// Now define the interface to be implemented by the BaseVisualization class
 export interface IVisualization {
   type: VisType;
   _svgId: string;
@@ -68,16 +95,4 @@ export interface IVisualization {
   expand: () => void;
   collapse: () => void;
   _hasRendered: boolean;
-}
-
-export interface Hierarchy {
-  id: number;
-  hier: object;
-}
-
-export interface VisProps {
-  canvasHeight: number;
-  canvasWidth?: number;
-  margin: Margins;
-  render: (_:any) => ReactNode;
 }

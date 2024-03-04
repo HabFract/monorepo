@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { mapZomeFn } from '../../connection'
 import { DNAIdMappings, ById } from '../../types'
 import { HAPP_DNA_NAME, HAPP_ZOME_NAME_PERSONAL_HABITS } from '../../../constants'
 import { Sphere, SphereConnection } from '../../generated'
 import { createEdges } from '../../utils'
 import { EntryRecord } from '@holochain-open-dev/utils'
-import { encodeHashToBase64 } from '@holochain/client'
+import { encodeHashToBase64, Record as HolochainRecord } from '@holochain/client'
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
-  const read = mapZomeFn<ById, HolochainRecord<Sphere>>(
+  const read = mapZomeFn<ById, HolochainRecord>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
@@ -26,10 +27,6 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     sphere: async (_, args): Promise<Partial<Sphere>> => {
       const rawRecord = await read(args.id)
       const entryRecord = new EntryRecord<Sphere>(rawRecord);
-      console.log('args :>> ', {
-        ...entryRecord.entry,
-        id: encodeHashToBase64(entryRecord.actionHash),
-      });
       return {
         ...entryRecord.entry,
         id: encodeHashToBase64(entryRecord.actionHash),
@@ -45,7 +42,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
 
       const entryRecords = rawRecords!.map((record: any) => new EntryRecord<Sphere>(record));
 
-      const sphereConnection = createEdges(entryRecords.map((entryRecord: EntryRecord<Sphere>) => ({...entryRecord.entry, id: entryRecord.actionHash, eH: encodeHashToBase64(entryRecord.entryHash) })))  as Partial<SphereConnection> & any; // Need to resolve type errors when no pagination implemented
+      const sphereConnection = createEdges(entryRecords.map((entryRecord: EntryRecord<Sphere>) => ({ ...entryRecord.entry, id: entryRecord.actionHash, eH: encodeHashToBase64(entryRecord.entryHash) }))) as Partial<SphereConnection> & any; // Need to resolve type errors when no pagination implemented
 
       return Promise.resolve(sphereConnection)
     },

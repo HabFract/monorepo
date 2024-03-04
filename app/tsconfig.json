@@ -1,32 +1,24 @@
 {
+  "references": [{ "path": "../tsconfig.json" }],
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "target": "ESNext",
     "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "outDir": "dist",
+    "declaration": false,
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
-
-    "noImplicitAny": false,
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": false,
-    "noImplicitThis": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true
+    "allowSyntheticDefaultImports": true
+    
   },
-  "include": ["src", "../design-system/vis"],
+  "include": ["src/**/*", "../design-system/vis"],
   "exclude": [
+    "../node_modules",
     "node_modules",
-    "src/graphql/generated",
-    "src/mocks"
-  ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+    "src/graphql/generated/**/*",
+    "dist"
+  ]
 }

@@ -6,7 +6,7 @@ type PageHeaderProps = {
 };
 
 const PageHeader : React.FC<PageHeaderProps> = ({ title }) => (
-  <div className="page-header">
+  <div role="heading" className="page-header">
     <h1>{title}</h1>
   </div>
 );

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Sphere, SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
 import { DarkThemeToggle } from "flowbite-react";
 import { useAtom } from "jotai";
-import { currentSphere } from "../state/currentSphere";
+import { currentSphere } from "../state/currentSphereHierarchyAtom";
 import { extractEdges } from "../graphql/utils";
 import { ActionHashB64 } from "@holochain/client";
 
@@ -29,25 +29,6 @@ function getItem(
   } as MenuItem;
 }
 
-function createFixedMenuItems() {
-  return [
-    getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
-    getItem('Dashboard', 'dash', <DashboardFilled />),
-    getItem('Visualise', 'vis', <PieChartFilled />),
-  ]  
-}
-
-function createSphereMenuItems({ spheres, onClick }: { spheres: SphereConnection, onClick: () => void}) {
-  return [...spheres.edges!.map((sphere: SphereEdge, _idx: number) => {
-    return getItem(`${sphere.node.name}`, sphere.node.id, <img src={sphere.node.metadata!.image as string} />,
-    [ 
-      getItem('Orbit List', 'list-orbits-' + sphere.node.id, null),
-        getItem('Create Orbit', 'add-orbit-' + sphere.node.eH, null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'
-      ])
-  }),
-  getItem('New Sphere', 'add-sphere', <PlusCircleFilled />)] 
-}
-
 export interface INav {
   transition: (newState: string, params?: object) => void;
   toggleVerticalCollapse: () => void;
@@ -66,12 +47,21 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
   const openMenu = () => {
     setCollapsed(false);
   };
+  const removeOtherActiveNavItemStates = () => {
+    console.log('removed other active nav item states :>> ', );
+  };
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (ref.current && (event.target.tagName == 'NAV')) {
         openMenu();
       } else if(!(ref as any).current.contains(event.target)) {
         closeMenu();
+      }
+      const subMenuSelected = event.target.closest('.ant-menu-sub')?.classList?.contains('ant-menu-vertical');
+      const bottomMenuSelected = !!event.target.closest('.main-actions-menu');
+      const plusSelected = !!event.target.closest('.ant-menu-item:last-of-type');
+      if(subMenuSelected || bottomMenuSelected || plusSelected) {
+        removeOtherActiveNavItemStates()
       }
     };
     document.addEventListener('click', handleClickOutside, true);
@@ -81,6 +71,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
   }, []);
 
   const [selectedSphere, setSelectedSphere] = useAtom(currentSphere);
+
   const onClick: MenuProps['onClick'] = (e) => {
     setSelectedItemName(e.key)
 
@@ -88,12 +79,11 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
       const id = e.key.split(/list\-orbits\-|add\-orbit\-/)[1];
       const sphere = extractEdges(spheres?.spheres as any).find((sphere: any) => sphere.id == id) as Sphere & {id: ActionHashB64};
       sphere && setSelectedSphere({entryHash: sphere.eH, actionHash: sphere.id})
-      console.log('selectedSphere :>> ', sphere, selectedSphere);
     }
 
     switch (true) {
       case e.key == 'vis':
-        transition('Vis', {currentSphereHash: selectedSphere.entryHash})
+        transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})
         break;
 
       case e.key == 'add-sphere':
@@ -111,7 +101,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
 
       case !!e.key.match(/list\-orbits/):
         const sphereId = e.key.split('list-orbits-')[1];
-        transition('ListOrbits', { sphereHash: sphereId })
+        transition('ListOrbits', { sphereAh: sphereId })
         break;
 
       default:
@@ -119,6 +109,25 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
         break;
     }
   };
+
+  function createFixedMenuItems() {
+    return [
+      getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
+      getItem('Dashboard', 'dash', <DashboardFilled />),
+      getItem('Visualise', 'vis', <PieChartFilled />),
+    ]  
+  }
+  
+  function createSphereMenuItems({ spheres, onClick }: { spheres: SphereConnection, onClick: () => void}) {
+    return [...spheres.edges!.map((sphere: SphereEdge, _idx: number) => {
+      return getItem(`${sphere.node.name}`, sphere.node.id, <img className={selectedSphere.actionHash == sphere.node.id ? 'selected' : ''} src={sphere.node.metadata!.image as string} />,
+      [ 
+        getItem('Orbit List', 'list-orbits-' + sphere.node.id, null),
+          getItem('Create Orbit', 'add-orbit-' + sphere.node.eH, null),//, [getItem('Option 3', '1c'), getItem('Option 4', '1d')], 'group'
+        ])
+    }),
+    getItem('New Sphere', 'add-sphere', <PlusCircleFilled />)] 
+  }
 
   return (
     <nav ref={ref} className={verticalCollapse ? "collaped-vertical side-nav" : "side-nav"}>
@@ -130,7 +139,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           mode="inline"
-          items={createSphereMenuItems({spheres: spheres.spheres as any, onClick: () => {debugger;closeMenu()}})}
+          items={createSphereMenuItems({spheres: spheres.spheres as any, onClick: () => {closeMenu()}})}
         />}
         <div className={"main-actions-menu"}>
           <Menu

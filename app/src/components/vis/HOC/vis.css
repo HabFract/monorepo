@@ -10,6 +10,24 @@ g.nodes {
   stroke-width: 4px;
 }
 
+.node-subgroup {
+  transform: scale(3) translate(-78px, -61px);
+  /* filter: brightness(1.5); */
+}
+
+.node-subgroup > * {
+  filter: saturate(0.45)
+}
+
+.node-subgroup > *:first-child {
+  filter: initial;
+  fill: #3c3c3c;
+  opacity: 1;
+}
+.node-subgroup.checked > *:first-child {
+  fill: #a6d71c;
+}
+
 .instruct-legend .cell:nth-child(3) circle,
 .legend-svg .cell:nth-child(3) circle {
   fill: #edd837;
@@ -49,7 +67,7 @@ g.nodes {
 }
 
 svg path.link {
-  stroke: #1a140e;
+  stroke: #fefefe;
   fill: none;
 }
 
@@ -85,4 +103,96 @@ body[class^="scroll"] .controls-div {
 
 g.tooltip rect:first-of-type {
   fill: #6B7D7F !important;
+}
+
+.tooltip-inner .content {
+  padding: 1rem 1.5rem  ;
+  color: #fefefe;
+  background: linear-gradient(180deg, #576468 0%, rgba(0,212,255,0) 11rem);
+  border-radius: 32px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  opacity: 1;
+  margin-top: 10px;
+} 
+
+.tooltip-inner .content span.title {
+  text-transform: uppercase;
+  @apply font-sans font-semibold tracking-wider;
+}
+
+.tooltip-inner .content p {
+  @apply font-medium tracking-normal mb-2;
+}
+
+.buttons, .tooltip-inner {
+  cursor: initial;
+}
+
+.buttons button:hover {
+  outline: 8px solid rgba(255, 23, 132, 0.7);
+}
+
+.tooltip-action-button {
+  border-radius: 100%;
+  background-repeat: no-repeat;
+  height: 6rem;
+  width: 6rem;
+  background-size: cover !important;
+}
+
+.tooltip-action-button.hide {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.25;
+}
+
+.higher-button {
+  background: url(assets/higher-scale-icon.svg);
+}
+
+.checkbox-button {
+  background: url(assets/checkbox-empty.svg);
+  background-repeat: no-repeat !important;
+}
+
+.tooltip-action-button button:focus, .tooltip-action-button button:focus-visible {
+  outline: 6px solid #91caff
+}
+.checkbox-button.checked {
+  background: url(assets/checkbox-checked.svg);
+}
+
+.lower-button {
+  background: url(assets/lower-scale-icon.svg);
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.tooltip-actions {
+  position: absolute;
+  right: -9rem;
+  width: 8rem;
+  height: 16rem;
+  top: -7.85rem;
+  padding: 0.5rem;
+}
+.tooltip-actions .buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tooltip-inner {
+  background: url(assets/line-corner-vector-3.svg);
+  background-position: right;
+  background-position-y: .5rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 100%;
+  width: 100%;
+  padding-top: calc(50% + .5rem);
+  padding-left: 4%;padding-right: 3px;
+  font-size: 2rem;
+  margin-left: 0rem;
 }
