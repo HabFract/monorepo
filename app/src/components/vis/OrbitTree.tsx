@@ -62,6 +62,9 @@ export const OrbitTree: ComponentType<VisProps> = ({
     if (!error && json && !currentOrbitTree) {
       const currentTreeJson = getJsonDerivation(json);
       const hierarchyData = hierarchy(currentTreeJson);
+      
+      setDepthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.Complete ? 100 : hierarchyData.height])
+
       const sphereNodeDetails = nodeDetailsCache[params.currentSphereAhB64] || {}
       const orbitVis = new BaseVisualization(
         VisType.Tree,
@@ -97,7 +100,6 @@ export const OrbitTree: ComponentType<VisProps> = ({
         parsedData = JSON.parse(parsedData);
       }
       // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
-      setDepthBounds(params?.currentSphereEhB64, [0, 2]);
       setBreadthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.Complete ? 100 : parsedData.result.level_trees.length - 1])
       // Depending on query type, set the state of the parsed JSON to the relevant part of the payload
       setJson(JSON.stringify(visCoverage == VisCoverage.Complete ? parsedData.result : parsedData.result.level_trees));

@@ -2,7 +2,6 @@ import React from 'react';
 import '@testing-library/jest-dom';
 import { expect, describe, test, it } from '@jest/globals';
 
-import { createPortal } from "react-dom";
 import { MockedProvider } from '@apollo/client/testing';
 import OrbitTree from '../../app/src/components/vis/OrbitTree';
 import { renderVis } from '../../app/src/components/vis/helpers';
@@ -12,23 +11,18 @@ import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-chil
 import { WithCurrentSphereMockedAtom } from '../utils-frontend';
 
 describe('Hierarchy Traversal - renders traversal buttons for parent with 1 child', () => {
-  let Tree, container;
+  let Tree;
   beforeEach(() => {
     Tree = renderVis(OrbitTree);
-
-    container = document.createElement("div");
-    container.id = 'root';
-    document.body.appendChild(container);
-    debugger;
+  });
+  afterAll(() => {
+    Tree = undefined;
   });
 
   it('renders traversal button for going down a level', async () => {
-    const { getByTestId, queryByTestId } = render(
-
-    createPortal(<MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
+    const { getByTestId, queryByTestId } = render(<MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
       {WithCurrentSphereMockedAtom(Tree)}
-      </MockedProvider>, container),
-      { container: container }
+      </MockedProvider>
     );
 
     await waitFor(() => {
@@ -46,6 +40,9 @@ describe('Hierarchy Path Templates - renders traversal buttons for parent with 2
   let Tree;
   beforeEach(() => {
     Tree = renderVis(OrbitTree);
+  });
+  afterAll(() => {
+    Tree = undefined;
   });
 
   it('renders traversal button for going down a level', async () => {
@@ -83,8 +80,8 @@ describe('Hierarchy Path Templates - renders traversal buttons for parent with 2
     });
     expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
-    // expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
-    // expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
   });
 
   it('given the down button was clicked, and then the right button was clicked, it renders traversal buttons for going left/up', async () => {
@@ -109,7 +106,7 @@ describe('Hierarchy Path Templates - renders traversal buttons for parent with 2
     });
     expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
-    // expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
-    // expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
   });
 });
