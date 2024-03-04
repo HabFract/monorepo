@@ -23,6 +23,9 @@ const config: CodegenConfig = {
     "src/graphql/generated/mocks.ts": {
       plugins: ["graphql-codegen-typescript-mock-data"]
     },
+    "src/graphql/generated/typeDefs.js": {
+      plugins: ["dist/app/src/graphql/typescript-typedefs.cjs"]
+    },
   }
 };
 

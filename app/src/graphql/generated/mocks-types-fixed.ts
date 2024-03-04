@@ -1,4 +1,4 @@
-import { AgentProfile, CreateResponsePayload, Mutation, Orbit, Frequency, Scale, OrbitConnection, OrbitCreateParams, OrbitEdge, OrbitHierarchyQueryParams, OrbitMetaData, OrbitUpdateParams, PageInfo, Profile, ProfileFields, Query, QueryParamsLevel, Sphere, SphereConnection, SphereCreateParams, SphereEdge, SphereMetaData, SphereUpdateParams, TimeFrame, UserProfileCreateUpdateParams } from ".";
+import { AgentProfile, CreateResponsePayload, Node, Mutation, Orbit, Frequency, Scale, OrbitConnection, OrbitCreateParams, OrbitEdge, OrbitHierarchyQueryParams, OrbitMetaData, OrbitUpdateParams, PageInfo, Profile, ProfileFields, Query, QueryParamsLevel, Sphere, SphereConnection, SphereCreateParams, SphereEdge, SphereMetaData, SphereUpdateParams, TimeFrame, UserProfileCreateUpdateParams } from ".";
 
 export const anAgentProfile = (overrides?: Partial<AgentProfile>): AgentProfile => {
     return {

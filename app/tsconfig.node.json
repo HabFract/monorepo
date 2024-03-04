@@ -1,9 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "ESNext",
     "target": "ES2019"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/__tests__/*"]
+  "exclude": ["node_modules", "**/__tests__/*", 
+  "src/graphql/generated/*.ts",
+  "src/graphql/generated/mocks-types-fixed",
+]
 }

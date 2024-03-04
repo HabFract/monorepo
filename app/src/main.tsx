@@ -23,33 +23,30 @@ const WithCacheStore = (component: React.ReactNode) => {
   </Provider>)
 };
 
-export const AppMachine = new StateMachine<AppState, AppStateStore>(initialState, AppTransitions);
+const client = (async() => {
+  const client = await connect({} as ClientOptions);
 
-const root = ReactDOM.createRoot(document.getElementById('root')!);
+  const AppMachine = new StateMachine<AppState, AppStateStore>(initialState, AppTransitions);
 
-export const client = await connect({} as ClientOptions);
 
-async function renderComponent(component: React.ReactNode) {
-  root.render(
-    <React.StrictMode>
-      <ApolloProvider client={client}>
-        {/* <MyProfileProvider> */}
-          <StateMachineContext.Provider value={AppMachine as any}>
-            <App>
-              {WithCacheStore(component)}
-            </App>
-          </StateMachineContext.Provider>
-        {/* </MyProfileProvider> */}
-      </ApolloProvider>
-    </React.StrictMode>,
-  );
-}
+  const root = ReactDOM.createRoot(document.getElementById('root')!);
+  async function renderComponent(component: React.ReactNode) {
+    root.render(
+      <React.StrictMode>
+        <ApolloProvider client={await client}>
+          {/* <MyProfileProvider> */}
+            <StateMachineContext.Provider value={AppMachine as any}>
+              <App>
+                {WithCacheStore(component)}
+              </App>
+            </StateMachineContext.Provider>
+          {/* </MyProfileProvider> */}
+        </ApolloProvider>
+      </React.StrictMode>,
+    );
+  }
+  
+  return client
+})() 
 
-Object.entries(routes).forEach(([routeName, component]) => {
-  AppMachine.on(routeName as AppState, async (state) => {
-    const ComponentWithProps = React.cloneElement(component as React.ReactElement, state.params);
-    renderComponent(ComponentWithProps);
-  });
-});
 
-AppMachine.go();

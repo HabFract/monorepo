@@ -11,19 +11,29 @@ module.exports = {
   roots: ['<rootDir>/tests'],
   testEnvironment: './tests/fixJsDomEnv.ts',
 
+  extensionsToTreatAsEsm: ['.ts', 
+'.min.js'],
   setupFilesAfterEnv: ['@testing-library/jest-dom'],
   setupFiles: ['./tests/setupTests.ts', "fake-indexeddb/auto"],
 
   moduleNameMapper: {
+    // '^@apollo/client$': '<rootDir>/tests/apollo.cjs',
     "\\.(css|less|graphql)$": "<rootDir>/tests/styleMock.js",
-    ...moduleNameMappers
+    ...moduleNameMappers,
+
+    "^(\\.{1,2}/.*)\\.js$": "$1",
   },
   transformIgnorePatterns: [
     `node_modules/(?!(${esModules.join("|")}))`,
   ],
   transform: {
-    "\\.(gql|graphql)$": "jest-transform-graphql",
-    '^jotai-minidb$': ['ts-jest'],
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.tsx?$': ['ts-jest', {
+      useESM: true,
+      tsConfig: '<rootDir>/tests/tsconfig.json',
+    }
+  ],
+    '^.+\\.js?$': ['babel-jest'],
+  '^jotai-minidb$': 'ts-jest',
+  "\\.(gql|graphql)$": "jest-transform-graphql",
   },
 };

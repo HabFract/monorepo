@@ -74,8 +74,8 @@ describe('Hierarchy Path Templates - renders traversal buttons for parent with 2
     });
     expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
-    // expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
-    // expect(queryByTestId('traversal-button-down')).not.toBeTruthy(); //TODO: fix levels window/depth upper bounds
+    expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
   });
 
   it('given the down button was clicked, and then the right button was clicked, it renders traversal buttons for going left/up', async () => {
@@ -100,7 +100,7 @@ describe('Hierarchy Path Templates - renders traversal buttons for parent with 2
     });
     expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
-    // expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
-    // expect(queryByTestId('traversal-button-down')).not.toBeTruthy(); //TODO: fix levels window/depth upper bounds
+    expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
   });
 });

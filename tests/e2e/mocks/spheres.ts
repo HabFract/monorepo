@@ -1,5 +1,5 @@
-import { GetSpheresDocument, CreateSphereDocument, DeleteSphereDocument } from './../../../app/src/graphql/generated/index';
-import { aSphere, aSphereConnection, aSphereEdge } from './../../../app/src/graphql/generated/mocks-types-fixed';
+import { GetSpheresDocument, CreateSphereDocument, DeleteSphereDocument } from '../../../app/src/graphql/generated';
+import { aSphere, aSphereConnection, aSphereEdge } from '../../../app/src/graphql/generated/mocks-types-fixed';
 
 export const SPHERE_ID = 'SGVhbHRoMQ==e';
 

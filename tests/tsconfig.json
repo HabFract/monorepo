@@ -1,13 +1,18 @@
 {
+  "references": [{ "path": "../tsconfig.json" }],
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ESNext",
     "module": "ESNext",
-    "lib": ["es2019"],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "outDir": "dist",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true
   },
-  "exclude": ["**/*.test.tsx"]
+  "include": ["e2e/*.tsx"],
+  "exclude": [
+    "../app/src/graphql/**/*.ts",
+    "../app/src/graphql/generated/mocks-type-fixed"
+  ]
 }

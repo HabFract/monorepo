@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals'
+
 import { mockedCacheEntries } from "./e2e/mocks/cache";
 import { SPHERE_ID } from "./e2e/mocks/spheres";
 
@@ -47,6 +49,22 @@ export function setMockNodeDetailsCache(params: typeof mockedCacheEntries) {
   mockNodeDetailsCache = params;
   mockNodeDetailsCacheKeys = Object.keys(Object.fromEntries(mockNodeDetailsCache));
 }
+jest.mock("../app/src/constants", () => ({
+  APP_WS_PORT: null,
+  ADMIN_WS_PORT: null,
+}
+));
+
+jest.mock("@holochain/client", () => ({
+  AdminWebsocket: null,
+  AppSignalCb: null,
+}
+));
+jest.mock("@holochain-open-dev/utils", () => ({
+  EntryRecord: null,
+}
+));
+
 jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
   entries: atom(mockNodeDetailsCache),
   keys: atom(mockNodeDetailsCacheKeys),
@@ -55,6 +73,19 @@ jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
 }));
 
 // Mock ES6 modules that cause problems
+jest.mock("antd", () => ({
+  DatePicker: {
+    generatePicker: () => ({}), // Chain other methods as needed
+  },
+  Form: {
+    Item: () => ({}), // Chain other methods as needed
+  },
+}));
+
+jest.mock("antd/es/menu/menu", () => ({
+  default: () => null,
+  MenuProps: () => null,
+}));
 
 jest.mock("@dicebear/core", () => ({
   createAvatar: () => null,

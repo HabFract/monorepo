@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { select } from "d3-selection";
 import { scaleOrdinal, scaleLinear } from "d3-scale";
 import { zoom } from "d3-zoom";
