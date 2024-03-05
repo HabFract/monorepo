@@ -73,6 +73,62 @@ describe('Hierarchy Path Templates - it renders traversal buttons and triggers e
     Tree = undefined;
   });
 
+  it('when you click the up button, it triggers internal currentOrbitCoords state to decrement y', async () => {
+    // Arrange
+    const { getByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x, y: 1})}</MockedProvider> );
+
+    // Act
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-up')).toBeTruthy();
+    });
+    const traversalButton = getByTestId('traversal-button-up');
+    fireEvent.click(traversalButton);
+
+    // Assert
+    await waitFor(() => {
+      expect(decrementDepth).toHaveBeenCalled();
+    });
+  });
+
+  it('when you click the right button, it triggers internal currentOrbitCoords state to increment x', async () => {
+    // Arrange
+    const { getByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y})}</MockedProvider> );
+
+    // Act
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-right')).toBeTruthy();
+    });
+    const traversalButton = getByTestId('traversal-button-right');
+    fireEvent.click(traversalButton);
+
+    // Assert
+    await waitFor(() => {
+      expect(incrementBreadth).toHaveBeenCalled();
+    });
+  });
+
+  it('when you click the left button, it triggers internal currentOrbitCoords state to decrement x', async () => {
+    // Arrange
+    const { getByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 1, y})}</MockedProvider> );
+
+    // Act
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-left')).toBeTruthy();
+    });
+    const traversalButton = getByTestId('traversal-button-left');
+    fireEvent.click(traversalButton);
+
+    // Assert
+    await waitFor(() => {
+      expect(decrementBreadth).toHaveBeenCalled();
+    });
+  });
 
   it('initially renders traversal button for going down a level', async () => {
     // Arrange
