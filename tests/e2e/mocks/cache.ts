@@ -39,6 +39,28 @@ export const mockedCacheEntries = [
         endTime: 1617321600,
       },
 
+      "R28gZm9yIGEgd2Fsay==1": {
+        id: "R28gZm9yIGEgd2Fsay==",
+        eH: "ER28gZm9yIGEgd2Fsay==",
+        checked: false,
+        name: "Go for a walk",
+        scale: "Atom",
+        description: "A daily walk to improve cardiovascular health.",
+        startTime: 1617235200,
+        endTime: 1617321600,
+      },
+
+      "R28gZm9yIGEgd2Fsay==2": {
+        id: "R28gZm9yIGEgd2Fsay==",
+        eH: "ER28gZm9yIGEgd2Fsay==",
+        checked: false,
+        name: "Go for a walk",
+        scale: "Atom",
+        description: "A daily walk to improve cardiovascular health.",
+        startTime: 1617235200,
+        endTime: 1617321600,
+      },
+
       TGlmdCB3ZWlnaHRz: {
         id: "TGlmdCB3ZWlnaHRz",
         eH: "ETGlmdCB3ZWlnaHRz",
