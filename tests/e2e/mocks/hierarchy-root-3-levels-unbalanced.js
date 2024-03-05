@@ -1,11 +1,12 @@
-const HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS = [
+const { ORBITS_MOCKS } = require('./orbits');
+
   {
     request: {
       query: HIERARCHY_QUERY,
       variables: { rootId: 'root' },
     },
     result: {
-      data: {
+      data: JSON.stringify({
         hierarchy: {
           id: 'root',
           children: [
@@ -14,19 +15,32 @@ const HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS = [
               children: [
                 {
                   id: 'grandchild1',
-                  children: [], // No children for this node
+                  children: [
+                    {
+                      id: ORBITS_MOCKS[2].id,
+                      children: [], // No children for this node
+                    },
+                    {
+                      id: ORBITS_MOCKS[3].id,
+                      children: [], // No children for this node
+                    },
+                  ],
                 },
               ],
             },
             {
               id: 'child2',
-              children: [], // No children for this node
+              children: [
+                // This child remains without children
+              ],
             },
           ],
         },
       },
+        }
+      }),
     },
   },
 ];
 
-export { HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS };
+module.exports = { HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS };
