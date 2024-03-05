@@ -14,9 +14,10 @@ let x = 0;
 let y = 0;
 let maxBreadth: number;
 
-const incrementBreadth = jest.fn(() => { x = 1 }) as Function;
-const incrementDepth = jest.fn(() => { y = 1 ; }) as Function;
-const decrementBreadth = jest.fn(() => { x = 0  }) as Function;
+// The following are rough versions of what is happening in internal state of jotai atoms.
+const incrementBreadth = jest.fn(() => { x += 1 }) as Function;
+const incrementDepth = jest.fn(() => { y -= 1 ; }) as Function;
+const decrementBreadth = jest.fn(() => { x -= 1  }) as Function;
 const decrementDepth = jest.fn(() => { y-=1  }) as Function;
 
 
@@ -30,6 +31,7 @@ jest.mock("../../app/src/hooks/useNodeTraversal", () => ({
   }),
 }));
 
+// Mock the value that would be set in the traversal hook to the length of the 'level_trees' array - 1
 export function setHierarchyBreadth(num: number) {
   maxBreadth = num
 }
@@ -73,63 +75,6 @@ describe('Hierarchy Path Templates - it renders traversal buttons and triggers e
     Tree = undefined;
   });
 
-  it('when you click the up button, it triggers internal currentOrbitCoords state to decrement y', async () => {
-    // Arrange
-    const { getByTestId } = render(
-      <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x, y: 1})}</MockedProvider> );
-
-    // Act
-    await waitFor(() => {
-      expect(getByTestId('traversal-button-up')).toBeTruthy();
-    });
-    const traversalButton = getByTestId('traversal-button-up');
-    fireEvent.click(traversalButton);
-
-    // Assert
-    await waitFor(() => {
-      expect(decrementDepth).toHaveBeenCalled();
-    });
-  });
-
-  it('when you click the right button, it triggers internal currentOrbitCoords state to increment x', async () => {
-    // Arrange
-    const { getByTestId } = render(
-      <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
-
-    // Act
-    await waitFor(() => {
-      expect(getByTestId('traversal-button-right')).toBeTruthy();
-    });
-    const traversalButton = getByTestId('traversal-button-right');
-    fireEvent.click(traversalButton);
-
-    // Assert
-    await waitFor(() => {
-      expect(incrementBreadth).toHaveBeenCalled();
-    });
-  });
-
-  it('when you click the left button, it triggers internal currentOrbitCoords state to decrement x', async () => {
-    // Arrange
-    const { getByTestId } = render(
-      <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 1, y: 1})}</MockedProvider> );
-
-    // Act
-    await waitFor(() => {
-      expect(getByTestId('traversal-button-left')).toBeTruthy();
-    });
-    const traversalButton = getByTestId('traversal-button-left');
-    fireEvent.click(traversalButton);
-
-    // Assert
-    await waitFor(() => {
-      expect(decrementBreadth).toHaveBeenCalled();
-    });
-  });
-
   it('initially renders traversal button for going down a level', async () => {
     // Arrange
     const { getByTestId, queryByTestId } = render(
@@ -152,7 +97,7 @@ describe('Hierarchy Path Templates - it renders traversal buttons and triggers e
     // Arrange
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x, y})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
 
       // Act
       await waitFor(() => {
@@ -167,12 +112,79 @@ describe('Hierarchy Path Templates - it renders traversal buttons and triggers e
       });
   });
 
+  it('when you click the up button, it triggers internal currentOrbitCoords state to decrement y', async () => {
+    // Arrange
+    const { getByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
+
+    // Mock state for 'level breadth' that is used to determine which buttons appear
+    setHierarchyBreadth(1)
+
+    // Act
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-up')).toBeTruthy();
+    });
+    const traversalButton = getByTestId('traversal-button-up');
+    fireEvent.click(traversalButton);
+
+    // Assert
+    await waitFor(() => {
+      expect(decrementDepth).toHaveBeenCalled();
+    });
+  });
+
+  it('when you click the right button, it triggers internal currentOrbitCoords state to increment x', async () => {
+    // Arrange
+    const { getByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
+
+    // Mock state for 'level breadth' that is used to determine which buttons appear
+    setHierarchyBreadth(1)
+
+    // Act
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-right')).toBeTruthy();
+    });
+    const traversalButton = getByTestId('traversal-button-right');
+    fireEvent.click(traversalButton);
+
+    // Assert
+    await waitFor(() => {
+      expect(incrementBreadth).toHaveBeenCalled();
+    });
+  });
+
+  it('when you click the left button, it triggers internal currentOrbitCoords state to decrement x', async () => {
+    // Arrange
+    const { getByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 1, y: 1})}</MockedProvider> );
+
+    // Mock state for 'level breadth' that is used to determine which buttons appear
+    setHierarchyBreadth(1)
+
+    // Act
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-left')).toBeTruthy();
+    });
+    const traversalButton = getByTestId('traversal-button-left');
+    fireEvent.click(traversalButton);
+
+    // Assert
+    await waitFor(() => {
+      expect(decrementBreadth).toHaveBeenCalled();
+    });
+  });
+
   it('given y = 1, renders traversal buttons for going up a level/right', async () => {
     // Arrange
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
         {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
 
+      // Mock state for 'level breadth' that is used to determine which buttons appear
       setHierarchyBreadth(1)
 
       // Test state for y = 1
