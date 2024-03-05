@@ -7,7 +7,7 @@ import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../
 import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
-import { currentOrbitCoords, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
+import { currentOrbitCoords, currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
@@ -29,11 +29,13 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;
 
   // Get and set node traversal bound state
+  const sphere = useAtomValue(currentSphere);
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [_, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
-  const {x, y} = store.get(currentOrbitCoords)
-
+  const result = useAtomValue(currentOrbitCoords)
+  const {x,y} = useAtomValue(currentOrbitCoords)
+  console.log('x, y :>> ', sphere, x, y);
   // Helper to form the query parameter object
   const getQueryParams = (customDepth?: number): OrbitHierarchyQueryParams => visCoverage == VisCoverage.Complete
     ? { orbitEntryHashB64: params.orbitEh }

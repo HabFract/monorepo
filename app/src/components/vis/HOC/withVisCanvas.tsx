@@ -117,7 +117,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
             console.log('LEFT :>> ', x !== 0);
             console.log('DOWN :>> ', hasChild && hasOneChild);
             console.log('DOWNLEFT :>> ', hasChild && !hasOneChild);
-            console.log('RIGHT :>> ', withTraversal && maxBreadth && x < maxBreadth);
+            console.log('RIGHT :>> ', !!(withTraversal && maxBreadth && x < maxBreadth));
             console.log('x,y,maxBreadth :>> ', x,y,maxBreadth);
 
             return (

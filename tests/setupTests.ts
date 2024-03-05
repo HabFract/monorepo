@@ -1,7 +1,6 @@
 import { jest } from "@jest/globals";
 
-import { TextEncoder, TextDecoder } from "util";
-global.TextEncoder = TextEncoder;
+import { TextDecoder } from "util";
 //@ts-ignore
 global.TextDecoder = TextDecoder;
 
@@ -9,6 +8,7 @@ import { mockedCacheEntries } from "./e2e/mocks/cache";
 import { SPHERE_ID } from "./e2e/mocks/spheres";
 
 import { atom } from "jotai";
+import { SortCriteria, SortOrder } from "../app/src/state/listSortFilterAtom";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -41,25 +41,67 @@ jest.mock("../app/src/hooks/useStateTransition", () => ({
 }));
 
 /* 
-/ Mocking the jotai indexdb store for node details in the vis
+/ Mocking the jotai indexdb store atoms for node details in the vis
 */
 let mockNodeDetailsCache = mockedCacheEntries;
 let mockNodeDetailsCacheKeys: string[] = Object.keys(
   Object.fromEntries(mockNodeDetailsCache)
 );
+let mockNodeDetailsCacheItems = Object.fromEntries(mockNodeDetailsCache);
 
 export function setMockNodeDetailsCache(params: typeof mockedCacheEntries) {
   mockNodeDetailsCache = params;
   mockNodeDetailsCacheKeys = Object.keys(
     Object.fromEntries(mockNodeDetailsCache)
   );
+  mockNodeDetailsCacheItems = Object.fromEntries(params);
 }
 
+
 jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
-  entries: atom(mockNodeDetailsCache),
-  keys: atom(mockNodeDetailsCacheKeys),
+  nodeCache: {
+    entries: atom(mockNodeDetailsCache),
+    keys: atom(mockNodeDetailsCacheKeys),
+    items: atom(mockNodeDetailsCacheItems),
+  },
   store: {
-    set: () => { mockNodeDetailsCache = mockedCacheEntries }, // Chain other methods as needed
+    sub: (atom) => {
+      switch (true) {
+        case !!(atom.init && typeof atom.init?.x !== 'undefined'): // Current node coordinates
+          return
+        default: 
+        console.log('atom------------------', atom)
+      }
+    }, // Chain other methods as needed
+    get: (atom) => {
+      switch (true) {
+        case !!(atom.init && atom.init.sortCriteria):
+          return {
+            sortCriteria: SortCriteria.Name,
+            sortOrder: SortOrder.GreatestToLowest,
+          }
+        case !!(atom.init && atom.init?.entryHash == ''): // Current Sphere
+          return { entryHash: SPHERE_ID, actionHash: SPHERE_ID }
+        case !!(atom.init && typeof atom.init?.x !== 'undefined'): // Current node coordinates
+          return { x:0, y:0 }
+        case !!(atom.init && atom.init?.details == null): // Current Node details
+          return {
+            id: 'ActionHashB64',
+            eH: 'EntryHashB64',
+            description: 'string',
+            name: 'string',
+            scale: 'Scale',
+            startTime: 232434,
+            endTime: null,
+            checked: false,
+          }
+        default: 
+        console.log('atom------------------', atom)
+      }
+    }, // Chain other methods as needed
+    set: (val) => {
+        mockNodeDetailsCache = mockedCacheEntries
+    }, // Chain other methods as needed
   },
   mapToCacheObject: (orbit) => ({
     id: orbit.id,
@@ -73,7 +115,7 @@ jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
   }),
 }));
 
-
+// Mock app level constants
 jest.mock("../app/src/constants", () => ({
   APP_WS_PORT: 1234,
   ADMIN_WS_PORT: 4321,
