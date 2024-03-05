@@ -35,7 +35,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
   const result = useAtomValue(currentOrbitCoords)
   const {x,y} = useAtomValue(currentOrbitCoords)
-  console.log('x, y :>> ', sphere, x, y);
+  
   // Helper to form the query parameter object
   const getQueryParams = (customDepth?: number): OrbitHierarchyQueryParams => visCoverage == VisCoverage.Complete
     ? { orbitEntryHashB64: params.orbitEh }

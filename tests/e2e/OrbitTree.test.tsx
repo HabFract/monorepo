@@ -10,17 +10,18 @@ import OrbitTree from '../../app/src/components/vis/OrbitTree';
 import { HIERARCHY_MOCKS } from './mocks/hierarchy-root-only';
 import { ORBITS_MOCKS } from './mocks/orbits';
 import { MockedProvider } from '@apollo/client/testing';
+import { WithCurrentOrbitCoordsMockedAtom } from '../utils-frontend';
+import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 
-const Tree = renderVis(OrbitTree);
+test('renders a loading state, then an orbit tree vis with a node', async () => {
+  let Tree = renderVis(OrbitTree);
 
-
-test.skip('renders a loading state, then an orbit tree vis with a node', async () => {
+  // Arrange
   const { getByText } = render(
-    <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
-      {(Tree)}
-    </MockedProvider>
-  );
-
+    <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
+      {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+  
+  // Assert
   await waitFor(() => {
     expect(getByText('Loading!')).toBeTruthy();
   });
@@ -31,18 +32,15 @@ test.skip('renders a loading state, then an orbit tree vis with a node', async (
   });
 });
 
-test.skip('renders details about the orbit', async () => {
+test('renders details about the orbit', async () => {
+  let Tree = renderVis(OrbitTree);
+  
+  // Arrange
   const { getByText } = render(
-    <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
-      {(Tree)}
-    </MockedProvider>
-  );
+    <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
+      {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
 
   const orbitName = ORBITS_MOCKS[0].result.data.orbits!.edges[0].node.name;
-
-  await act(async () => {
-    await new Promise((r) => setTimeout(r, 2000));
-  })
   
   await waitFor(() => {
     expect(getByText(orbitName)).toBeTruthy();

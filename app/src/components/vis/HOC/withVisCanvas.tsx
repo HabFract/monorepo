@@ -113,12 +113,12 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
               if(typeof translationCoords == 'undefined') return false
               return translationCoords[0] !== x || translationCoords[1] !== y
             }
-            console.log('UP :>> ', y !== 0);
-            console.log('LEFT :>> ', x !== 0);
-            console.log('DOWN :>> ', hasChild && hasOneChild);
-            console.log('DOWNLEFT :>> ', hasChild && !hasOneChild);
-            console.log('RIGHT :>> ', !!(withTraversal && maxBreadth && x < maxBreadth));
-            console.log('x,y,maxBreadth :>> ', x,y,maxBreadth);
+            // console.log('UP :>> ', y !== 0);
+            // console.log('LEFT :>> ', x !== 0);
+            // console.log('DOWN :>> ', hasChild && hasOneChild);
+            // console.log('DOWNLEFT :>> ', hasChild && !hasOneChild);
+            // console.log('RIGHT :>> ', !!(withTraversal && maxBreadth && x < maxBreadth));
+            // console.log('x,y,maxBreadth :>> ', x,y,maxBreadth);
 
             return (
               <> 

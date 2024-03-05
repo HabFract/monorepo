@@ -57,7 +57,6 @@ export function setMockNodeDetailsCache(params: typeof mockedCacheEntries) {
   mockNodeDetailsCacheItems = Object.fromEntries(params);
 }
 
-
 jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
   nodeCache: {
     entries: atom(mockNodeDetailsCache),
@@ -66,12 +65,12 @@ jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
   },
   store: {
     sub: (atom) => {
-      switch (true) {
-        case !!(atom.init && typeof atom.init?.x !== 'undefined'): // Current node coordinates
-          return
-        default: 
-        console.log('atom------------------', atom)
-      }
+      // switch (true) {
+      //   case !!(atom.init && typeof atom.init?.x !== 'undefined'): // Current node coordinates
+      //     return
+      //   default: 
+      //   console.log('atom------------------', atom)
+      // }
     }, // Chain other methods as needed
     get: (atom) => {
       switch (true) {
