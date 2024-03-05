@@ -1,5 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom';
+import { HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS } from './mocks/hierarchy-root-2-children-2-grandchildren-unbalanced';
 import { expect, describe, test, it } from '@jest/globals';
 
 import { MockedProvider } from '@apollo/client/testing';
@@ -220,4 +221,41 @@ describe('Hierarchy Path Templates - it renders traversal buttons and triggers e
       expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
       expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
   });
+});
+
+describe('Hierarchy Path Templates - it renders traversal buttons and triggers events - unbalanced tree with 2 children and 2 grandchildren', () => {
+  let Tree;
+  beforeEach(() => {
+    Tree = renderVis(OrbitTree);
+  });
+  afterAll(() => {
+    Tree = undefined;
+  });
+
+  it('initially renders traversal button for going down a level', async () => {
+    // Arrange
+    const { getByTestId, queryByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS} addTypename={false}>
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+
+    setHierarchyBreadth(1);
+
+    // Assert
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-down-left')).toBeTruthy();
+    });
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-up')).not.toBeTruthy();
+  });
+
+  // ... additional tests for each traversal button ...
+  // These tests should be similar to the ones for 'parent with 2 children',
+  // but using the HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS for the unbalanced tree.
+  // You can copy the structure of the existing tests and adjust the mock data and expected outcomes.
+  // Ensure that the tests cover the traversal buttons' behavior at both the first and second levels
+  // of the hierarchy, as the unbalanced tree has a different structure at these levels.
+  // The tests should check that the correct buttons are rendered and that clicking them
+  // triggers the appropriate state changes in the internal currentOrbitCoords state.
 });
