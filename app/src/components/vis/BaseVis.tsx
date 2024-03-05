@@ -957,6 +957,7 @@ export default class BaseVisualization implements IVisualization {
         .html((d) => {
         if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
           const {name, description, scale} = this.nodeDetails[d.data.content];
+          console.log('name :>> ', name);
           return `<div class="tooltip-inner">
           <div class="content">
           <span class="title">Name:</span>
@@ -1076,70 +1077,70 @@ export default class BaseVisualization implements IVisualization {
       .on("mouseenter", this.eventHandlers.handleHover.bind(this));
   }
 
-  appendLabels() : void {
-    this._gTooltip
-      .append("rect")
-      .attr("width", 3)
-      .attr("height", 45)
-      .attr("x", -6)
-      .attr("y", -25);
+  // appendLabels() : void {
+  //   this._gTooltip
+  //     .append("rect")
+  //     .attr("width", 3)
+  //     .attr("height", 45)
+  //     .attr("x", -6)
+  //     .attr("y", -25);
 
-    this._gTooltip
-      .append("div")
-      .attr("width", this.type == VisType.Radial ? 130 : 275)
-      .attr("height", 100)
-      .attr("x", -6)
-      .attr("y", -10);
+  //   this._gTooltip
+  //     .append("div")
+  //     .attr("width", this.type == VisType.Radial ? 130 : 275)
+  //     .attr("height", 100)
+  //     .attr("x", -6)
+  //     .attr("y", -10);
 
-    // Split the name label into two parts:
-    this._gTooltip
-      .append("text")
-      .attr("x", 5)
-      .attr("y", 20)
-      .text((d) => {
-        return d.data.name
-      })
-      .attr("transform", (d) => {
-        return this.type == VisType.Radial
-          ? `scale(0.75), translate(${
-              d.x < Math.PI / 2 ? "130, 100" : "0,0"
-            }), rotate(${0})`
-          : "";
-      });
-    this._gTooltip
-      .append("text")
-      .attr("x", 5)
-      .attr("y", 50)
-      .text((d) => {
-        const allWords = d.data.name.split(" ");
-        const words = allWords.slice(0, 6);
-        return `${words[4] || ""} ${words[5] || ""} ${words[6] || ""} ${
-          allWords.length > 7 ? "..." : ""
-        }`;
-      });
+  //   // Split the name label into two parts:
+  //   this._gTooltip
+  //     .append("text")
+  //     .attr("x", 5)
+  //     .attr("y", 20)
+  //     .text((d) => {
+  //       return d.data.name
+  //     })
+  //     .attr("transform", (d) => {
+  //       return this.type == VisType.Radial
+  //         ? `scale(0.75), translate(${
+  //             d.x < Math.PI / 2 ? "130, 100" : "0,0"
+  //           }), rotate(${0})`
+  //         : "";
+  //     });
+  //   this._gTooltip
+  //     .append("text")
+  //     .attr("x", 5)
+  //     .attr("y", 50)
+  //     .text((d) => {
+  //       const allWords = d.data.name.split(" ");
+  //       const words = allWords.slice(0, 6);
+  //       return `${words[4] || ""} ${words[5] || ""} ${words[6] || ""} ${
+  //         allWords.length > 7 ? "..." : ""
+  //       }`;
+  //     });
 
-    // this._enteringNodes
-    //   .append("g")
-    //   .attr(
-    //     "transform",
-    //     "translate(" +
-    //       (this.type == VisType.Radial ? -10 : -35) +
-    //       "," +
-    //       (this.type == VisType.Tree ? -25 : this.type == VisType.Radial ? -30 : 5) +
-    //       ") scale( " +
-    //       this._viewConfig.scale * 1.5 +
-    //       ") rotate(" +
-    //       (this.type == VisType.Cluster ? 270 : this.type == VisType.Radial ? 270 : 0) +
-    //       ")"
-    //   )
-    //   .append("path")
-    //   .attr("class", "expand-arrow")
-    //   .attr("d", (d) => {
-    //     return d._children
-    //       ? "M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"
-    //       : null;
-    //   });
-  }
+  //   // this._enteringNodes
+  //   //   .append("g")
+  //   //   .attr(
+  //   //     "transform",
+  //   //     "translate(" +
+  //   //       (this.type == VisType.Radial ? -10 : -35) +
+  //   //       "," +
+  //   //       (this.type == VisType.Tree ? -25 : this.type == VisType.Radial ? -30 : 5) +
+  //   //       ") scale( " +
+  //   //       this._viewConfig.scale * 1.5 +
+  //   //       ") rotate(" +
+  //   //       (this.type == VisType.Cluster ? 270 : this.type == VisType.Radial ? 270 : 0) +
+  //   //       ")"
+  //   //   )
+  //   //   .append("path")
+  //   //   .attr("class", "expand-arrow")
+  //   //   .attr("d", (d) => {
+  //   //     return d._children
+  //   //       ? "M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"
+  //   //       : null;
+  //   //   });
+  // }
   appendButtons() {
     const delBtnG = this._gButton.append("g");
     delBtnG
@@ -1495,7 +1496,7 @@ export default class BaseVisualization implements IVisualization {
       console.log("Appended and set groups... :>>", {});
 
       this.appendCirclesAndLabels();
-      this.appendLabels();
+      // this.appendLabels();
       this.appendButtons();
       
       if (!!this.activeNode) {
