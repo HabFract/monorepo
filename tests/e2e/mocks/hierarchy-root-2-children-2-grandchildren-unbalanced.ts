@@ -37,9 +37,9 @@ export const HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS = [
     },
     result: {
       data: {
-        getOrbitHierarchy: JSON.stringify({
-          result: {
-            content: "R28gZm9yIGEgd2Fsay==",
+        getOrbitHierarchy: JSON.stringify({ result: { level_trees:
+          [
+            {content: "R28gZm9yIGEgd2Fsay==",
             name: "Be the best",
             children: [
               {
@@ -64,8 +64,9 @@ export const HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS = [
                 children: []
               }
             ]
-          }
-        })
+            }
+          ]
+      }})
       }
     },
   },
@@ -83,7 +84,7 @@ export const HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS = [
     },
     result: {
       data: {
-        getOrbitHierarchy: `{\"result\":{\"level_trees\":${JSON.stringify(
+        getOrbitHierarchy: JSON.stringify({ result: { level_trees:
           [{
             content: "R28gZm9yIGEgd2Fsay==1",
             name: "Child Node 1 of 2",
@@ -104,7 +105,8 @@ export const HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS = [
             content: "R28gZm9yIGEgd2Fsay==2",
             name: "Child Node 2 of 2",
             children: []
-          }])}] }}`,
+          }] 
+      }}),
       },
     },
   },

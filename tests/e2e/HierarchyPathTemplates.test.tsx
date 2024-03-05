@@ -19,7 +19,7 @@ describe.skip('Hierarchy Path Templates - after traversing down, it renders path
     Tree = undefined;
   });
 
-  it('CURRENT renders a path for the only child after traversing from the root', async () => {
+  it('renders a path for the only child after traversing from the root', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
           {WithCurrentSphereMockedAtom(Tree)}
