@@ -56,6 +56,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const fetchHierarchyData = () => {
     if (error || isModalOpen) return;
     const query = depthBounds ? { ...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereEhB64] as any).minDepth } : getQueryParams(y)
+    console.log('query :>> ', query);
     getHierarchy({ variables: { params: { ...query } } })
   }
 

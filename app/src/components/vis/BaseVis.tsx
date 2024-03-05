@@ -1475,7 +1475,9 @@ export default class BaseVisualization implements IVisualization {
         return;
       }
 
-      // _p("Cleared canvas :>> ");
+      const translationNeeded = !!this.rootData._translationCoords;
+      this.clearCanvas(translationNeeded);
+      translationNeeded && this.translateLinks(this.rootData._translationCoords);
 
       this.setLayout();
       if (typeof this.rootData.newHabitDatesAdded == "undefined") {
@@ -1496,9 +1498,6 @@ export default class BaseVisualization implements IVisualization {
       this.appendLabels();
       this.appendButtons();
       
-      const translationNeeded = !!this.rootData._translationCoords;
-      this.clearCanvas(translationNeeded);
-      translationNeeded && this.translateLinks(this.rootData._translationCoords);
       if (!!this.activeNode) {
         // this?.isNewActiveNode &&
         //   this.zoomBase().selectAll(".active-circle").remove();
