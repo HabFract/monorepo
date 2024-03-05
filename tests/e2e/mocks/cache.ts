@@ -12,7 +12,7 @@ export const mockedCacheEntries = [
         scale: "Atom",
         description:
           "Engage in yoga to enhance flexibility, strength, and mental clarity.",
-        startTime: 1617235200,
+        startTime: 1617235100,
         endTime: 1617321600,
       },
 
@@ -24,7 +24,7 @@ export const mockedCacheEntries = [
         scale: "Atom",
         description:
           "Preparing nutritious meals to fuel the body for optimal health.",
-        startTime: 1617235200,
+        startTime: 1617235150,
         endTime: 1617321600,
       },
 
@@ -57,7 +57,7 @@ export const mockedCacheEntries = [
         name: "Go for a bigger step",
         scale: "Atom",
         description: "A daily bigger step to improve cardiovascular health.",
-        startTime: 1617235200,
+        startTime: 1617235201,
         endTime: 1617321600,
       },
 

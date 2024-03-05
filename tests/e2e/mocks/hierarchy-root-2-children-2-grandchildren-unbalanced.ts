@@ -110,4 +110,35 @@ export const HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS = [
       },
     },
   },
+  {
+    request: {
+      query: GetOrbitHierarchyDocument,
+      variables: {
+        params: {
+          levelQuery: {
+            sphereHashB64: SPHERE_ID,
+            orbitLevel: 2,
+          },
+        }
+      },
+    },
+    result: {
+      data: {
+        getOrbitHierarchy: JSON.stringify({ result: { level_trees:
+          [
+            {
+              content: mockOrbits[2].node.id,
+              name: mockOrbits[2].node.name,
+              children: []
+            },
+            {
+              content: mockOrbits[3].node.id,
+              name: mockOrbits[3].node.name,
+              children: []
+            }
+          ]
+      }}),
+      },
+    },
+  },
 ];
