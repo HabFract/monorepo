@@ -21,7 +21,7 @@ import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
 import { client } from "../../main";
-import miniDb, { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject } from "../../state/jotaiKeyValueStore";
+import { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject, nodeCache } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
 import { ThemeProvider } from "flowbite-react/lib/esm/components/Flowbite/ThemeContext";
 
@@ -1169,7 +1169,7 @@ export default class BaseVisualization implements IVisualization {
 
   async cacheOrbits(orbitEntries: Array<[ActionHashB64, OrbitNodeDetails]>) {
     try {
-      store.set(miniDb.setMany, orbitEntries)
+      store.set(nodeCache.setMany, orbitEntries)
       this.nodeDetails = Object.entries(orbitEntries);
       console.log('Sphere orbits fetched and cached!')
     } catch (error) {
@@ -1474,9 +1474,6 @@ export default class BaseVisualization implements IVisualization {
         this.clearCanvas(false);
         return;
       }
-      const translationNeeded = !!this.rootData._translationCoords;
-      this.clearCanvas(translationNeeded);
-      translationNeeded && this.translateLinks(this.rootData._translationCoords);
 
       // _p("Cleared canvas :>> ");
 
@@ -1499,6 +1496,9 @@ export default class BaseVisualization implements IVisualization {
       this.appendLabels();
       this.appendButtons();
       
+      const translationNeeded = !!this.rootData._translationCoords;
+      this.clearCanvas(translationNeeded);
+      translationNeeded && this.translateLinks(this.rootData._translationCoords);
       if (!!this.activeNode) {
         // this?.isNewActiveNode &&
         //   this.zoomBase().selectAll(".active-circle").remove();

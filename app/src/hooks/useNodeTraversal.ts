@@ -3,7 +3,7 @@ import { HierarchyBounds, currentOrbitCoords, currentOrbitDetails } from '../sta
 import { EntryHashB64 } from '@holochain/client';
 import { store } from '../state/jotaiKeyValueStore';
 
-export const useNodeTraversal = (hierarchyBounds: HierarchyBounds, selectedSphereHash: EntryHashB64) => {
+export const useNodeTraversal = (hierarchyBounds: HierarchyBounds) => {
   const x = store.get(currentOrbitCoords).x;
   const y = store.get(currentOrbitCoords).y;
   // const test = store.sub(currentOrbitCoords, () => { console.log(store.get(currentOrbitCoords)); })
@@ -43,7 +43,8 @@ export const useNodeTraversal = (hierarchyBounds: HierarchyBounds, selectedSpher
   const decrementDepth = () => {
     const newVal = depthIndex > 0 ? depthIndex - 1 : 0
     setDepthIndex(newVal);
-    store.set(currentOrbitCoords, {x, y: newVal })
+    setBreadthIndex(0);
+    store.set(currentOrbitCoords, {x: 0, y: newVal })
   };
   
   const maxBreadth = hierarchyBounds?.maxBreadth;

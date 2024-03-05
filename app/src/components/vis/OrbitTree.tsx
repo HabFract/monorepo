@@ -6,7 +6,7 @@ import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../
 
 import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import miniDB, { SphereOrbitNodes, store } from '../../state/jotaiKeyValueStore';
+import { SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { currentOrbitCoords, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 
 import { Modal } from 'flowbite-react';
@@ -23,7 +23,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const [_state, transition, params] = useStateTransition();
 
   // Get sphere and sphere orbit nodes details
-  const nodeDetailsCache =  Object.fromEntries(useAtomValue(miniDB.entries));
+  const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries));
   
   // Does this vis cover the whole tree, or just a window over the whole tree?
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;
@@ -101,7 +101,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
     const cacheEntries = nodeDetailsCache[params?.currentSphereAhB64] as SphereOrbitNodes;
     const byStartTime = (a, b) => {
       if(!cacheEntries) return 0;
-      return cacheEntries[a.content].startTime - cacheEntries[b.content].startTime
+      return (cacheEntries[a.content]?.startTime || 0) - (cacheEntries[b.content]?.startTime || 0)
     }
     if (!error && typeof data?.getOrbitHierarchy === 'string') {
       let parsedData = JSON.parse(data.getOrbitHierarchy);

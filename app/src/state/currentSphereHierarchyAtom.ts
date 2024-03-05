@@ -21,8 +21,8 @@ export interface SphereHierarchyBounds {
 export const currentSphere = atom<SphereHashes>({ entryHash: "",  actionHash: "", });
 
 export const currentOrbitCoords = atom<{x: number, y: number}>({ x:0, y:0 });
-export const currentOrbitId = atom<ActionHashB64 | null>(null);
-export const currentOrbitDetails = atom<OrbitNodeDetails | null>(null);
+export const currentOrbitId = atom<{id: ActionHashB64 | null}>({id: null});
+export const currentOrbitDetails = atom<{details: OrbitNodeDetails | null}>({details: null});
 
 export const currentSphereHierarchyBounds = atom<SphereHierarchyBounds>({});
 

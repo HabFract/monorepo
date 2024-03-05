@@ -7,12 +7,12 @@ import { select } from "d3-selection";
 import { useAtom, useAtomValue } from 'jotai';
 import { useNodeTraversal } from '../../../hooks/useNodeTraversal';
 import { HierarchyBounds, SphereHierarchyBounds, currentOrbitCoords, currentOrbitId as currentOrbitIdAtom, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
-import { DownOutlined, LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
+import { DownOutlined, EnterOutlined, LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
 import { WithVisCanvasProps } from '../types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { Modal } from 'flowbite-react';
 import { CreateOrbit } from '../../forms';
-import dbAtom, { store } from '../../../state/jotaiKeyValueStore';
+import { store } from '../../../state/jotaiKeyValueStore';
 
 const defaultMargins: Margins = {
   top: -1100,
@@ -65,7 +65,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
             decrementDepth,
             maxBreadth,
             maxDepth
-          } = useNodeTraversal(sphereHierarchyBounds[selectedSphere!.entryHash as keyof SphereHierarchyBounds] as HierarchyBounds, selectedSphere.entryHash as EntryHashB64);
+          } = useNodeTraversal(sphereHierarchyBounds[selectedSphere!.entryHash as keyof SphereHierarchyBounds] as HierarchyBounds);
 
     return (
       <>
@@ -79,13 +79,13 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
             const withTraversal: boolean = queryType == VisCoverage.Partial;
             let onlyChildParent: boolean;
             let hasChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length > 0;
+            let hasOneChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length == 1;
 
 
             if(appendedSvg) {
               // Pass through setState handlers for the modal opening and current append/prepend Node parent entry hash
               currentVis.modalOpen = setIsModalOpen;
               currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
-
               if(currentVis && currentVis.rootData && coordsChanged(currentVis?.rootData?._translationCoords)) {
                 const currentOrbit = newRootData?.find(d => {
                   if(!d) return false
@@ -113,15 +113,21 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
               if(typeof translationCoords == 'undefined') return false
               return translationCoords[0] !== x || translationCoords[1] !== y
             }
+            console.log('UP :>> ', y !== 0);
+            console.log('LEFT :>> ', x !== 0);
+            console.log('DOWN :>> ', hasChild && hasOneChild);
+            console.log('DOWNLEFT :>> ', hasChild && !hasOneChild);
+            console.log('RIGHT :>> ', withTraversal && maxBreadth && x < maxBreadth);
+            console.log('x,y,maxBreadth :>> ', x,y,maxBreadth);
 
             return (
               <> 
-                {!!(withTraversal && y !== 0) && <UpOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "46vw", top: "14vh"}}  onClick={decrementDepth} />}
+                {!!(withTraversal && y !== 0) && <EnterOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "23vh", transform: "scaley(-1)"}}  onClick={decrementDepth} />}
                 {!!(withTraversal && x !== 0) && <LeftOutlined data-testid={"traversal-button-left"} className='fixed left-1 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "29vh"}} onClick={decrementBreadth} />}
-                {!!(withTraversal && hasChild && !onlyChildParent) && <DownOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{left: "12vw", bottom: "45vh", transform: "rotate(45deg)"}}  onClick={incrementDepth} />}
+                {!!(withTraversal && hasChild && !hasOneChild) && <EnterOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "35vh", transform: "rotate(90deg), scalex(-1)"}}  onClick={incrementDepth} />}
                 
                 {!!(withTraversal && maxBreadth && x < maxBreadth) && <RightOutlined data-testid={"traversal-button-right"} className='fixed right-1 text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{top: "29vh"}}  onClick={incrementBreadth} />}
-                {!!(withTraversal && hasChild && onlyChildParent) && <DownOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "46vw", bottom: "43vh"}}  onClick={incrementDepth} />}
+                {!!(withTraversal && hasChild && hasOneChild) && <RightOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "43vw", bottom: "43vh", transform: "rotate(90deg)"}}  onClick={incrementDepth} />}
               {/* {!!(withTraversal && maxDepth && y < maxDepth && !onlyChildParent) && <DownOutlined data-testid={"traversal-button-down-right"} className='fixed text-3xl text-off-white hover:text-primary hover:cursor-pointer' style={{right: "12vw", bottom: "45vh", transform: "rotate(-45deg)"}}  onClick={() => {console.log('maxBreadth, setBreadthIndex :>> ', currentVis.rootData.data.children.length-1, setBreadthIndex); incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length-1);}} />} */}
 
                 <Modal show={isModalOpen} onClose={() => {setIsModalOpen(false)}}>
