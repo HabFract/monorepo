@@ -96,7 +96,7 @@ describe('Hierarchy Path Templates - it renders traversal buttons and triggers e
     // Arrange
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
 
     // Act
     await waitFor(() => {
@@ -115,7 +115,7 @@ describe('Hierarchy Path Templates - it renders traversal buttons and triggers e
     // Arrange
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 1, y})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 1, y: 1})}</MockedProvider> );
 
     // Act
     await waitFor(() => {
