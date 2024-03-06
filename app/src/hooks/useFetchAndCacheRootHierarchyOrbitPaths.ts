@@ -29,7 +29,7 @@ interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
 interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
   loading: boolean;
   error?: Error;
-  cached?: boolean;
+  cached: boolean;
 }
 
 export const useFetchAndCacheRootHierarchyOrbitPaths = ({

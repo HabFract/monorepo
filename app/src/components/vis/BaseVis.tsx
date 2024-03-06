@@ -1291,86 +1291,6 @@ export default class BaseVisualization implements IVisualization {
   //   });
   // }
 
-  bindLegendEventHandler() {
-    // let infoCell = document.querySelector(".help-svg");
-    // infoCell?.addEventListener("click", () => {
-    //   store.dispatch(toggleConfirm({ type: "Instructions" }));
-    // });
-  }
-
-  addLegend() {
-    const labels = [
-      "Complete",
-      "Incomplete",
-      "Sub-Incomplete",
-      // "Not Yet Tracked",
-      "Out of Bounds",
-    ];
-    const legendScale = this._viewConfig.isSmallScreen()
-      ? BASE_SCALE / 3.5
-      : BASE_SCALE / 2;
-    const ordinal = scaleOrdinal().domain(labels).range([
-      positiveCol,
-      negativeCol,
-      positiveColLighter,
-      // neutralCol,
-      noNodeCol,
-    ]);
-
-    const legendSvg = select("svg.legend-svg");
-    const gLegend = legendSvg
-      .append("g")
-      .attr("class", "legend")
-      .attr(
-        "transform",
-        `translate(5, ${
-          this._viewConfig.isSmallScreen() ? 55 : 25
-        }) scale(${legendScale})`
-      );
-
-    const legend = legendColor()
-      .orient("horizontal")
-      .labels(labels)
-      .orient("vertical")
-      .shape("circle")
-      .shapeRadius(14)
-      .shapePadding(-5)
-      .scale(ordinal);
-
-    gLegend.call(legend as any);
-  }
-
-  // setNodeAnimationGroups() {
-  //   this.gCirclePulse = this._canvas?.selectAll(
-  //     "g.the-node.solid.active g.node-subgroup"
-  //   );
-
-  //   this.gCirclePulse.pulseScale = scaleLinear()
-  //     // .range(["#1a140e", "#5568d2", "#3349c1"])
-  //     .domain([0, 3 * (this._viewConfig.nodeRadius as number)]);
-
-  //   this.gCirclePulse.pulseData = [
-  //     0,
-  //     this._viewConfig.nodeRadius,
-  //     this._viewConfig.nodeRadius as number * 2,
-  //   ];
-
-  //   this.gCirclePulse.pulseCircles = this.gCirclePulse
-  //     .insert("g", ".habit-label-dash-button")
-  //     .classed("active-circle", true)
-  //     .attr("stroke-opacity", "0.8")
-  //     .selectAll("circle")
-  //     .data(this.gCirclePulse.pulseData)
-  //     .enter()
-  //     .insert("circle", ".habit-label-dash-button")
-  //     .attr("r", function (d) {
-  //       return d;
-  //     })
-  //     .attr("fill", "none")
-  //     .style("stroke-width", "4")
-  //     .style("stroke", this.gCirclePulse.pulseScale);
-  // }
-
   activateNodeAnimation = debounce(() => {
     // https://stackoverflow.com/questions/45349849/concentric-emanating-circles-d3
     // Credit: Andrew Reid
@@ -1427,7 +1347,7 @@ export default class BaseVisualization implements IVisualization {
       this.calibrateViewPortAttrs();
       this.calibrateViewBox();
       this.setdXdY();
-      this.setZoomBehaviour();
+      // this.setZoomBehaviour();
     }
 
     if (
@@ -1454,12 +1374,6 @@ export default class BaseVisualization implements IVisualization {
       }
       
       this.setLayout();
-      if (typeof this.rootData.newHabitDatesAdded == "undefined") {
-        this.addHabitDatesForNewNodes();
-      }
-      !this.hasSummedData() && accumulateTree(this.rootData, this);
-
-      // _p("Formed new layout", this, "!");
 
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
@@ -1469,33 +1383,9 @@ export default class BaseVisualization implements IVisualization {
       console.log("Appended and set groups... :>>", {});
 
       this.appendCirclesAndLabels();
-      // this.appendLabels();
       this.appendButtons();
       
-      if (!!this.activeNode) {
-        // this?.isNewActiveNode &&
-        //   this.zoomBase().selectAll(".active-circle").remove();
-      } else {
-        // Set a default active node
-        this.isNewActiveNode = true;
-        let newActive = this.rootData.find((n) => {
-          return !n.data.content.match(/OOB/);
-        });
-        // console.log("New active node", newActive);
-        try {
-          this.setCurrentHabit(newActive);
-          this.setCurrentNode(newActive);
-          !this._zoomConfig.zoomedInView() &&
-            this.setActiveNode(newActive?.data);
-        } catch (err) {
-          console.error("No active habits for this date");
-        }
-      }
-      // this.activateNodeAnimation();
-      // console.log("Appended SVG elements... :>>");
       this.eventHandlers.handleNodeZoom.call(this, null, this.activeNode);
-      // console.log("this.activeNode", this.activeNode);
-      // console.log("this.activeNode.isNewActive", this.isNewActiveNode);
 
       // this._viewConfig.isSmallScreen() &&
       //   this.bindMobileEventHandlers(this._enteringNodes);

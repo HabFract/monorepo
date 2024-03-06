@@ -54,9 +54,11 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const [modalErrorMsg, setModalErrorMsg] = useState<string>("");
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(!!error || (!params?.orbitEh && !params?.currentSphereEhB64) || !!(currentOrbitTree && !currentOrbitTree?.rootData));
-
+  
   // Traverse (but don't render) the root of the sphere's hierarchy so that we can append the correct path to a subset of that tree that will be rendered by this component
-  const { loading: loadCache, error: errorCache, cached } = useFetchAndCacheRootHierarchyOrbitPaths({params: { orbitEntryHashB64: params.orbitEh }, hasCached: false, sphereNodes: sphereNodeDetails as SphereOrbitNodes})
+  const [hasCached, setHasCached] = useState<boolean>(false);
+  const { loading: loadCache, error: errorCache, cached } = useFetchAndCacheRootHierarchyOrbitPaths({params: { orbitEntryHashB64: params.orbitEh }, hasCached, sphereNodes: sphereNodeDetails as SphereOrbitNodes})
+  setHasCached(cached);
 
   const fetchHierarchyData = () => {
     if (error || isModalOpen) return;
