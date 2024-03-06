@@ -21,8 +21,9 @@ import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
 import { client } from "../../main";
-import miniDb, { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject } from "../../state/jotaiKeyValueStore";
+import { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject, nodeCache } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
+import { ThemeProvider } from "flowbite-react/lib/esm/components/Flowbite/ThemeContext";
 
 export default class BaseVisualization implements IVisualization {
   type: VisType;
@@ -575,11 +576,7 @@ export default class BaseVisualization implements IVisualization {
       const {width, height} = newPath._groups[0][0].getBoundingClientRect();
       const xTranslation = isMiddleElement ? 0 : (indexToBreadthRatio > 0.5 ? -1 : 1)*(width * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number / 2)); 
       
-      console.log('height *  :>> ', height * this._viewConfig.scale);
-      console.log('height *  :>> ', this._viewConfig.margin);
       const yTranslation = (height) * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number)/ 2; 
-      // const a = pathWidth?.getBoundingClientRect();
-      console.log('pathWidth :>> ', width, height, xTranslation);
       select(".canvas").selectAll("g.links")
         .attr("transform", `translate(${xTranslation},${-yTranslation})`)
     } else {
@@ -599,6 +596,8 @@ export default class BaseVisualization implements IVisualization {
           return [dx == 0 ? TWO_CHILDREN_LEFT : TWO_CHILDREN_RIGHT, 'path-parent-two-children-' + dx]; 
         } else if (breadth == 3) {
           return [THREE_CHILDREN, 'path-parent-three-children']; 
+        } else {
+          return [false, 'none'];
         }
       }
     }
@@ -958,6 +957,7 @@ export default class BaseVisualization implements IVisualization {
         .html((d) => {
         if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
           const {name, description, scale} = this.nodeDetails[d.data.content];
+          console.log('name :>> ', name);
           return `<div class="tooltip-inner">
           <div class="content">
           <span class="title">Name:</span>
@@ -1077,70 +1077,70 @@ export default class BaseVisualization implements IVisualization {
       .on("mouseenter", this.eventHandlers.handleHover.bind(this));
   }
 
-  appendLabels() : void {
-    this._gTooltip
-      .append("rect")
-      .attr("width", 3)
-      .attr("height", 45)
-      .attr("x", -6)
-      .attr("y", -25);
+  // appendLabels() : void {
+  //   this._gTooltip
+  //     .append("rect")
+  //     .attr("width", 3)
+  //     .attr("height", 45)
+  //     .attr("x", -6)
+  //     .attr("y", -25);
 
-    this._gTooltip
-      .append("div")
-      .attr("width", this.type == VisType.Radial ? 130 : 275)
-      .attr("height", 100)
-      .attr("x", -6)
-      .attr("y", -10);
+  //   this._gTooltip
+  //     .append("div")
+  //     .attr("width", this.type == VisType.Radial ? 130 : 275)
+  //     .attr("height", 100)
+  //     .attr("x", -6)
+  //     .attr("y", -10);
 
-    // Split the name label into two parts:
-    this._gTooltip
-      .append("text")
-      .attr("x", 5)
-      .attr("y", 20)
-      .text((d) => {
-        return d.data.name
-      })
-      .attr("transform", (d) => {
-        return this.type == VisType.Radial
-          ? `scale(0.75), translate(${
-              d.x < Math.PI / 2 ? "130, 100" : "0,0"
-            }), rotate(${0})`
-          : "";
-      });
-    this._gTooltip
-      .append("text")
-      .attr("x", 5)
-      .attr("y", 50)
-      .text((d) => {
-        const allWords = d.data.name.split(" ");
-        const words = allWords.slice(0, 6);
-        return `${words[4] || ""} ${words[5] || ""} ${words[6] || ""} ${
-          allWords.length > 7 ? "..." : ""
-        }`;
-      });
+  //   // Split the name label into two parts:
+  //   this._gTooltip
+  //     .append("text")
+  //     .attr("x", 5)
+  //     .attr("y", 20)
+  //     .text((d) => {
+  //       return d.data.name
+  //     })
+  //     .attr("transform", (d) => {
+  //       return this.type == VisType.Radial
+  //         ? `scale(0.75), translate(${
+  //             d.x < Math.PI / 2 ? "130, 100" : "0,0"
+  //           }), rotate(${0})`
+  //         : "";
+  //     });
+  //   this._gTooltip
+  //     .append("text")
+  //     .attr("x", 5)
+  //     .attr("y", 50)
+  //     .text((d) => {
+  //       const allWords = d.data.name.split(" ");
+  //       const words = allWords.slice(0, 6);
+  //       return `${words[4] || ""} ${words[5] || ""} ${words[6] || ""} ${
+  //         allWords.length > 7 ? "..." : ""
+  //       }`;
+  //     });
 
-    // this._enteringNodes
-    //   .append("g")
-    //   .attr(
-    //     "transform",
-    //     "translate(" +
-    //       (this.type == VisType.Radial ? -10 : -35) +
-    //       "," +
-    //       (this.type == VisType.Tree ? -25 : this.type == VisType.Radial ? -30 : 5) +
-    //       ") scale( " +
-    //       this._viewConfig.scale * 1.5 +
-    //       ") rotate(" +
-    //       (this.type == VisType.Cluster ? 270 : this.type == VisType.Radial ? 270 : 0) +
-    //       ")"
-    //   )
-    //   .append("path")
-    //   .attr("class", "expand-arrow")
-    //   .attr("d", (d) => {
-    //     return d._children
-    //       ? "M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"
-    //       : null;
-    //   });
-  }
+  //   // this._enteringNodes
+  //   //   .append("g")
+  //   //   .attr(
+  //   //     "transform",
+  //   //     "translate(" +
+  //   //       (this.type == VisType.Radial ? -10 : -35) +
+  //   //       "," +
+  //   //       (this.type == VisType.Tree ? -25 : this.type == VisType.Radial ? -30 : 5) +
+  //   //       ") scale( " +
+  //   //       this._viewConfig.scale * 1.5 +
+  //   //       ") rotate(" +
+  //   //       (this.type == VisType.Cluster ? 270 : this.type == VisType.Radial ? 270 : 0) +
+  //   //       ")"
+  //   //   )
+  //   //   .append("path")
+  //   //   .attr("class", "expand-arrow")
+  //   //   .attr("d", (d) => {
+  //   //     return d._children
+  //   //       ? "M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"
+  //   //       : null;
+  //   //   });
+  // }
   appendButtons() {
     const delBtnG = this._gButton.append("g");
     delBtnG
@@ -1170,7 +1170,8 @@ export default class BaseVisualization implements IVisualization {
 
   async cacheOrbits(orbitEntries: Array<[ActionHashB64, OrbitNodeDetails]>) {
     try {
-      store.set(miniDb.setMany, orbitEntries)
+      store.set(nodeCache.setMany, orbitEntries)
+      this.nodeDetails = Object.entries(orbitEntries);
       console.log('Sphere orbits fetched and cached!')
     } catch (error) {
       console.error('error :>> ', error);
@@ -1191,6 +1192,7 @@ export default class BaseVisualization implements IVisualization {
             e.target.classList.toggle('checked');
             e.target.closest('.the-node').firstChild.classList.toggle('checked');
             this.refetchOrbits()
+            this.render();
             break;
         
           case e.target.classList.contains('lower-button'):
@@ -1454,18 +1456,15 @@ export default class BaseVisualization implements IVisualization {
 
     if (
       this.firstRender() ||
-      this.hasNewHierarchyData() ||
-      this.isNewActiveNode ||
-      this.isCollapsed ||
-      this.isExpanded
+      this.hasNewHierarchyData()
     ) {
       // First render OR New hierarchy needs to be rendered
 
       // Update the current day's rootData
-      if (this.hasNextData()) this.rootData = this._nextRootData;
-      if (this.hasSummedData()) delete this._nextRootData;
-
-      if (!this.activeNode) console.log("Need new active node", {});
+      if (this.hasNextData()) {
+        this.rootData = this._nextRootData;
+        delete this._nextRootData
+      }
 
       if (this.noCanvas()) return;
 
@@ -1476,13 +1475,10 @@ export default class BaseVisualization implements IVisualization {
         this.clearCanvas(false);
         return;
       }
+
       const translationNeeded = !!this.rootData._translationCoords;
       this.clearCanvas(translationNeeded);
-      console.log('debug this.rootData._translationCoords :>> ', this.rootData._translationCoords);
-      console.log('debug this.nextrootData._translationCoords :>> ', this?._nextRootData?._translationCoords);
       translationNeeded && this.translateLinks(this.rootData._translationCoords);
-
-      // _p("Cleared canvas :>> ");
 
       this.setLayout();
       if (typeof this.rootData.newHabitDatesAdded == "undefined") {
@@ -1500,7 +1496,7 @@ export default class BaseVisualization implements IVisualization {
       console.log("Appended and set groups... :>>", {});
 
       this.appendCirclesAndLabels();
-      this.appendLabels();
+      // this.appendLabels();
       this.appendButtons();
       
       if (!!this.activeNode) {

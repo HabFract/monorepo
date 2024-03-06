@@ -13,8 +13,8 @@ import { CustomErrorLabel } from './CreateSphere';
 import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { currentSphere } from '../../state/currentSphereHierarchyAtom';
-import { useAtom } from 'jotai';
 import { AppState } from '../../routes';
+import { store } from '../../state/jotaiKeyValueStore';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -62,7 +62,7 @@ interface CreateOrbitProps {
 
 const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, parentOrbitEh, onCreateSuccess }: CreateOrbitProps) => {
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
-  const [selectedSphere, _setSelectedSphere] = useAtom(currentSphere);
+  const selectedSphere = store.get(currentSphere);
 
   // Used to dictate onward routing
   const originPage : AppState = !!parentOrbitEh ? 'Vis' : 'ListOrbits';
@@ -77,7 +77,25 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
         variables: { 
           params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 0 } },
         },
-      }
+      },
+      {
+        query: GetOrbitHierarchyDocument,
+        variables: { 
+          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 1 } },
+        },
+      },
+      {
+        query: GetOrbitHierarchyDocument,
+        variables: { 
+          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 2 } },
+        },
+      },
+      {
+        query: GetOrbitHierarchyDocument,
+        variables: { 
+          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 3 } },
+        },
+      },
     ],
   });
   const [updateOrbit] = useUpdateOrbitMutation({

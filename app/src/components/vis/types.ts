@@ -15,9 +15,7 @@ export type VisProps = { // for e.g. OrbitTree, OrbitCluster
   canvasWidth: number;
   margin: Margins;
   selectedSphere: SphereHashes;
-  breadthIndex: number;
-  depthIndex: number;
-  render: (currentVis: BaseVisualization, queryType: VisCoverage) => React.ReactNode;
+  render: (currentVis: BaseVisualization, queryType: VisCoverage, x, y,newRootData) => React.ReactNode;
 }
 
 export enum VisCoverage {

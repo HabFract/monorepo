@@ -1,7 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom'
 import { expect, describe, test, it } from '@jest/globals';
-import { render, waitFor, screen } from '@testing-library/react';
+import { render, waitFor, screen, act } from '@testing-library/react';
 
 import { renderVis } from '../../app/src/components/vis/helpers';
 
@@ -10,45 +10,76 @@ import OrbitTree from '../../app/src/components/vis/OrbitTree';
 import { HIERARCHY_MOCKS } from './mocks/hierarchy-root-only';
 import { ORBITS_MOCKS } from './mocks/orbits';
 import { MockedProvider } from '@apollo/client/testing';
-import { TestProvider } from '../utils-frontend';
-import { mockedCacheEntries } from './mocks/cache';
-import { SPHERE_ID } from './mocks/spheres';
-import { currentSphere } from '../../app/src/state/currentSphereHierarchyAtom';
+import { WithCurrentOrbitCoordsMockedAtom } from '../utils-frontend';
+import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 
-const Tree = renderVis(OrbitTree);
+test('renders a loading state, then an orbit tree vis with one node', async () => {
+  let Tree = renderVis(OrbitTree);
 
-
-test('renders a loading state, then an orbit tree vis with a node', async () => {
-  const { getByText } = render(
+  // Arrange
+  const { getByText, getAllByTestId } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
-      {(Tree)}
-    </MockedProvider>
-  );
-
+      {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+  
+  // Assert
   await waitFor(() => {
     expect(getByText('Loading!')).toBeTruthy();
   });
 
   await waitFor(() => {
-    expect(screen.getByTestId("test-node")).toBeTruthy();
+    expect(screen.getAllByTestId("test-node").length).toBe(1);
     expect(screen.getByTestId("svg")).toBeTruthy();
   });
 });
 
 test('renders details about the orbit', async () => {
+  let Tree = renderVis(OrbitTree);
+  
+  // Arrange
   const { getByText } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
-      <TestProvider initialValues={[
-        [currentSphere, { entryHash: SPHERE_ID, actionHash: SPHERE_ID }],
-      ]}>
-        {(Tree)}
-      </TestProvider>
-    </MockedProvider>
-  );
+      {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
 
   const orbitName = ORBITS_MOCKS[0].result.data.orbits!.edges[0].node.name;
-
+  
   await waitFor(() => {
     expect(getByText(orbitName)).toBeTruthy();
+  });
+});
+
+test('renders a loading state, then an orbit tree vis with two nodes', async () => {
+  let Tree = renderVis(OrbitTree);
+
+  // Arrange
+  const { getByText, getAllByTestId } = render(
+    <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
+      {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+  
+  // Assert
+  await waitFor(() => {
+    expect(getByText('Loading!')).toBeTruthy();
+  });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId("test-node").length).toBe(2);
+    expect(screen.getByTestId("svg")).toBeTruthy();
+  });
+});
+
+test('renders details about two orbits', async () => {
+  let Tree = renderVis(OrbitTree);
+  
+  // Arrange
+  const { getByText } = render(
+    <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
+      {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+
+  const mockOrbits = ORBITS_MOCKS[0].result.data.orbits!.edges;
+  const rootOrbitName = mockOrbits[0].node.name;
+  const childOrbitName = mockOrbits[1].node.name;
+  
+  await waitFor(() => {
+    expect(getByText(rootOrbitName)).toBeTruthy();
+    expect(getByText(childOrbitName)).toBeTruthy();
   });
 });

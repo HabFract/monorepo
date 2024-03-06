@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useGetSphereQuery, useGetOrbitsLazyQuery, Orbit, Sphere } from '../graphql/generated';
 import { extractEdges } from '../graphql/utils';
 import { OrbitNodeDetails, SphereNodeDetailsCache, mapToCacheObject } from '../state/jotaiKeyValueStore';
-import miniDB, { store } from '../state/jotaiKeyValueStore';
+import { nodeCache, store } from '../state/jotaiKeyValueStore';
 import { ActionHashB64 } from '@holochain/client';
 
 interface UseFetchAndCacheSphereOrbitsProps {
@@ -51,7 +51,7 @@ export const useFetchAndCacheSphereOrbits = ({ sphereAh }: UseFetchAndCacheSpher
         return cacheObject;
       }, indexedSphereData);
 
-      store.set(miniDB.setMany, Object.entries(entries));
+      store.set(nodeCache.setMany, Object.entries(entries));
     }
   }, [data, sphereAh]);
 

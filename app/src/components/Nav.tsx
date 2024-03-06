@@ -5,8 +5,8 @@ import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
 import { Sphere, SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
 import { DarkThemeToggle } from "flowbite-react";
-import { useAtom } from "jotai";
-import { currentSphere } from "../state/currentSphereHierarchyAtom";
+import { currentOrbitCoords, currentSphere } from "../state/currentSphereHierarchyAtom";
+import { store } from "../state/jotaiKeyValueStore";
 import { extractEdges } from "../graphql/utils";
 import { ActionHashB64 } from "@holochain/client";
 
@@ -70,7 +70,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
     };
   }, []);
 
-  const [selectedSphere, setSelectedSphere] = useAtom(currentSphere);
+  const selectedSphere = store.get(currentSphere);
 
   const onClick: MenuProps['onClick'] = (e) => {
     setSelectedItemName(e.key)
@@ -78,11 +78,12 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
     if(e.key.match(/list\-orbits\-|add\-orbit\-/)) { // Add any nav change conditions that should select a sphere
       const id = e.key.split(/list\-orbits\-|add\-orbit\-/)[1];
       const sphere = extractEdges(spheres?.spheres as any).find((sphere: any) => sphere.id == id) as Sphere & {id: ActionHashB64};
-      sphere && setSelectedSphere({entryHash: sphere.eH, actionHash: sphere.id})
+      sphere && store.set(currentSphere, {entryHash: sphere.eH, actionHash: sphere.id})
     }
 
     switch (true) {
       case e.key == 'vis':
+        store.set(currentOrbitCoords, {x: 0, y: 0})
         transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})
         break;
 

@@ -4,7 +4,7 @@ export const mockedCacheEntries = [
   [
     SPHERE_ID,
     {
-      "UHJhY3RpY2UgeW9nYQ==": {
+      "UHJhY3RpY2UR28gZm9yIGEgd2Fsay==eW9nYQ==": {
         id: "UHJhY3RpY2UgeW9nYQ==",
         eH: "EUHJhY3RpY2UgeW9nYQ==",
         checked: false,
@@ -12,7 +12,7 @@ export const mockedCacheEntries = [
         scale: "Atom",
         description:
           "Engage in yoga to enhance flexibility, strength, and mental clarity.",
-        startTime: 1617235200,
+        startTime: 1617235100,
         endTime: 1617321600,
       },
 
@@ -24,7 +24,7 @@ export const mockedCacheEntries = [
         scale: "Atom",
         description:
           "Preparing nutritious meals to fuel the body for optimal health.",
-        startTime: 1617235200,
+        startTime: 1617235150,
         endTime: 1617321600,
       },
 
@@ -36,6 +36,28 @@ export const mockedCacheEntries = [
         scale: "Atom",
         description: "A daily walk to improve cardiovascular health.",
         startTime: 1617235200,
+        endTime: 1617321600,
+      },
+
+      "R28gZm9yIGEgd2Fsay==1": {
+        id: "R28gZm9yIGEgd2Fsay==1",
+        eH: "ER28gZm9yIGEgd2Fsay==1e",
+        checked: false,
+        name: "Go for a step",
+        scale: "Atom",
+        description: "A daily step to improve cardiovascular health.",
+        startTime: 1617235200,
+        endTime: 1617321600,
+      },
+
+      "R28gZm9yIGEgd2Fsay==2": {
+        id: "R28gZm9yIGEgd2Fsay==2",
+        eH: "ER28gZm9yIGEgd2Fsay==2e",
+        checked: false,
+        name: "Go for a bigger step",
+        scale: "Atom",
+        description: "A daily bigger step to improve cardiovascular health.",
+        startTime: 1617235201,
         endTime: 1617321600,
       },
 

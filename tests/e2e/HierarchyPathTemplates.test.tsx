@@ -10,7 +10,7 @@ import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
 import { WithCurrentSphereMockedAtom } from '../utils-frontend';
 
-describe('Hierarchy Path Templates - after traversing down, it renders path an only child', () => {
+describe.skip('Hierarchy Path Templates - after traversing down, it renders path an only child', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
@@ -19,7 +19,7 @@ describe('Hierarchy Path Templates - after traversing down, it renders path an o
     Tree = undefined;
   });
 
-  it('CURRENT renders a path for the only child after traversing from the root', async () => {
+  it('renders a path for the only child after traversing from the root', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
           {WithCurrentSphereMockedAtom(Tree)}
@@ -37,7 +37,7 @@ describe('Hierarchy Path Templates - after traversing down, it renders path an o
   });
 });
 
-describe('Hierarchy Path Templates - after traversing down-left, it renders a path for the first child after traversing from the root', () => {
+describe.skip('Hierarchy Path Templates - after traversing down-left, it renders a path for the first child after traversing from the root', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);

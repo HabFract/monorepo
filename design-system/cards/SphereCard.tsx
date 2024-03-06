@@ -4,6 +4,8 @@ import { DeleteOutlined, EditOutlined, PieChartOutlined, OrderedListOutlined, Pl
 import SphereVis from '../vis/SphereVis';
 import { Scale, Sphere } from '../../app/src/graphql/generated';
 import { Button } from 'flowbite-react';
+import { currentOrbitCoords } from '../../app/src/state/currentSphereHierarchyAtom';
+import { store } from '../../app/src/state/jotaiKeyValueStore';
 
 type SphereCardProps = {
   sphere: Sphere;
@@ -82,7 +84,8 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
                 <span>Add Orbit</span>
               </Button>}
 
-              <Button className="btn responsive btn-primary w-full" size="sm" onClick={() => transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })}>
+              <Button className="btn responsive btn-primary w-full" size="sm" onClick={() => {
+        store.set(currentOrbitCoords, {x: 0, y: 0}); transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })}}>
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>
               </Button>

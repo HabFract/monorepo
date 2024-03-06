@@ -4,10 +4,10 @@ import { VisProps, VisCoverage, VisType } from './types';
 import { hierarchy } from "d3-hierarchy";
 import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
 
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import miniDB, { SphereOrbitNodes } from '../../state/jotaiKeyValueStore';
-import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
+import { SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
+import { currentOrbitCoords, currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
@@ -17,30 +17,31 @@ export const OrbitTree: ComponentType<VisProps> = ({
   canvasHeight,
   canvasWidth,
   margin,
-  breadthIndex,
-  depthIndex,
   render
 }) => {
   // Top level state machine and routing
   const [_state, transition, params] = useStateTransition();
 
   // Get sphere and sphere orbit nodes details
-  const nodeDetailsCache =  Object.fromEntries(useAtomValue(miniDB.entries));
+  const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries));
   
   // Does this vis cover the whole tree, or just a window over the whole tree?
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;
 
   // Get and set node traversal bound state
+  const sphere = useAtomValue(currentSphere);
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [_, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
-
+  const result = useAtomValue(currentOrbitCoords)
+  const {x,y} = useAtomValue(currentOrbitCoords)
+  
   // Helper to form the query parameter object
   const getQueryParams = (customDepth?: number): OrbitHierarchyQueryParams => visCoverage == VisCoverage.Complete
     ? { orbitEntryHashB64: params.orbitEh }
     : { levelQuery: { sphereHashB64: params.currentSphereEhB64, orbitLevel: customDepth || 0 } };
   // Helper to determine which part of the returned query data should be used in the Vis object
-  const getJsonDerivation = (json: string) => visCoverage == VisCoverage.Complete ? JSON.parse(json) : JSON.parse(json)[breadthIndex]
+  const getJsonDerivation = (json: string) => visCoverage == VisCoverage.Complete ? JSON.parse(json) : JSON.parse(json)[x]
 
   // GQL Query hook, parsed JSON state, and Vis object state
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery()
@@ -54,14 +55,24 @@ export const OrbitTree: ComponentType<VisProps> = ({
 
   const fetchHierarchyData = () => {
     if (error || isModalOpen) return;
-    const query = depthBounds ? { ...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereEhB64] as any).minDepth } : getQueryParams(depthIndex)
+    const query = depthBounds ? { ...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereEhB64] as any).minDepth } : getQueryParams(y)
+    console.log('query :>> ', query);
     getHierarchy({ variables: { params: { ...query } } })
   }
 
   const instantiateVisObject = () => {
     if (!error && json && !currentOrbitTree) {
       const currentTreeJson = getJsonDerivation(json);
-      const hierarchyData = hierarchy(currentTreeJson);
+      const hierarchyData = hierarchy(currentTreeJson).sort((a, b) => {
+        const idA : ActionHashB64 = a.data.content;
+        const idB : ActionHashB64 = b.data.content;
+        const sphereNodes = nodeDetailsCache[params.currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
+        return (sphereNodes[idA].startTime as number) - (sphereNodes[idB as keyof SphereOrbitNodes].startTime as number)
+      });
+        
+      
+      setDepthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.Complete ? 100 : hierarchyData.height])
+
       const sphereNodeDetails = nodeDetailsCache[params.currentSphereAhB64] || {}
       const orbitVis = new BaseVisualization(
         VisType.Tree,
@@ -87,9 +98,14 @@ export const OrbitTree: ComponentType<VisProps> = ({
     setModalErrorMsg(parsedGuestError[1] || "There was an error")
   }, [error])
 
-  useEffect(fetchHierarchyData, [depthIndex])
+  useEffect(fetchHierarchyData, [y])
 
   useEffect(() => {
+    const cacheEntries = nodeDetailsCache[params?.currentSphereAhB64] as SphereOrbitNodes;
+    const byStartTime = (a, b) => {
+      if(!cacheEntries) return 0;
+      return (cacheEntries[a.content]?.startTime || 0) - (cacheEntries[b.content]?.startTime || 0)
+    }
     if (!error && typeof data?.getOrbitHierarchy === 'string') {
       let parsedData = JSON.parse(data.getOrbitHierarchy);
       // Continue parsing if the result is still a string, this undoes more than one level of JSONification
@@ -97,10 +113,9 @@ export const OrbitTree: ComponentType<VisProps> = ({
         parsedData = JSON.parse(parsedData);
       }
       // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
-      setDepthBounds(params?.currentSphereEhB64, [0, 2]);
       setBreadthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.Complete ? 100 : parsedData.result.level_trees.length - 1])
       // Depending on query type, set the state of the parsed JSON to the relevant part of the payload
-      setJson(JSON.stringify(visCoverage == VisCoverage.Complete ? parsedData.result : parsedData.result.level_trees));
+      setJson(JSON.stringify(visCoverage == VisCoverage.Complete ? parsedData.result : parsedData.result.level_trees.sort(byStartTime)));
     }
   }, [data])
 
@@ -112,14 +127,10 @@ export const OrbitTree: ComponentType<VisProps> = ({
       // -- set the _nextRootData property of the vis, 
       // -- trigger a re-render
       currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string));
-
-      // TODO: set actual depth bounds and perhaps use the translation coords
-      
-      currentOrbitTree._nextRootData._translationCoords = [breadthIndex, depthIndex, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1];
-
+      currentOrbitTree._nextRootData._translationCoords = [x, y, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1];
       currentOrbitTree.render();
     }
-  }, [json, breadthIndex])
+  }, [json, x, y])
 
   return (
     <>
@@ -162,7 +173,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
           </Modal.Body>
         </Modal>
       )}
-      {!error && json && currentOrbitTree && render(currentOrbitTree, visCoverage)}
+      {!error && json && currentOrbitTree && render(currentOrbitTree, visCoverage, x, y, hierarchy(getJsonDerivation(json)))}
     </>
   )
 };
