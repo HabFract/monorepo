@@ -12,7 +12,7 @@ import { legendColor } from "d3-svg-legend";
 // import propagating from "propagating-hammerjs";
 import _ from "lodash";
 
-import { ONE_CHILD, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT, THREE_CHILDREN } from './PathTemplates/paths';
+import { ONE_CHILD, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT } from './PathTemplates/paths';
 
 import { expand, collapse, contentEqual, nodeStatusColours, parseTreeValues, cumulativeValue, outOfBoundsNode, getInitialXTranslate, getInitialYTranslate, newXTranslate, newYTranslate, debounce } from "./helpers";
 
@@ -552,7 +552,7 @@ export default class BaseVisualization implements IVisualization {
     const middleIndex = (breadth + 1) / 2;
     const isMiddleElement = (dx + 1) == middleIndex;
     const isChildElement = dy > 0; 
-    
+    debugger;
 //     console.log('debug isMiddleElement, isChildElement, :>> ', isMiddleElement, isChildElement,);
 //     console.log('debug dx dy ratio :>> ', dx, dy, indexToBreadthRatio);
 //     const dxScaled = this._viewConfig!.dx as number / this._viewConfig.scale;
@@ -562,7 +562,7 @@ export default class BaseVisualization implements IVisualization {
 // // + (this._viewConfig!.nodeRadius as number)  * 2 as any
 //     const x = isMiddleElement ? 0 : indexToBreadthRatio > 0.5 ? (fullWidth) : -(fullWidth);
 //     const y = -(this._viewConfig!.dy as number);
-    const [path, dataTestId] = determinePathFragment(dx, dy, breadth);
+    // const [path, dataTestId] = determinePathFragment(dx, dy, breadth);
 
     select(".canvas").selectAll("g.links *").remove();
     if(!!path) {
@@ -584,23 +584,14 @@ export default class BaseVisualization implements IVisualization {
     }
 
     // Helper function to determine the SVG path fragment based on node position
-    function determinePathFragment(dx: number, dy: number, breadth: number) : any {
-      if (dy === 0) {
-        // Root node logic
-        return [false, 'none']; // No path needed
-      } else {
-        // Child node logic
-        if (breadth === 1) {
-          return [ONE_CHILD, 'path-parent-one-child']; 
-        } else if (breadth == 2) {
-          return [dx == 0 ? TWO_CHILDREN_LEFT : TWO_CHILDREN_RIGHT, 'path-parent-two-children-' + dx]; 
-        } else if (breadth == 3) {
-          return [THREE_CHILDREN, 'path-parent-three-children']; 
-        } else {
-          return [false, 'none'];
-        }
-      }
-    }
+    // function determinePathFragment(dx: number, dy: number, breadth: number) : any {
+    //   if (dy === 0) {
+    //     // Root node logic
+    //     return [false, 'none']; // No path needed
+    //   } else {
+    //     return
+    //   }
+    // }
   }
 
   resetForExpandedMenu({ justTranslation }) {
@@ -1475,7 +1466,7 @@ export default class BaseVisualization implements IVisualization {
         this.clearCanvas(false);
         return;
       }
-
+debugger;
       const translationNeeded = !!this.rootData._translationCoords;
       this.clearCanvas(translationNeeded);
       translationNeeded && this.translateLinks(this.rootData._translationCoords);

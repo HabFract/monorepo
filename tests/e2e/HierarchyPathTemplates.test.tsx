@@ -5,7 +5,7 @@ import { expect, describe, test, it } from '@jest/globals';
 import { MockedProvider } from '@apollo/client/testing';
 import OrbitTree from '../../app/src/components/vis/OrbitTree';
 import { renderVis } from '../../app/src/components/vis/helpers';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { screen, render, waitFor } from '@testing-library/react';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
 import { WithCurrentOrbitCoordsMockedAtom } from '../utils-frontend';
@@ -27,9 +27,14 @@ jest.mock("../../app/src/hooks/useNodeTraversal", () => ({
     incrementDepth,
     decrementBreadth,
     decrementDepth,
-    maxBreadth, // Should be irrelevant for these tests
+    maxBreadth
   }),
 }));
+
+// Mock the value that would be set in the traversal hook to the length of the 'level_trees' array - 1
+export function setHierarchyBreadth(num: number) {
+  maxBreadth = num
+}
 
 describe('Hierarchy Path Templates - after traversing down, it renders path an only child', () => {
   let Tree;
@@ -49,26 +54,38 @@ describe('Hierarchy Path Templates - after traversing down, it renders path an o
   });
 });
 
-describe('Hierarchy Path Templates - after traversing down-left, it renders a path for the first child after traversing from the root', () => {
+// describe('Hierarchy Path Templates - after traversing down-left, it renders a path for the first child after traversing from the root', () => {
+describe('CURRENT', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
   });
-  
+
+  function returnRerender(node: React.ReactNode, options) {
+    const rendered = render(<MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>{node}</MockedProvider>, options)
+    const container = rendered.container;
+    console.log('rendered container :>> ', container);
+    return {
+      ...rendered,
+      rerender: (ui, options) =>
+        returnRerender(ui, {container, ...options}),
+      }
+  }
+
   it('renders a path for the first child after traversing from the root', async () => {
-    // Arrange
-    const { getByTestId, queryByTestId } = render(
-      <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+    // Arrange - simulate state before the described traversal 
+    const { getByTestId, rerender } = returnRerender(WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0}), undefined);
+        
     
-    
-    await waitFor(async () => {
-      const traversalButton = getByTestId('traversal-button-down-left');
-      await fireEvent.click(traversalButton);
-    });
+    // Arrange - simulate state after the described traversal 
+    rerender(WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1}), undefined);
+    setHierarchyBreadth(1) // zero-indexed breadth of 2 on level 1
     
     await waitFor(() => {
       expect(getByTestId('path-parent-two-children-0')).toBeTruthy();
     });
+
+    expect(screen.queryByTestId('path-parent-one-child')).not.toBeTruthy();
+    expect(screen.queryByTestId('path-parent-two-children-1')).not.toBeTruthy();
   });
 });

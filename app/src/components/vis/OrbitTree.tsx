@@ -12,6 +12,7 @@ import { currentOrbitCoords, currentSphere, currentSphereHierarchyBounds, setBre
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
+import { useFetchAndCacheRootHierarchyOrbitPaths } from '../../hooks/useFetchAndCacheRootHierarchyOrbitPaths';
 
 export const OrbitTree: ComponentType<VisProps> = ({
   canvasHeight,
@@ -24,6 +25,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
 
   // Get sphere and sphere orbit nodes details
   const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries));
+  const sphereNodeDetails = nodeDetailsCache[params.currentSphereAhB64] || {}
   
   // Does this vis cover the whole tree, or just a window over the whole tree?
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;
@@ -53,10 +55,12 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(!!error || (!params?.orbitEh && !params?.currentSphereEhB64) || !!(currentOrbitTree && !currentOrbitTree?.rootData));
 
+  // Traverse (but don't render) the root of the sphere's hierarchy so that we can append the correct path to a subset of that tree that will be rendered by this component
+  const { loading: loadCache, error: errorCache, cached } = useFetchAndCacheRootHierarchyOrbitPaths({params: { orbitEntryHashB64: params.orbitEh }, hasCached: false, sphereNodes: sphereNodeDetails as SphereOrbitNodes})
+
   const fetchHierarchyData = () => {
     if (error || isModalOpen) return;
     const query = depthBounds ? { ...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereEhB64] as any).minDepth } : getQueryParams(y)
-    console.log('query :>> ', query);
     getHierarchy({ variables: { params: { ...query } } })
   }
 
@@ -73,7 +77,6 @@ export const OrbitTree: ComponentType<VisProps> = ({
       
       setDepthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.Complete ? 100 : hierarchyData.height])
 
-      const sphereNodeDetails = nodeDetailsCache[params.currentSphereAhB64] || {}
       const orbitVis = new BaseVisualization(
         VisType.Tree,
         'vis',
@@ -126,6 +129,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
       // If there is a change to the parsed JSON or we traverse the parsed json's `level_trees` array (breadth traversal), then 
       // -- set the _nextRootData property of the vis, 
       // -- trigger a re-render
+      console.log('x, y hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1 :>> ', x, y, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1);
       currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string));
       currentOrbitTree._nextRootData._translationCoords = [x, y, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1];
       currentOrbitTree.render();
