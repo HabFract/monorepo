@@ -42,9 +42,6 @@ describe('Hierarchy Traversal -  renders traversal buttons for parent with 1 chi
   beforeEach(() => {
     Tree = renderVis(OrbitTree);
   });
-  afterAll(() => {
-    Tree = undefined;
-  });
 
   it('renders traversal button for going down a level', async () => {
     // Arrange
@@ -90,9 +87,6 @@ describe('Hierarchy Traversal - it renders traversal buttons and triggers events
   let Tree;
   beforeEach(() => {
     Tree = renderVis(OrbitTree);
-  });
-  afterAll(() => {
-    Tree = undefined;
   });
 
   it('initially renders traversal button for going down a level', async () => {
@@ -245,9 +239,7 @@ describe('Hierarchy Traversal - it renders traversal buttons and triggers events
   beforeEach(() => {
     Tree = renderVis(OrbitTree);
   });
-  afterAll(() => {
-    Tree = undefined;
-  });
+  
 
   it('initially renders traversal button for going down a level', async () => {
     // Arrange

@@ -36,9 +36,6 @@ describe('Hierarchy Path Templates - after traversing down, it renders path an o
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
   });
-  afterAll(() => {
-    Tree = undefined;
-  });
 
   it('by default renders no extra paths', async () => {
     // Arrange
@@ -56,9 +53,6 @@ describe('Hierarchy Path Templates - after traversing down-left, it renders a pa
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
-  });
-  afterAll(() => {
-    Tree = undefined;
   });
   
   it('renders a path for the first child after traversing from the root', async () => {
