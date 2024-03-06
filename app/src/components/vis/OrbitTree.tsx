@@ -55,10 +55,9 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(!!error || (!params?.orbitEh && !params?.currentSphereEhB64) || !!(currentOrbitTree && !currentOrbitTree?.rootData));
   
-  // Traverse (but don't render) the root of the sphere's hierarchy so that we can append the correct path to a subset of that tree that will be rendered by this component
+  // Traverse (but don't render) the root of the sphere's hierarchy so that we can cache the correct path to append at the top of the vis
   const [hasCached, setHasCached] = useState<boolean>(false);
-  const { loading: loadCache, error: errorCache, cached } = useFetchAndCacheRootHierarchyOrbitPaths({params: { orbitEntryHashB64: params.orbitEh }, hasCached, sphereNodes: sphereNodeDetails as SphereOrbitNodes})
-  setHasCached(cached);
+  const { loading: loadCache, error: errorCache, cache } = useFetchAndCacheRootHierarchyOrbitPaths({params: { orbitEntryHashB64: params.orbitEh }, hasCached, sphereNodes: sphereNodeDetails as SphereOrbitNodes})
 
   const fetchHierarchyData = () => {
     if (error || isModalOpen) return;
@@ -103,6 +102,13 @@ export const OrbitTree: ComponentType<VisProps> = ({
     setModalErrorMsg(parsedGuestError[1] || "There was an error")
   }, [error])
 
+  useEffect(() => {
+    if(!hasCached && cache !== null) {
+      cache()
+      setHasCached(true);
+    }
+  }, [cache])
+
   useEffect(fetchHierarchyData, [y])
 
   useEffect(() => {
@@ -131,7 +137,6 @@ export const OrbitTree: ComponentType<VisProps> = ({
       // If there is a change to the parsed JSON or we traverse the parsed json's `level_trees` array (breadth traversal), then 
       // -- set the _nextRootData property of the vis, 
       // -- trigger a re-render
-      console.log('x, y hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1 :>> ', x, y, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1);
       currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string));
       currentOrbitTree._nextRootData._translationCoords = [x, y, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1];
       currentOrbitTree.render();

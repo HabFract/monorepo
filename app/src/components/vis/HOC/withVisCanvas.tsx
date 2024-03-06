@@ -96,11 +96,9 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                 });
                 if(currentOrbit?.data?.content) {
                   const node = currentVis.nodeDetails[selectedSphere.actionHash as ActionHashB64];
-                  console.log('node :>> ', node);
                   // currentOrbit && store.set(currentOrbitIdAtom, currentOrbit.data.content);
                 }
                 hasChild = newRootData?.data.children && newRootData?.data.children.length > 0  
-                console.log('hasChild :>> ', hasChild);
               }
   
               onlyChildParent = currentVis.rootData.parent == null || currentVis.rootData.parent?.children && currentVis.rootData.parent?.children.length == 1;

@@ -12,7 +12,7 @@ import { legendColor } from "d3-svg-legend";
 // import propagating from "propagating-hammerjs";
 import _ from "lodash";
 
-import { ONE_CHILD, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT } from './PathTemplates/paths';
+import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, ONE_CHILD, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3, THREE_CHILDREN_LEFT, THREE_CHILDREN_RIGHT, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT } from './PathTemplates/paths';
 
 import { expand, collapse, contentEqual, nodeStatusColours, parseTreeValues, cumulativeValue, outOfBoundsNode, getInitialXTranslate, getInitialYTranslate, newXTranslate, newYTranslate, debounce } from "./helpers";
 
@@ -542,41 +542,90 @@ export default class BaseVisualization implements IVisualization {
     select(".canvas")?.remove();
   }
 
-  clearCanvas(saveLinks: boolean) : void {
-    select(".canvas").selectAll(saveLinks ? "*:not(g.links):not( path.link):not(g.links:last-of-type)" : "*").remove();
-    select(".canvas").selectAll("g.links + g.links").remove();
+  clearCanvas() : void {
+    select(".canvas").selectAll("*").remove();
   }
 
-  translateLinks([dx, dy, breadth]: number[]) : void {
+  // clearPreviousLinkPath() : void {
+  //   this._canvas.selectAll("g.links *").remove();
+  // }
 
-    select(".canvas").selectAll("g.links *").remove();
-    if(!!path) {
-      select(".canvas").selectAll("g.links").append('path')
-        .attr("d", path)
-        .classed("link", true)
-        .attr("stroke-width", "3")
-        .attr("stroke-opacity", "0.3")
-        .attr("data-testid", dataTestId);
-      const newPath = select(".canvas").selectAll("g.links path")
-      const {width, height} = newPath._groups[0][0].getBoundingClientRect();
-      const xTranslation = isMiddleElement ? 0 : (indexToBreadthRatio > 0.5 ? -1 : 1)*(width * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number / 2)); 
-      
-      const yTranslation = (height) * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number)/ 2; 
-      select(".canvas").selectAll("g.links")
-        .attr("transform", `translate(${xTranslation},${-yTranslation})`)
-    } else {
-      // select(".canvas").selectAll("g.links").remove();
+  appendLinkPath() : void {
+    const rootNodeId = this.rootData.data.content;
+    const cacheItem : OrbitNodeDetails = store.get(nodeCache.items)?.[this.sphereAh]?.[rootNodeId];
+    console.log('rootNodeId, cacheItem :>> ', rootNodeId, cacheItem);
+    if(!cacheItem || !cacheItem?.path) return
+    
+    const newPath = select(".canvas").selectAll("g.links").append('path')
+      .attr("d", cacheItem.path)
+      .classed("link", true)
+      .attr("stroke-width", "3")
+      .attr("stroke-opacity", "0.3")
+      .attr("data-testid", getTestId(cacheItem.path));
+
+    const pathElement = newPath._groups[0][0];
+    
+    const {height, width} = pathElement.getBoundingClientRect();
+    select(pathElement).attr("transform", `translate(${getPathXTranslation(cacheItem.path, width, 300/this._viewConfig.scale) * this._viewConfig.scale},${-((height + 100) * this._viewConfig.scale)})`);
+
+    // Helper function to get exact x translation based on path
+    function getPathXTranslation(path: string, width: number, offset: number) : number {
+      switch (path) {
+        case ONE_CHILD:
+          return 0
+        case TWO_CHILDREN_LEFT:
+          return width + offset
+        case TWO_CHILDREN_RIGHT:
+          return -(width + offset)
+        case THREE_CHILDREN_LEFT:
+          return width + offset * 2
+        case THREE_CHILDREN_RIGHT:
+          return -(width + offset * 2)
+        case FOUR_CHILDREN_LEFT_1:
+          return width + offset * 3
+        case FOUR_CHILDREN_LEFT_2:
+          return width + offset
+        case FOUR_CHILDREN_RIGHT_1:
+          return -(width + offset)
+        case FOUR_CHILDREN_RIGHT_2:
+          return -(width + offset * 3)
+        case FIVE_CHILDREN_LEFT_1:
+          return width + offset * 4
+        case FIVE_CHILDREN_LEFT_2:
+          return width + offset * 2
+        case FIVE_CHILDREN_RIGHT_1:
+          return -(width + offset * 2)
+        case FIVE_CHILDREN_RIGHT_2:
+          return -(width + offset * 4)
+        case SIX_CHILDREN_LEFT_1:
+          return width + offset * 5
+        case SIX_CHILDREN_LEFT_2:
+          return width + offset * 2
+        case SIX_CHILDREN_LEFT_3:
+          return width + offset * 2
+        case SIX_CHILDREN_RIGHT_1:
+          return -(width + offset * 2)
+        case SIX_CHILDREN_RIGHT_2:
+          return -(width + offset * 2)
+        case SIX_CHILDREN_RIGHT_3:
+          return -(width + offset * 5)
+        default:
+          0
+      }
     }
-
-    // Helper function to determine the SVG path fragment based on node position
-    // function determinePathFragment(dx: number, dy: number, breadth: number) : any {
-    //   if (dy === 0) {
-    //     // Root node logic
-    //     return [false, 'none']; // No path needed
-    //   } else {
-    //     return
-    //   }
-    // }
+    // Helper function to fetch path testId based on path
+    function getTestId(path: string) : string {
+      switch (path) {
+        case ONE_CHILD:
+          return 'path-parent-one-child'
+        case TWO_CHILDREN_LEFT:
+          return 'path-parent-two-children-0'
+        case TWO_CHILDREN_RIGHT:
+          return 'path-parent-two-children-1'
+        default:
+          'none'
+      }
+    }
   }
 
   resetForExpandedMenu({ justTranslation }) {
@@ -933,7 +982,6 @@ export default class BaseVisualization implements IVisualization {
         .html((d) => {
         if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
           const {name, description, scale} = this.nodeDetails[d.data.content];
-          console.log('name :>> ', name);
           return `<div class="tooltip-inner">
           <div class="content">
           <span class="title">Name:</span>
@@ -1053,70 +1101,6 @@ export default class BaseVisualization implements IVisualization {
       .on("mouseenter", this.eventHandlers.handleHover.bind(this));
   }
 
-  // appendLabels() : void {
-  //   this._gTooltip
-  //     .append("rect")
-  //     .attr("width", 3)
-  //     .attr("height", 45)
-  //     .attr("x", -6)
-  //     .attr("y", -25);
-
-  //   this._gTooltip
-  //     .append("div")
-  //     .attr("width", this.type == VisType.Radial ? 130 : 275)
-  //     .attr("height", 100)
-  //     .attr("x", -6)
-  //     .attr("y", -10);
-
-  //   // Split the name label into two parts:
-  //   this._gTooltip
-  //     .append("text")
-  //     .attr("x", 5)
-  //     .attr("y", 20)
-  //     .text((d) => {
-  //       return d.data.name
-  //     })
-  //     .attr("transform", (d) => {
-  //       return this.type == VisType.Radial
-  //         ? `scale(0.75), translate(${
-  //             d.x < Math.PI / 2 ? "130, 100" : "0,0"
-  //           }), rotate(${0})`
-  //         : "";
-  //     });
-  //   this._gTooltip
-  //     .append("text")
-  //     .attr("x", 5)
-  //     .attr("y", 50)
-  //     .text((d) => {
-  //       const allWords = d.data.name.split(" ");
-  //       const words = allWords.slice(0, 6);
-  //       return `${words[4] || ""} ${words[5] || ""} ${words[6] || ""} ${
-  //         allWords.length > 7 ? "..." : ""
-  //       }`;
-  //     });
-
-  //   // this._enteringNodes
-  //   //   .append("g")
-  //   //   .attr(
-  //   //     "transform",
-  //   //     "translate(" +
-  //   //       (this.type == VisType.Radial ? -10 : -35) +
-  //   //       "," +
-  //   //       (this.type == VisType.Tree ? -25 : this.type == VisType.Radial ? -30 : 5) +
-  //   //       ") scale( " +
-  //   //       this._viewConfig.scale * 1.5 +
-  //   //       ") rotate(" +
-  //   //       (this.type == VisType.Cluster ? 270 : this.type == VisType.Radial ? 270 : 0) +
-  //   //       ")"
-  //   //   )
-  //   //   .append("path")
-  //   //   .attr("class", "expand-arrow")
-  //   //   .attr("d", (d) => {
-  //   //     return d._children
-  //   //       ? "M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"
-  //   //       : null;
-  //   //   });
-  // }
   appendButtons() {
     const delBtnG = this._gButton.append("g");
     delBtnG
@@ -1355,31 +1339,24 @@ export default class BaseVisualization implements IVisualization {
       this.hasNewHierarchyData()
     ) {
       // First render OR New hierarchy needs to be rendered
+      
+      if (this.noCanvas()) return;
+      this.clearCanvas();
 
       // Update the current day's rootData
       if (this.hasNextData()) {
         this.rootData = this._nextRootData;
         delete this._nextRootData
-        this.clearCanvas(false);
       }
 
-      if (this.noCanvas()) return;
-
-      //Render cleared canvas for OOB dates
-      const isBlankData = this.rootData?.data?.content == "";
-      if (isBlankData) {
-        console.log("Rendered blank :>> ");
-        this.clearCanvas(false);
-        return;
-      }
-      
       this.setLayout();
 
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
       this.setCircleAndLabelGroups();
       this.setButtonGroups();
-
+      
+      this.appendLinkPath();
       console.log("Appended and set groups... :>>", {});
 
       this.appendCirclesAndLabels();

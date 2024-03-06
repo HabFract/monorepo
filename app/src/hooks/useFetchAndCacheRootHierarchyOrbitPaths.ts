@@ -1,5 +1,5 @@
 import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3 } from './../components/vis/PathTemplates/paths';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   OrbitHierarchyQueryParams,
   useGetOrbitHierarchyQuery,
@@ -29,7 +29,7 @@ interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
 interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
   loading: boolean;
   error?: Error;
-  cached: boolean;
+  cache: Function | null;
 }
 
 export const useFetchAndCacheRootHierarchyOrbitPaths = ({
@@ -39,13 +39,14 @@ export const useFetchAndCacheRootHierarchyOrbitPaths = ({
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
   const rootLevel = 0; // NOTE: this will potentially be negative in the future and will have to be figured out from new backend functionality
   params.orbitEntryHashB64 =
-    "uhCEki40eCuhsovNGfSW58x2h5e6D7P5O0lxjhwZfopX9QnHFtDdy";
+    "uhCEkFRQWwBr0LTZVYjXaOx_tj4EYZTj10d7enLcTYkNBs5OV0Kbn";
+    //TODO get this and un-hard code.
   const { data, loading, error } = useGetOrbitHierarchyQuery({
     skip: hasCached,
     variables: { params },
   });
 
-  let cached: boolean = false;
+  const [hierarchyObject, setHierarchyObject] = useState()
 
   useEffect(() => {
     if (data) {
@@ -54,7 +55,7 @@ export const useFetchAndCacheRootHierarchyOrbitPaths = ({
       while (typeof parsedData === "string") {
         parsedData = JSON.parse(parsedData);
       }
-      cached = cacheOrbitPaths(
+      setHierarchyObject(
         hierarchy(parsedData.result).sort((a, b) => {
           const idA: ActionHashB64 = a.data.content;
           const idB: ActionHashB64 = b.data.content;
@@ -82,6 +83,7 @@ export const useFetchAndCacheRootHierarchyOrbitPaths = ({
       store.set(nodeCache.setMany, Object.entries(existingCache));
 
       cached = true;
+      console.log('cached paths:>> ', cached);
     } catch (error) {
       console.error("Error caching hierarch paths:" + error);
     }
@@ -106,7 +108,7 @@ export const useFetchAndCacheRootHierarchyOrbitPaths = ({
 
     // Determine if the node is a middle node
     const middleIndex = Math.ceil(numberOfSiblings / 2);
-    const isMiddleNode = relativeIndex === middleIndex;
+    const isMiddleNode = (numberOfSiblings % 2 !== 0) && relativeIndex === middleIndex;
     switch (true) {
       case isMiddleNode:
         return ONE_CHILD;
@@ -116,11 +118,15 @@ export const useFetchAndCacheRootHierarchyOrbitPaths = ({
         return getRightSidePath(relativeIndex, numberOfSiblings);
     }
   }
+  
+  const cache = !!hierarchyObject
+    ? function(){cacheOrbitPaths(hierarchyObject)}
+    : null;
 
   return {
     loading,
     error,
-    cached,
+    cache,
   };
 };
 
@@ -156,13 +162,13 @@ function getRightSidePath(relativeIndex: number, numberOfSiblings: number) {
       return THREE_CHILDREN_RIGHT;
 
     case 4:
-      return relativeIndex == 1 ? FOUR_CHILDREN_RIGHT_1 : FOUR_CHILDREN_RIGHT_2;
+      return relativeIndex == 3 ? FOUR_CHILDREN_RIGHT_1 : FOUR_CHILDREN_RIGHT_2;
 
     case 5:
-      return relativeIndex == 1 ? FIVE_CHILDREN_RIGHT_1 : FIVE_CHILDREN_RIGHT_2;
+      return relativeIndex == 4 ? FIVE_CHILDREN_RIGHT_1 : FIVE_CHILDREN_RIGHT_2;
 
     case 6:
-      return relativeIndex == 1 ? SIX_CHILDREN_RIGHT_1 :  relativeIndex == 2 ? SIX_CHILDREN_RIGHT_2 : SIX_CHILDREN_RIGHT_3;
+      return relativeIndex == 4 ? SIX_CHILDREN_RIGHT_1 :  relativeIndex == 5 ? SIX_CHILDREN_RIGHT_2 : SIX_CHILDREN_RIGHT_3;
 
     default:
       return ONE_CHILD;
