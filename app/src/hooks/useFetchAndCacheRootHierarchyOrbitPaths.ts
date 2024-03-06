@@ -5,7 +5,7 @@ import {
   useGetOrbitHierarchyQuery,
 } from "../graphql/generated";
 import {
-  OrbitNodeDetails,
+  SphereNodeDetailsCache,
   SphereOrbitNodes,
 } from "../state/jotaiKeyValueStore";
 import { nodeCache, store } from "../state/jotaiKeyValueStore";
@@ -18,6 +18,7 @@ import {
   TWO_CHILDREN_LEFT,
   TWO_CHILDREN_RIGHT,
 } from "../components/vis/PathTemplates/paths";
+import { currentSphere } from '../state/currentSphereHierarchyAtom';
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
   params: OrbitHierarchyQueryParams;
@@ -38,7 +39,7 @@ export const useFetchAndCacheRootHierarchyOrbitPaths = ({
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
   const rootLevel = 0; // NOTE: this will potentially be negative in the future and will have to be figured out from new backend functionality
   params.orbitEntryHashB64 =
-    "uhCEklRNoI3bojjmGey-JfZx66MWPgwQeEPtsWTRsxfeysPxgqPgk";
+    "uhCEki40eCuhsovNGfSW58x2h5e6D7P5O0lxjhwZfopX9QnHFtDdy";
   const { data, loading, error } = useGetOrbitHierarchyQuery({
     skip: hasCached,
     variables: { params },
@@ -68,23 +69,36 @@ export const useFetchAndCacheRootHierarchyOrbitPaths = ({
 
   function cacheOrbitPaths(d3Hierarchy: object): boolean {
     let cached = false;
+    let workingSphereNodes : SphereOrbitNodes = {...sphereNodes};
     try {
-      (d3Hierarchy as any).each((node) => {
-        const path = getPath(node);
-      });
+      const currentSphereId = store.get(currentSphere)?.actionHash;
+      if(!currentSphereId || currentSphereId == '') throw new Error('Cannot cache paths without a currentSphere id');
+      const existingCache = store.get(nodeCache.items) as SphereNodeDetailsCache;
+      if(!existingCache[currentSphereId]) throw new Error('No existing cache for this currentSphere id');
+
+      (d3Hierarchy as any).each((node) => cachePath(node?.data?.content, getPath(node)));
+
+      existingCache[currentSphereId] = workingSphereNodes;
+      store.set(nodeCache.setMany, Object.entries(existingCache));
+
       cached = true;
     } catch (error) {
       console.error("Error caching hierarch paths:" + error);
     }
     return cached;
+    
+    function cachePath(id: string, path: string | null) {
+      if(typeof id != 'string' || path == null) return;
+  
+      const cacheNodeItem = {...sphereNodes[id]};
+      cacheNodeItem.path = path;
+      workingSphereNodes[id] = cacheNodeItem
+    }
   }
 
-  function cacheHierarchyNode(path: string) {}
-  function getPath(node) {
+  function getPath(node) : string | null {
     // Skip the root node
-    if (!node.parent) {
-      return;
-    }
+    if (!node.parent) { return null; }
 
     // Calculate the relative index (1-based) and the number of siblings
     const relativeIndex = node.parent.children.indexOf(node) + 1;
@@ -97,10 +111,9 @@ export const useFetchAndCacheRootHierarchyOrbitPaths = ({
       case isMiddleNode:
         return ONE_CHILD;
       case relativeIndex <= numberOfSiblings / 2:
-        console.log(getLeftSidePath(relativeIndex, numberOfSiblings));
-        break;
+        return getLeftSidePath(relativeIndex, numberOfSiblings);
       default:
-        console.log(getRightSidePath(relativeIndex, numberOfSiblings));
+        return getRightSidePath(relativeIndex, numberOfSiblings);
     }
   }
 

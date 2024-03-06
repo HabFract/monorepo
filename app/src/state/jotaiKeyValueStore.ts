@@ -15,6 +15,7 @@ export interface OrbitNodeDetails {
   scale: Scale;
   startTime?: number;
   endTime?: number;
+  path?: string;
   checked: boolean;
 }
 

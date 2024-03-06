@@ -548,21 +548,6 @@ export default class BaseVisualization implements IVisualization {
   }
 
   translateLinks([dx, dy, breadth]: number[]) : void {
-    const indexToBreadthRatio = (dx+1) / (breadth);
-    const middleIndex = (breadth + 1) / 2;
-    const isMiddleElement = (dx + 1) == middleIndex;
-    const isChildElement = dy > 0; 
-    debugger;
-//     console.log('debug isMiddleElement, isChildElement, :>> ', isMiddleElement, isChildElement,);
-//     console.log('debug dx dy ratio :>> ', dx, dy, indexToBreadthRatio);
-//     const dxScaled = this._viewConfig!.dx as number / this._viewConfig.scale;
-//     const fullWidth = (dxScaled * (this._viewConfig!.levelsWide as number)) * 2;
-//     console.log('debug dxScaled, levelsWide, fullWidth, noderadius :>> ', dxScaled, this._viewConfig!.levelsWide, fullWidth, (this._viewConfig!.nodeRadius as number));
-// //     + (this._viewConfig!.nodeRadius as number)  * 2 as any
-// // + (this._viewConfig!.nodeRadius as number)  * 2 as any
-//     const x = isMiddleElement ? 0 : indexToBreadthRatio > 0.5 ? (fullWidth) : -(fullWidth);
-//     const y = -(this._viewConfig!.dy as number);
-    // const [path, dataTestId] = determinePathFragment(dx, dy, breadth);
 
     select(".canvas").selectAll("g.links *").remove();
     if(!!path) {
@@ -1455,6 +1440,7 @@ export default class BaseVisualization implements IVisualization {
       if (this.hasNextData()) {
         this.rootData = this._nextRootData;
         delete this._nextRootData
+        this.clearCanvas(false);
       }
 
       if (this.noCanvas()) return;
@@ -1466,11 +1452,7 @@ export default class BaseVisualization implements IVisualization {
         this.clearCanvas(false);
         return;
       }
-debugger;
-      const translationNeeded = !!this.rootData._translationCoords;
-      this.clearCanvas(translationNeeded);
-      translationNeeded && this.translateLinks(this.rootData._translationCoords);
-
+      
       this.setLayout();
       if (typeof this.rootData.newHabitDatesAdded == "undefined") {
         this.addHabitDatesForNewNodes();
