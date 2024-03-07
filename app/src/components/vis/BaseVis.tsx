@@ -23,7 +23,6 @@ import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
 import { client } from "../../main";
 import { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject, nodeCache } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
-import { ThemeProvider } from "flowbite-react/lib/esm/components/Flowbite/ThemeContext";
 
 export default class BaseVisualization implements IVisualization {
   type: VisType;
@@ -44,6 +43,7 @@ export default class BaseVisualization implements IVisualization {
   _zoomConfig: ZoomConfig;
   eventHandlers: EventHandlers;
   _hasRendered: boolean = false;
+  skipMainRender: boolean = false;
   isNewActiveNode?: boolean;
   activeNode: any;
   _enteringNodes: any;
@@ -553,7 +553,7 @@ export default class BaseVisualization implements IVisualization {
   appendLinkPath() : void {
     const rootNodeId = this.rootData.data.content;
     const cacheItem : OrbitNodeDetails = store.get(nodeCache.items)?.[this.sphereAh]?.[rootNodeId];
-    console.log('rootNodeId, cacheItem :>> ', rootNodeId, cacheItem);
+    // console.log('rootNodeId, cacheItem :>> ', rootNodeId, cacheItem);
     if(!cacheItem || !cacheItem?.path) return
     
     const newPath = select(".canvas").selectAll("g.links").append('path')
@@ -857,6 +857,8 @@ export default class BaseVisualization implements IVisualization {
   }
 
   setNodeAndLinkGroups() : void {
+    !this.firstRender() && this.clearNodesAndLinks();
+
     const transformation = this.type == VisType.Radial ? `rotate(90)` : "";
     this._gLink = this._canvas
       .append("g")
@@ -954,6 +956,38 @@ export default class BaseVisualization implements IVisualization {
       });
   }
 
+  clearNodesAndLinks() : void {
+    this._canvas.selectAll('g.nodes').remove();
+    this._canvas.selectAll('g.links').remove();
+  }
+
+  clearAndRedrawLabels() : void {
+    !this.firstRender() && this._canvas.selectAll(".tooltip").remove();
+
+    return this._enteringNodes
+      .append("g")
+      .classed("tooltip", true)
+        .append("foreignObject")
+        .attr("x", "-295")
+        .attr("y", "-45")
+        .attr("width", "550")
+        .style("overflow", "visible")
+        .attr("height", "550")
+        .html((d) => {
+          if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
+          const cachedNode = this.nodeDetails[d.data.content];
+          const {name, description, scale} = cachedNode;
+          return `<div class="tooltip-inner">
+          <div class="content">
+          <span class="title">Name:</span>
+          <p>${name}</p>
+          <span class="title">Description:</span>
+          <p>${description} - ${scale}</p>
+          </div>
+        </div>`
+      });
+  }
+
   setCircleAndLabelGroups() : void {
     this._gCircle = this._enteringNodes
       .append("g")
@@ -970,74 +1004,7 @@ export default class BaseVisualization implements IVisualization {
         // return scale == 'Astro' ? "filter: saturate(0.45)" : "filter: brightness(1.25)"
 
       });
-    this._gTooltip = this._enteringNodes
-      .append("g")
-      .classed("tooltip", true)
-        .append("foreignObject")
-        .attr("x", "-295")
-        .attr("y", "-45")
-        .attr("width", "550")
-        .style("overflow", "visible")
-        .attr("height", "550")
-        .html((d) => {
-        if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
-          const {name, description, scale} = this.nodeDetails[d.data.content];
-          return `<div class="tooltip-inner">
-          <div class="content">
-          <span class="title">Name:</span>
-          <p>${name}</p>
-          <span class="title">Description:</span>
-          <p>${description} - ${scale}</p>
-          </div>
-        </div>`
-        });
-      // .classed("hidden", this.type == VisType.Radial)
-      // .attr(
-      //   "transform",
-      //   `translate(${this._viewConfig.nodeRadius as number / 10}, ${
-      //     this._viewConfig.nodeRadius
-      //   }), scale(${
-      //     this._viewConfig.isSmallScreen() ? XS_LABEL_SCALE : LG_LABEL_SCALE
-      //   })`
-      // )
-      // .attr("opacity", (d) => "1");//this.activeOrNonActiveOpacity(d, "0"));
-  }
-
-  setButtonGroups() {
-    this._gButton = this._gTooltip.select(".tooltip-inner")
-      .append("g")
-      .classed("tooltip-actions", true)
-        .append("foreignObject")
-        .attr("width", "550")
-        .style("overflow", "visible")
-        .attr("height", "550")
-        .html((d) => {
-          if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
-          const { checked, scale } = this.nodeDetails[d.data.content];
-          return `<div class="buttons">
-          <button class="tooltip-action-button higher-button ${scale !== 'Astro' ? '' : 'hide'}"></button>
-          <button class="tooltip-action-button checkbox-button ${checked ? 'checked' : ''}"></button>
-          <button class="tooltip-action-button lower-button"></button>
-        </div>`
-      });
-      // .classed("habit-label-dash-button", true)
-      // .attr(
-      //   "transform",
-      //   (d) =>
-      //     `translate(0, 0), scale(${
-      //       this._viewConfig.isSmallScreen()
-      //         ? this.type == VisType.Radial
-      //           ? XS_BUTTON_SCALE * 1.15
-      //           : XS_BUTTON_SCALE
-      //         : this.type == VisType.Radial
-      //         ? LG_BUTTON_SCALE / 1.15
-      //         : LG_BUTTON_SCALE
-      //     })` +
-      //     (this.type == VisType.Radial
-      //       ? `, rotate(${450 - ((d.x / 8) * 180) / Math.PI - 90})`
-      //       : "")
-      // )
-      // .attr("style", "opacity: 0");
+    this._gTooltip = this.clearAndRedrawLabels()
   }
 
   appendCirclesAndLabels() : void {
@@ -1101,14 +1068,23 @@ export default class BaseVisualization implements IVisualization {
       .on("mouseenter", this.eventHandlers.handleHover.bind(this));
   }
 
-  appendButtons() {
-    const delBtnG = this._gButton.append("g");
-    delBtnG
-      .append("path")
-      .attr("d", "M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z")
-      .attr("fill", "#e06a58")
-      .attr("display", (d) => (d.depth === 0 ? "none" : "initial"))
-      .on("click", this.eventHandlers.handleDeleteNode.bind(this));
+  appendNodeDetailsAndControls() {
+    this._gButton = this._gTooltip.select(".tooltip-inner")
+      .append("g")
+      .classed("tooltip-actions", true)
+        .append("foreignObject")
+        .attr("width", "550")
+        .style("overflow", "visible")
+        .attr("height", "550")
+        .html((d) => {
+          if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
+          const { checked, scale } = this.nodeDetails[d.data.content];
+          return `<div class="buttons">
+          <button class="tooltip-action-button higher-button ${scale !== 'Astro' ? '' : 'hide'}"></button>
+          <button class="tooltip-action-button checkbox-button ${checked ? 'checked' : ''}"></button>
+          <button class="tooltip-action-button lower-button"></button>
+        </div>`
+      });
   }
 
   async refetchOrbits() {
@@ -1319,6 +1295,7 @@ export default class BaseVisualization implements IVisualization {
   }, 800);
 
   render() {
+    if(this.skipMainRender) return this.skipMainRender = false;
     if (this.noCanvas()) {
       this._canvas = select(`#${this._svgId}`)
       .append("g")
@@ -1354,13 +1331,11 @@ export default class BaseVisualization implements IVisualization {
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
       this.setCircleAndLabelGroups();
-      this.setButtonGroups();
       
+      this.appendNodeDetailsAndControls();
       this.appendLinkPath();
-      console.log("Appended and set groups... :>>", {});
 
       this.appendCirclesAndLabels();
-      this.appendButtons();
       
       this.eventHandlers.handleNodeZoom.call(this, null, this.activeNode);
 
@@ -1372,6 +1347,7 @@ export default class BaseVisualization implements IVisualization {
         `scale(${BASE_SCALE}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})`
       );
 
+      console.log("BaseVis render complete... :>>");
       this._hasRendered = true;
     }
 
