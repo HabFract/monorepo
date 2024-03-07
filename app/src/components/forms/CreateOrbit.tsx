@@ -14,7 +14,9 @@ import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { currentSphere } from '../../state/currentSphereHierarchyAtom';
 import { AppState } from '../../routes';
-import { store } from '../../state/jotaiKeyValueStore';
+import { OrbitNodeDetails, mapToCacheObject, nodeCache, store } from '../../state/jotaiKeyValueStore';
+import { useFetchAndCacheSphereOrbits } from '../../hooks/useFetchAndCacheSphereOrbits';
+import { client } from '../../main';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -64,39 +66,42 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
   const selectedSphere = store.get(currentSphere);
 
+  const {x, y} = store.get(currentOrbitCoords);
+
   // Used to dictate onward routing
   const originPage : AppState = !!parentOrbitEh ? 'Vis' : 'ListOrbits';
 
   const [addOrbit] = useCreateOrbitMutation({
+    awaitRefetchQueries: !!parentOrbitEh,
     refetchQueries: () => [
-      // {
-      //   query: GetOrbitsDocument,
-      // },
       {
         query: GetOrbitHierarchyDocument,
-        variables: { 
-          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 0 } },
-        },
-      },
-      {
-        query: GetOrbitHierarchyDocument,
-        variables: { 
-          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 1 } },
-        },
-      },
-      {
-        query: GetOrbitHierarchyDocument,
-        variables: { 
-          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 2 } },
-        },
-      },
-      {
-        query: GetOrbitHierarchyDocument,
-        variables: { 
-          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: 3 } },
+        variables: {
+          params: { levelQuery: { sphereHashB64: selectedSphere.entryHash, orbitLevel: y } },
         },
       },
     ],
+    async update(){
+      const variables = { sphereEntryHashB64: sphereEh };
+      let data;
+      try {
+        const gql = await client;
+        data = await gql.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only'} )
+        if(data?.data?.orbits) {
+          const orbits = (extractEdges(data.data.orbits) as Orbit[]);
+          const indexedOrbitData = Object.entries(orbits.map(mapToCacheObject))
+            .map(([_idx, value]) => [value.eH, value]);
+          store.set(nodeCache.set, selectedSphere.actionHash as ActionHashB64, Object.fromEntries(indexedOrbitData))
+          console.log('Sphere orbits fetched and cached!')
+        }
+
+        if(typeof onCreateSuccess !== 'undefined') {
+          onCreateSuccess!.call(this)
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
   });
   const [updateOrbit] = useUpdateOrbitMutation({
     refetchQueries: [
