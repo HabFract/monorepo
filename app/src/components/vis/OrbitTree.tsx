@@ -12,7 +12,7 @@ import { currentOrbitCoords, currentSphere, currentSphereHierarchyBounds, setBre
 import { Modal } from 'flowbite-react';
 import { Form, Formik } from 'formik';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
-import { useFetchAndCacheRootHierarchyOrbitPaths } from '../../hooks/useFetchAndCacheRootHierarchyOrbitPaths';
+import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
 
 export const OrbitTree: ComponentType<VisProps> = ({
   canvasHeight,
@@ -57,7 +57,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   
   // Traverse (but don't render) the root of the sphere's hierarchy so that we can cache the correct path to append at the top of the vis
   const [hasCached, setHasCached] = useState<boolean>(false);
-  const { loading: loadCache, error: errorCache, cache } = useFetchAndCacheRootHierarchyOrbitPaths({params: { orbitEntryHashB64: params.orbitEh }, hasCached, sphereNodes: sphereNodeDetails as SphereOrbitNodes})
+  const { loading: loadCache, error: errorCache, cache } = useFetchOrbitsAndCacheHierarchyPaths({params: getQueryParams(), hasCached})
 
   const fetchHierarchyData = () => {
     if (error || isModalOpen) return;
@@ -103,9 +103,13 @@ export const OrbitTree: ComponentType<VisProps> = ({
   }, [error])
 
   useEffect(() => {
-    if(!hasCached && cache !== null) {
-      cache()
-      setHasCached(true);
+    if(!hasCached && cache !== null) { // Check that the hook has finished fetching data and returned a cache function
+      try {
+        cache()
+        setHasCached(true);
+      } catch (error) {
+        console.error(error)   
+      }
     }
   }, [cache])
 
