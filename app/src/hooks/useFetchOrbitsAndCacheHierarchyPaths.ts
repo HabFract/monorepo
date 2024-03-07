@@ -1,4 +1,4 @@
-import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3 } from './../components/vis/PathTemplates/paths';
+import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3 } from '../components/vis/PathTemplates/paths';
 import { useEffect, useState } from "react";
 import {
   OrbitHierarchyQueryParams,
@@ -23,7 +23,6 @@ import { currentSphere } from '../state/currentSphereHierarchyAtom';
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
   params: OrbitHierarchyQueryParams;
   hasCached?: boolean; // pass true to bypass the hook
-  sphereNodes: SphereOrbitNodes;
 }
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
@@ -32,15 +31,10 @@ interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
   cache: Function | null;
 }
 
-export const useFetchAndCacheRootHierarchyOrbitPaths = ({
+export const useFetchOrbitsAndCacheHierarchyPaths = ({
   params,
   hasCached = false,
-  sphereNodes,
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
-  const rootLevel = 0; // NOTE: this will potentially be negative in the future and will have to be figured out from new backend functionality
-  params.orbitEntryHashB64 =
-    "uhCEkFRQWwBr0LTZVYjXaOx_tj4EYZTj10d7enLcTYkNBs5OV0Kbn";
-    //TODO get this and un-hard code.
   const { data, loading, error } = useGetOrbitHierarchyQuery({
     skip: hasCached,
     variables: { params },
@@ -48,6 +42,12 @@ export const useFetchAndCacheRootHierarchyOrbitPaths = ({
 
   const [hierarchyObject, setHierarchyObject] = useState()
 
+  const currentSphereId = store.get(currentSphere)?.actionHash as ActionHashB64;
+  
+  const sphereNodes = store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
+  
+  if(!currentSphere || !sphereNodes) throw new Error('Cannot cache paths without a currentSphereId or existing cache');
+  
   useEffect(() => {
     if (data) {
       let parsedData = JSON.parse(data.getOrbitHierarchy);
@@ -56,7 +56,7 @@ export const useFetchAndCacheRootHierarchyOrbitPaths = ({
         parsedData = JSON.parse(parsedData);
       }
       setHierarchyObject(
-        hierarchy(parsedData.result).sort((a, b) => {
+        hierarchy(parsedData.result.level_trees[0]).sort((a, b) => {
           const idA: ActionHashB64 = a.data.content;
           const idB: ActionHashB64 = b.data.content;
           return (
@@ -72,7 +72,6 @@ export const useFetchAndCacheRootHierarchyOrbitPaths = ({
     let cached = false;
     let workingSphereNodes : SphereOrbitNodes = {...sphereNodes};
     try {
-      const currentSphereId = store.get(currentSphere)?.actionHash;
       if(!currentSphereId || currentSphereId == '') throw new Error('Cannot cache paths without a currentSphere id');
       const existingCache = store.get(nodeCache.items) as SphereNodeDetailsCache;
       if(!existingCache[currentSphereId]) throw new Error('No existing cache for this currentSphere id');
