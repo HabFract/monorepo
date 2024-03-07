@@ -12,7 +12,7 @@ import { WithVisCanvasProps } from '../types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { Modal } from 'flowbite-react';
 import { CreateOrbit } from '../../forms';
-import { store } from '../../../state/jotaiKeyValueStore';
+import { nodeCache, store } from '../../../state/jotaiKeyValueStore';
 
 const defaultMargins: Margins = {
   top: -1100,
@@ -133,7 +133,17 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                     Create Orbit
                   </Modal.Header>
                   <Modal.Body>
-                    <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh} onCreateSuccess={() => setIsModalOpen(false)}></CreateOrbit>
+                    <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh} onCreateSuccess={() => {
+                      setIsModalOpen(false);
+                      currentVis.isModalOpen = false; // TODO, let this happen on cancel by adding onCancel callback
+                      currentVis.nodeDetails = store.get(nodeCache.items)![selectedSphere.actionHash as ActionHashB64]
+                      currentVis.setNodeAndLinkGroups.call(currentVis);
+                      currentVis.setNodeAndLinkEnterSelections.call(currentVis);
+                      currentVis.setCircleAndLabelGroups.call(currentVis);
+                      currentVis.appendCirclesAndLabels.call(currentVis);
+                      currentVis.appendNodeDetailsAndControls.call(currentVis);
+                      currentVis.skipMainRender = true;
+                    }}></CreateOrbit>
                   </Modal.Body>
                 </Modal>
               </>
