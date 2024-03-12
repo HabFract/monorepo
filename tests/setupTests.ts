@@ -83,6 +83,8 @@ jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
           return { entryHash: SPHERE_ID, actionHash: SPHERE_ID }
         case !!(atom.init && typeof atom.init?.x !== 'undefined'): // Current node coordinates
           return { x:0, y:0 }
+        case !!(atom.init && atom.init?.[SPHERE_ID] !== undefined): // Node cache items
+          return mockNodeDetailsCacheItems
         case !!(atom.init && atom.init?.details == null): // Current Node details
           return {
             id: 'ActionHashB64',

@@ -16,7 +16,7 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
     },
     result: {
       data: {
-        getOrbitHierarchy: `{"result": {"content":"R28gZm9yIGEgd2Fsay==","name":"Go for a walk","children":[{"content":"R28gZm9yIGEgd2Fsay==1","name":"Go for a step","children":[]}]}}`,
+        getOrbitHierarchy: `{"result": {"content":"R28gZm9yIGEgd2Fsay==OC","name":"Go for a walk","children":[{"content":"R28gZm9yIGEgd2Fsay==OC1","name":"Go for a step","children":[]}]}}`,
       },
     },
   },
@@ -34,7 +34,7 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
     },
     result: {
       data: {
-        getOrbitHierarchy: `{"result": { "level_trees": [{"content":"R28gZm9yIGEgd2Fsay==","name":"Go for a walk","children":[{"content":"R28gZm9yIGEgd2Fsay==1","name":"Go for a step","children":[]}]}]}}`,
+        getOrbitHierarchy: `{"result": { "level_trees": [{"content":"R28gZm9yIGEgd2Fsay==OC","name":"Go for a walk","children":[{"content":"R28gZm9yIGEgd2Fsay==OC1","name":"Go for a step","children":[]}]}]}}`,
       },
     },
   },
@@ -52,7 +52,7 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
     },
     result: {
       data: {
-        getOrbitHierarchy: `{"result": { "level_trees": [{"content":"R28gZm9yIGEgd2Fsay==1","name":"Go for a step","children":[]}]}}`,
+        getOrbitHierarchy: `{"result": { "level_trees": [{"content":"R28gZm9yIGEgd2Fsay==OC1","name":"Go for a step","children":[]}]}}`,
       },
     },
   },

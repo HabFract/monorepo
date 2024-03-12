@@ -48,6 +48,30 @@ export const mockedCacheEntries = [
         description: "A daily step to improve cardiovascular health.",
         startTime: 1617235200,
         endTime: 1617321600,
+        path: "M0,0C0,897.21,-1650.25,897.21,-1650.25,1794.421"
+      },
+
+      "R28gZm9yIGEgd2Fsay==OC": {
+        id: "R28gZm9yIGEgd2Fsay==OC",
+        eH: "ER28gZm9yIGEgd2Fsay==OC",
+        checked: false,
+        name: "Go for a walk",
+        scale: "Atom",
+        description: "A daily walk to improve cardiovascular health.",
+        startTime: 1617235200,
+        endTime: 1617321600,
+      },
+
+      "R28gZm9yIGEgd2Fsay==OC1": {
+        id: "R28gZm9yIGEgd2Fsay==OC1",
+        eH: "ER28gZm9yIGEgd2Fsay==eOC1",
+        checked: false,
+        name: "Go for a step",
+        scale: "Atom",
+        description: "A daily step to improve cardiovascular health.",
+        startTime: 1617235200,
+        endTime: 1617321600,
+        path: "M0,0C0,897.21,0,897.21,0,1794.421"
       },
 
       "R28gZm9yIGEgd2Fsay==2": {
@@ -59,6 +83,7 @@ export const mockedCacheEntries = [
         description: "A daily bigger step to improve cardiovascular health.",
         startTime: 1617235201,
         endTime: 1617321600,
+        path: "M0,0C0,897.21,1650.25,897.21,1650.25,1794.421"
       },
 
       TGlmdCB3ZWlnaHRz: {
