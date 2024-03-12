@@ -5,10 +5,11 @@ import {
   useGetOrbitHierarchyQuery,
 } from "../graphql/generated";
 import {
+  nodeCache,
+  store,
   SphereNodeDetailsCache,
   SphereOrbitNodes,
 } from "../state/jotaiKeyValueStore";
-import { nodeCache, store } from "../state/jotaiKeyValueStore";
 import { hierarchy } from "d3-hierarchy";
 import { ActionHashB64 } from "@holochain/client";
 import {
@@ -43,7 +44,6 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
   const [hierarchyObject, setHierarchyObject] = useState()
 
   const currentSphereId = store.get(currentSphere)?.actionHash as ActionHashB64;
-  
   const sphereNodes = store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
   
   if(!currentSphere || !sphereNodes) throw new Error('Cannot cache paths without a currentSphereId or existing cache');
@@ -90,7 +90,6 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
     
     function cachePath(id: string, path: string | null) {
       if(typeof id != 'string' || path == null) return;
-  
       const cacheNodeItem = {...sphereNodes[id]};
       cacheNodeItem.path = path;
       workingSphereNodes[id] = cacheNodeItem

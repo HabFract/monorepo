@@ -37,7 +37,7 @@ export function setHierarchyBreadth(num: number) {
   maxBreadth = num
 }
 
-describe.skip('Hierarchy Traversal -  renders traversal buttons for parent with 1 child', () => {
+describe('Hierarchy Traversal -  renders traversal buttons for parent with 1 child', () => {
   let Tree;
   beforeEach(() => {
     Tree = renderVis(OrbitTree);
@@ -83,7 +83,7 @@ describe.skip('Hierarchy Traversal -  renders traversal buttons for parent with 
   });
 });
 
-describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers events - parent with 2 children', () => {
+describe('Hierarchy Traversal - it renders traversal buttons and triggers events - parent with 2 children', () => {
   let Tree;
   beforeEach(() => {
     Tree = renderVis(OrbitTree);
@@ -234,7 +234,7 @@ describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers e
   });
 });
 
-describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers events - unbalanced tree with 2 children and 2 grandchildren (for depth first side)', () => {
+describe('Hierarchy Traversal - it renders traversal buttons and triggers events - unbalanced tree with 2 children and 2 grandchildren (for depth first side)', () => {
   let Tree;
   beforeEach(() => {
     Tree = renderVis(OrbitTree);

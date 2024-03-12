@@ -36,7 +36,7 @@ export function setHierarchyBreadth(num: number) {
   maxBreadth = num
 }
 
-describe('Hierarchy Path Templates - after traversing down, it renders path an only child', () => {
+describe('Hierarchy Path Templates - without traversing, it renders no paths', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
@@ -64,7 +64,7 @@ describe('CURRENT', () => {
   function returnRerender(node: React.ReactNode, options) {
     const rendered = render(<MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>{node}</MockedProvider>, options)
     const container = rendered.container;
-    console.log('rendered container :>> ', container);
+    
     return {
       ...rendered,
       rerender: (ui, options) =>
@@ -73,19 +73,17 @@ describe('CURRENT', () => {
   }
 
   it('renders a path for the first child after traversing from the root', async () => {
-    // Arrange - simulate state before the described traversal 
-    const { getByTestId, rerender } = returnRerender(WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0}), undefined);
-        
-    
     // Arrange - simulate state after the described traversal 
-    rerender(WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1}), undefined);
+    const { getByTestId, queryByTestId } = render(
+        <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
+          {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
     setHierarchyBreadth(1) // zero-indexed breadth of 2 on level 1
     
     await waitFor(() => {
-      expect(getByTestId('path-parent-two-children-0')).toBeTruthy();
+      expect(getByTestId('path-parent-one-child')).toBeTruthy();
     });
 
-    expect(screen.queryByTestId('path-parent-one-child')).not.toBeTruthy();
+    expect(screen.queryByTestId('path-parent-two-children-0')).not.toBeTruthy();
     expect(screen.queryByTestId('path-parent-two-children-1')).not.toBeTruthy();
   });
 });
