@@ -1,4 +1,4 @@
-import { TWO_CHILDREN_LEFT_XS, THREE_CHILDREN_LEFT_XS, TWO_CHILDREN_RIGHT_XS, THREE_CHILDREN_RIGHT_XS } from './../components/vis/PathTemplates/paths';
+import { TWO_CHILDREN_LEFT_XS, THREE_CHILDREN_LEFT_XS, TWO_CHILDREN_RIGHT_XS, THREE_CHILDREN_RIGHT_XS, FOUR_CHILDREN_LEFT_1_XS, FOUR_CHILDREN_LEFT_2_XS, FIVE_CHILDREN_LEFT_1_XS, FIVE_CHILDREN_LEFT_2_XS, SIX_CHILDREN_LEFT_1_XS, SIX_CHILDREN_LEFT_2_XS, SIX_CHILDREN_LEFT_3_XS, FIVE_CHILDREN_RIGHT_1_XS, FIVE_CHILDREN_RIGHT_2_XS, FOUR_CHILDREN_RIGHT_1_XS, FOUR_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_RIGHT_1_XS, SIX_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_RIGHT_3_XS } from './../components/vis/PathTemplates/paths';
 import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, ONE_CHILD_XS, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3 } from '../components/vis/PathTemplates/paths';
 import { useEffect, useState } from "react";
 import {
@@ -141,13 +141,13 @@ function getLeftSidePathXS(relativeIndex: number, numberOfSiblings: number) {
       return THREE_CHILDREN_LEFT_XS;
 
     case 4:
-      return relativeIndex == 1 ? FOUR_CHILDREN_LEFT_1 : FOUR_CHILDREN_LEFT_2;
+      return relativeIndex == 1 ? FOUR_CHILDREN_LEFT_1_XS : FOUR_CHILDREN_LEFT_2_XS;
 
     case 5:
-      return relativeIndex == 1 ? FIVE_CHILDREN_LEFT_1 : FIVE_CHILDREN_LEFT_2;
+      return relativeIndex == 1 ? FIVE_CHILDREN_LEFT_1_XS : FIVE_CHILDREN_LEFT_2_XS;
 
     case 6:
-      return relativeIndex == 1 ? SIX_CHILDREN_LEFT_1 :  relativeIndex == 2 ? SIX_CHILDREN_LEFT_2 : SIX_CHILDREN_LEFT_3;
+      return relativeIndex == 1 ? SIX_CHILDREN_LEFT_1_XS :  relativeIndex == 2 ? SIX_CHILDREN_LEFT_2_XS : SIX_CHILDREN_LEFT_3_XS;
     // Enumerate up to as many as we will allow
 
     default:
@@ -164,18 +164,19 @@ function getRightSidePathXS(relativeIndex: number, numberOfSiblings: number) {
       return THREE_CHILDREN_RIGHT_XS;
 
     case 4:
-      return relativeIndex == 3 ? FOUR_CHILDREN_RIGHT_1 : FOUR_CHILDREN_RIGHT_2;
+      return relativeIndex == 3 ? FOUR_CHILDREN_RIGHT_1_XS : FOUR_CHILDREN_RIGHT_2_XS;
 
     case 5:
-      return relativeIndex == 4 ? FIVE_CHILDREN_RIGHT_1 : FIVE_CHILDREN_RIGHT_2;
+      return relativeIndex == 4 ? FIVE_CHILDREN_RIGHT_1_XS : FIVE_CHILDREN_RIGHT_2_XS;
 
     case 6:
-      return relativeIndex == 4 ? SIX_CHILDREN_RIGHT_1 :  relativeIndex == 5 ? SIX_CHILDREN_RIGHT_2 : SIX_CHILDREN_RIGHT_3;
+      return relativeIndex == 4 ? SIX_CHILDREN_RIGHT_1_XS :  relativeIndex == 5 ? SIX_CHILDREN_RIGHT_2_XS : SIX_CHILDREN_RIGHT_3_XS;
 
     default:
       return ONE_CHILD;
   }
 }
+
 function getLeftSidePath(relativeIndex: number, numberOfSiblings: number) {
   switch (numberOfSiblings) {
     case 2:

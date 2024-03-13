@@ -90,10 +90,10 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                 const currentOrbit = newRootData?.find(d => {
                   if(!d) return false
                   const siblings = d?.parent && d.parent.children.map(d => d.data.content)
-                  // console.log('d, siblings :>> ', d, siblings);
                   return siblings && siblings.length > 0 && d.parent?.children[x] ? (d.parent?.children[x].data.content == d.data.content) && d.depth == y
                     : false
                 });
+                console.log('currentOrbit :>> ', currentOrbit);
                 if(currentOrbit?.data?.content) {
                   const node = currentVis.nodeDetails[selectedSphere.actionHash as ActionHashB64];
                   // currentOrbit && store.set(currentOrbitIdAtom, currentOrbit.data.content);

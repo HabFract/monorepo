@@ -1,22 +1,59 @@
 // @ts-nocheck
 
 import { select } from "d3-selection";
-import { scaleOrdinal, scaleLinear } from "d3-scale";
 import { zoom } from "d3-zoom";
 import { linkVertical, linkHorizontal } from "d3-shape";
-import { tree, hierarchy } from "d3-hierarchy";
-import { easeCubic, easePolyIn, easeLinear } from "d3-ease";
+import { tree } from "d3-hierarchy";
+import { easeCubic, easeLinear } from "d3-ease";
 import { TreeLayout } from "d3-hierarchy";
-import { legendColor } from "d3-svg-legend";
-
 // import propagating from "propagating-hammerjs";
 import _ from "lodash";
 
-import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, ONE_CHILD, ONE_CHILD_XS, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3, THREE_CHILDREN_LEFT, THREE_CHILDREN_LEFT_XS, THREE_CHILDREN_RIGHT, THREE_CHILDREN_RIGHT_XS, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT_XS, TWO_CHILDREN_LEFT_XS, TWO_CHILDREN_RIGHT } from './PathTemplates/paths';
+import { 
+  ONE_CHILD,
+  ONE_CHILD_XS,
+  TWO_CHILDREN_LEFT,
+  TWO_CHILDREN_RIGHT,
+  THREE_CHILDREN_LEFT,
+  THREE_CHILDREN_RIGHT,
+  FOUR_CHILDREN_LEFT_1,
+  FOUR_CHILDREN_LEFT_2,
+  FOUR_CHILDREN_RIGHT_1,
+  FOUR_CHILDREN_RIGHT_2,
+  FIVE_CHILDREN_LEFT_1, 
+  FIVE_CHILDREN_LEFT_2, 
+  FIVE_CHILDREN_RIGHT_1, 
+  FIVE_CHILDREN_RIGHT_2,
+  SIX_CHILDREN_LEFT_1,
+  SIX_CHILDREN_LEFT_2,
+  SIX_CHILDREN_LEFT_3,
+  SIX_CHILDREN_RIGHT_1,
+  SIX_CHILDREN_RIGHT_2,
+  SIX_CHILDREN_RIGHT_3,
+
+  TWO_CHILDREN_RIGHT_XS,
+  TWO_CHILDREN_LEFT_XS,
+  THREE_CHILDREN_LEFT_XS,
+  THREE_CHILDREN_RIGHT_XS,
+  FOUR_CHILDREN_LEFT_1_XS,
+  FOUR_CHILDREN_LEFT_2_XS,
+  FOUR_CHILDREN_RIGHT_1_XS,
+  FOUR_CHILDREN_RIGHT_2_XS,
+  FIVE_CHILDREN_LEFT_1_XS,
+  FIVE_CHILDREN_LEFT_2_XS,
+  FIVE_CHILDREN_RIGHT_1_XS,
+  FIVE_CHILDREN_RIGHT_2_XS,
+  SIX_CHILDREN_LEFT_1_XS,
+  SIX_CHILDREN_LEFT_2_XS,
+  SIX_CHILDREN_LEFT_3_XS,
+  SIX_CHILDREN_RIGHT_1_XS,
+  SIX_CHILDREN_RIGHT_2_XS,
+  SIX_CHILDREN_RIGHT_3_XS
+} from './PathTemplates/paths';
 
 import { expand, collapse, contentEqual, nodeStatusColours, parseTreeValues, cumulativeValue, outOfBoundsNode, getInitialXTranslate, getInitialYTranslate, newXTranslate, newYTranslate, debounce } from "./helpers";
 
-import { positiveCol, negativeCol, noNodeCol, neutralCol, parentPositiveBorderCol, positiveColLighter, BASE_SCALE, FOCUS_MODE_SCALE, LG_BUTTON_SCALE, LG_LABEL_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_BUTTON_SCALE, XS_LABEL_SCALE, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS, } from "./constants";
+import { noNodeCol, parentPositiveBorderCol, positiveColLighter, BASE_SCALE, FOCUS_MODE_SCALE, LG_BUTTON_SCALE, LG_LABEL_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_BUTTON_SCALE, XS_LABEL_SCALE, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS, } from "./constants";
 import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
@@ -275,10 +312,6 @@ export default class BaseVisualization implements IVisualization {
 
   firstRender() : boolean {
     return !this._hasRendered;
-  }
-
-  clearFirstRenderFlag() {
-    this._hasRendered = false;
   }
 
   noCanvas() : boolean {
@@ -598,6 +631,14 @@ export default class BaseVisualization implements IVisualization {
           return -(width + offset)
         case FOUR_CHILDREN_RIGHT_2:
           return -(width + offset * 3)
+        case FOUR_CHILDREN_LEFT_1_XS:
+          return width + offset * 3
+        case FOUR_CHILDREN_LEFT_2_XS:
+          return width + offset
+        case FOUR_CHILDREN_RIGHT_1_XS:
+          return -(width + offset)
+        case FOUR_CHILDREN_RIGHT_2_XS:
+          return -(width + offset * 3)
         case FIVE_CHILDREN_LEFT_1:
           return width + offset * 4
         case FIVE_CHILDREN_LEFT_2:
@@ -605,6 +646,14 @@ export default class BaseVisualization implements IVisualization {
         case FIVE_CHILDREN_RIGHT_1:
           return -(width + offset * 2)
         case FIVE_CHILDREN_RIGHT_2:
+          return -(width + offset * 4)
+        case FIVE_CHILDREN_LEFT_1_XS:
+          return width + offset * 4
+        case FIVE_CHILDREN_LEFT_2_XS:
+          return width + offset * 2
+        case FIVE_CHILDREN_RIGHT_1_XS:
+          return -(width + offset * 2)
+        case FIVE_CHILDREN_RIGHT_2_XS:
           return -(width + offset * 4)
         case SIX_CHILDREN_LEFT_1:
           return width + offset * 5
@@ -617,6 +666,18 @@ export default class BaseVisualization implements IVisualization {
         case SIX_CHILDREN_RIGHT_2:
           return -(width + offset * 2)
         case SIX_CHILDREN_RIGHT_3:
+          return -(width + offset * 5)
+        case SIX_CHILDREN_LEFT_1_XS:
+          return width + offset * 5
+        case SIX_CHILDREN_LEFT_2_XS:
+          return width + offset * 2
+        case SIX_CHILDREN_LEFT_3_XS:
+          return width + offset * 2
+        case SIX_CHILDREN_RIGHT_1_XS:
+          return -(width + offset * 2)
+        case SIX_CHILDREN_RIGHT_2_XS:
+          return -(width + offset * 2)
+        case SIX_CHILDREN_RIGHT_3_XS:
           return -(width + offset * 5)
         default:
           0
