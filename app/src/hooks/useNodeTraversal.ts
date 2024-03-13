@@ -35,7 +35,7 @@ export const useNodeTraversal = (hierarchyBounds: HierarchyBounds) => {
     if (hierarchyBounds) {
       const newVal = depthIndex + 1;
       setDepthIndex(newVal);
-      setBreadthIndex(0);
+      // setBreadthIndex(0);
       store.set(currentOrbitCoords, {x: 0, y: newVal })
     }
   };

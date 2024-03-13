@@ -1384,7 +1384,7 @@ export default class BaseVisualization implements IVisualization {
       this.calibrateViewPortAttrs();
       this.calibrateViewBox();
       this.setdXdY();
-      // this.setZoomBehaviour();
+      this.setZoomBehaviour();
     }
 
     if (

@@ -46,7 +46,9 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const getJsonDerivation = (json: string) => visCoverage == VisCoverage.Complete ? JSON.parse(json) : JSON.parse(json)[x]
 
   // GQL Query hook, parsed JSON state, and Vis object state
-  const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery()
+  const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery({
+    fetchPolicy: "network-only"
+  })
   const [json, setJson] = useState<string | null>(null);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<BaseVisualization | null>(null);
 
@@ -130,6 +132,10 @@ export const OrbitTree: ComponentType<VisProps> = ({
       
       // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
       setBreadthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.Complete ? 100 : parsedData.result.level_trees.length - 1])
+      // Trigger path cacheing if we have appended a node
+      const newHierarchyDescendants = hierarchy(parsedData.result.level_trees?.sort(byStartTime)[x])?.descendants()?.length;
+      const oldHierarchyDescendants = currentOrbitTree?.rootData.descendants().length;
+      setHasCached(newHierarchyDescendants == oldHierarchyDescendants);
 
       // Depending on query type, set the state of the parsed JSON to the relevant part of the payload
       setJson(JSON.stringify(visCoverage == VisCoverage.Complete ? parsedData.result : parsedData.result.level_trees.sort(byStartTime)));
@@ -143,7 +149,13 @@ export const OrbitTree: ComponentType<VisProps> = ({
       // If there is a change to the parsed JSON or we traverse the parsed json's `level_trees` array (breadth traversal), then 
       // -- set the _nextRootData property of the vis, 
       // -- trigger a re-render
-      currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string));
+      currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string)).sort((a, b) => {
+        const idA : ActionHashB64 = a.data.content;
+        const idB : ActionHashB64 = b.data.content;
+        const sphereNodes = nodeDetailsCache[params.currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
+        return (sphereNodes[idA].startTime as number) - (sphereNodes[idB as keyof SphereOrbitNodes].startTime as number)
+      });
+      
       currentOrbitTree._nextRootData._translationCoords = [x, y, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1];
       currentOrbitTree.render();
     }
