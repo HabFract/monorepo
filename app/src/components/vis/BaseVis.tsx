@@ -12,7 +12,7 @@ import { legendColor } from "d3-svg-legend";
 // import propagating from "propagating-hammerjs";
 import _ from "lodash";
 
-import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, ONE_CHILD, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3, THREE_CHILDREN_LEFT, THREE_CHILDREN_RIGHT, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT } from './PathTemplates/paths';
+import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, ONE_CHILD, ONE_CHILD_XS, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3, THREE_CHILDREN_LEFT, THREE_CHILDREN_LEFT_XS, THREE_CHILDREN_RIGHT, THREE_CHILDREN_RIGHT_XS, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT_XS, TWO_CHILDREN_LEFT_XS, TWO_CHILDREN_RIGHT } from './PathTemplates/paths';
 
 import { expand, collapse, contentEqual, nodeStatusColours, parseTreeValues, cumulativeValue, outOfBoundsNode, getInitialXTranslate, getInitialYTranslate, newXTranslate, newYTranslate, debounce } from "./helpers";
 
@@ -553,33 +553,42 @@ export default class BaseVisualization implements IVisualization {
   appendLinkPath() : void {
     const rootNodeId = this.rootData.data.content;
     const cacheItem : OrbitNodeDetails = store.get(nodeCache.items)?.[this.sphereAh]?.[rootNodeId];
-    // console.log('rootNodeId, cacheItem :>> ', rootNodeId, cacheItem);
     if(!cacheItem || !cacheItem?.path) return
     
     const newPath = select(".canvas").selectAll("g.links").append('path')
       .attr("d", cacheItem.path)
       .classed("link", true)
+      .classed("appended-path", true)
       .attr("stroke-width", "3")
       .attr("stroke-opacity", "0.3")
       .attr("data-testid", getTestId(cacheItem.path));
 
     const pathElement = newPath._groups[0][0];
-    
     const {height, width} = pathElement.getBoundingClientRect();
-    select(pathElement).attr("transform", `translate(${getPathXTranslation(cacheItem.path, width, 300/this._viewConfig.scale) * this._viewConfig.scale},${-((height + 100) * this._viewConfig.scale)})`);
+    select(pathElement).attr("transform", `translate(${getPathXTranslation(cacheItem.path, width, (this._viewConfig.isSmallScreen() ? 30 : 250)/this._viewConfig.scale) * this._viewConfig.scale},${-((height + (this._viewConfig.isSmallScreen() ? 0 : 100)) * this._viewConfig.scale)})`);
 
     // Helper function to get exact x translation based on path
     function getPathXTranslation(path: string, width: number, offset: number) : number {
       switch (path) {
         case ONE_CHILD:
           return 0
+        case ONE_CHILD_XS:
+          return 0
         case TWO_CHILDREN_LEFT:
           return width + offset
         case TWO_CHILDREN_RIGHT:
           return -(width + offset)
+        case TWO_CHILDREN_LEFT_XS:
+          return width + offset
+        case TWO_CHILDREN_RIGHT_XS:
+          return -(width + offset)
         case THREE_CHILDREN_LEFT:
           return width + offset * 2
         case THREE_CHILDREN_RIGHT:
+          return -(width + offset * 2)
+        case THREE_CHILDREN_LEFT_XS:
+          return width + offset * 2
+        case THREE_CHILDREN_RIGHT_XS:
           return -(width + offset * 2)
         case FOUR_CHILDREN_LEFT_1:
           return width + offset * 3
@@ -618,10 +627,16 @@ export default class BaseVisualization implements IVisualization {
       switch (path) {
         case ONE_CHILD:
           return 'path-parent-one-child'
-        case TWO_CHILDREN_LEFT:
+        case ONE_CHILD_XS:
+          return 'path-parent-one-child'
+        case TWO_CHILDREN_LEFT_XS:
           return 'path-parent-two-children-0'
-        case TWO_CHILDREN_RIGHT:
+        case TWO_CHILDREN_RIGHT_XS:
           return 'path-parent-two-children-1'
+        case THREE_CHILDREN_LEFT_XS:
+          return 'path-parent-three-children-0'
+        case THREE_CHILDREN_RIGHT_XS:
+          return 'path-parent-three-children-2'
         default:
           'none'
       }

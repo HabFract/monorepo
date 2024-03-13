@@ -1,4 +1,5 @@
-import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3 } from '../components/vis/PathTemplates/paths';
+import { TWO_CHILDREN_LEFT_XS, THREE_CHILDREN_LEFT_XS, TWO_CHILDREN_RIGHT_XS, THREE_CHILDREN_RIGHT_XS } from './../components/vis/PathTemplates/paths';
+import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, ONE_CHILD_XS, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3 } from '../components/vis/PathTemplates/paths';
 import { useEffect, useState } from "react";
 import {
   OrbitHierarchyQueryParams,
@@ -95,6 +96,9 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
       workingSphereNodes[id] = cacheNodeItem
     }
   }
+  function isMobile() {
+    return document.body.getBoundingClientRect().width < 768 
+  }
 
   function getPath(node) : string | null {
     // Skip the root node
@@ -109,11 +113,11 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
     const isMiddleNode = (numberOfSiblings % 2 !== 0) && relativeIndex === middleIndex;
     switch (true) {
       case isMiddleNode:
-        return ONE_CHILD;
+        return isMobile() ? ONE_CHILD_XS : ONE_CHILD;
       case relativeIndex <= numberOfSiblings / 2:
-        return getLeftSidePath(relativeIndex, numberOfSiblings);
+        return isMobile() ? getLeftSidePathXS(relativeIndex, numberOfSiblings) : getLeftSidePath(relativeIndex, numberOfSiblings);
       default:
-        return getRightSidePath(relativeIndex, numberOfSiblings);
+        return isMobile() ? getRightSidePathXS(relativeIndex, numberOfSiblings) : getRightSidePath(relativeIndex, numberOfSiblings);
     }
   }
   
@@ -128,6 +132,50 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
   };
 };
 
+function getLeftSidePathXS(relativeIndex: number, numberOfSiblings: number) {
+  switch (numberOfSiblings) {
+    case 2:
+      return TWO_CHILDREN_LEFT_XS;
+
+    case 3:
+      return THREE_CHILDREN_LEFT_XS;
+
+    case 4:
+      return relativeIndex == 1 ? FOUR_CHILDREN_LEFT_1 : FOUR_CHILDREN_LEFT_2;
+
+    case 5:
+      return relativeIndex == 1 ? FIVE_CHILDREN_LEFT_1 : FIVE_CHILDREN_LEFT_2;
+
+    case 6:
+      return relativeIndex == 1 ? SIX_CHILDREN_LEFT_1 :  relativeIndex == 2 ? SIX_CHILDREN_LEFT_2 : SIX_CHILDREN_LEFT_3;
+    // Enumerate up to as many as we will allow
+
+    default:
+      return ONE_CHILD;
+  }
+}
+
+function getRightSidePathXS(relativeIndex: number, numberOfSiblings: number) {
+  switch (numberOfSiblings) {
+    case 2:
+      return TWO_CHILDREN_RIGHT_XS;
+
+    case 3:
+      return THREE_CHILDREN_RIGHT_XS;
+
+    case 4:
+      return relativeIndex == 3 ? FOUR_CHILDREN_RIGHT_1 : FOUR_CHILDREN_RIGHT_2;
+
+    case 5:
+      return relativeIndex == 4 ? FIVE_CHILDREN_RIGHT_1 : FIVE_CHILDREN_RIGHT_2;
+
+    case 6:
+      return relativeIndex == 4 ? SIX_CHILDREN_RIGHT_1 :  relativeIndex == 5 ? SIX_CHILDREN_RIGHT_2 : SIX_CHILDREN_RIGHT_3;
+
+    default:
+      return ONE_CHILD;
+  }
+}
 function getLeftSidePath(relativeIndex: number, numberOfSiblings: number) {
   switch (numberOfSiblings) {
     case 2:
