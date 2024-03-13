@@ -142,6 +142,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                       currentVis.setCircleAndLabelGroups.call(currentVis);
                       currentVis.appendCirclesAndLabels.call(currentVis);
                       currentVis.appendNodeDetailsAndControls.call(currentVis);
+                      currentVis.appendLinkPath.call(currentVis);
                       currentVis.skipMainRender = true;
                     }}></CreateOrbit>
                   </Modal.Body>
