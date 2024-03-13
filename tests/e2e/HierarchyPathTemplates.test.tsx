@@ -5,10 +5,12 @@ import { expect, describe, test, it } from '@jest/globals';
 import { MockedProvider } from '@apollo/client/testing';
 import OrbitTree from '../../app/src/components/vis/OrbitTree';
 import { renderVis } from '../../app/src/components/vis/helpers';
-import { screen, render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
 import { WithCurrentOrbitCoordsMockedAtom } from '../utils-frontend';
+import { HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS } from './mocks/hierarchy-root-2-children-2-grandchildren-unbalanced';
+import { HIERARCHY_ROOT_THREE_CHILDREN } from './mocks/hierarchy-root-3-children';
 
 let x = 0;
 let y = 0;
@@ -44,46 +46,115 @@ describe('Hierarchy Path Templates - without traversing, it renders no paths', (
 
   it('by default renders no extra paths', async () => {
     // Arrange
-    const { queryByTestId } = render(
+    const { queryAllByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
         {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
-    
-    expect(queryByTestId('path-parent-one-child')).not.toBeTruthy();
-    expect(queryByTestId('path-parent-two-children-0')).not.toBeTruthy();
-    expect(queryByTestId('path-parent-two-children-1')).not.toBeTruthy();
+  });
+
+  it('by default renders no extra paths', async () => {
+    // Arrange
+    const { queryAllByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+  });
+
+  it('by default renders no extra paths', async () => {
+    // Arrange
+    const { queryAllByTestId } = render(
+      <MockedProvider mocks={HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS} addTypename={false}>
+        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
   });
 });
 
-// describe('Hierarchy Path Templates - after traversing down-left, it renders a path for the first child after traversing from the root', () => {
-describe('CURRENT', () => {
+describe('Hierarchy Path Templates - One root, one child - after traversing down from the root it renders a path for the first child', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
   });
 
-  function returnRerender(node: React.ReactNode, options) {
-    const rendered = render(<MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>{node}</MockedProvider>, options)
-    const container = rendered.container;
-    
-    return {
-      ...rendered,
-      rerender: (ui, options) =>
-        returnRerender(ui, {container, ...options}),
-      }
-  }
-
-  it('renders a path for the first child after traversing from the root', async () => {
+  it('renders a path for the first child after traversing', async () => {
     // Arrange - simulate state after the described traversal 
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId } = render(
         <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
           {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
-    setHierarchyBreadth(1) // zero-indexed breadth of 2 on level 1
+    setHierarchyBreadth(0) // zero-indexed breadth of 1 on level 1
     
     await waitFor(() => {
       expect(getByTestId('path-parent-one-child')).toBeTruthy();
     });
+  });
+});
 
-    expect(screen.queryByTestId('path-parent-two-children-0')).not.toBeTruthy();
-    expect(screen.queryByTestId('path-parent-two-children-1')).not.toBeTruthy();
+describe('Hierarchy Path Templates - One root, two children - after traversing it renders correct path for that child', () => {
+  let Tree;
+  beforeAll(() => {
+    Tree = renderVis(OrbitTree);
+  });
+
+  it('after traversing down-left, it renders a path for the first child', async () => {
+    // Arrange - simulate state after the described traversal 
+    const { getByTestId } = render(
+        <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
+          {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
+    setHierarchyBreadth(1) // zero-indexed breadth of 2 on level 1
+    
+    await waitFor(() => {
+      expect(getByTestId('path-parent-two-children-0')).toBeTruthy();
+    });
+  });
+
+  it('after traversing down-right, it renders a path for the second child', async () => {
+    // Arrange - simulate state after the described traversal 
+    const { getByTestId } = render(
+        <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
+          {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 1, y: 1})}</MockedProvider> );
+    setHierarchyBreadth(1) // zero-indexed breadth of 2 on level 1
+    
+    await waitFor(() => {
+      expect(getByTestId('path-parent-two-children-1')).toBeTruthy();
+    });
+  });
+});
+
+describe('Hierarchy Path Templates - One root, three children - after traversing it renders correct path for that child', () => {
+  let Tree;
+  beforeAll(() => {
+    Tree = renderVis(OrbitTree);
+  });
+
+  it('after traversing down-left, it renders a path for the first child', async () => {
+    // Arrange - simulate state after the described traversal 
+    const { getByTestId } = render(
+        <MockedProvider mocks={HIERARCHY_ROOT_THREE_CHILDREN} addTypename={false}>
+          {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
+    setHierarchyBreadth(2) // zero-indexed breadth of 3 on level 1
+    
+    await waitFor(() => {
+      expect(getByTestId('path-parent-three-children-0')).toBeTruthy();
+    });
+  });
+
+  it('after traversing down, then right, it renders a path for the second child', async () => {
+    // Arrange - simulate state after the described traversal 
+    const { getByTestId } = render(
+        <MockedProvider mocks={HIERARCHY_ROOT_THREE_CHILDREN} addTypename={false}>
+          {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 1, y: 1})}</MockedProvider> );
+    setHierarchyBreadth(2) // zero-indexed breadth of 3 on level 1
+    
+    await waitFor(() => {
+      expect(getByTestId('path-parent-one-child')).toBeTruthy(); // Middle child will have the same path as the single child 
+    });
+  });
+
+  it('after traversing down, then right twice, it renders a path for the third child', async () => {
+    // Arrange - simulate state after the described traversal 
+    const { getByTestId } = render(
+        <MockedProvider mocks={HIERARCHY_ROOT_THREE_CHILDREN} addTypename={false}>
+          {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 2, y: 1})}</MockedProvider> );
+    setHierarchyBreadth(2) // zero-indexed breadth of 3 on level 1
+    
+    await waitFor(() => {
+      expect(getByTestId('path-parent-three-children-2')).toBeTruthy();
+    });
   });
 });
