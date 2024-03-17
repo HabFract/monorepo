@@ -20,7 +20,7 @@ function getNextOnboardingState(state: string) {
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
-  const [navCollapseVertical, setNavCollapseVertical] = useState<boolean>(true);
+  const [navCollapseVertical, setNavCollapseVertical] = useState<boolean>(false);
 
   const customTheme: CustomFlowbiteTheme = {
     label: {
