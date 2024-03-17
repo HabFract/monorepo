@@ -32,10 +32,10 @@ function getItem(
 export interface INav {
   transition: (newState: string, params?: object) => void;
   toggleVerticalCollapse: () => void;
-  verticalCollapse: boolean;
+  expandedMenu: boolean;
 }
 
-const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalCollapse } : INav) => {
+const Nav: React.FC<INav> = ({ transition, expandedMenu, toggleVerticalCollapse } : INav) => {
   const ref = useRef(null);
   const { loading, error, data: spheres } = useGetSpheresQuery();
   
@@ -52,9 +52,8 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (ref.current && (event.target.tagName == 'NAV')) {
-        openMenu();
-      } else if(!(ref as any).current.contains(event.target)) {
+      if(!(ref as any).current.contains(event.target)) {
+        toggleVerticalCollapse()
         closeMenu();
       }
       const subMenuSelected = event.target.closest('.ant-menu-sub')?.classList?.contains('ant-menu-vertical');
@@ -131,7 +130,7 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
   }
 
   return (
-    <nav ref={ref} className={verticalCollapse ? "collaped-vertical side-nav" : "side-nav"}>
+    <nav ref={ref} className={expandedMenu ? "side-nav expanded" : "side-nav"}>
       {loading || !spheres ? "Loading" :
         <Menu
           inlineCollapsed={collapsed}
@@ -140,7 +139,8 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           mode="inline"
-          items={createSphereMenuItems({spheres: spheres.spheres as any, onClick: () => {closeMenu()}})}
+          items={createSphereMenuItems({spheres: spheres.spheres as any, onClick: () => {closeMenu(); 
+            toggleVerticalCollapse()}})}
         />}
         <div className={"main-actions-menu"}>
           <Menu
@@ -152,9 +152,9 @@ const Nav: React.FC<INav> = ({ transition, verticalCollapse, toggleVerticalColla
             mode="inline"
             items={createFixedMenuItems()}
           />
-          <div className="flex flex-col gap-1">
-            <button className="toggle-vertical-collapse" onClick={() => toggleVerticalCollapse()}>
-              <ArrowsAltOutlined className={verticalCollapse ? "collapsed" : "expanded"}/>
+          <div className={!expandedMenu ? "flex flex-col gap-1 w-full " : "flex flex-col gap-1 w-full items-start"} >
+            <button className="toggle-vertical-collapse" onClick={() => {expandedMenu ? closeMenu() : openMenu(); toggleVerticalCollapse();}}>
+              <ArrowsAltOutlined className={!expandedMenu ? "collapsed" : "expanded"}/>
             </button>
             <div className="w-16 fixed overflow-hidden right-1 top-0 cursor-pointer p-2 logo-div" onClick={() => transition('Home')}><img src="assets/logo-no-text.svg" alt="habit/fract"/></div>
           </div>
