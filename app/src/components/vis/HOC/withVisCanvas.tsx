@@ -12,7 +12,7 @@ import { WithVisCanvasProps } from '../types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { Modal } from 'flowbite-react';
 import { CreateOrbit } from '../../forms';
-import { store } from '../../../state/jotaiKeyValueStore';
+import { nodeCache, store } from '../../../state/jotaiKeyValueStore';
 
 const defaultMargins: Margins = {
   top: -1100,
@@ -90,17 +90,15 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                 const currentOrbit = newRootData?.find(d => {
                   if(!d) return false
                   const siblings = d?.parent && d.parent.children.map(d => d.data.content)
-                  // console.log('d, siblings :>> ', d, siblings);
                   return siblings && siblings.length > 0 && d.parent?.children[x] ? (d.parent?.children[x].data.content == d.data.content) && d.depth == y
                     : false
                 });
+                console.log('currentOrbit :>> ', currentOrbit);
                 if(currentOrbit?.data?.content) {
                   const node = currentVis.nodeDetails[selectedSphere.actionHash as ActionHashB64];
-                  console.log('node :>> ', node);
                   // currentOrbit && store.set(currentOrbitIdAtom, currentOrbit.data.content);
                 }
                 hasChild = newRootData?.data.children && newRootData?.data.children.length > 0  
-                console.log('hasChild :>> ', hasChild);
               }
   
               onlyChildParent = currentVis.rootData.parent == null || currentVis.rootData.parent?.children && currentVis.rootData.parent?.children.length == 1;
@@ -135,7 +133,18 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                     Create Orbit
                   </Modal.Header>
                   <Modal.Body>
-                    <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh} onCreateSuccess={() => setIsModalOpen(false)}></CreateOrbit>
+                    <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh} onCreateSuccess={() => {
+                      setIsModalOpen(false);
+                      currentVis.isModalOpen = false; // TODO, let this happen on cancel by adding onCancel callback
+                      currentVis.nodeDetails = store.get(nodeCache.items)![selectedSphere.actionHash as ActionHashB64]
+                      currentVis.setNodeAndLinkGroups.call(currentVis);
+                      currentVis.setNodeAndLinkEnterSelections.call(currentVis);
+                      currentVis.setCircleAndLabelGroups.call(currentVis);
+                      currentVis.appendCirclesAndLabels.call(currentVis);
+                      currentVis.appendNodeDetailsAndControls.call(currentVis);
+                      currentVis.appendLinkPath.call(currentVis);
+                      currentVis.skipMainRender = true;
+                    }}></CreateOrbit>
                   </Modal.Body>
                 </Modal>
               </>

@@ -1,4 +1,4 @@
-import { Provider, atom, createStore } from 'jotai'
+import { createStore } from 'jotai'
 import { MiniDb } from 'jotai-minidb'
 import { Orbit, Scale } from '../graphql/generated'
 import { ActionHashB64, EntryHashB64 } from '@holochain/client'
@@ -15,6 +15,7 @@ export interface OrbitNodeDetails {
   scale: Scale;
   startTime?: number;
   endTime?: number;
+  path?: string;
   checked: boolean;
 }
 

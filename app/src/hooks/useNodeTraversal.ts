@@ -19,36 +19,36 @@ export const useNodeTraversal = (hierarchyBounds: HierarchyBounds) => {
 
   const incrementBreadth = () => {
     if (hierarchyBounds) {
-      const newVal = (breadthIndex + 1) <= hierarchyBounds.maxBreadth ? breadthIndex + 1 : breadthIndex;
+      const newVal = breadthIndex + 1;
       setBreadthIndex(newVal);
       store.set(currentOrbitCoords, {x: newVal, y })
     }
   };
 
   const decrementBreadth = () => {
-    const newVal = breadthIndex > 0 ? breadthIndex - 1 : 0;
+    const newVal = breadthIndex - 1;
     setBreadthIndex(newVal);
     store.set(currentOrbitCoords, {x: newVal, y })
   };
 
   const incrementDepth = () => {
     if (hierarchyBounds) {
-      const newVal = (depthIndex + 1) <= hierarchyBounds.maxDepth ? depthIndex + 1 : depthIndex;
+      const newVal = depthIndex + 1;
       setDepthIndex(newVal);
-      setBreadthIndex(0);
+      // setBreadthIndex(0);
       store.set(currentOrbitCoords, {x: 0, y: newVal })
     }
   };
 
   const decrementDepth = () => {
-    const newVal = depthIndex > 0 ? depthIndex - 1 : 0
+    const newVal = depthIndex - 1
     setDepthIndex(newVal);
     setBreadthIndex(0);
     store.set(currentOrbitCoords, {x: 0, y: newVal })
   };
   
   const maxBreadth = hierarchyBounds?.maxBreadth;
-  const maxDepth = hierarchyBounds?.maxDepth;
+  const maxDepth = hierarchyBounds?.maxDepth; // TODO: remove this if it is no longer needed anywhere
   
   return { depthIndex, setDepthIndex, breadthIndex, setBreadthIndex, incrementBreadth, decrementBreadth, incrementDepth, decrementDepth, maxBreadth, maxDepth };
 };

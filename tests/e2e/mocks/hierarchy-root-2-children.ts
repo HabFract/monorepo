@@ -55,7 +55,7 @@ export const HIERARCHY_ROOT_TWO_CHILDREN_MOCKS = [
     },
     result: {
       data: {
-        getOrbitHierarchy: "{\"result\":{\"level_trees\":[{\"content\":\"R28gZm9yIGEgd2Fsay==\",\"name\":\"uhCEkx2SQRKUrAZv7oMVcNvaaF5-jn2Tsewap6zXNlM_1k7kkbU5h\",\"children\":[]},{\"content\":\"R28gZm9yIGEgd2Fsay==1\",\"name\":\"uhCEkqfZsLqgYny0reZuRIEW-KSeqoAYvdkSBx5oNJXU9Etka6CYc\",\"children\":[]}]  }}",
+        getOrbitHierarchy: "{\"result\":{\"level_trees\":[{\"content\":\"R28gZm9yIGEgd2Fsay==2C1\",\"name\":\"uhCEkx2SQRKUrAZv7oMVcNvaaF5-jn2Tsewap6zXNlM_1k7kkbU5h\",\"children\":[]},{\"content\":\"R28gZm9yIGEgd2Fsay==2C2\",\"name\":\"uhCEkqfZsLqgYny0reZuRIEW-KSeqoAYvdkSBx5oNJXU9Etka6CYc\",\"children\":[]}]  }}",
       },
     },
   },

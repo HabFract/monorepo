@@ -1,29 +1,65 @@
 // @ts-nocheck
 
 import { select } from "d3-selection";
-import { scaleOrdinal, scaleLinear } from "d3-scale";
 import { zoom } from "d3-zoom";
 import { linkVertical, linkHorizontal } from "d3-shape";
-import { tree, hierarchy } from "d3-hierarchy";
-import { easeCubic, easePolyIn, easeLinear } from "d3-ease";
+import { tree } from "d3-hierarchy";
+import { easeCubic, easeLinear } from "d3-ease";
 import { TreeLayout } from "d3-hierarchy";
-import { legendColor } from "d3-svg-legend";
-
 // import propagating from "propagating-hammerjs";
 import _ from "lodash";
 
-import { ONE_CHILD, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT, THREE_CHILDREN } from './PathTemplates/paths';
+import { 
+  ONE_CHILD,
+  ONE_CHILD_XS,
+  TWO_CHILDREN_LEFT,
+  TWO_CHILDREN_RIGHT,
+  THREE_CHILDREN_LEFT,
+  THREE_CHILDREN_RIGHT,
+  FOUR_CHILDREN_LEFT_1,
+  FOUR_CHILDREN_LEFT_2,
+  FOUR_CHILDREN_RIGHT_1,
+  FOUR_CHILDREN_RIGHT_2,
+  FIVE_CHILDREN_LEFT_1, 
+  FIVE_CHILDREN_LEFT_2, 
+  FIVE_CHILDREN_RIGHT_1, 
+  FIVE_CHILDREN_RIGHT_2,
+  SIX_CHILDREN_LEFT_1,
+  SIX_CHILDREN_LEFT_2,
+  SIX_CHILDREN_LEFT_3,
+  SIX_CHILDREN_RIGHT_1,
+  SIX_CHILDREN_RIGHT_2,
+  SIX_CHILDREN_RIGHT_3,
+
+  TWO_CHILDREN_RIGHT_XS,
+  TWO_CHILDREN_LEFT_XS,
+  THREE_CHILDREN_LEFT_XS,
+  THREE_CHILDREN_RIGHT_XS,
+  FOUR_CHILDREN_LEFT_1_XS,
+  FOUR_CHILDREN_LEFT_2_XS,
+  FOUR_CHILDREN_RIGHT_1_XS,
+  FOUR_CHILDREN_RIGHT_2_XS,
+  FIVE_CHILDREN_LEFT_1_XS,
+  FIVE_CHILDREN_LEFT_2_XS,
+  FIVE_CHILDREN_RIGHT_1_XS,
+  FIVE_CHILDREN_RIGHT_2_XS,
+  SIX_CHILDREN_LEFT_1_XS,
+  SIX_CHILDREN_LEFT_2_XS,
+  SIX_CHILDREN_LEFT_3_XS,
+  SIX_CHILDREN_RIGHT_1_XS,
+  SIX_CHILDREN_RIGHT_2_XS,
+  SIX_CHILDREN_RIGHT_3_XS
+} from './PathTemplates/paths';
 
 import { expand, collapse, contentEqual, nodeStatusColours, parseTreeValues, cumulativeValue, outOfBoundsNode, getInitialXTranslate, getInitialYTranslate, newXTranslate, newYTranslate, debounce } from "./helpers";
 
-import { positiveCol, negativeCol, noNodeCol, neutralCol, parentPositiveBorderCol, positiveColLighter, BASE_SCALE, FOCUS_MODE_SCALE, LG_BUTTON_SCALE, LG_LABEL_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_BUTTON_SCALE, XS_LABEL_SCALE, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS, } from "./constants";
+import { noNodeCol, parentPositiveBorderCol, positiveColLighter, BASE_SCALE, FOCUS_MODE_SCALE, LG_BUTTON_SCALE, LG_LABEL_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_BUTTON_SCALE, XS_LABEL_SCALE, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS, } from "./constants";
 import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
 import { client } from "../../main";
 import { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject, nodeCache } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
-import { ThemeProvider } from "flowbite-react/lib/esm/components/Flowbite/ThemeContext";
 
 export default class BaseVisualization implements IVisualization {
   type: VisType;
@@ -44,6 +80,7 @@ export default class BaseVisualization implements IVisualization {
   _zoomConfig: ZoomConfig;
   eventHandlers: EventHandlers;
   _hasRendered: boolean = false;
+  skipMainRender: boolean = false;
   isNewActiveNode?: boolean;
   activeNode: any;
   _enteringNodes: any;
@@ -275,10 +312,6 @@ export default class BaseVisualization implements IVisualization {
 
   firstRender() : boolean {
     return !this._hasRendered;
-  }
-
-  clearFirstRenderFlag() {
-    this._hasRendered = false;
   }
 
   noCanvas() : boolean {
@@ -542,63 +575,131 @@ export default class BaseVisualization implements IVisualization {
     select(".canvas")?.remove();
   }
 
-  clearCanvas(saveLinks: boolean) : void {
-    select(".canvas").selectAll(saveLinks ? "*:not(g.links):not( path.link):not(g.links:last-of-type)" : "*").remove();
-    select(".canvas").selectAll("g.links + g.links").remove();
+  clearCanvas() : void {
+    select(".canvas").selectAll("*").remove();
   }
 
-  translateLinks([dx, dy, breadth]: number[]) : void {
-    const indexToBreadthRatio = (dx+1) / (breadth);
-    const middleIndex = (breadth + 1) / 2;
-    const isMiddleElement = (dx + 1) == middleIndex;
-    const isChildElement = dy > 0; 
+  // clearPreviousLinkPath() : void {
+  //   this._canvas.selectAll("g.links *").remove();
+  // }
+
+  appendLinkPath() : void {
+    const rootNodeId = this.rootData.data.content;
+    const cacheItem : OrbitNodeDetails = store.get(nodeCache.items)?.[this.sphereAh]?.[rootNodeId];
+    if(!cacheItem || !cacheItem?.path) return
     
-//     console.log('debug isMiddleElement, isChildElement, :>> ', isMiddleElement, isChildElement,);
-//     console.log('debug dx dy ratio :>> ', dx, dy, indexToBreadthRatio);
-//     const dxScaled = this._viewConfig!.dx as number / this._viewConfig.scale;
-//     const fullWidth = (dxScaled * (this._viewConfig!.levelsWide as number)) * 2;
-//     console.log('debug dxScaled, levelsWide, fullWidth, noderadius :>> ', dxScaled, this._viewConfig!.levelsWide, fullWidth, (this._viewConfig!.nodeRadius as number));
-// //     + (this._viewConfig!.nodeRadius as number)  * 2 as any
-// // + (this._viewConfig!.nodeRadius as number)  * 2 as any
-//     const x = isMiddleElement ? 0 : indexToBreadthRatio > 0.5 ? (fullWidth) : -(fullWidth);
-//     const y = -(this._viewConfig!.dy as number);
-    const [path, dataTestId] = determinePathFragment(dx, dy, breadth);
+    const newPath = select(".canvas").selectAll("g.links").append('path')
+      .attr("d", cacheItem.path)
+      .classed("link", true)
+      .classed("appended-path", true)
+      .attr("stroke-width", "3")
+      .attr("stroke-opacity", "0.3")
+      .attr("data-testid", getTestId(cacheItem.path));
 
-    select(".canvas").selectAll("g.links *").remove();
-    if(!!path) {
-      select(".canvas").selectAll("g.links").append('path')
-        .attr("d", path)
-        .classed("link", true)
-        .attr("stroke-width", "3")
-        .attr("stroke-opacity", "0.3")
-        .attr("data-testid", dataTestId);
-      const newPath = select(".canvas").selectAll("g.links path")
-      const {width, height} = newPath._groups[0][0].getBoundingClientRect();
-      const xTranslation = isMiddleElement ? 0 : (indexToBreadthRatio > 0.5 ? -1 : 1)*(width * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number / 2)); 
-      
-      const yTranslation = (height) * this._viewConfig.scale  + (this._viewConfig!.nodeRadius as number)/ 2; 
-      select(".canvas").selectAll("g.links")
-        .attr("transform", `translate(${xTranslation},${-yTranslation})`)
-    } else {
-      // select(".canvas").selectAll("g.links").remove();
+    const pathElement = newPath._groups[0][0];
+    const {height, width} = pathElement.getBoundingClientRect();
+    select(pathElement).attr("transform", `translate(${getPathXTranslation(cacheItem.path, width, (this._viewConfig.isSmallScreen() ? 30 : 250)/this._viewConfig.scale) * this._viewConfig.scale},${-((height + (this._viewConfig.isSmallScreen() ? 0 : 100)) * this._viewConfig.scale)})`);
+
+    // Helper function to get exact x translation based on path
+    function getPathXTranslation(path: string, width: number, offset: number) : number {
+      switch (path) {
+        case ONE_CHILD:
+          return 0
+        case ONE_CHILD_XS:
+          return 0
+        case TWO_CHILDREN_LEFT:
+          return width + offset
+        case TWO_CHILDREN_RIGHT:
+          return -(width + offset)
+        case TWO_CHILDREN_LEFT_XS:
+          return width + offset
+        case TWO_CHILDREN_RIGHT_XS:
+          return -(width + offset)
+        case THREE_CHILDREN_LEFT:
+          return width + offset * 2
+        case THREE_CHILDREN_RIGHT:
+          return -(width + offset * 2)
+        case THREE_CHILDREN_LEFT_XS:
+          return width + offset * 2
+        case THREE_CHILDREN_RIGHT_XS:
+          return -(width + offset * 2)
+        case FOUR_CHILDREN_LEFT_1:
+          return width + offset * 3
+        case FOUR_CHILDREN_LEFT_2:
+          return width + offset
+        case FOUR_CHILDREN_RIGHT_1:
+          return -(width + offset)
+        case FOUR_CHILDREN_RIGHT_2:
+          return -(width + offset * 3)
+        case FOUR_CHILDREN_LEFT_1_XS:
+          return width + offset * 3
+        case FOUR_CHILDREN_LEFT_2_XS:
+          return width + offset
+        case FOUR_CHILDREN_RIGHT_1_XS:
+          return -(width + offset)
+        case FOUR_CHILDREN_RIGHT_2_XS:
+          return -(width + offset * 3)
+        case FIVE_CHILDREN_LEFT_1:
+          return width + offset * 4
+        case FIVE_CHILDREN_LEFT_2:
+          return width + offset * 2
+        case FIVE_CHILDREN_RIGHT_1:
+          return -(width + offset * 2)
+        case FIVE_CHILDREN_RIGHT_2:
+          return -(width + offset * 4)
+        case FIVE_CHILDREN_LEFT_1_XS:
+          return width + offset * 4
+        case FIVE_CHILDREN_LEFT_2_XS:
+          return width + offset * 2
+        case FIVE_CHILDREN_RIGHT_1_XS:
+          return -(width + offset * 2)
+        case FIVE_CHILDREN_RIGHT_2_XS:
+          return -(width + offset * 4)
+        case SIX_CHILDREN_LEFT_1:
+          return width + offset * 5
+        case SIX_CHILDREN_LEFT_2:
+          return width + offset * 2
+        case SIX_CHILDREN_LEFT_3:
+          return width + offset * 2
+        case SIX_CHILDREN_RIGHT_1:
+          return -(width + offset * 2)
+        case SIX_CHILDREN_RIGHT_2:
+          return -(width + offset * 2)
+        case SIX_CHILDREN_RIGHT_3:
+          return -(width + offset * 5)
+        case SIX_CHILDREN_LEFT_1_XS:
+          return width + offset * 5
+        case SIX_CHILDREN_LEFT_2_XS:
+          return width + offset * 2
+        case SIX_CHILDREN_LEFT_3_XS:
+          return width + offset * 2
+        case SIX_CHILDREN_RIGHT_1_XS:
+          return -(width + offset * 2)
+        case SIX_CHILDREN_RIGHT_2_XS:
+          return -(width + offset * 2)
+        case SIX_CHILDREN_RIGHT_3_XS:
+          return -(width + offset * 5)
+        default:
+          0
+      }
     }
-
-    // Helper function to determine the SVG path fragment based on node position
-    function determinePathFragment(dx: number, dy: number, breadth: number) : any {
-      if (dy === 0) {
-        // Root node logic
-        return [false, 'none']; // No path needed
-      } else {
-        // Child node logic
-        if (breadth === 1) {
-          return [ONE_CHILD, 'path-parent-one-child']; 
-        } else if (breadth == 2) {
-          return [dx == 0 ? TWO_CHILDREN_LEFT : TWO_CHILDREN_RIGHT, 'path-parent-two-children-' + dx]; 
-        } else if (breadth == 3) {
-          return [THREE_CHILDREN, 'path-parent-three-children']; 
-        } else {
-          return [false, 'none'];
-        }
+    // Helper function to fetch path testId based on path
+    function getTestId(path: string) : string {
+      switch (path) {
+        case ONE_CHILD:
+          return 'path-parent-one-child'
+        case ONE_CHILD_XS:
+          return 'path-parent-one-child'
+        case TWO_CHILDREN_LEFT_XS:
+          return 'path-parent-two-children-0'
+        case TWO_CHILDREN_RIGHT_XS:
+          return 'path-parent-two-children-1'
+        case THREE_CHILDREN_LEFT_XS:
+          return 'path-parent-three-children-0'
+        case THREE_CHILDREN_RIGHT_XS:
+          return 'path-parent-three-children-2'
+        default:
+          'none'
       }
     }
   }
@@ -832,6 +933,8 @@ export default class BaseVisualization implements IVisualization {
   }
 
   setNodeAndLinkGroups() : void {
+    !this.firstRender() && this.clearNodesAndLinks();
+
     const transformation = this.type == VisType.Radial ? `rotate(90)` : "";
     this._gLink = this._canvas
       .append("g")
@@ -929,6 +1032,38 @@ export default class BaseVisualization implements IVisualization {
       });
   }
 
+  clearNodesAndLinks() : void {
+    this._canvas.selectAll('g.nodes').remove();
+    this._canvas.selectAll('g.links').remove();
+  }
+
+  clearAndRedrawLabels() : void {
+    !this.firstRender() && this._canvas.selectAll(".tooltip").remove();
+
+    return this._enteringNodes
+      .append("g")
+      .classed("tooltip", true)
+        .append("foreignObject")
+        .attr("x", "-295")
+        .attr("y", "-45")
+        .attr("width", "550")
+        .style("overflow", "visible")
+        .attr("height", "550")
+        .html((d) => {
+          if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
+          const cachedNode = this.nodeDetails[d.data.content];
+          const {name, description, scale} = cachedNode;
+          return `<div class="tooltip-inner">
+          <div class="content">
+          <span class="title">Name:</span>
+          <p>${name}</p>
+          <span class="title">Description:</span>
+          <p>${description} - ${scale}</p>
+          </div>
+        </div>`
+      });
+  }
+
   setCircleAndLabelGroups() : void {
     this._gCircle = this._enteringNodes
       .append("g")
@@ -945,75 +1080,7 @@ export default class BaseVisualization implements IVisualization {
         // return scale == 'Astro' ? "filter: saturate(0.45)" : "filter: brightness(1.25)"
 
       });
-    this._gTooltip = this._enteringNodes
-      .append("g")
-      .classed("tooltip", true)
-        .append("foreignObject")
-        .attr("x", "-295")
-        .attr("y", "-45")
-        .attr("width", "550")
-        .style("overflow", "visible")
-        .attr("height", "550")
-        .html((d) => {
-        if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
-          const {name, description, scale} = this.nodeDetails[d.data.content];
-          console.log('name :>> ', name);
-          return `<div class="tooltip-inner">
-          <div class="content">
-          <span class="title">Name:</span>
-          <p>${name}</p>
-          <span class="title">Description:</span>
-          <p>${description} - ${scale}</p>
-          </div>
-        </div>`
-        });
-      // .classed("hidden", this.type == VisType.Radial)
-      // .attr(
-      //   "transform",
-      //   `translate(${this._viewConfig.nodeRadius as number / 10}, ${
-      //     this._viewConfig.nodeRadius
-      //   }), scale(${
-      //     this._viewConfig.isSmallScreen() ? XS_LABEL_SCALE : LG_LABEL_SCALE
-      //   })`
-      // )
-      // .attr("opacity", (d) => "1");//this.activeOrNonActiveOpacity(d, "0"));
-  }
-
-  setButtonGroups() {
-    this._gButton = this._gTooltip.select(".tooltip-inner")
-      .append("g")
-      .classed("tooltip-actions", true)
-        .append("foreignObject")
-        .attr("width", "550")
-        .style("overflow", "visible")
-        .attr("height", "550")
-        .html((d) => {
-          if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
-          const { checked, scale } = this.nodeDetails[d.data.content];
-          return `<div class="buttons">
-          <button class="tooltip-action-button higher-button ${scale !== 'Astro' ? '' : 'hide'}"></button>
-          <button class="tooltip-action-button checkbox-button ${checked ? 'checked' : ''}"></button>
-          <button class="tooltip-action-button lower-button"></button>
-        </div>`
-      });
-      // .classed("habit-label-dash-button", true)
-      // .attr(
-      //   "transform",
-      //   (d) =>
-      //     `translate(0, 0), scale(${
-      //       this._viewConfig.isSmallScreen()
-      //         ? this.type == VisType.Radial
-      //           ? XS_BUTTON_SCALE * 1.15
-      //           : XS_BUTTON_SCALE
-      //         : this.type == VisType.Radial
-      //         ? LG_BUTTON_SCALE / 1.15
-      //         : LG_BUTTON_SCALE
-      //     })` +
-      //     (this.type == VisType.Radial
-      //       ? `, rotate(${450 - ((d.x / 8) * 180) / Math.PI - 90})`
-      //       : "")
-      // )
-      // .attr("style", "opacity: 0");
+    this._gTooltip = this.clearAndRedrawLabels()
   }
 
   appendCirclesAndLabels() : void {
@@ -1077,78 +1144,23 @@ export default class BaseVisualization implements IVisualization {
       .on("mouseenter", this.eventHandlers.handleHover.bind(this));
   }
 
-  // appendLabels() : void {
-  //   this._gTooltip
-  //     .append("rect")
-  //     .attr("width", 3)
-  //     .attr("height", 45)
-  //     .attr("x", -6)
-  //     .attr("y", -25);
-
-  //   this._gTooltip
-  //     .append("div")
-  //     .attr("width", this.type == VisType.Radial ? 130 : 275)
-  //     .attr("height", 100)
-  //     .attr("x", -6)
-  //     .attr("y", -10);
-
-  //   // Split the name label into two parts:
-  //   this._gTooltip
-  //     .append("text")
-  //     .attr("x", 5)
-  //     .attr("y", 20)
-  //     .text((d) => {
-  //       return d.data.name
-  //     })
-  //     .attr("transform", (d) => {
-  //       return this.type == VisType.Radial
-  //         ? `scale(0.75), translate(${
-  //             d.x < Math.PI / 2 ? "130, 100" : "0,0"
-  //           }), rotate(${0})`
-  //         : "";
-  //     });
-  //   this._gTooltip
-  //     .append("text")
-  //     .attr("x", 5)
-  //     .attr("y", 50)
-  //     .text((d) => {
-  //       const allWords = d.data.name.split(" ");
-  //       const words = allWords.slice(0, 6);
-  //       return `${words[4] || ""} ${words[5] || ""} ${words[6] || ""} ${
-  //         allWords.length > 7 ? "..." : ""
-  //       }`;
-  //     });
-
-  //   // this._enteringNodes
-  //   //   .append("g")
-  //   //   .attr(
-  //   //     "transform",
-  //   //     "translate(" +
-  //   //       (this.type == VisType.Radial ? -10 : -35) +
-  //   //       "," +
-  //   //       (this.type == VisType.Tree ? -25 : this.type == VisType.Radial ? -30 : 5) +
-  //   //       ") scale( " +
-  //   //       this._viewConfig.scale * 1.5 +
-  //   //       ") rotate(" +
-  //   //       (this.type == VisType.Cluster ? 270 : this.type == VisType.Radial ? 270 : 0) +
-  //   //       ")"
-  //   //   )
-  //   //   .append("path")
-  //   //   .attr("class", "expand-arrow")
-  //   //   .attr("d", (d) => {
-  //   //     return d._children
-  //   //       ? "M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"
-  //   //       : null;
-  //   //   });
-  // }
-  appendButtons() {
-    const delBtnG = this._gButton.append("g");
-    delBtnG
-      .append("path")
-      .attr("d", "M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z")
-      .attr("fill", "#e06a58")
-      .attr("display", (d) => (d.depth === 0 ? "none" : "initial"))
-      .on("click", this.eventHandlers.handleDeleteNode.bind(this));
+  appendNodeDetailsAndControls() {
+    this._gButton = this._gTooltip.select(".tooltip-inner")
+      .append("g")
+      .classed("tooltip-actions", true)
+        .append("foreignObject")
+        .attr("width", "550")
+        .style("overflow", "visible")
+        .attr("height", "550")
+        .html((d) => {
+          if(!d?.data?.content || !this.nodeDetails[d.data.content]) return
+          const { checked, scale } = this.nodeDetails[d.data.content];
+          return `<div class="buttons">
+          <button class="tooltip-action-button higher-button ${scale !== 'Astro' ? '' : 'hide'}"></button>
+          <button class="tooltip-action-button checkbox-button ${checked ? 'checked' : ''}"></button>
+          <button class="tooltip-action-button lower-button"></button>
+        </div>`
+      });
   }
 
   async refetchOrbits() {
@@ -1315,86 +1327,6 @@ export default class BaseVisualization implements IVisualization {
   //   });
   // }
 
-  bindLegendEventHandler() {
-    // let infoCell = document.querySelector(".help-svg");
-    // infoCell?.addEventListener("click", () => {
-    //   store.dispatch(toggleConfirm({ type: "Instructions" }));
-    // });
-  }
-
-  addLegend() {
-    const labels = [
-      "Complete",
-      "Incomplete",
-      "Sub-Incomplete",
-      // "Not Yet Tracked",
-      "Out of Bounds",
-    ];
-    const legendScale = this._viewConfig.isSmallScreen()
-      ? BASE_SCALE / 3.5
-      : BASE_SCALE / 2;
-    const ordinal = scaleOrdinal().domain(labels).range([
-      positiveCol,
-      negativeCol,
-      positiveColLighter,
-      // neutralCol,
-      noNodeCol,
-    ]);
-
-    const legendSvg = select("svg.legend-svg");
-    const gLegend = legendSvg
-      .append("g")
-      .attr("class", "legend")
-      .attr(
-        "transform",
-        `translate(5, ${
-          this._viewConfig.isSmallScreen() ? 55 : 25
-        }) scale(${legendScale})`
-      );
-
-    const legend = legendColor()
-      .orient("horizontal")
-      .labels(labels)
-      .orient("vertical")
-      .shape("circle")
-      .shapeRadius(14)
-      .shapePadding(-5)
-      .scale(ordinal);
-
-    gLegend.call(legend as any);
-  }
-
-  // setNodeAnimationGroups() {
-  //   this.gCirclePulse = this._canvas?.selectAll(
-  //     "g.the-node.solid.active g.node-subgroup"
-  //   );
-
-  //   this.gCirclePulse.pulseScale = scaleLinear()
-  //     // .range(["#1a140e", "#5568d2", "#3349c1"])
-  //     .domain([0, 3 * (this._viewConfig.nodeRadius as number)]);
-
-  //   this.gCirclePulse.pulseData = [
-  //     0,
-  //     this._viewConfig.nodeRadius,
-  //     this._viewConfig.nodeRadius as number * 2,
-  //   ];
-
-  //   this.gCirclePulse.pulseCircles = this.gCirclePulse
-  //     .insert("g", ".habit-label-dash-button")
-  //     .classed("active-circle", true)
-  //     .attr("stroke-opacity", "0.8")
-  //     .selectAll("circle")
-  //     .data(this.gCirclePulse.pulseData)
-  //     .enter()
-  //     .insert("circle", ".habit-label-dash-button")
-  //     .attr("r", function (d) {
-  //       return d;
-  //     })
-  //     .attr("fill", "none")
-  //     .style("stroke-width", "4")
-  //     .style("stroke", this.gCirclePulse.pulseScale);
-  // }
-
   activateNodeAnimation = debounce(() => {
     // https://stackoverflow.com/questions/45349849/concentric-emanating-circles-d3
     // Credit: Andrew Reid
@@ -1439,6 +1371,7 @@ export default class BaseVisualization implements IVisualization {
   }, 800);
 
   render() {
+    if(this.skipMainRender) return this.skipMainRender = false;
     if (this.noCanvas()) {
       this._canvas = select(`#${this._svgId}`)
       .append("g")
@@ -1459,6 +1392,9 @@ export default class BaseVisualization implements IVisualization {
       this.hasNewHierarchyData()
     ) {
       // First render OR New hierarchy needs to be rendered
+      
+      if (this.noCanvas()) return;
+      this.clearCanvas();
 
       // Update the current day's rootData
       if (this.hasNextData()) {
@@ -1466,63 +1402,18 @@ export default class BaseVisualization implements IVisualization {
         delete this._nextRootData
       }
 
-      if (this.noCanvas()) return;
-
-      //Render cleared canvas for OOB dates
-      const isBlankData = this.rootData?.data?.content == "";
-      if (isBlankData) {
-        console.log("Rendered blank :>> ");
-        this.clearCanvas(false);
-        return;
-      }
-
-      const translationNeeded = !!this.rootData._translationCoords;
-      this.clearCanvas(translationNeeded);
-      translationNeeded && this.translateLinks(this.rootData._translationCoords);
-
       this.setLayout();
-      if (typeof this.rootData.newHabitDatesAdded == "undefined") {
-        this.addHabitDatesForNewNodes();
-      }
-      !this.hasSummedData() && accumulateTree(this.rootData, this);
-
-      // _p("Formed new layout", this, "!");
 
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
       this.setCircleAndLabelGroups();
-      this.setButtonGroups();
-
-      console.log("Appended and set groups... :>>", {});
+      
+      this.appendNodeDetailsAndControls();
+      this.appendLinkPath();
 
       this.appendCirclesAndLabels();
-      // this.appendLabels();
-      this.appendButtons();
       
-      if (!!this.activeNode) {
-        // this?.isNewActiveNode &&
-        //   this.zoomBase().selectAll(".active-circle").remove();
-      } else {
-        // Set a default active node
-        this.isNewActiveNode = true;
-        let newActive = this.rootData.find((n) => {
-          return !n.data.content.match(/OOB/);
-        });
-        // console.log("New active node", newActive);
-        try {
-          this.setCurrentHabit(newActive);
-          this.setCurrentNode(newActive);
-          !this._zoomConfig.zoomedInView() &&
-            this.setActiveNode(newActive?.data);
-        } catch (err) {
-          console.error("No active habits for this date");
-        }
-      }
-      // this.activateNodeAnimation();
-      // console.log("Appended SVG elements... :>>");
       this.eventHandlers.handleNodeZoom.call(this, null, this.activeNode);
-      // console.log("this.activeNode", this.activeNode);
-      // console.log("this.activeNode.isNewActive", this.isNewActiveNode);
 
       // this._viewConfig.isSmallScreen() &&
       //   this.bindMobileEventHandlers(this._enteringNodes);
@@ -1532,6 +1423,7 @@ export default class BaseVisualization implements IVisualization {
         `scale(${BASE_SCALE}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})`
       );
 
+      console.log("BaseVis render complete... :>>");
       this._hasRendered = true;
     }
 
