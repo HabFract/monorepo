@@ -55,8 +55,9 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, toggleSideNavExpande
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if(!(ref as any).current.contains(event.target)){ closeMenu() }
-      
+      if(!(ref as any).current.contains(event.target) && sideNavExpanded && !collapsed ){
+        closeMenu();
+      } 
       const subMenuSelected = event.target.closest('.ant-menu-sub')?.classList?.contains('ant-menu-vertical');
       const bottomMenuSelected = !!event.target.closest('.main-actions-menu');
       const plusSelected = !!event.target.closest('.ant-menu-item:last-of-type');
