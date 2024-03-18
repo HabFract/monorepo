@@ -50,25 +50,25 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
 }
 
 /* Vertical collapse button */
-.toggle-vertical-collapse {
+.toggle-expanded-menu {
   @apply bg-transparent border-0 text-off-white text-sm h-10;
   width: 3.5rem; margin-left: .25rem;
 }
-.toggle-vertical-collapse span[role="img"]{
+.toggle-expanded-menu span[role="img"]{
   transform: rotate(-45deg) scale(1.25);
 }
-.toggle-vertical-collapse span[role="img"].collapsed {
+.toggle-expanded-menu span[role="img"].collapsed {
   transform: rotate(45deg) scale(2);
 }
-.toggle-vertical-collapse:focus {
+.toggle-expanded-menu:focus {
   @apply ring-0 outline-0;
 }
-.toggle-vertical-collapse:hover {
+.toggle-expanded-menu:hover {
   border-color: rgba(80, 227, 194, 0.9) !important;
   @apply bg-neutral-transparent text-off-white;
   border: 1px solid rgba(80, 227, 194, 0.9);
 }
-.toggle-vertical-collapse:active {
+.toggle-expanded-menu:active {
   background: rgba(155, 89, 182, 0.5);
   color: #FDFEFE;
 }
