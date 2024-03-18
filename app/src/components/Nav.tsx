@@ -51,17 +51,18 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, toggleSideNavExpande
     toggleSideNavExpanded()
   };
   const removeOtherActiveNavItemStates = () => {
-    console.log('removed other active nav item states :>> ', );
+    document.querySelectorAll(".ant-menu-item-selected")?.forEach(item => item.classList.toggle("ant-menu-item-selected"))
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
       if(!(ref as any).current.contains(event.target) && sideNavExpanded && !collapsed ){
         closeMenu();
       } 
+      const iconBtn = !!event.target.closest('.toggle-expanded-menu');
       const subMenuSelected = event.target.closest('.ant-menu-sub')?.classList?.contains('ant-menu-vertical');
       const bottomMenuSelected = !!event.target.closest('.main-actions-menu');
       const plusSelected = !!event.target.closest('.ant-menu-item:last-of-type');
-      if(subMenuSelected || bottomMenuSelected || plusSelected) {
+      if(!iconBtn && (subMenuSelected || bottomMenuSelected || plusSelected)) {
         removeOtherActiveNavItemStates()
       }
     };
@@ -86,7 +87,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, toggleSideNavExpande
       case e.key == 'vis':
         store.set(currentOrbitCoords, {x: 0, y: 0});
         if(!selectedSphere.actionHash) {
-          // console.log('collapsed,sideNavExpanded :>> ', collapsed,sideNavExpanded);
+          // Activate tooltip to encourage current Sphere selection
           collapsed && !sideNavExpanded && openMenu()
           setTooltipVisible(true);
           setTimeout(() => {
@@ -167,7 +168,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, toggleSideNavExpande
             items={createFixedMenuItems()}
           />
           <div className={!sideNavExpanded ? "flex flex-col gap-1 w-full " : "flex flex-col gap-1 w-full items-start"} >
-            <button className="toggle-vertical-collapse" onClick={() => {sideNavExpanded ? closeMenu() : openMenu(); toggleSideNavExpanded(); console.log('clikc handler', collapsed,)}}>
+            <button className="toggle-expanded-menu" onClick={() => {sideNavExpanded ? closeMenu() : openMenu(); toggleSideNavExpanded(); console.log('clikc handler', collapsed,)}}>
               <ArrowsAltOutlined className={!sideNavExpanded ? "collapsed" : "expanded"}/>
             </button>
             <div className="w-16 fixed overflow-hidden right-1 top-0 cursor-pointer p-2 logo-div" onClick={() => transition('Home')}><img src="assets/logo-no-text.svg" alt="habit/fract"/></div>
