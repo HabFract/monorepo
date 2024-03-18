@@ -89,7 +89,7 @@ export default {
       // "sphere-card-bg": "#004955",
       "card-bg": "rgba(0,73,85, 0.5)",
       "card-bg-light": "rgba(0,73,85, 0.9)",
-      "nav-bg": "rgba(0,73,85, 0.5)",
+      "nav-bg": "rgba(0,73,85, 0.95)",
 
       // "extra-transparent": "rgba(100, 116, 139, 0.25)",
       "card-bg-light": "rgba(100, 116, 139, 0.25)",
