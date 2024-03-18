@@ -105,7 +105,7 @@ function App({ children: pageComponent }: any) {
             className={"fixed top-0 right-0 z-20 text-white"} onClick={() => transition(getNextOnboardingState(state))}>NEXT</Button>
         </>
         : <>
-          <Nav transition={transition} sideNavExpanded={sideNavExpanded} toggleSideNavExpanded={() => setSideNavExpanded(!sideNavExpanded)} ></Nav>
+          <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded} ></Nav>
           <main className={"page-container"}>{pageComponent}</main>
         </>
       }

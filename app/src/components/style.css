@@ -140,7 +140,7 @@ nav > .ant-menu:first-child .ant-menu-item:last-child {
 }
 
 nav > .ant-menu .ant-menu-item[role="menuitem"], .ant-menu-item.ant-menu-item-selected , .ant-menu-item:active {
-  transition: .5s all cubic-bezier(1, .3, .3, 1);
+  transition: .5s border-radius cubic-bezier(1, .3, .3, 1);
   border-radius: 1rem !important;
   /* @apply text-white; */
 }

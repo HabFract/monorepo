@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Sphere, SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
 import { DarkThemeToggle } from "flowbite-react";
 import { currentOrbitCoords, currentSphere } from "../state/currentSphereHierarchyAtom";
-import { store } from "../state/jotaiKeyValueStore";
+import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from "../state/jotaiKeyValueStore";
 import { extractEdges } from "../graphql/utils";
 import { ActionHashB64 } from "@holochain/client";
 
@@ -31,11 +31,11 @@ function getItem(
 
 export interface INav {
   transition: (newState: string, params?: object) => void;
-  toggleSideNavExpanded: () => void;
+  setSideNavExpanded: Function;
   sideNavExpanded: boolean;
 }
 
-const Nav: React.FC<INav> = ({ transition, sideNavExpanded, toggleSideNavExpanded } : INav) => {
+const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded } : INav) => {
   const ref = useRef(null);
   const { loading, error, data: spheres } = useGetSpheresQuery();
   
@@ -44,39 +44,53 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, toggleSideNavExpande
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const closeMenu = () => {
     setCollapsed(true);
-    toggleSideNavExpanded()
+    setSideNavExpanded(false)
+    // setTimeout(() => {
+      // console.log('setCollapsed CLOSE :>> ', collapsed, sideNavExpanded);
+    // }, 10);
   };
   const openMenu = () => {
     setCollapsed(false);
-    toggleSideNavExpanded()
+    setSideNavExpanded(true)
+    // setTimeout(() => {
+      // console.log('setCollapsed OPEN :>> ', collapsed, sideNavExpanded);
+    // }, 10);
   };
   const removeOtherActiveNavItemStates = () => {
-    document.querySelectorAll(".ant-menu-item-selected")?.forEach(item => item.classList.toggle("ant-menu-item-selected"))
+    document.querySelectorAll(".ant-menu-item-selected")?.forEach(item => item.classList.remove("ant-menu-item-selected"))
   };
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if(!(ref as any).current.contains(event.target) && sideNavExpanded && !collapsed ){
+    const handleClick = (event) => setTimeout(() => {
+      if(!(ref as any).current.contains(event.target)){
         closeMenu();
       } 
       const iconBtn = !!event.target.closest('.toggle-expanded-menu');
       const subMenuSelected = event.target.closest('.ant-menu-sub')?.classList?.contains('ant-menu-vertical');
       const bottomMenuSelected = !!event.target.closest('.main-actions-menu');
       const plusSelected = !!event.target.closest('.ant-menu-item:last-of-type');
+      // console.log('ref.current :>> ', ref.current , event.target,  sideNavExpanded , !collapsed);
+      // console.log('subMenuSelected :>> ', subMenuSelected);
+      // console.log('bottomMenuSelected :>> ', bottomMenuSelected);
+      // console.log('plusSelected :>> ', plusSelected);
       if(!iconBtn && (subMenuSelected || bottomMenuSelected || plusSelected)) {
         removeOtherActiveNavItemStates()
-      }
-    };
-    document.addEventListener('click', handleClickOutside, true);
+      } 
+    }, 10); // Let other state changes clear first
+
+    document.addEventListener('click', handleClick, true);
     return () => {
-      document.removeEventListener('click', handleClickOutside, true);
+      document.removeEventListener('click', handleClick, true);
     };
   }, []);
 
   const selectedSphere = store.get(currentSphere);
+  const currentSphereId = selectedSphere?.actionHash as ActionHashB64;
+  const sphereNodes = currentSphereId && store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
 
   const onClick: MenuProps['onClick'] = (e) => {
+    removeOtherActiveNavItemStates()
+    console.log('e.key :>> ', e.key);
     setSelectedItemName(e.key)
-
     if(e.key.match(/list\-orbits\-|add\-orbit\-/)) { // Add any nav change conditions that should select a sphere
       const id = e.key.split(/list\-orbits\-|add\-orbit\-/)[1];
       const sphere = extractEdges(spheres?.spheres as any).find((sphere: any) => sphere.id == id) as Sphere & {id: ActionHashB64};
@@ -86,9 +100,13 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, toggleSideNavExpande
     switch (true) {
       case e.key == 'vis':
         store.set(currentOrbitCoords, {x: 0, y: 0});
-        if(!selectedSphere.actionHash) {
+        
+        if(!selectedSphere.actionHash || !sphereNodes) {
           // Activate tooltip to encourage current Sphere selection
-          collapsed && !sideNavExpanded && openMenu()
+          if(collapsed && !sideNavExpanded) {
+            setCollapsed(false);
+            setSideNavExpanded(true)
+          }
           setTooltipVisible(true);
           setTimeout(() => {
             setTooltipVisible(false);
@@ -125,9 +143,9 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, toggleSideNavExpande
   function createFixedMenuItems() {
     return [
       getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
-      getItem('Dashboard', 'dash', <DashboardFilled />),
+      // getItem('Dashboard', 'dash', <DashboardFilled />),
       getItem('Visualise', 'vis', <><PieChartFilled  data-tooltip-target="tooltip-left" data-tooltip-placement="left" /><div id="tooltip-left" role="tooltip" className={tooltipVisible ? "" : "invisible"}>
-      You need to select a sphere to start visualising!
+        You need to select a sphere to start visualising!
       <div className="tooltip-arrow" data-popper-arrow></div>
   </div></>),
     ]  
@@ -155,7 +173,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, toggleSideNavExpande
           defaultOpenKeys={['sub1']}
           mode="inline"
           items={createSphereMenuItems({spheres: spheres.spheres as any, onClick: () => {closeMenu(); 
-            toggleSideNavExpanded()}})}
+            setSideNavExpanded(false)}})}
         />}
         <div className={"main-actions-menu"}>
           <Menu
@@ -168,7 +186,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, toggleSideNavExpande
             items={createFixedMenuItems()}
           />
           <div className={!sideNavExpanded ? "flex flex-col gap-1 w-full " : "flex flex-col gap-1 w-full items-start"} >
-            <button className="toggle-expanded-menu" onClick={() => {sideNavExpanded ? closeMenu() : openMenu(); toggleSideNavExpanded(); console.log('clikc handler', collapsed,)}}>
+            <button className="toggle-expanded-menu" onClick={() => {sideNavExpanded ? closeMenu() : openMenu()}}>
               <ArrowsAltOutlined className={!sideNavExpanded ? "collapsed" : "expanded"}/>
             </button>
             <div className="w-16 fixed overflow-hidden right-1 top-0 cursor-pointer p-2 logo-div" onClick={() => transition('Home')}><img src="assets/logo-no-text.svg" alt="habit/fract"/></div>
