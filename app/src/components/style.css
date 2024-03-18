@@ -216,8 +216,7 @@ button[data-testid="dark-theme-toggle"] svg {
 }
 .ant-menu-title-content {
   margin-top: .25rem;
-  
-  margin-left: .6rem;
+  margin-left: 1.6rem !important;
 }
 .side-nav.expanded .ant-menu-item {
   overflow: initial;
@@ -229,8 +228,26 @@ button[data-testid="dark-theme-toggle"] svg {
 
 #tooltip-left {
   @apply transition-opacity duration-300 absolute z-10 inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700;
-
+  left: 105%;
 }
+
+#tooltip-left:before{
+  content:'';
+  display:block;
+  width:0;
+  height:0;
+  position:absolute;
+
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right:8px solid rgb(17 24 39 / 1);
+  left:-8px;
+  top:12px;
+}
+#tooltip-left.invisible:before, .side-nav:not(.expanded) #tooltip-left:before{
+  display: none;
+}
+
 ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] img{
   transition: .3s all cubic-bezier(1, 0.13, 0.13, 1);
   width: 3rem;

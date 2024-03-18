@@ -20,7 +20,7 @@ function getNextOnboardingState(state: string) {
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
-  const [navCollapseVertical, setNavCollapseVertical] = useState<boolean>(false);
+  const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
 
   const customTheme: CustomFlowbiteTheme = {
     label: {
@@ -105,7 +105,7 @@ function App({ children: pageComponent }: any) {
             className={"fixed top-0 right-0 z-20 text-white"} onClick={() => transition(getNextOnboardingState(state))}>NEXT</Button>
         </>
         : <>
-          <Nav transition={transition} expandedMenu={navCollapseVertical} toggleVerticalCollapse={() => setNavCollapseVertical(!navCollapseVertical)} ></Nav>
+          <Nav transition={transition} sideNavExpanded={sideNavExpanded} toggleSideNavExpanded={() => setSideNavExpanded(!sideNavExpanded)} ></Nav>
           <main className={"page-container"}>{pageComponent}</main>
         </>
       }
