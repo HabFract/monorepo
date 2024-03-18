@@ -216,11 +216,21 @@ button[data-testid="dark-theme-toggle"] svg {
 }
 .ant-menu-title-content {
   margin-top: .25rem;
+  
+  margin-left: .6rem;
+}
+.side-nav.expanded .ant-menu-item {
+  overflow: initial;
 }
 .ant-menu-item-selected .ant-menu-title-content {
   color: #FEFEFE !important;
 }
 /* Expanded Nav */
+
+#tooltip-left {
+  @apply transition-opacity duration-300 absolute z-10 inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700;
+
+}
 ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] img{
   transition: .3s all cubic-bezier(1, 0.13, 0.13, 1);
   width: 3rem;

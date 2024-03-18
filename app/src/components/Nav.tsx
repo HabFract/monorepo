@@ -41,21 +41,24 @@ const Nav: React.FC<INav> = ({ transition, expandedMenu, toggleVerticalCollapse 
   
   const [_, setSelectedItemName] = useState<string>();
   const [collapsed, setCollapsed] = useState(true);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
   const closeMenu = () => {
     setCollapsed(true);
+    toggleVerticalCollapse()
   };
   const openMenu = () => {
     setCollapsed(false);
+    toggleVerticalCollapse()
   };
   const removeOtherActiveNavItemStates = () => {
     console.log('removed other active nav item states :>> ', );
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if(!(ref as any).current.contains(event.target)) {
-        toggleVerticalCollapse()
+      if(!(ref as any).current.contains(event.target)){
         closeMenu();
       }
+      toggleVerticalCollapse()
       const subMenuSelected = event.target.closest('.ant-menu-sub')?.classList?.contains('ant-menu-vertical');
       const bottomMenuSelected = !!event.target.closest('.main-actions-menu');
       const plusSelected = !!event.target.closest('.ant-menu-item:last-of-type');
@@ -82,7 +85,16 @@ const Nav: React.FC<INav> = ({ transition, expandedMenu, toggleVerticalCollapse 
 
     switch (true) {
       case e.key == 'vis':
-        store.set(currentOrbitCoords, {x: 0, y: 0})
+        store.set(currentOrbitCoords, {x: 0, y: 0});
+        if(!selectedSphere.actionHash) {
+          // console.log('collapsed,expandedMenu :>> ', collapsed,expandedMenu);
+          collapsed && !expandedMenu && openMenu()
+          setTooltipVisible(true);
+          setTimeout(() => {
+            setTooltipVisible(false);
+          }, 2500);
+          return;
+        }
         transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})
         break;
 
@@ -114,7 +126,10 @@ const Nav: React.FC<INav> = ({ transition, expandedMenu, toggleVerticalCollapse 
     return [
       getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
       getItem('Dashboard', 'dash', <DashboardFilled />),
-      getItem('Visualise', 'vis', <PieChartFilled />),
+      getItem('Visualise', 'vis', <><PieChartFilled  data-tooltip-target="tooltip-left" data-tooltip-placement="left" /><div style={{left: "105%"}} id="tooltip-left" role="tooltip" className={tooltipVisible ? "" : "invisible"}>
+      You need to select a sphere to start visualising!
+      <div className="tooltip-arrow" data-popper-arrow></div>
+  </div></>),
     ]  
   }
   
