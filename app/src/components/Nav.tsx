@@ -31,11 +31,11 @@ function getItem(
 
 export interface INav {
   transition: (newState: string, params?: object) => void;
-  toggleVerticalCollapse: () => void;
-  expandedMenu: boolean;
+  toggleSideNavExpanded: () => void;
+  sideNavExpanded: boolean;
 }
 
-const Nav: React.FC<INav> = ({ transition, expandedMenu, toggleVerticalCollapse } : INav) => {
+const Nav: React.FC<INav> = ({ transition, sideNavExpanded, toggleSideNavExpanded } : INav) => {
   const ref = useRef(null);
   const { loading, error, data: spheres } = useGetSpheresQuery();
   
@@ -44,21 +44,19 @@ const Nav: React.FC<INav> = ({ transition, expandedMenu, toggleVerticalCollapse 
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const closeMenu = () => {
     setCollapsed(true);
-    toggleVerticalCollapse()
+    toggleSideNavExpanded()
   };
   const openMenu = () => {
     setCollapsed(false);
-    toggleVerticalCollapse()
+    toggleSideNavExpanded()
   };
   const removeOtherActiveNavItemStates = () => {
     console.log('removed other active nav item states :>> ', );
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if(!(ref as any).current.contains(event.target)){
-        closeMenu();
-      }
-      toggleVerticalCollapse()
+      if(!(ref as any).current.contains(event.target)){ closeMenu() }
+      
       const subMenuSelected = event.target.closest('.ant-menu-sub')?.classList?.contains('ant-menu-vertical');
       const bottomMenuSelected = !!event.target.closest('.main-actions-menu');
       const plusSelected = !!event.target.closest('.ant-menu-item:last-of-type');
@@ -87,8 +85,8 @@ const Nav: React.FC<INav> = ({ transition, expandedMenu, toggleVerticalCollapse 
       case e.key == 'vis':
         store.set(currentOrbitCoords, {x: 0, y: 0});
         if(!selectedSphere.actionHash) {
-          // console.log('collapsed,expandedMenu :>> ', collapsed,expandedMenu);
-          collapsed && !expandedMenu && openMenu()
+          // console.log('collapsed,sideNavExpanded :>> ', collapsed,sideNavExpanded);
+          collapsed && !sideNavExpanded && openMenu()
           setTooltipVisible(true);
           setTimeout(() => {
             setTooltipVisible(false);
@@ -126,7 +124,7 @@ const Nav: React.FC<INav> = ({ transition, expandedMenu, toggleVerticalCollapse 
     return [
       getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
       getItem('Dashboard', 'dash', <DashboardFilled />),
-      getItem('Visualise', 'vis', <><PieChartFilled  data-tooltip-target="tooltip-left" data-tooltip-placement="left" /><div style={{left: "105%"}} id="tooltip-left" role="tooltip" className={tooltipVisible ? "" : "invisible"}>
+      getItem('Visualise', 'vis', <><PieChartFilled  data-tooltip-target="tooltip-left" data-tooltip-placement="left" /><div id="tooltip-left" role="tooltip" className={tooltipVisible ? "" : "invisible"}>
       You need to select a sphere to start visualising!
       <div className="tooltip-arrow" data-popper-arrow></div>
   </div></>),
@@ -145,7 +143,7 @@ const Nav: React.FC<INav> = ({ transition, expandedMenu, toggleVerticalCollapse 
   }
 
   return (
-    <nav ref={ref} className={expandedMenu ? "side-nav expanded" : "side-nav"}>
+    <nav ref={ref} className={sideNavExpanded ? "side-nav expanded" : "side-nav"}>
       {loading || !spheres ? "Loading" :
         <Menu
           inlineCollapsed={collapsed}
@@ -155,7 +153,7 @@ const Nav: React.FC<INav> = ({ transition, expandedMenu, toggleVerticalCollapse 
           defaultOpenKeys={['sub1']}
           mode="inline"
           items={createSphereMenuItems({spheres: spheres.spheres as any, onClick: () => {closeMenu(); 
-            toggleVerticalCollapse()}})}
+            toggleSideNavExpanded()}})}
         />}
         <div className={"main-actions-menu"}>
           <Menu
@@ -167,9 +165,9 @@ const Nav: React.FC<INav> = ({ transition, expandedMenu, toggleVerticalCollapse 
             mode="inline"
             items={createFixedMenuItems()}
           />
-          <div className={!expandedMenu ? "flex flex-col gap-1 w-full " : "flex flex-col gap-1 w-full items-start"} >
-            <button className="toggle-vertical-collapse" onClick={() => {expandedMenu ? closeMenu() : openMenu(); toggleVerticalCollapse();}}>
-              <ArrowsAltOutlined className={!expandedMenu ? "collapsed" : "expanded"}/>
+          <div className={!sideNavExpanded ? "flex flex-col gap-1 w-full " : "flex flex-col gap-1 w-full items-start"} >
+            <button className="toggle-vertical-collapse" onClick={() => {sideNavExpanded ? closeMenu() : openMenu(); toggleSideNavExpanded(); console.log('clikc handler', collapsed,)}}>
+              <ArrowsAltOutlined className={!sideNavExpanded ? "collapsed" : "expanded"}/>
             </button>
             <div className="w-16 fixed overflow-hidden right-1 top-0 cursor-pointer p-2 logo-div" onClick={() => transition('Home')}><img src="assets/logo-no-text.svg" alt="habit/fract"/></div>
           </div>
