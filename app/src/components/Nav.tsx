@@ -85,7 +85,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
 
   const selectedSphere = store.get(currentSphere);
   const currentSphereId = selectedSphere?.actionHash as ActionHashB64;
-  const sphereNodes = currentSphereId && store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
+  const sphereNodes = currentSphereId && store.get(nodeCache.items) && store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
 
   const onClick: MenuProps['onClick'] = (e) => {
     removeOtherActiveNavItemStates()
