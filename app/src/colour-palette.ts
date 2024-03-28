@@ -1,13 +1,30 @@
+// Basic gray
 export const RAISIN_BLACK = "rgba(36, 36, 36, 1)";
+
+// Primary
 export const KEPPEL = "rgba(54, 175, 152, 1)";
+
+// Secondary
 export const DEEP_SPACE = "rgba(69, 97, 95, 1)";
+
+// Vectors
 export const BLUEBERRY = "rgba(83,128,229, 1)";
 export const EMERALD = "rgba(95,197,127, 1)";
 export const PARADISE_PINK = "rgba(232,57,98, 1)";
+
+// Keywords/links
 export const SEA_GREEN = "rgba(11,254,184, 1)";
+
+// Warn
 export const RIPE_MANGO = "rgba(251,200,43, 1)";
+
+// Danger
 export const DEEP_CARMINE = "rgba(231,50,50, 1)";
+
+// Lines/boxes
 export const OPAL = "rgba(169,189,182, 1)";
+
+// Title
 export const CHINESE_WHITE = "rgba(219,228,226, 1)";
 
 // Text
