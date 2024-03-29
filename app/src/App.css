@@ -33,6 +33,16 @@ nav + main.page-container .orbits-list {
       
 }
 
+.full-spinner {
+  position: fixed;
+  height: 6rem;
+  width: 6rem;
+  left: calc(50vw - 3rem);
+  top: calc(50vh - 3rem);
+  animation: spin 2s linear infinite;
+  @apply text-line fill-primary;
+}
+
 .onboarding-page {
   padding-top: var(--onboarding-progress-bar-height);
   padding-bottom: var(--onboarding-progress-bar-height);
