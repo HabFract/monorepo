@@ -1,10 +1,10 @@
 .form-container {
-  @apply py-2 px-4 text-off-white relative bg-gradient-to-l to-transparent from-secondary-transparent;
+  @apply py-2 px-4 text-title relative bg-gradient-to-l to-transparent from-secondary;
   min-height: 100vh;
 }
 
 .form-container h2 {
-  @apply text-off-white text-center;
+  @apply text-title text-center;
 }
 
 .form-title {
@@ -74,7 +74,7 @@ form {
 }
 
 span.reqd {
-  @apply text-info font-bold;
+  @apply text-link font-bold;
 }
 
 /* Date pickers */

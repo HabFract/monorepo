@@ -27,33 +27,37 @@ function App({ children: pageComponent }: any) {
       root: {
         base: "text-base font-sans font-semibold tracking-wide leading-[1.5rem] flex items-center gap-2",
         colors: {
-          default: "text-off-white",
+          default: "text-title",
           disabled: "text-slate-50",
         }
       }
+    },
+    dropdown: {
+      content: "",
+      inlineWrapper: "bg-primary text-base font-sans font-semibold tracking-wide leading-[1.5rem] flex items-center gap-2"
     },
     textInput: {
       field: {
         input: {
           colors: {
-            default: "text-base font-normal bg-slate-800 hover:bg-slate-700 text-off-white border-slate-500 border-2 focus:border-transparent focus:outline-info-hover-bg focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
-            valid: "dark:bg-card-bg ",
-            invalid: "dark:bg-card-bg ",
-            disabled: "text-base font-normal bg-slate-800 hover:bg-slate-800 text-off-white border-slate-500 border-2 focus:border-transparent focus:outline-info-hover-bg focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
+            default: "text-base font-normal bg-slate-800 hover:bg-slate-700 text-title border-slate-500 border-2 focus:border-transparent focus:outline-link focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
+            valid: "dark:bg-secondary ",
+            invalid: "dark:bg-secondary ",
+            disabled: "text-base font-normal bg-slate-800 hover:bg-slate-800 text-title border-slate-500 border-2 focus:border-transparent focus:outline-link focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
           }
         }
       }
     },
     textarea: {
       colors: {
-        default: "p-4 text-base font-normal bg-slate-800 hover:bg-slate-700 text-off-white border-slate-500 border-2 focus:border-transparent  focus:outline-info-hover-bg focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
+        default: "p-4 text-base font-normal bg-slate-800 hover:bg-slate-700 text-title border-slate-500 border-2 focus:border-transparent  focus:outline-link focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
       }
     },
     select: {
       field: {
         select: {
           colors: {
-            default: "p-4 text-base font-normal bg-slate-800 hover:bg-slate-700 text-off-white border-slate-500 border-2 focus:border-transparent  focus:outline-info-hover-bg focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
+            default: "p-4 text-base font-normal bg-slate-800 hover:bg-slate-700 text-title border-slate-500 border-2 focus:border-transparent  focus:outline-link focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
           }
         }
       }
@@ -65,10 +69,10 @@ function App({ children: pageComponent }: any) {
     },
     modal: {
       header: {
-        title: 'text-2xl text-off-white font-heading font-base tracking-wider leading-[1.5rem]'
+        title: 'text-2xl text-title font-heading font-base tracking-wider leading-[1.5rem]'
       },
       content: {
-        inner: 'border-2 border-off-white bg-slate-900 rounded-xl text-base text-off-white'
+        inner: 'border-2 border-title bg-slate-900 rounded-xl text-base text-title'
       },
     },
 

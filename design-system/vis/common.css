@@ -1,10 +1,9 @@
 .orbit-vis {
   border-radius: 1rem;
-  padding: 0.5rem;
 }
 
 label {
-  @apply font-heading uppercase text-xs text-off-white;
+  @apply font-heading uppercase text-xs text-white;
 }
 
 .sphere-pie-label {    
@@ -12,8 +11,12 @@ label {
   margin-top: -1.5rem; */
 }
 
+div[role="progressbar"] {
+  @apply pt-2;
+}
+
 div[role="progressbar"] > div > div {
-  @apply bg-primary;
+  @apply bg-secondary;
 }
 div[role="progressbar"] > div.sub > div {
   margin-left: 0;
@@ -28,6 +31,12 @@ div[role="progressbar"] > div.astro > div {
 .sphere-pie svg {
   @apply -ml-10 mt-1 sm:ml-2;
   overflow: inherit;
+}
+
+.sphere-pie .pie {
+  padding-top: 1.5rem;
+  padding-bottom: 3.5rem;
+  padding-left: 50%;
 }
 
 .apexcharts-pie-area {
@@ -50,6 +59,10 @@ div[role="progressbar"] > div.astro > div {
 @media screen and (min-width: 420px) {
   .sphere-pie svg {
     @apply -ml-2;
+  }
+
+  .sphere-pie .pie {
+    padding-left: 23%;
   }
 
   .sphere-pie-label {    

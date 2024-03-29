@@ -13,7 +13,7 @@
 }
 
 .layout {
-  @apply bg-dark-gray p-2 flex flex-col gap-2;
+  @apply bg-gray-500 p-2 flex flex-col gap-2;
   min-height: 100%;
   padding-top: 4px;
 }
@@ -23,14 +23,14 @@
 }
 
 .sort-filter-label {
-  @apply text-xs md:text-sm text-off-white font-semibold;
+  @apply text-xs md:text-sm text-title font-semibold;
   text-align: center;
   width: 100%;
   padding-left: 56px;
 }
 
 .sort-filter-icon:hover {
-  @apply text-primary-hover-bg;
+  @apply text-primary;
   transform: scale(1.2);
   cursor: pointer;
 }

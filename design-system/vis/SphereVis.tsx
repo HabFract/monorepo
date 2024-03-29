@@ -18,7 +18,7 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
       const series = Object.fromEntries(Object.entries(spherePercentages).map(([type, number]) => [type, isNaN(number) ? 0 : number]));
       return {
         series: [series.Sub, series.Atom, series.Astro],
-        colors: ["rgba(64, 169, 255, 0.5)", "rgba(107,125,127, 0.9)","rgba(189, 16, 224, 0.3)"],
+        colors: ["#c0dea9", "#688acc","#9e5fcb"],
         
         chart: {
           width: "auto",
@@ -74,7 +74,7 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
   return (
     //@ts-ignore
     <div className="sphere-pie relative">
-      <div ref={pieChart} className="py-6" id="pie-chart"></div>
+      <div ref={pieChart} className="pie" id="pie-chart"></div>
       <label><div className="sphere-pie-label absolute w-full top-1/2">Breakdown</div></label>
     </div>
   );

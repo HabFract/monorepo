@@ -3,7 +3,7 @@ import './common.css';
 import '../common.css';
 import '../buttons/common.css';
 
-import { Button } from 'flowbite-react';
+import { Button, Dropdown } from 'flowbite-react';
 import { EditOutlined, DeleteOutlined, PieChartOutlined } from '@ant-design/icons'; // Import icons
 import { Orbit } from '../../app/src/graphql/generated';
 import OrbitVis from '../vis/OrbitVis';
@@ -33,24 +33,30 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runD
         <div className="orbit-description flex items-center justify-center">
           <p className='card-copy'>{orbit.metadata?.description}</p>
         </div>
-        <div className="row-c-around h-full">
+        <div className="row-c-around h-full big-gap">
           <div className="orbit-actions col-c gap-2">
-            <div className="orbit-actions-crud row-c-around">
-              <Button className="btn responsive btn-warn" size="sm" onClick={() => {transition('CreateOrbit', { editMode: true, orbitToEditId: orbit.id, sphereEh })}}>
-                <EditOutlined className="btn-icon" />
-                <span>Edit</span>
-              </Button>
-              <Button className="btn responsive btn-danger" size="sm" onClick={runDelete}>
-                <DeleteOutlined className="btn-icon" />
-                <span>Delete</span>
-              </Button>
+            <div className="orbit-actions-crud flex-col row-c-around">
+            <Dropdown label="Manage" dismissOnClick={false} className="bg-red-500 hover:bg-red-600">
+              <Dropdown.Item onClick={() => {transition('CreateOrbit', { editMode: true, orbitToEditId: orbit.id, sphereEh })}}>
+                <span>
+                  <EditOutlined className="btn-icon" />
+                  Edit
+                </span>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <span>
+                  <DeleteOutlined className="btn-icon" />
+                  Delete
+                </span>
+              </Dropdown.Item>
+            </Dropdown>
             </div>
             <div className="orbit-actions-vis row-c">
-              <Button className="btn btn-primary" size="sm" onClick={() => {
+              {/* <Button className="btn btn-primary" size="sm" onClick={() => {
         store.set(currentOrbitCoords, {x: 0, y: 0}); transition('Vis', { orbitEh: orbit.eH })}}>
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>
-              </Button>
+              </Button> */}
             </div>
           </div>
           <div className="mini-vis col-c">
