@@ -33,59 +33,44 @@ export default {
     },
     extend: {
       colors: {
-      "primary": {
-        "DEFAULT": "rgba(80, 227, 194, 0.9)",
-        "transparent": "rgba(80, 227, 194, 0.4)",
-        "hover-bg": "rgba(80, 227, 194, 0.8)",
-        "hover-text": "#000"
-      },
-      "secondary": {
-        "DEFAULT": "rgb(54, 25, 91)",
-        "extra-transparent": "rgba(54, 25, 91, 0.25)",
-        "transparent": "rgba(54, 25, 91, 0.5)",
-        "hover-bg": "rgba(54, 25, 91, 0.9)",
-        "hover-text": "#FDFEFE"
-      },
-      // "secondary": {
-      //   "DEFAULT": "#9B59B6",
-      //   "extra-transparent": "rgba(155, 89, 182, 0.25)",
-      //   "transparent": "rgba(155, 89, 182, 0.5)",
-      //   "hover-bg": "rgba(155, 89, 182, 0.9)",
-      //   "hover-text": "#FDFEFE"
-      // },
-      "neutral": {
-        "DEFAULT": "#6B7D7F",
-        "extra-transparent": "rgba(107,125,127, 0.25)",
-        "transparent": "rgba(107,125,127, 0.65)",
-        "hover-bg": "rgba(107,125,127, 0.9)",
-        "hover-text": "#FDFEFE"
-      },
+        "primary": {
+          "DEFAULT": "rgba(54, 175, 152, 1)", // KEPPEL
+          "500": "rgba(54, 175, 152, .5)",
+        },
+        "secondary": "rgba(69, 97, 95, 1)", // DEEP SPACE
+        "bg": "#242424", // RAISIN_BLACK
+
+        "warn": {
+          "DEFAULT": "rgba(251,200,43, 1)",
+          "500": "rgba(251,200,43, .5)",
+        }, // RIPE MANGO
+        "danger": {
+          "DEFAULT": "rgba(231,50,50, 1)",
+          "500": "rgba(231,50,50, .5)",
+        }, // DEEP CARMINE
+
+        "title": "rgba(219,228,226, 1)", // CHINESE_WHITE
+        "text": "rgba(255,225,225, 1)", // WHITE
+        "link": "rgba(11,254,184, 1)", // SEA GREEN
+
+        "line": "rgba(169,189,182, 1)", // OPAL
+
+        "gray": {
+          "100": "#c0c7ce", // LAVENDER_GRAY
+          "200": "#909896", // SPANISH_GRAY
+          "300": "#505554", // DAVYS_GRAY
+          "400": "#37383a", // ONYX
+          "500": "#00120f", // RICH_BLACK
+        },
         
-      "danger": {
-        "DEFAULT": "rgba(189, 16, 224, 0.9)",
-        "transparent": "rgba(189, 16, 224, 0.3)",
-        "hover-bg": "rgba(189, 16, 224, 0.7)",
-        "hover-text": "#fff"
-      },
-      "info": {
-        "DEFAULT": "#40A9FF",
-        "transparent": "rgba(64, 169, 255, 0.5)",
-        "hover-bg": "rgba(64, 169, 255, 0.9)",
-        "hover-text": "#fff"
-      },
-      "warn": {
-        "DEFAULT": "rgba(248, 231, 28, 0.8)",
-        "transparent": "rgba(248, 231, 28, 0.3)",
-        "hover-bg": "rgba(248, 231, 28, 0.7)",
-        "hover-text": "#000"
-      },
-      "off-white": "#FEFEFE",
-      "brown": "#5E503F",
-      "dark-gray": "#222222",
-      // "sphere-card-bg": "#004955",
-      "card-bg": "rgba(0,73,85, 0.5)",
-      "card-bg-light": "rgba(0,73,85, 0.9)",
-      "nav-bg": "rgba(0,73,85, 0.5)"
+        "category": {
+          "1": "#688acc", // BLUE_GRAY
+          "2": "#c0dea9", // MOSS_GREEN
+          "3": "#9e5fcb", // AMETHYST
+          "4": "#92a8d4", // CEIL
+          "5": "#f16d53", // BURNT_SIENNA
+          "6": "#e2b657", // SUNRAY
+        },
       },
     },
   },

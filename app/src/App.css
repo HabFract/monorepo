@@ -4,12 +4,12 @@
 
 
 #root {
-  @apply bg-dark-gray;
+  @apply bg-gray-500;
   --onboarding-progress-bar-height: 48px;
 }
 
 .page-container {
-  @apply bg-dark-gray overflow-auto fixed w-full h-full inset-y-0 left-0;
+  @apply bg-gray-500 overflow-auto fixed w-full h-full inset-y-0 left-0;
   overflow-x: hidden;
   padding-left: 0 !important;
 }

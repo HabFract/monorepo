@@ -1,7 +1,7 @@
 .card-h1 {
   @apply 
     uppercase
-    text-[#3E3F48]
+    text-title
     font-medium
     font-heading
     text-base
@@ -9,7 +9,7 @@
     pl-2
     leading-5
     tracking-tight
-    text-off-white;
+    text-white;
 }
 
 .orbit-card .card-h1 {
@@ -30,18 +30,18 @@
   @apply flex rounded-t-lg items-center justify-around;
 }
 .card-header.orbit-header {
-  @apply bg-card-bg;
+  @apply bg-secondary;
 }
 
 .card-header.sphere-header {
-  @apply border-t-4 border-neutral-transparent bg-card-bg-light;
+  @apply border-t-2 border-line bg-bg;
 }
 
 .sphere-card .card-body-bg {
-  @apply to-transparent from-secondary-extra-transparent;
+  @apply to-transparent from-secondary;
 }
 .orbit-card .card-body-bg {
-  @apply from-card-bg-light;
+  @apply from-secondary;
 }
 
 .card-body-bg {
@@ -51,18 +51,17 @@
   border-radius: .5rem;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
-  @apply w-full bg-gradient-to-b from-card-bg to-transparent;
+  @apply w-full bg-gradient-to-b;
 }
 .list-header .card-header {
-  @apply border-secondary-transparent bg-nav-bg;
+  @apply border-line bg-bg;
 }
 .sphere-card.list-header .card-header {
-  @apply bg-secondary-transparent;
+  @apply bg-secondary;
 }
 
 .card-copy {
-  @apply font-sans;
-  background: rgba(0,0,0,0.15);
+  @apply font-sans bg-gray-400;
   border-radius: .75rem;
   margin-bottom: .5rem;
 }
@@ -104,8 +103,12 @@
 
 @media screen and (min-width: 500px) {
   .sphere-card .sphere-description + div {
-    @apply justify-between;
+    @apply justify-between items-start pt-12;
     padding-left: clamp(3rem, 1rem, 2.5rem);
+  }
+  .sphere-actions-vis {
+    position: initial;
+    top: initial;
   }
 }
 @media screen and (min-width: 1200px) {

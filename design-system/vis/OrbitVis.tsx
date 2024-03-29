@@ -21,11 +21,11 @@ function getOrbitScalePercent(scale: Scale) : number {
 function getOrbitScaleImg(scale: Scale) {
   switch (scale) {
     case Scale.Sub:
-      return { src: "assets/orbits/scale-outlines-1.png", alt: "Orbit"}
+      return { src: "assets/orbits/scale-outlines-1.svg", alt: "Subatomic Orbit"}
     case Scale.Atom:
-      return { src: "assets/orbits/scale-outlines-2.png", alt: "Orbit"}
+      return { src: "assets/orbits/scale-outlines-2.svg", alt: "Atomic Orbit"}
     case Scale.Astro:
-      return { src: "assets/orbits/scale-outlines-3.png", alt: "Orbit"}
+      return { src: "assets/orbits/scale-outlines-3.svg", alt: "Astronomic Orbit"}
   }
 }
 

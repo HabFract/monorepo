@@ -15,7 +15,7 @@ const preview = {
       values: [
         {
           name: "myDefault",
-          value: "#322B33", // your desired default background color
+          value: "#242424", // your desired default background color
         },
         // ... other backgrounds
       ],

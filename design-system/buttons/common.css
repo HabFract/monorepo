@@ -1,39 +1,39 @@
 
 .btn-primary {
-  @apply bg-primary-transparent border-primary border-2;
+  @apply bg-primary-500 border-primary-500 border-2;
 }
 .btn-primary:hover {
-  @apply text-primary-hover-text bg-primary-hover-bg border-primary !important;
+  @apply text-gray-500 bg-primary border-primary-500 !important;
 }
 .btn-secondary {
-  @apply bg-secondary-transparent border-secondary border-2;
+  @apply bg-secondary border-secondary border-2;
 }
 .btn-secondary:hover {
-  @apply text-secondary-hover-text bg-secondary-hover-bg border-secondary !important;
+  @apply text-gray-500 bg-secondary border-secondary !important;
 }
 .btn-warn {
-  @apply bg-warn-transparent border-warn border-2;
+  @apply bg-warn-500 border-warn border-2;
 }
 .btn-warn:hover {
-  @apply text-warn-hover-text bg-warn-hover-bg border-warn !important;
+  @apply text-gray-500 bg-warn border-warn !important;
 }
 .btn-danger {
-  @apply bg-danger-transparent border-danger border-2;
+  @apply bg-danger-500 border-danger border-2;
 }
 .btn-danger:hover {
-  @apply text-danger-hover-text bg-danger-hover-bg border-danger !important;
+  @apply text-gray-500 bg-danger border-danger !important;
 }
 .btn-neutral {
-  @apply bg-neutral-transparent border-neutral border-2;
+  @apply bg-gray-200 border-gray-200 border-2;
 }
 .btn-neutral:hover {
-  @apply text-neutral-hover-text bg-neutral-hover-bg border-neutral !important;
+  @apply text-gray-500 bg-gray-200 border-gray-200 !important;
 }
 .btn-info {
-  @apply bg-info-transparent border-info border-2;
+  @apply bg-primary border-primary border-2;
 }
 .btn-info:hover {
-  @apply text-info-hover-text bg-info-hover-bg border-info !important;
+  @apply text-text bg-primary border-primary !important;
 }
 
 .btn:active {
@@ -41,6 +41,38 @@
 }
 .btn:focus {
   outline: 1px dashed #2d3436;
+}
+
+
+/* Override dropdown button/menu */
+button[data-testid="flowbite-dropdown-target"]:hover:enabled, button[data-testid="flowbite-dropdown-target"] span:hover:enabled {
+  @apply bg-primary-500;
+}
+button[data-testid="flowbite-dropdown-target"]:active {
+  outline: none !important;
+}
+button[data-testid="flowbite-dropdown-target"] {
+  @apply bg-primary-500 border-primary-500 border-2;
+}
+div[data-testid="flowbite-dropdown"] {
+  @apply bg-secondary border-primary-500 border-2 overflow-hidden rounded-lg;
+}
+div[data-testid="flowbite-dropdown"] button {
+  @apply text-white;
+}
+
+/* Override for delete/edit actions */
+.orbit-actions-crud div[data-testid="flowbite-dropdown"] li:first-child button {
+  @apply bg-warn-500 border-warn border-0 rounded-none;
+}
+.orbit-actions-crud div[data-testid="flowbite-dropdown"] li:first-child button:hover {
+  @apply text-gray-500 bg-warn border-warn !important;
+}
+.orbit-actions-crud div[data-testid="flowbite-dropdown"] li:last-child button {
+  @apply bg-danger-500 border-danger border-0 rounded-none;
+}
+.orbit-actions-crud div[data-testid="flowbite-dropdown"] li:last-child:hover {
+  @apply text-gray-500 bg-danger border-danger !important;
 }
 
 .btn span[role="img"] {

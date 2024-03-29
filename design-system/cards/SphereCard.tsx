@@ -63,7 +63,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
         </div>
         <div className="row-c-around h-full flex-1">
           <div className="sphere-actions col-c">
-            <div className="sphere-actions-crud col-c w-full">
+            {/* <div className="sphere-actions-crud col-c w-full">
               <Button className="btn responsive btn-warn w-full" size="sm" onClick={() => {transition('CreateSphere', { editMode: true, sphereToEditId: id })}}>
                 <EditOutlined className="btn-icon" />
                 <span>Edit</span>
@@ -72,15 +72,15 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
                 <DeleteOutlined className="btn-icon" />
                 <span>Delete</span>
               </Button>}
-            </div>
+            </div> */}
             <div className="sphere-actions-vis col-c">
               {!isHeader && <Button onClick={() => transition('ListOrbits', { sphereHash: sphere.id })} className="btn mt-2 responsive btn-neutral w-full" size="sm">
                 <OrderedListOutlined className="btn-icon" />
                 <span>Orbits</span>
               </Button>}
 
-              {!isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn responsive btn-primary add-orbit border-0 w-full" size="sm">
-                <PlusCircleOutlined className="btn-icon btn-primary" />
+              {!isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn responsive btn-secondary add-orbit border-0 w-full" size="sm">
+                <PlusCircleOutlined className="btn-icon btn-secondary" />
                 <span>Add Orbit</span>
               </Button>}
 
@@ -96,7 +96,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
           </div>
         </div>
       </main>
-      {isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn mt-2 btn-secondary add-orbit border-0 w-full" size="sm">
+      {isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn mt-2 btn-primary add-orbit border-0 w-full" size="sm">
         <PlusCircleOutlined className="btn-icon btn-secondary" />
         <span>Add Orbit</span>
       </Button>}
