@@ -16,7 +16,7 @@ div[role="progressbar"] {
 }
 
 div[role="progressbar"] > div > div {
-  @apply bg-secondary;
+  @apply bg-link;
 }
 div[role="progressbar"] > div.sub > div {
   margin-left: 0;

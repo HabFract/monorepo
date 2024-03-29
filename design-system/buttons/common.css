@@ -46,7 +46,7 @@
 
 /* Override dropdown button/menu */
 button[data-testid="flowbite-dropdown-target"]:hover:enabled, button[data-testid="flowbite-dropdown-target"] span:hover:enabled {
-  @apply bg-primary-500;
+  @apply bg-primary;
 }
 button[data-testid="flowbite-dropdown-target"]:active {
   outline: none !important;
