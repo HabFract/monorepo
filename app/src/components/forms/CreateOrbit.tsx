@@ -117,7 +117,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
     startTime: DateTime.now().ts,
     endTime: DateTime.now().ts,
     frequency: Frequency.Day,
-    scale: Scale.Astro,
+    scale: !!parentOrbitEh && parentOrbitEh !== 'root' ? Scale.Atom : Scale.Astro,
     archival: false,
     parentHash: parentOrbitEh ||''
   });
@@ -141,8 +141,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
           }
         }}
         >
-        {({ values, errors, touched, setFieldTouched, handleChange }) => 
-  typeof console.log('errors :>> ', errors) == 'undefined' && (
+        {({ values, errors, touched, setFieldTouched, handleChange }) => (
           <Form noValidate={true}>
             {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
             <div className="field">
@@ -223,7 +222,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                       {Object.values(Scale).sort((a: any, b: any) => a - b).map((scale, i) => {
                         return cannotBeAstro && scale == 'Astro'
                           ? null
-                          : <option key={i} value={scale}>{scale}</option>
+                          : <option key={scale} value={scale}>{scale}</option>
                         }
                       )
                       }
