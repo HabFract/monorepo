@@ -72,7 +72,7 @@ function App({ children: pageComponent }: any) {
         title: 'text-2xl text-title font-heading font-base tracking-wider leading-[1.5rem]'
       },
       content: {
-        inner: 'border-2 border-title bg-slate-900 rounded-xl text-base text-title'
+        inner: 'border-2 border-title bg-bg rounded-xl text-base text-title'
       },
     },
 

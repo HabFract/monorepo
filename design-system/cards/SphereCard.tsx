@@ -61,40 +61,28 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
         <div className="sphere-description flex items-center justify-center">
           <p className='card-copy'>{metadata?.description}</p>
         </div>
-        <div className="row-c-around h-full flex-1">
-          <div className="sphere-actions col-c">
-            {/* <div className="sphere-actions-crud col-c w-full">
-              <Button className="btn responsive btn-warn w-full" size="sm" onClick={() => {transition('CreateSphere', { editMode: true, sphereToEditId: id })}}>
-                <EditOutlined className="btn-icon" />
-                <span>Edit</span>
-              </Button>
-              {!isHeader && <Button className="btn responsive btn-danger w-full" size="sm" onClick={runDelete}>
-                <DeleteOutlined className="btn-icon" />
-                <span>Delete</span>
-              </Button>}
-            </div> */}
-            <div className="sphere-actions-vis col-c">
-              {!isHeader && <Button onClick={() => transition('ListOrbits', { sphereHash: sphere.id })} className="btn mt-2 responsive btn-neutral w-full" size="sm">
-                <OrderedListOutlined className="btn-icon" />
-                <span>Orbits</span>
-              </Button>}
+        <div className="card-actions">
+          <div className="sphere-actions-vis col-c w-full">
+            {!isHeader && <Button onClick={() => transition('ListOrbits', { sphereHash: sphere.id })} className="btn mt-2 responsive btn-neutral w-full" size="sm">
+              <OrderedListOutlined className="btn-icon" />
+              <span>Orbits</span>
+            </Button>}
 
-              {!isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn responsive btn-secondary add-orbit border-0 w-full" size="sm">
-                <PlusCircleOutlined className="btn-icon btn-secondary" />
-                <span>Add Orbit</span>
-              </Button>}
+            {!isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn responsive btn-secondary add-orbit border-0 w-full" size="sm">
+              <PlusCircleOutlined className="btn-icon btn-secondary" />
+              <span>Add</span>
+            </Button>}
 
-              <Button className="btn responsive btn-primary w-full" size="sm" onClick={() => {
-        store.set(currentOrbitCoords, {x: 0, y: 0}); transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })}}>
-                <PieChartOutlined className="btn-icon" />
-                <span>Visualise</span>
-              </Button>
-            </div>
-          </div>
-          <div className="mini-vis col-c flex-1">
-            <SphereVis spherePercentages={calculateSpherePercentages(calculateSphereCounts(orbitScales))}/>
+            <Button className="btn responsive btn-primary w-full" size="sm" onClick={() => {
+                store.set(currentOrbitCoords, {x: 0, y: 0}); transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })}}>
+              <PieChartOutlined className="btn-icon" />
+              <span>Visualise</span>
+            </Button>
           </div>
         </div>
+        { isHeader && <div className="mini-vis col-c flex-1">
+          <SphereVis spherePercentages={calculateSpherePercentages(calculateSphereCounts(orbitScales))}/>
+        </div>}
       </main>
       {isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn mt-2 btn-primary add-orbit border-0 w-full" size="sm">
         <PlusCircleOutlined className="btn-icon btn-secondary" />
