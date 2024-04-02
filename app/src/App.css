@@ -9,7 +9,7 @@
 }
 
 .page-container {
-  @apply bg-gray-500 overflow-auto fixed w-full h-full inset-y-0 left-0;
+  @apply bg-bg overflow-auto fixed w-full h-full inset-y-0 left-0;
   overflow-x: hidden;
   padding-left: 0 !important;
 }
@@ -18,9 +18,15 @@ nav + main.page-container .sphere-card .row-c-around {
   align-items: flex-start;
 }
 nav + main.page-container .sphere-card .row-c-around .sphere-actions {
-  @apply py-1;
-  margin-left: 2.5rem;
+  flex-direction: row;
+  padding: 0;
+  margin: 0;
 }
+nav + main.page-container .sphere-card .row-c-around .sphere-actions button {
+  height: 3rem;
+}
+
+
 nav + main.page-container .sphere-card .row-c-around #pie-chart {
   padding-left: 25%;
 }

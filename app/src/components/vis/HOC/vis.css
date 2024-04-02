@@ -25,7 +25,7 @@ g.nodes {
   opacity: 1;
 }
 .node-subgroup.checked > *:first-child {
-  fill: #a6d71c;
+  color: rgba(11,254,184, 1);
 }
 
 .instruct-legend .cell:nth-child(3) circle,
@@ -107,10 +107,10 @@ g.tooltip rect:first-of-type {
 
 .tooltip-inner .content {
   padding: 1rem 1.5rem  ;
-  color: #fefefe;
+  color: rgba(219,228,226, 1);
   background: linear-gradient(180deg, #576468 0%, rgba(0,212,255,0) 11rem);
   border-radius: 32px;
-  border-top-right-radius: 0;
+  border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   opacity: 1;
   margin-top: 10px;
@@ -130,7 +130,7 @@ g.tooltip rect:first-of-type {
 }
 
 .buttons button:hover {
-  outline: 8px solid rgba(255, 23, 132, 0.7);
+  outline: 8px solid rgb(54, 175, 152);
 }
 
 .tooltip-action-button {
@@ -184,7 +184,7 @@ g.tooltip rect:first-of-type {
 }
 
 .tooltip-inner {
-  background: url(assets/line-corner-vector-3.svg);
+  background: url(assets/line-corner-vector.svg);
   background-position: right;
   background-position-y: .5rem;
   background-size: contain;
@@ -192,7 +192,8 @@ g.tooltip rect:first-of-type {
   height: 100%;
   width: 100%;
   padding-top: calc(50% + .5rem);
-  padding-left: 4%;padding-right: 3px;
+  padding-left: 3%;
+  padding-right: 3px;
   font-size: 2rem;
   margin-left: 0rem;
 }

@@ -37,7 +37,10 @@ export default {
           "DEFAULT": "rgba(54, 175, 152, 1)", // KEPPEL
           "500": "rgba(54, 175, 152, .5)",
         },
-        "secondary": "rgba(69, 97, 95, 1)", // DEEP SPACE
+        "secondary": {
+          "DEFAULT": "rgba(69, 97, 95, 1)",
+          "500": "rgba(69, 97, 95, 0.5)",
+        },
         "bg": "#242424", // RAISIN_BLACK
 
         "warn": {

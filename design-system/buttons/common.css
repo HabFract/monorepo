@@ -1,15 +1,15 @@
 
 .btn-primary {
-  @apply bg-primary-500 border-primary-500 border-2;
+  @apply bg-primary text-white border-primary-500 border-2;
 }
 .btn-primary:hover {
-  @apply text-gray-500 bg-primary border-primary-500 !important;
+  @apply text-white bg-primary-500 border-primary-500 !important;
 }
 .btn-secondary {
   @apply bg-secondary border-secondary border-2;
 }
 .btn-secondary:hover {
-  @apply text-gray-500 bg-secondary border-secondary !important;
+  @apply text-white bg-secondary-500 border-secondary !important;
 }
 .btn-warn {
   @apply bg-warn-500 border-warn border-2;
@@ -24,10 +24,10 @@
   @apply text-gray-500 bg-danger border-danger !important;
 }
 .btn-neutral {
-  @apply bg-gray-200 border-gray-200 border-2;
+  @apply bg-gray-100 text-gray-400 border-gray-200 border-2;
 }
 .btn-neutral:hover {
-  @apply text-gray-500 bg-gray-200 border-gray-200 !important;
+  @apply bg-gray-200 text-white border-gray-200 !important;
 }
 .btn-info {
   @apply bg-primary border-primary border-2;

@@ -141,7 +141,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
           }
         }}
         >
-        {({ values, errors, touched, setFieldTouched, handleChange }) => (
+        {({ values, errors, touched, setFieldTouched, handleChange }) => 
+  typeof console.log('errors :>> ', errors) == 'undefined' && (
           <Form noValidate={true}>
             {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
             <div className="field">

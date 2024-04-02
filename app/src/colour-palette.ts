@@ -8,9 +8,9 @@ export const KEPPEL = "rgba(54, 175, 152, 1)";
 export const DEEP_SPACE = "rgba(69, 97, 95, 1)";
 
 // Vectors
-export const BLUEBERRY = "rgba(83,128,229, 1)";
-export const EMERALD = "rgba(95,197,127, 1)";
-export const PARADISE_PINK = "rgba(232,57,98, 1)";
+export const BLUEBERRY = "#6069df";
+export const EMERALD = "#8b67e5";
+export const PARADISE_PINK = "#5380e5";
 
 // Keywords/links
 export const SEA_GREEN = "rgba(11,254,184, 1)";

@@ -24,7 +24,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runD
         <div className="orbit-title">
           <h2 className="card-name card-h1">{orbit.name}</h2>
         </div>
-        <div className="orbit-timeframe col-c text-sm p-1">
+        <div className="orbit-timeframe col-c text-sm">
           <span className="font-semibold">Last tracked:</span>
           <p>{new Date(orbit?.metadata!.timeframe?.startTime)?.toLocaleDateString('en-us')}</p>
         </div>

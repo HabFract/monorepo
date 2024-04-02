@@ -6,7 +6,8 @@
     font-heading
     text-base
     py-1
-    pl-2
+    pr-1
+    pl-4
     leading-5
     tracking-tight
     text-white;
@@ -24,13 +25,15 @@
     max-w-xl
     text-center
     p-2;
+
+    line-height: 1.25rem;
 }
 
 .card-header {
   @apply flex rounded-t-lg items-center justify-around;
 }
 .card-header.orbit-header {
-  @apply bg-secondary;
+  @apply bg-secondary-500;
 }
 
 .card-header.sphere-header {
@@ -56,8 +59,9 @@
 .list-header .card-header {
   @apply border-line bg-bg;
 }
+
 .sphere-card.list-header .card-header {
-  @apply bg-secondary;
+  @apply bg-bg;
 }
 
 .card-copy {
@@ -67,7 +71,11 @@
 }
 
 .orbit-timeframe {
-  @apply font-sans text-white;
+  @apply font-sans text-white pr-4 pt-4 gap-1 tracking-wide;
+}
+.orbit-timeframe span {
+  @apply text-center;
+  line-height: 1rem;
 }
 
 /* .orbit-card, .sphere-card {
@@ -82,6 +90,16 @@
 
 .mini-vis {
   max-width: 50%;
+}
+
+.layout.spheres .card-actions {
+  @apply w-full;
+}
+.layout.spheres .card-actions > div {
+  @apply flex-row items-center justify-center;
+}
+.layout.spheres .card-actions button {
+  margin-top: 0 !important;
 }
 
 @media screen and (min-width: 420px) {
@@ -103,8 +121,7 @@
 
 @media screen and (min-width: 500px) {
   .sphere-card .sphere-description + div {
-    @apply justify-between items-start pt-12;
-    padding-left: clamp(3rem, 1rem, 2.5rem);
+    @apply justify-between items-start;
   }
   .sphere-actions-vis {
     position: initial;
