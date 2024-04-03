@@ -38,10 +38,11 @@ export default {
           "500": "rgba(54, 175, 152, .5)",
         },
         "secondary": {
-          "DEFAULT": "rgba(69, 97, 95, 1)",
+          "DEFAULT": "rgba(69, 97, 95, 1)", // DEEP SPACE
           "500": "rgba(69, 97, 95, 0.5)",
         },
         "bg": "#242424", // RAISIN_BLACK
+        "menu-bg": "#354342", // DARKENED DEEP SPACE
 
         "warn": {
           "DEFAULT": "rgba(251,200,43, 1)",

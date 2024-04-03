@@ -8,13 +8,13 @@ nav.side-nav {
   gap: 0.5rem;
   /* transition: 1s all ease-in; */
   background: transparent;
-  border-radius: 1rem;
+  border-radius: 1rem; 
   border-bottom: 0;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
 nav.side-nav ul[role="menu"] {
-  border-radius: 1rem;
+  border-radius: 1.5rem;
 }
 
 nav.side-nav + .page-container .sphere-card.list-header button.add-orbit,
@@ -44,6 +44,80 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
   background-position-x: -1px;
 }
 
+/* Sphere context nav layout */
+.sphere-context-actions{
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.side-nav.expanded > .ant-menu-root:first-child {
+  display: grid;
+  gap: .25rem;
+  position: relative;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: -.5rem;
+  min-height: 4rem;
+}
+
+.side-nav.expanded > .ant-menu-root:first-child .ant-menu-item {
+  width: 48px;
+  display: grid;
+  place-items: center;
+  place-content: center;
+  height: 48px;
+}
+
+.side-nav.expanded .ant-menu-item:first-child {
+  padding-left: 22px !important;
+}
+
+.side-nav.expanded .ant-menu-item:not(.ant-menu-item:first-child) {
+  padding-left: 22px !important;
+  position: initial;
+}
+
+.side-nav.expanded  > .ant-menu-root:first-child .ant-menu-item img{
+  min-width: 54px !important;
+  height: 54px !important;
+}
+.side-nav.expanded > .ant-menu-root:first-child::before,
+.side-nav.expanded > .ant-menu-root:first-child::after,
+.side-nav.expanded > .ant-menu-root .ant-menu-item:first-child span:last-child,
+.side-nav.expanded > .ant-menu-root .ant-menu-item:not(.ant-menu-item-selected) span,
+.side-nav.expanded > .ant-menu-root .ant-menu-item:not(.ant-menu-item-selected):not(.ant-menu:first-child) span:last-child {
+  display: none;
+}
+
+.side-nav.expanded > .ant-menu-root .ant-menu-item:not(.ant-menu-item-selected):first-child span {
+  display: grid;
+}
+
+.side-nav.expanded > .ant-menu-root .ant-menu-item-selected span.ant-menu-title-content {
+  position: absolute;
+  top: -2rem;
+  text-align: center;
+  left: 1rem;
+  right: 1rem;
+  margin: 0 !important;
+  font-size: 1.2rem;
+}
+
+.side-nav.expanded > .ant-menu-root .ant-menu-item:first-child {
+  position: absolute;
+  bottom: calc(50% - 22px);
+  left: calc(50% - 28px);
+}
+
+.side-nav.expanded > .ant-menu-root:first-child {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  justify-items: center;
+  align-items: center;
+  padding: .5rem 0 1rem 0;
+}
+
 .ant-menu-item-icon, .ant-menu-item-icon.selected, .ant-menu-submenu-title img {
   height:64px !important;
   object-fit: cover;
@@ -54,7 +128,8 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
 /* Vertical collapse button */
 .toggle-expanded-menu {
   @apply bg-transparent border-0 text-title text-sm h-10;
-  width: 3.5rem; margin-left: .25rem;
+  width: 64px;
+  margin-left: 1px;
 }
 .toggle-expanded-menu span[role="img"]{
   transform: rotate(-45deg) scale(1.25);
@@ -69,10 +144,6 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
   border-color: rgba(80, 227, 194, 0.9) !important;
   @apply bg-gray-400 text-title;
   border: 1px solid rgba(80, 227, 194, 0.9);
-}
-.toggle-expanded-menu:active {
-  background: rgba(155, 89, 182, 0.5);
-  color: #FDFEFE;
 }
 
 .page-header {
@@ -104,17 +175,26 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
 }
 
 ul[role="menu"] {
-  @apply bg-bg text-title;
+  @apply bg-menu-bg text-title;
   border-bottom-left-radius: 1.125rem;
   border-bottom-right-radius: 1.125rem;
 }
+.sphere-context-actions {
+  @apply bg-gray-300 py-1 px-2;
+  border-bottom-left-radius: 1.125rem;
+  border-bottom-right-radius: 1.125rem;
+}
+
 ul[role="menu"] li:hover span {
   @apply text-link;
 }
 ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
   border: 2px solid rgba(80, 227, 194, 0.8);
   border-radius: 1.15rem;
-
+  
+}
+.ant-menu-item-selected[role="menuitem"] img.ant-menu-item-icon {
+  outline: 2px solid rgba(80, 227, 194, 0.8) !important;
 }
 
 .ant-menu-submenu.ant-menu-submenu-vertical {
@@ -128,7 +208,6 @@ ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
   max-height: 40px;
   color:rgba(80, 227, 194, 0.8) !important;
   margin-left: -.25rem !important;
-  box-shadow: 2px 4px 18px rgba(54, 25, 91, .5) !important;
 }
 .ant-menu-item:hover span[role="img"] {
   color: rgba(80, 227, 194, 1) !important;
@@ -138,14 +217,11 @@ ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
 }
 
 nav > .ant-menu:first-child .ant-menu-item:last-child {
-  margin-left: 0.3rem;
   margin-top: 0.25rem;
 }
 
-nav > .ant-menu .ant-menu-item[role="menuitem"], .ant-menu-item.ant-menu-item-selected , .ant-menu-item:active {
-  transition: .5s border-radius cubic-bezier(1, .3, .3, 1);
-  border-radius: 1rem !important;
-  /* @apply text-white; */
+.ant-menu-item, .ant-menu-item:active {
+  border-radius: 2rem !important;
 }
 .ant-menu-item:active {
   @apply bg-secondary-500 text-white;
@@ -164,9 +240,7 @@ button[data-testid="dark-theme-toggle"]:hover {
   background-color: #FEFEFE;
   color: rgba(80, 227, 194, 0.8) !important;
 }
-button[data-testid="dark-theme-toggle"]:active {
-  @apply bg-gray-900 text-white;
-}
+
 button[data-testid="dark-theme-toggle"] svg {
   margin-left: .125rem !important;
 }
@@ -175,6 +249,21 @@ button[data-testid="dark-theme-toggle"] svg {
   @apply text-white;
   background: rgb(17, 24, 39);
 }
+
+/* Active button states */
+.ant-menu-item-active:active, 
+button[data-testid="dark-themetheme-toggle"]:active {
+  background: rgba(80, 227, 194, 0.8) !important;
+}
+button[data-testid="dark-themetheme-toggle"]:active, .toggle-expanded-menu:active span {
+  @apply text-link
+}
+.toggle-expanded-menu:active, .ant-menu-item-active:active span, .ant-menu-item-active:active span[role="img"] {
+  color: rgba(36, 36, 36, 1) !important;
+}
+
+/* Tooltips */
+
 .ant-tooltip-inner {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
@@ -191,6 +280,7 @@ button[data-testid="dark-theme-toggle"] svg {
   box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px
 }
 
+/* Submenus (deprecated */
 .ant-menu-submenu-title[role="menuitem"] {
   height: 60px !important;
   border-radius: 1.75rem;
@@ -215,8 +305,10 @@ button[data-testid="dark-theme-toggle"] svg {
   cursor: pointer;
 }
 
+/* Menu items */
 .ant-menu-item-selected {
   background: rgba(80, 227, 194, 0.4) !important;
+  border-radius: 2rem !important;
 }
 .ant-menu-item-selected span[role="img"] {
   /* icon selected */
