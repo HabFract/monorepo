@@ -136,10 +136,11 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
     ]  
   }
   function createSphereMenuItems({ spheres }: { spheres: Sphere[], onClick: () => void}) {
+    console.log('currentSphereId :>> ', currentSphereId);
     return [    
       getItem('New Sphere', 'add-sphere', <PlusCircleFilled />),
       ...spheres!.map((sphere: Sphere, _idx: number) => {
-        return getItem(`${sphere.name}`, sphere.id, <img className={selectedSphere.actionHash == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string} />)
+        return getItem(`${sphere.name}`, sphere.id, <img className={currentSphereId == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string} />)
     })] 
   }
 
@@ -160,7 +161,9 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   const msg = `You need to ${ spheresArray.length == 0 ? "create" : "select"} a Sphere to `;
 
   function withTooltip(type: string, msg: string) {
-    return <Button type="button" onClick={(_e) => {goToPage(type)}} data-button-id={type} data-tooltip-target="tooltip-left" data-tooltip-placement="left" disabled={spheresArray.length == 0} className={`btn btn-sq btn-${type}`}>
+    console.log('Object.values(sphereNodes) :>> ', typeof sphereNodes == 'object' && Object.values(sphereNodes));
+    const noSphereOrbits = !!(type == 'secondary' && !sphereNodes || (!!sphereNodes && !(Object.values(sphereNodes)?.length > 0)))
+    return <Button type="button" onClick={(_e) => {goToPage(type)}} data-button-id={type} data-tooltip-target="tooltip-left" data-tooltip-placement="left" disabled={spheresArray.length == 0 || !currentSphereId ||noSphereOrbits } className={`btn btn-sq btn-${type}`}>
           <div id="tooltip-left" role="tooltip" className={sphereBtnsTooltipVisible == type ? "z-50 top-0 transition-all" : "invisible transition-all"} style={{width: "12rem"}}>
               {msg}
             <div className="tooltip-arrow" data-popper-arrow></div>
@@ -173,6 +176,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         return
         case 'secondary': transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})   
         return
+        console.log('{sphereAh: currentSphereId} :>> ', {sphereAh: currentSphereId});
         case 'primary': transition('CreateOrbit', {sphereAh: currentSphereId})   
         return
       }

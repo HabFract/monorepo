@@ -124,6 +124,11 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
   margin-left: -.125rem;
   border-radius: 1.05rem;
 }
+.side-nav:not(.expanded) > .ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) {
+  min-height: 64px;
+  min-width: 64px !important;
+  padding-inline: calc(0.25rem) !important;
+}
 
 /* Vertical collapse button */
 .toggle-expanded-menu {
@@ -193,8 +198,10 @@ ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
   border-radius: 1.15rem;
   
 }
-.ant-menu-item-selected[role="menuitem"] img.ant-menu-item-icon {
+.ant-menu-item[role="menuitem"] img.ant-menu-item-icon.selected {
   outline: 2px solid rgba(80, 227, 194, 0.8) !important;
+  border-radius: 2.15rem;
+  
 }
 
 .ant-menu-submenu.ant-menu-submenu-vertical {
@@ -310,7 +317,7 @@ button[data-testid="dark-themetheme-toggle"]:active, .toggle-expanded-menu:activ
   background: rgba(80, 227, 194, 0.4) !important;
   border-radius: 2rem !important;
 }
-.ant-menu-item-selected span[role="img"] {
+.ant-menu-item span[role="img"] {
   /* icon selected */
   color: rgba(80, 227, 194, 0.9) !important;
   
@@ -391,8 +398,13 @@ ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] {
 }
 
 /* Tree Vis icon */
-.tree-vis-icon,.cls-2{fill:white; transform: scale(1.5);}
-.cls-2{stroke:white;stroke-miterlimit:10;stroke-width:6px;}
+.tree-vis-icon,.cls-2{fill:currentColor; transform: scale(1.5);}
+
+.cls-2{
+  stroke:currentColor;
+  stroke-miterlimit:10;
+  stroke-width:6px;
+}
 
 .btn-sq {
   height: 3rem;
