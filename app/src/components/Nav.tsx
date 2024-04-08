@@ -1,4 +1,5 @@
 import "./style.css";
+import TreeVisIcon from "./TreeVisIcon";
 
 import { DashboardFilled, UnorderedListOutlined, PieChartFilled, PlusCircleFilled, ArrowsAltOutlined, AppstoreAddOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
@@ -11,6 +12,8 @@ import { extractEdges } from "../graphql/utils";
 import { ActionHashB64 } from "@holochain/client";
 
 type MenuItem = Required<MenuProps>['items'][number];
+
+const TOOLTIP_TIMEOUT = 2500; // milliseconds
 
 function getItem(
   label: React.ReactNode,
@@ -36,13 +39,13 @@ export interface INav {
 }
 
 const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded } : INav) => {
-  console.log('sideNaveExpanded :>> ', sideNavExpanded);
   const ref = useRef(null);
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
   const [_, setSelectedItemName] = useState<string>();
   const [collapsed, setCollapsed] = useState(true);
   const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [sphereBtnsTooltipVisible, setSphereBtnsTooltipVisible] = useState<string>("");
 
   useEffect(() => {
     const handleClick = (event) => setTimeout(() => {
@@ -86,28 +89,17 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           setTooltipVisible(true);
           setTimeout(() => {
             setTooltipVisible(false);
-          }, 2500);
+          }, TOOLTIP_TIMEOUT);
           return;
         }
         transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})
         break;
-
       case e.key == 'add-sphere':
         transition('CreateSphere')
         break;
 
       case e.key == 'list-spheres':
         transition('ListSpheres')
-        break;
-
-      case !!e.key.match(/add\-orbit/):
-        const addOrbitSphereEh = e.key.split('add-orbit-')[1];
-        transition('CreateOrbit', { sphereEh: addOrbitSphereEh })
-        break;
-
-      case !!e.key.match(/list\-orbits/):
-        const sphereId = e.key.split('list-orbits-')[1];
-        transition('ListOrbits', { sphereAh: sphereId })
         break;
 
       default:
@@ -135,7 +127,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
     return [
       getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
       // getItem('Dashboard', 'dash', <DashboardFilled />),
-      getItem('Visualise', 'vis', <>
+      getItem('Dashboard', 'vis', <>
         <PieChartFilled  data-tooltip-target="tooltip-left" data-tooltip-placement="left" />
           <div id="tooltip-left" role="tooltip" className={tooltipVisible ? "" : "invisible"}>
             You need to { spheresArray.length == 0 ? "create" : "select"} a sphere to start visualising!
@@ -143,11 +135,11 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           </div></>),
     ]  
   }
-  function createSphereMenuItems({ spheres }: { spheres: SphereConnection, onClick: () => void}) {
+  function createSphereMenuItems({ spheres }: { spheres: Sphere[], onClick: () => void}) {
     return [    
       getItem('New Sphere', 'add-sphere', <PlusCircleFilled />),
-      ...spheres.edges!.map((sphere: SphereEdge, _idx: number) => {
-        return getItem(`${sphere.node.name}`, sphere.node.id, <img className={selectedSphere.actionHash == sphere.node.id ? 'selected' : ''} src={sphere.node.metadata!.image as string} />)
+      ...spheres!.map((sphere: Sphere, _idx: number) => {
+        return getItem(`${sphere.name}`, sphere.id, <img className={selectedSphere.actionHash == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string} />)
     })] 
   }
 
@@ -161,45 +153,74 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
       </div>
     )
   }
-  const SphereActionsMenu = () => {
-    return (
-      <div className="sphere-context-actions">
-        <Button type="button" disabled={spheresArray.length == 0} className="btn btn-secondary"><UnorderedListOutlined /></Button>
-        <Button type="button" disabled={spheresArray.length == 0} className="btn btn-primary"><AppstoreAddOutlined /></Button>
-        <Button type="button" disabled={spheresArray.length == 0} className="btn btn-neutral"><PlusCircleOutlined /></Button>
-      </div>
-    )
-  }
+
 
   const loading = loadingSpheres || !spheres;
-  const spheresArray = !loading && extractEdges(spheres.spheres); 
+  const spheresArray = loading ? [] : extractEdges(spheres.spheres); 
+  const msg = `You need to ${ spheresArray.length == 0 ? "create" : "select"} a Sphere to `;
+
+  function withTooltip(type: string, msg: string) {
+    return <Button type="button" onClick={(_e) => {goToPage(type)}} data-button-id={type} data-tooltip-target="tooltip-left" data-tooltip-placement="left" disabled={spheresArray.length == 0} className={`btn btn-sq btn-${type}`}>
+          <div id="tooltip-left" role="tooltip" className={sphereBtnsTooltipVisible == type ? "z-50 top-0 transition-all" : "invisible transition-all"} style={{width: "12rem"}}>
+              {msg}
+            <div className="tooltip-arrow" data-popper-arrow></div>
+          </div>
+          { getIcon(type)}
+    </Button>
+    function goToPage(type: string) {
+      switch (type) {
+        case 'neutral': transition('ListOrbits', {sphereAh: currentSphereId})   
+        return
+        case 'secondary': transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})   
+        return
+        case 'primary': transition('CreateOrbit', {sphereAh: currentSphereId})   
+        return
+      }
+    }
+    function getIcon(type: string) {
+      switch (type) {
+        case 'neutral': return (<UnorderedListOutlined />)
+        case 'secondary': return (<TreeVisIcon />)
+        case 'primary': return (<PlusCircleOutlined />)
+        return
+      }
+    }
+  }
   
   return (
     <nav ref={ref} className={sideNavExpanded ? "side-nav expanded" : "side-nav"}>
       { loading
         ? <Spinner aria-label="Loading!" className='menu-spinner' size="xl" />
-        : <><Menu
-        inlineCollapsed={collapsed}
-        onClick={onClick}
-        style={{ width: collapsed ? 72 : 256 }}
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1']}
-        mode="inline"
-        items={createSphereMenuItems({spheres: spheres.spheres as any, onClick: () => {closeMenu(); setSideNavExpanded(false)}})}
-      />
-      <div className={"main-actions-menu"}>
-        {!collapsed && <SphereActionsMenu></SphereActionsMenu>}
-        <Menu
-          inlineCollapsed={collapsed}
-          onClick={(e) => onClick(e)}
-          style={{ width: collapsed ? 72 : 256 }}
-          defaultSelectedKeys={['1']}
-          defaultOpenKeys={['sub1']}
-          mode="inline"
-          items={createFixedMenuItems()}
-        />
-        {<ToggleMenuExpand></ToggleMenuExpand>}
-      </div></>
+        : <>
+          <Menu
+            inlineCollapsed={collapsed}
+            onClick={onClick}
+            style={{ width: collapsed ? 72 : 256 }}
+            defaultSelectedKeys={['1']}
+            defaultOpenKeys={['sub1']}
+            mode="inline"
+            items={createSphereMenuItems({spheres: spheresArray, onClick: () => {closeMenu(); setSideNavExpanded(false)}})}
+          />
+          <div className={"main-actions-menu"}>
+            {!collapsed && 
+              <div className="sphere-context-actions">
+                {withTooltip('neutral', msg + 'list Orbits')}
+                {withTooltip('secondary', msg + 'list Orbits')}
+                {withTooltip('primary', msg + 'create an Orbit')}
+              </div>
+            }
+            <Menu
+              inlineCollapsed={collapsed}
+              onClick={(e) => onClick(e)}
+              style={{ width: collapsed ? 72 : 256 }}
+              defaultSelectedKeys={['1']}
+              defaultOpenKeys={['sub1']}
+              mode="inline"
+              items={createFixedMenuItems()}
+            />
+            {<ToggleMenuExpand></ToggleMenuExpand>}
+          </div>
+        </>
       }
     </nav>
   );

@@ -389,3 +389,12 @@ ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] {
     @apply text-4xl
   }
 }
+
+/* Tree Vis icon */
+.tree-vis-icon,.cls-2{fill:white; transform: scale(1.5);}
+.cls-2{stroke:white;stroke-miterlimit:10;stroke-width:6px;}
+
+.btn-sq {
+  height: 3rem;
+  max-width: 3rem;
+}

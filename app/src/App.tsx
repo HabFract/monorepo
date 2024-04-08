@@ -67,6 +67,9 @@ function App({ children: pageComponent }: any) {
         dark: "bg-white"
       }
     },
+    button: {
+      disabled: "opacity-1 "
+    },
     modal: {
       header: {
         title: 'text-2xl text-title font-heading font-base tracking-wider leading-[1.5rem]'
