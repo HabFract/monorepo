@@ -59,7 +59,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
       </header>
       <main className="card-body-bg sphere-card col-c">
         <div className="sphere-description flex items-center justify-center">
-          <p className='card-copy'>{metadata?.description}</p>
+          {metadata?.description && metadata?.description !== '' && <p className='card-copy'>{metadata.description}</p>}
         </div>
         <div className="card-actions">
           <div className="sphere-actions-vis col-c w-full">
