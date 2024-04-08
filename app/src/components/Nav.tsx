@@ -123,7 +123,8 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
 
   const loading = loadingSpheres || !spheres;
   const spheresArray = loading ? [] : extractEdges(spheres.spheres); 
-
+  
+  const sphere = extractEdges(spheres?.spheres as any).find((sphere: any) => sphere.id == currentSphereId) as Sphere & {id: ActionHashB64};
   const noSphereOrbits = () =>  (!sphereNodes || (!!sphereNodes && !(Object.values(sphereNodes)?.length > 0)));
   
   // Main routing logic for menus
@@ -163,10 +164,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           // Set current sphere from action hash of sphere clicked
           store.set(currentSphere, {entryHash: e.key, actionHash: e.key})
           const pageString = currentPage as string;
-          console.log('noSphereOrbits() :>> ', noSphereOrbits());
-          console.log('pageString :>> ', pageString, currentSphereId, e.key);
-          console.log(' store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] :>> ',  store.get(nodeCache.items)![e.key as keyof SphereNodeDetailsCache]);
-          transition(pageString, (pageString == "ListOrbits" || pageString == "CreateOrbit") ?  {sphereAh: e.key} : {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: e.key})
+          transition(pageString, pageString == "ListOrbits" ? {sphereAh: e.key} : pageString == "CreateOrbit" ?  {sphereEh: sphere.eH} : {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: e.key})
         }
         break;
     }
@@ -183,12 +181,13 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
     >
       {getIcon(type)}
     </Button>
+
     function goToPage(type: string) {
       switch (type) {
         case 'neutral': 
           setTooltipVisible(false);
           setCurrentPage(Page.ListOrbits)
-          setTooltipText("to list orbits")
+          // setTooltipText("to list orbits")
           transition('ListOrbits', {sphereAh: currentSphereId})   
           return
         case 'secondary':
@@ -203,9 +202,9 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           return
         case 'primary': 
           setTooltipVisible(false);
-          setTooltipText("to create an orbit")
+          // setTooltipText("to create an orbit")
           setCurrentPage(Page.CreateOrbit)
-          transition('CreateOrbit', {sphereAh: currentSphereId})   
+          transition('CreateOrbit', {sphereEh: sphere.eH})   
         return
       }
     }
