@@ -1,4 +1,5 @@
 
+
 .btn-primary {
   @apply bg-primary text-white border-primary-500 border-2;
 }
@@ -29,13 +30,19 @@
 .btn-neutral:hover {
   @apply bg-gray-200 text-white border-gray-200 !important;
 }
-.btn-info {
-  @apply bg-primary border-primary border-2;
+.btn:disabled {
+  color: #505554 !important;
+  background: #909896 !important;
+  border-width: 1px;
+  border-color: #505554 !important;
+  pointer-events: auto !important;
 }
-.btn-info:hover {
-  @apply text-text bg-primary border-primary !important;
+.btn:disabled:hover {
+  pointer-events: auto !important;
+  color: #505554 !important;
+  background: #909896 !important;
+  border-color: #37383a !important;
 }
-
 .btn:active {
   outline: 1px solid #2d3436;
 }
