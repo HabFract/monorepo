@@ -95,6 +95,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})
         break;
       case e.key == 'add-sphere':
+        store.set(currentSphere, {});
         transition('CreateSphere')
         break;
 
@@ -171,6 +172,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           { getIcon(type)}
     </Button>
     function goToPage(type: string) {
+      console.log('{currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash} :>> ', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash});
       switch (type) {
         case 'neutral': transition('ListOrbits', {sphereAh: currentSphereId})   
         return
