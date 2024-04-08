@@ -135,6 +135,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
               ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
               : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
             setSubmitting(false);
+            console.log('selectedSphere.actionHash :>> ', selectedSphere.actionHash);
             originPage == 'Vis' ? transition('Vis', { currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash }) : transition('ListOrbits', { sphereHash: selectedSphere.actionHash })
           } catch (error) {
             console.error(error);

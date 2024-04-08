@@ -1,36 +1,36 @@
 
 
-.btn-primary {
+.btn-primary, .btn-primary.nohover:hover {
   @apply bg-primary text-white border-primary-500 border-2;
 }
-.btn-primary:hover {
+.btn-primary:not(.nohover):hover {
   @apply text-white bg-primary-500 border-primary-500 !important;
 }
-.btn-secondary {
+.btn-secondary, .btn-secondary.nohover:hover {
   @apply bg-secondary border-secondary border-2;
 }
-.btn-secondary:hover {
+.btn-secondary:not(.nohover):hover {
   @apply text-white bg-secondary-500 border-secondary !important;
 }
-.btn-warn {
+.btn-warn, .btn-warn.nohover:hover {
   @apply bg-warn-500 border-warn border-2;
 }
-.btn-warn:hover {
+.btn-warn:not(.nohover):hover {
   @apply text-gray-500 bg-warn border-warn !important;
 }
-.btn-danger {
+.btn-danger, .btn-danger.nohover:hover {
   @apply bg-danger-500 border-danger border-2;
 }
-.btn-danger:hover {
+.btn-danger:not(.nohover):hover {
   @apply text-gray-500 bg-danger border-danger !important;
 }
-.btn-neutral {
+.btn-neutral, .btn-neutral.nohover:hover {
   @apply bg-gray-100 text-gray-400 border-gray-200 border-2;
 }
-.btn-neutral:hover {
+.btn-neutral:not(.nohover):hover {
   @apply bg-gray-200 text-white border-gray-200 !important;
 }
-.btn:disabled {
+.btn:disabled, .btn-disabled.nohover:hover {
   color: #505554 !important;
   background: #909896 !important;
   border-width: 1px;
