@@ -32,6 +32,16 @@ function getItem(
   } as MenuItem;
 }
 
+enum Page {
+  CreateSphere = 'CreateSphere',
+  ListSpheres = 'ListSpheres',
+  CreateOrbit = 'CreateOrbit',
+  ListOrbits = 'ListOrbits',
+  Dashboard = 'Dashboard',
+  Vis = 'Vis',
+  Home = 'Home',
+}
+
 export interface INav {
   transition: (newState: string, params?: object) => void;
   setSideNavExpanded: Function;
@@ -42,25 +52,26 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   const ref = useRef(null);
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
+  const [currentPage, setCurrentPage] = useState<Page>();
   const [_, setSelectedItemName] = useState<string>();
   const [collapsed, setCollapsed] = useState(true);
   const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [sphereBtnsTooltipVisible, setSphereBtnsTooltipVisible] = useState<string>("");
+  const [tooltipText, setTooltipText] = useState<string>("");
 
+  // Nav open, close, selected states handler bound and unbound by useEffect:
   useEffect(() => {
-    const handleClick = (event) => setTimeout(() => {
+    const handleClick = (event) => {
       if(event.target.isConnected && !(ref as any).current.contains(event.target)){
         closeMenu();
       } 
       const iconBtn = !!event.target.closest('.toggle-expanded-menu');
       const subMenuSelected = event.target.closest('.ant-menu-sub')?.classList?.contains('ant-menu-vertical');
       const bottomMenuSelected = !!event.target.closest('.main-actions-menu');
-      const plusSelected = !!event.target.closest('.ant-menu-item:last-of-type');
+      const plusSelected = !!event.target.closest('.side-nav > .ant-menu-root .ant-menu-item:first-of-type');
       if(!iconBtn && (subMenuSelected || bottomMenuSelected || plusSelected)) {
         removeOtherActiveNavItemStates()
       } 
-    }, 10); // Let other state changes clear first
-
+    }
     document.addEventListener('click', handleClick, true);
     return () => {
       document.removeEventListener('click', handleClick, true);
@@ -70,45 +81,6 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   const selectedSphere = store.get(currentSphere);
   const currentSphereId = selectedSphere?.actionHash as ActionHashB64;
   const sphereNodes = currentSphereId && store.get(nodeCache.items) && store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
-
-  // Main routing logic for menus
-  const onClick: MenuProps['onClick'] = (e) => {
-    removeOtherActiveNavItemStates()
-    setSelectedItemName(e.key)
-
-    switch (true) {
-      case e.key == 'vis':
-        store.set(currentOrbitCoords, {x: 0, y: 0});
-        
-        if(!selectedSphere.actionHash || !sphereNodes) {
-          // Activate tooltip to encourage current Sphere selection
-          if(collapsed && !sideNavExpanded) {
-            setCollapsed(false);
-            setSideNavExpanded(true)
-          }
-          setTooltipVisible(true);
-          setTimeout(() => {
-            setTooltipVisible(false);
-          }, TOOLTIP_TIMEOUT);
-          return;
-        }
-        transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})
-        break;
-      case e.key == 'add-sphere':
-        store.set(currentSphere, {});
-        transition('CreateSphere')
-        break;
-
-      case e.key == 'list-spheres':
-        transition('ListSpheres')
-        break;
-
-      default:
-        // Set current sphere from action hash of sphere clicked
-        store.set(currentSphere, {entryHash: e.key, actionHash: e.key})
-        break;
-    }
-  };
 
   // Menu state/dom helpers
   function closeMenu () {
@@ -120,32 +92,25 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
     setSideNavExpanded(true)
   };
   function removeOtherActiveNavItemStates() {
-    document.querySelectorAll(".ant-menu-item-selected")?.forEach(item => item.classList.remove("ant-menu-item-selected"))
+    [...document.querySelectorAll(".ant-menu-item-selected")]?.forEach(item => item.classList.remove("ant-menu-item-selected"))
   };
 
   // Helpers for creating menu items
   function createFixedMenuItems() {
     return [
       getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
-      // getItem('Dashboard', 'dash', <DashboardFilled />),
-      getItem('Dashboard', 'vis', <>
-        <PieChartFilled  data-tooltip-target="tooltip-left" data-tooltip-placement="left" />
-          <div id="tooltip-left" role="tooltip" className={tooltipVisible ? "" : "invisible"}>
-            You need to { spheresArray.length == 0 ? "create" : "select"} a sphere to start visualising!
-            <div className="tooltip-arrow" data-popper-arrow></div>
-          </div></>),
+      getItem('Dashboard', 'db', <PieChartFilled />),
     ]  
   }
   function createSphereMenuItems({ spheres }: { spheres: Sphere[], onClick: () => void}) {
-    console.log('currentSphereId :>> ', currentSphereId);
     return [    
       getItem('New Sphere', 'add-sphere', <PlusCircleFilled />),
       ...spheres!.map((sphere: Sphere, _idx: number) => {
-        return getItem(`${sphere.name}`, sphere.id, <img className={currentSphereId == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string} />)
-    })] 
+      return getItem(`${sphere.name}`, sphere.id, <img className={currentSphereId == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string} />)})
+    ] 
   }
 
-  // Small single use components:
+  // Small single use component:
   const ToggleMenuExpand = () => {
     return (
       <div className={!sideNavExpanded ? "flex flex-col gap-1 w-full " : "flex flex-col gap-1 w-full items-start"} >
@@ -156,31 +121,99 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
     )
   }
 
-
   const loading = loadingSpheres || !spheres;
   const spheresArray = loading ? [] : extractEdges(spheres.spheres); 
-  const msg = `You need to ${ spheresArray.length == 0 ? "create" : "select"} a Sphere to `;
 
-  function withTooltip(type: string, msg: string) {
-    console.log('Object.values(sphereNodes) :>> ', typeof sphereNodes == 'object' && Object.values(sphereNodes));
-    const noSphereOrbits = !!(type == 'secondary' && !sphereNodes || (!!sphereNodes && !(Object.values(sphereNodes)?.length > 0)))
-    return <Button type="button" onClick={(_e) => {goToPage(type)}} data-button-id={type} data-tooltip-target="tooltip-left" data-tooltip-placement="left" disabled={spheresArray.length == 0 || !currentSphereId ||noSphereOrbits } className={`btn btn-sq btn-${type}`}>
-          <div id="tooltip-left" role="tooltip" className={sphereBtnsTooltipVisible == type ? "z-50 top-0 transition-all" : "invisible transition-all"} style={{width: "12rem"}}>
-              {msg}
-            <div className="tooltip-arrow" data-popper-arrow></div>
-          </div>
-          { getIcon(type)}
+  const noSphereOrbits = () =>  (!sphereNodes || (!!sphereNodes && !(Object.values(sphereNodes)?.length > 0)));
+  
+  // Main routing logic for menus
+  const onClick: MenuProps['onClick'] = (e) => {
+    setSelectedItemName(e.key)
+    switch (true) {
+      case e.key == 'db':
+        return // TEMP
+        setCurrentPage(Page.Dashboard)
+        transition('Dashboard', {})
+        break;
+
+      case e.key == 'add-sphere':
+        store.set(currentSphere, {});
+        setCurrentPage(Page.CreateSphere)
+        transition('CreateSphere')
+        break;
+
+      case e.key == 'list-spheres':
+        setCurrentPage(Page.ListSpheres)
+        transition('ListSpheres')
+        break;
+
+      default:
+        // Falls through to any Sphere context icon
+        // Check conditions where the current page would cause errors for the new Sphere selection
+        if([Page.Vis].includes(currentPage as Page) && noSphereOrbits()) {
+          // If there is a problem, just show a tooltip
+          activatePageContextTooltip()
+          debugger;
+        } else {
+          // expand menu for action buttons
+          if(collapsed && !sideNavExpanded) {
+            setCollapsed(false);
+            setSideNavExpanded(true)
+          }
+          // Set current sphere from action hash of sphere clicked
+          store.set(currentSphere, {entryHash: e.key, actionHash: e.key})
+          const pageString = currentPage as string;
+          console.log('noSphereOrbits() :>> ', noSphereOrbits());
+          console.log('pageString :>> ', pageString, currentSphereId, e.key);
+          console.log(' store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] :>> ',  store.get(nodeCache.items)![e.key as keyof SphereNodeDetailsCache]);
+          transition(pageString, (pageString == "ListOrbits" || pageString == "CreateOrbit") ?  {sphereAh: e.key} : {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: e.key})
+        }
+        break;
+    }
+  };
+
+  // Helper for buttons that may require menu tooltip state to change
+  function buttonWithTooltipHandling(type: string) {
+    return <Button
+      type="button"
+      onClick={(_e) => {goToPage(type)}}
+      disabled={spheresArray.length == 0 || !currentSphereId || (currentPage == Page.Vis && noSphereOrbits())}
+      className={`btn btn-sq btn-${type} ` +  (isCurrentPage(type) ? "nohover" : "")}
+      style={{cursor: isCurrentPage(type) ? "initial" : "pointer", outlineOffset: "-4px", outline: isCurrentPage(type) ? "3px solid rgba(80, 227, 194, 0.8)" : ""}}
+    >
+      {getIcon(type)}
     </Button>
     function goToPage(type: string) {
-      console.log('{currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash} :>> ', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash});
       switch (type) {
-        case 'neutral': transition('ListOrbits', {sphereAh: currentSphereId})   
+        case 'neutral': 
+          setTooltipVisible(false);
+          setCurrentPage(Page.ListOrbits)
+          setTooltipText("to list orbits")
+          transition('ListOrbits', {sphereAh: currentSphereId})   
+          return
+        case 'secondary':
+          if(noSphereOrbits()) {
+            activatePageContextTooltip()
+            setTooltipText("with existing Orbits before you can visualise the Sphere")
+            return
+          }
+          store.set(currentOrbitCoords, {x: 0, y: 0});
+          setCurrentPage(Page.Vis)       
+          transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})   
+          return
+        case 'primary': 
+          setTooltipVisible(false);
+          setTooltipText("to create an orbit")
+          setCurrentPage(Page.CreateOrbit)
+          transition('CreateOrbit', {sphereAh: currentSphereId})   
         return
-        case 'secondary': transition('Vis', {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash})   
-        return
-        console.log('{sphereAh: currentSphereId} :>> ', {sphereAh: currentSphereId});
-        case 'primary': transition('CreateOrbit', {sphereAh: currentSphereId})   
-        return
+      }
+    }
+    function isCurrentPage(type: string) {
+      switch (type) {
+        case 'neutral': return currentPage == Page.ListOrbits
+        case 'secondary': return currentPage == Page.Vis
+        case 'primary': return currentPage == Page.CreateOrbit
       }
     }
     function getIcon(type: string) {
@@ -188,9 +221,16 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         case 'neutral': return (<UnorderedListOutlined />)
         case 'secondary': return (<TreeVisIcon />)
         case 'primary': return (<PlusCircleOutlined />)
-        return
       }
     }
+  }
+
+  const msg = `You need to ${ spheresArray.length == 0 ? "create" : "select"} a Sphere `;
+  function activatePageContextTooltip() {
+    setTooltipVisible(true);
+    setTimeout(() => {
+      setTooltipVisible(false);
+    }, TOOLTIP_TIMEOUT);
   }
   
   return (
@@ -202,25 +242,27 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
             inlineCollapsed={collapsed}
             onClick={onClick}
             style={{ width: collapsed ? 72 : 256 }}
-            defaultSelectedKeys={['1']}
-            defaultOpenKeys={['sub1']}
             mode="inline"
             items={createSphereMenuItems({spheres: spheresArray, onClick: () => {closeMenu(); setSideNavExpanded(false)}})}
           />
           <div className={"main-actions-menu"}>
             {!collapsed && 
-              <div className="sphere-context-actions">
-                {withTooltip('neutral', msg + 'list Orbits')}
-                {withTooltip('secondary', msg + 'list Orbits')}
-                {withTooltip('primary', msg + 'create an Orbit')}
+              <div className="sphere-context-actions" 
+              data-tooltip-target="tooltip-left" data-tooltip-placement="left" >
+
+                <div id="tooltip-left" role="tooltip" className={tooltipVisible ? "" : "invisible"}>
+                  {`${msg} ${tooltipText}`}
+                  <div className="tooltip-arrow" data-popper-arrow></div>
+                </div>
+                {buttonWithTooltipHandling('neutral')}
+                {buttonWithTooltipHandling('secondary')}
+                {buttonWithTooltipHandling('primary')}
               </div>
             }
             <Menu
               inlineCollapsed={collapsed}
               onClick={(e) => onClick(e)}
               style={{ width: collapsed ? 72 : 256 }}
-              defaultSelectedKeys={['1']}
-              defaultOpenKeys={['sub1']}
               mode="inline"
               items={createFixedMenuItems()}
             />
