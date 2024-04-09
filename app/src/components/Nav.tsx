@@ -1,15 +1,16 @@
 import "./style.css";
 import TreeVisIcon from "./TreeVisIcon";
 
-import { DashboardFilled, UnorderedListOutlined, PieChartFilled, PlusCircleFilled, ArrowsAltOutlined, AppstoreAddOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { UnorderedListOutlined, PieChartFilled, PlusCircleFilled, ArrowsAltOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
-import { Sphere, SphereConnection, SphereEdge, useGetSpheresQuery } from "../graphql/generated";
+import { Sphere, useGetSpheresQuery } from "../graphql/generated";
 import { Button, DarkThemeToggle, Spinner } from "flowbite-react";
 import { currentOrbitCoords, currentSphere } from "../state/currentSphereHierarchyAtom";
-import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from "../state/jotaiKeyValueStore";
+import { SphereNodeDetailsCache, nodeCache, store } from "../state/jotaiKeyValueStore";
 import { extractEdges } from "../graphql/utils";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { decode } from "@msgpack/msgpack";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -21,7 +22,6 @@ function getItem(
   icon?: React.ReactNode,
   children?: MenuItem[],
   type?: 'group',
-  onClick?: any
 ): MenuItem {
   return {
     key,
@@ -78,10 +78,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   }, []);
 
   const selectedSphere = store.get(currentSphere);
-  console.log('selectedSphere :>> ', selectedSphere);
   const currentSphereId = selectedSphere?.actionHash as ActionHashB64;
-  const sphereNodes = currentSphereId && store.get(nodeCache.items) && store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
-
   // Menu state/dom helpers
   function closeMenu () {
     setCollapsed(true);
@@ -102,7 +99,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
       getItem('Dashboard', 'db', <PieChartFilled />),
     ]  
   }
-  function createSphereMenuItems({ spheres }: { spheres: Sphere[], onClick: () => void}) {
+  function createSphereMenuItems({ spheres }: { spheres: Sphere[] }) {
     return [    
       getItem('New Sphere', 'add-sphere', <PlusCircleFilled />),
       ...spheres!.map((sphere: Sphere, _idx: number) => {
@@ -128,11 +125,9 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   const noSphereOrbits = (sphereAh?: EntryHashB64) =>  {
     const cacheId = (sphereAh || sphere()?.id);
     if(!cacheId) return true;
-    const sphereNodes =  store.get(nodeCache.items)![cacheId as keyof SphereNodeDetailsCache];
-    console.log('sphereNodes for ah :>> ', cacheId, " ==== |", sphereNodes);
+    const sphereNodes =  store.get(nodeCache.items)?.[cacheId as keyof SphereNodeDetailsCache];
     return (!sphereNodes || (typeof sphereNodes == 'object' && !(Object.values(sphereNodes).length > 0)));
   }
-  
   // Main routing logic for menus
   const onClick: MenuProps['onClick'] = (e) => {
     switch (true) {
@@ -149,6 +144,11 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         break;
 
       case e.key == 'list-spheres':
+        if(spheresArray.length == 0) {
+          // If there is a problem, just show a tooltip
+          activatePageContextTooltip()
+          return;
+        }
         setCurrentPage(Page.ListSpheres)
         transition('ListSpheres')
         break;
@@ -159,15 +159,12 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         if([Page.Vis].includes(currentPage as Page) && noSphereOrbits(e.key)) {
           // If there is a problem, just show a tooltip
           activatePageContextTooltip()
-          debugger;
         } else {
           // Set current sphere from action hash of sphere clicked
           store.set(currentSphere, {entryHash: sphere()?.eH, actionHash: e.key})
           // expand menu for action buttons
-          if(collapsed && !sideNavExpanded) {
-            setCollapsed(false);
-            setSideNavExpanded(true)
-          }
+          if(collapsed && !sideNavExpanded) openMenu();
+
           const pageString = currentPage as string;
           if(currentPage== Page.Home) return
           // Reload the current page with a new sphere context
@@ -179,8 +176,6 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
 
   // Helper for buttons that may require menu tooltip state to change
   function buttonWithTooltipHandling(type: string) {
-    console.log('currentSphereId :>> ', currentSphereId);
-    console.log('noSphereOrbits() :>> ', noSphereOrbits());
     return <Button
       type="button"
       onClick={(_e) => {goToPage(type)}}
@@ -197,10 +192,10 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           setTooltipVisible(false);
           setCurrentPage(Page.ListOrbits)
           // setTooltipText("to list orbits")
-          transition('ListOrbits', {sphereAh: currentSphereId})   
+          transition('ListOrbits', {sphereAh: sphere().id})
+          closeMenu()
           return
         case 'secondary':
-          console.log('noSphereOrbits() :>> ', noSphereOrbits());
           if(noSphereOrbits()) {
             activatePageContextTooltip()
             setTooltipText("with existing Orbits before you can visualise the Sphere")
@@ -209,12 +204,14 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           store.set(currentOrbitCoords, {x: 0, y: 0});
           setCurrentPage(Page.Vis)       
           transition('Vis', {currentSphereEhB64: sphere().eH, currentSphereAhB64: sphere().id})   
+          closeMenu()
           return
         case 'primary': 
           setTooltipVisible(false);
           // setTooltipText("to create an orbit")
           setCurrentPage(Page.CreateOrbit)
           transition('CreateOrbit', {sphereEh: sphere().eH})   
+          closeMenu()
         return
       }
     }
@@ -252,7 +249,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
             onClick={onClick}
             style={{ width: collapsed ? 72 : 256 }}
             mode="inline"
-            items={createSphereMenuItems({spheres: spheresArray, onClick: () => {closeMenu(); setSideNavExpanded(false)}})}
+            items={createSphereMenuItems({spheres: spheresArray})}
           />
           <div className={"main-actions-menu"}>
             {!collapsed && 

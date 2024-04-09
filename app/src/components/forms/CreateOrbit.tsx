@@ -136,10 +136,9 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
               : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
             setSubmitting(false);
             if(!response.data) return;
-            const aH = editMode ? response.data.updateOrbit.actionHash : response.data.createOrbit.actionHash;
             originPage == 'Vis' 
-              ? transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: aH}) 
-              : transition('ListOrbits', { sphereAh: aH })
+              ? transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: selectedSphere.actionHash}) 
+              : transition('ListOrbits', { sphereAh: selectedSphere.actionHash })
           } catch (error) {
             console.error(error);
           }

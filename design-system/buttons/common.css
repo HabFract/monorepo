@@ -98,3 +98,11 @@ div[data-testid="flowbite-dropdown"] button {
   @apply 
     mr-2
 }
+
+.upload-img-btn:hover {
+  @apply bg-secondary-500;
+}
+.upload-img-btn {
+  top: 0.425rem;
+  left: -0.375rem;
+}

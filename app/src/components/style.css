@@ -14,7 +14,7 @@ nav.side-nav {
   border-bottom-left-radius: 0;
 }
 nav.side-nav ul[role="menu"] {
-  border-radius: 1.5rem;
+  border-radius: 1.25rem;
 }
 
 nav.side-nav + .page-container .sphere-card.list-header button.add-orbit,
@@ -51,9 +51,14 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
   justify-content: space-around;
 }
 
+.side-nav.expanded + .page-container {
+  filter: opacity(0.3);
+  pointer-events: none;
+}
+
 .side-nav.expanded > .ant-menu-root:first-child {
   display: grid;
-  gap: .25rem;
+  gap: .75rem;
   position: relative;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
@@ -125,9 +130,10 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
   border-radius: 1.05rem;
 }
 .side-nav:not(.expanded) > .ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) {
-  min-height: 60px;
+  min-height: 62px;
   min-width: 60px !important;
-  padding-inline: calc(0.25rem) !important;
+  padding-inline: calc(0.15rem) !important;
+  padding-top: 2px;
 }
 
 /* Vertical collapse button */
@@ -227,10 +233,11 @@ nav > .ant-menu:first-child .ant-menu-item:last-child {
   margin-top: 0.25rem;
 }
 
-.ant-menu-item, .ant-menu-item:active {
-  border-radius: 2rem !important;
+.ant-menu-item {
+  border-radius: .5rem !important;
 }
 .ant-menu-item:active {
+  border-radius: 1.25rem !important;
   @apply bg-secondary-500 text-white;
 }
 
