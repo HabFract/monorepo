@@ -7,10 +7,10 @@
   @apply text-white bg-primary-500 border-primary-500 !important;
 }
 .btn-secondary, .btn-secondary.nohover:hover {
-  @apply bg-secondary border-secondary border-2;
+  @apply bg-secondary border-primary-500 border-2;
 }
 .btn-secondary:not(.nohover):hover {
-  @apply text-white bg-secondary-500 border-secondary !important;
+  @apply text-white bg-secondary-500 border-primary !important;
 }
 .btn-warn, .btn-warn.nohover:hover {
   @apply bg-warn-500 border-warn border-2;

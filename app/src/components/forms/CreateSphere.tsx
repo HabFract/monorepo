@@ -79,14 +79,12 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
         validationSchema={SphereValidationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            
-            editMode
+            let response = editMode
               ? await updateSphere({ variables: { sphere: { id: sphereToEditId as string, name: values.name, description: values.description, image: values.sphere_image } } })
               : await addSphere({ variables: { variables: { name: values.name, description: values.description, image: values.sphere_image } } })
             setSubmitting(false);
-
-            // transition('ListOrbits', { sphereAh: selectedSphere.actionHash })
-            transition('ListSpheres')
+            if(!response.data) return;
+            transition('ListSpheres', { sphereAh: editMode ? response.data.updateSphere.actionHash : response.data.createSphere.actionHash })
           } catch (error) {
             console.error(error);
           }

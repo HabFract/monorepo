@@ -5,7 +5,7 @@ import SphereVis from '../vis/SphereVis';
 import { Scale, Sphere } from '../../app/src/graphql/generated';
 import { Button } from 'flowbite-react';
 import { currentOrbitCoords } from '../../app/src/state/currentSphereHierarchyAtom';
-import { store } from '../../app/src/state/jotaiKeyValueStore';
+import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../app/src/state/jotaiKeyValueStore';
 
 type SphereCardProps = {
   sphere: Sphere;
@@ -45,7 +45,9 @@ function calculateSphereCounts(orbitScales: Scale[]) {
 
 const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition, runDelete } : SphereCardProps) => {
   const { name, metadata, id } = sphere;
-
+  const sphereNodes = id && store.get(nodeCache.items) && store.get(nodeCache.items)![id as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
+console.log('Object.values(sphereNodes) :>> ',  sphereNodes);
+console.log(', store.get(nodeCache.items) :>> ' , store.get(nodeCache.items));
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
       <header className={"sphere-header card-header"}>
@@ -73,7 +75,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
               <span>Add</span>
             </Button>}
 
-            <Button className="btn responsive btn-primary w-full" size="sm" onClick={() => {
+            <Button disabled={!sphereNodes || typeof sphereNodes == 'object' && !(Object.values(sphereNodes).length > 0)} className="btn responsive btn-primary w-full" size="sm" onClick={() => {
                 store.set(currentOrbitCoords, {x: 0, y: 0}); transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })}}>
               <PieChartOutlined className="btn-icon" />
               <span>Visualise</span>
