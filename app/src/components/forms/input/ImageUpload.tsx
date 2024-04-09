@@ -64,7 +64,7 @@ const ImageUpload = ({
 
   const uploadButton = (
     <div className='absolute z-10 top-2 left-5 text-gray-500 '>
-      <div className='absolute top-3 bg-secondary text-white hover:bg-secondary rounded-full p-2 transition-all duration-300'>Upload
+      <div className='upload-img-btn absolute bg-secondary text-white hover:bg-secondary rounded-full p-2 transition-all duration-300'>Upload
         <span className="rounded-xl text-primary bg-secondary">{loading ? <LoadingOutlined /> : <PlusCircleFilled />}</span>
       </div>
     </div>
