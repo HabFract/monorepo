@@ -121,7 +121,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
     archival: false,
     parentHash: parentOrbitEh ||''
   });
-  console.log('sphereEh :>> ', sphereEh);
   return (
     <div className="form-container">
       {!inModal && <h2 className="form-title">{editMode ? "Update" : "Create"} Orbit</h2>}
@@ -132,11 +131,15 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
           try {
             if (!values.archival) delete values.endTime;
             delete values.archival;
-            editMode
+            let response = editMode
               ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
               : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
             setSubmitting(false);
-            originPage == 'Vis' ? transition('Vis', { currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: selectedSphere.actionHash }) : transition('ListOrbits', { sphereAh: selectedSphere.actionHash })
+            if(!response.data) return;
+            const aH = editMode ? response.data.updateOrbit.actionHash : response.data.createOrbit.actionHash;
+            originPage == 'Vis' 
+              ? transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: aH}) 
+              : transition('ListOrbits', { sphereAh: aH })
           } catch (error) {
             console.error(error);
           }
