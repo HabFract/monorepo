@@ -4,7 +4,7 @@ import { DeleteOutlined, EditOutlined, PieChartOutlined, OrderedListOutlined, Pl
 import SphereVis from '../vis/SphereVis';
 import { Scale, Sphere } from '../../app/src/graphql/generated';
 import { Button } from 'flowbite-react';
-import { currentOrbitCoords } from '../../app/src/state/currentSphereHierarchyAtom';
+import { currentOrbitCoords, currentSphere } from '../../app/src/state/currentSphereHierarchyAtom';
 import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../app/src/state/jotaiKeyValueStore';
 import TreeVisIcon from '../../app/src/components/TreeVisIcon';
 
@@ -77,6 +77,7 @@ console.log(', store.get(nodeCache.items) :>> ' , store.get(nodeCache.items));
             </Button>}
 
             <Button disabled={!sphereNodes || typeof sphereNodes == 'object' && !(Object.values(sphereNodes).length > 0)} className="btn responsive btn-primary w-full" size="sm" onClick={() => {
+                store.set(currentSphere, {entryHash: sphere.eH, actionHash: sphere.id});
                 store.set(currentOrbitCoords, {x: 0, y: 0}); transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })}}>
               <TreeVisIcon />
               <span>Visualise</span>

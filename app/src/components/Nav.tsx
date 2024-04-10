@@ -185,8 +185,11 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         // Check conditions where the current page would cause errors for the new Sphere selection
         if([Page.Vis].includes(currentPage as Page) && noSphereOrbits(e.key)) {
           // If there is a problem, just show a tooltip
+          setTooltipText("Select a Sphere with existing Orbits to enable Visualisation")
+          openMenu()
           activatePageContextTooltip()
         } else {
+          setTooltipVisible(false)
           // Set current sphere from action hash of sphere clicked
           store.set(currentSphere, {entryHash: sphere()?.eH, actionHash: e.key})
           // expand menu for action buttons
