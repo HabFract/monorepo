@@ -10,7 +10,6 @@ import { currentOrbitCoords, currentSphere } from "../state/currentSphereHierarc
 import { SphereNodeDetailsCache, nodeCache, store } from "../state/jotaiKeyValueStore";
 import { extractEdges } from "../graphql/utils";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { decode } from "@msgpack/msgpack";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -22,13 +21,15 @@ function getItem(
   icon?: React.ReactNode,
   children?: MenuItem[],
   type?: 'group',
+  disabled?
 ): MenuItem {
   return {
     key,
     icon,
     children,
     label,
-    type
+    type,
+    disabled
   } as MenuItem;
 }
 
@@ -52,6 +53,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   const ref = useRef(null);
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
+  const tooltipRef = useRef(null);
   const [currentPage, setCurrentPage] = useState<Page>(Page.Home);
   const [collapsed, setCollapsed] = useState(true);
   const [tooltipVisible, setTooltipVisible] = useState(false);
@@ -96,14 +98,25 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   function createFixedMenuItems() {
     return [
       getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
-      getItem('Dashboard', 'db', <PieChartFilled />),
+      getItem('Dashboard', 'db', <PieChartFilled />, undefined, undefined, true),
     ]  
   }
   function createSphereMenuItems({ spheres }: { spheres: Sphere[] }) {
     return [    
-      getItem('New Sphere', 'add-sphere', <PlusCircleFilled />),
+      getItem(
+        'New Sphere',
+        'add-sphere',
+        <PlusCircleFilled />,
+        undefined,
+        undefined,
+        (() => !!(typeof spheresArray == 'object' && spheresArray.length >= 4))() // Disable when we have 4 already),
+      ),
       ...spheres!.map((sphere: Sphere, _idx: number) => {
-      return getItem(`${sphere.name}`, sphere.id, <img className={currentSphereId == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string} />)})
+      return getItem(
+        `${sphere.name}`,
+        sphere.id,
+        <img className={currentSphereId == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string}/>,
+      )})
     ] 
   }
 
@@ -120,7 +133,9 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
 
   const loading = loadingSpheres || !spheres;
   const spheresArray = loading ? [] : extractEdges(spheres.spheres); 
+  const tooltipMsg = `You need to ${ spheresArray.length == 0 ? "create" : spheresArray.length == 4 ? "delete" : "select"} a Sphere `;
   
+
   const sphere = (sphereAh?: EntryHashB64) => extractEdges(spheres?.spheres as any).find((sphere: any) => (sphereAh || sphere.id) == currentSphereId) as Sphere & {id: ActionHashB64};
   const noSphereOrbits = (sphereAh?: EntryHashB64) =>  {
     const cacheId = (sphereAh || sphere()?.id);
@@ -138,6 +153,11 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         break;
 
       case e.key == 'add-sphere':
+        if(spheresArray.length >= 4) {
+          setTooltipText(tooltipMsg + "before you can add another Sphere. These are the 4 burners of your habit life!")
+          if(tooltipRef.current) {(tooltipRef.current as HTMLElement).style.top = "0rem"}
+          activatePageContextTooltip()
+        }
         store.set(currentSphere, {});
         setCurrentPage(Page.CreateSphere)
         closeMenu()
@@ -147,11 +167,17 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
       case e.key == 'list-spheres':
         if(spheresArray.length == 0) {
           // If there is a problem, just show a tooltip
+
+          setTooltipText(tooltipMsg + "before you can view the Spheres list")
+          if(tooltipRef.current) {(tooltipRef.current as HTMLElement).style.top = "0rem"}
           activatePageContextTooltip()
+          openMenu()
           return;
         }
         setCurrentPage(Page.ListSpheres)
         transition('ListSpheres')
+        
+        if(!collapsed && sideNavExpanded) closeMenu();
         break;
 
       default:
@@ -195,10 +221,11 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           transition('ListOrbits', {sphereAh: sphere().id})
           closeMenu()
           return
-        case 'secondary':
+        case 'primary':
           if(noSphereOrbits()) {
+            setTooltipText("Select a Sphere with existing Orbits to enable Visualisation")
+            if(tooltipRef.current) {(tooltipRef.current as HTMLElement).style.top = "0rem"}
             activatePageContextTooltip()
-            setTooltipText("with existing Orbits before you can visualise the Sphere")
             return
           }
           store.set(currentOrbitCoords, {x: 0, y: 0});
@@ -206,7 +233,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           transition('Vis', {currentSphereEhB64: sphere().eH, currentSphereAhB64: sphere().id})   
           closeMenu()
           return
-        case 'primary': 
+        case 'secondary': 
           setTooltipVisible(false);
           setCurrentPage(Page.CreateOrbit)
           transition('CreateOrbit', {sphereEh: sphere().eH})   
@@ -217,24 +244,24 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
     function isCurrentPage(type: string) {
       switch (type) {
         case 'neutral': return currentPage == Page.ListOrbits
-        case 'secondary': return currentPage == Page.Vis
-        case 'primary': return currentPage == Page.CreateOrbit
+        case 'primary': return currentPage == Page.Vis
+        case 'secondary': return currentPage == Page.CreateOrbit
       }
     }
     function getIcon(type: string) {
       switch (type) {
         case 'neutral': return (<UnorderedListOutlined />)
-        case 'secondary': return (<TreeVisIcon />)
-        case 'primary': return (<PlusCircleOutlined />)
+        case 'primary': return (<TreeVisIcon />)
+        case 'secondary': return (<PlusCircleOutlined />)
       }
     }
   }
 
-  const msg = `You need to ${ spheresArray.length == 0 ? "create" : "select"} a Sphere `;
   function activatePageContextTooltip() {
     setTooltipVisible(true);
     setTimeout(() => {
       setTooltipVisible(false);
+      if(tooltipRef.current) (tooltipRef.current as HTMLElement).style.top = "initial"
     }, TOOLTIP_TIMEOUT);
   }
   
@@ -251,19 +278,15 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
             items={createSphereMenuItems({spheres: spheresArray})}
           />
           <div className={"main-actions-menu"}>
-            {!collapsed && 
-              <div className="sphere-context-actions" 
-              data-tooltip-target="tooltip-left" data-tooltip-placement="left" >
-
-                <div id="tooltip-left" role="tooltip" className={tooltipVisible ? "" : "invisible"}>
-                  {`${msg} ${tooltipText}`}
-                  <div className="tooltip-arrow" data-popper-arrow></div>
-                </div>
-                {buttonWithTooltipHandling('neutral')}
-                {buttonWithTooltipHandling('secondary')}
-                {buttonWithTooltipHandling('primary')}
+            <div style={{ display: collapsed ? "none" : "flex" }} className={"sphere-context-actions"} data-tooltip-target="tooltip-left" data-tooltip-placement="left" >
+              <div ref={tooltipRef} id="tooltip-left" role="tooltip" className={tooltipVisible ? "" : "invisible"}>
+                {`${tooltipText}`}
+                <div className="tooltip-arrow" data-popper-arrow></div>
               </div>
-            }
+              {buttonWithTooltipHandling('neutral')}
+              {buttonWithTooltipHandling('secondary')}
+              {buttonWithTooltipHandling('primary')}
+            </div>
             <Menu
               inlineCollapsed={collapsed}
               onClick={(e) => onClick(e)}
