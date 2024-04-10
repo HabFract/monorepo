@@ -140,6 +140,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
       case e.key == 'add-sphere':
         store.set(currentSphere, {});
         setCurrentPage(Page.CreateSphere)
+        closeMenu()
         transition('CreateSphere')
         break;
 
@@ -191,7 +192,6 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         case 'neutral': 
           setTooltipVisible(false);
           setCurrentPage(Page.ListOrbits)
-          // setTooltipText("to list orbits")
           transition('ListOrbits', {sphereAh: sphere().id})
           closeMenu()
           return
@@ -208,7 +208,6 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           return
         case 'primary': 
           setTooltipVisible(false);
-          // setTooltipText("to create an orbit")
           setCurrentPage(Page.CreateOrbit)
           transition('CreateOrbit', {sphereEh: sphere().eH})   
           closeMenu()
