@@ -19,6 +19,7 @@ module.exports = {
   moduleNameMapper: {
     // '^@apollo/client$': '<rootDir>/tests/apollo.cjs',
     "\\.(css|less|graphql)$": "<rootDir>/tests/styleMock.js",
+    "\\.(svg\.raw\?)$": "<rootDir>/tests/svgTransform.ts",
     ...moduleNameMappers,
 
     "^(\\.{1,2}/.*)\\.js$": "$1",
@@ -27,13 +28,14 @@ module.exports = {
     `node_modules/(?!(${esModules.join("|")}))`,
   ],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', {
-      useESM: true,
-      tsConfig: '<rootDir>/tests/tsconfig.json',
-    }
-  ],
-    '^.+\\.js?$': ['babel-jest'],
-  '^jotai-minidb$': 'ts-jest',
-  "\\.(gql|graphql)$": "jest-transform-graphql",
+      '^.+\\.tsx?$': ['ts-jest', {
+        useESM: true,
+        tsConfig: '<rootDir>/tests/tsconfig.json',
+      }
+    ],
+    "^.+\\.svg.+$": "<rootDir>/tests/svgTransform.ts",
+      '^.+\\.js?$': ['babel-jest'],
+    '^jotai-minidb$': 'ts-jest',
+    "\\.(gql|graphql)$": "jest-transform-graphql",
   },
 };
