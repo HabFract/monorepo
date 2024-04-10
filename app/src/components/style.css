@@ -73,6 +73,10 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
   place-content: center;
   height: 48px;
 }
+.side-nav > .ant-menu-root:first-child .ant-menu-item-disabled:first-child {
+  /* Allow click and block with tooltip */
+  pointer-events: all;
+}
 
 .side-nav.expanded .ant-menu-item:first-child {
   padding-left: 22px !important;

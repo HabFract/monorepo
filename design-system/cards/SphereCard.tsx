@@ -6,6 +6,7 @@ import { Scale, Sphere } from '../../app/src/graphql/generated';
 import { Button } from 'flowbite-react';
 import { currentOrbitCoords } from '../../app/src/state/currentSphereHierarchyAtom';
 import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../app/src/state/jotaiKeyValueStore';
+import TreeVisIcon from '../../app/src/components/TreeVisIcon';
 
 type SphereCardProps = {
   sphere: Sphere;
@@ -72,12 +73,12 @@ console.log(', store.get(nodeCache.items) :>> ' , store.get(nodeCache.items));
 
             {!isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn responsive btn-secondary add-orbit border-0 w-full" size="sm">
               <PlusCircleOutlined className="btn-icon btn-secondary" />
-              <span>Add</span>
+              <span>Create Orbit</span>
             </Button>}
 
             <Button disabled={!sphereNodes || typeof sphereNodes == 'object' && !(Object.values(sphereNodes).length > 0)} className="btn responsive btn-primary w-full" size="sm" onClick={() => {
                 store.set(currentOrbitCoords, {x: 0, y: 0}); transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })}}>
-              <PieChartOutlined className="btn-icon" />
+              <TreeVisIcon />
               <span>Visualise</span>
             </Button>
           </div>
