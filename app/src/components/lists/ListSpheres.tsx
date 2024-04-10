@@ -57,8 +57,7 @@ function ListSpheres() {
       <PageHeader title="Spheres List" />
       <ListSortFilter label='' />
       <div className="spheres-list">
-        {sortedSpheres.map((sphere : Sphere) => <SphereCard key={sphere.id} sphere={sphere} transition={transition} isHeader={false} orbitScales={[]} runDelete={() => runDelete({variables: {id: sphere.id}})}/>)//orbits.map((orbit: Orbit) => orbit?.scale)}/>)}
-}</div>
+        {sortedSpheres.map((sphere : Sphere) => <SphereCard key={sphere.id} sphere={sphere} transition={transition} isHeader={false} orbitScales={[]} runDelete={() => runDelete({variables: {id: sphere.id}})}/>)}</div>
     </div>
   );
 }
