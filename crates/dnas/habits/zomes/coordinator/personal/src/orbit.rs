@@ -165,7 +165,7 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
                     let tag_bytes = link.clone().tag.0.try_into().unwrap();
                     let from_bytes  = i8::from_ne_bytes(tag_bytes);
 
-                    let new_link_level = from_bytes - 1;
+                    let new_link_level = from_bytes + 1;
                     let link_tag_bytes = new_link_level.to_ne_bytes().to_vec();
                     create_link(
                         orbit.sphere_hash.clone(),
@@ -200,7 +200,7 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
                 let mut child_level_link = links
                     .into_iter()
                     .filter(|link| link.clone().target == child_hash.clone().into());
-
+                
                 match child_level_link.next() {
                     Some(link) => {
                         let tag_bytes = link.clone().tag.0.try_into().unwrap();
