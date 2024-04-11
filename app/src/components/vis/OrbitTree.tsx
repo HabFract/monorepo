@@ -2,7 +2,7 @@ import React, { ComponentType, useEffect, useState } from 'react';
 import BaseVisualization from "./BaseVis";
 import { VisProps, VisCoverage, VisType } from './types';
 import { hierarchy } from "d3-hierarchy";
-import { OrbitHierarchyQueryParams, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
+import { OrbitHierarchyQueryParams, useGetLowestSphereHierarchyLevelQuery, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
 
 import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
@@ -61,6 +61,10 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const [hasCached, setHasCached] = useState<boolean>(false);
   const { loading: loadCache, error: errorCache, cache } = useFetchOrbitsAndCacheHierarchyPaths({params: getQueryParams(), hasCached})
 
+  const { data: dataLevel, loading: loadLevel, error: errorLevel } = useGetLowestSphereHierarchyLevelQuery({variables: {sphereEntryHashB64: sphere.entryHash as string}})
+  console.log('dataLevel :>> ', dataLevel);
+  
+  
   const fetchHierarchyData = () => {
     if (error || isModalOpen) return;
     const query = depthBounds ? { ...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereEhB64] as any).minDepth } : getQueryParams(y)
@@ -101,7 +105,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
     setIsModalOpen(true)
     const errorObject = Object.values(error)[1]?.[0];
     const parsedGuestError = errorObject.stack.match(/Guest\("([\w\s]+)"\)/);
-    setModalErrorMsg(parsedGuestError[1] || "There was an error")
+    setModalErrorMsg(parsedGuestError?.[1] || "There was an error")
   }, [error])
 
   useEffect(() => {
