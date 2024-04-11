@@ -135,6 +135,10 @@ export const anOrbit = (overrides?) => {
       overrides && overrides.hasOwnProperty("parentHash")
         ? overrides.parentHash!
         : undefined,
+    childHash:
+      overrides && overrides.hasOwnProperty("childHash")
+        ? overrides.childHash!
+        : undefined,
     scale:
       overrides && overrides.hasOwnProperty("scale")
         ? overrides.scale!
