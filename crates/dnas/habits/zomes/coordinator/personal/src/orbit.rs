@@ -161,8 +161,12 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
 
             match parent_level_link.next() {
                 Some(link) => {
-                    let new_link_level = link.tag.0[0] + 1;
-                    let link_tag_bytes = vec![new_link_level];
+
+                    let tag_bytes = link.clone().tag.0.try_into().unwrap();
+                    let from_bytes  = i8::from_ne_bytes(tag_bytes);
+
+                    let new_link_level = from_bytes - 1;
+                    let link_tag_bytes = new_link_level.to_ne_bytes().to_vec();
                     create_link(
                         orbit.sphere_hash.clone(),
                         orbit_entry_hash.clone(),
@@ -178,14 +182,55 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
         }
     } else {
         // There is no parent
-        // This is a root node so its level is 0 (temp) TODO: allow multiple level 0s
-        let link_tag_bytes = 0_i8.to_be_bytes().to_vec();
-        create_link(
-            orbit.sphere_hash.clone(),
-            orbit_entry_hash,
-            LinkTypes::OrbitHierarchyLevel,
-            LinkTag(link_tag_bytes),
-        )?;
+        if let Some(child_hash) = orbit.child_hash {
+            create_link(
+                orbit_entry_hash.clone(),
+                child_hash.clone(),
+                LinkTypes::OrbitParentToChild,
+                (),
+            )?;
+            // Get the child's level and add a level - 1 link
+            let sphere_level_links = get_links_from_base(
+                orbit.sphere_hash.clone(),
+                LinkTypes::OrbitHierarchyLevel,
+                None,
+            )?;
+
+            if let Some(links) = sphere_level_links {
+                let mut child_level_link = links
+                    .into_iter()
+                    .filter(|link| link.clone().target == child_hash.clone().into());
+
+                match child_level_link.next() {
+                    Some(link) => {
+                        let tag_bytes = link.clone().tag.0.try_into().unwrap();
+                        let from_bytes  = i8::from_ne_bytes(tag_bytes);
+
+                        let new_link_level = from_bytes - 1;
+                        let link_tag_bytes = new_link_level.to_ne_bytes().to_vec();
+                        create_link(
+                            orbit.sphere_hash.clone(),
+                            orbit_entry_hash.clone(),
+                            LinkTypes::OrbitHierarchyLevel,
+                            LinkTag(link_tag_bytes),
+                        )?;
+                    },
+                    _ => { Err(wasm_error!(WasmErrorInner::Guest(
+                        "Could not add a new level link to the created orbit. Hierarchy queries may fail or provide inaccuracies".to_string()
+                    )))?
+                    }
+                }
+            }
+        } else {
+            // This is a root node so its level is 0 (temp) TODO: choose whether to allow multiple level 0s
+            let link_tag_bytes = 0_i8.to_be_bytes().to_vec();
+            create_link(
+                orbit.sphere_hash.clone(),
+                orbit_entry_hash,
+                LinkTypes::OrbitHierarchyLevel,
+                LinkTag(link_tag_bytes),
+            )?;
+        }
     }
     Ok(record)
 }
