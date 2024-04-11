@@ -1,0 +1,3 @@
+query getLowestSphereHierarchyLevel($sphereEntryHashB64: String!) {
+  getLowestSphereHierarchyLevel(sphereEntryHashB64: $sphereEntryHashB64)
+}

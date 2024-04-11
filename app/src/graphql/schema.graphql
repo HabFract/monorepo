@@ -5,6 +5,7 @@ type Query {
   orbit(id: ID!): Orbit!
   orbits(sphereEntryHashB64: String): OrbitConnection!
   getOrbitHierarchy(params: OrbitHierarchyQueryParams!) : String! 
+  getLowestSphereHierarchyLevel(sphereEntryHashB64: String!) : Int! 
   me: AgentProfile!
 }
 
@@ -18,8 +19,6 @@ type Mutation {
   createProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
   updateProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
 }
-
-scalar DateTime
 
 type PageInfo {
   hasNextPage: Boolean!
