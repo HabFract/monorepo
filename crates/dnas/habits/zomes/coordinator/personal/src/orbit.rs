@@ -179,7 +179,7 @@ pub fn create_my_orbit(orbit: Orbit) -> ExternResult<Record> {
     } else {
         // There is no parent
         // This is a root node so its level is 0 (temp) TODO: allow multiple level 0s
-        let link_tag_bytes = vec![0 as u8];
+        let link_tag_bytes = 0_i8.to_be_bytes().to_vec();
         create_link(
             orbit.sphere_hash.clone(),
             orbit_entry_hash,
@@ -240,6 +240,41 @@ pub fn get_all_my_sphere_orbits(
 }
 
 #[hdk_extern]
+pub fn get_lowest_sphere_hierarchy_level(sphere_hash_b64: EntryHashB64) -> ExternResult<i8> {
+    let level_links_for_sphere =
+        get_links_from_base(sphere_hash_b64, LinkTypes::OrbitHierarchyLevel, None);
+    return if let Ok(Some(links)) = level_links_for_sphere {
+        let maybe_min = links.iter().min_by(|&a, &b| {
+            let tag_a_bytes = a.clone().tag.0.try_into().unwrap();
+            let from_bytes_a  = i8::from_ne_bytes(tag_a_bytes);
+            let tag_b_bytes = b.clone().tag.0.try_into().unwrap();
+            let from_bytes_b  = i8::from_ne_bytes(tag_b_bytes);
+
+    debug!(
+        "_+_+_+_+_+_+_+_+_+_ Compare tags: {:#?} {:#?}",
+        from_bytes_a.clone(),
+        from_bytes_b.clone(),
+    );
+
+            return from_bytes_a.cmp(&from_bytes_b);
+        });
+        if let Some(ref min) = maybe_min {
+            let bytes : [u8; 1] = min.tag.clone().0.try_into().unwrap();
+            let from_bytes = i8::from_ne_bytes(bytes); 
+            Ok(from_bytes)
+        } else {
+            Err(wasm_error!(WasmErrorInner::Guest(
+                "Could not find a minimum sphere hierarchy level from link tags".to_string()
+            )))
+        }
+    } else {
+        Err(wasm_error!(WasmErrorInner::Guest(
+            "No sphere level links found for this sphere".to_string()
+        )))
+    };
+}
+
+#[hdk_extern]
 pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serde_json::Value> {
     // Query based on orbit entry hash only, or it could be a recursive call from a levels query
     if let Some(entry_hash) = input.orbit_entry_hash_b64 {
@@ -254,7 +289,7 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
             }) => {
                 let lower_bound =
                     orbit_level.expect("Level has been checked higher up the call stack");
-                let levels_range: RangeInclusive<u8> = lower_bound..=(lower_bound.clone() + 2);
+                let levels_range: RangeInclusive<i8> = lower_bound..=(lower_bound.clone() + 2);
 
                 insert_descendants(
                     entry_hash.clone().into(),
@@ -268,7 +303,11 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
             }
             // Otherwise, just return the whole tree (turtles all the way down)
             None => {
-                insert_descendants(entry_hash.clone().into(), &mut filtered_descendant_hashes, None);
+                insert_descendants(
+                    entry_hash.clone().into(),
+                    &mut filtered_descendant_hashes,
+                    None,
+                );
             }
         }
         let orbit_entry_type: EntryType = UnitEntryTypes::Orbit.try_into()?;
@@ -347,7 +386,7 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct HierarchyLevelQueryInput {
-    pub orbit_level: Option<u8>,
+    pub orbit_level: Option<i8>,
     pub sphere_hash_b64: Option<EntryHashB64>,
 }
 
@@ -361,7 +400,7 @@ pub struct OrbitHierarchyInput {
 /** Private helpers */
 
 struct SphereOrbitLevelRange {
-    range: RangeInclusive<u8>,
+    range: RangeInclusive<i8>,
     sphere_entry_hash_b64: EntryHashB64,
 }
 
@@ -376,7 +415,6 @@ fn insert_descendants(
         if let Some(links_vec) = links {
             for link in links_vec {
                 if let Some(child_hash) = link.target.into_entry_hash() {
-
                     match range {
                         // If this call needs to be restricted to those descendants linked to a certain level, do that now
                         Some(SphereOrbitLevelRange {
@@ -389,15 +427,18 @@ fn insert_descendants(
                                     range.clone(),
                                     child_hash.clone(),
                                 );
-                                
+
                             if include_orbit {
                                 if hashes.insert(child_hash.clone()) {
                                     // Only recurse if the child hash was not already present
-                                    insert_descendants(child_hash, hashes, 
+                                    insert_descendants(
+                                        child_hash,
+                                        hashes,
                                         Some(SphereOrbitLevelRange {
                                             sphere_entry_hash_b64: sphere_entry_hash_b64.clone(),
                                             range: range.clone(),
-                                        }));
+                                        }),
+                                    );
                                 }
                             }
                         }
@@ -484,8 +525,8 @@ fn delete_sphere_hash_link(sphere_hash: EntryHash, target_hash: ActionHash) -> E
     }
 }
 
-fn orbit_level_links(sphere_hash: EntryHash, level: u8) -> ExternResult<Option<Vec<Link>>> {
-    let link_tag_bytes = vec![level];
+fn orbit_level_links(sphere_hash: EntryHash, level: i8) -> ExternResult<Option<Vec<Link>>> {
+    let link_tag_bytes = level.to_ne_bytes().to_vec();
     get_links_from_base(
         sphere_hash,
         LinkTypes::OrbitHierarchyLevel,
@@ -495,7 +536,7 @@ fn orbit_level_links(sphere_hash: EntryHash, level: u8) -> ExternResult<Option<V
 
 fn does_orbit_have_level_links_within_level_range(
     sphere_hash: EntryHash,
-    range: RangeInclusive<u8>,
+    range: RangeInclusive<i8>,
     orbit_hash: EntryHash,
 ) -> bool {
     // Takes a sphere_hash (base), a range (of levels) and an orbit_hash, and determines if the orbit_hash is included in the targets of level links within that range
@@ -509,7 +550,7 @@ fn does_orbit_have_level_links_within_level_range(
                 .collect::<Vec<HoloHash<AnyLinkable>>>();
 
             if targets.contains(&orbit_hash.clone().into()) {
-                return true
+                return true;
             }
         }
     }
