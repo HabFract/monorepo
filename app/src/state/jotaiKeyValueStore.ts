@@ -10,6 +10,7 @@ export const store = createStore()
 export interface OrbitNodeDetails {
   id: ActionHashB64;
   eH?: EntryHashB64;
+  parentEh?: EntryHashB64;
   description?: string;
   name: string;
   scale: Scale;
@@ -30,6 +31,7 @@ export type SphereNodeDetailsCache = {
 export const mapToCacheObject = (orbit: Orbit) : OrbitNodeDetails => ({
   id: orbit.id,
   eH: orbit.eH,
+  parentEh: orbit.parentHash || undefined,
   name: orbit.name,
   scale: orbit.scale,
   description: orbit.metadata?.description || "",
