@@ -26,7 +26,7 @@ export enum VisCoverage {
 // BaseVisualization class property types/interfaces
 
 export interface EventHandlers {
-  handlePrependNode: () => void;
+  handlePrependNode: ({ childOrbitEh }: { childOrbitEh: EntryHashB64 }) => void;
   handleAppendNode: ({ parentOrbitEh }: { parentOrbitEh: EntryHashB64 }) => void;
   handleDeleteNode: (event: any, node: any) => void; // Replace 'any' with specific event and node types
   rgtClickOrDoubleTap: (event: any, d: any) => void; // Replace 'any' with specific event and node types

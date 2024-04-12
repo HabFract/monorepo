@@ -59,19 +59,20 @@ interface CreateOrbitProps {
   orbitToEditId?: ActionHashB64;
   sphereEh: string; // Link to a sphere
   parentOrbitEh: string | undefined; // Link to a parent Orbit to create hierarchies
+  childOrbitEh: string | undefined; // Link to a parent Orbit to create hierarchies
 }
 
-const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, parentOrbitEh, onCreateSuccess }: CreateOrbitProps) => {
+const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, parentOrbitEh, childOrbitEh, onCreateSuccess }: CreateOrbitProps) => {
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
   const selectedSphere = store.get(currentSphere);
 
   const {x, y} = store.get(currentOrbitCoords);
 
   // Used to dictate onward routing
-  const originPage : AppState = !!parentOrbitEh ? 'Vis' : 'ListOrbits';
+  const originPage : AppState = !!(parentOrbitEh || childOrbitEh) ? 'Vis' : 'ListOrbits';
 
   const [addOrbit] = useCreateOrbitMutation({
-    awaitRefetchQueries: !!parentOrbitEh,
+    awaitRefetchQueries: !!(parentOrbitEh || childOrbitEh),
     refetchQueries: () => [
       {
         query: GetOrbitHierarchyDocument,
@@ -117,9 +118,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
     startTime: DateTime.now().ts,
     endTime: DateTime.now().ts,
     frequency: Frequency.Day,
-    scale: !!parentOrbitEh && parentOrbitEh !== 'root' ? Scale.Atom : Scale.Astro,
+    scale: !!parentOrbitEh && parentOrbitEh !== 'root' ? Scale.Atom : Scale.Astro, // TODO make helper for including childOrbitEh
     archival: false,
-    parentHash: parentOrbitEh ||''
+    parentHash: !!childOrbitEh ? 'root' : parentOrbitEh ||'',
+    childHash: childOrbitEh ||''
   });
   return (
     <div className="form-container">
@@ -133,7 +135,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             delete values.archival;
             let response = editMode
               ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
-              : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
+              : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined, childHash: values.childHash || undefined } } })
             setSubmitting(false);
             if(!response.data) return;
             originPage == 'Vis' 
@@ -179,7 +181,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                     color={errors.parentHash && touched.parentHash ? "invalid" : "default"}
                   >
                     <option value={'root'}>{'None'}</option>
-                    {(extractEdges((orbits as any)?.orbits) as Orbit[]).map((orbit, i) =>
+                    { !childOrbitEh && (extractEdges((orbits as any)?.orbits) as Orbit[]).map((orbit, i) =>
                       <option key={i} value={orbit.eH}>{orbit.name}</option>
                     )
                     }

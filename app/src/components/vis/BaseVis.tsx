@@ -79,6 +79,7 @@ export default class BaseVisualization implements IVisualization {
   globalStateTransition: Function;
   modalIsOpen?: boolean;
   modalParentOrbitEh?: Function;
+  modalChildOrbitEh?: Function;
   _nextRootData: any;
   layout!: TreeLayout<unknown>;
   _viewConfig: ViewConfig;
@@ -161,8 +162,10 @@ export default class BaseVisualization implements IVisualization {
     };
 
     this.eventHandlers = {
-      handlePrependNode: function () {
+      handlePrependNode: function ({ childOrbitEh }) {
         this.modalOpen(true);
+        this.modalIsOpen = true;
+        this.modalChildOrbitEh(childOrbitEh)
       },
       handleAppendNode: function ({ parentOrbitEh }) {
         this.modalOpen(true);
@@ -1111,9 +1114,9 @@ export default class BaseVisualization implements IVisualization {
       .attr("height", "550")
       .html((d) => {
         if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
-        const { checked, scale } = this.nodeDetails[d.data.content];
+        const { checked, scale, parentEh } = this.nodeDetails[d.data.content];
         return `<div class="buttons">
-          <button class="tooltip-action-button higher-button ${scale !== 'Astro' ? '' : 'hide'}"></button>
+          <button class="tooltip-action-button higher-button ${!parentEh && scale !== 'Astro' ? '' : 'hide'}"></button>
           <button class="tooltip-action-button checkbox-button ${checked ? 'checked' : ''}"></button>
           <button class="tooltip-action-button lower-button"></button>
         </div>`
@@ -1154,17 +1157,22 @@ export default class BaseVisualization implements IVisualization {
         if (e.target.tagName !== "BUTTON") return;
 
         this.eventHandlers.handleNodeFocus.call(this, e, d);
+        console.log('e.target.classList :>> ', e.target.classList);
         switch (true) {
           case e.target.classList.contains('checkbox-button'):
             if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
             this.nodeDetails[d.data.content].checked = !this.nodeDetails[d.data.content];
             e.target.classList.toggle('checked');
             e.target.closest('.the-node').firstChild.classList.toggle('checked');
-            // this.refetchOrbits()
             this.render();
             break;
 
-          case e.target.classList.contains('lower-button'):
+          case e.target.classList.contains('higher-button'): // Prepend
+            if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
+            this.eventHandlers.handlePrependNode.call(this, { childOrbitEh: this.nodeDetails[d.data.content].eH as string })
+            break;
+
+          case e.target.classList.contains('lower-button'): // Append
             if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
             this.eventHandlers.handleAppendNode.call(this, { parentOrbitEh: this.nodeDetails[d.data.content].eH as string })
             break;

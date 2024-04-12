@@ -54,7 +54,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
     
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [currentParentOrbitEh, setCurrentParentOrbitEh] = useState<EntryHashB64>();
-    
+    const [currentChildOrbitEh, setCurrentChildOrbitEh] = useState<EntryHashB64>();
     
     const selectedSphere = store.get(currentSphere);
     // const {x, y} = store.get(currentOrbitCoords);
@@ -86,6 +86,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
               // Pass through setState handlers for the modal opening and current append/prepend Node parent entry hash
               currentVis.modalOpen = setIsModalOpen;
               currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
+              currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
               if(currentVis && currentVis.rootData && coordsChanged(currentVis?.rootData?._translationCoords)) {
                 const currentOrbit = newRootData?.find(d => {
                   if(!d) return false
@@ -117,7 +118,6 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
             // console.log('DOWNLEFT :>> ', hasChild && !hasOneChild);
             // console.log('RIGHT :>> ', !!(withTraversal && maxBreadth && x < maxBreadth));
             // console.log('x,y,maxBreadth :>> ', x,y,maxBreadth);
-
             return (
               <> 
                 {!!(withTraversal && y !== 0) && <EnterOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "23vh", transform: "scaley(-1)"}}  onClick={decrementDepth} />}
@@ -133,7 +133,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                     Create Orbit
                   </Modal.Header>
                   <Modal.Body>
-                    <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh} onCreateSuccess={() => {
+                    <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh} childOrbitEh={currentChildOrbitEh} onCreateSuccess={() => {
                       setIsModalOpen(false);
                       currentVis.isModalOpen = false; // TODO, let this happen on cancel by adding onCancel callback
                       currentVis.nodeDetails = store.get(nodeCache.items)![selectedSphere.actionHash as ActionHashB64]
