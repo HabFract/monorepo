@@ -95,6 +95,7 @@ export type Node = {
 
 export type Orbit = Node & {
   __typename?: 'Orbit';
+  childHash?: Maybe<Scalars['String']['output']>;
   eH: Scalars['String']['output'];
   frequency: Frequency;
   id: Scalars['ID']['output'];
@@ -112,6 +113,7 @@ export type OrbitConnection = {
 };
 
 export type OrbitCreateParams = {
+  childHash?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   endTime?: InputMaybe<Scalars['Float']['input']>;
   frequency: Frequency;
@@ -335,7 +337,7 @@ export type GetOrbitsQueryVariables = Exact<{
 }>;
 
 
-export type GetOrbitsQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } }> } };
+export type GetOrbitsQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, parentHash?: string | null, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } }> } };
 
 export type GetLowestSphereHierarchyLevelQueryVariables = Exact<{
   sphereEntryHashB64: Scalars['String']['input'];
@@ -654,6 +656,7 @@ export const GetOrbitsDocument = gql`
         eH
         name
         sphereHash
+        parentHash
         frequency
         scale
         metadata {

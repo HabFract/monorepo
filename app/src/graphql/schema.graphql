@@ -126,6 +126,7 @@ type Orbit implements Node {
   name: String!
   sphereHash: String!
   parentHash: String
+  childHash: String
   frequency: Frequency!
   scale: Scale!
   metadata: OrbitMetaData
@@ -166,6 +167,7 @@ input OrbitCreateParams {
   scale: Scale!
   sphereHash: String!
   parentHash: String
+  childHash: String
 }
 input OrbitUpdateParams {
   id: ID!

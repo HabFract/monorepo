@@ -480,6 +480,18 @@
         "description": null,
         "fields": [
           {
+            "name": "childHash",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "eH",
             "description": null,
             "args": [],
@@ -668,6 +680,18 @@
         "description": null,
         "fields": null,
         "inputFields": [
+          {
+            "name": "childHash",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "description",
             "description": null,

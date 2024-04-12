@@ -75,16 +75,19 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
         endTime,
         sphereHash,
         parentHash,
+        childHash,
         frequency,
         scale,
       },
     }
   ) => {
     if(!sphereHash) throw new Error("Cannot create an orbit not linked to a sphere!")
+      console.log('childHash :>> ', childHash);
     const rawRecord = await runCreate({
       name,
       sphereHash,
       parentHash,
+      childHash,
       metadata: {
         timeframe: { startTime, endTime },
         description,

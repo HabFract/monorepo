@@ -35,6 +35,7 @@ export const aNode = (overrides?: Partial<Node>): Node => {
 
 export const anOrbit = (overrides?: Partial<Orbit>): Orbit => {
     return {
+        childHash: overrides && overrides.hasOwnProperty('childHash') ? overrides.childHash! : 'ut',
         eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'exercitationem',
         frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 'cb6d9b13-cc5b-4d03-ab32-b7e56988c4e1',
@@ -55,6 +56,7 @@ export const anOrbitConnection = (overrides?: Partial<OrbitConnection>): OrbitCo
 
 export const anOrbitCreateParams = (overrides?: Partial<OrbitCreateParams>): OrbitCreateParams => {
     return {
+        childHash: overrides && overrides.hasOwnProperty('childHash') ? overrides.childHash! : 'voluptatem',
         description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'et',
         endTime: overrides && overrides.hasOwnProperty('endTime') ? overrides.endTime! : 5.44,
         frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,

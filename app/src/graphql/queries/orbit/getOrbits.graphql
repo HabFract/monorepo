@@ -6,6 +6,7 @@ query getOrbits($sphereEntryHashB64: String) {
         eH
         name
         sphereHash
+        parentHash
         frequency
         scale
         metadata {
