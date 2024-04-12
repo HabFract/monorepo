@@ -37,8 +37,12 @@ export default {
           "DEFAULT": "rgba(54, 175, 152, 1)", // KEPPEL
           "500": "rgba(54, 175, 152, .5)",
         },
-        "secondary": "rgba(69, 97, 95, 1)", // DEEP SPACE
+        "secondary": {
+          "DEFAULT": "rgba(69, 97, 95, 1)", // DEEP SPACE
+          "500": "rgba(69, 97, 95, 0.5)",
+        },
         "bg": "#242424", // RAISIN_BLACK
+        "menu-bg": "#354342", // DARKENED DEEP SPACE
 
         "warn": {
           "DEFAULT": "rgba(251,200,43, 1)",
@@ -50,7 +54,11 @@ export default {
         }, // DEEP CARMINE
 
         "title": "rgba(219,228,226, 1)", // CHINESE_WHITE
+
         "text": "rgba(255,225,225, 1)", // WHITE
+        
+        "text-prim": "#A2EAC4;",
+
         "link": "rgba(11,254,184, 1)", // SEA GREEN
 
         "line": "rgba(169,189,182, 1)", // OPAL

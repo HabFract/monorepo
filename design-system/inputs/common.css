@@ -1,0 +1,65 @@
+
+input.text-input {
+  @apply text-base
+  font-normal
+  bg-slate-800
+  hover:bg-slate-700
+  text-title
+  border-slate-500
+  border-2
+  focus:border-transparent
+  focus:outline-link
+  focus:outline-offset-2
+  focus:outline-2
+  focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)]
+  focus:ring-0
+}
+
+input.text-input:disabled {
+  @apply text-base
+  font-normal
+  bg-slate-800
+  hover:bg-slate-800
+  text-title
+  border-slate-500
+  border-2
+  focus:border-transparent
+  focus:outline-link
+  focus:outline-offset-2
+  focus:outline-2
+  focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)]
+  focus:ring-0;
+}
+
+label {
+  @apply text-title !important;
+  margin-bottom: 6px !important;
+}
+
+label, .textarea::placeholder, .textarea {
+  font-family: "Lexend", "Roboto", "Arial", sans-serif;
+  font-weight: 300 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+} 
+.textarea {
+  @apply border-text-prim bg-black;
+  border-width: 1px !important;
+  resize: none;
+}
+.textarea::placeholder {
+  @apply text-gray-200;
+}
+.textarea:focus {
+  @apply border-secondary;
+  --tw-ring-color: rgba(11,254,184, 1);
+  /* --tw-ring-color: rgba(69, 97, 95, 1); */
+}
+.textarea:disabled {
+  --tw-ring-color: #909896;
+  border-color: rgba(69, 97, 95, 1) !important;
+  @apply bg-gray-400 !important;
+}
+.textarea:active {
+  @apply border-primary;
+}
