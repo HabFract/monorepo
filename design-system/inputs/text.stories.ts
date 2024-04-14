@@ -1,6 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
 import TextInput from "./text";
-import { AppstoreFilled } from '@ant-design/icons';
 
 export interface TextInputProps {
   id: string;
@@ -11,7 +10,7 @@ export interface TextInputProps {
   size: "sm" | "base" | "large";
   iconSide: "left" | "right";
   disabled: boolean;
-  icon: unknown;
+  icon: string;
 }
 
 const meta: Meta<TextInputProps> = {
@@ -33,8 +32,29 @@ export const Default: Story = {
     placeholder: "Type here",
     labelValue: "Name:",
     size: "base",
+    disabled: false
+  },
+};
+
+export const IconLeft: Story = {
+  args: {
+    id: "example",
+    placeholder: "Type here",
+    labelValue: "Name:",
+    size: "base",
     iconSide: "left",
-    icon: AppstoreFilled,
+    icon: 'tag',
+    disabled: false
+  },
+};
+export const IconRight: Story = {
+  args: {
+    id: "example",
+    placeholder: "Type here",
+    labelValue: "Name:",
+    size: "base",
+    iconSide: "right",
+    icon: 'pencil',
     disabled: false
   },
 };

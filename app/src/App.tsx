@@ -23,15 +23,15 @@ function App({ children: pageComponent }: any) {
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
 
   const customTheme: CustomFlowbiteTheme = {
-    label: {
-      root: {
-        base: "text-base font-sans font-semibold tracking-wide leading-[1.5rem] flex items-center gap-2",
-        colors: {
-          default: "text-title",
-          disabled: "text-slate-50",
-        }
-      }
-    },
+    // label: {
+    //   root: {
+    //     base: "text-base font-sans font-semibold tracking-wide leading-[1.5rem] flex items-center gap-2",
+    //     colors: {
+    //       default: "text-title",
+    //       disabled: "text-slate-50",
+    //     }
+    //   }
+    // },
     dropdown: {
       content: "",
       inlineWrapper: "bg-primary text-base font-sans font-semibold tracking-wide leading-[1.5rem] flex items-center gap-2"

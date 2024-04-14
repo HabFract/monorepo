@@ -7,6 +7,17 @@
 
 @layer utilities {
   .placeholder-input-std::placeholder{
-    @apply text-input-placeholder text-std-input font-std !important;
+    @apply text-input-placeholder leading-std text-std-input font-std !important;
+  }
+  .input-icon {
+    @apply h-5 w-5;
+    padding: 0 2px; 
+    /* 12 in total (10 for input) */
+  }
+  .input-with-icon-right input{
+    padding-right: 40px;
+  }
+  .input-with-icon input{
+    padding-left: 40px;
   }
 }

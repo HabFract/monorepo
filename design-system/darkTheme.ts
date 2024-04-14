@@ -2,9 +2,13 @@ import { CustomFlowbiteTheme } from "flowbite-react";
 
 const darkThemeTextInput: CustomFlowbiteTheme["textInput"] = {
   field: {
+    "icon": {
+      "base": "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2",
+      "svg": "h-3 w-3 text-gray-100"
+    },
     input: {
       colors: {
-        default: "font-sans font-std leading-std bg-input-bg hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input",
+        default: "font-sans font-std leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input",
         valid: "dark:bg-secondary ",
         invalid: "dark:bg-secondary ",
         disabled: "text-base bg-slate-800 hover:bg-slate-800 text-title border-slate-500 border-2 focus:border-transparent focus:outline-link focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
@@ -12,6 +16,28 @@ const darkThemeTextInput: CustomFlowbiteTheme["textInput"] = {
     }
   }
 };
+
+const darkThemeToggleSwitch: CustomFlowbiteTheme["toggleSwitch"] = {
+  "toggle": {
+    "base": "rounded-full border group-focus:ring-4 group-focus:ring-0",
+    "checked": {
+      "on": "after:translate-x-full after:border-white",
+      "off": "border-0 bg-text-prim",
+      "color": {
+        "default": "border-0 bg-link",
+        "failure": "border-red-900 bg-red-700",
+        "success": "border-green-500 bg-green-500",
+        "warning": "border-yellow-600 bg-yellow-600",
+      }
+    },
+    "sizes": {
+      "sm": "h-5 w-9 after:absolute after:left-[2px] after:top-[2px] after:h-4 after:w-4",
+      "md": "h-6 w-11 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5",
+      "lg": "h-7 w-14 after:absolute after:left-[4px] after:top-0.5 after:h-6 after:w-6"
+    }
+  }
+};
+
 
 const darkThemeInputLabel: CustomFlowbiteTheme["label"] = {
   "root": {
@@ -31,6 +57,6 @@ const darkTheme = {
   textInput: darkThemeTextInput
 }
 
-export  { darkThemeTextInput, darkThemeInputLabel }
+export  { darkThemeTextInput, darkThemeInputLabel, darkThemeToggleSwitch }
 
 export default darkTheme

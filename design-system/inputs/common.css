@@ -2,9 +2,7 @@ label {
   @apply text-base font-std text-title !important;
   margin-bottom: 6px !important;
   text-transform: capitalize !important;
-}
-
-label, .textarea::placeholder, .textarea {
+  
   font-family: "Lexend", "Roboto", "Arial", sans-serif;
   font-weight: 300 !important;
   font-size: 14px !important;
@@ -12,8 +10,12 @@ label, .textarea::placeholder, .textarea {
 }
 
 .textarea {
-  @apply text-input-text font-sans text-std-input font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0;
+  @apply py-[10px] px-3 text-input-text font-sans text-std-input leading-std font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0;
   resize: none;
+}
+
+.textarea::placeholder {
+  @apply py-[10px] px-3 text-input-placeholder leading-std text-std-input font-std !important;
 }
 
 input:disabled, .textarea:disabled {
@@ -21,8 +23,29 @@ input:disabled, .textarea:disabled {
   border-color: rgba(69, 97, 95, 1) !important;
   @apply bg-gray-400 !important;
 }
+
 .textarea:active, input:active {
   @apply border-primary;
 }
 
+.toggle-switch + svg {
+  top: 1.125rem;
+  position: absolute;
+  transform: scale(0.7);
+}
+
+.toggle-switch.unchecked + svg {
+  right: calc(1.125rem);
+  transform: scale(0.5);
+  @apply text-input-text;
+}
+.toggle-switch.checked + svg {
+  right: calc(.125rem + 2.25rem);
+}
+
+.toggle-switch > div::after{
+  @apply bg-white rounded-full;
+  margin-top: 1px;
+  margin-left: 1px;
+}
 
