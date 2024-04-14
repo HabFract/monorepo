@@ -355,7 +355,7 @@ button[data-testid="dark-themetheme-toggle"]:active, .toggle-expanded-menu:activ
 /* Expanded Nav */
 
 #tooltip-left {
-  @apply transition-opacity duration-300 absolute z-10 inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700;
+  @apply transition-opacity duration-300 absolute z-10 inline-block px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700;
   left: 105%;
   width: 12rem;
 }

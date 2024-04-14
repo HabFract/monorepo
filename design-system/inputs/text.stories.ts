@@ -3,7 +3,9 @@ import TextInput from "./text";
 import { AppstoreFilled } from '@ant-design/icons';
 
 export interface TextInputProps {
+  id: string;
   placeholder: string;
+  labelValue: string;
   errored: boolean;
   required: boolean;
   size: "sm" | "base" | "large";
@@ -27,7 +29,9 @@ type Story = StoryObj<TextInputProps>;
 
 export const Default: Story = {
   args: {
+    id: "example",
     placeholder: "Type here",
+    labelValue: "Name:",
     size: "base",
     iconSide: "left",
     icon: AppstoreFilled,

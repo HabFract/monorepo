@@ -6,7 +6,7 @@ const TextArea: React.FC<TextAreaProps> = ({ placeholder, label, id, errored, re
 
   return (
     <div className="max-w-md">
-      <div className="block">
+      <div className="flex justify-start">
         <Label htmlFor={id} value={label} />
       </div>
       <Textarea id={id} className="textarea" placeholder={placeholder} required={required} disabled={disabled} rows={rows} />

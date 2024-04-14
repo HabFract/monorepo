@@ -4,3 +4,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .placeholder-input-std::placeholder{
+    @apply text-input-placeholder text-std-input font-std !important;
+  }
+}

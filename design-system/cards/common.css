@@ -1,8 +1,6 @@
 .card-h1 {
-  @apply 
-    uppercase
+  @apply uppercase
     text-title
-    font-medium
     font-heading
     text-base
     py-1

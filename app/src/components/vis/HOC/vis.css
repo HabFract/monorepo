@@ -122,7 +122,7 @@ g.tooltip rect:first-of-type {
 }
 
 .tooltip-inner .content p {
-  @apply font-medium tracking-normal mb-2;
+  @apply font-normal tracking-normal mb-2;
 }
 
 .buttons, .tooltip-inner {

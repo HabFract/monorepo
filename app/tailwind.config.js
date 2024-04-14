@@ -27,7 +27,6 @@ export default {
       uppercase: "uppercase",
     },
     fontFamily: {
-
       sans: ["Nunito", "Arial"],
       heading: ["Poppins", "Arial"],
     },
