@@ -38,6 +38,30 @@ const darkThemeToggleSwitch: CustomFlowbiteTheme["toggleSwitch"] = {
   }
 };
 
+const darkThemeSelect: CustomFlowbiteTheme["select"] = {
+    field: {
+      "select" : {
+        "base": "w-full rounded-full border-2 border-red-400",
+        "colors" : {
+          "default": "py-[10px] px-3 text-input-text font-sans text-std-input leading-std font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
+          "failure": "border-red-900 bg-red-700",
+          "success": "border-green-500 bg-green-500",
+          "warning": "border-yellow-600 bg-yellow-600",
+        }
+      },
+      "icon": {
+        "svg": "text-red-300 h-3 w-3 text-gray-100"
+      },
+      
+    }
+};
+
+const darkRadioTheme: CustomFlowbiteTheme["radio"] = {
+  "root": {
+    "base": "h-4 w-4 border border-gray-300 text-link focus:ring-2 focus:ring-primary-500 cursor-pointer"
+  }
+}
+
 
 const darkThemeInputLabel: CustomFlowbiteTheme["label"] = {
   "root": {
@@ -57,6 +81,6 @@ const darkTheme = {
   textInput: darkThemeTextInput
 }
 
-export  { darkThemeTextInput, darkThemeInputLabel, darkThemeToggleSwitch }
+export  { darkThemeTextInput, darkRadioTheme, darkThemeSelect, darkThemeInputLabel, darkThemeToggleSwitch }
 
 export default darkTheme

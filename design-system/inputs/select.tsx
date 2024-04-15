@@ -1,15 +1,17 @@
+import { darkThemeSelect } from "../darkTheme";
+import { getIconSvg } from "../icons";
 import { SelectProps } from "./select.stories";
-import { Label, Select as FBSelect } from "flowbite-react";
+import { Select as FBSelect } from "flowbite-react";
+import "./common.css";
+import WithLabel from "./label";
 
-
-const Select: React.FC<SelectProps> = ({ placeholder, errored, required, disabled, size, options } : SelectProps) => {
-
+const Select: React.FC<SelectProps> = ({ id, placeholder, labelValue, withInfo, errored, required, disabled, size, icon, iconSide, options } : SelectProps) => {
   return (
-    <div className="max-w-md">
-      <FBSelect disabled={disabled} required={required}>
+    <WithLabel id={id} labelValue={labelValue} withInfo={withInfo}>
+      <FBSelect id={id} className={icon ? "input-with-icon text-input-text" : "text-input-text"} icon={iconSide == "left" ? getIconSvg(icon) : undefined} sizing={size} color={"default"} theme={darkThemeSelect} disabled={disabled} required={required}>
           {options.map((optionText, idx) => <option key={idx}>{optionText}</option>)}
       </FBSelect>
-    </div>
+    </WithLabel>
   )
 }
 

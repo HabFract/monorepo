@@ -7,6 +7,7 @@ export interface TextInputProps {
   labelValue: string;
   errored: boolean;
   required: boolean;
+  withInfo: boolean;
   size: "sm" | "base" | "large";
   iconSide: "left" | "right";
   disabled: boolean;
@@ -47,14 +48,16 @@ export const IconLeft: Story = {
     disabled: false
   },
 };
-export const IconRight: Story = {
+
+export const WithIconWithInfo: Story = {
   args: {
     id: "example",
     placeholder: "Type here",
     labelValue: "Name:",
     size: "base",
-    iconSide: "right",
-    icon: 'pencil',
-    disabled: false
+    iconSide: "left",
+    icon: 'tag',
+    disabled: false,
+    withInfo: true
   },
 };

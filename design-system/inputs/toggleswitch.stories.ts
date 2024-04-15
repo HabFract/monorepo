@@ -5,7 +5,7 @@ export interface ToggleSwitchProps {
   errored: boolean;
   disabled: boolean;
   id: string;
-  label: string;
+  labelValue: string;
   size: "sm" | "md" | "lg";
 }
 
@@ -23,7 +23,7 @@ type Story = StoryObj<ToggleSwitchProps>;
 export const Default: Story = {
   args: {
     id: "example",
-    label: "Select?",
+    labelValue: "Select?",
     disabled: false,
   },
 };

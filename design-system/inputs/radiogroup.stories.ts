@@ -3,18 +3,20 @@ import RadioGroup from "./radiogroup";
 
 export interface RadioGroupProps {
   id: string;
+  labelValue: string;
   errored: boolean;
   required: boolean;
-  size: "medium" | "large";
+  withInfo: boolean;
   options: string[];
   disabled: boolean;
+  direction: "horizontal" | "vertical";
 }
 
 const meta: Meta<RadioGroupProps> = {
   title: "Components/Input/RadioGroup",
   component: RadioGroup,
   argTypes: {
-    size: { options: ["medium", "large"], control: { type: "radio" } },
+    direction: { options: ["horizontal", "vertical"], control: { type: "radio" } },
   },
 };
 
@@ -25,8 +27,26 @@ type Story = StoryObj<RadioGroupProps>;
 export const Default: Story = {
   args: {
     id: "example",
-    size: "medium",
     options: ["Apples", "Oranges", "Bananas"],
     disabled: false,
+  },
+};
+
+export const WithLabel: Story = {
+  args: {
+    id: "example",
+    labelValue: "Favorite fruit:",
+    options: ["Apples", "Oranges", "Bananas"],
+    disabled: false,
+  },
+};
+
+export const WithLabelWithInfo: Story = {
+  args: {
+    id: "example",
+    labelValue: "Favorite fruit:",
+    options: ["Apples", "Oranges", "Bananas"],
+    disabled: false,
+    withInfo: true,
   },
 };

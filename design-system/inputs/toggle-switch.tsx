@@ -4,15 +4,15 @@ import { ToggleSwitchProps } from "./toggleswitch.stories";
 import { ComponentProps, FC, useState } from "react";
 import { darkThemeToggleSwitch } from "../darkTheme";
 import { getIconSvg } from "../icons";
+import "./common.css";
 
-const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ id, label, errored, disabled, size } : ToggleSwitchProps) => {
+const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ id, labelValue, errored, disabled, size } : ToggleSwitchProps) => {
   const [switch1, setSwitch1] = useState(false);
 
   return (
-    <div className="flex justify-between">
-
+    <div className="toggle-switch flex justify-between">
       <div className="flex justify-start">
-        <Label htmlFor={id} value={label} />
+        <Label htmlFor={id} value={labelValue} />
       </div>
       <FBSwitch
         id={id}
