@@ -7,6 +7,7 @@ export interface TextAreaProps {
   id: string;
   errored: boolean;
   required: boolean;
+  withInfo: boolean;
   disabled: boolean;
   rows: number;
 }
@@ -39,5 +40,15 @@ export const Disabled: Story = {
     placeholder: "Tell us what you think",
     rows: 5,
     disabled: true
+  },
+};
+
+export const WithInfo: Story = {
+  args: {
+    id: "test",
+    labelValue: "Comments:",
+    placeholder: "Tell us what you think",
+    rows: 5,
+    withInfo: true
   },
 };

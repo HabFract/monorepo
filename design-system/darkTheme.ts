@@ -62,7 +62,6 @@ const darkRadioTheme: CustomFlowbiteTheme["radio"] = {
   }
 }
 
-
 const darkThemeInputLabel: CustomFlowbiteTheme["label"] = {
   "root": {
     "base": "text-std-input",
