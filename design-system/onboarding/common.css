@@ -1,4 +1,4 @@
-
+/* 
 .onboarding-progress {
   background: white;
   position: fixed;
@@ -7,4 +7,54 @@
   left: 0;
   right: 0;
   flex-direction: row !important;
+} */
+
+.onboarding-progress {
+  flex-direction: row !important;
+  gap: 1rem;
+}
+
+.onboarding-progress .ant-steps-item-subtitle {
+  @apply text-text !important;
+
+}
+.ant-steps-item-icon {
+  background-color: #00B197 !important;
+  border-color: #00B197 !important;
+}
+.ant-steps-item-content {
+  position: relative;
+  padding-right: 2rem;
+}
+
+.ant-steps-icon {
+  @apply text-text !important;
+}
+.ant-steps .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
+  background-color: #00B197 !important;
+}
+
+.ant-steps-item-content:not(.ant-steps-item:last-child .ant-steps-item-content)::after {
+  content: "";
+  position: absolute;
+  right: -2rem;
+  top: 20%;
+  height: 16px;
+  width: 72px;
+  background-size: contain !important;
+  background-repeat: no-repeat;
+  background: url(assets/horizontal-line.svg);
+}
+
+.ant-steps-item.ant-steps-item-wait .ant-steps-item-icon,
+.ant-steps-item.ant-steps-item-wait .ant-steps-icon{
+  background-color: transparent !important;
+  border-color: #A3BEB7 !important;
+  color: #A3BEB7 !important;
+}
+.ant-steps-item-subtitle{
+  @apply font-sans font-std leading-std;
+}
+.ant-steps-item.ant-steps-item-wait .ant-steps-item-subtitle{
+  color: #A3BEB7 !important;
 }

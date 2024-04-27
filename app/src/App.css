@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+.placeholder-input-std::placeholder{
+  @apply text-input-placeholder leading-std text-std-input font-std !important;
+}
+.input-icon {
+  @apply h-5 w-5;
+  padding: 0 2px; 
+  /* 12 in total (10 for input) */
+}
+.input-with-icon-right input{
+  padding-right: 40px;
+}
+.input-with-icon input{
+  padding-left: 40px;
+}
 
 #root {
   @apply bg-gray-500;
@@ -11,7 +25,7 @@
 .page-container {
   @apply bg-bg overflow-auto fixed w-full h-full inset-y-0 left-0;
   overflow-x: hidden;
-  padding-left: 0 !important;
+  /* padding-left: 0 !important; */
 }
 
 nav + main.page-container .sphere-card .row-c-around {
@@ -50,16 +64,5 @@ nav + main.page-container .orbits-list {
 }
 
 .onboarding-page {
-  padding-top: var(--onboarding-progress-bar-height);
-  padding-bottom: var(--onboarding-progress-bar-height);
-}
-
-.onboarding-progress {
-  background: white;
-  position: fixed;
-  height: var(--onboarding-progress-bar-height);
-  bottom: 0;
-  left: 0;
-  right: 0;
-  flex-direction: row !important;
+  padding: 1rem .5rem;
 }

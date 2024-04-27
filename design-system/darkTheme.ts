@@ -62,6 +62,10 @@ const darkRadioTheme: CustomFlowbiteTheme["radio"] = {
   }
 }
 
+const darkThemeButton: CustomFlowbiteTheme["button"] = {
+  "base" : "h-4 w-4 border border-gray-300" 
+};
+
 const darkThemeInputLabel: CustomFlowbiteTheme["label"] = {
   "root": {
     "base": "text-std-input",
@@ -77,9 +81,14 @@ const darkThemeInputLabel: CustomFlowbiteTheme["label"] = {
 };
 
 const darkTheme = {
-  textInput: darkThemeTextInput
+  textInput: darkThemeTextInput,
+  toggleSwitch: darkThemeToggleSwitch,
+  select: darkThemeSelect,
+  radio: darkRadioTheme,
+  button: darkThemeButton,
+  label: darkThemeInputLabel,
 }
 
-export  { darkThemeTextInput, darkRadioTheme, darkThemeSelect, darkThemeInputLabel, darkThemeToggleSwitch }
+export  { darkThemeButton, darkThemeTextInput, darkRadioTheme, darkThemeSelect, darkThemeInputLabel, darkThemeToggleSwitch }
 
 export default darkTheme

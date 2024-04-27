@@ -12,6 +12,8 @@ export interface TextInputProps {
   iconSide: "left" | "right";
   disabled: boolean;
   icon: string;
+  onChange?: Function
+  value?: string
 }
 
 const meta: Meta<TextInputProps> = {

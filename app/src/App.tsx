@@ -1,13 +1,16 @@
 
 import './App.css'
 
-import { Steps, Button } from 'antd';
-
 import { useStateTransition } from './hooks/useStateTransition';
 
+import Steps from '../../design-system/onboarding/ProgressBar';
+import Button from '../../design-system/buttons/Button';
 import Nav from './components/Nav';
 import { CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
-import { useState } from 'react';
+import { cloneElement, useState } from 'react';
+import BackCaret from './components/icons/BackCaret';
+import Onboarding from './components/layouts/Onboarding';
+import darkTheme from '../../design-system/darkTheme';
 
 function getLastOnboardingState(state: string) {
   if (state == 'Onboarding1') return 'Home';
@@ -80,39 +83,34 @@ function App({ children: pageComponent }: any) {
     },
 
   };
-
   return (
-    <Flowbite theme={{ theme: customTheme }}>
+    <Flowbite>
       {state.match('Onboarding')
-        ? <>
-          <Button
-            className={"fixed top-0 left-0 z-20 text-white"} onClick={() => transition(getLastOnboardingState(state))}>BACK</Button>
-          <main className={"page-container onboarding-page"}>{pageComponent}</main>
-          <Steps
-            className={"onboarding-progress"}
-            direction={'horizontal'}
-            current={state.match(/Onboarding(\d+)/)[1]}
-            items={[
-              {
-                subTitle: 'Profile',
-              },
-              {
-                subTitle: 'Sphere',
-              },
-              {
-                subTitle: 'Orbit',
-              },
-              {
-                subTitle: 'Visualise',
-              },
-            ]}
-          />
+        ? <main className={"page-container onboarding-page"}>
+          <Onboarding stage={state.match(/Onboarding(\d+)/)[1]}>
+            <Steps
+              stepNames={['Create Profile', 'Create A Sphere', 'Create An Orbit', 'Confirm Orbit', 'Visualize']}
+              currentStep={state.match(/Onboarding(\d+)/)[1]}
+            />
+            <Button
+              type={"secondary"}
+              icon={<BackCaret />}
+              onClick={() => transition(getLastOnboardingState(state))}>
+            </Button>
 
-          <Button
-            className={"fixed top-0 right-0 z-20 text-white"} onClick={() => transition(getNextOnboardingState(state))}>NEXT</Button>
-        </>
+            {cloneElement(pageComponent, {
+              children: [cloneElement(pageComponent.props.children, {
+                submitBtn:
+                  <Button
+                    type={"onboarding"}
+                    onClick={() => transition(getNextOnboardingState(state))}>Save & Continue</Button>
+              })]
+            })}
+
+          </Onboarding>
+        </main>
         : <>
-          <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded} ></Nav>
+          <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded}></Nav>
           <main className={"page-container"}>{pageComponent}</main>
         </>
       }

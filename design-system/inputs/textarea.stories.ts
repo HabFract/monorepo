@@ -10,6 +10,7 @@ export interface TextAreaProps {
   withInfo: boolean;
   disabled: boolean;
   rows: number;
+  onChange?: Function
 }
 
 const meta: Meta<TextAreaProps> = {

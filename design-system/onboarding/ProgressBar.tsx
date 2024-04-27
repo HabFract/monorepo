@@ -3,31 +3,24 @@ import React from 'react';
 import './common.css';
 import { Steps } from 'antd';
 
-type ProgressBarProps = {
-  currentStep: number
+export type ProgressBarProps = {
+  currentStep: any;
+  stepNames: string[];
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }: ProgressBarProps) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, stepNames }: ProgressBarProps) => {
 
   return (
     <Steps
       className={"onboarding-progress"}
       direction={'horizontal'}
       current={currentStep - 1}
-      items={[
+      items={stepNames.map(stepName => (
         {
-          subTitle: 'Profile',
-        },
-        {
-          subTitle: 'Sphere',
-        },
-        {
-          subTitle: 'Orbit',
-        },
-        {
-          subTitle: 'Visualise',
-        },
-      ]}
+          subTitle: stepName,
+        }
+      ))
+      }
     />
   )
 }

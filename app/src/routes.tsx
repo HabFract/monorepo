@@ -1,5 +1,7 @@
 import { CreateProfile, CreateSphere, CreateOrbit } from "./components/forms";
+import { CreateSphereOnboarding, CreateOrbitOnboarding } from "./components/forms/onboarding";
 import { ListOrbits, ListSpheres } from "./components/lists";
+import Onboarding from "./components/layouts/Onboarding";
 
 import OrbitTree from "./components/vis/OrbitTree";
 import { renderVis } from "./components/vis/helpers";
@@ -28,7 +30,7 @@ export type AppStateStore = {
 }
 
 export const initialState: AppStateStore = { // Home route
-  currentState: "Home",
+  currentState: "Onboarding1",
   params: {}
 }
 
@@ -36,8 +38,8 @@ export const routes: Routes = {
   Boot: <p>Loading</p>,
   Vis: renderVis(OrbitTree),
   Home: <p>Welcome Home</p>,
-  Onboarding1: <CreateProfile editMode={false} />,
-  Onboarding2: <CreateSphere editMode={false} />,
+  Onboarding1: <CreateSphereOnboarding editMode={false} />,
+  Onboarding2: <CreateOrbitOnboarding editMode={false} />,
   Onboarding3: <CreateProfile editMode={false} />,
   Onboarding4: <CreateProfile editMode={false} />,
   CreateSphere: <CreateSphere editMode={false} />,

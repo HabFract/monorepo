@@ -14,7 +14,7 @@
     "allowSyntheticDefaultImports": true
     
   },
-  "include": ["src/**/*", "../design-system/vis"],
+  "include": ["src/**/*", "../design-system/vis", "../design-system/inputs/text.tsx"],
   "exclude": [
     "../node_modules",
     "node_modules",

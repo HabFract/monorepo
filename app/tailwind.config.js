@@ -27,10 +27,20 @@ export default {
       uppercase: "uppercase",
     },
     fontFamily: {
-      sans: ["Nunito", "Arial"],
+      sans: ["Lexend, Nunito", "Arial"],
       heading: ["Poppins", "Arial"],
     },
     extend: {
+      fontWeight: {
+        "std": 300
+      },
+      lineHeight: {
+        "std": "24px"
+      },
+      fontSize: {
+        "std-input": "14px",
+        "base": "16px"
+      },
       colors: {
         "primary": {
           "DEFAULT": "rgba(54, 175, 152, 1)", // KEPPEL
@@ -53,7 +63,16 @@ export default {
         }, // DEEP CARMINE
 
         "title": "rgba(219,228,226, 1)", // CHINESE_WHITE
+
         "text": "rgba(255,225,225, 1)", // WHITE
+
+        "input-placeholder": "#4E5454",
+        "input-bg": "#242424",
+        "input-text": "rgba(255,225,225, 1)",
+        "input-border": "rgba(255,225,225, 1)",
+        
+        "text-prim": "#A2EAC4;",
+
         "link": "rgba(11,254,184, 1)", // SEA GREEN
 
         "line": "rgba(169,189,182, 1)", // OPAL
