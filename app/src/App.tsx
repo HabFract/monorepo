@@ -30,22 +30,22 @@ function App({ children: pageComponent }: any) {
       {state.match('Onboarding')
         ? <main className={"page-container onboarding-page"}>
           <Onboarding stage={state.match(/Onboarding(\d+)/)[1]}>
-            <div className={"flex w-full justify-between gap-2"}>
-              <Button
-                type={"icon"}
-                icon={<BackCaret />}
-                onClick={() => transition(getLastOnboardingState(state))}>
-              </Button>
-              <h1 className={"onboarding-title"}>Break a Negative Habit</h1>
-            </div>
-
-            <ProgressBar
-              stepNames={['Create Profile', 'Create A Sphere', 'Create An Orbit', 'Confirm Orbit', 'Visualize']}
-              currentStep={state.match(/Onboarding(\d+)/)[1]}
-            />
-
             {cloneElement(pageComponent, {
               children: [cloneElement(pageComponent.props.children, {
+                headerDiv: <>
+                  <div className={"flex w-full justify-between gap-2"}>
+                    <Button
+                      type={"icon"}
+                      icon={<BackCaret />}
+                      onClick={() => transition(getLastOnboardingState(state))}>
+                    </Button>
+                    <h1 className={"onboarding-title"}>Break a Negative Habit</h1>
+                  </div>
+                  <ProgressBar
+                    stepNames={['Create Profile', 'Create A Sphere', 'Create An Orbit', 'Confirm Orbit', 'Visualize']}
+                    currentStep={state.match(/Onboarding(\d+)/)[1]}
+                  />
+                </>,
                 submitBtn:
                   <Button
                     type={"onboarding"}

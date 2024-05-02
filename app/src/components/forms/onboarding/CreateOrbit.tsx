@@ -5,11 +5,10 @@ import { DateTime } from "luxon"
 
 import { Checkbox, Flex } from 'antd';
 import DateInput from '../input/DatePicker';
-import { Button, TextInput, Label, Select, Textarea } from 'flowbite-react';
+import { TextInput, Label, Select, Textarea } from 'flowbite-react';
 
 import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../../graphql/generated';
 import { extractEdges } from '../../../graphql/utils';
-import { CustomErrorLabel } from '../CreateSphere';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../../hooks/useStateTransition';
 import { currentOrbitCoords, currentSphere } from '../../../state/currentSphereHierarchyAtom';
@@ -17,6 +16,18 @@ import { AppState } from '../../../routes';
 import { mapToCacheObject, nodeCache, store } from '../../../state/jotaiKeyValueStore';
 import { client } from '../../../main';
 import DefaultSubmitBtn from '../DefaultSubmitButton';
+import { AlertOutlined } from '@ant-design/icons';
+
+export const CustomErrorLabel: any = (fieldName: string, errors: object, touched: object) => {
+  return (
+    <div className='error-label'>
+      {errors[fieldName] && touched[fieldName] 
+        ? <>
+            <AlertOutlined className={errors[fieldName].match(/required/) ? 'icon-warn' : 'icon-danger'} /><span className='error-label-text'>{errors[fieldName]}</span>
+          </> 
+        : ''}</div>
+      );
+}
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({

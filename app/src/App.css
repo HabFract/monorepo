@@ -2,9 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-.placeholder-input-std::placeholder{
-  @apply text-input-placeholder leading-std text-std-input font-std !important;
+.placeholder-input-std::placeholder {
+  @apply text-input-placeholder text-std-input font-std text-base font-sans !important;
 }
+
 .input-icon {
   @apply h-5 w-5;
   padding: 0 2px; 
@@ -23,9 +24,8 @@
 }
 
 .page-container {
-  @apply bg-bg overflow-auto fixed w-full h-full inset-y-0 left-0;
+  @apply bg-bg overflow-auto fixed w-full h-full inset-y-0 left-0 p-2;
   overflow-x: hidden;
-  /* padding-left: 0 !important; */
 }
 
 nav + main.page-container .sphere-card .row-c-around {
@@ -64,5 +64,5 @@ nav + main.page-container .orbits-list {
 }
 
 .onboarding-page {
-  padding: .5rem;
+  
 }

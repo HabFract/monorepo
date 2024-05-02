@@ -2,7 +2,6 @@ import { Textarea } from "flowbite-react";
 import { TextAreaProps } from "./textarea.stories";
 import WithLabel from "./label";
 import './common.css';
-import { CustomErrorLabel } from "../../app/src/components/forms/CreateSphere";
 
 const TextArea: React.FC<TextAreaProps> = ({ placeholder, labelValue, id, onChange, required, withInfo, disabled, rows } : TextAreaProps) => {
 
@@ -41,7 +40,7 @@ export const TextAreaField: React.FC<{ field: any, form: any, props: TextAreaPro
         onChange={onChange}
       >
       </TextArea>
-      {CustomErrorLabel(name, errors, touched)}
+      {/* {CustomErrorLabel(name, errors, touched)} */}
     </>
   )
 }

@@ -9,7 +9,7 @@ import { Button, TextInput, Label, Select, Textarea } from 'flowbite-react';
 
 import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
-import { CustomErrorLabel } from './CreateSphere';
+// import { CustomErrorLabel } from './CreateSphere';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { currentOrbitCoords, currentSphere } from '../../state/currentSphereHierarchyAtom';

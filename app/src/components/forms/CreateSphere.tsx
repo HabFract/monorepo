@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import { Formik, Form, Field, useFormikContext } from 'formik';
 import * as Yup from 'yup';
-import { Button, TextInput, Label, Textarea } from 'flowbite-react';
+import { Label } from 'flowbite-react';
 import { useCreateSphereMutation, useGetSphereQuery, useUpdateSphereMutation } from '../../graphql/generated';
-import { AlertOutlined } from '@ant-design/icons';
 import { ImageUpload } from './input';
+import { TextAreaField } from '../../../../design-system/inputs/textarea';
+import { TextInputField } from '../../../../design-system/inputs/text';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { ActionHashB64 } from '@holochain/client';
+import DefaultSubmitBtn from './DefaultSubmitButton';
 
 
 // Define the validation schema using Yup
@@ -21,17 +23,8 @@ const SphereValidationSchema = Yup.object().shape({
 interface CreateSphereProps {
   editMode: boolean;
   sphereToEditId?: ActionHashB64;
-}
-
-export const CustomErrorLabel: any = (fieldName: string, errors: object, touched: object) => {
-  return (
-    <div className='error-label'>
-      {errors[fieldName] && touched[fieldName] 
-        ? <>
-            <AlertOutlined className={errors[fieldName].match(/required/) ? 'icon-warn' : 'icon-danger'} /><span className='error-label-text'>{errors[fieldName]}</span>
-          </> 
-        : ''}</div>
-      );
+  headerDiv?: React.ReactNode;
+  submitBtn?: React.ReactNode;
 }
 
 const SphereFetcher = ({sphereToEditId}) => {
@@ -53,10 +46,10 @@ const SphereFetcher = ({sphereToEditId}) => {
   return null;
 };
 
-const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEditId}) => {
+const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEditId, headerDiv, submitBtn}) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
 
-  const [addSphere] = useCreateSphereMutation({
+  const [addSphere, {loading}] = useCreateSphereMutation({
     refetchQueries: [
       'getSpheres',
     ]
@@ -68,75 +61,66 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
   });
 
   return (
-    <div className="form-container create-sphere">
-      <h2 className="form-title">{editMode ? "Update" : "Create"} Sphere</h2>
-      <Formik
-        initialValues={{
-          name: '',
-          description: '',
-          sphere_image: '',
-        }}
-        validationSchema={SphereValidationSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          try {
-            let response = editMode
-              ? await updateSphere({ variables: { sphere: { id: sphereToEditId as string, name: values.name, description: values.description, image: values.sphere_image } } })
-              : await addSphere({ variables: { variables: { name: values.name, description: values.description, image: values.sphere_image } } })
-            setSubmitting(false);
-            if(!response.data) return;
-            transition('ListSpheres', { sphereAh: editMode ? (response.data as any).updateSphere.actionHash : (response.data as any).createSphere.actionHash })
-          } catch (error) {
-            console.error(error);
-          }
-        }}
-      >
-        {({ errors, touched, setFieldTouched, handleChange }) => (
+    <Formik
+      initialValues={{
+        name: '',
+        description: '',
+        sphere_image: '',
+      }}
+      validationSchema={SphereValidationSchema}
+      onSubmit={async (values, { setSubmitting }) => {
+        try {
+          let response = editMode
+            ? await updateSphere({ variables: { sphere: { id: sphereToEditId as string, name: values.name, description: values.description, image: values.sphere_image } } })
+            : await addSphere({ variables: { variables: { name: values.name, description: values.description, image: values.sphere_image } } })
+          setSubmitting(false);
+          if(!response.data) return;
+          transition(state == 'Onboarding1' ? 'Onboarding2' : 'ListSpheres', { sphereAh: editMode ? (response.data as any).updateSphere.actionHash : (response.data as any).createSphere.actionHash })
+        } catch (error) {
+          console.error(error);
+        }
+      }}
+    >
+      {({ errors, touched, setFieldTouched, handleChange }) => {
+        return (
+        <>
+          { headerDiv }
+          <p className='form-description'>A sphere is an <em>area of your life</em> where you want to track repeated actions.</p>
           <Form noValidate={true}>
-            {editMode && <SphereFetcher sphereToEditId={sphereToEditId} />} 
-
-            <div className="field">
-              <Label htmlFor='name'>Name: <span className="reqd">*</span></Label>
-
+            {editMode && <SphereFetcher sphereToEditId={sphereToEditId} />}
               <div className="flex flex-col gap-2">
-                <Field as={TextInput} color={"default"} sizing="lg" autoComplete={'off'} type="text" name="name" id="name" required
-                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }} />
-                {CustomErrorLabel('name', errors, touched)}
+                <Field
+                  component={TextInputField}
+                  size="base"
+                  name="name"
+                  id="name"
+                  required={true}
+                  labelValue={"Name:"}
+                  placeholder={"E.g. Health and Fitness"}
+                  onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
+                />
               </div>
-            </div>
-
-            <div className="field">
-              <Label htmlFor='description'>Description:</Label>
               <div className="flex flex-col gap-2">
-                <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" id="description"
-                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}/>
-                {CustomErrorLabel('description', errors, touched)}
+                <Field
+                  component={TextAreaField}
+                  name="description"
+                  id="description"
+                  labelValue={"Description:"}
+                  placeholder={"E.g. I am aiming to run a marathon this year"}
+                  onChange={(e) => { setFieldTouched(e.target.name); handleChange(e); }}
+                />
               </div>
-            </div>
-
-            {/* <div className="field">
-              <Label htmlFor='hashtag' disabled>Hashtag:</Label>
-              <div className="flex flex-col gap-2">
-                <Field as={TextInput} disabled color={"disabled"} sizing="lg" autoComplete={'off'} type="text" name="hashtag" id="hashtag"
-                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }} />
-                {CustomErrorLabel('hashtag', errors, touched)}
-              </div>
-            </div> */}
-
             <div className="field row sphere-image">
               <Label htmlFor='sphere_image'>Image:</Label>
               <div className="flex flex-col gap-2">
                 <Field component={ImageUpload} color={"disabled"} sizing="lg" autoComplete={'off'} type="text" name="sphere_image" id="sphere_image" />
               </div>
             </div>
-
-            <Button type="submit" disabled={Object.values(errors).length > 0 || Object.values(touched).filter(value => value).length < 1} className={editMode ? "btn-warn" : "btn-primary"}>{editMode ? "Update" : "Create"}</Button>
+            { submitBtn || <DefaultSubmitBtn loading={loading} editMode={editMode} errors={errors} touched={touched}></DefaultSubmitBtn> }
           </Form>
-        )}
-      </Formik>
-      <div className="scene">
-        <img src="assets/scenes/Dark/RemoteLife.svg" alt="" />
-      </div>
-    </div>
+        </>
+      )}}
+    </Formik>
   );
 };
 

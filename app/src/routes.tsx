@@ -1,7 +1,6 @@
 import { CreateProfile, CreateSphere, CreateOrbit } from "./components/forms";
-import { CreateSphereOnboarding, CreateOrbitOnboarding } from "./components/forms/onboarding";
+import { CreateOrbitOnboarding } from "./components/forms/onboarding";
 import { ListOrbits, ListSpheres } from "./components/lists";
-import Onboarding from "./components/layouts/Onboarding";
 
 import OrbitTree from "./components/vis/OrbitTree";
 import { renderVis } from "./components/vis/helpers";
@@ -38,7 +37,7 @@ export const routes: Routes = {
   Boot: <p>Loading</p>,
   Vis: renderVis(OrbitTree),
   Home: <p>Welcome Home</p>,
-  Onboarding1: <CreateSphereOnboarding editMode={false} />,
+  Onboarding1: <CreateSphere editMode={false} />,
   Onboarding2: <CreateOrbitOnboarding editMode={false} />,
   Onboarding3: <CreateProfile editMode={false} />,
   Onboarding4: <CreateProfile editMode={false} />,

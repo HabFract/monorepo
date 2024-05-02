@@ -8,7 +8,7 @@ const darkThemeTextInput: CustomFlowbiteTheme["textInput"] = {
     },
     input: {
       colors: {
-        default: "font-sans font-std leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input",
+        default: "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input",
         valid: "dark:bg-secondary ",
         invalid: "dark:bg-secondary ",
         disabled: "text-base bg-slate-800 hover:bg-slate-800 text-title border-slate-500 border-2 focus:border-transparent focus:outline-link focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
@@ -63,7 +63,7 @@ const darkRadioTheme: CustomFlowbiteTheme["radio"] = {
 }
 
 const darkThemeButton: CustomFlowbiteTheme["button"] = {
-  "base" : "h-4 w-4 border border-gray-300" 
+  "base" : "w-auto flex justify-center text-center border border-gray-300" 
 };
 
 const darkThemeInputLabel: CustomFlowbiteTheme["label"] = {

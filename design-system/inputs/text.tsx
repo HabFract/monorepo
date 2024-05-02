@@ -5,7 +5,6 @@ import { TextInputProps } from "./text.stories";
 import './common.css';
 import { TextInput as FBTextInput } from "flowbite-react";
 import WithLabel from "./label";
-import { CustomErrorLabel } from "../../app/src/components/forms/CreateSphere";
 
 const TextInput: React.FC<TextInputProps> = ({ id, placeholder, labelValue, onChange, value, errored, required, withInfo, disabled, size, icon, iconSide } : TextInputProps) => {
   return (
@@ -50,7 +49,7 @@ export const TextInputField: React.FC<{ field: any, form: any, props: TextInputP
         onChange={onChange}
       >
       </TextInput>
-      {CustomErrorLabel(name, errors, touched)}
+      {/* {CustomErrorLabel(name, errors, touched)} */}
     </>
   )
 }

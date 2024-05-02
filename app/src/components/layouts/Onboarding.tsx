@@ -1,5 +1,5 @@
 
-function OnboardingLayout({ children, stage } : any) {
+function OnboardingLayout({ children } : any) {
 
   return (
     <div className="flex justify-between flex-col gap-3">
