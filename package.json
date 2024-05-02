@@ -42,6 +42,7 @@
     "flowbite-react": "^0.6.4",
     "formik": "^2.4.5",
     "graphql-tag": "^2.12.6",
+    "habit-fract-design-system": "workspace:*",
     "jotai": "^2.5.1",
     "jotai-minidb": "^0.0.7",
     "postcss": "^8.4.31",

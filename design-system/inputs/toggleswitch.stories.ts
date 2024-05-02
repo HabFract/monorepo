@@ -8,7 +8,7 @@ export interface ToggleSwitchProps {
   withInfo: boolean;
   labelValue: string;
   size: "sm" | "md" | "lg";
-  onClickInfo?: () => {};
+  onClickInfo?: (e: any) => {};
 }
 
 const meta: Meta<ToggleSwitchProps> = {

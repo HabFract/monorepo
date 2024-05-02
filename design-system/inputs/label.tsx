@@ -7,7 +7,7 @@ export interface LabelProps {
   labelValue: string;
   required?: boolean;
   withInfo?: boolean;
-  onClickInfo?: () => {};
+  onClickInfo?: (e: any) => {};
   children: React.ReactNode
 }
 

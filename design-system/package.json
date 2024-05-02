@@ -1,9 +1,21 @@
 {
-  "name": "design-system",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "habit-fract-design-system",
+  "version": "0.0.1",
+  "description": "Habit/Fract design system",
+  "type": "module",
+  "source": "./src/index.ts",
+  "files": ["dist"],
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js"
+    }
+  },
   "scripts": {
+    "build": "vite build",
+    "clean": "rm -rf ./dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -19,9 +31,14 @@
     "@storybook/react": "^7.5.3",
     "@storybook/react-vite": "^7.5.3",
     "@storybook/testing-library": "^0.2.2",
+    "i": "^0.3.7",
+    "npm": "^10.7.0",
+    "postcss": "^8.4.31",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "storybook": "^7.5.3"
+    "rollup-plugin-postcss": "^4.0.2",
+    "storybook": "^7.5.3",
+    "vite-plugin-dts": "^3.9.0"
   }
 }

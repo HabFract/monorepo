@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "declaration": true,
+    "noImplicitAny": false,
+    "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ES6", "ES2022"],
+    "target": "ES2022",
+    "allowJs": false,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src",
+    "vite.config.ts",
+  ],
+  "exclude": [
+    "test",
+    "**/*.stories.*",
+    "node_modules"
+  ]
+}

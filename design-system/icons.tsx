@@ -1,4 +1,4 @@
-import { FC, ComponentProps } from "react"
+import React, { FC, ComponentProps } from "react"
 
 export function getIconSvg(icon: string) : FC<ComponentProps<'svg'>> | undefined {
   switch (icon) {

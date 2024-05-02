@@ -10,6 +10,7 @@ import { TextInputField } from '../../../../../design-system/inputs/text';
 import { useStateTransition } from '../../../hooks/useStateTransition';
 import { ActionHashB64 } from '@holochain/client';
 import DefaultSubmitBtn from '../DefaultSubmitButton';
+import { Select } from '../../../../../design-system/dist/index.es';
 
 
 // Define the validation schema using Yup
@@ -95,6 +96,19 @@ const CreateSphereOnboarding: React.FC<CreateSphereProps> = ({editMode = false, 
       {({ errors, touched, setFieldTouched, handleChange }) => {
         return (
         <>
+        <Select {...{
+    id: "example",
+    icon: "Favorite fruit:",
+    iconSide: "left",
+    labelValue: "Favorite fruit:",
+    placeholder: "Type here",
+    size: "base",
+    options: ["Apples", "Oranges", "Bananas"],
+    errored: false,
+    required: false,
+    disabled: false,
+    withInfo: false,
+  }}></Select>
           <p className='form-description'>A sphere is an <em>area of your life</em> where you want to track repeated actions.</p>
           <Form noValidate={true}>
             {editMode && <SphereFetcher sphereToEditId={sphereToEditId} />}

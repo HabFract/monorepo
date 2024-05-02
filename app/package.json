@@ -28,6 +28,7 @@
     "lodash": "^4.17.21",
     "luxon": "^3.4.4",
     "propagating-hammerjs": "^2.0.1",
+    "habit-fract-design-system": "workspace:*",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {

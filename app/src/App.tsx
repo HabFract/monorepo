@@ -6,7 +6,7 @@ import { useStateTransition } from './hooks/useStateTransition';
 import ProgressBar from '../../design-system/onboarding/ProgressBar';
 import Button from '../../design-system/buttons/Button';
 import Nav from './components/Nav';
-import { CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
+import { Flowbite } from 'flowbite-react';
 import { cloneElement, useState } from 'react';
 import BackCaret from './components/icons/BackCaret';
 import Onboarding from './components/layouts/Onboarding';
@@ -26,7 +26,7 @@ function App({ children: pageComponent }: any) {
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
 
   return (
-    <Flowbite>
+    <Flowbite theme={{theme: darkTheme}}>
       {state.match('Onboarding')
         ? <main className={"page-container onboarding-page"}>
           <Onboarding stage={state.match(/Onboarding(\d+)/)[1]}>

@@ -130,7 +130,7 @@ div[data-testid="flowbite-dropdown"] button {
 /* Onboarding submit button */
 
 .btn-onboarding {
-  @apply w-full border-0 text-bg font-sans font-medium leading-std hover:text-secondary !important;
+  @apply w-full mt-4 border-0 text-bg font-sans font-medium leading-std hover:text-secondary !important;
   background: rgb(162,234,196);
   background: linear-gradient(90deg, rgba(162,234,196,1) 50%, rgba(0,177,151,1) 100%);
 }
