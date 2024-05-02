@@ -1,5 +1,4 @@
 import { CreateProfile, CreateSphere, CreateOrbit } from "./components/forms";
-import { CreateOrbitOnboarding } from "./components/forms/onboarding";
 import { ListOrbits, ListSpheres } from "./components/lists";
 
 import OrbitTree from "./components/vis/OrbitTree";
@@ -29,7 +28,7 @@ export type AppStateStore = {
 }
 
 export const initialState: AppStateStore = { // Home route
-  currentState: "Onboarding1",
+  currentState: "CreateSphere",
   params: {}
 }
 
@@ -38,12 +37,12 @@ export const routes: Routes = {
   Vis: renderVis(OrbitTree),
   Home: <p>Welcome Home</p>,
   Onboarding1: <CreateSphere editMode={false} />,
-  Onboarding2: <CreateOrbitOnboarding editMode={false} />,
+  Onboarding2: <CreateOrbit editMode={false} />,
   Onboarding3: <CreateProfile editMode={false} />,
   Onboarding4: <CreateProfile editMode={false} />,
-  CreateSphere: <CreateSphere editMode={false} />,
+  CreateSphere: <CreateSphere headerDiv={<h1 className="w-full text-center">Create a Sphere</h1>} editMode={false} />,
   ListSpheres: <ListSpheres />,
-  CreateOrbit: <CreateOrbit editMode={false} inModal={false} sphereEh="" parentOrbitEh="" />,
+  CreateOrbit: <CreateOrbit headerDiv={<h1 className="w-full text-center">Create an Orbit</h1>} editMode={false} inModal={false} sphereEh="" parentOrbitEh="" />,
   ListOrbits: <ListOrbits />,
 };
 

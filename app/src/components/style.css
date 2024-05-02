@@ -18,12 +18,12 @@ nav.side-nav ul[role="menu"] {
 }
 
 nav.side-nav + .page-container .sphere-card.list-header button.add-orbit,
-nav.side-nav + .page-container .form-container .field:nth-child(3),
-nav.side-nav + .page-container .form-container .field:nth-child(4),
-nav.side-nav + .page-container .form-container .field:nth-child(5),
-nav.side-nav + .page-container .form-container .field:nth-child(6),
-nav.side-nav + .page-container .form-container .field:nth-child(7),
-nav.side-nav + .page-container .form-container button[type="submit"] {
+nav.side-nav + .page-container form .field:nth-child(3),
+nav.side-nav + .page-container form .field:nth-child(4),
+nav.side-nav + .page-container form .field:nth-child(5),
+nav.side-nav + .page-container form .field:nth-child(6),
+nav.side-nav + .page-container form .field:nth-child(7),
+nav.side-nav + .page-container form button[type="submit"] {
     width: 80%;
     align-self: end;
 }
