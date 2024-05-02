@@ -38,13 +38,13 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runD
             <Dropdown label="Manage" dismissOnClick={false} className="bg-red-500 hover:bg-red-600">
               <Dropdown.Item onClick={() => {transition('CreateOrbit', { editMode: true, orbitToEditId: orbit.id, sphereEh })}}>
                 <span>
-                  <EditOutlined className="btn-icon" />
+                  <EditOutlined className="icon" />
                   Edit
                 </span>
               </Dropdown.Item>
               <Dropdown.Item>
                 <span>
-                  <DeleteOutlined className="btn-icon" />
+                  <DeleteOutlined className="icon" />
                   Delete
                 </span>
               </Dropdown.Item>

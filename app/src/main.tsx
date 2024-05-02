@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import './index.css'
+import './typo.css'
 import { StateMachine } from './state/stateMachine'
 import { StateMachineContext } from './contexts/state-machine'
 import { ApolloProvider } from '@apollo/client'

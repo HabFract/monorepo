@@ -9,12 +9,12 @@ export type ProgressBarProps = {
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, stepNames }: ProgressBarProps) => {
-
+console.log('currentStep :>> ', currentStep);
   return (
     <Steps
-      className={"onboarding-progress"}
+      className={`onboarding-progress progress-${currentStep}`}
       direction={'horizontal'}
-      current={currentStep - 1}
+      current={currentStep}
       items={stepNames.map(stepName => (
         {
           subTitle: stepName,

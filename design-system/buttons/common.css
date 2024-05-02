@@ -85,8 +85,8 @@ div[data-testid="flowbite-dropdown"] button {
 .btn span[role="img"] {
   @apply border-0 bg-transparent;
 }
-/* Hide icon test on smaller viewports */
 
+/* Hide icon test on smaller viewports */
 .btn.responsive span[role="img"] {
   @apply m-0-sm;
 }
@@ -94,21 +94,48 @@ div[data-testid="flowbite-dropdown"] button {
   @apply hidden-sm;
 }
 
-.btn-icon {
+/* Icon only button */
+.btn.btn-icon {
   @apply 
-    mr-2
+    h-8 w-8 bg-bg border-0;
 }
 
+.btn.btn-icon:hover {
+  @apply bg-gray-400 border-0;
+}
+
+.btn.btn-icon {
+  @apply 
+    h-8 w-8 bg-bg text-white;
+}
+
+.btn .icon {
+  @apply h-8 w-8 mr-2;
+}
+
+.btn.btn-icon .icon {
+  @apply m-0;
+}
+
+/* Upload image button */
+
 .upload-img-btn:hover {
-  @apply bg-secondary-500;
+  @apply bg-secondary-500 text-white;
 }
 .upload-img-btn {
   top: 0.425rem;
   left: -0.375rem;
 }
 
+/* Onboarding submit button */
+
 .btn-onboarding {
   @apply w-full border-0 text-bg font-sans font-medium leading-std hover:text-secondary !important;
   background: rgb(162,234,196);
   background: linear-gradient(90deg, rgba(162,234,196,1) 50%, rgba(0,177,151,1) 100%);
+}
+.btn-onboarding:hover {
+  @apply text-gray-500 !important;
+  background: rgba(162,234,196, 0.8);
+  background: linear-gradient(90deg, rgba(162,234,196,0.8) 50%, rgba(0,177,151,0.8) 100%);
 }

@@ -67,12 +67,12 @@ console.log(', store.get(nodeCache.items) :>> ' , store.get(nodeCache.items));
         <div className="card-actions">
           <div className="sphere-actions-vis col-c w-full">
             {!isHeader && <Button onClick={() => transition('ListOrbits', { sphereAh: sphere.id })} className="btn mt-2 responsive btn-neutral w-full" size="sm">
-              <OrderedListOutlined className="btn-icon" />
+              <OrderedListOutlined className="icon" />
               <span>Orbits</span>
             </Button>}
 
             {!isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn responsive btn-secondary add-orbit border-0 w-full" size="sm">
-              <PlusCircleOutlined className="btn-icon btn-secondary" />
+              <PlusCircleOutlined className="icon" />
               <span>Create Orbit</span>
             </Button>}
 
@@ -89,7 +89,7 @@ console.log(', store.get(nodeCache.items) :>> ' , store.get(nodeCache.items));
         </div>}
       </main>
       {isHeader && <Button onClick={() => transition('CreateOrbit', { sphereEh: sphere.eH })} className="btn mt-2 btn-primary add-orbit border-0 w-full" size="sm">
-        <PlusCircleOutlined className="btn-icon btn-secondary" />
+        <PlusCircleOutlined className="icon" />
         <span>Add Orbit</span>
       </Button>}
     </div>
