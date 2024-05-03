@@ -13,7 +13,7 @@ export type ButtonProps = {
 
 const Button: React.FC<ButtonProps> = ({ children, type, icon }: ButtonProps) => {
   return (
-    <FBButton type={type == "onboarding" ? "submit" : "button"} className={type ? `btn btn-${type}` : "btn"}>
+    <FBButton theme={darkThemeButton} type={type == "onboarding" ? "submit" : "button"} className={type ? `btn btn-${type}` : "btn"}>
       {icon || children}
     </FBButton>
   )

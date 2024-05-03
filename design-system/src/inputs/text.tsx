@@ -44,7 +44,7 @@ export const TextInputField: React.FC<{ field: any, form: any, props: TextInputP
         required={required}
         disabled={false}
         withInfo={false}
-        iconSide={iconSide}
+        iconSide={iconSide || "left"}
         icon={icon}
         onChange={onChange}
       >

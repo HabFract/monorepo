@@ -11,16 +11,17 @@
   padding: 0 2px; 
   /* 12 in total (10 for input) */
 }
+
 .input-with-icon-right input{
   padding-right: 40px;
 }
+
 .input-with-icon input{
   padding-left: 40px;
 }
 
 #root {
   @apply bg-gray-500;
-  --onboarding-progress-bar-height: 48px;
 }
 
 .page-container {
@@ -48,6 +49,7 @@ nav + main.page-container .sphere-card .row-c-around #pie-chart {
 nav + main.page-container .sphere-card.list-header {
   width: 100%;
 }
+
 nav + main.page-container .orbits-list {
   padding-left: 72px;
       

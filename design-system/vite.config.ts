@@ -10,17 +10,20 @@ export default defineConfig({
   plugins: [react(),
     nodePolyfills(),
     dts({
+      include: ["src"],
       insertTypesEntry: true,
     })
   ],
   build: {
+    copyPublicDir: false,
     lib: {
+      name: "Habit/Fract Design System",
       entry: path.resolve(__dirname, 'src/index.ts'),
       formats: ['es', 'cjs'],
       fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'antd'],
+      external: ['react', 'react-dom', 'antd', 'react/jsx-runtime', 'tailwindcss'],
       output: {
         preserveModules: true,
         exports: "named",

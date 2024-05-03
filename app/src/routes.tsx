@@ -28,7 +28,7 @@ export type AppStateStore = {
 }
 
 export const initialState: AppStateStore = { // Home route
-  currentState: "CreateSphere",
+  currentState: "Onboarding1",
   params: {}
 }
 

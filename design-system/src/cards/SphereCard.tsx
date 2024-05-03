@@ -1,12 +1,12 @@
 import React from 'react';
 import './common.css';
 import { DeleteOutlined, EditOutlined, PieChartOutlined, OrderedListOutlined, PlusCircleFilled, PlusCircleOutlined } from '@ant-design/icons';
-import SphereVis from '../vis/SphereVis';
-import { Scale, Sphere } from '../../app/src/graphql/generated';
+import { SphereVis } from '../vis';
+import { Scale, Sphere } from '../../../app/src/graphql/generated';
 import { Button } from 'flowbite-react';
-import { currentOrbitCoords, currentSphere } from '../../app/src/state/currentSphereHierarchyAtom';
-import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../app/src/state/jotaiKeyValueStore';
-import TreeVisIcon from '../../app/src/components/TreeVisIcon';
+import { currentOrbitCoords, currentSphere } from '../../../app/src/state/currentSphereHierarchyAtom';
+import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../../app/src/state/jotaiKeyValueStore';
+import TreeVisIcon from '../../../app/src/components/TreeVisIcon';
 
 type SphereCardProps = {
   sphere: Sphere;
@@ -47,8 +47,7 @@ function calculateSphereCounts(orbitScales: Scale[]) {
 const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition, runDelete } : SphereCardProps) => {
   const { name, metadata, id } = sphere;
   const sphereNodes = id && store.get(nodeCache.items) && store.get(nodeCache.items)![id as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
-console.log('Object.values(sphereNodes) :>> ',  sphereNodes);
-console.log(', store.get(nodeCache.items) :>> ' , store.get(nodeCache.items));
+
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
       <header className={"sphere-header card-header"}>

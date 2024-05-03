@@ -5,7 +5,7 @@ import './common.css';
 
 import PageHeader from '../PageHeader';
 import ListSortFilter from './ListSortFilter';
-import SphereCard from '../../../../design-system/cards/SphereCard';
+import { SphereCard } from 'habit-fract-design-system';
 import { extractEdges } from '../../graphql/utils';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { store } from '../../state/jotaiKeyValueStore';

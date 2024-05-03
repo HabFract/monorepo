@@ -1,6 +1,7 @@
 .col-c {
   @apply flex flex-col items-center justify-center gap-2;
 }
+
 .row-c-around, .row-c {
   @apply flex items-center gap-2;
 }

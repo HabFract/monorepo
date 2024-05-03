@@ -17,6 +17,7 @@ import { mapToCacheObject, nodeCache, store } from '../../state/jotaiKeyValueSto
 import { client } from '../../main';
 import DefaultSubmitBtn from './DefaultSubmitButton';
 import { AlertOutlined } from '@ant-design/icons';
+import { TextInputField } from 'habit-fract-design-system';
 
 export const CustomErrorLabel: any = (fieldName: string, errors: object, touched: object) => {
   return (
@@ -164,23 +165,31 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
           <p className='form-description'>An orbit is a <em>specific life</em> action that your wish to track over time.</p>
           <Form noValidate={true}>
             {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
-            <div className="field">
-              <Label htmlFor='name'>Name: <span className="reqd">*</span></Label>
 
-              <div className="flex flex-col gap-2">
-                <Field as={TextInput} color={"default"} sizing="lg" autoComplete={'off'} type="text" name="name" id="name" required
-                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }} />
-                {CustomErrorLabel('name', errors, touched)}
-              </div>
+            <div className="flex flex-col gap-2">
+              <Field
+                component={TextInputField}
+                size="base"
+                name="name"
+                id="name"
+                required={true}
+                labelValue={"Name:"}
+                placeholder={"E.g. Run for 10 minutes"}
+                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
+              />
             </div>
 
-            <div className="field">
-              <Label htmlFor='description'>Description:</Label>
-              <div className="flex flex-col gap-2">
-                <Field as={Textarea} color={"default"} autoComplete={'off'} type="text" name="description" id="description"
-                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }} />
-                {CustomErrorLabel('description', errors, touched)}
-              </div>
+            <div className="flex flex-col gap-2">
+              <Field
+                component={TextInputField}
+                size="base"
+                name="description"
+                id="description"
+                required={true}
+                labelValue={"Description:"}
+                placeholder={"E.g. Give some more details..."}
+                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
+              />
             </div>
 
 

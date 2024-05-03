@@ -3,15 +3,16 @@
   "version": "0.0.1",
   "description": "Habit/Fract design system",
   "type": "module",
-  "source": "./src/index.ts",
   "files": ["dist"],
+  "source": "./src/index.ts",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.es.js",
   "exports": {
     ".": {
       "import": "./dist/index.es.js",
       "require": "./dist/index.cjs.js"
-    }
+    },
+    "./dist/style.css": "./dist/style.css"
   },
   "scripts": {
     "build": "vite build",

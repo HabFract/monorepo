@@ -4,12 +4,10 @@ import * as Yup from 'yup';
 import { Label } from 'flowbite-react';
 import { useCreateSphereMutation, useGetSphereQuery, useUpdateSphereMutation } from '../../graphql/generated';
 import { ImageUpload } from './input';
-import { TextAreaField } from '../../../../design-system/inputs/textarea';
-import { TextInputField } from '../../../../design-system/inputs/text';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { ActionHashB64 } from '@holochain/client';
 import DefaultSubmitBtn from './DefaultSubmitButton';
-
+import { TextAreaField, TextInputField } from 'habit-fract-design-system';
 
 // Define the validation schema using Yup
 const SphereValidationSchema = Yup.object().shape({
@@ -94,6 +92,8 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
                   size="base"
                   name="name"
                   id="name"
+                  icon={"tag"}
+                  iconSide={"left"}
                   required={true}
                   labelValue={"Name:"}
                   placeholder={"E.g. Health and Fitness"}

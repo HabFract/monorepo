@@ -3,23 +3,14 @@ import './App.css'
 
 import { useStateTransition } from './hooks/useStateTransition';
 
-import ProgressBar from '../../design-system/onboarding/ProgressBar';
-import Button from '../../design-system/buttons/Button';
+import Button from '../../design-system/src/buttons/Button';
 import Nav from './components/Nav';
 import { Flowbite } from 'flowbite-react';
 import { cloneElement, useState } from 'react';
 import BackCaret from './components/icons/BackCaret';
 import Onboarding from './components/layouts/Onboarding';
-import darkTheme from '../../design-system/darkTheme';
-
-function getLastOnboardingState(state: string) {
-  if (state == 'Onboarding1') return 'Home';
-  return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) - 1}`
-};
-function getNextOnboardingState(state: string) {
-  if (state == 'Onboarding4') return 'Home';
-  return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) + 1}`
-};
+import { ProgressBar, darkTheme } from 'habit-fract-design-system';
+import 'habit-fract-design-system/dist/style.css';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
@@ -43,7 +34,7 @@ function App({ children: pageComponent }: any) {
                   </div>
                   <ProgressBar
                     stepNames={['Create Profile', 'Create A Sphere', 'Create An Orbit', 'Confirm Orbit', 'Visualize']}
-                    currentStep={state.match(/Onboarding(\d+)/)[1]}
+                    currentStep={+(state.match(/Onboarding(\d+)/)[1])}
                   />
                 </>,
                 submitBtn:
@@ -66,3 +57,12 @@ function App({ children: pageComponent }: any) {
 }
 
 export default App
+
+function getLastOnboardingState(state: string) {
+  if (state == 'Onboarding1') return 'Home';
+  return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) - 1}`
+};
+function getNextOnboardingState(state: string) {
+  if (state == 'Onboarding4') return 'Home';
+  return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) + 1}`
+};

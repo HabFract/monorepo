@@ -4,8 +4,7 @@ import './common.css';
 import PageHeader from '../PageHeader';
 import ListSortFilter from './ListSortFilter';
 
-import OrbitCard from '../../../../design-system/cards/OrbitCard';
-import SphereCard from '../../../../design-system/cards/SphereCard';
+import { OrbitCard, SphereCard } from 'habit-fract-design-system';
 import { Orbit, useDeleteOrbitMutation } from '../../graphql/generated';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { useFetchAndCacheSphereOrbits } from '../../hooks/useFetchAndCacheSphereOrbits';

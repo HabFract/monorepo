@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import OrbitCard from './OrbitCard';
-import { Orbit } from '../../app/src/graphql/generated';
+import { Orbit } from '../../../app/src/graphql/generated';
 
 export default {
   title: 'Components/Cards/OrbitCard',

@@ -9,7 +9,6 @@ export type ProgressBarProps = {
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, stepNames }: ProgressBarProps) => {
-console.log('currentStep :>> ', currentStep);
   return (
     <Steps
       className={`onboarding-progress progress-${currentStep}`}
