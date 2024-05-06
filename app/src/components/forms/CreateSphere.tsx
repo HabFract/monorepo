@@ -100,6 +100,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
                   onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
                 />
               </div>
+
               <div className="flex flex-col gap-2">
                 <Field
                   component={TextAreaField}
@@ -110,12 +111,14 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
                   onChange={(e) => { setFieldTouched(e.target.name); handleChange(e); }}
                 />
               </div>
-            <div className="field row sphere-image">
-              <Label htmlFor='sphere_image'>Image:</Label>
-              <div className="flex flex-col gap-2">
-                <Field component={ImageUpload} color={"disabled"} sizing="lg" autoComplete={'off'} type="text" name="sphere_image" id="sphere_image" />
+
+              <div className="field row sphere-image">
+                <Label htmlFor='sphere_image'>Image:</Label>
+                <div className="flex flex-col gap-2">
+                  <Field component={ImageUpload} color={"disabled"} sizing="lg" autoComplete={'off'} type="text" name="sphere_image" id="sphere_image" />
+                </div>
               </div>
-            </div>
+
             { submitBtn || <DefaultSubmitBtn loading={loading} editMode={editMode} errors={errors} touched={touched}></DefaultSubmitBtn> }
           </Form>
         </>

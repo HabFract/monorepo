@@ -115,7 +115,7 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
   const { data: orbits, loading: getAllLoading, error } = useGetOrbitsQuery({ variables: { sphereEntryHashB64: sphereEh } });
   const loading = getAllLoading;
 
-  const [currentOrbitValues, _] = useState<OrbitCreateParams>({
+  const [currentOrbitValues, _] = useState<OrbitCreateParams | any>({
     name: '',
     description: '',
     startTime: DateTime.now().ts,
@@ -179,7 +179,7 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
                 size="base"
                 name="description"
                 id="description"
-                required={true}
+                required={false}
                 labelValue={"Description:"}
                 placeholder={"E.g. Give some more details..."}
                 onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
@@ -250,7 +250,7 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
               />
             </div>
 
-            <Flex className={"field"} vertical={true}>
+            {!inOnboarding && <Flex className={"field"} vertical={true}>
               <Flex justify='space-around'>
                 <Label htmlFor='startTime'>Start<span className="reqd">*</span><span className="hidden-sm">/</span>
                 </Label>
@@ -289,7 +289,7 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
                   </Field>
                 </div>
               </div>
-            </Flex>
+            </Flex>}
             { submitBtn || <DefaultSubmitBtn loading={loading} editMode={editMode} errors={errors} touched={touched}></DefaultSubmitBtn> }
           </Form>
         </>

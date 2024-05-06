@@ -134,6 +134,7 @@ export const aQuery = (overrides?: Partial<Query>): Query => {
         orbits: overrides && overrides.hasOwnProperty('orbits') ? overrides.orbits! : anOrbitConnection(),
         sphere: overrides && overrides.hasOwnProperty('sphere') ? overrides.sphere! : aSphere(),
         spheres: overrides && overrides.hasOwnProperty('spheres') ? overrides.spheres! : aSphereConnection(),
+        getLowestSphereHierarchyLevel: overrides && overrides.hasOwnProperty('getLowestSphereHierarchyLevel') ? overrides.getLowestSphereHierarchyLevel! : 7407,
     };
 };
 
