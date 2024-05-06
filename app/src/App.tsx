@@ -7,8 +7,10 @@ import Button from '../../design-system/src/buttons/Button';
 import Nav from './components/Nav';
 import { Flowbite } from 'flowbite-react';
 import { cloneElement, useState } from 'react';
+
 import BackCaret from './components/icons/BackCaret';
 import Onboarding from './components/layouts/Onboarding';
+
 import { ProgressBar, darkTheme } from 'habit-fract-design-system';
 import 'habit-fract-design-system/dist/style.css';
 

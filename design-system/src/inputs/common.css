@@ -14,11 +14,20 @@ label {
   resize: none;
 }
 
+.textarea.warning {
+  @apply border-warn;
+}
+
+
+.textarea.danger {
+  @apply border-danger;
+}
+
 .textarea::placeholder {
   @apply py-[10px] px-3 text-input-placeholder text-std-input font-std text-base font-sans !important;
 }
 
-input:disabled, .textarea:disabled {
+input:disabled, .textarea:disabled, select:disabled {
   --tw-ring-color: #909896;
   border-color: rgba(69, 97, 95, 1) !important;
   @apply bg-gray-400 !important;
@@ -60,4 +69,20 @@ input:disabled, .textarea:disabled {
 
 select:not([size]) {
   background-image: url(assets/down-caret.svg) !important;
+}
+
+/* Labels */
+
+span.reqd {
+  @apply text-link text-base;
+}
+
+.error-label span {
+  @apply mt-1 ml-0 font-std text-std-input leading-std;
+}
+.error-label span.warn {
+  @apply text-warn;
+}
+.error-label span.danger {
+  @apply text-danger;
 }

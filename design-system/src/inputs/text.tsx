@@ -5,15 +5,17 @@ import { TextInputProps } from "./text.stories";
 import './common.css';
 import { TextInput as FBTextInput } from "flowbite-react";
 import WithLabel from "./label";
+import ErrorLabel from "./errorlabel";
 
-const TextInput: React.FC<TextInputProps> = ({ id, placeholder, labelValue, onChange, value, errored, required, withInfo, disabled, size, icon, iconSide } : TextInputProps) => {
+const TextInput: React.FC<TextInputProps> = ({ id, name, theme, placeholder, labelValue, onChange, required, withInfo, disabled, size, icon, iconSide } : TextInputProps) => {
   return (
-    <WithLabel id={id} labelValue={labelValue} withInfo={withInfo}>
+    <WithLabel id={id} labelValue={labelValue} required={required} withInfo={withInfo}>
       <FBTextInput
         id={id}
+        name={name}
         onChange={(e) => !!onChange ? onChange(e) : null}
         className={icon && iconSide == "left" ? "input-with-icon text-input-text" : icon && iconSide == "right" ? "input-with-icon-right text-input-text" : "text-input-text"}
-        color={"default"}
+        color={theme || "default"}
         theme={darkThemeTextInput}
         icon={iconSide == "left" ? getIconSvg(icon) : undefined}
         rightIcon={iconSide == "right" ? getIconSvg(icon) : undefined}
@@ -29,13 +31,14 @@ const TextInput: React.FC<TextInputProps> = ({ id, placeholder, labelValue, onCh
 
 export const TextInputField: React.FC<{ field: any, form: any, props: TextInputProps}> = ({
   field,
-  form: { touched, errors, setFieldValue, values },
+  form: { touched, errors, setFieldValue: _ },
   ...props
 } : any) => {
-  const { name, labelValue, value, icon, iconSide, size, id, placeholder, required, onChange, onBlur } = props;
+  const { name, labelValue, value: __, icon, iconSide, size, id, placeholder, required, onChange, onBlur: ___ } = props;
   return (
     <>
       <TextInput
+        name={name}
         id={id}
         size={size}
         placeholder={placeholder}
@@ -47,9 +50,10 @@ export const TextInputField: React.FC<{ field: any, form: any, props: TextInputP
         iconSide={iconSide || "left"}
         icon={icon}
         onChange={onChange}
+        theme={errors[name]?.match("required") ? "warning" : errors[name] ? "danger" : "default"}
       >
       </TextInput>
-      {/* {CustomErrorLabel(name, errors, touched)} */}
+      <ErrorLabel fieldName={name} errors={errors} touched={touched}></ErrorLabel>
     </>
   )
 }

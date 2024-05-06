@@ -49,20 +49,6 @@ form {
   @apply flex text-sm;
 }
 
-.field .error-label {
-  @apply h-1 text-slate-300 text-sm pl-1 mb-2 text-xs text-right;
-}
-.field .error-label-text {
-  @apply pl-2;
-}
-
-.field .icon-warn {
-  @apply text-warn;
-}
-.field .icon-danger {
-  @apply text-danger;
-}
-
 .field textarea, .field > label + div {
   flex: 1;
 }
@@ -157,9 +143,7 @@ span.reqd {
     @apply flex text-sm mb-6;
     flex-basis: 7rem;
   }
-  .field .error-label {
-    @apply pb-2 h-4 text-left;
-  }
+
   .scene {
     position: absolute;
     bottom: 0;

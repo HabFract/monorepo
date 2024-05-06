@@ -16,19 +16,8 @@ import { AppState } from '../../routes';
 import { mapToCacheObject, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { client } from '../../main';
 import DefaultSubmitBtn from './DefaultSubmitButton';
-import { AlertOutlined } from '@ant-design/icons';
-import { TextInputField } from 'habit-fract-design-system';
-
-export const CustomErrorLabel: any = (fieldName: string, errors: object, touched: object) => {
-  return (
-    <div className='error-label'>
-      {errors[fieldName] && touched[fieldName] 
-        ? <>
-            <AlertOutlined className={errors[fieldName].match(/required/) ? 'icon-warn' : 'icon-danger'} /><span className='error-label-text'>{errors[fieldName]}</span>
-          </> 
-        : ''}</div>
-      );
-}
+import { TextAreaField, TextInputField } from 'habit-fract-design-system';
+import { SelectInputField } from '../../../../design-system/src';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -78,11 +67,12 @@ interface CreateOrbitProps {
 }
 
 const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, parentOrbitEh, childOrbitEh, onCreateSuccess, headerDiv, submitBtn }: CreateOrbitProps) => {
-  const [_state, transition] = useStateTransition(); // Top level state machine and routing
+  const [state, transition] = useStateTransition(); // Top level state machine and routing
   const selectedSphere = store.get(currentSphere);
   const {x, y} = store.get(currentOrbitCoords);
+  const inOnboarding = state.match('Onboarding');
   // Used to dictate onward routing
-  const originPage : AppState = !!(parentOrbitEh || childOrbitEh) ? 'Vis' : 'ListOrbits';
+  const originPage : AppState = inOnboarding ? 'Onboarding2' : !!(parentOrbitEh || childOrbitEh) ? 'Vis' : 'ListOrbits';
 
   const [addOrbit] = useCreateOrbitMutation({
     awaitRefetchQueries: !!(parentOrbitEh || childOrbitEh),
@@ -150,9 +140,11 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
             : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined, childHash: values.childHash || undefined } } })
           setSubmitting(false);
           if(!response.data) return;
-          originPage == 'Vis' 
-            ? transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: selectedSphere.actionHash}) 
-            : transition('ListOrbits', { sphereAh: selectedSphere.actionHash })
+          if(originPage == 'Vis') {
+            transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: selectedSphere.actionHash}) 
+          } else {
+            transition(inOnboarding ? 'Onboarding3' : 'ListOrbits', { sphereAh: selectedSphere.actionHash })
+          }
         } catch (error) {
           console.error(error);
         }
@@ -167,21 +159,23 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
             {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
 
             <div className="flex flex-col gap-2">
-              <Field
-                component={TextInputField}
-                size="base"
-                name="name"
-                id="name"
-                required={true}
-                labelValue={"Name:"}
-                placeholder={"E.g. Run for 10 minutes"}
-                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
-              />
+                <Field
+                  component={TextInputField}
+                  size="base"
+                  name="name"
+                  id="name"
+                  icon={"tag"}
+                  iconSide={"left"}
+                  required={true}
+                  labelValue={"Name:"}
+                  placeholder={"E.g. Run for 10 minutes"}
+                  onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
+                />
             </div>
 
             <div className="flex flex-col gap-2">
               <Field
-                component={TextInputField}
+                component={TextAreaField}
                 size="base"
                 name="description"
                 id="description"
@@ -192,31 +186,29 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
               />
             </div>
 
-
-            {!parentOrbitEh && <div className="field">
+            {!parentOrbitEh && !inOnboarding && <div className="field">
               <Label htmlFor='parentHash'>Parent Orbit: <span className="reqd">*</span></Label>
 
               <div className="flex flex-col gap-2">
                 <Field type="text" name="parentHash">
-                {({ field }) => (
-                  <Select 
-                  {...field}
-                  disabled={!!editMode}
-                    color={errors.parentHash && touched.parentHash ? "invalid" : "default"}
-                  >
-                    <option value={'root'}>{'None'}</option>
-                    { !childOrbitEh && (extractEdges((orbits as any)?.orbits) as Orbit[]).map((orbit, i) =>
-                      <option key={i} value={orbit.eH}>{orbit.name}</option>
-                    )
-                    }
-                  </Select>
-                )}
-              </Field>
-                {CustomErrorLabel('parentHash', errors, touched)}
+                  {({ field }) => (
+                    <Select 
+                    {...field}
+                    disabled={!!editMode}
+                      color={errors.parentHash && touched.parentHash ? "invalid" : "default"}
+                    >
+                      <option value={'root'}>{'None'}</option>
+                      { !childOrbitEh && (extractEdges((orbits as any)?.orbits) as Orbit[]).map((orbit, i) =>
+                        <option key={i} value={orbit.eH}>{orbit.name}</option>
+                      )
+                      }
+                    </Select>
+                  )}
+                </Field>
               </div>
             </div>}
 
-            <div className="field">
+            {/* FIELD STRIPPED OUT OF MVP: <div className="field">
               <Label htmlFor='frequency'>Frequency: <span className="reqd">*</span>
               </Label>
               <div className="flex flex-col gap-2">
@@ -235,31 +227,27 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
                 </Field>
                 {CustomErrorLabel('frequency', errors, touched)}
               </div>
-            </div>
+            </div> */}
 
-            <div className="field">
-              <Label htmlFor='scale'>Scale: <span className="reqd">*</span></Label>
-              <div className="flex flex-col gap-2">
-                <Field name="scale" >
-                  {({ field }) => {
-                    const cannotBeAstro = values.parentHash !== '' && values.parentHash !== 'root';
-                    return (
-                    <Select
-                      {...field}
-                      color={errors.scale && touched.scale ? "invalid" : "default"}
-                    >
-                      {Object.values(Scale).sort((a: any, b: any) => a - b).map((scale, i) => {
-                        return cannotBeAstro && scale == 'Astro'
-                          ? null
-                          : <option key={scale} value={scale}>{scale}</option>
-                        }
-                      )
-                      }
-                    </Select>
-                  )}}
-                </Field>
-                {CustomErrorLabel('scale', errors, touched)}
-              </div>
+            <div className="flex flex-col gap-2">
+              <Field
+                component={SelectInputField}
+                size="base"
+                name="scale"
+                id="scale"
+                icon={"scale-planets"}
+                iconSide={"left"}
+                options={Object.values(Scale).sort((a: any, b: any) => a - b).map((scale, i) => {
+                  const cannotBeAstro = values.parentHash !== '' && values.parentHash !== 'root';
+                  return cannotBeAstro && scale == 'Astro'
+                    ? null
+                    : <option key={scale} value={scale}>{scale}</option>
+                  }
+                )}
+                required={true}
+                labelValue={"Scale:"}
+                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
+              />
             </div>
 
             <Flex className={"field"} vertical={true}>

@@ -8,10 +8,10 @@ const darkThemeTextInput: CustomFlowbiteTheme["textInput"] = {
     },
     input: {
       colors: {
-        default: "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input",
-        valid: "dark:bg-secondary ",
-        invalid: "dark:bg-secondary ",
-        disabled: "text-base bg-slate-800 hover:bg-slate-800 text-title border-slate-500 border-2 focus:border-transparent focus:outline-link focus:outline-offset-2 focus:outline-2 focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
+        "default": "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input",
+        "danger": "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-danger",
+        "success": "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-link",
+        "warning": "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-warn",
       }
     }
   }
@@ -44,9 +44,9 @@ const darkThemeSelect: CustomFlowbiteTheme["select"] = {
         "base": "w-full rounded-full border-2 border-red-400",
         "colors" : {
           "default": "py-[10px] px-3 text-input-text font-sans text-std-input leading-std font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
-          "failure": "border-red-900 bg-red-700",
-          "success": "border-green-500 bg-green-500",
-          "warning": "border-yellow-600 bg-yellow-600",
+          "danger": "py-[10px] px-3 text-input-text font-sans text-std-input leading-std font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 border-danger",
+          "success": "py-[10px] px-3 text-input-text font-sans text-std-input leading-std font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 border-link",
+          "warning": "py-[10px] px-3 text-input-text font-sans text-std-input leading-std font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 border-warn",
         }
       },
       "icon": {
