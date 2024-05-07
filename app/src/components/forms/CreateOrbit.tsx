@@ -150,7 +150,8 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
         }
       }}
       >
-      {({ values, errors, touched, setFieldTouched, handleChange }) => {
+      {({ values, errors, touched }) => {
+
       return  (
         <>
           {!inModal ? headerDiv : null}
@@ -166,10 +167,10 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
                   id="name"
                   icon={"tag"}
                   iconSide={"left"}
+                  withInfo={true}
                   required={true}
                   labelValue={"Name:"}
                   placeholder={"E.g. Run for 10 minutes"}
-                  onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
                 />
             </div>
 
@@ -182,7 +183,6 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
                 required={false}
                 labelValue={"Description:"}
                 placeholder={"E.g. Give some more details..."}
-                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
               />
             </div>
 
@@ -237,6 +237,7 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
                 id="scale"
                 icon={"scale-planets"}
                 iconSide={"left"}
+                withInfo={true}
                 options={Object.values(Scale).sort((a: any, b: any) => a - b).map((scale, i) => {
                   const cannotBeAstro = values.parentHash !== '' && values.parentHash !== 'root';
                   return cannotBeAstro && scale == 'Astro'
@@ -246,7 +247,6 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
                 )}
                 required={true}
                 labelValue={"Scale:"}
-                onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
               />
             </div>
 

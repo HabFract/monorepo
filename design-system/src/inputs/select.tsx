@@ -20,7 +20,10 @@ const Select: React.FC<SelectProps> = ({ id, name, theme, onChange, labelValue, 
         disabled={disabled}
         required={required}
       >
-        {options.map((optionText, idx) => <option key={idx}>{optionText}</option>)}
+        {typeof options[0] == 'string'
+          ? options.map((optionText, idx) => <option key={idx}>{optionText}</option>)
+          : options.map((option) => option)
+        }
       </FBSelect>
     </WithLabel>
   )
@@ -28,14 +31,13 @@ const Select: React.FC<SelectProps> = ({ id, name, theme, onChange, labelValue, 
 
 export const SelectInputField: React.FC<{ field: any, form: any, props: SelectProps}> = ({
   field,
-  form: { touched, errors, setFieldValue: _, values },
+  form: { touched, errors, setFieldValue, setFieldTouched, values },
   ...props
 } : any) => {
-  const { id, name, labelValue, value: __, options, iconSide, size, placeholder, required, onChange, onBlur: ___ } = props;
+  const { id, name, labelValue, value: __, options, iconSide, size, placeholder, required, withInfo, disabled, onBlur: ___ } = props;
 
   let icon = props.icon;
   if(icon == "scale-planets") icon = getIconForPlanetValue(values.scale);
-
   return (
     <>
       <Select
@@ -44,18 +46,18 @@ export const SelectInputField: React.FC<{ field: any, form: any, props: SelectPr
         size={size}
         placeholder={placeholder}
         labelValue={labelValue}
-        errored={errors[name]}
+        errored={touched[field.name] && errors[field.name]}
         required={required}
         options={options}
-        disabled={false}
-        withInfo={false}
+        disabled={!!disabled}
+        withInfo={!!withInfo}
         iconSide={iconSide || "left"}
         icon={icon}
-        onChange={onChange}
-        theme={errors[name]?.match("required") ? "warning" : errors[name] ? "danger" : "default"}
+        onChange={(e) => { setFieldValue(field.name, e.target.value); setFieldTouched(field.name) }}
+        theme={(touched[field.name] && errors[field.name]?.match("required")) ? "warning" : (touched[field.name] && errors[field.name]) ? "danger" : "default"}
       >
       </Select>
-      <ErrorLabel fieldName={name} errors={errors} touched={touched}></ErrorLabel>
+      <ErrorLabel fieldName={field.name} errors={errors} touched={touched}></ErrorLabel>
     </>
   )
 }

@@ -73,13 +73,17 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
             : await addSphere({ variables: { variables: { name: values.name, description: values.description, image: values.sphere_image } } })
           setSubmitting(false);
           if(!response.data) return;
-          transition(state == 'Onboarding1' ? 'Onboarding2' : 'ListSpheres', { sphereAh: editMode ? (response.data as any).updateSphere.actionHash : (response.data as any).createSphere.actionHash })
+
+          const props = state == 'Onboarding1'
+            ? { sphereEh: (response.data as any).createSphere.entryHash }
+            : { sphereAh: editMode ? (response.data as any).updateSphere.actionHash : (response.data as any).createSphere.actionHash }
+          transition(state == 'Onboarding1' ? 'Onboarding2' : 'ListSpheres', props)
         } catch (error) {
           console.error(error);
         }
       }}
     >
-      {({ errors, touched, setFieldTouched, handleChange }) => {
+      {({ errors, touched }) => {
         return (
         <>
           { headerDiv }
@@ -97,7 +101,6 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
                   required={true}
                   labelValue={"Name:"}
                   placeholder={"E.g. Health and Fitness"}
-                  onChange={(e) => { setFieldTouched(e.target.name); handleChange(e) }}
                 />
               </div>
 
@@ -108,7 +111,6 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
                   id="description"
                   labelValue={"Description:"}
                   placeholder={"E.g. I am aiming to run a marathon this year"}
-                  onChange={(e) => { setFieldTouched(e.target.name); handleChange(e); }}
                 />
               </div>
 

@@ -24,10 +24,10 @@ const TextArea: React.FC<TextAreaProps> = ({ placeholder, theme, labelValue, id,
 
 export const TextAreaField: React.FC<{ field: any, form: any, props: TextAreaProps}> = ({
   field,
-  form: { touched, errors, setFieldValue: _ },
+  form: { touched, errors, setFieldValue, setFieldTouched },
   ...props
 } : any) => {
-  const { name, labelValue, value: __, id, placeholder, required, onChange, onBlur: ___ } = props;
+  const { name, labelValue, value: __, id, placeholder, required, disabled, withInfo, onBlur: ___ } = props;
   return (
     <>
       <TextArea
@@ -36,15 +36,15 @@ export const TextAreaField: React.FC<{ field: any, form: any, props: TextAreaPro
         rows={5}
         placeholder={placeholder}
         labelValue={labelValue}
-        errored={errors[name]}
+        errored={touched[field.name] && errors[field.name]}
         required={required}
-        disabled={false}
-        withInfo={false}
-        onChange={onChange}
-        theme={errors[name]?.match("required") ? "warning" : errors[name] ? "danger" : "default"}
+        disabled={!!disabled}
+        withInfo={!!withInfo}
+        onChange={(e) => { setFieldValue(field.name, e.target.value); setFieldTouched(field.name) }}
+        theme={(touched[field.name] && errors[field.name]?.match("required")) ? "warning" : (touched[field.name] && errors[field.name]) ? "danger" : "default"}
       >
       </TextArea>
-      <ErrorLabel fieldName={name} errors={errors} touched={touched}></ErrorLabel>
+      <ErrorLabel fieldName={field.name} errors={errors} touched={touched}></ErrorLabel>
     </>
   )
 }

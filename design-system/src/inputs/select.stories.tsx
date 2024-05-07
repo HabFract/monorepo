@@ -10,7 +10,7 @@ export interface SelectProps {
   required: boolean;
   withInfo: boolean;
   size: "sm" | "base" | "lg";
-  options: string[];
+  options: string[] | HTMLElement[];
   disabled: boolean;
   icon: string;
   iconSide: "left" | "right";

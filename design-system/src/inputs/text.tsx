@@ -31,10 +31,10 @@ const TextInput: React.FC<TextInputProps> = ({ id, name, theme, placeholder, lab
 
 export const TextInputField: React.FC<{ field: any, form: any, props: TextInputProps}> = ({
   field,
-  form: { touched, errors, setFieldValue: _ },
+  form: { touched, errors, setFieldValue, setFieldTouched },
   ...props
 } : any) => {
-  const { name, labelValue, value: __, icon, iconSide, size, id, placeholder, required, onChange, onBlur: ___ } = props;
+  const { name, labelValue, value: __, icon, iconSide, size, id, placeholder, required, withInfo, disabled, onBlur: ___ } = props;
   return (
     <>
       <TextInput
@@ -43,17 +43,17 @@ export const TextInputField: React.FC<{ field: any, form: any, props: TextInputP
         size={size}
         placeholder={placeholder}
         labelValue={labelValue}
-        errored={errors[name]}
+        errored={touched[field.name] && errors[field.name]}
         required={required}
-        disabled={false}
-        withInfo={false}
+        disabled={!!disabled}
+        withInfo={!!withInfo}
         iconSide={iconSide || "left"}
         icon={icon}
-        onChange={onChange}
-        theme={errors[name]?.match("required") ? "warning" : errors[name] ? "danger" : "default"}
+        onChange={(e) => { setFieldValue(field.name, e.target.value); setFieldTouched(field.name) }}
+        theme={(touched[field.name] && errors[field.name]?.match("required")) ? "warning" : (touched[field.name] && errors[field.name]) ? "danger" : "default"}
       >
       </TextInput>
-      <ErrorLabel fieldName={name} errors={errors} touched={touched}></ErrorLabel>
+      <ErrorLabel fieldName={field.name} errors={errors} touched={touched}></ErrorLabel>
     </>
   )
 }
