@@ -119,7 +119,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
                 </div>
               </div>
 
-            { submitBtn || <DefaultSubmitBtn loading={loading} editMode={editMode} errors={errors} touched={touched}></DefaultSubmitBtn> }
+            { React.cloneElement(submitBtn as React.ReactElement, { loading, errors, touched }) || <DefaultSubmitBtn loading={loading} editMode={editMode} errors={errors} touched={touched}></DefaultSubmitBtn> }
           </Form>
         </>
       )}}
