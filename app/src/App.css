@@ -22,21 +22,28 @@
 
 #root {
   @apply bg-gray-500;
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  place-content: flex-start;
 }
 
 .page-container {
-  @apply flex flex-col gap-2 bg-bg overflow-auto fixed w-full h-full inset-y-0 left-0 p-2;
+  @apply flex flex-col gap-2 bg-bg overflow-auto p-2 w-full;
+  height: 100vh;
   overflow-x: hidden;
 }
 
 nav + main.page-container .sphere-card .row-c-around {
   align-items: flex-start;
 }
+
 nav + main.page-container .sphere-card .row-c-around .sphere-actions {
   flex-direction: row;
   padding: 0;
   margin: 0;
 }
+
 nav + main.page-container .sphere-card .row-c-around .sphere-actions button {
   height: 3rem;
 }
@@ -65,6 +72,34 @@ nav + main.page-container .orbits-list {
   @apply text-line fill-primary;
 }
 
-.onboarding-page {
-  
+@media screen and (min-width: 440px) {
+  #root {
+    grid-template-columns: 10% 80% 10%;
+    place-content: center;
+  }
+
+  .page-container {
+    grid-column: 2/3;
+    grid-row: 1/-1;
+    border-radius: 1rem;
+    @apply p-6 h-full;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  #root {
+    grid-template-columns: 20% 60% 20%;
+  }
+
+  .page-container {
+    @apply p-8;
+  }
+}
+@media screen and (min-width: 1200px) {
+  #root {
+    grid-template-columns: 30% 40% 30%;
+  }
+  .page-container {
+    @apply p-12;
+  }
 }

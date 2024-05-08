@@ -18,6 +18,11 @@
   padding-top: 4px;
 }
 
+.layout.orbit-subdivision-list {
+  @apply bg-bg p-2 flex flex-col gap-2;
+  min-height: intial;
+}
+
 .sort-filter-icon {
   @apply text-white text-xl md:text-xl;
 }
