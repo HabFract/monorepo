@@ -3,6 +3,7 @@ import { SphereCard, OrbitCard } from './cards';
 import { SphereVis, OrbitVis } from './vis';
 import { ProgressBar } from './onboarding';
 import { Button } from './buttons';
+import { HelperText } from './copy';
 import { default as darkTheme } from './darkTheme';
 
 import './inputs/common.css';
@@ -19,6 +20,7 @@ export {
   ToggleSwitch,
   Label,
   ErrorLabel,
+  HelperText,
 
   SphereCard,
   OrbitCard,

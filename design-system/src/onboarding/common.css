@@ -46,22 +46,8 @@
   padding-right: 2rem;
 }
 
-/* .ant-steps .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
-} */
 .ant-steps-item-title::after {
   background-color: #00B197 !important;
-}
-
-.ant-steps-item-content:not(.ant-steps-item:last-child .ant-steps-item-content)::after {
-  content: "";
-  position: absolute;
-  right: -2rem;
-  top: 20%;
-  height: 16px;
-  width: 72px;
-  background-size: contain !important;
-  background-repeat: no-repeat;
-  background: url(assets/horizontal-line.svg);
 }
 
 .ant-steps-item.ant-steps-item-wait .ant-steps-item-icon,

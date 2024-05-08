@@ -17,7 +17,6 @@ const SphereValidationSchema = Yup.object().shape({
   //TODO: limit to jpg/png?
 });
 
-
 interface CreateSphereProps {
   editMode: boolean;
   sphereToEditId?: ActionHashB64;
@@ -73,10 +72,10 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
             : await addSphere({ variables: { variables: { name: values.name, description: values.description, image: values.sphere_image } } })
           setSubmitting(false);
           if(!response.data) return;
-
+          const payload = (response.data as any);
           const props = state == 'Onboarding1'
-            ? { sphereEh: (response.data as any).createSphere.entryHash }
-            : { sphereAh: editMode ? (response.data as any).updateSphere.actionHash : (response.data as any).createSphere.actionHash }
+            ? { sphereEh: payload.createSphere.entryHash }
+            : { sphereAh: editMode ? payload.updateSphere.actionHash : payload.createSphere.actionHash }
           transition(state == 'Onboarding1' ? 'Onboarding2' : 'ListSpheres', props)
         } catch (error) {
           console.error(error);

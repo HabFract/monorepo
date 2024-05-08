@@ -1,4 +1,4 @@
-import { CreateProfile, CreateSphere, CreateOrbit } from "./components/forms";
+import { CreateProfile, CreateSphere, CreateOrbit, RefineOrbit } from "./components/forms";
 import { ListOrbits, ListSpheres } from "./components/lists";
 
 import OrbitTree from "./components/vis/OrbitTree";
@@ -38,7 +38,7 @@ export const routes: Routes = {
   Home: <p>Welcome Home</p>,
   Onboarding1: <CreateSphere editMode={false} />,
   Onboarding2: <CreateOrbit editMode={false} />,
-  Onboarding3: <CreateProfile editMode={false} />,
+  Onboarding3: <RefineOrbit />,
   Onboarding4: <CreateProfile editMode={false} />,
   CreateSphere: <CreateSphere headerDiv={<h1 className="w-full text-center">Create a Sphere</h1>} editMode={false} />,
   ListSpheres: <ListSpheres />,

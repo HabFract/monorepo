@@ -82,7 +82,6 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     }
   ) => {
     if(!sphereHash) throw new Error("Cannot create an orbit not linked to a sphere!")
-      console.log('childHash :>> ', childHash);
     const rawRecord = await runCreate({
       name,
       sphereHash,

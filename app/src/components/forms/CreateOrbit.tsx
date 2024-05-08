@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { Formik, Form, Field, useFormikContext } from 'formik';
+import React, { useState } from 'react';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { DateTime } from "luxon"
 
 import { Checkbox, Flex } from 'antd';
 import DateInput from './input/DatePicker';
-import { TextInput, Label, Select, Textarea } from 'flowbite-react';
+import { Label, Select } from 'flowbite-react';
 
 import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
-import { ActionHashB64, EntryHashB64 } from '@holochain/client';
+import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { currentOrbitCoords, currentSphere } from '../../state/currentSphereHierarchyAtom';
 import { AppState } from '../../routes';
 import { mapToCacheObject, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { client } from '../../main';
 import DefaultSubmitBtn from './DefaultSubmitButton';
-import { TextAreaField, TextInputField } from 'habit-fract-design-system';
-import { SelectInputField } from '../../../../design-system/src';
+import { TextAreaField, TextInputField, SelectInputField } from 'habit-fract-design-system';
+import { OrbitFetcher } from './utils';
 
 // Define the validation schema using Yup
 const OrbitValidationSchema = Yup.object().shape({
@@ -34,25 +34,6 @@ const OrbitValidationSchema = Yup.object().shape({
   parentHash: Yup.string(),
   archival: Yup.boolean(),
 });
-
-const OrbitFetcher = ({orbitToEditId}) => {
-  const { setValues } = useFormikContext();
-
-  const {data: getData, error: getError, loading: getLoading } = useGetOrbitQuery({
-    variables: {
-      id: orbitToEditId as string
-    },
-  });
-
-  useEffect(() => {
-      const {  name, sphereHash: parentHash, frequency, scale, metadata: {description, timeframe:  {startTime, endTime} }} = getData!.orbit as any;
-      
-      setValues({
-        name, description, startTime, endTime: endTime || undefined, frequency, scale, archival: !!endTime, parentHash
-      })
-  }, [getData])
-  return null;
-};
 
 interface CreateOrbitProps {
   editMode: boolean;
@@ -75,8 +56,8 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
   const originPage : AppState = inOnboarding ? 'Onboarding2' : !!(parentOrbitEh || childOrbitEh) ? 'Vis' : 'ListOrbits';
 
   const [addOrbit] = useCreateOrbitMutation({
-    awaitRefetchQueries: !!(parentOrbitEh || childOrbitEh),
-    refetchQueries: () => [
+    awaitRefetchQueries: !inOnboarding && !!(parentOrbitEh || childOrbitEh),
+    refetchQueries: () => inOnboarding ? [] : [
       {
         query: GetOrbitHierarchyDocument,
         variables: {
@@ -85,6 +66,7 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
       },
     ],
     async update(){
+      if(inOnboarding) return;
       const variables = { sphereEntryHashB64: sphereEh };
       let data;
       try {
@@ -140,10 +122,14 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
             : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined, childHash: values.childHash || undefined } } })
           setSubmitting(false);
           if(!response.data) return;
+          const payload = response.data as any;
           if(originPage == 'Vis') {
             transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: selectedSphere.actionHash}) 
           } else {
-            transition(inOnboarding ? 'Onboarding3' : 'ListOrbits', { sphereAh: selectedSphere.actionHash })
+            const props = inOnboarding
+              ? { refiningOrbitAh: payload.createOrbit.actionHash }
+              : { sphereAh: selectedSphere.actionHash }
+            transition(inOnboarding ? 'Onboarding3' : 'ListOrbits', props)
           }
         } catch (error) {
           console.error(error);
@@ -283,7 +269,6 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
                       <Checkbox
                         className="text-sm text-light-gray"
                         {...field}
-                      // onChange={async (e) => {  setFieldValue('archival', e.target.checked) }}
                       >Archival?</Checkbox>
                     )}
                   </Field>
