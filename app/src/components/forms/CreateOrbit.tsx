@@ -47,7 +47,7 @@ interface CreateOrbitProps {
   submitBtn?: React.ReactNode;
 }
 
-const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, parentOrbitEh, childOrbitEh, onCreateSuccess, headerDiv, submitBtn }: CreateOrbitProps) => {
+const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, parentOrbitEh, childOrbitEh, onCreateSuccess, headerDiv, submitBtn }: CreateOrbitProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   const selectedSphere = store.get(currentSphere);
   const {x, y} = store.get(currentOrbitCoords);
@@ -283,4 +283,4 @@ const CreateOrbitOnboarding: React.FC<CreateOrbitProps> = ({ editMode = false, i
   );
 };
 
-export default CreateOrbitOnboarding;
+export default CreateOrbit;

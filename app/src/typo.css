@@ -56,7 +56,7 @@ p.form-description {
   @apply font-sans;
 }
 
-p.form-description em {
+p.form-description em, .helper-text em {
   font-weight: medium;
   @apply text-text-prim;
 }

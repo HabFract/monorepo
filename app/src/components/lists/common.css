@@ -19,7 +19,7 @@
 }
 
 .layout.orbit-subdivision-list {
-  @apply bg-bg p-2 flex flex-col gap-2;
+  @apply bg-bg p-0 flex flex-col gap-2;
   min-height: intial;
 }
 
@@ -45,6 +45,10 @@
 }
 
 @media screen and (min-width: 768px) {
+  .layout {
+    min-height: initial;
+  }
+
   .orbits-list {
     @apply grid grid-cols-2 gap-2;
   }

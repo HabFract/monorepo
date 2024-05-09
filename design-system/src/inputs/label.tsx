@@ -4,17 +4,18 @@ import "./common.css";
 export interface LabelProps {
   id: string;
   labelValue: string;
+  isListItem: boolean;
   required?: boolean;
   withInfo?: boolean;
   onClickInfo?: (e: any) => {};
   children: React.ReactNode
 }
 
-const withLabel: React.FC<LabelProps> = ({ children, id, labelValue,required, withInfo, onClickInfo } : LabelProps) => {
+const withLabel: React.FC<LabelProps> = ({ children, id, labelValue, isListItem, required, withInfo, onClickInfo } : LabelProps) => {
   return (
-    <div className="max-w-md">
-      <div className="flex justify-between h-6">
-        <Label htmlFor={id} value={labelValue} />
+    <div className={isListItem ? "max-w-md flex gap-2 items-center" : "max-w-md"}>
+      <div className={isListItem ? "flex justify-end gap-2 h-6 w-6": "flex justify-between h-6"}>
+        <Label className={isListItem ? "pt-1" : ""} htmlFor={id} value={labelValue} />
         <div className="flex justify-between gap-2">
           {withInfo ? <div className="text-primary w-4 h-4 pr-4 mb-2 cursor-pointer" onClick={(e) => onClickInfo!(e)}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">

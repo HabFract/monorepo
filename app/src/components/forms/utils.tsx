@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export const OrbitFetcher = ({orbitToEditId}) => {
   const { setValues } = useFormikContext();
-console.log('orbitToEditId :>> ', orbitToEditId);
+
   const {data: getData, error: getError, loading: getLoading } = useGetOrbitQuery({
     variables: {
       id: orbitToEditId as string

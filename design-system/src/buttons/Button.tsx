@@ -14,7 +14,7 @@ export type ButtonProps = {
   errors?: object,
 }
 
-const Button: React.FC<ButtonProps> = ({ children, type, icon, touched, loading, errors }: ButtonProps) => {
+const Button: React.FC<ButtonProps> = ({ children, type, icon, touched, loading, errors, onClick }: ButtonProps) => {
   
   return (
     <FBButton
@@ -22,6 +22,7 @@ const Button: React.FC<ButtonProps> = ({ children, type, icon, touched, loading,
       theme={darkThemeButton}
       type={type == "onboarding" ? "submit" : "button"}
       className={type ? `btn btn-${type}` : "btn"}
+      onClick={onClick}
     >
       {loading
         ? <div role="status">

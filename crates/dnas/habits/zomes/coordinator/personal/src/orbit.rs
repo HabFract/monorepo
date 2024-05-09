@@ -37,7 +37,7 @@ fn get_latest(action_hash: ActionHash) -> ExternResult<Option<Record>> {
 
 #[hdk_extern]
 pub fn get_my_orbit(original_orbit_hash: ActionHash) -> ExternResult<Option<Record>> {
-    get_latest(original_orbit_hash)
+    get_latest(original_orbit_hash.into())
 }
 
 pub fn get_orbit(original_orbit_hash: ActionHash) -> ExternResult<Option<Record>> {

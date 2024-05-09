@@ -31,7 +31,10 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
 
   return {
     orbit: async (_, args): Promise<Orbit> => {
-      return read(args.id)
+      console.log('args.id :>> ', args.id);
+      const response = await read(args.id)
+      console.log('response, args :>> ', response, args);
+      return response
     },
 
     orbits: async (_, args): Promise<OrbitConnection> => {

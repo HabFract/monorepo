@@ -1,11 +1,13 @@
 import { Meta, StoryObj } from '@storybook/react';
 import TextInput, { TextInputField } from "./text";
+import { FocusEventHandler } from 'react';
 
 export interface TextInputProps {
   id: string;
   name: string;
   placeholder: string;
   labelValue: string;
+  isListItem: boolean;
   errored: boolean;
   required: boolean;
   withInfo: boolean;
@@ -14,6 +16,7 @@ export interface TextInputProps {
   disabled: boolean;
   icon: string;
   onChange?: Function
+  onBlur?: FocusEventHandler
   value?: string
   theme?: string
 }
@@ -62,6 +65,19 @@ export const Disabled: Story = {
     iconSide: "left",
     icon: 'tag',
     disabled: true
+  },
+};
+
+export const ListItem: Story = {
+  args: {
+    id: "example",
+    placeholder: "Type here",
+    labelValue: "1:",
+    size: "base",
+    iconSide: "right",
+    icon: 'save',
+    isListItem: true,
+    disabled: false
   },
 };
 

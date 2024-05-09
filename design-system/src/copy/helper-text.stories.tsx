@@ -1,14 +1,14 @@
 import React from 'react';
 import { StoryFn, Meta, StoryObj } from '@storybook/react';
 import HelperText, { HelperTextProps } from './helper-text';
-import BackCaret from '../../../app/src/components/icons/BackCaret';
+import List from '../../../app/src/components/icons/List';
 
 const meta: Meta<HelperTextProps> = {
   title: "Components/Onboarding/HelperText",
   component: HelperText,
   argTypes: {
   },
-  render: (args: any) => <HelperText title={args.title} onClickInfo={(e) => console.log("Clicked!") as any}>{args.content}</HelperText> 
+  render: (args: any) => <HelperText title={args.title} titleIcon={args.titleIcon} withInfo={args.withInfo} onClickInfo={(e) => console.log("Clicked!") as any}>{args.content}</HelperText> 
 };
 
 export default meta;
@@ -21,10 +21,11 @@ export const Default: Story = {
   }
 };
 
-export const Title: Story = {
+export const TitleIconInfo: Story = {
   args : {  
     title: "Hello World",
-    content: "This is the best way to write a helper message"
+    content: "This is the best way to write a helper message",
+    titleIcon: <List />
   }
 };
 
@@ -32,6 +33,7 @@ export const TitleIcon: Story = {
   args : {  
     content: "This is the best way to write a helper message",
     title: "Hello World",
-    titleIcon: <BackCaret />
+    titleIcon: <List />,
+    withInfo: false,
   }
 };

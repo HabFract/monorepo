@@ -231,7 +231,6 @@ export default () => {
       } = await setUpAliceandBob();
 
       const callZomeAlice = async (zome_name, fn_name, payload) => {
-        console.log('payload :>> ', payload);
         return await alice.callZome({
           cap_secret: null,
           cell_id: habits_cell_alice,
