@@ -23,7 +23,7 @@ import { subdivisionListAtom } from '../../state/subdivisionListAtom';
 
 export const OrbitFetcher = ({orbitToEditId}) => {
   const { setValues } = useFormikContext();
-
+  
   const {data: getData, error: getError, loading: getLoading } = useGetOrbitQuery({
     variables: {
       id: orbitToEditId as string
@@ -98,7 +98,7 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
             <p className='form-description'>Make sure that you have chosen the <em>best specifics</em> for your orbit, before you are ready to start tracking!</p>
             <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText>
               <OrbitSubdivisionList listItemScale={SubdivisionScale.Atom}></OrbitSubdivisionList>
-              { React.cloneElement(submitBtn as React.ReactElement, { loading, errors, touched }) }
+              { React.cloneElement(submitBtn as React.ReactElement, { disabled: (list.length > 1) ,loading, errors, touched }) }
           </div>
         </>
       )}}

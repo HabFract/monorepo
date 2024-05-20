@@ -1,4 +1,4 @@
-import { ActionHashB64, EntryHashB64, encodeHashToBase64 } from '@holochain/client';
+import { ActionHashB64, EntryHashB64, encodeHashToBase64, Record as HolochainRecord } from '@holochain/client';
 import { mapZomeFn } from '../../connection'
 import { DNAIdMappings, ById } from '../../types'
 import { HAPP_DNA_NAME, HAPP_ZOME_NAME_PERSONAL_HABITS } from '../../../constants'
@@ -7,7 +7,7 @@ import { EntryRecord } from '@holochain-open-dev/utils'
 import { createEdges } from '../../utils'
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
-  const read = mapZomeFn<ById, Orbit>(
+  const read = mapZomeFn<ById, HolochainRecord>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
@@ -31,10 +31,10 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
 
   return {
     orbit: async (_, args): Promise<Orbit> => {
-      console.log('args.id :>> ', args.id);
-      const response = await read(args.id)
-      console.log('response, args :>> ', response, args);
-      return response
+      const rawRecord = await read(args.id)
+      const orbit = new EntryRecord<Orbit>(rawRecord)
+
+      return {...orbit.entry, id: args.id, eH: encodeHashToBase64(orbit.entryHash) }
     },
 
     orbits: async (_, args): Promise<OrbitConnection> => {
