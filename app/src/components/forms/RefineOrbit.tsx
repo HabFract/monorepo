@@ -20,28 +20,7 @@ import { OrbitSubdivisionList } from '../lists';
 import { SubdivisionScale } from '../lists/OrbitSubdivisionList';
 import { useAtom } from 'jotai';
 import { subdivisionListAtom } from '../../state/subdivisionListAtom';
-
-export const OrbitFetcher = ({orbitToEditId}) => {
-  const { setValues } = useFormikContext();
-  
-  const {data: getData, error: getError, loading: getLoading } = useGetOrbitQuery({
-    variables: {
-      id: orbitToEditId as string
-    },
-  });
-
-  useEffect(() => {
-    console.log('getData :>> ', getData);
-      if(typeof getData == "undefined") return;
-      const {  name, sphereHash: parentHash, frequency, scale, metadata: {description, timeframe:  {startTime, endTime} }} = getData!.orbit as any;
-      
-      setValues({
-        name, description, startTime, endTime: endTime || undefined, frequency, scale, archival: !!endTime, parentHash
-      })
-  }, [getLoading])
-
-  return null;
-};
+import { OrbitFetcher } from './utils';
 
 interface RefineOrbitProps {
   // refiningOrbitEh: string;
@@ -63,13 +42,20 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
  
   const loading = false;
 
-
   const [list, setList] = useAtom(subdivisionListAtom);
   
+  const schema = Yup.object().shape({
+    list: Yup.array().of(Yup.string().max(255).required())
+  })
+  .test({
+    message: 'The error message if length === 1',
+    test: obj => list.length >= 1,
+  })
+
   return (
     <Formik
       initialValues={{} as any}
-      validationSchema={{} as any}
+      validationSchema={schema}
       onSubmit={async (values, { setSubmitting }) => {
         // try {
         //   if (!values.archival) delete values.endTime;
@@ -90,6 +76,7 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
       }}
       >
       {({ values, errors, touched }) => {
+        console.log('errors :>> ', errors);
         return  (
         <>
           { refiningOrbitAh && <OrbitFetcher orbitToEditId={refiningOrbitAh} />}
@@ -97,8 +84,8 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
             { headerDiv }
             <p className='form-description'>Make sure that you have chosen the <em>best specifics</em> for your orbit, before you are ready to start tracking!</p>
             <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText>
-              <OrbitSubdivisionList listItemScale={SubdivisionScale.Atom}></OrbitSubdivisionList>
-              { React.cloneElement(submitBtn as React.ReactElement, { disabled: (list.length > 1) ,loading, errors, touched }) }
+            <OrbitSubdivisionList submitBtn={submitBtn} listItemScale={SubdivisionScale.Atom}></OrbitSubdivisionList>
+              
           </div>
         </>
       )}}

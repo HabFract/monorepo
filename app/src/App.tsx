@@ -17,7 +17,7 @@ import { decode } from '@msgpack/msgpack';
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
-  
+
   return (
     <Flowbite theme={{theme: darkTheme}}>
       {state.match('Onboarding')
@@ -42,7 +42,8 @@ function App({ children: pageComponent }: any) {
                   submitBtn:
                     <Button
                       type={"onboarding"}
-                      onClick={(e) => console.log(e)}>Save & Continue</Button>
+                      onClick={(e) => console.log(e)}
+                    >Save & Continue</Button>
                 })
               })}
 

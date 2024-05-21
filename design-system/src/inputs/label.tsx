@@ -13,7 +13,7 @@ export interface LabelProps {
 
 const withLabel: React.FC<LabelProps> = ({ children, id, labelValue, isListItem, required, withInfo, onClickInfo } : LabelProps) => {
   return (
-    <div className={isListItem ? "max-w-md flex gap-2 items-center" : "max-w-md"}>
+    <div className={isListItem ? "max-w-md flex gap-2 items-center" : "max-w-md"} style={{flexGrow: 9}}>
       <div className={isListItem ? "flex justify-end gap-2 h-6 w-6": "flex justify-between h-6"}>
         <Label className={isListItem ? "pt-1" : ""} htmlFor={id} value={labelValue} />
         <div className="flex justify-between gap-2">
