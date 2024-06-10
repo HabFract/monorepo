@@ -4,14 +4,14 @@ import "./common.css";
 export interface LabelProps {
   id: string;
   labelValue: string;
-  isListItem: boolean;
+  isListItem?: boolean;
   required?: boolean;
   withInfo?: boolean;
   onClickInfo?: (e: any) => {};
   children: React.ReactNode
 }
 
-const withLabel: React.FC<LabelProps> = ({ children, id, labelValue, isListItem, required, withInfo, onClickInfo } : LabelProps) => {
+const withLabel: React.FC<LabelProps> = ({ children, id, labelValue, required, withInfo, onClickInfo, isListItem = false } : LabelProps) => {
   return (
     <div className={isListItem ? "max-w-md flex gap-2 items-center" : "max-w-md"} style={{flexGrow: 9}}>
       <div className={isListItem ? "flex justify-end gap-2 h-6 w-6": "flex justify-between h-6"}>

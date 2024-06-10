@@ -4,6 +4,7 @@ import TextArea, { TextAreaField } from "./textarea";
 export interface TextAreaProps {
   placeholder: string;
   labelValue: string;
+  value: string;
   id: string;
   name: string;
   errored: boolean;

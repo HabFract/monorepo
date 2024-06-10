@@ -30,7 +30,15 @@ const ImageUpload = ({
   form: { touched, errors, setFieldValue, values },
   ...props
 }) => {
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string>(field?.value || "");
+
   useEffect(() => {
+    if(field?.value && Object.values(touched).length == 0) {
+      // Then we are editing an existing value, don't seed one
+      setImageUrl(field.value)
+      return;
+    }
     const avatar = createAvatar(icons, {
       "seed": "Annie" + values.name,
       backgroundColor: ["6B7D7F"],
@@ -44,9 +52,7 @@ const ImageUpload = ({
     setFieldValue(field.name, url);
     setImageUrl(url)
   }, [values.name])
-  
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>();
+
   const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.status === 'uploading') {
       setLoading(true);
@@ -69,6 +75,11 @@ const ImageUpload = ({
       </div>
     </div>
   );
+  const dummyRequest = ({ file, onSuccess }) => {
+    setTimeout(() => {
+      onSuccess("ok");
+    }, 0);
+  };
 
   return (
     <Upload
@@ -78,6 +89,7 @@ const ImageUpload = ({
       showUploadList={false}
       beforeUpload={beforeUpload}
       onChange={handleChange}
+      customRequest={dummyRequest as any}
     >
       {imageUrl ? <div className='relative w-full h-full'><img src={imageUrl} alt="avatar" style={{ width: '100%' }} />{uploadButton}</div> : uploadButton}
     </Upload>

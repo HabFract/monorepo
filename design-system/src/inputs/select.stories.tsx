@@ -4,6 +4,7 @@ import Select, { SelectInputField } from "./select";
 export interface SelectProps {
   id: string;
   name: string;
+  value: string;
   placeholder: string;
   labelValue: string;
   errored: boolean;

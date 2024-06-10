@@ -51,7 +51,7 @@ export const TextInputField: React.FC<{ field: any, form: any, props: TextInputP
         name={name}
         id={id}
         size={size}
-        value={value}
+        value={field?.value || value}
         placeholder={placeholder}
         labelValue={labelValue}
         isListItem={isListItem}

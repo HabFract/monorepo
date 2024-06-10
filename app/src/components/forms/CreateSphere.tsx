@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { Label } from 'flowbite-react';
-import { useCreateSphereMutation, useGetSphereQuery, useUpdateSphereMutation } from '../../graphql/generated';
+import { SphereCreateParams, useCreateSphereMutation, useGetSphereQuery, useUpdateSphereMutation } from '../../graphql/generated';
 import { ImageUpload } from './input';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { ActionHashB64 } from '@holochain/client';
@@ -15,7 +15,7 @@ import { currentSphere } from '../../state/currentSphereHierarchyAtom';
 const SphereValidationSchema = Yup.object().shape({
   name: Yup.string().required('Name is a required field'),
   description: Yup.string().min(5, 'A description needs to be at least 5 characters'),
-  sphere_image: Yup.string().trim().matches(/^data:((?:\w+\/(?:(?!;).)+)?)((?:;[\w=]*[^;])*),(.+)$/,"Image must be a valid data URI"),
+  image: Yup.string().trim().matches(/^data:((?:\w+\/(?:(?!;).)+)?)((?:;[\w=]*[^;])*),(.+)$/,"Image must be a valid data URI"),
   //TODO: limit to jpg/png?
 });
 
@@ -26,9 +26,7 @@ interface CreateSphereProps {
   submitBtn?: React.ReactNode;
 }
 
-const SphereFetcher = ({sphereToEditId}) => {
-  const { setValues } = useFormikContext();
-
+const SphereFetcher = ({sphereToEditId, setValues}) => {
   const {data: getData, error: getError, loading: getLoading } = useGetSphereQuery({
     variables: {
       id: sphereToEditId as string
@@ -41,10 +39,10 @@ const SphereFetcher = ({sphereToEditId}) => {
 
     const {  name, metadata: {description, image }} = getData?.sphere as any;
     console.log('VALUES', {
-      name, description, sphere_image: image
+      name, description, image
     });
     setValues({
-      name, description, sphere_image: image
+      name, description, image
     })
   }, [getData])
   return null;
@@ -52,6 +50,12 @@ const SphereFetcher = ({sphereToEditId}) => {
 
 const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEditId, headerDiv, submitBtn}) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
+
+  const [currentSphereValues, setCurrentSphereValues] = useState<SphereCreateParams>({
+    name: '',
+    description: '',
+    image: '',
+  });
 
   const [addSphere, {loading}] = useCreateSphereMutation({
     refetchQueries: [
@@ -66,21 +70,18 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
 
   return (
     <Formik
-      initialValues={{
-        name: '',
-        description: '',
-        sphere_image: '',
-      }}
+      enableReinitialize={true}
+      initialValues={currentSphereValues}
       validationSchema={SphereValidationSchema}
       onSubmit={async (values, { setSubmitting }) => {
         try {
           let response = editMode
-            ? await updateSphere({ variables: { sphere: { id: sphereToEditId as string, name: values.name, description: values.description, image: values.sphere_image } } })
-            : await addSphere({ variables: { variables: { name: values.name, description: values.description, image: values.sphere_image } } })
+            ? await updateSphere({ variables: { sphere: { id: sphereToEditId as string, name: values.name, description: values.description, image: values.image } } })
+            : await addSphere({ variables: { variables: { name: values.name, description: values.description, image: values.image } } })
           setSubmitting(false);
           if(!response.data) return;
           const payload = (response.data as any);
-          const props = state == 'Onboarding1'
+          const props = state == 'Onboarding1' && !editMode
             ? { sphereEh: payload.createSphere.entryHash }
             : { sphereAh: editMode ? payload.updateSphere.actionHash : payload.createSphere.actionHash }
 
@@ -97,7 +98,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
           { headerDiv }
           <p className='form-description'>A sphere is an <em>area of your life</em> where you want to track repeated actions.</p>
           <Form noValidate={true}>
-            {editMode && <SphereFetcher sphereToEditId={sphereToEditId} />}
+            {editMode && <SphereFetcher sphereToEditId={sphereToEditId} setValues={setCurrentSphereValues} />}
               <div className="form-field">
                 <Field
                   component={TextInputField}
@@ -123,9 +124,13 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
               </div>
 
               <div className="field row sphere-image">
-                <Label htmlFor='sphere_image'>Image:</Label>
+                <Label htmlFor='image'>Image:</Label>
                 <div className="form-field">
-                  <Field component={ImageUpload} color={"disabled"} sizing="lg" autoComplete={'off'} type="text" name="sphere_image" id="sphere_image" />
+                  <Field
+                    component={ImageUpload}
+                    name="image"
+                    id="image"
+                  />
                 </div>
               </div>
 

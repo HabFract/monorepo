@@ -29,7 +29,7 @@
 }
 
 .page-container {
-  @apply flex gap-2 bg-bg overflow-auto p-2 w-full;
+  @apply flex gap-2 bg-bg overflow-auto p-0 w-full;
   flex-direction: column;
   height: 100vh;
   overflow-x: hidden;

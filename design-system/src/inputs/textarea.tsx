@@ -4,12 +4,13 @@ import WithLabel from "./label";
 import './common.css';
 import ErrorLabel from "./errorlabel";
 
-const TextArea: React.FC<TextAreaProps> = ({ placeholder, theme, labelValue, id, name, onChange, required, withInfo, disabled, rows } : TextAreaProps) => {
+const TextArea: React.FC<TextAreaProps> = ({ value, placeholder, theme, labelValue, id, name, onChange, required, withInfo, disabled, rows } : TextAreaProps) => {
 
   return (
-    <WithLabel id={id} labelValue={labelValue} required={required} withInfo={withInfo}>
+    <WithLabel id={id} labelValue={labelValue} required={required} withInfo={withInfo} isListItem={false}>
       <Textarea
         id={id}
+        value={value}
         name={name}
         onChange={(e) => !!onChange ? onChange(e) : null}
         className={"textarea " + (theme || "default")}
@@ -27,12 +28,13 @@ export const TextAreaField: React.FC<{ field: any, form: any, props: TextAreaPro
   form: { touched, errors, setFieldValue, setFieldTouched },
   ...props
 } : any) => {
-  const { name, labelValue, value: __, id, placeholder, required, disabled, withInfo, onBlur: ___ } = props;
+  const { name, labelValue, value, id, placeholder, required, disabled, withInfo, onBlur: ___ } = props;
   return (
     <>
       <TextArea
         id={id}
         name={name}
+        value={field?.value || value}
         rows={5}
         placeholder={placeholder}
         labelValue={labelValue}

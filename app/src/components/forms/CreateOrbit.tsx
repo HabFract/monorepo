@@ -97,7 +97,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
   const { data: orbits, loading: getAllLoading, error } = useGetOrbitsQuery({ variables: { sphereEntryHashB64: sphereEh } });
   const loading = getAllLoading;
 
-  const [currentOrbitValues, _] = useState<OrbitCreateParams | any>({
+  const [currentOrbitValues, _] = useState<Partial<OrbitCreateParams> & {archival: boolean}>({
     name: '',
     description: '',
     startTime: DateTime.now().ts,
@@ -275,7 +275,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                 </div>
               </div>
             </Flex>}
-            { React.cloneElement(submitBtn as React.ReactElement, { loading, errors, touched }) || <DefaultSubmitBtn loading={loading} editMode={editMode} errors={errors} touched={touched}></DefaultSubmitBtn> }
+            { submitBtn && React.cloneElement(submitBtn as React.ReactElement, { loading, errors, touched }) || <DefaultSubmitBtn loading={loading} editMode={editMode} errors={errors} touched={touched}></DefaultSubmitBtn> }
           </Form>
         </>
       )}}
