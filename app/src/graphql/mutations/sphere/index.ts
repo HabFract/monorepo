@@ -82,7 +82,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     const entryRecord = new EntryRecord<Sphere>(rawRecord);
 
     return {
-      actionHash: encodeHashToBase64(entryRecord.actionHash),
+      actionHash: entryRecord.actionHash as any,
       entryHash: encodeHashToBase64(entryRecord.entryHash),
     };
   };

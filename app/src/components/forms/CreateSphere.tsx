@@ -8,11 +8,13 @@ import { useStateTransition } from '../../hooks/useStateTransition';
 import { ActionHashB64 } from '@holochain/client';
 import DefaultSubmitBtn from './DefaultSubmitButton';
 import { TextAreaField, TextInputField } from 'habit-fract-design-system';
+import { store } from '../../state/jotaiKeyValueStore';
+import { currentSphere } from '../../state/currentSphereHierarchyAtom';
 
 // Define the validation schema using Yup
 const SphereValidationSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  description: Yup.string().min(10, 'A description needs to be descriptive!'),
+  name: Yup.string().required('Name is a required field'),
+  description: Yup.string().min(5, 'A description needs to be at least 5 characters'),
   sphere_image: Yup.string().trim().matches(/^data:((?:\w+\/(?:(?!;).)+)?)((?:;[\w=]*[^;])*),(.+)$/,"Image must be a valid data URI"),
   //TODO: limit to jpg/png?
 });
@@ -31,14 +33,19 @@ const SphereFetcher = ({sphereToEditId}) => {
     variables: {
       id: sphereToEditId as string
     },
+    skip: !sphereToEditId
   });
 
   useEffect(() => {
-      const {  name, metadata: {description, image }} = getData!.sphere as any;
-      
-      setValues({
-        name, description, sphere_image: image
-      })
+    if(!getData) return;
+
+    const {  name, metadata: {description, image }} = getData?.sphere as any;
+    console.log('VALUES', {
+      name, description, sphere_image: image
+    });
+    setValues({
+      name, description, sphere_image: image
+    })
   }, [getData])
   return null;
 };
@@ -76,6 +83,8 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
           const props = state == 'Onboarding1'
             ? { sphereEh: payload.createSphere.entryHash }
             : { sphereAh: editMode ? payload.updateSphere.actionHash : payload.createSphere.actionHash }
+
+          store.set(currentSphere, {entryHash: props.sphereEh, actionHash: payload?.createSphere.actionHash});
           transition(state == 'Onboarding1' ? 'Onboarding2' : 'ListSpheres', props)
         } catch (error) {
           console.error(error);
@@ -120,7 +129,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
                 </div>
               </div>
 
-            { React.cloneElement(submitBtn as React.ReactElement, { loading, errors, touched }) || <DefaultSubmitBtn loading={loading} editMode={editMode} errors={errors} touched={touched}></DefaultSubmitBtn> }
+            { submitBtn && React.cloneElement(submitBtn as React.ReactElement, { loading, errors, touched }) || <DefaultSubmitBtn loading={loading} editMode={editMode} errors={errors} touched={touched}></DefaultSubmitBtn> }
           </Form>
         </>
       )}}

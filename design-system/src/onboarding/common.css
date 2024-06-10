@@ -17,25 +17,30 @@
   /* linear-gradient(90deg,transparent 0%, transparent 20%,rgb(36,36,36) 90vw) */
 }
 
+:root {
+  --onboarding-translate-offset-x: -25px;
+  --onboarding-translate-increment: -125px;
+}
+
 .onboarding-progress .ant-steps-item-subtitle,
 .ant-steps-icon {
   @apply text-text !important;
 }
 
 .onboarding-progress.progress-1 .ant-steps-item {
-  transform: translateX(-50px);
+  transform: translateX(calc(var(--onboarding-translate-offset-x) + 0));
 }
 .onboarding-progress.progress-2 .ant-steps-item {
-  transform: translateX(-160px);
+  transform: translateX(calc(var(--onboarding-translate-offset-x) + (1 * var(--onboarding-translate-increment))));
 }
 .onboarding-progress.progress-3 .ant-steps-item {
-  transform: translateX(-340px);
+  transform: translateX(calc(var(--onboarding-translate-offset-x) + (2 * var(--onboarding-translate-increment))));
 }
 .onboarding-progress.progress-4 .ant-steps-item {
-  transform: translateX(-520px);
+  transform: translateX(calc(var(--onboarding-translate-offset-x) + (3 * var(--onboarding-translate-increment))));
 }
 .onboarding-progress.progress-5 .ant-steps-item {
-  transform: translateX(-700px);
+  transform: translateX(calc(var(--onboarding-translate-offset-x) + (4 * var(--onboarding-translate-increment))));
 }
 
 .ant-steps .ant-steps-item-container {

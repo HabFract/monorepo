@@ -12,6 +12,8 @@ import Onboarding from './components/layouts/Onboarding';
 
 import { Button, ProgressBar, darkTheme } from 'habit-fract-design-system';
 import 'habit-fract-design-system/dist/style.css';
+import { store } from './state/jotaiKeyValueStore';
+import { currentSphere } from './state/currentSphereHierarchyAtom';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
@@ -29,7 +31,12 @@ function App({ children: pageComponent }: any) {
                       <Button
                         type={"icon"}
                         icon={<BackCaret />}
-                        onClick={() => { return transition(getLastOnboardingState(state), { editMode: true })}}>
+                        onClick={() => {
+                          const props = getLastOnboardingState(state).match("Onboarding1") 
+                            ? { sphereToEditId: store.get(currentSphere)?.actionHash }
+                            : {}
+
+                          return transition(getLastOnboardingState(state), { editMode: true, ...props })}}>
                       </Button>
                       <h1 className={"onboarding-title"}>Break a Negative Habit</h1>
                     </div>
@@ -41,7 +48,7 @@ function App({ children: pageComponent }: any) {
                   submitBtn:
                     <Button
                       type={"onboarding"}
-                      onClick={(e) => console.log(e)}
+                      onClick={(e) => transition(getNextOnboardingState(state))}
                     >Save & Continue</Button>
                 })
               })}
