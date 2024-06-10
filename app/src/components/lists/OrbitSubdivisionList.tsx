@@ -46,6 +46,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn }
                 onClickInfo={() => console.log("clicked!")}
               >Since you have chosen the MICRO scale for your orbit, you can now<em> add 1-4 micro-steps</em> which can be ticked off on completion (this is what we call a <em>WIN</em>).
               </HelperText>
+
               <Form noValidate={true}>
                 <div className="flex flex-col gap-2">
                   <FieldArray
@@ -60,7 +61,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn }
                               name={`list[${index}].name`}
                               value={item.name}
                               id={`list[${index}].name`}
-                              icon={"save"}
+                              icon={index == values.list.length -1 ? "pencil" : "save"}
                               iconSide={"right"}
                               withInfo={false}
                               required={false}
@@ -75,7 +76,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn }
 
                           </div>
                         ))}
-                        {values.list.length <= 4 && <button
+                        {values.list.length <= 3 && <button
                           className="flex flex-1 text-link w-8 mx-auto flex justify-center hover:text-primary"
                           type="button"
                           onClick={() => arrayHelpers.push({ name: "" })}

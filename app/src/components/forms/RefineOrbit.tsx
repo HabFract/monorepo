@@ -15,12 +15,13 @@ import { currentOrbitCoords, currentSphere } from '../../state/currentSphereHier
 import { AppState } from '../../routes';
 import { mapToCacheObject, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { client } from '../../main';
-import { TextAreaField, TextInputField, SelectInputField, HelperText } from 'habit-fract-design-system';
+import { OrbitCard, TextAreaField, TextInputField, SelectInputField, HelperText } from 'habit-fract-design-system';
 import { OrbitSubdivisionList } from '../lists';
 import { SubdivisionScale } from '../lists/OrbitSubdivisionList';
 import { useAtom } from 'jotai';
 import { subdivisionListAtom } from '../../state/subdivisionListAtom';
 import { OrbitFetcher } from './utils';
+import { OrbitValidationSchema } from './CreateOrbit';
 
 interface RefineOrbitProps {
   // refiningOrbitEh: string;
@@ -42,20 +43,11 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
  
   const loading = false;
 
-  const [list, setList] = useAtom(subdivisionListAtom);
-  
-  const schema = Yup.object().shape({
-    list: Yup.array().of(Yup.string().max(255).required())
-  })
-  .test({
-    message: 'The error message if length === 1',
-    test: obj => list.length >= 1,
-  })
 
   return (
     <Formik
       initialValues={{} as any}
-      validationSchema={schema}
+      validationSchema={OrbitValidationSchema}
       onSubmit={async (values, { setSubmitting }) => {
         // try {
         //   if (!values.archival) delete values.endTime;
@@ -76,16 +68,33 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
       }}
       >
       {({ values, errors, touched }) => {
-        console.log('errors :>> ', errors);
         return  (
         <>
-          { refiningOrbitAh && <OrbitFetcher orbitToEditId={refiningOrbitAh} />}
+          {refiningOrbitAh && <OrbitFetcher orbitToEditId={refiningOrbitAh} />}
           <div className='test'>
             { headerDiv }
             <p className='form-description'>Make sure that you have chosen the <em>best specifics</em> for your orbit, before you are ready to start tracking!</p>
             <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText>
+
+            {values?.name && 
+              <OrbitCard
+                displayOnly={true}
+                sphereEh={values.sphereHash}
+                orbit={{
+                  name: values.name,
+                  scale: values.scale,
+                  frequency: values.frequency,
+                  metadata:
+                    {
+                      description:values.description,
+                      timeframe: {
+                        startTime: values.startTime,
+                        endTime: values.endTime,
+                      }
+                    }
+                }} 
+            ></OrbitCard>}
             <OrbitSubdivisionList submitBtn={submitBtn} listItemScale={SubdivisionScale.Atom}></OrbitSubdivisionList>
-              
           </div>
         </>
       )}}

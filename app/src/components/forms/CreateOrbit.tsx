@@ -20,7 +20,7 @@ import { TextAreaField, TextInputField, SelectInputField } from 'habit-fract-des
 import { OrbitFetcher } from './utils';
 
 // Define the validation schema using Yup
-const OrbitValidationSchema = Yup.object().shape({
+export const OrbitValidationSchema = Yup.object().shape({
   name: Yup.string().matches(/(?!^\d+$)^.+$/, 'Name must contain letters.').required('Name is required'),
   description: Yup.string().matches(/(?!^\d+$)^.+$/, 'Description must contain letters.'),
   startTime: Yup.number().min(0).required("Start date/time is required"),

@@ -32,6 +32,33 @@
   @apply flex flex-col gap-2 bg-bg overflow-auto p-2 w-full;
   height: 100vh;
   overflow-x: hidden;
+  min-width: 100vw;
+  z-index: 5;
+}
+
+.page-container.home {
+  background: linear-gradient(170.28deg, #1B231E -9.44%, #0D120E 100%)  ;
+  position: relative;
+}
+
+div#root::before, div#root::after {
+  position: absolute;
+  content: "";
+  top: 45vh;
+  height: 50%;
+  background-size: cover;
+  opacity: 0.45;
+  width: 50vw;
+  z-index: 0;
+}
+
+div#root::before {
+  left: 2rem;
+  background: url(assets/HAB.svg) top left no-repeat;
+}
+div#root::after {
+  right: 2rem;
+  background: url(assets/FRACT.svg) top right no-repeat;
 }
 
 nav + main.page-container .sphere-card .row-c-around {
@@ -92,6 +119,7 @@ nav + main.page-container .orbits-list {
   }
 
   .page-container {
+    min-width: calc(50vw - 6rem);
     @apply p-8;
   }
 }

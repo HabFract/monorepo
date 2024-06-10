@@ -64,7 +64,7 @@ export default {
 
         "title": "rgba(219,228,226, 1)", // CHINESE_WHITE
 
-        "text": "rgba(255,225,225, 1)", // WHITE
+        "text": "rgba(255,255,255, 1)", // WHITE
 
         "input-placeholder": "#4E5454",
         "input-bg": "#242424",

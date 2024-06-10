@@ -11,13 +11,14 @@ import { OrbitVis } from '../vis';
 type OrbitCardProps = {
   orbit: Orbit;
   sphereEh?: string,
-  transition: (newState: string, params?: object) => void
-  runDelete: () => void
+  transition: (newState: string, params?: object) => void,
+  runDelete: () => void,
+  displayOnly: boolean
 };
 
-const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runDelete }: OrbitCardProps) => {
+const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, displayOnly }: OrbitCardProps) => {
   return (
-    <div className="orbit-card flex flex-col rounded-2xl overflow-hidden">
+    <div className={ displayOnly ? "orbit-card display-only" : "orbit-card"}>
       <header className="orbit-header card-header">
         <div className="orbit-title">
           <h2 className="card-name card-h1">{orbit.name}</h2>
@@ -31,7 +32,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runD
         <div className="orbit-description flex items-center justify-center">
           {orbit?.metadata?.description && orbit?.metadata?.description !== '' && <p className='card-copy'>{orbit.metadata?.description}</p>}        </div>
         <div className="row-c-around h-full big-gap">
-          <div className="orbit-actions col-c gap-2">
+          {!displayOnly && <div className="orbit-actions col-c gap-2">
             <div className="orbit-actions-crud flex-col row-c-around">
             <Dropdown label="Manage" dismissOnClick={false} className="bg-red-500 hover:bg-red-600">
               <Dropdown.Item onClick={() => {transition('CreateOrbit', { editMode: true, orbitToEditId: orbit.id, sphereEh })}}>
@@ -55,7 +56,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runD
                 <span>Visualise</span>
               </Button> */}
             </div>
-          </div>
+          </div>}
           <div className="mini-vis col-c">
             {orbit?.scale && <OrbitVis scale={orbit.scale} />}
           </div>

@@ -12,7 +12,6 @@ import Onboarding from './components/layouts/Onboarding';
 
 import { Button, ProgressBar, darkTheme } from 'habit-fract-design-system';
 import 'habit-fract-design-system/dist/style.css';
-import { decode } from '@msgpack/msgpack';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
@@ -50,8 +49,8 @@ function App({ children: pageComponent }: any) {
             </Onboarding>
           </main>
         : <>
-          <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded}></Nav>
-          <main className={"page-container"}>{pageComponent}</main>
+          {!state.match('Home') && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded}></Nav>}
+          <main className={state.match('Home') ? "home page-container" : "page-container"}>{pageComponent}</main>
         </>
       }
 
