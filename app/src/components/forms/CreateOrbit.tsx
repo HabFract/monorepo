@@ -145,7 +145,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
           <Form noValidate={true}>
             {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
 
-            <div className="flex flex-col gap-2">
+            <div className="flex form-field">
                 <Field
                   component={TextInputField}
                   size="base"
@@ -160,7 +160,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                 />
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex form-field">
               <Field
                 component={TextAreaField}
                 size="base"
@@ -175,7 +175,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             {!parentOrbitEh && !inOnboarding && <div className="field">
               <Label htmlFor='parentHash'>Parent Orbit: <span className="reqd">*</span></Label>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex form-field">
                 <Field type="text" name="parentHash">
                   {({ field }) => (
                     <Select 
@@ -197,7 +197,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             {/* FIELD STRIPPED OUT OF MVP: <div className="field">
               <Label htmlFor='frequency'>Frequency: <span className="reqd">*</span>
               </Label>
-              <div className="flex flex-col gap-2">
+              <div className="flex form-field">
                 <Field name="frequency" >
                   {({ field }) => (
                     <Select
@@ -215,7 +215,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
               </div>
             </div> */}
 
-            <div className="flex flex-col gap-2">
+            <div className="flex form-field">
               <Field
                 component={SelectInputField}
                 size="base"
@@ -244,7 +244,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                 </Label>
               </Flex>
               <div className="flex flex-wrap items-start">
-                <div className="flex flex-col gap-2 flex-1">
+                <div className="flex form-field flex-1">
                   <Field
                     name="startTime"
                     id="startTime"

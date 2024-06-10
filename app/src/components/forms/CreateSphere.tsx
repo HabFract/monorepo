@@ -89,7 +89,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
           <p className='form-description'>A sphere is an <em>area of your life</em> where you want to track repeated actions.</p>
           <Form noValidate={true}>
             {editMode && <SphereFetcher sphereToEditId={sphereToEditId} />}
-              <div className="flex flex-col gap-2">
+              <div className="form-field">
                 <Field
                   component={TextInputField}
                   size="base"
@@ -103,7 +103,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
                 />
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="form-field">
                 <Field
                   component={TextAreaField}
                   name="description"
@@ -115,7 +115,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
 
               <div className="field row sphere-image">
                 <Label htmlFor='sphere_image'>Image:</Label>
-                <div className="flex flex-col gap-2">
+                <div className="form-field">
                   <Field component={ImageUpload} color={"disabled"} sizing="lg" autoComplete={'off'} type="text" name="sphere_image" id="sphere_image" />
                 </div>
               </div>

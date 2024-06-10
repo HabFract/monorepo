@@ -18,6 +18,7 @@ form {
   display: flex;
   flex-direction: column;
   gap: .5rem;
+  align-items: center;
 }
 
 .scene {
@@ -37,6 +38,16 @@ form {
   display: flex;
   flex-wrap: wrap;
   gap: .5rem;
+}
+.form-field {
+  flex-direction: column;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  width: 100%;
+}
+.form-field > * {
+  width: 100%;
 }
 
 .field.row {
@@ -138,6 +149,9 @@ span.reqd {
   .field {
       flex-wrap: nowrap;
       @apply flex-row;
+  }
+  .form-field {   
+    width: 85%;
   }
   .field label {
     @apply flex text-sm mb-6;

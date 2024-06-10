@@ -51,13 +51,13 @@ const forms = ['CreateSphere', 'CreateOrbit'] as any[];
 const lists = ['ListSpheres', 'ListOrbits'];
 
 export const AppTransitions: StateTransitions<AppState> = {
-  Boot: ['Onboarding1'],
+  Boot: ['Home'],
+  Home: [ "Onboarding1"],
   Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding3'],
   Onboarding3: ['Onboarding2', 'Onboarding4'],
   Onboarding4: ['Onboarding3', 'Home'],
 
-  Home: [...forms, ...lists, 'Vis'],
   Vis: ['Home', ...forms, ...lists, 'Vis'],
   CreateSphere: ['Home', ...lists, ...forms, 'Vis'],
   ListSpheres: ['Home', ...lists, ...forms, 'Vis'],

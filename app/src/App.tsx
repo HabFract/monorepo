@@ -50,7 +50,18 @@ function App({ children: pageComponent }: any) {
           </main>
         : <>
           {!state.match('Home') && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded}></Nav>}
-          <main className={state.match('Home') ? "home page-container" : "page-container"}>{pageComponent}</main>
+          <main className={state.match('Home') ? "home page-container" : "page-container"}>
+            {cloneElement(pageComponent, {
+              children: cloneElement(pageComponent.props.children, {
+                startBtn:
+                  state.match('Home') && <Button
+                  type={"onboarding"}
+                  onClick={() => { return transition("Onboarding1")}}>
+                    Star Tracking Habits
+                </Button>
+              })
+            })}
+          </main>
         </>
       }
 
