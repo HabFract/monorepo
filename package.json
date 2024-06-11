@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "dotenv -- concurrently \"npm run start:backend-services\" \"npm run build:backend && npm run start:backend-prod\"",
+    "start": "AGENTS=1 pnpm network",
     "dev": "dotenv -- concurrently \"npm run start:backend-services\" \"npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
     "test": "npm run test:zomes; npm run test:ui",
     "test:ui": "node node_modules/jest/bin/jest.js --config jest.config.js --silent=true",
@@ -18,11 +18,17 @@
     "start:backend-prod": "cd crates && npm run start:prod",
     "test:zomes": "cd tests && npm run test",
     "check-env": "test ! -f .env && cp .env.example .env && cp .env crates/.env; exit 0",
-    "postinstall": "npm run check-env"
+    "postinstall": "npm run check-env",
+    "network": "pnpm build:backend && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"pnpm local-services\" \"pnpm run start:frontend\" \"pnpm launch\"",
+    "local-services": "hc run-local-services --bootstrap-interface $INTERNAL_IP --bootstrap-port $BOOTSTRAP_PORT --signal-interfaces $INTERNAL_IP --signal-port $SIGNAL_PORT",
+    "network:android": "pnpm build:happ && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"pnpm local-services\" \"pnpm run start:frontend\" \"pnpm tauri dev\" \"pnpm tauri android dev\"",
+    "build:zomes": "CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown --workspace --exclude habit_fract",
+    "launch": "concurrently-repeat \"pnpm run tauri dev\" $AGENTS",
+    "tauri": "tauri"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
     "antd": "^5.11.0",
@@ -73,7 +79,7 @@
     "@vitejs/plugin-react": "^4.0.3",
     "babel-jest": "^29.7.0",
     "babel-plugin-import": "^1.13.8",
-    "concurrently": "^6.2.1",
+    "concurrently": "^8.2.2",
     "dotenv-cli": "^7.3.0",
     "fake-indexeddb": "^5.0.2",
     "jest": "^29.7.0",
@@ -85,6 +91,10 @@
     "ts-jest": "^29.1.2",
     "typescript": "^5.3.3",
     "vite": "^4.4.5",
-    "vite-plugin-node-polyfills": "^0.15.0"
+    "vite-plugin-node-polyfills": "^0.15.0",
+    "@tauri-apps/cli": "^2.0.0-beta.20",
+    "concurrently-repeat": "^0.0.1",
+    "internal-ip-cli": "^2.0.0",
+    "new-port-cli": "^1.0.0"
   }
 }
