@@ -2,7 +2,7 @@
 function OnboardingLayout({ children } : any) {
 
   return (
-    <div className="flex justify-between flex-col gap-3">
+    <div className="onboarding-layout">
       {children}
     </div>
   )

@@ -31,6 +31,7 @@ const ImageUpload = ({
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
+  const [custom, setCustom] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>(field?.value || "");
 
   useEffect(() => {
@@ -62,6 +63,7 @@ const ImageUpload = ({
       // Get this url from response in real world.
       getBase64(info.file.originFileObj as RcFile, (url) => {
         setLoading(false);
+        setCustom(true);
         setImageUrl(url);
         setFieldValue(field.name, url);
       });
@@ -69,7 +71,7 @@ const ImageUpload = ({
   };
 
   const uploadButton = (
-    <div className='absolute z-10 top-2 left-5 text-gray-500 '>
+    <div className='absolute z-10 top-4 left-6 text-gray-500 '>
       <div className='upload-img-btn absolute bg-secondary text-white hover:bg-secondary rounded-full p-2 transition-all duration-300'>Upload
         <span className="rounded-xl text-primary bg-secondary">{loading ? <LoadingOutlined /> : <PlusCircleFilled />}</span>
       </div>
@@ -91,7 +93,7 @@ const ImageUpload = ({
       onChange={handleChange}
       customRequest={dummyRequest as any}
     >
-      {imageUrl ? <div className='relative w-full h-full'><img src={imageUrl} alt="avatar" style={{ width: '100%' }} />{uploadButton}</div> : uploadButton}
+      {imageUrl && custom ? <div className='relative w-full h-full'><img src={imageUrl} alt="avatar" style={{ width: '100%' }} /></div> : <div className='relative w-full h-full'>{uploadButton}</div>}
     </Upload>
   );
 };

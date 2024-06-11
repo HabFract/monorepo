@@ -1,0 +1,10 @@
+.helper-text {
+  font-size: 16px !important;
+  @apply mt-2 flex w-full justify-between font-medium leading-std text-input-text text-xs gap-4 font-sans font-semibold;
+}
+span.helper-content {
+  line-height: 24px;
+  font-size: 1em;
+  font-weight: light;
+  @apply font-sans font-light mb-2;
+}

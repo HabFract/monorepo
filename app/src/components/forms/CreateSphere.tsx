@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Formik, Form, Field, useFormikContext } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Label } from 'flowbite-react';
 import { SphereCreateParams, useCreateSphereMutation, useGetSphereQuery, useUpdateSphereMutation } from '../../graphql/generated';
@@ -16,7 +16,6 @@ const SphereValidationSchema = Yup.object().shape({
   name: Yup.string().required('Name is a required field'),
   description: Yup.string().min(5, 'A description needs to be at least 5 characters'),
   image: Yup.string().trim().matches(/^data:((?:\w+\/(?:(?!;).)+)?)((?:;[\w=]*[^;])*),(.+)$/,"Image must be a valid data URI"),
-  //TODO: limit to jpg/png?
 });
 
 interface CreateSphereProps {
@@ -38,9 +37,6 @@ const SphereFetcher = ({sphereToEditId, setValues}) => {
     if(!getData) return;
 
     const {  name, metadata: {description, image }} = getData?.sphere as any;
-    console.log('VALUES', {
-      name, description, image
-    });
     setValues({
       name, description, image
     })
@@ -81,11 +77,13 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
           setSubmitting(false);
           if(!response.data) return;
           const payload = (response.data as any);
+          const eH = payload?.createSphere?.entryHash || payload?.updateSphere?.entryHash
+          const aH = payload?.createSphere?.actionHash || payload?.updateSphere?.actionHash
           const props = state == 'Onboarding1' && !editMode
-            ? { sphereEh: payload.createSphere.entryHash }
-            : { sphereAh: editMode ? payload.updateSphere.actionHash : payload.createSphere.actionHash }
+            ? { sphereEh: eH }
+            : { sphereAh: aH }
 
-          store.set(currentSphere, {entryHash: props.sphereEh, actionHash: payload?.createSphere.actionHash});
+          store.set(currentSphere, {entryHash: eH, actionHash: aH});
           transition(state == 'Onboarding1' ? 'Onboarding2' : 'ListSpheres', props)
         } catch (error) {
           console.error(error);

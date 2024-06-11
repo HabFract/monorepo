@@ -18,8 +18,8 @@
 }
 
 :root {
-  --onboarding-translate-offset-x: -25px;
-  --onboarding-translate-increment: -125px;
+  --onboarding-translate-offset-x: -75px;
+  --onboarding-translate-increment: -200px;
 }
 
 .onboarding-progress .ant-steps-item-subtitle,

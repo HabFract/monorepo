@@ -45,12 +45,16 @@
   z-index: 5;
 }
 
+.onboarding-layout {
+  @apply flex justify-between flex-col gap-2 p-2;
+}
+
 .home-layout .top {
   @apply flex justify-between flex-col gap-2;
 }
 .home-layout .bottom:hover + .top {
   background: url(assets/circled-pen.svg) no-repeat;
-  background-position: 100% 10rem;
+  background-position: 100% 12rem;
   background-size: contain;
   background-size: 8rem;
 }
@@ -159,12 +163,17 @@ nav + main.page-container .orbits-list {
   .page-container.home::before {
     background-position-y: -8vh;
   }
+  .onboarding-layout {
+    @apply gap-4 p-4;
+  }
+  
 }
 @media screen and (min-width: 1200px) {
   #root {
     grid-template-columns: 30% 40% 30%;
   }
   .page-container {
+    font-size: 130%;
     @apply p-12;
   }
   .page-container.home::before {

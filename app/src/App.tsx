@@ -64,7 +64,7 @@ function App({ children: pageComponent }: any) {
                   state.match('Home') && <Button
                   type={"onboarding"}
                   onClick={() => { return transition("Onboarding1")}}>
-                    Star Tracking Habits
+                    Start Tracking Habits
                 </Button>
               })
             })}

@@ -71,7 +71,6 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
         return  (
         <>
           {refiningOrbitAh && <OrbitFetcher orbitToEditId={refiningOrbitAh} />}
-          <div className='test'>
             { headerDiv }
             <p className='form-description'>Make sure that you have chosen the <em>best specifics</em> for your orbit, before you are ready to start tracking!</p>
             <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText>
@@ -95,7 +94,6 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
                 }} 
             ></OrbitCard>}
             <OrbitSubdivisionList submitBtn={submitBtn} listItemScale={SubdivisionScale.Atom}></OrbitSubdivisionList>
-          </div>
         </>
       )}}
     </Formik>

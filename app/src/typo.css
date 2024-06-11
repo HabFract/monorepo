@@ -9,6 +9,7 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  font-size: 16px;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -44,14 +45,14 @@ h1.onboarding-title {
   text-align: center;
   margin: 0;
   font-family: TTSupermolot, Arial, sans-serif;
-  line-height: 2;
+  line-height: 2.2em;
   font-weight: 400;
   @apply text-primary;
 }
 
 p.form-description {
   line-height: 24px;
-  font-size: 14px;
+  font-size: 1em;
   font-weight: light;
   @apply font-sans;
 }
