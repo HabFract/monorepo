@@ -6,23 +6,30 @@
   "scripts": {
     "start": "AGENTS=1 pnpm network",
     "dev": "dotenv -- concurrently \"npm run start:backend-services\" \"npm run start:backend-dev\" \"npm run start:frontend\" \"cd app && npm run generate:watch\" \"npm run open-browser\"",
+
     "test": "npm run test:zomes; npm run test:ui",
     "test:ui": "node node_modules/jest/bin/jest.js --config jest.config.js --silent=true",
     "test:ui-watch-current": "node node_modules/jest/bin/jest.js -t CURRENT --watch --config jest.config.js ",
-    "build:frontend": "cd app && npm run generate && npm run build",
-    "start:frontend": "cd app && npm run start",
+
+    "build:frontend": "cd ui && npm run generate && npm run build",
+    "start:frontend": "cd ui && npm run start",
     "open-browser": "sleep 15 && open-cli http://localhost:${VITE_UI_PORT}",
+
     "build:backend": "cd crates && npm run build",
     "start:backend-services": "cd crates && npm run start:precheck ",
     "start:backend-dev": "cd crates && npm run start:dev",
     "start:backend-prod": "cd crates && npm run start:prod",
     "test:zomes": "cd tests && npm run test",
+
     "check-env": "test ! -f .env && cp .env.example .env && cp .env crates/.env; exit 0",
     "postinstall": "npm run check-env",
-    "network": "pnpm build:backend && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"pnpm local-services\" \"pnpm run start:frontend\" \"pnpm launch\"",
+
+    "network": "pnpm build:happ && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"pnpm local-services\" \"pnpm run start:frontend\" \"pnpm launch\"",
+    "build:happ": "npm run build:zomes && hc app pack workdir --recursive",
+    "build:zomes": "CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown --workspace --exclude habit_fract",
+
     "local-services": "hc run-local-services --bootstrap-interface $INTERNAL_IP --bootstrap-port $BOOTSTRAP_PORT --signal-interfaces $INTERNAL_IP --signal-port $SIGNAL_PORT",
     "network:android": "pnpm build:happ && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"pnpm local-services\" \"pnpm run start:frontend\" \"pnpm tauri dev\" \"pnpm tauri android dev\"",
-    "build:zomes": "CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown --workspace --exclude habit_fract",
     "launch": "concurrently-repeat \"pnpm run tauri dev\" $AGENTS",
     "tauri": "tauri"
   },
@@ -95,6 +102,7 @@
     "@tauri-apps/cli": "^2.0.0-beta.20",
     "concurrently-repeat": "^0.0.1",
     "internal-ip-cli": "^2.0.0",
+    "internal-ip": "^7.0.0",
     "new-port-cli": "^1.0.0"
   }
 }
