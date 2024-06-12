@@ -16,9 +16,12 @@ pub fn entry_from_record<T: TryFrom<SerializedBytes, Error = SerializedBytesErro
 pub fn get_links_from_base(
   base: impl Into<HoloHash<AnyLinkable>>,
   link_type: impl LinkTypeFilterExt,
-  link_tag: Option<LinkTag>,
+  _link_tag: Option<LinkTag>,
 ) -> ExternResult<Option<Vec<Link>>> {
-  let links = get_links(base, link_type, link_tag)?;
+  let links = get_links(
+    GetLinksInputBuilder::try_new(base, link_type)?
+        .build()
+    )?;
   if links.len() == 0 {
       return Ok(None);
   }

@@ -17,7 +17,7 @@ pub struct Orbit {
 }
 
 impl Orbit {
-    fn new(name: &str, parent_hash: Option<EntryHashB64>, child_hash: Option<EntryHashB64>, sphere_hash: EntryHashB64, frequency: String, scale: String, metadata: Option<OrbitMetadata>) -> Self {
+    fn _new(name: &str, parent_hash: Option<EntryHashB64>, child_hash: Option<EntryHashB64>, sphere_hash: EntryHashB64, frequency: String, scale: String, metadata: Option<OrbitMetadata>) -> Self {
         Orbit {
             name: name.to_string(),
             parent_hash,

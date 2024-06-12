@@ -41,7 +41,10 @@ pub fn get_my_orbit(original_orbit_hash: ActionHash) -> ExternResult<Option<Reco
 }
 
 pub fn get_orbit(original_orbit_hash: ActionHash) -> ExternResult<Option<Record>> {
-    let links = get_links(original_orbit_hash.clone(), LinkTypes::OrbitUpdates, None)?;
+    let links = get_links(
+        GetLinksInputBuilder::try_new(original_orbit_hash.clone(), LinkTypes::OrbitUpdates)?
+            .build()
+        )?;
     let latest_link = links
         .into_iter()
         .max_by(|link_a, link_b| link_a.timestamp.cmp(&link_b.timestamp));
