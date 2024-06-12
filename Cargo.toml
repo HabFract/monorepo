@@ -63,4 +63,5 @@ path = "crates/dnas/habits/zomes/integrity/personal"
 [workspace.dependencies.holochain]
 default-features = false
 features = ["test_utils"]
-version = "0.3.1-rc"
+version = "0.3.1-rc.2"
+  
