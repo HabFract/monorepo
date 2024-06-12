@@ -11,8 +11,8 @@ export default ({ mode }) => {
   return defineConfig({
     server: {
       host: "0.0.0.0",
-      // port: 1420,
-      port: parseInt(process.env.VITE_UI_PORT as string),
+      port: 1420,
+      // port: parseInt(process.env.VITE_UI_PORT as string),
       strictPort: true,
       hmr: {
         protocol: "ws",
