@@ -6,7 +6,8 @@ import { StateMachine } from './state/stateMachine'
 import { AppState, AppStateStore, AppTransitions, initialState, routes } from './routes'
 import { Provider } from 'jotai'
 import { store } from './state/jotaiKeyValueStore'
-import { openConnection } from './graphql'
+import { getConnection } from './graphql/connection'
+import { initGraphQLClient } from './graphql/client'
 
 /*
 
@@ -47,15 +48,9 @@ export async function renderComponent(component: React.ReactNode) {
 AppMachine.go();
 
 export const client = async() => {
-  const client = await openConnection();
-
-// const dnaMappings = await sniffHolochainAppCells(client);
-// console.log('dnaMappings :>> ', dnaMappings);
-
-
-
-
-  return client
+  const conn = await getConnection("habit_fract");
+  // TODO: return apollo client for use outside components
+  // return await initGraphQLClient(conn.client)
 }
 
 

@@ -12,7 +12,6 @@ export const OrbitFetcher = ({orbitToEditId}) => {
   });
 
   useEffect(() => {
-    console.log('getData :>> ', getData);
       if(typeof getData == "undefined") return;
       const {  name, sphereHash: parentHash, frequency, scale, metadata: {description, timeframe:  {startTime, endTime} }} = getData!.orbit as any;
       

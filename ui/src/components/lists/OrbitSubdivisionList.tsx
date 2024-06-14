@@ -32,12 +32,11 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn }
         initialValues={{ list: [{ name: "" }] }}
         validationSchema={ListValidationSchema}
         onSubmit={(values, { setSubmitting }) => {
-          console.log(values);
+          // console.log(values);
           setSubmitting(false);
         }}
       >
         {({ values, errors, touched, handleChange, handleBlur }) => {
-          console.log(errors)
           return (
             <>
               <HelperText
