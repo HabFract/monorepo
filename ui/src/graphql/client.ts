@@ -98,8 +98,8 @@ export const cache = new InMemoryCache({
   },
 });
 
-export async function initGraphQLClient(options: APIOptions) {
-  const { dnaConfig, conductorUri } = await autoConnect()
+export async function initGraphQLClient({ dnaConfig, conductorUri }) {
+  
   const schema = await bindSchema({ dnaConfig, conductorUri }) // {conductorUri: `ws://localhost:${APP_WS_PORT}`} as APIOptions)
 
   return new ApolloClient({
@@ -108,14 +108,14 @@ export async function initGraphQLClient(options: APIOptions) {
   })
 }
 
-async function connect(options: ClientOptions) {
+async function connect(options: any) {
   // autodetect `CellId`s if no explicit `dnaConfig` is provided
-  if (!options.dnaConfig) {
-    const { dnaConfig } = await autoConnect(options.conductorUri)
-    options.dnaConfig = dnaConfig
-  }
+  // if (!options.dnaConfig) {
+  //   const { dnaConfig } = await autoConnect(options,options.conductorUri)
+  //   options.dnaConfig = dnaConfig
+  // }
 
-  return await initGraphQLClient(options)
+  // return await initGraphQLClient(options)
 }
 
 export default connect

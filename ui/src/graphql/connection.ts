@@ -44,27 +44,25 @@ export function getCellId(cellInfo: CellInfo): CellId {
 
 // :NOTE: when calling AppWebsocket.connect for the Launcher Context
 // it just expects an empty string for the socketURI. Other environments require it.
-const DEFAULT_CONNECTION_URI = (`ws://localhost:${APP_WS_PORT}` as string) || ''
+const DEFAULT_CONNECTION_URI = (`ws://localhost:${"NONE"}` as string) || ''
 const HOLOCHAIN_APP_ID = (HAPP_ID as string) || ''
 
 const CONNECTION_CACHE: { [i: string]: Promise<AppWebsocket> } = {}
 
 export async function autoConnect(
   conductorUri?: string,
-  appID?: string,
 ) {
   if (!conductorUri) {
     conductorUri = DEFAULT_CONNECTION_URI
   }
 
-  const appWs = await openConnection(conductorUri)
-  const dnaConfig = await sniffHolochainAppCells(appWs, appID)
+  const appWs = await openConnection(conductorUri);
+  const dnaConfig = await sniffHolochainAppCells(appWs)
+    // const adminWs = await AdminWebsocket.connect(new URL(`ws://localhost:NONE`));
+    // console.log("adminWs", adminWs)
+    // await adminWs.authorizeSigningCredentials(dnaConfig[HAPP_DNA_NAME]!.cell_id!);
 
-  const adminWs = await AdminWebsocket.connect(new URL(`ws://localhost:${9001}`));
-
-  await adminWs.authorizeSigningCredentials(dnaConfig[HAPP_DNA_NAME]!.cell_id!);
-
-  return { conn: appWs, dnaConfig, conductorUri }
+  return { client: appWs, dnaConfig, conductorUri }
 }
 
 /**
@@ -81,10 +79,11 @@ export const openConnection = (
 ) => {
   console.log(`Init Holochain connection: ${socketURI}`)
   CONNECTION_CACHE[socketURI] = AppWebsocket.connect(
-    new URL(socketURI),
-    undefined,
+    // new URL(socketURI),
+    // new URL(`ws://UNUSED`)
+    // undefined,
   ).then((client) => {
-    console.log(`Holochain connection to ${socketURI} OK`)
+    console.log(`Holochain connection to ${socketURI} OK:`, client)
     return client
   })
 
@@ -109,9 +108,7 @@ export async function sniffHolochainAppCells(
   conn: AppWebsocket,
   appID?: string,
 ) {
-  const appInfo = await conn.appInfo({
-    installed_app_id: appID || HOLOCHAIN_APP_ID,
-  })
+  const appInfo = await conn.appInfo()
   if (!appInfo) {
     throw new Error(
       `appInfo call failed for Holochain app '${
