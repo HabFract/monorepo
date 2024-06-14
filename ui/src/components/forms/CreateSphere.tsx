@@ -55,12 +55,12 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
 
   const [addSphere, {loading}] = useCreateSphereMutation({
     refetchQueries: [
-      'getSpheres',
+      // 'getSpheres',
     ]
   });
   const [updateSphere] = useUpdateSphereMutation({
     refetchQueries: [
-      'getSpheres',
+      // 'getSpheres',
     ]
   });
 
@@ -82,7 +82,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
           const props = state == 'Onboarding1' && !editMode
             ? { sphereEh: eH }
             : { sphereAh: aH }
-
+console.log('props :>> ', props);
           store.set(currentSphere, {entryHash: eH, actionHash: aH});
           transition(state == 'Onboarding1' ? 'Onboarding2' : 'ListSpheres', props)
         } catch (error) {

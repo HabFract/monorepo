@@ -90,7 +90,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
   });
   const [updateOrbit] = useUpdateOrbitMutation({
     refetchQueries: [
-      'getOrbits',
+      // 'getOrbits',
     ],
   });
 
