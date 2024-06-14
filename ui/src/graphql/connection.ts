@@ -78,19 +78,19 @@ export const openConnection = (
   socketURI: string,
 ) => {
   console.log(`Init Holochain connection: ${socketURI}`)
-  CONNECTION_CACHE[socketURI] = AppWebsocket.connect(
-    // new URL(socketURI),
+  CONNECTION_CACHE["habit_fract"] = AppWebsocket.connect(
+    // new URL("habit_fract"),
     // new URL(`ws://UNUSED`)
     // undefined,
   ).then((client) => {
-    console.log(`Holochain connection to ${socketURI} OK:`, client)
+    console.log(`Holochain connection to ${"habit_fract"} OK:`, client)
     return client
   })
 
-  return CONNECTION_CACHE[socketURI]
+  return CONNECTION_CACHE["habit_fract"]
 }
 
-const getConnection = (socketURI: string) => {
+export const getConnection = (socketURI: string) => {
   if (!CONNECTION_CACHE[socketURI]) {
     throw new Error(
       `Connection for ${socketURI} not initialised! Please call openConnection() first.`,
@@ -303,8 +303,8 @@ const zomeFunction =
     skipEncodeDecode?: boolean,
   ): BoundZomeFn<InputType, Promise<OutputType>> =>
   async (args): Promise<OutputType> => {
-    const { callZome } = await getConnection(socketURI)
-    const res = await callZome(
+    const conn = await getConnection("habit_fract");
+    const res = await conn.callZome(
       {
         cap_secret: null,
         cell_id,
@@ -315,6 +315,11 @@ const zomeFunction =
       },
       60000,
     )
+    // .then((response) => {
+    //   console.log("Zome response:", response)
+    // }).catch((e) => {
+    //   console.error(e)
+    // })
 
     if (!skipEncodeDecode) decodeFields(res)
     return res
