@@ -23,7 +23,7 @@ tauri-plugin-holochain = { git = "https://github.com/darksoil-studio/p2p-shipyar
 holochain_types = { version = "0.3.1-rc" }
 lair_keystore = { version = "0.4.0" }
 
-holochain_client = { version = "0.5.0-rc" }
+holochain_client = { version = "0.5.0-rc.4" }
 
 log = "0.4"
 tauri-plugin-log = "2.0.0-beta"

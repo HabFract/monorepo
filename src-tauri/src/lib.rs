@@ -11,7 +11,7 @@ const PRODUCTION_SIGNAL_URL: &'static str = "wss://signal.holo.host";
 const PRODUCTION_BOOTSTRAP_URL: &'static str = "https://bootstrap.holo.host";
 
 pub fn happ_bundle() -> AppBundle {
-    let bytes = include_bytes!("../../crates/workdir/habit_fract.happ");
+    let bytes = include_bytes!("../../workdir/habit_fract.happ");
     AppBundle::decode(bytes).expect("Failed to decode habit_fract happ")
 }
 
