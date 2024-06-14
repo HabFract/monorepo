@@ -4,4 +4,4 @@ name: habit_fract
 ui:
   bundled: "../../ui.zip"
 happ_manifest:
-  bundled: "./habit_fract.happ"
+  bundled: "../../workdir/habit_fract.happ"
