@@ -25,12 +25,14 @@ export type Routes = {
 
 export type AppStateStore = {
   currentState: AppState,
-  params?: object
+  params?: object,
+  client: any
 }
 
 export const initialState: AppStateStore = { // Home route
   currentState: "Home",
-  params: {}
+  params: {},
+  client: null
 }
 
 export const routes: Routes = {
@@ -40,7 +42,7 @@ export const routes: Routes = {
   Onboarding1: <CreateSphere editMode={false} />,
   Onboarding2: <CreateOrbit editMode={false} />,
   Onboarding3: <RefineOrbit />,
-  Onboarding4: <CreateProfile editMode={false} />,
+  Onboarding4: <ListSpheres/>,
   CreateSphere: <CreateSphere headerDiv={<h1 className="w-full text-center">Create a Sphere</h1>} editMode={false} />,
   ListSpheres: <ListSpheres />,
   CreateOrbit: <CreateOrbit headerDiv={<h1 className="w-full text-center">Create an Orbit</h1>} editMode={false} inModal={false} sphereEh="" parentOrbitEh="" />,
@@ -55,7 +57,7 @@ export const AppTransitions: StateTransitions<AppState> = {
   Home: [ "Onboarding1"],
   Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding2', 'Onboarding3'],
-  Onboarding3: ['Onboarding2', 'Onboarding3', 'Onboarding4'],
+  Onboarding3: ['Onboarding2', 'Onboarding3', 'Onboarding4', 'ListSpheres'],
   Onboarding4: ['Onboarding3', 'Home'],
 
   Vis: ['Home', ...forms, ...lists, 'Vis'],

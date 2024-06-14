@@ -1,6 +1,4 @@
 
-import './App.css'
-
 import { useStateTransition } from './hooks/useStateTransition';
 
 import Nav from './components/Nav';
@@ -11,21 +9,20 @@ import BackCaret from './components/icons/BackCaret';
 import Onboarding from './components/layouts/Onboarding';
 
 import { Button, ProgressBar, darkTheme } from 'habit-fract-design-system';
-import 'habit-fract-design-system/dist/style.css';
 import { store } from './state/jotaiKeyValueStore';
 import { currentSphere } from './state/currentSphereHierarchyAtom';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
-
-  return (
+  
+    return (
     <Flowbite theme={{theme: darkTheme}}>
       {state.match('Onboarding')
         ? <main className={"page-container onboarding-page"}>
             <Onboarding>
-              {cloneElement(pageComponent, {
-                children: cloneElement(pageComponent.props.children, {
+              {pageComponent && cloneElement(pageComponent, {
+                
                   headerDiv: (() => <>
                     <div className={"flex w-full justify-between gap-2"}>
                       <Button
@@ -50,7 +47,6 @@ function App({ children: pageComponent }: any) {
                       type={"onboarding"}
                       onClick={(e) => transition(getNextOnboardingState(state))}
                     >Save & Continue</Button>
-                })
               })}
 
             </Onboarding>
@@ -58,15 +54,13 @@ function App({ children: pageComponent }: any) {
         : <>
           {!state.match('Home') && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded}></Nav>}
           <main className={state.match('Home') ? "home page-container" : "page-container"}>
-            {cloneElement(pageComponent, {
-              children: cloneElement(pageComponent.props.children, {
-                startBtn:
+            {pageComponent && cloneElement(pageComponent, { startBtn:
                   state.match('Home') && <Button
                   type={"onboarding"}
                   onClick={() => { return transition("Onboarding1")}}>
                     Start Tracking Habits
                 </Button>
-              })
+              
             })}
           </main>
         </>

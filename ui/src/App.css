@@ -21,6 +21,10 @@
 }
 
 #root {
+}
+
+.ant-app {
+  color: white;
   @apply bg-gray-500;
   display: grid;
   width: 100vw;
@@ -29,12 +33,14 @@
 }
 
 .page-container {
+
   @apply flex gap-2 bg-bg overflow-auto p-0 w-full;
   flex-direction: column;
   height: 100vh;
   overflow-x: hidden;
   min-width: 100vw;
   z-index: 5;
+  align-items: center;
 }
 
 .home-layout {
@@ -46,7 +52,7 @@
 }
 
 .onboarding-layout {
-  @apply flex justify-between flex-col gap-2 p-2;
+  @apply flex justify-between flex-col gap-2 p-2 w-full;
 }
 
 .home-layout .top {
@@ -137,7 +143,7 @@ nav + main.page-container .orbits-list {
 }
 
 @media screen and (min-width: 440px) {
-  #root {
+  .ant-app {
     grid-template-columns: 10% 80% 10%;
     place-content: center;
   }
@@ -151,7 +157,7 @@ nav + main.page-container .orbits-list {
 }
 
 @media screen and (min-width: 768px) {
-  #root {
+  .ant-app {
     grid-template-columns: 20% 60% 20%;
   }
 
@@ -169,7 +175,7 @@ nav + main.page-container .orbits-list {
   
 }
 @media screen and (min-width: 1200px) {
-  #root {
+  .ant-app {
     grid-template-columns: 30% 40% 30%;
   }
   .page-container {

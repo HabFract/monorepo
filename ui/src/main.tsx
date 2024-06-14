@@ -1,14 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import BootScreen from './BootScreen'
 import App from './App'
-import './typo.css'
 import { StateMachine } from './state/stateMachine'
-import { StateMachineContext } from './contexts/state-machine'
-import { ApolloProvider } from '@apollo/client'
 import { AppState, AppStateStore, AppTransitions, initialState, routes } from './routes'
-import connect, { ClientOptions } from './graphql/client'
 import { Provider } from 'jotai'
 import { store } from './state/jotaiKeyValueStore'
+import { openConnection } from './graphql'
 
 /*
 
@@ -17,45 +15,47 @@ Application State Management (Courtesy of Ada Burrows for hREA playspace)
 
 */
 
-const WithCacheStore = (component: React.ReactNode) => {
+export const WithCacheStore = (component: React.ReactNode) => {
   return (<Provider store={store}>
     {component}
   </Provider>)
 };
 
-export const client = (async() => {
-  const client = await connect({} as ClientOptions);
+export const AppMachine = new StateMachine<AppState, AppStateStore>(initialState, AppTransitions);
 
-  const root = ReactDOM.createRoot(document.getElementById('root')!);
-
-  const AppMachine = new StateMachine<AppState, AppStateStore>(initialState, AppTransitions);
-
-  Object.entries(routes).forEach(([routeName, component]) => {
-    AppMachine.on(routeName as AppState, async (state) => {
-      const ComponentWithProps = React.cloneElement(component as React.ReactElement, state.params);
-      renderComponent(ComponentWithProps);
-    });
+Object.entries(routes).forEach(([routeName, component]) => {
+  AppMachine.on(routeName as AppState, async (state: any) => {
+    const ComponentWithProps = React.cloneElement(component as React.ReactElement, state.params);
+    renderComponent(ComponentWithProps);
   });
-  
-  async function renderComponent(component: React.ReactNode) {
-    root.render(
-      <React.StrictMode>
-        <ApolloProvider client={await client}>
-          {/* <MyProfileProvider> */}
-            <StateMachineContext.Provider value={AppMachine as any}>
-              <App>
-                {WithCacheStore(component)}
-              </App>
-            </StateMachineContext.Provider>
-          {/* </MyProfileProvider> */}
-        </ApolloProvider>
-      </React.StrictMode>,
-    );
-  }
+});
 
-  AppMachine.go();
+const root = ReactDOM.createRoot(document.getElementById('root')!);
+
+export async function renderComponent(component: React.ReactNode) {
+  root.render(
+    <React.StrictMode>
+      <BootScreen>
+        <App>
+          {component}
+        </App>
+      </BootScreen>
+    </React.StrictMode>,
+  );
+}
+
+AppMachine.go();
+
+export const client = async() => {
+  const client = await openConnection();
+
+// const dnaMappings = await sniffHolochainAppCells(client);
+// console.log('dnaMappings :>> ', dnaMappings);
+
+
+
 
   return client
-})() 
+}
 
 
