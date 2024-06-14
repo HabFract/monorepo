@@ -18,7 +18,8 @@ function BootScreen({ children }: any) {
   useEffect(() => {
     if(connected) return;
     autoConnect().then(connection => {
-      AppMachine.state.client = connection
+      
+      AppMachine.state.client = {...connection, conductorUri: connection.client.client.url!.href }
       initGraphQLClient(AppMachine.state.client).then(client => {
         setApolloClient(client)
       });
