@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "vite --clearScreen false",
-    "build": "tsc && vite build && npm run zip",
+    "build": "tsc; vite build && npm run zip",
     "generate": "graphql-codegen --config codegen.ts",
     "generate:watch": "graphql-codegen --watch --config codegen.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -17,7 +17,7 @@
     "@apollo/client": "^3.8.6",
     "@graphql-tools/schema": "^10.0.2",
     "@holochain-open-dev/utils": "^0.16.3",
-    "@holochain/client": "^0.16.7",
+    "@holochain/client": "^0.17.0-rc",
     "deep-for-each": "^3.0.0",
     "fecha": "^4.2.3",
     "graphql": "^16.8.1",

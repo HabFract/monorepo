@@ -2,6 +2,6 @@
 manifest_version: "1"
 name: habit_fract
 ui:
-  bundled: "../../ui.zip"
+  bundled: "../ui.zip"
 happ_manifest:
   bundled: "./habit_fract.happ"
