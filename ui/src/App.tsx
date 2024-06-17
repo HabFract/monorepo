@@ -22,7 +22,6 @@ function App({ children: pageComponent }: any) {
         ? <main className={"page-container onboarding-page"}>
             <Onboarding>
               {pageComponent && cloneElement(pageComponent, {
-                
                   headerDiv: (() => <>
                     <div className={"flex w-full justify-between gap-2"}>
                       <Button
@@ -77,6 +76,6 @@ function getLastOnboardingState(state: string) {
   return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) - 1}`
 };
 function getNextOnboardingState(state: string) {
-  if (state == 'Onboarding4') return 'Home';
+  if (state == 'Onboarding3') return 'ListSpheres';
   return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) + 1}`
 };

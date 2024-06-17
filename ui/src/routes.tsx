@@ -42,7 +42,6 @@ export const routes: Routes = {
   Onboarding1: <CreateSphere editMode={false} />,
   Onboarding2: <CreateOrbit editMode={false} />,
   Onboarding3: <RefineOrbit />,
-  Onboarding4: <ListSpheres/>,
   CreateSphere: <CreateSphere headerDiv={<h1 className="w-full text-center">Create a Sphere</h1>} editMode={false} />,
   ListSpheres: <ListSpheres />,
   CreateOrbit: <CreateOrbit headerDiv={<h1 className="w-full text-center">Create an Orbit</h1>} editMode={false} inModal={false} sphereEh="" parentOrbitEh="" />,
