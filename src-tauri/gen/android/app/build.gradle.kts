@@ -17,7 +17,7 @@ android {
     compileSdk = 34
     namespace = "net.habitfract.personal"
     defaultConfig {
-        manifestPlaceholders["usesCleartextTraffic"] = "false"
+        manifestPlaceholders["usesCleartextTraffic"] = "true"
         applicationId = "net.habitfract.personal"
         minSdk = 24
         targetSdk = 34
