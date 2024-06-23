@@ -85,8 +85,12 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
 .side-nav.expanded .ant-menu-item:not(.ant-menu-item:first-child) {
   padding-left: 22px !important;
   position: initial;
+  opacity: 0.8;
 }
-
+.side-nav.expanded .ant-menu-item:not(.ant-menu-item:first-child):hover,
+.side-nav > .ant-menu-root .ant-menu-item-selected:not(.ant-menu-item:first-child):has(> img.selected) {
+  opacity: 1;
+}
 .side-nav.expanded  > .ant-menu-root:first-child .ant-menu-item img{
   min-width: 64px !important;
   height: 64px !important;
@@ -145,6 +149,7 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
   @apply bg-transparent border-0 text-title text-sm h-10;
   width: 64px;
   margin-left: 1px;
+  border-radius: 2rem;
 }
 .toggle-expanded-menu span[role="img"]{
   transform: rotate(-45deg) scale(1.25);
@@ -174,6 +179,11 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
     from-secondary
     to-secondary
     text-base;
+
+  font-family: TTSupermolot, Arial, sans-serif;
+  line-height: 2.2em;
+  font-weight: 400;
+  
   outline: 2px solid rgba(107,125,127, 0.25);
   border-bottom: 0;
   border-bottom-left-radius: 0;
@@ -195,7 +205,8 @@ ul[role="menu"] {
   border-bottom-right-radius: 1.125rem;
 }
 .sphere-context-actions {
-  @apply bg-gray-300 py-1 px-2;
+  @apply bg-primary-500 py-1 px-2;
+  border-top: 1px solid rgba(219,228,226, 1);
   border-bottom-left-radius: 1.125rem;
   border-bottom-right-radius: 1.125rem;
 }

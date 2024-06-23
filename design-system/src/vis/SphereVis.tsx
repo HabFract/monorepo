@@ -71,7 +71,7 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
     chart.render();
   }, [])
   
-  return (
+  return Object.values(spherePercentages).length > 0 && (
     //@ts-ignore
     <div className="sphere-pie relative">
       <div ref={pieChart} className="pie" id="pie-chart"></div>

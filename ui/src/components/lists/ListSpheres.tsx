@@ -54,8 +54,9 @@ function ListSpheres() {
 
   return (
     <div className='layout spheres'>
-      <PageHeader title="Spheres List" />
-      <ListSortFilter label='' />
+      <PageHeader title="List Spheres" />
+      {/* <ListSortFilter label='' /> */}
+      <div></div>
       <div className="spheres-list">
         {sortedSpheres.map((sphere : Sphere) => <SphereCard key={sphere.id} sphere={sphere} transition={transition} isHeader={false} orbitScales={[]} runDelete={() => runDelete({variables: {id: sphere.id}})}/>)}</div>
     </div>

@@ -33,7 +33,7 @@
 }
 
 .page-container {
-
+  min-height: 8rem;
   @apply flex gap-2 bg-bg overflow-auto p-0 w-full;
   flex-direction: column;
   height: 100vh;
@@ -151,6 +151,16 @@ nav + main.page-container .orbits-list {
   margin: 1rem 0 0 0;
 }
 
+/* Modal */
+*[data-testid=modal-overlay]>div>div {
+  @apply bg-input-bg;
+}
+*[data-testid=modal-overlay]>div>div button {
+  padding: 0 1rem;
+  border-radius: 1rem;
+  display: flex;
+}
+
 @media screen and (min-width: 440px) {
   .ant-app {
     grid-template-columns: 10% 80% 10%;
@@ -159,7 +169,7 @@ nav + main.page-container .orbits-list {
 
   .page-container {
     grid-column: 2/3;
-    grid-row: 1/-1;
+    grid-row: 2/3;
     border-radius: 1rem;
     @apply p-6 h-full;
   }
@@ -186,7 +196,7 @@ nav + main.page-container .orbits-list {
 @media screen and (min-width: 1200px) {
   .ant-app {
     grid-template-columns: 8% 22% 40% 22% 8%;
-    grid-row: 8% 1fr 8%;
+    grid-template-rows: 4% 1fr 4%;
   }
   .page-container {
     font-size: 130%;

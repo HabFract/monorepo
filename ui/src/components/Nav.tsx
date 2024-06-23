@@ -98,7 +98,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   function createFixedMenuItems() {
     return [
       getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
-      getItem('Dashboard', 'db', <PieChartFilled />, undefined, undefined, true),
+      // getItem('Dashboard', 'db', <PieChartFilled />, undefined, undefined, true),
     ]  
   }
   function createSphereMenuItems({ spheres }: { spheres: Sphere[] }) {
@@ -211,7 +211,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
       onClick={(_e) => {goToPage(type)}}
       disabled={spheresArray.length == 0 || !currentSphereId || (currentPage == Page.Vis && noSphereOrbits())}
       className={`btn btn-sq btn-${type} ` +  (isCurrentPage(type) ? "nohover" : "")}
-      style={{cursor: isCurrentPage(type) ? "initial" : "pointer", outlineOffset: "-4px", outline: isCurrentPage(type) ? "3px solid rgba(80, 227, 194, 0.8)" : ""}}
+      style={{cursor: isCurrentPage(type) ? "initial" : "pointer", outlineOffset: "-4px", borderColor: "transparent", outline: isCurrentPage(type) ? "3px solid rgba(251,200,43, 1)" : ""}}
     >
       {getIcon(type)}
     </Button>

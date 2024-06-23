@@ -121,6 +121,9 @@
     @apply p-4 gap-4;
   }
 
+  .sphere-card .sphere-description {
+    min-height: 3rem;
+  }
   .sphere-card .sphere-description + div {
     gap: 0;
   }

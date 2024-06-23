@@ -50,13 +50,18 @@ h1.onboarding-title {
   @apply text-primary;
 }
 
-p.form-description {
+p.form-description, *[data-testid=modal-overlay]>div>div h3 {
   line-height: 24px;
   font-size: 1em;
   font-weight: 300;
   @apply font-sans;
   max-width: 28rem;
   margin: 0 auto;
+}
+*[data-testid=modal-overlay]>div>div h3 {
+  font-family: TTSupermolot, Arial, sans-serif;
+  color: white;
+  margin: 1rem 0 .5rem 0
 }
 
 p.form-description em, .helper-text em {

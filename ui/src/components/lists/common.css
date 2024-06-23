@@ -52,6 +52,15 @@
   .orbits-list {
     @apply grid grid-cols-2 gap-2;
   }
+  .layout.spheres {
+    @apply grid-cols-3;
+  }
+  .spheres-list {
+    grid-column: 1/-1;
+  }
+  .layout.spheres .page-header, .layout.spheres .list-sort-filter {
+    grid-column: 2/3;
+  }
   .orbit-card, .orbit-card main, .sphere-card, .sphere-card main {
     height: 100%;
   }
@@ -59,7 +68,9 @@
 @media screen and (min-width: 960px) {
   .orbits-list {
     @apply grid-cols-3;
+    grid-column: 1/-1;
   }
+
   .spheres-list {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
@@ -70,6 +81,12 @@
     display: grid;
     grid-template-columns: 400px 1fr 1fr 1fr;
     grid-template-rows: auto auto 1fr;
+  }
+  .layout.spheres {
+    grid-column: 1/-1;
+  }
+  .layout.spheres .page-header, .layout.spheres .list-sort-filter {
+    grid-column: 2/3;
   }
   .layout.orbit-subdivision-list {
     grid-template-columns: 1fr 1fr;
@@ -98,9 +115,7 @@
   .orbits-list {
     @apply grid-cols-2;
   }
-  .list-sort-filter {
-    /* grid-column: 2/2; */
-  }
+
   .spheres {
     @apply grid grid-cols-1;
     grid-template-rows: 3rem 2rem auto;
@@ -112,8 +127,9 @@
 @media screen and (min-width: 1680px) {
   .layout {
     grid-template-rows: 3rem 2rem min-content;
+    grid-template-columns: 1fr 1fr 1fr;
   }
   .orbits-list, .spheres-list {
-    @apply grid-cols-4;
+    @apply grid-cols-3;
   }
 }
