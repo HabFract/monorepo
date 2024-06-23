@@ -62,7 +62,7 @@ import { noNodeCol, parentPositiveBorderCol, positiveColLighter, BASE_SCALE, FOC
 import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
-import { client } from "../../main";
+import { client } from "../../graphql/client";
 import { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject, nodeCache } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
 

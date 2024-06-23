@@ -46,7 +46,6 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
 
   const currentSphereId = store.get(currentSphere)?.actionHash as ActionHashB64;
   const sphereNodes = store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
-  
   if(!currentSphere || !sphereNodes) throw new Error('Cannot cache paths without a currentSphereId or existing cache');
   
   useEffect(() => {

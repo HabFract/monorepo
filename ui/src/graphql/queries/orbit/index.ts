@@ -33,7 +33,6 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   return {
     orbit: async (_, args): Promise<Orbit> => {
       const rawRecord = await read(args.id)
-      console.log(rawRecord)
       const orbit = new EntryRecord<Orbit>(rawRecord)
 
       return {...orbit.entry, id: args.id, eH: encodeHashToBase64(orbit.entryHash) }
@@ -41,12 +40,10 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
 
     orbits: async (_, args): Promise<OrbitConnection> => {
       const rawRecords : Orbit[] = await readAll({sphereHash: args.sphereEntryHashB64});
-      console.log("rawRecord,", rawRecords, args);
       if(typeof rawRecords !== 'object' || !rawRecords?.length) return Promise.resolve({ edges: [], pageInfo: undefined } as any)
 
       const entryRecords = rawRecords!.map((record: any) => new EntryRecord<Orbit>(record));
       const orbitConnection = createEdges(entryRecords.map((entryRecord: EntryRecord<Orbit>) => ({...entryRecord.entry, id: entryRecord.actionHash, eH: encodeHashToBase64(entryRecord.entryHash) })))  as Partial<OrbitConnection> & any; // Need to resolve type errors when no pagination implemented
-console.log('orbitConnection :>> ', orbitConnection);
       return Promise.resolve(orbitConnection)
     },
 

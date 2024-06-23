@@ -46,11 +46,3 @@ export async function renderComponent(component: React.ReactNode) {
 }
 
 AppMachine.go();
-
-export const client = async() => {
-  const conn = await getConnection("habit_fract");
-  // TODO: return apollo client for use outside components
-  // return await initGraphQLClient(conn.client)
-}
-
-

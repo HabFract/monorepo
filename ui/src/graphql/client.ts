@@ -108,14 +108,9 @@ export async function initGraphQLClient({ dnaConfig, conductorUri }) {
   })
 }
 
-async function connect(options: any) {
-  // autodetect `CellId`s if no explicit `dnaConfig` is provided
-  // if (!options.dnaConfig) {
-  //   const { dnaConfig } = await autoConnect(options,options.conductorUri)
-  //   options.dnaConfig = dnaConfig
-  // }
-
-  // return await initGraphQLClient(options)
+export const client = async() => {
+  const connection = await autoConnect();
+  const options = {...connection, conductorUri: connection.client.client.url!.href };
+  console.log('options :>> ', options);
+  return await initGraphQLClient(options);
 }
-
-export default connect

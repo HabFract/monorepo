@@ -23,7 +23,7 @@ export const useFetchAndCacheSphereOrbits = ({ sphereAh }: UseFetchAndCacheSpher
     variables: { id: sphereAh as string },
     skip: !sphereAh,
   });
-  console.log('sphereAh :>> ', sphereAh);
+
   const sphereEh = dataSphere?.sphere?.eH;
   const [getOrbits, { loading: loadingOrbits, error: errorOrbits, data }] = useGetOrbitsLazyQuery({
     fetchPolicy: 'network-only',

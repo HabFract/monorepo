@@ -2,11 +2,6 @@ import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { DateTime } from "luxon"
-
-import { Checkbox, Flex } from 'antd';
-import DateInput from './input/DatePicker';
-import { Label, Select } from 'flowbite-react';
-
 import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { ActionHashB64 } from '@holochain/client';
@@ -14,7 +9,7 @@ import { useStateTransition } from '../../hooks/useStateTransition';
 import { currentOrbitCoords, currentOrbitId, currentSphere } from '../../state/currentSphereHierarchyAtom';
 import { AppState } from '../../routes';
 import { mapToCacheObject, nodeCache, store } from '../../state/jotaiKeyValueStore';
-import { client } from '../../main';
+import { client } from '../../graphql/client';
 import DefaultSubmitBtn from './DefaultSubmitButton';
 import { TextAreaField, TextInputField, SelectInputField } from 'habit-fract-design-system';
 import { OrbitFetcher } from './utils';
@@ -65,14 +60,13 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
         },
       },
     ],
+    
     async update(){
-      console.log('inOnboarding :>> ', inOnboarding);
       if(!!inOnboarding) return;
       const variables = { sphereEntryHashB64: sphereEh };
       let data;
       try {
-        return;
-        const gql = await client;
+        const gql = await client();
         data = await gql.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only'} )
         if(data?.data?.orbits) {
           const orbits = (extractEdges(data.data.orbits) as Orbit[]);

@@ -31,7 +31,7 @@ export type AppStateStore = {
 }
 
 export const initialState: AppStateStore = { // Home route
-  currentState: "Home",
+  currentState: "ListSpheres",
   params: {},
   client: null
 }
