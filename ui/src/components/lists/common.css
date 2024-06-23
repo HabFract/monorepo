@@ -58,6 +58,9 @@
   .spheres-list {
     grid-column: 1/-1;
   }
+  .layout.orbits {
+    width: 100%;
+  }
   .layout.spheres .page-header, .layout.spheres .list-sort-filter {
     grid-column: 2/3;
   }

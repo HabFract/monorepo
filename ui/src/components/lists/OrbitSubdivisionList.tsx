@@ -8,7 +8,7 @@ import { MinusCircleFilled, PlusCircleFilled } from '@ant-design/icons';
 import React from 'react';
 
 export enum SubdivisionScale {
-  Micro = "Micro",
+  Rename = "Rename",
   Atom = "Atom",
 }
 
@@ -17,7 +17,7 @@ interface OrbitSubdivisionListProps {
   submitBtn?: React.ReactNode;
 }
 
-const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn }) => {
+const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, listItemScale }) => {
   const ListValidationSchema = Yup.object().shape({
     list: Yup.array().of(
       Yup.object().shape({
@@ -40,10 +40,14 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn }
           return (
             <>
               <HelperText
-                title={"Define Micro Orbits"}
+                title={listItemScale == SubdivisionScale.Rename ? "Rename Atomic Orbit" : "Break Up High Scale Orbits"}
                 titleIcon={<List />}
                 onClickInfo={() => console.log("clicked!")}
-              >Since you have chosen the MICRO scale for your orbit, you can now<em> add 1-4 micro-steps</em> which can be ticked off on completion (this is what we call a <em>WIN</em>).
+              >
+                {listItemScale == SubdivisionScale.Rename
+                  ? <span>Since you have chosen the Atomic scale for your Orbit, it's best to make sure it is named in a way that is an incremental action - one that is quantifiable and achievable:</span>
+                  : <span>Since you have chosen a big scale for your Orbit (shooting for the stars!), you can now <em>break it up</em> into incremental actions - so start by <em>subdividing into Orbits of a smaller scale</em>:</span>
+                }
               </HelperText>
 
               <Form noValidate={true}>

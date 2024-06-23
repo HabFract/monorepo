@@ -75,7 +75,7 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
             { headerDiv }
 
             <h2 className='onboarding-subtitle'>Refine Your Orbit</h2>
-            <p className='form-description'>Make sure that you have chosen the <em>best specifics</em> for your orbit, before you are ready to start tracking!</p>
+            <p className='form-description'>Make sure that you have <em>broken down</em> your Orbit into smaller scales (as desired) before you are ready to start tracking!</p>
             <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText>
 
             {values?.name && 
@@ -96,7 +96,7 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
                     }
                 }} 
             ></OrbitCard>}
-            <OrbitSubdivisionList submitBtn={submitBtn} listItemScale={SubdivisionScale.Atom}></OrbitSubdivisionList>
+            <OrbitSubdivisionList submitBtn={submitBtn} listItemScale={values.scale == Scale.Atom ? SubdivisionScale.Rename : SubdivisionScale.Atom}></OrbitSubdivisionList>
         </>
       )}}
     </Formik>

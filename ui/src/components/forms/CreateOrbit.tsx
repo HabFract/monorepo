@@ -129,6 +129,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             const props = inOnboarding
               ? { refiningOrbitAh: payload.createOrbit.actionHash }
               : { sphereAh: selectedSphere.actionHash }
+
             transition(inOnboarding ? 'Onboarding3' : 'ListOrbits', props)
           }
         } catch (error) {
@@ -174,26 +175,45 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
               />
             </div>
 
-            {!parentOrbitEh && !inOnboarding && <div className="field">
-              <Label htmlFor='parentHash'>Parent Orbit: <span className="reqd">*</span></Label>
+            <div className="flex form-field">
+              <Field
+                component={SelectInputField}
+                size="base"
+                name="scale"
+                id="scale"
+                icon={"scale-planets"}
+                iconSide={"left"}
+                withInfo={true}
+                options={Object.values(Scale).sort((a: any, b: any) => a - b).map((scale, i) => {
+                  const cannotBeAstro = values.parentHash !== '' && values.parentHash !== 'root';
+                  return cannotBeAstro && scale == 'Astro'
+                    ? null
+                    : <option key={scale} value={scale}>{getDisplayName(scale)}</option>
+                  }
+                )}
+                required={true}
+                labelValue={"Scale:"}
+              />
+            </div>
 
-              <div className="flex form-field">
-                <Field type="text" name="parentHash">
-                  {({ field }) => (
-                    <Select 
-                    {...field}
-                    disabled={!!editMode}
-                      color={errors.parentHash && touched.parentHash ? "invalid" : "default"}
-                    >
-                      <option value={'root'}>{'None'}</option>
-                      { !childOrbitEh && (extractEdges((orbits as any)?.orbits) as Orbit[]).map((orbit, i) =>
-                        <option key={i} value={orbit.eH}>{orbit.name}</option>
-                      )
-                      }
-                    </Select>
-                  )}
-                </Field>
-              </div>
+            {!parentOrbitEh && !inOnboarding && <div className="flex form-field">
+              {/* <Label htmlFor='parentHash'>Parent Orbit: <span className="reqd">*</span></Label> */}
+              <Field
+                component={SelectInputField}
+                size="base"
+                name="parentHash"
+                id="parent-hash"
+                withInfo={true}
+                options={[
+                  <option value={'root'}>{'None'}</option>,
+                  ...(childOrbitEh ? [] : (extractEdges((orbits as any)?.orbits) as Orbit[]).map((orbit, i) =>
+                    <option key={i} value={orbit.eH}>{orbit.name}</option>
+                  ))
+                ]}
+                required={true}
+                disabled={!!editMode}
+                labelValue={"Parent Orbit:"}
+              />
             </div>}
 
             {/* FIELD STRIPPED OUT OF MVP: <div className="field">
@@ -217,28 +237,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
               </div>
             </div> */}
 
-            <div className="flex form-field">
-              <Field
-                component={SelectInputField}
-                size="base"
-                name="scale"
-                id="scale"
-                icon={"scale-planets"}
-                iconSide={"left"}
-                withInfo={true}
-                options={Object.values(Scale).sort((a: any, b: any) => a - b).map((scale, i) => {
-                  const cannotBeAstro = values.parentHash !== '' && values.parentHash !== 'root';
-                  return cannotBeAstro && scale == 'Astro'
-                    ? null
-                    : <option key={scale} value={scale}>{scale}</option>
-                  }
-                )}
-                required={true}
-                labelValue={"Scale:"}
-              />
-            </div>
 
-            {!inOnboarding && <Flex className={"field"} vertical={true}>
+            {/* {!inOnboarding && <Flex className={"field"} vertical={true}>
               <Flex justify='space-around'>
                 <Label htmlFor='startTime'>Start<span className="reqd">*</span><span className="hidden-sm">/</span>
                 </Label>
@@ -276,7 +276,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                   </Field>
                 </div>
               </div>
-            </Flex>}
+            </Flex>} */}
             { submitBtn && React.cloneElement(submitBtn as React.ReactElement, { loading, errors, touched }) || <DefaultSubmitBtn loading={loading} editMode={editMode} errors={errors} touched={touched}></DefaultSubmitBtn> }
           </Form>
         </>
@@ -286,3 +286,14 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
 };
 
 export default CreateOrbit;
+
+function getDisplayName(scale: Scale) {
+  switch (scale) {
+    case Scale.Astro:
+      return "Astronomic"
+    case Scale.Sub:
+      return "Sub Astronomic"
+    case Scale.Atom:
+      return "Atomic"
+  }
+}

@@ -5,6 +5,7 @@ import Home from "./components/layouts/Home";
 import OrbitTree from "./components/vis/OrbitTree";
 import { renderVis } from "./components/vis/helpers";
 import { StateTransitions } from "./state/stateMachine";
+import { Spinner } from "flowbite-react";
 
 export type AppState = // Currently just for routing in the state machine
   | 'Boot'
@@ -30,13 +31,13 @@ export type AppStateStore = {
 }
 
 export const initialState: AppStateStore = { // Home route
-  currentState: "ListOrbits",
+  currentState: "Home",
   params: {},
   client: null
 }
 
 export const routes: Routes = {
-  Boot: <p>Loading</p>,
+  Boot: <Spinner aria-label="Loading!"size="xl" className="absolute top-1/2 bottom-1/2" />,
   Vis: renderVis(OrbitTree),
   Home: <Home />,
   Onboarding1: <CreateSphere editMode={false} />,

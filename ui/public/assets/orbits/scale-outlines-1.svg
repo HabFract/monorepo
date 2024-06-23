@@ -6,7 +6,7 @@
    fill="none"
    version="1.1"
    id="svg1328"
-   sodipodi:docname="scale-icons-BLANK-withsubatom.svg"
+   sodipodi:docname="scale-outlines-1.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -83,14 +83,14 @@
      inkscape:pagecheckerboard="0"
      showgrid="false"
      inkscape:zoom="11.313708"
-     inkscape:cx="32.703689"
-     inkscape:cy="30.538174"
-     inkscape:window-width="1660"
-     inkscape:window-height="1006"
-     inkscape:window-x="102"
+     inkscape:cx="59.706331"
+     inkscape:cy="28.593632"
+     inkscape:window-width="1920"
+     inkscape:window-height="1172"
+     inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="svg1328"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g38582"
      scale-x="0.5"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -100,15 +100,11 @@
      style="mix-blend-mode:luminosity"
      id="g1242"
      transform="translate(-1.9602596,-0.98660103)">
-    <circle
-       cx="6.6605701"
-       cy="17.960501"
-       r="4.5"
-       transform="rotate(-6,6.66057,17.9605)"
-       fill="#ffffff"
-       fill-opacity="0.3"
+    <path
        id="circle1184"
-       style="fill:#c0c0c0;fill-opacity:0.996078;stroke:#ffffff;stroke-width:0.4;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:4;stroke-opacity:1;paint-order:normal" />
+       style="fill:#c0c0c0;fill-opacity:0.996078;stroke:#ffffff;stroke-width:0.4;stroke-dashoffset:4"
+       transform="rotate(-6,6.66057,17.9605)"
+       d="m 11.16057,17.960501 a 4.5,4.5 0 0 1 -4.4999999,4.5 4.5,4.5 0 0 1 -4.5,-4.5 4.5,4.5 0 0 1 4.5,-4.5 4.5,4.5 0 0 1 4.4999999,4.5 z" />
     <mask
        id="path-2-inside-1_849_2598"
        fill="#ffffff">
@@ -130,24 +126,16 @@
          d="m 8.30503,13.6648 c 0.03951,-0.1032 -0.01199,-0.2193 -0.11674,-0.2545 -0.14768,-0.0496 -0.2977,-0.092 -0.4495,-0.127 -0.10767,-0.0248 -0.21231,0.0472 -0.23263,0.1558 -0.02032,0.1086 0.05138,0.2127 0.15896,0.2379 0.12819,0.0301 0.25498,0.0659 0.37996,0.1073 0.10488,0.0348 0.22044,-0.0163 0.25995,-0.1195 z"
          id="path1196" />
     </mask>
-    <circle
-       cx="6.6607199"
-       cy="17.9606"
-       r="3.7"
-       transform="rotate(-6,6.66072,17.9606)"
-       fill="#1a8cd0"
+    <path
        id="circle1201"
-       style="opacity:1;fill:#ffffff;fill-opacity:0.996078" />
-    <circle
-       cx="3.26631"
-       cy="15.8035"
-       r="0.85000002"
-       transform="rotate(-6,3.26631,15.8035)"
-       fill="#faaf78"
-       stroke="#332d57"
-       stroke-width="0.4"
+       style="opacity:1;fill:#ffffff;fill-opacity:0.996078"
+       transform="rotate(-6,6.66072,17.9606)"
+       d="m 10.36072,17.9606 a 3.7,3.7 0 0 1 -3.7000001,3.7 3.7,3.7 0 0 1 -3.7000001,-3.7 3.7,3.7 0 0 1 3.7000001,-3.7 3.7,3.7 0 0 1 3.7000001,3.7 z" />
+    <path
        id="circle1203"
-       style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:0.996078" />
+       style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-width:0.4;stroke-opacity:0.996078"
+       transform="rotate(-6,3.26631,15.8035)"
+       d="m 4.11631,15.8035 a 0.85000002,0.85000002 0 0 1 -0.85,0.85 0.85000002,0.85000002 0 0 1 -0.85,-0.85 0.85000002,0.85000002 0 0 1 0.85,-0.85 0.85000002,0.85000002 0 0 1 0.85,0.85 z" />
     <path
        fill-rule="evenodd"
        clip-rule="evenodd"
@@ -173,14 +161,11 @@
     <g
        mask="url(#mask0_849_2598)"
        id="g1212">
-      <circle
-         cx="4.2985826"
-         cy="18.595394"
-         r="3.5"
-         transform="rotate(-6)"
-         fill="#53B4EF"
+      <path
          id="circle1210"
-         style="fill:#ffffff;fill-opacity:0.996078" />
+         style="fill:#ffffff;fill-opacity:0.996078"
+         transform="rotate(-6)"
+         d="m 7.7985826,18.595394 a 3.5,3.5 0 0 1 -3.5,3.5 3.5,3.5 0 0 1 -3.50000005,-3.5 3.5,3.5 0 0 1 3.50000005,-3.5 3.5,3.5 0 0 1 3.5,3.5 z" />
     </g>
     <path
        fill-rule="evenodd"
@@ -217,86 +202,52 @@
        mask="url(#path-12-inside-5_849_2598)"
        id="path1224"
        style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:1" />
-    <circle
-       cx="3.70858"
-       cy="17.9188"
-       r="0.2"
-       transform="rotate(-6,3.70858,17.9188)"
-       fill="#ffffff"
+    <path
        id="circle1226"
-       style="fill:#ffffff;fill-opacity:0.996078" />
-    <circle
-       cx="4.0173998"
-       cy="18.6406"
-       r="0.15000001"
-       transform="rotate(-6,4.0174,18.6406)"
-       fill="#332d57"
+       style="fill:#ffffff;fill-opacity:0.996078"
+       transform="rotate(-6,3.70858,17.9188)"
+       d="m 3.90858,17.9188 a 0.2,0.2 0 0 1 -0.2,0.2 0.2,0.2 0 0 1 -0.2,-0.2 0.2,0.2 0 0 1 0.2,-0.2 0.2,0.2 0 0 1 0.2,0.2 z" />
+    <path
        id="circle1228"
-       style="fill:#ffffff;fill-opacity:0.996078" />
-    <circle
-       cx="7.4270601"
-       cy="18.080999"
-       r="0.15000001"
-       transform="rotate(-6,7.42706,18.081)"
-       fill="#332d57"
+       style="fill:#ffffff;fill-opacity:0.996078"
+       transform="rotate(-6,4.0174,18.6406)"
+       d="m 4.1673998,18.6406 a 0.15000001,0.15000001 0 0 1 -0.15,0.15 0.15000001,0.15000001 0 0 1 -0.15,-0.15 0.15000001,0.15000001 0 0 1 0.15,-0.15 0.15000001,0.15000001 0 0 1 0.15,0.15 z" />
+    <path
        id="circle1230"
-       style="fill:#ffffff;fill-opacity:0.996078" />
-    <circle
-       cx="4.9359002"
-       cy="18.2927"
-       r="0.25"
-       transform="rotate(-6,4.9359,18.2927)"
-       fill="#332d57"
+       style="fill:#ffffff;fill-opacity:0.996078"
+       transform="rotate(-6,7.42706,18.081)"
+       d="m 7.5770601,18.080999 a 0.15000001,0.15000001 0 0 1 -0.15,0.15 0.15000001,0.15000001 0 0 1 -0.15,-0.15 0.15000001,0.15000001 0 0 1 0.15,-0.15 0.15000001,0.15000001 0 0 1 0.15,0.15 z" />
+    <path
        id="circle1232"
-       style="fill:#ffffff;fill-opacity:0.996078" />
-    <circle
-       cx="10.2694"
-       cy="21.5026"
-       r="0.25"
-       transform="rotate(-6,10.2694,21.5026)"
-       fill="#faaf78"
+       style="fill:#ffffff;fill-opacity:0.996078"
+       transform="rotate(-6,4.9359,18.2927)"
+       d="m 5.1859002,18.2927 a 0.25,0.25 0 0 1 -0.25,0.25 0.25,0.25 0 0 1 -0.25,-0.25 0.25,0.25 0 0 1 0.25,-0.25 0.25,0.25 0 0 1 0.25,0.25 z" />
+    <path
        id="circle1234"
-       style="fill:#ffffff;fill-opacity:0.996078" />
-    <circle
-       cx="8.9693098"
-       cy="15.0534"
-       r="0.55000001"
-       transform="rotate(-6,8.96931,15.0534)"
-       fill="#b8deff"
-       stroke="#332d57"
-       stroke-width="0.4"
+       style="fill:#ffffff;fill-opacity:0.996078"
+       transform="rotate(-6,10.2694,21.5026)"
+       d="m 10.5194,21.5026 a 0.25,0.25 0 0 1 -0.25,0.25 0.25,0.25 0 0 1 -0.25,-0.25 0.25,0.25 0 0 1 0.25,-0.25 0.25,0.25 0 0 1 0.25,0.25 z" />
+    <path
        id="circle1238"
-       style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:0.996078" />
-    <circle
-       cx="5.2653899"
-       cy="21.4254"
-       r="0.40000001"
-       transform="rotate(-6,5.26539,21.4254)"
-       fill="#b8deff"
-       stroke="#332d57"
-       stroke-width="0.4"
+       style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-width:0.4;stroke-opacity:0.996078"
+       transform="rotate(-6,8.96931,15.0534)"
+       d="m 9.5193098,15.0534 a 0.55000001,0.55000001 0 0 1 -0.55,0.55 0.55000001,0.55000001 0 0 1 -0.55,-0.55 0.55000001,0.55000001 0 0 1 0.55,-0.55 0.55000001,0.55000001 0 0 1 0.55,0.55 z" />
+    <path
        id="circle1240"
-       style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:0.996078" />
+       style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-width:0.4;stroke-opacity:0.996078"
+       transform="rotate(-6,5.26539,21.4254)"
+       d="m 5.6653899,21.4254 a 0.40000001,0.40000001 0 0 1 -0.4,0.4 0.40000001,0.40000001 0 0 1 -0.4,-0.4 0.40000001,0.40000001 0 0 1 0.4,-0.4 0.40000001,0.40000001 0 0 1 0.4,0.4 z" />
   </g>
-  <circle
-     cx="22.086838"
-     cy="17.372269"
-     r="9"
-     transform="rotate(-6)"
-     fill="#B341FF"
-     fill-opacity="0.3"
+  <path
      id="circle1244"
-     style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:0.996078" />
-  <circle
-     cx="22.086838"
-     cy="17.372269"
-     r="7.4000001"
+     style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:0.996078"
      transform="rotate(-6)"
-     fill="#8C12DC"
-     stroke="#332D57"
-     stroke-width="0.8"
+     d="m 31.086838,17.372269 a 9,9 0 0 1 -9,9 9,9 0 0 1 -9,-9 9,9 0 0 1 9,-9.0000003 9,9 0 0 1 9,9.0000003 z" />
+  <path
      id="circle1246"
-     style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:0.996078" />
+     style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-width:0.8;stroke-opacity:0.996078"
+     transform="rotate(-6)"
+     d="m 29.486838,17.372269 a 7.4000001,7.4000001 0 0 1 -7.4,7.4 7.4000001,7.4000001 0 0 1 -7.4,-7.4 7.4000001,7.4000001 0 0 1 7.4,-7.4000004 7.4000001,7.4000001 0 0 1 7.4,7.4000004 z" />
   <mask
      id="mask1_849_2598"
      maskUnits="userSpaceOnUse"
@@ -317,14 +268,10 @@
      id="g1253"
      style="fill:#ffffff;fill-opacity:0.996078"
      transform="translate(-1.9602596,-0.98660103)">
-    <circle
-       cx="24.1509"
-       cy="16.122299"
-       r="7"
-       transform="rotate(-6,24.1509,16.1223)"
-       fill="#b341ff"
+    <path
        id="circle1251"
-       style="fill:#ffffff;fill-opacity:0.996078" />
+       transform="rotate(-6,24.1509,16.1223)"
+       d="m 31.1509,16.122299 a 7,7 0 0 1 -7,7 7,7 0 0 1 -7,-7 7,7 0 0 1 7,-6.9999998 7,7 0 0 1 7,6.9999998 z" />
   </g>
   <path
      fill-rule="evenodd"
@@ -333,14 +280,11 @@
      fill="white"
      id="path1255"
      style="fill:#ffffff;fill-opacity:0.996078" />
-  <circle
-     cx="16.186573"
-     cy="16.67239"
-     r="0.40000001"
-     transform="rotate(-6)"
-     fill="white"
+  <path
      id="circle1257"
-     style="fill:#ffffff;fill-opacity:0.996078" />
+     style="fill:#ffffff;fill-opacity:0.996078"
+     transform="rotate(-6)"
+     d="m 16.586573,16.67239 a 0.40000001,0.40000001 0 0 1 -0.4,0.4 0.40000001,0.40000001 0 0 1 -0.4,-0.4 0.40000001,0.40000001 0 0 1 0.4,-0.4 0.40000001,0.40000001 0 0 1 0.4,0.4 z" />
   <path
      fill-rule="evenodd"
      clip-rule="evenodd"
@@ -355,76 +299,50 @@
      fill="#332D57"
      id="path1261"
      style="fill:#ffffff;fill-opacity:0.996078;stroke:#bbc3cf;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-  <circle
-     cx="14.686577"
-     cy="9.6721792"
-     r="0.69999999"
-     transform="rotate(-6)"
-     fill="#F7931B"
+  <path
      id="circle1263"
-     style="fill:#ffffff;fill-opacity:0.996078" />
-  <circle
-     cx="16.186762"
-     cy="8.9722071"
-     r="0.30000001"
+     style="fill:#ffffff;fill-opacity:0.996078"
      transform="rotate(-6)"
-     fill="#FECD64"
+     d="m 15.386577,9.6721792 a 0.69999999,0.69999999 0 0 1 -0.7,0.6999998 0.69999999,0.69999999 0 0 1 -0.7,-0.6999998 0.69999999,0.69999999 0 0 1 0.7,-0.7 0.69999999,0.69999999 0 0 1 0.7,0.7 z" />
+  <path
      id="circle1265"
-     style="fill:#ffffff;fill-opacity:0.996078" />
-  <circle
-     cx="28.486675"
-     cy="25.172264"
-     r="0.5"
+     style="fill:#ffffff;fill-opacity:0.996078"
      transform="rotate(-6)"
-     fill="#F7931B"
+     d="m 16.486762,8.9722071 a 0.30000001,0.30000001 0 0 1 -0.3,0.3 0.30000001,0.30000001 0 0 1 -0.3,-0.3 0.30000001,0.30000001 0 0 1 0.3,-0.3 0.30000001,0.30000001 0 0 1 0.3,0.3 z" />
+  <path
      id="circle1267"
-     style="fill:#ffffff;fill-opacity:0.996078" />
-  <circle
-     cx="-18.872276"
-     cy="21.686853"
-     r="0.40000001"
-     transform="rotate(-96)"
-     fill="#332D57"
+     style="fill:#ffffff;fill-opacity:0.996078"
+     transform="rotate(-6)"
+     d="m 28.986675,25.172264 a 0.5,0.5 0 0 1 -0.5,0.5 0.5,0.5 0 0 1 -0.5,-0.5 0.5,0.5 0 0 1 0.5,-0.5 0.5,0.5 0 0 1 0.5,0.5 z" />
+  <path
      id="circle1273"
-     style="fill:#ffffff;fill-opacity:0.996078" />
-  <circle
-     cx="-17.872124"
-     cy="20.686417"
-     r="0.5"
+     style="fill:#ffffff;fill-opacity:0.996078"
      transform="rotate(-96)"
-     fill="#332D57"
+     d="m -18.472276,21.686853 a 0.40000001,0.40000001 0 0 1 -0.4,0.4 0.40000001,0.40000001 0 0 1 -0.4,-0.4 0.40000001,0.40000001 0 0 1 0.4,-0.4 0.40000001,0.40000001 0 0 1 0.4,0.4 z" />
+  <path
      id="circle1275"
-     style="fill:#ffffff;fill-opacity:0.996078" />
-  <circle
-     cx="-19.272266"
-     cy="20.386721"
-     r="0.2"
+     style="fill:#ffffff;fill-opacity:0.996078"
      transform="rotate(-96)"
-     fill="#332D57"
+     d="m -17.372124,20.686417 a 0.5,0.5 0 0 1 -0.5,0.5 0.5,0.5 0 0 1 -0.5,-0.5 0.5,0.5 0 0 1 0.5,-0.5 0.5,0.5 0 0 1 0.5,0.5 z" />
+  <path
      id="circle1277"
-     style="fill:#ffffff;fill-opacity:0.996078" />
+     style="fill:#ffffff;fill-opacity:0.996078"
+     transform="rotate(-96)"
+     d="m -19.072266,20.386721 a 0.2,0.2 0 0 1 -0.2,0.2 0.2,0.2 0 0 1 -0.2,-0.2 0.2,0.2 0 0 1 0.2,-0.2 0.2,0.2 0 0 1 0.2,0.2 z" />
   <g
      style="mix-blend-mode:luminosity;fill:#ffffff;fill-opacity:0.996078"
      id="g1326"
      transform="translate(-1.9602596,-0.98660103)">
-    <circle
-       cx="52.650398"
-       cy="13.3153"
-       r="11.25"
-       transform="rotate(-6,52.6504,13.3153)"
-       fill="#ffffff"
-       fill-opacity="0.3"
+    <path
        id="circle1279"
-       style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:1" />
-    <circle
-       cx="52.649799"
-       cy="13.3154"
-       transform="rotate(-6,52.6498,13.3154)"
-       fill="#89bff2"
-       stroke="#332d57"
+       style="stroke:#ffffff"
+       transform="rotate(-6,52.6504,13.3153)"
+       d="m 63.900398,13.3153 a 11.25,11.25 0 0 1 -11.25,11.25 11.25,11.25 0 0 1 -11.25,-11.25 11.25,11.25 0 0 1 11.25,-11.25 11.25,11.25 0 0 1 11.25,11.25 z" />
+    <path
        id="circle1281"
-       style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:1"
-       r="9.25" />
+       style="stroke:#ffffff"
+       transform="rotate(-6,52.6498,13.3154)"
+       d="m 61.899799,13.3154 a 9.25,9.25 0 0 1 -9.25,9.25 9.25,9.25 0 0 1 -9.25,-9.25 9.25,9.25 0 0 1 9.25,-9.2499999 9.25,9.25 0 0 1 9.25,9.2499999 z" />
     <mask
        id="mask2_849_2598"
        maskUnits="userSpaceOnUse"
@@ -444,14 +362,10 @@
        mask="url(#mask2_849_2598)"
        id="g1288"
        style="fill:#ffffff;fill-opacity:0.996078">
-      <circle
-         cx="50.661098"
-         cy="13.5244"
-         r="8.75"
-         transform="rotate(-6,50.6611,13.5244)"
-         fill="#d2e1fb"
+      <path
          id="circle1286"
-         style="fill:#ffffff;fill-opacity:0.996078" />
+         transform="rotate(-6,50.6611,13.5244)"
+         d="m 59.411098,13.5244 a 8.75,8.75 0 0 1 -8.75,8.75 8.75,8.75 0 0 1 -8.75,-8.75 8.75,8.75 0 0 1 8.75,-8.7500002 8.75,8.75 0 0 1 8.75,8.7500002 z" />
     </g>
     <mask
        id="mask3_849_2598"
@@ -472,16 +386,11 @@
        mask="url(#mask3_849_2598)"
        id="g1297"
        style="fill:#ffffff;fill-opacity:0.996078">
-      <circle
-         cx="54.313499"
-         cy="5.2221498"
-         r="1.125"
-         transform="rotate(-96,54.3135,5.22215)"
-         fill="#c5e0ef"
-         stroke="#332d57"
-         stroke-width="0.75"
+      <path
          id="circle1293"
-         style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:1" />
+         style="stroke:#ffffff;stroke-width:0.75"
+         transform="rotate(-96,54.3135,5.22215)"
+         d="m 55.438499,5.2221498 a 1.125,1.125 0 0 1 -1.125,1.125 1.125,1.125 0 0 1 -1.125,-1.125 1.125,1.125 0 0 1 1.125,-1.125 1.125,1.125 0 0 1 1.125,1.125 z" />
     </g>
     <path
        fill-rule="evenodd"
@@ -490,14 +399,10 @@
        fill="#ffffff"
        id="path1299"
        style="fill:#ffffff;fill-opacity:0.996078" />
-    <circle
-       cx="45.269699"
-       cy="13.2112"
-       r="0.5"
-       transform="rotate(-6,45.2697,13.2112)"
-       fill="#ffffff"
+    <path
        id="circle1301"
-       style="fill:#ffffff;fill-opacity:0.996078" />
+       transform="rotate(-6,45.2697,13.2112)"
+       d="m 45.769699,13.2112 a 0.5,0.5 0 0 1 -0.5,0.5 0.5,0.5 0 0 1 -0.5,-0.5 0.5,0.5 0 0 1 0.5,-0.5 0.5,0.5 0 0 1 0.5,0.5 z" />
     <path
        fill-rule="evenodd"
        clip-rule="evenodd"
@@ -540,50 +445,29 @@
          id="path1310"
          style="fill:#ffffff;fill-opacity:0.996078" />
     </g>
-    <circle
-       transform="rotate(-96)"
-       stroke="#332d57"
-       stroke-width="0.75"
+    <path
        id="circle1295"
-       style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:1"
-       r="1.25"
-       cy="53.354523"
-       cx="-27.567991" />
-    <circle
-       cx="58.828602"
-       cy="2.7365699"
-       r="1.25"
-       transform="rotate(-6,58.8286,2.73657)"
-       fill="#f7931b"
-       stroke="#332d57"
+       style="stroke:#ffffff;stroke-width:0.75"
+       transform="rotate(-96)"
+       d="m -26.317991,53.354523 a 1.25,1.25 0 0 1 -1.25,1.25 1.25,1.25 0 0 1 -1.25,-1.25 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" />
+    <path
        id="circle1314"
-       style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:1" />
-    <circle
-       cx="52.9963"
-       cy="15.4156"
-       r="0.5"
-       transform="rotate(-96,52.9963,15.4156)"
-       fill="#332d57"
+       style="stroke:#ffffff"
+       transform="rotate(-6,58.8286,2.73657)"
+       d="m 60.078602,2.7365699 a 1.25,1.25 0 0 1 -1.25,1.25 1.25,1.25 0 0 1 -1.25,-1.25 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" />
+    <path
        id="circle1318"
-       style="fill:#ffffff;fill-opacity:0.996078" />
-    <circle
-       cx="47.107601"
-       cy="16.7887"
-       r="0.875"
-       transform="rotate(-96,47.1076,16.7887)"
-       fill="#d2e1fb"
-       stroke="#332d57"
-       stroke-width="0.75"
+       transform="rotate(-96,52.9963,15.4156)"
+       d="m 53.4963,15.4156 a 0.5,0.5 0 0 1 -0.5,0.5 0.5,0.5 0 0 1 -0.5,-0.5 0.5,0.5 0 0 1 0.5,-0.5 0.5,0.5 0 0 1 0.5,0.5 z" />
+    <path
        id="circle1320"
-       style="fill:#ffffff;fill-opacity:0.996078;stroke:#ffffff;stroke-opacity:1" />
-    <circle
-       cx="49.778099"
-       cy="11.1033"
-       r="1.625"
-       transform="rotate(-6,49.7781,11.1033)"
-       fill="#86b7e5"
+       style="stroke:#ffffff;stroke-width:0.75"
+       transform="rotate(-96,47.1076,16.7887)"
+       d="m 47.982601,16.7887 a 0.875,0.875 0 0 1 -0.875,0.875 0.875,0.875 0 0 1 -0.875,-0.875 0.875,0.875 0 0 1 0.875,-0.875 0.875,0.875 0 0 1 0.875,0.875 z" />
+    <path
        id="circle1322"
-       style="fill:#ffffff;fill-opacity:0.996078" />
+       transform="rotate(-6,49.7781,11.1033)"
+       d="m 51.403099,11.1033 a 1.625,1.625 0 0 1 -1.625,1.625 1.625,1.625 0 0 1 -1.625,-1.625 1.625,1.625 0 0 1 1.625,-1.6249999 1.625,1.625 0 0 1 1.625,1.6249999 z" />
     <path
        fill-rule="evenodd"
        clip-rule="evenodd"
@@ -595,24 +479,16 @@
   <g
      id="g38582"
      transform="translate(-1.9602596,-0.98660103)">
-    <circle
-       cx="4.7468376"
-       cy="18.558445"
-       r="3.7"
-       transform="rotate(-6)"
-       fill="#1a8cd0"
+    <path
        id="circle1201-6"
-       style="mix-blend-mode:luminosity;fill:#82a3e4;fill-opacity:1" />
-    <circle
-       cx="1.5965006"
-       cy="16.05835"
-       r="0.85000002"
+       style="mix-blend-mode:luminosity;fill:#82a3e4"
        transform="rotate(-6)"
-       fill="#faaf78"
-       stroke="#332d57"
-       stroke-width="0.4"
+       d="m 8.4468377,18.558445 a 3.7,3.7 0 0 1 -3.7000001,3.7 3.7,3.7 0 0 1 -3.7,-3.7 3.7,3.7 0 0 1 3.7,-3.7 3.7,3.7 0 0 1 3.7000001,3.7 z" />
+    <path
        id="circle1203-6"
-       style="mix-blend-mode:luminosity;fill:#a053d7;fill-opacity:1;stroke:#37383a;stroke-opacity:1" />
+       style="mix-blend-mode:luminosity;fill:#a053d7;stroke:#37383a;stroke-width:0.4"
+       transform="rotate(-6)"
+       d="m 2.4465007,16.05835 a 0.85000002,0.85000002 0 0 1 -0.8500001,0.85 0.85000002,0.85000002 0 0 1 -0.84999999,-0.85 0.85000002,0.85000002 0 0 1 0.84999999,-0.85 0.85000002,0.85000002 0 0 1 0.8500001,0.85 z" />
     <path
        fill-rule="evenodd"
        clip-rule="evenodd"
@@ -624,14 +500,11 @@
        mask="url(#mask0_849_2598-4)"
        id="g1212-9"
        style="mix-blend-mode:luminosity">
-      <circle
-         cx="4.2985826"
-         cy="18.595394"
-         r="3.5"
-         transform="rotate(-6)"
-         fill="#53B4EF"
+      <path
          id="circle1210-5"
-         style="fill:#477cf1;fill-opacity:0.99507" />
+         style="fill:#477cf1;fill-opacity:0.99507"
+         transform="rotate(-6)"
+         d="m 7.7985826,18.595394 a 3.5,3.5 0 0 1 -3.5,3.5 3.5,3.5 0 0 1 -3.50000005,-3.5 3.5,3.5 0 0 1 3.50000005,-3.5 3.5,3.5 0 0 1 3.5,3.5 z" />
     </g>
     <path
        fill-rule="evenodd"
@@ -654,65 +527,40 @@
        mask="url(#path-12-inside-5_849_2598-89)"
        id="path1224-8"
        style="mix-blend-mode:luminosity;stroke:#37383a;stroke-opacity:1" />
-    <circle
-       cx="1.8152392"
-       cy="18.208292"
-       r="0.2"
-       transform="rotate(-6)"
-       fill="#ffffff"
+    <path
        id="circle1226-7"
-       style="mix-blend-mode:luminosity" />
-    <circle
-       cx="2.0469191"
-       cy="18.958418"
-       r="0.15000001"
+       style="mix-blend-mode:luminosity;fill:#ffffff"
        transform="rotate(-6)"
-       fill="#332d57"
+       d="m 2.0152392,18.208292 a 0.2,0.2 0 0 1 -0.2,0.2 0.2,0.2 0 0 1 -0.2,-0.2 0.2,0.2 0 0 1 0.2,-0.2 0.2,0.2 0 0 1 0.2,0.2 z" />
+    <path
        id="circle1228-1"
-       style="mix-blend-mode:luminosity;fill:#37383a;fill-opacity:1" />
-    <circle
-       cx="5.4963951"
-       cy="18.758289"
-       r="0.15000001"
+       style="mix-blend-mode:luminosity;fill:#37383a"
        transform="rotate(-6)"
-       fill="#332d57"
+       d="m 2.1969191,18.958418 a 0.15000001,0.15000001 0 0 1 -0.15,0.15 0.15000001,0.15000001 0 0 1 -0.15,-0.15 0.15000001,0.15000001 0 0 1 0.15,-0.15 0.15000001,0.15000001 0 0 1 0.15,0.15 z" />
+    <path
        id="circle1230-7"
-       style="mix-blend-mode:luminosity;fill:#37383a;fill-opacity:1" />
-    <circle
-       cx="2.9967539"
-       cy="18.708433"
-       r="0.25"
+       style="mix-blend-mode:luminosity;fill:#37383a"
        transform="rotate(-6)"
-       fill="#332d57"
+       d="m 5.6463951,18.758289 a 0.15000001,0.15000001 0 0 1 -0.15,0.15 0.15000001,0.15000001 0 0 1 -0.15,-0.15 0.15000001,0.15000001 0 0 1 0.15,-0.15 0.15000001,0.15000001 0 0 1 0.15,0.15 z" />
+    <path
        id="circle1232-2"
-       style="mix-blend-mode:luminosity;fill:#37383a;fill-opacity:1" />
-    <circle
-       cx="7.9655094"
-       cy="22.45825"
-       r="0.25"
+       style="mix-blend-mode:luminosity;fill:#37383a"
        transform="rotate(-6)"
-       fill="#faaf78"
+       d="m 3.2467539,18.708433 a 0.25,0.25 0 0 1 -0.25,0.25 0.25,0.25 0 0 1 -0.25,-0.25 0.25,0.25 0 0 1 0.25,-0.25 0.25,0.25 0 0 1 0.25,0.25 z" />
+    <path
        id="circle1234-7"
-       style="mix-blend-mode:luminosity;fill:#a053d7;fill-opacity:1" />
-    <circle
-       cx="7.3466663"
-       cy="15.908484"
-       r="0.55000001"
+       style="mix-blend-mode:luminosity;fill:#a053d7"
        transform="rotate(-6)"
-       fill="#b8deff"
-       stroke="#332d57"
-       stroke-width="0.4"
+       d="m 8.2155094,22.45825 a 0.25,0.25 0 0 1 -0.25,0.25 0.25,0.25 0 0 1 -0.25,-0.25 0.25,0.25 0 0 1 0.25,-0.25 0.25,0.25 0 0 1 0.25,0.25 z" />
+    <path
        id="circle1238-2"
-       style="mix-blend-mode:luminosity;fill:#6788d8;fill-opacity:1;stroke:#37383a;stroke-opacity:1" />
-    <circle
-       cx="2.9969809"
-       cy="21.858412"
-       r="0.40000001"
+       style="mix-blend-mode:luminosity;fill:#6788d8;stroke:#37383a;stroke-width:0.4"
        transform="rotate(-6)"
-       fill="#b8deff"
-       stroke="#332d57"
-       stroke-width="0.4"
+       d="m 7.8966663,15.908484 a 0.55000001,0.55000001 0 0 1 -0.55,0.55 0.55000001,0.55000001 0 0 1 -0.55,-0.55 0.55000001,0.55000001 0 0 1 0.55,-0.55 0.55000001,0.55000001 0 0 1 0.55,0.55 z" />
+    <path
        id="circle1240-2"
-       style="mix-blend-mode:luminosity;fill:#6788d8;fill-opacity:1;stroke:#37383a;stroke-opacity:0.988414" />
+       style="mix-blend-mode:luminosity;fill:#6788d8;stroke:#37383a;stroke-width:0.4;stroke-opacity:0.988414"
+       transform="rotate(-6)"
+       d="m 3.3969809,21.858412 a 0.40000001,0.40000001 0 0 1 -0.4,0.4 0.40000001,0.40000001 0 0 1 -0.4,-0.4 0.40000001,0.40000001 0 0 1 0.4,-0.4 0.40000001,0.40000001 0 0 1 0.4,0.4 z" />
   </g>
 </svg>

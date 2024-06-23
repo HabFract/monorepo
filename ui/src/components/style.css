@@ -434,7 +434,10 @@ ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] {
       align-self: initial;
   }
   .field.row.sphere-image {
-    width: 85% !important;
+    width: 28rem;
+  }
+  .page-container:not(.onboarding-page) .field.row.sphere-image {
+    width: 85%;
   }
 }
 

@@ -10,6 +10,7 @@ import { initGraphQLClient } from './graphql/client';
 import './App.css'
 import 'habit-fract-design-system/dist/style.css';
 import './typo.css'
+import { Spinner } from 'flowbite-react';
 
 function BootScreen({ children }: any) {
   const [connected, setConnected] = useState<boolean>(false); // Top level state machine and routing
@@ -28,7 +29,7 @@ function BootScreen({ children }: any) {
     })
   }, [connected])
   
-    return !connected ? "loading" : (
+    return !connected ? <Spinner aria-label="Loading!"size="xl" className='full-spinner' /> : (
       <ApolloProvider client={apolloClient}>
       {/* <MyProfileProvider> */}
         <StateMachineContext.Provider value={AppMachine as any}>

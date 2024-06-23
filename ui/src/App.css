@@ -211,10 +211,13 @@ nav + main.page-container .orbits-list {
   .page-container:not(.home) {
     grid-column: 2/-2;
   }
+  .page-container.create-form {
+    justify-content: center;
+  }
   .page-container.vis {
     padding: 0;
   }
-  .page-container.vis #vis-root {
+  #vis-root {
     width: 100%;
   }
   .onboarding-title {

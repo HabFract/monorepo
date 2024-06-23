@@ -98,7 +98,7 @@ div[data-testid="flowbite-dropdown"] button {
 
 /* Hide icon test on smaller viewports */
 .btn.responsive span[role="img"] {
-  @apply m-0-sm;
+  @apply m-0-sm justify-center;
 }
 .btn.responsive span[role="img"] + span {
   @apply hidden-sm;

@@ -16,7 +16,7 @@ type OrbitCardProps = {
   displayOnly: boolean
 };
 
-const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, displayOnly }: OrbitCardProps) => {
+const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runDelete, displayOnly }: OrbitCardProps) => {
   return (
     <div className={ displayOnly ? "orbit-card display-only" : "orbit-card"}>
       <header className="orbit-header card-header">
@@ -34,14 +34,14 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, disp
         <div className="row-c-around h-full big-gap">
           {!displayOnly && <div className="orbit-actions col-c gap-2">
             <div className="orbit-actions-crud flex-col row-c-around">
-            <Dropdown label="Manage" dismissOnClick={false} className="bg-red-500 hover:bg-red-600">
+            <Dropdown label="Manage" dismissOnClick={false} className="bg-secondary p-2">
               <Dropdown.Item onClick={() => {transition('CreateOrbit', { editMode: true, orbitToEditId: orbit.id, sphereEh })}}>
                 <span>
                   <EditOutlined className="icon" />
                   Edit
                 </span>
               </Dropdown.Item>
-              <Dropdown.Item>
+              <Dropdown.Item onClick={() => {runDelete()}}>
                 <span>
                   <DeleteOutlined className="icon" />
                   Delete

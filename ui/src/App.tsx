@@ -52,7 +52,7 @@ function App({ children: pageComponent }: any) {
           </main>
         : <>
           {!state.match('Home') && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded}></Nav>}
-          <main className={getMainContainerClass(state)}>
+          <main className={(() => getMainContainerClass(state))()}>
             {pageComponent && cloneElement(pageComponent, { startBtn:
                   state.match('Home') && <Button
                   type={"onboarding"}
@@ -75,6 +75,14 @@ function getMainContainerClass(state) {
       return "home page-container"
     case 'Vis':
       return "vis page-container"
+    case 'CreateSphere':
+      return "create-form page-container"
+    case 'CreateOrbit':
+      return "create-form page-container"
+    case 'ListOrbits':
+      return "list page-container"
+    case 'ListSpheres':
+      return "list page-container"
     default:
       return "page-container"
   }

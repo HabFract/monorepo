@@ -96,7 +96,7 @@ console.log('props :>> ', props);
           { headerDiv }
 
           <h2 className='onboarding-subtitle'>Create a Sphere</h2>
-          <p className='form-description'>A sphere is an <em>area of your life</em> where you want to track repeated actions.</p>
+          <p className='form-description px-1'>A sphere is an <em>area of your life</em> where you want to track repeated actions.</p>
           <Form noValidate={true}>
             {editMode && <SphereFetcher sphereToEditId={sphereToEditId} setValues={setCurrentSphereValues} />}
               <div className="form-field">
