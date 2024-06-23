@@ -1,25 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field, useFormikContext } from 'formik';
-import * as Yup from 'yup';
-import { DateTime } from "luxon"
-
-import { Checkbox, Flex } from 'antd';
-import DateInput from './input/DatePicker';
-import { TextInput, Label, Select, Textarea } from 'flowbite-react';
 
 import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { ActionHashB64, EntryHashB64, decodeHashFromBase64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { currentOrbitCoords, currentSphere } from '../../state/currentSphereHierarchyAtom';
-import { AppState } from '../../routes';
-import { mapToCacheObject, nodeCache, store } from '../../state/jotaiKeyValueStore';
-import { client } from '../../main';
 import { OrbitCard, TextAreaField, TextInputField, SelectInputField, HelperText } from 'habit-fract-design-system';
 import { OrbitSubdivisionList } from '../lists';
 import { SubdivisionScale } from '../lists/OrbitSubdivisionList';
-import { useAtom } from 'jotai';
-import { subdivisionListAtom } from '../../state/subdivisionListAtom';
 import { OrbitFetcher } from './utils';
 import { OrbitValidationSchema } from './CreateOrbit';
 
@@ -31,7 +19,7 @@ interface RefineOrbitProps {
   headerDiv?: React.ReactNode;
 }
 
-enum Refinement {
+export enum Refinement {
   Update = 'update',
   Split = 'split',
   AddList = 'add-list',
@@ -39,10 +27,6 @@ enum Refinement {
 
 const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, headerDiv, submitBtn }: RefineOrbitProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
-  const editMode : Refinement = Refinement.Update; 
- 
-  const loading = false;
-
 
   return (
     <Formik
@@ -50,54 +34,45 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
       initialValues={{} as any}
       validationSchema={OrbitValidationSchema}
       onSubmit={async (values, { setSubmitting }) => {
-        // try {
-        //   if (!values.archival) delete values.endTime;
-        //   delete values.archival;
-        //   let response = editMode
-        //     ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
-        //     : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined, childHash: values.childHash || undefined } } })
-        //   setSubmitting(false);
-        //   if(!response.data) return;
-        //   if(originPage == 'Vis') {
-        //     transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: selectedSphere.actionHash}) 
-        //   } else {
-        //     transition(inOnboarding ? 'Onboarding3' : 'ListOrbits', { sphereAh: selectedSphere.actionHash })
-        //   }
-        // } catch (error) {
-        //   console.error(error);
-        // }
+        // This doesn't actually need submitting, just using the context to use the Orbit Fetcher.
       }}
-      >
+    >
       {({ values, errors, touched }) => {
         return  (
-        <>
-          {refiningOrbitAh && <OrbitFetcher orbitToEditId={refiningOrbitAh} />}
-            { headerDiv }
+          <>
+            {refiningOrbitAh && <OrbitFetcher orbitToEditId={refiningOrbitAh} />}
+              { headerDiv }
 
-            <h2 className='onboarding-subtitle'>Refine Your Orbit</h2>
-            <p className='form-description'>Make sure that you have <em>broken down</em> your Orbit into smaller scales (as desired) before you are ready to start tracking!</p>
-            <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText>
+              <h2 className='onboarding-subtitle'>Refine Your Orbit</h2>
+              <p className='form-description'>
+                {values.scale == Scale.Atom
+                  ? <span>Make sure that you have been thoughtful about the best name for your Atomic Orbit before you continue</span>
+                  : <span>Make sure that you have <em>broken down</em> your Orbit into smaller scales (as desired) before you are ready to start tracking!</span>
+                }
+              </p>
+              
+              <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText>
 
-            {values?.name && 
-              <OrbitCard
-                displayOnly={true}
-                sphereEh={values.sphereHash}
-                orbit={{
-                  name: values.name,
-                  scale: values.scale,
-                  frequency: values.frequency,
-                  metadata:
-                    {
-                      description:values.description,
-                      timeframe: {
-                        startTime: values.startTime,
-                        endTime: values.endTime,
+              {values?.name && 
+                <OrbitCard
+                  displayOnly={true}
+                  sphereEh={values.sphereHash}
+                  orbit={{
+                    name: values.name,
+                    scale: values.scale,
+                    frequency: values.frequency,
+                    metadata:
+                      {
+                        description:values.description,
+                        timeframe: {
+                          startTime: values.startTime,
+                          endTime: values.endTime,
+                        }
                       }
-                    }
-                }} 
-            ></OrbitCard>}
-            <OrbitSubdivisionList submitBtn={submitBtn} listItemScale={values.scale == Scale.Atom ? SubdivisionScale.Rename : SubdivisionScale.Atom}></OrbitSubdivisionList>
-        </>
+                  }} 
+              ></OrbitCard>}
+              <OrbitSubdivisionList submitBtn={submitBtn} currentOrbitValues={values} refinementType={values.scale == Scale.Atom ? Refinement.Update : Refinement.Split}></OrbitSubdivisionList>
+          </>
       )}}
     </Formik>
   );

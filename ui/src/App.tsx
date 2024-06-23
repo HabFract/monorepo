@@ -10,7 +10,7 @@ import Onboarding from './components/layouts/Onboarding';
 
 import { Button, ProgressBar, darkTheme } from 'habit-fract-design-system';
 import { store } from './state/jotaiKeyValueStore';
-import { currentSphere } from './state/currentSphereHierarchyAtom';
+import { currentOrbitId, currentSphere } from './state/currentSphereHierarchyAtom';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
@@ -28,9 +28,13 @@ function App({ children: pageComponent }: any) {
                         type={"icon"}
                         icon={<BackCaret />}
                         onClick={() => {
+                          const sphere = store.get(currentSphere);
+                          const orbit = store.get(currentOrbitId);
                           const props = getLastOnboardingState(state).match("Onboarding1") 
-                            ? { sphereToEditId: store.get(currentSphere)?.actionHash }
-                            : {}
+                            ? { sphereToEditId: sphere?.actionHash }
+                            : getLastOnboardingState(state).match("Onboarding2")
+                              ? { sphereEh: sphere.entryHash, orbitToEditId: orbit?.id }
+                              : { orbitToEditId: orbit?.id }
 
                           return transition(getLastOnboardingState(state), { editMode: true, ...props })}}>
                       </Button>

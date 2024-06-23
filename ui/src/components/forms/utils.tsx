@@ -4,19 +4,18 @@ import { useEffect } from "react";
 
 export const OrbitFetcher = ({orbitToEditId}) => {
   const { setValues } = useFormikContext();
-
+  if(!orbitToEditId) return;
+  
   const {data: getData, error: getError, loading: getLoading } = useGetOrbitQuery({
     variables: {
       id: orbitToEditId as string
     },
   });
-
   useEffect(() => {
       if(typeof getData == "undefined") return;
       const {  name, sphereHash: parentHash, frequency, scale, metadata: {description, timeframe:  {startTime, endTime} }} = getData!.orbit as any;
-      
       setValues({
-        name, description, startTime, endTime: endTime || undefined, frequency, scale, archival: !!endTime, parentHash
+        id: orbitToEditId, name, description, startTime, endTime: endTime || undefined, frequency, scale, archival: !!endTime, parentHash, eH: getData.orbit.eH
       })
   }, [getData])
   return null;

@@ -11,7 +11,7 @@ import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCr
 import { extractEdges } from '../../graphql/utils';
 import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { currentOrbitCoords, currentSphere } from '../../state/currentSphereHierarchyAtom';
+import { currentOrbitCoords, currentOrbitId, currentSphere } from '../../state/currentSphereHierarchyAtom';
 import { AppState } from '../../routes';
 import { mapToCacheObject, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { client } from '../../main';
@@ -66,10 +66,12 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
       },
     ],
     async update(){
-      if(inOnboarding) return;
+      console.log('inOnboarding :>> ', inOnboarding);
+      if(!!inOnboarding) return;
       const variables = { sphereEntryHashB64: sphereEh };
       let data;
       try {
+        return;
         const gql = await client;
         data = await gql.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only'} )
         if(data?.data?.orbits) {
@@ -89,8 +91,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
     }
   });
   const [updateOrbit] = useUpdateOrbitMutation({
-    refetchQueries: [
-      // 'getOrbits',
+    refetchQueries: state.match("Onboarding") ? [] : [
+      'getOrbits',
     ],
   });
 
@@ -117,19 +119,24 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
         try {
           if (!values.archival) delete values.endTime;
           delete values.archival;
+          delete values.eH;
           let response = editMode
             ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
             : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined, childHash: values.childHash || undefined } } })
           setSubmitting(false);
           if(!response.data) return;
+  
           const payload = response.data as any;
           if(originPage == 'Vis') {
             transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: selectedSphere.actionHash}) 
           } else {
+            const orbitAh = editMode ? payload.updateOrbit.actionHash : payload.createOrbit.actionHash
+            console.log('orbitAh :>> ', orbitAh);
             const props = inOnboarding
-              ? { refiningOrbitAh: payload.createOrbit.actionHash }
+              ? { refiningOrbitAh: orbitAh }
               : { sphereAh: selectedSphere.actionHash }
 
+            store.set(currentOrbitId, { id: orbitAh })
             transition(inOnboarding ? 'Onboarding3' : 'ListOrbits', props)
           }
         } catch (error) {
@@ -185,7 +192,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                 iconSide={"left"}
                 withInfo={true}
                 options={Object.values(Scale).sort((a: any, b: any) => a - b).map((scale, i) => {
-                  const cannotBeAstro = values.parentHash !== '' && values.parentHash !== 'root';
+                  const cannotBeAstro = !(editMode && state.match("Onboarding")) && values.parentHash !== '' && values.parentHash !== 'root';
                   return cannotBeAstro && scale == 'Astro'
                     ? null
                     : <option key={scale} value={scale}>{getDisplayName(scale)}</option>
@@ -197,7 +204,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             </div>
 
             {!parentOrbitEh && !inOnboarding && <div className="flex form-field">
-              {/* <Label htmlFor='parentHash'>Parent Orbit: <span className="reqd">*</span></Label> */}
               <Field
                 component={SelectInputField}
                 size="base"
@@ -287,7 +293,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
 
 export default CreateOrbit;
 
-function getDisplayName(scale: Scale) {
+export function getDisplayName(scale: Scale) {
   switch (scale) {
     case Scale.Astro:
       return "Astronomic"
