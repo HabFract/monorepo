@@ -120,11 +120,12 @@ div[data-testid="flowbite-dropdown"] button {
 /* Upload image button */
 
 .upload-img-btn:hover {
-  @apply bg-secondary-500 text-white;
+  @apply opacity-100;
 }
 .upload-img-btn {
   top: 0.425rem;
-  left: -0.375rem;
+  left: -1rem;
+  position: relative;
 }
 
 /* Onboarding submit button */

@@ -142,6 +142,15 @@ nav + main.page-container .orbits-list {
   @apply text-line fill-primary;
 }
 
+
+.onboarding-subtitle {
+  line-height: 2rem;
+  font-size: 1rem;
+  width: 100%;
+  text-align: center;
+  margin: 1rem 0 0 0;
+}
+
 @media screen and (min-width: 440px) {
   .ant-app {
     grid-template-columns: 10% 80% 10%;
@@ -165,6 +174,7 @@ nav + main.page-container .orbits-list {
     min-width: calc(50vw - 6rem);
     @apply p-8;
     position: initial;
+    overflow: hidden;
   }
   .page-container.home::before {
     background-position-y: -8vh;
@@ -172,7 +182,6 @@ nav + main.page-container .orbits-list {
   .onboarding-layout {
     @apply gap-4 p-4;
   }
-  
 }
 @media screen and (min-width: 1200px) {
   .ant-app {
@@ -192,9 +201,57 @@ nav + main.page-container .orbits-list {
   .page-container:not(.home) {
     grid-column: 2/-2;
   }
+  .page-container.vis {
+    padding: 0;
+  }
+  .page-container.vis #vis-root {
+    width: 100%;
+  }
+  .onboarding-title {
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 1.5rem;
+  }
+  .onboarding-subtitle {
+    line-height: 2.5rem;
+    font-size: 1.25rem;
+  }
+  .onboarding-layout > div {
+    position: relative;
+  }
+  
+  .onboarding-layout > div > div:nth-child(1) .btn {
+    height: 3rem;
+    z-index: 1;
+  }
+
+  .onboarding-layout > div > div:nth-child(1) {
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .onboarding-layout > div > div:nth-child(2) {
+    @apply absolute;
+    margin-top: .5rem;
+    z-index: -1;
+    left: 24rem;
+  }
 }
+
 @media screen and (min-width: 1680px) {
   .page-container.home::before {
     background-position-y: -3vw;
+  }
+
+  .onboarding-layout > div > div:nth-child(1) {
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .onboarding-layout > div > div:nth-child(1) .btn {
+    height: 3rem;
+  }
+  .onboarding-layout > div > div:nth-child(2) {
+    @apply absolute;
+    right: 11rem;
+    margin-top: .5rem;
   }
 }

@@ -37,7 +37,7 @@ function App({ children: pageComponent }: any) {
                       <h1 className={"onboarding-title"}>Break a Negative Habit</h1>
                     </div>
                     <ProgressBar
-                      stepNames={['Create Profile', 'Create A Sphere', 'Create An Orbit', 'Confirm Orbit', 'Visualize']}
+                      stepNames={['Create Profile', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize']}
                       currentStep={+(state.match(/Onboarding(\d+)/)[1])}
                     />
                   </>)(),
@@ -52,7 +52,7 @@ function App({ children: pageComponent }: any) {
           </main>
         : <>
           {!state.match('Home') && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded}></Nav>}
-          <main className={state.match('Home') ? "home page-container" : "page-container"}>
+          <main className={getMainContainerClass(state)}>
             {pageComponent && cloneElement(pageComponent, { startBtn:
                   state.match('Home') && <Button
                   type={"onboarding"}
@@ -69,6 +69,17 @@ function App({ children: pageComponent }: any) {
   )
 }
 
+function getMainContainerClass(state) {
+  switch (state) {
+    case 'Home':
+      return "home page-container"
+    case 'Vis':
+      return "vis page-container"
+    default:
+      return "page-container"
+  }
+
+}
 export default App
 
 function getLastOnboardingState(state: string) {

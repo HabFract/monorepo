@@ -71,9 +71,9 @@ const ImageUpload = ({
   };
 
   const uploadButton = (
-    <div className='absolute z-10 top-4 left-6 text-gray-500 '>
-      <div className='upload-img-btn absolute bg-secondary text-white hover:bg-secondary rounded-full p-2 transition-all duration-300'>Upload
-        <span className="rounded-xl text-primary bg-secondary">{loading ? <LoadingOutlined /> : <PlusCircleFilled />}</span>
+    <div className='absolute z-10 top-4 left-4 text-gray-500 '>
+      <div className='upload-img-btn absolute z-10 cursor-pointer bg-gray-500 opacity-75 text-white rounded-full p-2 transition-all duration-300'>Upload
+        <span className="rounded-xl text-primary bg-secondary ml-2">{loading ? <LoadingOutlined /> : <PlusCircleFilled />}</span>
       </div>
     </div>
   );
@@ -83,6 +83,7 @@ const ImageUpload = ({
     }, 0);
   };
 
+  const showSeeded = true;
   return (
     <Upload
       name="avatar"
@@ -93,7 +94,7 @@ const ImageUpload = ({
       onChange={handleChange}
       customRequest={dummyRequest as any}
     >
-      {imageUrl && custom ? <div className='relative w-full h-full'><img src={imageUrl} alt="avatar" style={{ width: '100%' }} /></div> : <div className='relative w-full h-full'>{uploadButton}</div>}
+      {imageUrl && (custom || showSeeded) ? <div className='relative w-full h-full overflow-hidden'><img src={imageUrl} alt="avatar" style={{ width: '100%' }} /><div className='absolute w-8 h-4 top-1 left-1'>{uploadButton}</div></div> : <div className='relative w-full h-full'>{uploadButton}</div>}
     </Upload>
   );
 };

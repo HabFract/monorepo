@@ -1,5 +1,5 @@
 import React, { FC, ComponentProps } from "react"
-import { Scale } from "../../app/src/graphql/generated";
+import { Scale } from "../../ui/src/graphql/generated";
 
 export function getIconForPlanetValue(scale: Scale) : FC<ComponentProps<'svg'>> | undefined {
   switch (scale) {

@@ -53,8 +53,10 @@ h1.onboarding-title {
 p.form-description {
   line-height: 24px;
   font-size: 1em;
-  font-weight: light;
+  font-weight: 300;
   @apply font-sans;
+  max-width: 28rem;
+  margin: 0 auto;
 }
 
 p.form-description em, .helper-text em {

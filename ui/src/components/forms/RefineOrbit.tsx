@@ -46,6 +46,7 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
 
   return (
     <Formik
+      style="max-width: 28rem;" 
       initialValues={{} as any}
       validationSchema={OrbitValidationSchema}
       onSubmit={async (values, { setSubmitting }) => {
@@ -72,6 +73,8 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
         <>
           {refiningOrbitAh && <OrbitFetcher orbitToEditId={refiningOrbitAh} />}
             { headerDiv }
+
+            <h2 className='onboarding-subtitle'>Refine Your Orbit</h2>
             <p className='form-description'>Make sure that you have chosen the <em>best specifics</em> for your orbit, before you are ready to start tracking!</p>
             <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText>
 

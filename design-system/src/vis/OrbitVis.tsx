@@ -1,5 +1,5 @@
 import { Progress } from 'flowbite-react';
-import { Scale } from "../../../app/src/graphql/generated";
+import { Scale } from "../../../ui/src/graphql/generated";
 import './common.css'
 import '../common.css'
 

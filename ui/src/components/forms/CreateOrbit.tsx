@@ -141,6 +141,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
       return  (
         <>
           {!inModal ? headerDiv : null}
+
+          <h2 className='onboarding-subtitle'>Create an Orbit</h2>
           <p className='form-description'>An orbit is a <em>specific life</em> action that your wish to track over time.</p>
           <Form noValidate={true}>
             {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}

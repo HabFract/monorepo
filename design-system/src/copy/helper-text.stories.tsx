@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta, StoryObj } from '@storybook/react';
 import HelperText, { HelperTextProps } from './helper-text';
-import List from '../../../app/src/components/icons/List';
+import List from '../../../ui/src/components/icons/List';
 
 const meta: Meta<HelperTextProps> = {
   title: "Components/Onboarding/HelperText",

@@ -2,11 +2,11 @@ import React from 'react';
 import './common.css';
 import { DeleteOutlined, EditOutlined, PieChartOutlined, OrderedListOutlined, PlusCircleFilled, PlusCircleOutlined } from '@ant-design/icons';
 import { SphereVis } from '../vis';
-import { Scale, Sphere } from '../../../app/src/graphql/generated';
+import { Scale, Sphere } from '../../../ui/src/graphql/generated';
 import { Button } from 'flowbite-react';
-import { currentOrbitCoords, currentSphere } from '../../../app/src/state/currentSphereHierarchyAtom';
-import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../../app/src/state/jotaiKeyValueStore';
-import TreeVisIcon from '../../../app/src/components/TreeVisIcon';
+import { currentOrbitCoords, currentSphere } from '../../../ui/src/state/currentSphereHierarchyAtom';
+import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../../ui/src/state/jotaiKeyValueStore';
+import TreeVisIcon from '../../../ui/src/components/TreeVisIcon';
 
 type SphereCardProps = {
   sphere: Sphere;

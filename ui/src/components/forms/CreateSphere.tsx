@@ -55,12 +55,12 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
 
   const [addSphere, {loading}] = useCreateSphereMutation({
     refetchQueries: [
-      // 'getSpheres',
+      'getSpheres',
     ]
   });
   const [updateSphere] = useUpdateSphereMutation({
     refetchQueries: [
-      // 'getSpheres',
+      'getSpheres',
     ]
   });
 
@@ -94,6 +94,8 @@ console.log('props :>> ', props);
         return (
         <>
           { headerDiv }
+
+          <h2 className='onboarding-subtitle'>Create a Sphere</h2>
           <p className='form-description'>A sphere is an <em>area of your life</em> where you want to track repeated actions.</p>
           <Form noValidate={true}>
             {editMode && <SphereFetcher sphereToEditId={sphereToEditId} setValues={setCurrentSphereValues} />}

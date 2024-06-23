@@ -3,7 +3,7 @@ function OnboardingLayout({ children } : any) {
 
   return (
     <div className="onboarding-layout">
-      {children}
+      <div className="flex flex-col flex-around w-full">{children}</div>
     </div>
   )
 }
