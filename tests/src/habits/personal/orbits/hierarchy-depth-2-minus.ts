@@ -1,4 +1,4 @@
-import { Orbit, Sphere } from './../../../../../app/src/graphql/generated/index';
+import { Orbit, Sphere } from './../../../../../ui/src/graphql/generated/index';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import {
   encodeHashToBase64,

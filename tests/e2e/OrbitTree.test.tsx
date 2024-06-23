@@ -3,9 +3,9 @@ import '@testing-library/jest-dom'
 import { expect, describe, test, it } from '@jest/globals';
 import { render, waitFor, screen, act } from '@testing-library/react';
 
-import { renderVis } from '../../app/src/components/vis/helpers';
+import { renderVis } from '../../ui/src/components/vis/helpers';
 
-import OrbitTree from '../../app/src/components/vis/OrbitTree';
+import OrbitTree from '../../ui/src/components/vis/OrbitTree';
 
 import { HIERARCHY_MOCKS } from './mocks/hierarchy-root-only';
 import { ORBITS_MOCKS } from './mocks/orbits';

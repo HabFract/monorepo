@@ -1,6 +1,6 @@
 import {
   GetOrbitHierarchyDocument,
-} from "../../../app/src/graphql/generated/index";
+} from "../../../ui/src/graphql/generated/index";
 import { SPHERE_ID } from "./spheres";
 
 export const HIERARCHY_ROOT_THREE_CHILDREN = [

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render, waitFor } from '@testing-library/react';
 import { describe, expect, test, it } from '@jest/globals'
 
-import SphereList from '../../app/src/components/lists/ListSpheres';
+import SphereList from '../../ui/src/components/lists/ListSpheres';
 import { SPHERES_MOCKS } from './mocks/spheres';
 import { MockedProvider } from '@apollo/client/testing';
 import { WithCurrentSphereMockedAtom } from '../utils-frontend';

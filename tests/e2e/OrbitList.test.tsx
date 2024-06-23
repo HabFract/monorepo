@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { expect, describe, test, it } from '@jest/globals';
 import { screen, render, waitFor } from '@testing-library/react';
 
-import OrbitList from '../../app/src/components/lists/ListOrbits';
+import OrbitList from '../../ui/src/components/lists/ListOrbits';
 import { ORBITS_MOCKS } from './mocks/orbits';
 import { MockedProvider } from '@apollo/client/testing';
 import { setMockNodeDetailsCache } from '../setupTests';

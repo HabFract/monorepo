@@ -1,4 +1,4 @@
-import { GetOrbitHierarchyDocument } from "../../../app/src/graphql/generated/index";
+import { GetOrbitHierarchyDocument } from "../../../ui/src/graphql/generated/index";
 import { SPHERE_ID } from "./spheres";
 
 // NOTE: In order for the Orbit Details to render on the visualisaiton, the content field of each node should match the id field in the cache.

@@ -1,6 +1,6 @@
 import {
   GetOrbitHierarchyDocument,
-} from "../../../app/src/graphql/generated/index";
+} from "../../../ui/src/graphql/generated/index";
 import { ORBITS_MOCKS } from "./orbits";
 import { SPHERE_ID } from "./spheres";
 

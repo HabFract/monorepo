@@ -1,6 +1,6 @@
 
-import { anOrbitConnection } from '../../../app/src/graphql/generated/mocks-types-fixed'
-import { GetOrbitsDocument, Frequency, Scale, DeleteOrbitDocument, GetSphereDocument } from '../../../app/src/graphql/generated/index'
+import { anOrbitConnection } from '../../../ui/src/graphql/generated/mocks-types-fixed'
+import { GetOrbitsDocument, Frequency, Scale, DeleteOrbitDocument, GetSphereDocument } from '../../../ui/src/graphql/generated/index'
 
 export const ORBITS_MOCKS = [
   {

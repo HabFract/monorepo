@@ -8,7 +8,7 @@ import { mockedCacheEntries } from "./e2e/mocks/cache";
 import { SPHERE_ID } from "./e2e/mocks/spheres";
 
 import { atom } from "jotai";
-import { SortCriteria, SortOrder } from "../app/src/state/listSortFilterAtom";
+import { SortCriteria, SortOrder } from "../ui/src/state/listSortFilterAtom";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -35,7 +35,7 @@ export function setMockUseStateTransitionResponse(params: typeof initialState) {
   mockUseStateTransitionResponse = ["Home", jest.fn(() => {}), params];
 }
 
-jest.mock("../app/src/hooks/useStateTransition", () => ({
+jest.mock("../ui/src/hooks/useStateTransition", () => ({
   useStateTransition: () => mockUseStateTransitionResponse,
   setMockUseStateTransitionResponse,
 }));
@@ -57,7 +57,7 @@ export function setMockNodeDetailsCache(params: typeof mockedCacheEntries) {
   mockNodeDetailsCacheItems = Object.fromEntries(params);
 }
 
-jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
+jest.mock("../ui/src/state/jotaiKeyValueStore", () => ({
   nodeCache: {
     entries: atom(mockNodeDetailsCache),
     keys: atom(mockNodeDetailsCacheKeys),
@@ -117,13 +117,13 @@ jest.mock("../app/src/state/jotaiKeyValueStore", () => ({
 }));
 
 // Mock app level constants
-jest.mock("../app/src/constants", () => ({
+jest.mock("../ui/src/constants", () => ({
   APP_WS_PORT: 1234,
   ADMIN_WS_PORT: 4321,
   HAPP_DNA_NAME: "habits",
 }));
 
-jest.mock("../app/src/main", () => ({
+jest.mock("../ui/src/main", () => ({
   client: () => ({
     query: () => {},
   }),

@@ -3,8 +3,8 @@ import '@testing-library/jest-dom';
 import { expect, describe, test, it } from '@jest/globals';
 
 import { MockedProvider } from '@apollo/client/testing';
-import OrbitTree from '../../app/src/components/vis/OrbitTree';
-import { renderVis } from '../../app/src/components/vis/helpers';
+import OrbitTree from '../../ui/src/components/vis/OrbitTree';
+import { renderVis } from '../../ui/src/components/vis/helpers';
 import { render, waitFor } from '@testing-library/react';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
@@ -23,7 +23,7 @@ const decrementBreadth = jest.fn(() => { x -= 1  }) as Function;
 const decrementDepth = jest.fn(() => { y-=1  }) as Function;
 
 
-jest.mock("../../app/src/hooks/useNodeTraversal", () => ({
+jest.mock("../../ui/src/hooks/useNodeTraversal", () => ({
   useNodeTraversal: (_, __) => ({
     incrementBreadth,
     incrementDepth,
