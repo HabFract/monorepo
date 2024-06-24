@@ -25,6 +25,7 @@ import { currentSphere } from '../state/currentSphereHierarchyAtom';
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
   params: OrbitHierarchyQueryParams;
   hasCached?: boolean; // pass true to bypass the hook
+  currentSphereId: ActionHashB64
 }
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
@@ -36,7 +37,10 @@ interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
 export const useFetchOrbitsAndCacheHierarchyPaths = ({
   params,
   hasCached = false,
+  currentSphereId
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
+  if(!currentSphereId) return { loading: false, error: new Error("Cannot run hook withou a sphere Ah"), cache: null}
+
   const { data, loading, error } = useGetOrbitHierarchyQuery({
     skip: hasCached,
     variables: { params },
@@ -44,7 +48,6 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
 
   const [hierarchyObject, setHierarchyObject] = useState()
 
-  const currentSphereId = store.get(currentSphere)?.actionHash as ActionHashB64;
   const sphereNodes = store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
   if(!currentSphere || !sphereNodes) throw new Error('Cannot cache paths without a currentSphereId or existing cache');
   
@@ -71,6 +74,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
   function cacheOrbitPaths(d3Hierarchy: object): boolean {
     let cached = false;
     let workingSphereNodes : SphereOrbitNodes = {...sphereNodes};
+    console.log('currentSphereId :>> ', currentSphereId);
     try {
       if(!currentSphereId || currentSphereId == '') throw new Error('Cannot cache paths without a currentSphere id');
       const existingCache = store.get(nodeCache.items) as SphereNodeDetailsCache;

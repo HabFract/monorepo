@@ -10,6 +10,7 @@ import { currentOrbitCoords, currentSphere } from "../state/currentSphereHierarc
 import { SphereNodeDetailsCache, nodeCache, store } from "../state/jotaiKeyValueStore";
 import { extractEdges } from "../graphql/utils";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ItemType } from "antd/es/menu/hooks/useItems";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -79,8 +80,6 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
     };
   }, []);
 
-  const selectedSphere = store.get(currentSphere);
-  const currentSphereId = selectedSphere?.actionHash as ActionHashB64;
   // Menu state/dom helpers
   function closeMenu () {
     setCollapsed(true);
@@ -93,7 +92,6 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   function removeOtherActiveNavItemStates() {
     [...document.querySelectorAll(".ant-menu-item-selected")]?.forEach(item => item.classList.remove("ant-menu-item-selected"))
   };
-
   // Helpers for creating menu items
   function createFixedMenuItems() {
     return [
@@ -115,7 +113,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
       return getItem(
         `${sphere.name}`,
         sphere.id,
-        <img className={currentSphereId == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string}/>,
+        <img className={store.get(currentSphere)?.actionHash == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string}/>,
       )})
     ] 
   }
@@ -130,13 +128,15 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
       </div>
     )
   }
-
-  const loading = loadingSpheres || !spheres;
-  const spheresArray = loading ? [] : extractEdges(spheres.spheres); 
+  let loading = loadingSpheres || !spheres;
+  const spheresArray = loading ? [] : extractEdges(spheres!.spheres); 
+  const [menuItems, setMenuItems] = useState<ItemType[]>(createSphereMenuItems({spheres: spheresArray}));
+  store.sub(currentSphere, () => {
+    spheresArray && setMenuItems(createSphereMenuItems({spheres: spheresArray}))
+  })
   const tooltipMsg = `You need to ${ spheresArray.length == 0 ? "create" : spheresArray.length == 4 ? "delete" : "select"} a Sphere `;
-  
 
-  const sphere = (sphereAh?: EntryHashB64) => extractEdges(spheres?.spheres as any).find((sphere: any) => (sphereAh || sphere.id) == currentSphereId) as Sphere & {id: ActionHashB64};
+  const sphere = (sphereAh?: EntryHashB64) => spheresArray.find((sphere: any) => sphereAh == sphere.id) as Sphere & {id: ActionHashB64};
   const noSphereOrbits = (sphereAh?: EntryHashB64) =>  {
     const cacheId = (sphereAh || sphere()?.id);
     if(!cacheId) return true;
@@ -191,14 +191,15 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         } else {
           setTooltipVisible(false)
           // Set current sphere from action hash of sphere clicked
-          store.set(currentSphere, {entryHash: sphere()?.eH, actionHash: e.key})
+          store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
+
           // expand menu for action buttons
           if(collapsed && !sideNavExpanded) openMenu();
 
           const pageString = currentPage as string;
           if(currentPage== Page.Home) return
           // Reload the current page with a new sphere context
-          transition(pageString, pageString == "ListOrbits" ? {sphereAh: e.key} : pageString == "CreateOrbit" ?  {sphereEh: sphere().eH} : {currentSphereEhB64: selectedSphere.entryHash, currentSphereAhB64: e.key})
+          transition(pageString, pageString == "ListOrbits" ? {sphereAh: e.key} : pageString == "CreateOrbit" ?  {sphereEh: sphere(e.key).eH} : {currentSphereEhB64: store.get(currentSphere).entryHash, currentSphereAhB64: e.key})
         }
         break;
     }
@@ -209,7 +210,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
     return <Button
       type="button"
       onClick={(_e) => {goToPage(type)}}
-      disabled={spheresArray.length == 0 || !currentSphereId || (currentPage == Page.Vis && noSphereOrbits())}
+      disabled={spheresArray.length == 0 || !store.get(currentSphere)?.actionHash || (currentPage == Page.Vis && noSphereOrbits())}
       className={`btn btn-sq btn-${type} ` +  (isCurrentPage(type) ? "nohover" : "")}
       style={{cursor: isCurrentPage(type) ? "initial" : "pointer", borderColor: "transparent", outlineOffset: "1px", outline: isCurrentPage(type) ? "3px solid rgb(17 24 39 / 1)" : ""}}
     >
@@ -232,7 +233,8 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
             return
           }
           store.set(currentOrbitCoords, {x: 0, y: 0});
-          setCurrentPage(Page.Vis)       
+          setCurrentPage(Page.Vis)
+          console.log('object :>> ', {currentSphereEhB64: sphere().eH, currentSphereAhB64: sphere().id});
           transition('Vis', {currentSphereEhB64: sphere().eH, currentSphereAhB64: sphere().id})   
           closeMenu()
           return
@@ -278,7 +280,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
             onClick={onClick}
             style={{ width: collapsed ? 72 : 256 }}
             mode="inline"
-            items={createSphereMenuItems({spheres: spheresArray})}
+            items={menuItems}
           />
           <div className={"main-actions-menu"}>
             <div style={{ display: collapsed ? "none" : "flex" }} className={"sphere-context-actions"} data-tooltip-target="tooltip-left" data-tooltip-placement="left" >

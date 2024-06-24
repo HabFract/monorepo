@@ -25,7 +25,7 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereAh }: ListOrbitsProps) =>
       'getOrbits',
     ],
   });
-
+console.log('sphereAh :>> ', sphereAh);
   const { loading: loadingOrbits, error, data } = useFetchAndCacheSphereOrbits({sphereAh});
   const sortedOrbits : Orbit[] = useSortedOrbits(data?.orbits);
   const loading = !sphereAh || loadingOrbits;

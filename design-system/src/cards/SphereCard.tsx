@@ -77,7 +77,12 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
 
             <Button disabled={!sphereNodes || typeof sphereNodes == 'object' && !(Object.values(sphereNodes).length > 0)} className="btn responsive btn-primary w-full" size="sm" onClick={() => {
                 store.set(currentSphere, {entryHash: sphere.eH, actionHash: sphere.id});
-                store.set(currentOrbitCoords, {x: 0, y: 0}); transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })}}>
+                store.set(currentOrbitCoords, {x: 0, y: 0});
+                setTimeout(() => {
+                  console.log('{currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id } :>> ', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id });
+                  transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })
+                }, 10);
+                }}>
               <TreeVisIcon />
               <span>Visualise</span>
             </Button>
