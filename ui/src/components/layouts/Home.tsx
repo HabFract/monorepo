@@ -1,5 +1,3 @@
-import { HelperText, TextInputField } from 'habit-fract-design-system'
-
 function HomeLayout({ startBtn, firstVisit, loading } : any) {
   return (
     <div className="home-layout">

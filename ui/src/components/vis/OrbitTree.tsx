@@ -64,7 +64,6 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const { data: dataLevel, loading: loadLevel, error: errorLevel } = useGetLowestSphereHierarchyLevelQuery({variables: {sphereEntryHashB64: sphere.entryHash as string}})
   console.log('dataLevel :>> ', dataLevel);
   
-  
   const fetchHierarchyData = () => {
     if (error || isModalOpen) return;
     const query = depthBounds ? { ...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereEhB64] as any).minDepth } : getQueryParams(y)

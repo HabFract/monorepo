@@ -31,7 +31,7 @@ export type AppStateStore = {
 }
 
 export const initialState: AppStateStore = { // Home route
-  currentState: "ListSpheres",
+  currentState: "Home",
   params: {},
   client: null
 }
@@ -54,7 +54,7 @@ const lists = ['ListSpheres', 'ListOrbits'];
 
 export const AppTransitions: StateTransitions<AppState> = {
   Boot: ['Home'],
-  Home: [ "Onboarding1"],
+  Home: [ "Onboarding1", "ListSpheres"],
   Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding2', 'Onboarding3'],
   Onboarding3: ['Onboarding2', 'Onboarding3', 'Onboarding4', 'ListSpheres'],

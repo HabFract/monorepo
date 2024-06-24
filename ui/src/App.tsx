@@ -2,7 +2,7 @@
 import { useStateTransition } from './hooks/useStateTransition';
 
 import Nav from './components/Nav';
-import { Flowbite } from 'flowbite-react';
+import { Flowbite, Spinner } from 'flowbite-react';
 import { cloneElement, useState } from 'react';
 
 import BackCaret from './components/icons/BackCaret';
@@ -11,13 +11,21 @@ import Onboarding from './components/layouts/Onboarding';
 import { Button, ProgressBar, darkTheme } from 'habit-fract-design-system';
 import { store } from './state/jotaiKeyValueStore';
 import { currentOrbitId, currentSphere } from './state/currentSphereHierarchyAtom';
+import { useGetSpheresQuery } from './graphql/generated';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
   
-    return (
-    <Flowbite theme={{theme: darkTheme}}>
+  const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
+  
+  // Don't start at the home page for established users...
+  const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
+  state.match('Home') && userHasSpheres && transition('ListSpheres');
+  
+    return loadingSpheres
+      ? <Spinner aria-label="Loading!"size="xl" className='full-spinner' />
+      : (<Flowbite theme={{theme: darkTheme}}>
       {state.match('Onboarding')
         ? <main className={"page-container onboarding-page"}>
             <Onboarding>
