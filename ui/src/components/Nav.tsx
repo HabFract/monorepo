@@ -128,7 +128,9 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
       </div>
     )
   }
+
   let loading = loadingSpheres || !spheres;
+
   const spheresArray = loading ? [] : extractEdges(spheres!.spheres); 
   const [menuItems, setMenuItems] = useState<ItemType[]>(createSphereMenuItems({spheres: spheresArray}));
   store.sub(currentSphere, () => {
@@ -136,7 +138,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   })
   const tooltipMsg = `You need to ${ spheresArray.length == 0 ? "create" : spheresArray.length == 4 ? "delete" : "select"} a Sphere `;
 
-  const sphere = (sphereAh?: EntryHashB64) => spheresArray.find((sphere: any) => sphereAh == sphere.id) as Sphere & {id: ActionHashB64};
+  const sphere = (sphereAh?: EntryHashB64) => spheresArray.find((sphere: any) => (sphereAh || store.get(currentSphere)?.actionHash) == sphere.id) as Sphere & {id: ActionHashB64};
   const noSphereOrbits = (sphereAh?: EntryHashB64) =>  {
     const cacheId = (sphereAh || sphere()?.id);
     if(!cacheId) return true;
@@ -181,12 +183,17 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         break;
 
       default:
-        // Falls through to any Sphere context icon
+        // Falls through to current Sphere selection context
         // Check conditions where the current page would cause errors for the new Sphere selection
         if([Page.Vis].includes(currentPage as Page) && noSphereOrbits(e.key)) {
           // If there is a problem, just show a tooltip
           setTooltipText("Select a Sphere with existing Orbits to enable Visualisation")
           openMenu()
+          activatePageContextTooltip()
+        } else if([Page.Vis].includes(currentPage as Page) && (e.key !== store.get(currentSphere).actionHash)) {
+          // If there is a problem, just show a tooltip
+          openMenu()
+          setTooltipText("Please change page to list before attempting to Visualise a new Sphere...")
           activatePageContextTooltip()
         } else {
           setTooltipVisible(false)
@@ -199,7 +206,14 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           const pageString = currentPage as string;
           if(currentPage== Page.Home) return
           // Reload the current page with a new sphere context
-          transition(pageString, pageString == "ListOrbits" ? {sphereAh: e.key} : pageString == "CreateOrbit" ?  {sphereEh: sphere(e.key).eH} : {currentSphereEhB64: store.get(currentSphere).entryHash, currentSphereAhB64: e.key})
+          transition(
+              pageString, 
+              pageString == "ListOrbits" 
+                ? {sphereAh: e.key} 
+                : pageString == "CreateOrbit" 
+                  ? {sphereEh: sphere(e.key).eH}
+                  : {currentSphereEhB64: store.get(currentSphere).entryHash, currentSphereAhB64: e.key}
+          )
         }
         break;
     }
@@ -233,8 +247,8 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
             return
           }
           store.set(currentOrbitCoords, {x: 0, y: 0});
+
           setCurrentPage(Page.Vis)
-          console.log('object :>> ', {currentSphereEhB64: sphere().eH, currentSphereAhB64: sphere().id});
           transition('Vis', {currentSphereEhB64: sphere().eH, currentSphereAhB64: sphere().id})   
           closeMenu()
           return

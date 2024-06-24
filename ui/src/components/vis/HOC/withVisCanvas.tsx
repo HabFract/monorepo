@@ -45,19 +45,20 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
     const mountingDivId = 'vis-root'; // Declared at the router level
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
+    const selectedSphere = store.get(currentSphere);
+    
+    console.log('selectedSphere :>> ', selectedSphere.actionHash);
     useEffect(() => {
       if(document.querySelector(`#${mountingDivId} #${svgId}`)) return
       const appended = !!appendSvg(mountingDivId, svgId);
       setAppendedSvg(appended)
-    }, []);
+    }, [selectedSphere.actionHash]);
     const { canvasHeight, canvasWidth } = getCanvasDimensions()
     
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [currentParentOrbitEh, setCurrentParentOrbitEh] = useState<EntryHashB64>();
     const [currentChildOrbitEh, setCurrentChildOrbitEh] = useState<EntryHashB64>();
     
-    const selectedSphere = store.get(currentSphere);
-    // const {x, y} = store.get(currentOrbitCoords);
     const sphereHierarchyBounds : SphereHierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
     const { incrementBreadth, 
             decrementBreadth, 
@@ -94,7 +95,6 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                   return siblings && siblings.length > 0 && d.parent?.children[x] ? (d.parent?.children[x].data.content == d.data.content) && d.depth == y
                     : false
                 });
-                console.log('currentOrbit :>> ', currentOrbit);
                 if(currentOrbit?.data?.content) {
                   const node = currentVis.nodeDetails[selectedSphere.actionHash as ActionHashB64];
                   // currentOrbit && store.set(currentOrbitIdAtom, currentOrbit.data.content);

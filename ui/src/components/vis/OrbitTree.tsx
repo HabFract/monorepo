@@ -4,7 +4,7 @@ import { VisProps, VisCoverage, VisType } from './types';
 import { hierarchy } from "d3-hierarchy";
 import { OrbitHierarchyQueryParams, useGetLowestSphereHierarchyLevelQuery, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
 
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { currentOrbitCoords, currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
@@ -15,6 +15,7 @@ import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
 
 export const OrbitTree: ComponentType<VisProps> = ({
+  selectedSphere: sphere,
   canvasHeight,
   canvasWidth,
   margin,
@@ -31,7 +32,6 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;
 
   // Get and set node traversal bound state
-  const sphere = useAtomValue(currentSphere);
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [_, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
@@ -42,16 +42,14 @@ export const OrbitTree: ComponentType<VisProps> = ({
     : { levelQuery: { sphereHashB64: params.currentSphereEhB64, orbitLevel: customDepth || 0 } };
   // Helper to determine which part of the returned query data should be used in the Vis object
   const getJsonDerivation = (json: string) => visCoverage == VisCoverage.Complete ? JSON.parse(json) : JSON.parse(json)[x]
-  
   // GQL Query hook, parsed JSON state, and Vis object state
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery({
     fetchPolicy: "network-only"
   })
   const [json, setJson] = useState<string | null>(null);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<BaseVisualization | null>(null);
-  
-  console.log('currentOrbitTree :>> ', sphere, currentOrbitTree, json);
-
+  // const clear = useSetAtom(nodeCache.clear);
+  // clear();
   // Modal state, set to open when there is an error or if initial Visualisation is not possible
   const [modalErrorMsg, setModalErrorMsg] = useState<string>("");
   const toggleModal = () => setIsModalOpen(!isModalOpen);
@@ -66,6 +64,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const fetchHierarchyData = () => {
     if (error || isModalOpen) return;
     const query = depthBounds ? { ...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereEhB64] as any).minDepth } : getQueryParams(y)
+    console.log('query :>> ', query);
     getHierarchy({ variables: { params: { ...query } } })
   }
 
