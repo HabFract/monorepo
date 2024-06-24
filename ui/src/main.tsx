@@ -6,8 +6,6 @@ import { StateMachine } from './state/stateMachine'
 import { AppState, AppStateStore, AppTransitions, initialState, routes } from './routes'
 import { Provider } from 'jotai'
 import { store } from './state/jotaiKeyValueStore'
-import { getConnection } from './graphql/connection'
-import { initGraphQLClient } from './graphql/client'
 
 /*
 

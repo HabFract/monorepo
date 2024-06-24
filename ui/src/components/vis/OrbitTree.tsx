@@ -63,23 +63,23 @@ export const OrbitTree: ComponentType<VisProps> = ({
   
   const fetchHierarchyData = () => {
     if (error || isModalOpen) return;
-    const query = depthBounds ? { ...getQueryParams(), orbitLevel: (depthBounds![params?.currentSphereEhB64] as any).minDepth } : getQueryParams(y)
-    console.log('query :>> ', query);
+    const query = depthBounds
+      ? { ...getQueryParams(), orbitLevel: 0}//(depthBounds![params?.currentSphereEhB64] as any).minDepth } 
+      : getQueryParams(0)//(y)
     getHierarchy({ variables: { params: { ...query } } })
   }
 
   const instantiateVisObject = () => {
-    if (!error && json && !currentOrbitTree) {
+    if (!error && json && !currentOrbitTree && nodeDetailsCache[params.currentSphereAhB64]) {
       const currentTreeJson = getJsonDerivation(json);
       const hierarchyData = hierarchy(currentTreeJson).sort((a, b) => {
         const idA : ActionHashB64 = a.data.content;
         const idB : ActionHashB64 = b.data.content;
-        console.log('nodeDetailsCache[params.currentSphereAhB64 :>> ', nodeDetailsCache[params.currentSphereAhB64]);
       if(!nodeDetailsCache[params.currentSphereAhB64]) return;
         const sphereNodes = nodeDetailsCache[params.currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
+        if(!sphereNodes[idA as keyof SphereOrbitNodes] || !sphereNodes[idB as keyof SphereOrbitNodes]) return 1
         return (sphereNodes[idA].startTime as number) - (sphereNodes[idB as keyof SphereOrbitNodes].startTime as number)
       });
-        
       
       setDepthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.Complete ? 100 : hierarchyData.height])
 
@@ -98,7 +98,6 @@ export const OrbitTree: ComponentType<VisProps> = ({
       setCurrentOrbitTree(orbitVis)
     }
   }
-
   useEffect(() => {
     if (typeof error != 'object') return;
     setIsModalOpen(true)
@@ -132,7 +131,6 @@ export const OrbitTree: ComponentType<VisProps> = ({
       while (typeof parsedData === 'string') {
         parsedData = JSON.parse(parsedData);
       }
-      
       // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
       setBreadthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.Complete ? 100 : parsedData.result.level_trees.length - 1])
       // Trigger path cacheing if we have appended a node
@@ -158,12 +156,10 @@ export const OrbitTree: ComponentType<VisProps> = ({
         const sphereNodes = nodeDetailsCache[params.currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
         return (sphereNodes[idA].startTime as number) - (sphereNodes[idB as keyof SphereOrbitNodes].startTime as number)
       });
-      
       currentOrbitTree._nextRootData._translationCoords = [x, y, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1];
       currentOrbitTree.render();
     }
-  }, [json, x, y])
-
+  }, [json, x, y, data])
   return (
     <>
       {loading && <div>Loading!</div>}

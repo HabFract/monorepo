@@ -69,8 +69,10 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
               );
             }
             
-            //@ts-ignore
-            (submitBtn.props).onClick.call(null);
+            setTimeout(() => {
+              //@ts-ignore
+              (submitBtn.props).onClick.call(null);
+            }, 100);
           } catch (error) {
             console.error(error)
           }

@@ -187,13 +187,13 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         // Check conditions where the current page would cause errors for the new Sphere selection
         if([Page.Vis].includes(currentPage as Page) && noSphereOrbits(e.key)) {
           // If there is a problem, just show a tooltip
-          setTooltipText("Select a Sphere with existing Orbits to enable Visualisation")
+          setTooltipText("Please change page to Orbit list and ensure you have Orbits before attempting to Visualise a new Sphere")
           openMenu()
           activatePageContextTooltip()
         } else if([Page.Vis].includes(currentPage as Page) && (e.key !== store.get(currentSphere).actionHash)) {
           // If there is a problem, just show a tooltip
           openMenu()
-          setTooltipText("Please change page to list before attempting to Visualise a new Sphere...")
+          setTooltipText("Please change page to Orbit list before attempting to Visualise a new Sphere...")
           activatePageContextTooltip()
         } else {
           setTooltipVisible(false)

@@ -1157,7 +1157,6 @@ export default class BaseVisualization implements IVisualization {
         if (e.target.tagName !== "BUTTON") return;
 
         this.eventHandlers.handleNodeFocus.call(this, e, d);
-        console.log('e.target.classList :>> ', e.target.classList);
         switch (true) {
           case e.target.classList.contains('checkbox-button'):
             if (!d?.data?.content || !this.nodeDetails[d.data.content]) return

@@ -46,7 +46,7 @@ function App({ children: pageComponent }: any) {
 
                           return transition(getLastOnboardingState(state), { editMode: true, ...props })}}>
                       </Button>
-                      <h1 className={"onboarding-title"}>Break a Negative Habit</h1>
+                      <h1 className={"onboarding-title"}>Make a Positive Habit</h1>
                     </div>
                     <ProgressBar
                       stepNames={['Create Profile', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize']}
@@ -64,7 +64,7 @@ function App({ children: pageComponent }: any) {
           </main>
         : <>
           {!state.match('Home') && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded}></Nav>}
-          <main className={(() => getMainContainerClass(state))()}>
+          <main className={state ? (() => getMainContainerClass(state))() : "page-container"}>
             {pageComponent && cloneElement(pageComponent, { startBtn:
                   state.match('Home') && <Button
                   type={"onboarding"}
@@ -82,6 +82,7 @@ function App({ children: pageComponent }: any) {
 }
 
 function getMainContainerClass(state) {
+  console.log('state :>> ', state);
   switch (state) {
     case 'Home':
       return "home page-container"

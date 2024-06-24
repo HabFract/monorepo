@@ -47,7 +47,9 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
     const selectedSphere = store.get(currentSphere);
     
-    console.log('selectedSphere :>> ', selectedSphere.actionHash);
+    if(!selectedSphere.actionHash) {
+      console.error("No sphere context has been set!")
+    }
     useEffect(() => {
       if(document.querySelector(`#${mountingDivId} #${svgId}`)) return
       const appended = !!appendSvg(mountingDivId, svgId);
@@ -81,7 +83,6 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
             let onlyChildParent: boolean;
             let hasChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length > 0;
             let hasOneChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length == 1;
-
 
             if(appendedSvg) {
               // Pass through setState handlers for the modal opening and current append/prepend Node parent entry hash
@@ -120,12 +121,12 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
             // console.log('x,y,maxBreadth :>> ', x,y,maxBreadth);
             return (
               <> 
-                {!!(withTraversal && y !== 0) && <EnterOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "23vh", transform: "scaley(-1)"}}  onClick={decrementDepth} />}
+                {/* {!!(withTraversal && y !== 0) && <EnterOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "23vh", transform: "scaley(-1)"}}  onClick={decrementDepth} />}
                 {!!(withTraversal && x !== 0) && <LeftOutlined data-testid={"traversal-button-left"} className='fixed left-1 text-3xl text-title hover:text-primary hover:cursor-pointer' style={{top: "29vh"}} onClick={decrementBreadth} />}
                 {!!(withTraversal && hasChild && !hasOneChild) && <EnterOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "35vh", transform: "rotate(90deg), scalex(-1)"}}  onClick={incrementDepth} />}
                 
                 {!!(withTraversal && maxBreadth && x < maxBreadth) && <RightOutlined data-testid={"traversal-button-right"} className='fixed right-1 text-3xl text-title hover:text-primary hover:cursor-pointer' style={{top: "29vh"}}  onClick={incrementBreadth} />}
-                {!!(withTraversal && hasChild && hasOneChild) && <RightOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{right: "43vw", bottom: "43vh", transform: "rotate(90deg)"}}  onClick={incrementDepth} />}
+                {!!(withTraversal && hasChild && hasOneChild) && <RightOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{right: "43vw", bottom: "43vh", transform: "rotate(90deg)"}}  onClick={incrementDepth} />} */}
               {/* {!!(withTraversal && maxDepth && y < maxDepth && !onlyChildParent) && <DownOutlined data-testid={"traversal-button-down-right"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{right: "12vw", bottom: "45vh", transform: "rotate(-45deg)"}}  onClick={() => {console.log('maxBreadth, setBreadthIndex :>> ', currentVis.rootData.data.children.length-1, setBreadthIndex); incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length-1);}} />} */}
 
                 <Modal show={isModalOpen} onClose={() => {setIsModalOpen(false)}}>

@@ -60,7 +60,7 @@
 }
 .home-layout .bottom:hover + .top {
   background: url(assets/circled-pen.svg) no-repeat;
-  background-position: 100% 12rem;
+  background-position: 5% 4rem;
   background-size: contain;
   background-size: 8rem;
 }
