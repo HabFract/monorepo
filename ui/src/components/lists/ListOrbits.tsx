@@ -11,6 +11,7 @@ import { useFetchAndCacheSphereOrbits } from '../../hooks/useFetchAndCacheSphere
 import { useSortedOrbits } from '../../hooks/useSortedOrbits';
 import { ActionHashB64 } from '@holochain/client';
 import { Spinner } from 'flowbite-react';
+import { decode } from '@msgpack/msgpack';
 
 interface ListOrbitsProps {
   sphereAh?: ActionHashB64; // Optional prop to filter orbits by sphere
@@ -18,7 +19,7 @@ interface ListOrbitsProps {
 
 const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereAh }: ListOrbitsProps) => {
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
-  
+
   // TODO: make a modal on this list page, which is triggered before the following hook. This might be a repeated functionality on different pages so much be better to make a HOC.
   const [runDelete, { loading: loadingDelete, error: errorDelete, data: dataDelete }] = useDeleteOrbitMutation({
     refetchQueries: [
@@ -28,13 +29,13 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereAh }: ListOrbitsProps) =>
   const { loading: loadingOrbits, error, data } = useFetchAndCacheSphereOrbits({sphereAh});
   const sortedOrbits : Orbit[] = useSortedOrbits(data?.orbits);
   const loading = !sphereAh || loadingOrbits;
-  
+  console.log('sortedOrbits :>> ', sortedOrbits);
   if (loading) return <Spinner aria-label="Loading!" className='full-spinner' size="xl" />;
   if (error) return <p>Error : {error.message}</p>;
   return (
     <div className='layout orbits'>
       <PageHeader title="Orbits Breakdown " />
-      <ListSortFilter label={'for the Sphere:'} />
+      <ListSortFilter label={''} />
       {data?.sphere && <SphereCard sphere={data.sphere} isHeader={true} transition={transition} orbitScales={data.orbits.map((orbit: Orbit) => orbit?.scale)} />}
       <div className="orbits-list">
         {sortedOrbits.map((orbit: Orbit) => <OrbitCard key={orbit.id} sphereEh={data!.sphere.eH} transition={transition} orbit={orbit} runDelete={() => runDelete({variables: {id: orbit.id}})}/>)}

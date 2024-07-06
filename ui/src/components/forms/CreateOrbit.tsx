@@ -49,10 +49,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
   const inOnboarding = state.match('Onboarding');
   // Used to dictate onward routing
   const originPage : AppState = inOnboarding ? 'Onboarding2' : !!(parentOrbitEh || childOrbitEh) ? 'Vis' : 'ListOrbits';
-  console.log('sphereEh :>> ', sphereEh);
+
   const [addOrbit] = useCreateOrbitMutation({
-    awaitRefetchQueries: !inOnboarding && !!(parentOrbitEh || childOrbitEh),
-    refetchQueries: () => inOnboarding ? [] : [
+    awaitRefetchQueries: !!(parentOrbitEh || childOrbitEh),
+    refetchQueries: () => [
       {
         query: GetOrbitHierarchyDocument,
         variables: {

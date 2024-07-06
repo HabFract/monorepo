@@ -10,9 +10,9 @@ type OrbitVisProps = {
 function getOrbitScalePercent(scale: Scale) : number {
   switch (scale) {
     case Scale.Atom:
-      return 23
+      return 20
     case Scale.Sub:
-      return 30
+      return 25
     case Scale.Astro:
       return 100
   }
@@ -21,11 +21,11 @@ function getOrbitScalePercent(scale: Scale) : number {
 function getOrbitScaleImg(scale: Scale) {
   switch (scale) {
     case Scale.Atom:
-      return { src: "assets/orbits/scale-outlines-1.svg", alt: "Subatomic Orbit"}
+      return { src: "assets/orbits/scale-outlines-1.png", alt: "Subatomic Orbit"}
     case Scale.Sub:
-      return { src: "assets/orbits/scale-outlines-2.svg", alt: "Atomic Orbit"}
+      return { src: "assets/orbits/scale-outlines-2.png", alt: "Atomic Orbit"}
     case Scale.Astro:
-      return { src: "assets/orbits/scale-outlines-3.svg", alt: "Astronomic Orbit"}
+      return { src: "assets/orbits/scale-outlines-3.png", alt: "Astronomic Orbit"}
   }
 }
 

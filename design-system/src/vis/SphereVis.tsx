@@ -69,6 +69,7 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
     if(typeof pieChart?.current === "undefined" || (pieChart.current as HTMLElement)!.children?.length > 0) return;
     const chart = new ApexCharts(pieChart.current, getChartOptions());
     chart.render();
+    return () => chart.destroy()
   }, [])
   
   return Object.values(spherePercentages).length > 0 && (

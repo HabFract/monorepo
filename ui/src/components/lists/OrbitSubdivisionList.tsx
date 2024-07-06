@@ -21,6 +21,8 @@ interface OrbitSubdivisionListProps {
   submitBtn?: React.ReactNode;
 }
 
+export const sleep = (ms: number) => new Promise((r) => setTimeout(() => r(null), ms));
+
 const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, refinementType, currentOrbitValues: { scale: currentScale, eH: currentHash, id } }) => {
   const ListValidationSchema = Yup.object().shape({
     list: Yup.array().of(
@@ -63,7 +65,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
               serializeAsyncActions<any>(
                 list!.map(
                   (orbit) => {
-                    return async () => await addOrbit({ variables: {variables: {name: orbit.name, scale, frequency: Frequency.Day, startTime: +(new Date()), sphereHash: sphere.entryHash as string, parentHash: currentHash as string}}})
+                    return async () => {await sleep(2500); return addOrbit({ variables: {variables: {name: orbit.name, scale, frequency: Frequency.Day, startTime: +(new Date()), sphereHash: sphere.entryHash as string, parentHash: currentHash as string}}})}
                   }
                 )
               );
@@ -72,7 +74,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
             setTimeout(() => {
               //@ts-ignore
               (submitBtn.props).onClick.call(null);
-            }, 100);
+            }, 500);
           } catch (error) {
             console.error(error)
           }

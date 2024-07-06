@@ -56,7 +56,7 @@ function App({ children: pageComponent }: any) {
                   submitBtn:
                     <Button
                       type={"onboarding"}
-                      onClick={(e) => transition(getNextOnboardingState(state))}
+                      onClick={(e) => state.match("Onboarding3") ? transition(getNextOnboardingState(state), {sphereAh: store.get(currentSphere)?.actionHash}) : transition(getNextOnboardingState(state))}
                     >Save & Continue</Button>
               })}
 
@@ -82,7 +82,6 @@ function App({ children: pageComponent }: any) {
 }
 
 function getMainContainerClass(state) {
-  console.log('state :>> ', state);
   switch (state) {
     case 'Home':
       return "home page-container"
@@ -108,6 +107,6 @@ function getLastOnboardingState(state: string) {
   return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) - 1}`
 };
 function getNextOnboardingState(state: string) {
-  if (state == 'Onboarding3') return 'ListSpheres';
+  if (state == 'Onboarding3') return 'ListOrbits';
   return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) + 1}`
 };

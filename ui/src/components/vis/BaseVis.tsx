@@ -9,10 +9,10 @@ import { TreeLayout } from "d3-hierarchy";
 // import propagating from "propagating-hammerjs";
 import _ from "lodash";
 
-import astroIncomplete from "/assets/astro-incomplete.svg?raw";
-import subAstroIncomplete from "/assets/sub-astro-incomplete.svg?raw";
-import atomIncomplete from "/assets/atom-incomplete.svg?raw";
-import subAtomIncomplete from "/assets/sub-incomplete.svg?raw";
+import astroIncomplete from "/assets/astro-incomplete-new.svg?raw";
+import subAstroIncomplete from "/assets/astro-incomplete-new.svg?raw";
+import atomIncomplete from "/assets/astro-incomplete-new.svg?raw";
+import subAtomIncomplete from "/assets/astro-incomplete-new.svg?raw";
 
 import {
   ONE_CHILD,
@@ -58,7 +58,7 @@ import {
 
 import { expand, collapse, contentEqual, nodeStatusColours, parseTreeValues, cumulativeValue, outOfBoundsNode, getInitialXTranslate, getInitialYTranslate, newXTranslate, newYTranslate, debounce } from "./helpers";
 
-import { noNodeCol, parentPositiveBorderCol, positiveColLighter, BASE_SCALE, FOCUS_MODE_SCALE, LG_BUTTON_SCALE, LG_LABEL_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_BUTTON_SCALE, XS_LABEL_SCALE, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS, } from "./constants";
+import { noNodeCol, parentPositiveBorderCol, positiveColLighter, BASE_SCALE, FOCUS_MODE_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS } from "./constants";
 import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
@@ -753,14 +753,14 @@ export default class BaseVisualization implements IVisualization {
 
   setdXdY(): void {
     this._viewConfig.dx =
-      this._viewConfig.canvasWidth / (this._viewConfig.levelsHigh as number) - // Adjust for tree horizontal spacing on different screens
+      this._viewConfig.canvasWidth / (this._viewConfig.levelsHigh as number * 2) - // Adjust for tree horizontal spacing on different screens
       +(this.type == VisType.Tree && this._viewConfig.isSmallScreen()) * 250 -
       +(this.type == VisType.Cluster && this._viewConfig.isSmallScreen()) * 210;
     this._viewConfig.dy =
-      this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number);
+      this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number * 2);
     //adjust for taller aspect ratio
-    this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 4.25 : 3.5;
-    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3.25 : 3.5;
+    this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 4.25 : 2;
+    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3.25 : 2;
   }
 
   setNodeRadius(): void {
@@ -806,7 +806,7 @@ export default class BaseVisualization implements IVisualization {
       this._zoomConfig.focusMode = false;
     };
 
-    this.zoomer = zoom().scaleExtent([0.5, 5]).on("zoom", zooms.bind(this));
+    this.zoomer = zoom().scaleExtent([0.1, 1.5]).on("zoom", zooms.bind(this));
     this.zoomBase().call(this.zoomer);
   }
 
@@ -901,8 +901,7 @@ export default class BaseVisualization implements IVisualization {
           .size(
             [this._viewConfig.canvasWidth / 2,
             this._viewConfig.canvasHeight / 2]
-          )
-          .separation((a, b) => (3));
+          );
         this.layout.nodeSize([this._viewConfig.dx as number, this._viewConfig.dy as number]);
         break;
       // case VisType.Cluster:
@@ -1051,11 +1050,11 @@ export default class BaseVisualization implements IVisualization {
       .append("g")
       .classed("tooltip", true)
       .append("foreignObject")
-      .attr("x", "-325")
-      .attr("y", "10")
-      .attr("width", "550")
+      .attr("x", "-375")
+      .attr("y", "-10")
+      .attr("width", "650")
       .style("overflow", "visible")
-      .attr("height", "550")
+      .attr("height", "650")
       .html((d) => {
         if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
         const cachedNode = this.nodeDetails[d.data.content];
@@ -1065,7 +1064,7 @@ export default class BaseVisualization implements IVisualization {
           <span class="title">Name:</span>
           <p>${name}</p>
           <span class="title">Description:</span>
-          <p>${description} - ${scale}</p>
+          <p>${description}</p>
           </div>
         </div>`
       });

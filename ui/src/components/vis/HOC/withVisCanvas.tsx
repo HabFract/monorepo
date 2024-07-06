@@ -15,10 +15,10 @@ import { CreateOrbit } from '../../forms';
 import { nodeCache, store } from '../../../state/jotaiKeyValueStore';
 
 const defaultMargins: Margins = {
-  top: -1100,
+  top: 0,
   right: 0,
   bottom: 0,
-  left: -30,
+  left: -20,
 };
 
 const getCanvasDimensions = function () {

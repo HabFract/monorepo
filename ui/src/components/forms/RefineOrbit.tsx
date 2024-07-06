@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Formik, Form, Field, useFormikContext } from 'formik';
+import React from 'react';
+import { Formik } from 'formik';
 
-import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
-import { extractEdges } from '../../graphql/utils';
-import { ActionHashB64, EntryHashB64, decodeHashFromBase64 } from '@holochain/client';
+import { Scale } from '../../graphql/generated';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { OrbitCard, TextAreaField, TextInputField, SelectInputField, HelperText } from 'habit-fract-design-system';
+import { OrbitCard, HelperText } from 'habit-fract-design-system';
 import { OrbitSubdivisionList } from '../lists';
-import { SubdivisionScale } from '../lists/OrbitSubdivisionList';
 import { OrbitFetcher } from './utils';
 import { OrbitValidationSchema } from './CreateOrbit';
 
 interface RefineOrbitProps {
-  // refiningOrbitEh: string;
   refiningOrbitAh: string;
-
   submitBtn?: React.ReactNode;
   headerDiv?: React.ReactNode;
 }
@@ -44,14 +39,14 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
               { headerDiv }
 
               <h2 className='onboarding-subtitle'>Refine Your Orbit</h2>
-              <p className='form-description'>
+              <p className='form-description mb-2'>
                 {values.scale == Scale.Atom
                   ? <span>Make sure that you have been thoughtful about the best name for your Atomic Orbit before you continue</span>
                   : <span>Make sure that you have <em>broken down</em> your Orbit into smaller scales (as desired) before you are ready to start tracking!</span>
                 }
               </p>
               
-              <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText>
+              {/* <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText> */}
 
               {values?.name && 
                 <OrbitCard

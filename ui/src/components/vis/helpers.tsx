@@ -6,6 +6,7 @@ import {
   positiveColLighter,
   neutralCol,
   noNodeCol,
+  BASE_SCALE,
 } from "./constants";
 
 // Helper function to return a ReactNode that is a combination of the Vis component, wrapped by the withCanvas higher order component, contained by a mounting div
@@ -108,7 +109,7 @@ export const updateVisRootData = (
 
 export const getInitialXTranslate = ({ levelsWide, defaultView }) => {
   const [_x, _y, w, _h] = defaultView.split` `;
-  return w / levelsWide / 1.5 ;
+  return w / levelsWide / (BASE_SCALE * 2) ;
 };
 
 export const getInitialYTranslate = (
@@ -118,7 +119,7 @@ export const getInitialYTranslate = (
   const [_x, _y, _w, h] = defaultView.split` `;
   switch (type) {
     default:
-      return (h / levelsHigh);
+      return (h / levelsHigh / 3.5);
   }
 };
 

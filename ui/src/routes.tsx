@@ -57,7 +57,7 @@ export const AppTransitions: StateTransitions<AppState> = {
   Home: [ "Onboarding1", "ListSpheres"],
   Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding2', 'Onboarding3'],
-  Onboarding3: ['Onboarding2', 'Onboarding3', 'Onboarding4', 'ListSpheres'],
+  Onboarding3: ['Onboarding2', 'Onboarding3', 'Onboarding4', 'ListOrbits'],
   Onboarding4: ['Onboarding3', 'Home'],
 
   Vis: ['Home', ...forms, ...lists, 'Vis'],

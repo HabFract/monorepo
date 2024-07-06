@@ -5,34 +5,13 @@ g.nodes {
   pointer-events: all;
 }
 
-.the-node.active {
-  stroke: #6B7D7F;
-  stroke-width: 4px;
-}
-
 .node-subgroup {
-  transform: scale(3) translate(-78px, -61px);
-  /* filter: brightness(1.5); */
+  transform: scale(4) translate(-62px, -52px);
+  color: #ccc;
 }
 
-.node-subgroup > * {
-  filter: saturate(0.45)
-}
-
-.node-subgroup > *:first-child {
-  filter: initial;
-  fill: #3c3c3c;
-  opacity: 1;
-}
-.node-subgroup.checked > *:first-child {
+.node-subgroup.checked {
   color: rgba(11,254,184, 1);
-}
-
-.instruct-legend .cell:nth-child(3) circle,
-.legend-svg .cell:nth-child(3) circle {
-  fill: #edd837;
-  stroke: #93cc96;
-  stroke-width: 8px;
 }
 
 .expand-arrow {
@@ -106,14 +85,15 @@ g.tooltip rect:first-of-type {
 }
 
 .tooltip-inner .content {
-  padding: 1rem 1.5rem  ;
+  padding: 0.75rem 1.5rem;
   color: rgba(219,228,226, 1);
-  background: linear-gradient(180deg, #576468 0%, rgba(0,212,255,0) 11rem);
-  border-radius: 32px;
+  background: linear-gradient(0deg, rgba(69, 97, 95, 1) -20%, rgba(69, 97, 95, 0.5) 100%);
+  border-radius: 1.75rem;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   opacity: 1;
-  margin-top: 10px;
+  margin-top: 12px;
+  margin-right: 4px;
 } 
 
 .tooltip-inner .content span.title {
@@ -177,11 +157,11 @@ g.tooltip rect:first-of-type {
 .tooltip-actions .buttons {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: .5rem;
 }
 
 .tooltip-inner {
-  background: url(assets/line-corner-vector.svg);
+  background: url(assets/line-corner-vectornew.svg);
   background-position: right;
   background-position-y: .5rem;
   background-size: contain;

@@ -54,12 +54,12 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
   });
 
   const [addSphere, {loading}] = useCreateSphereMutation({
-    refetchQueries: state.match("Onboarding") ? [] : [
+    refetchQueries: [
       'getSpheres',
     ]
   });
   const [updateSphere] = useUpdateSphereMutation({
-    refetchQueries: state.match("Onboarding") ? [] : [
+    refetchQueries: [
       'getSpheres',
     ]
   });
