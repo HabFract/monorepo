@@ -2,7 +2,6 @@ import bindSchema, { autoConnect, APIOptions, DNAIdMappings } from '.'
 import { InMemoryCache, ApolloClient, from, makeVar } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
 import { SchemaLink } from '@apollo/client/link/schema'
-import { decode } from '@msgpack/msgpack'
 import { createEdges, extractEdges } from './utils'
 
 // Same as OpenConnectionOptions but for external client where dnaConfig may be autodetected
@@ -21,7 +20,7 @@ const errorLink = onError(
           const decodedErrors = message.match(/Deserialize\(\[(.*?)\]\)/);
           const error = decodedErrors?[1] : "";
           console.log(
-          `[GraphQL error]: DeserializedBuffer: ${JSON.stringify(error ? decode(JSON.parse("[" + error + "]")) : "{}", null, 2)}, Message: ${message}, Location: ${locations}, Path: ${path}`,
+          `[GraphQL error]: DeserializedBuffer: ${JSON.stringify(error ? (JSON.parse("[" + error + "]")) : "{}", null, 2)}, Message: ${message}, Location: ${locations}, Path: ${path}`,
         )},
       )
     if (networkError) console.log(`[Network error]: ${networkError}`)

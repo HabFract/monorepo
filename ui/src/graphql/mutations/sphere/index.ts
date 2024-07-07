@@ -79,7 +79,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
         image: metadata?.image,
       },
     });
-    const entryRecord = new EntryRecord<Sphere>(rawRecord);
+    const entryRecord = new EntryRecord<Sphere>(rawRecord as any);
 
     return {
       actionHash: entryRecord.actionHash as any,
@@ -111,7 +111,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
         },
       },
     });
-    const entryRecord = new EntryRecord<Sphere>(rawRecord);
+    const entryRecord = new EntryRecord<Sphere>(rawRecord as any);
     return {
       actionHash: entryRecord.actionHash as any,
       entryHash: encodeHashToBase64(entryRecord.entryHash),

@@ -11,7 +11,6 @@ import { useFetchAndCacheSphereOrbits } from '../../hooks/useFetchAndCacheSphere
 import { useSortedOrbits } from '../../hooks/useSortedOrbits';
 import { ActionHashB64 } from '@holochain/client';
 import { Spinner } from 'flowbite-react';
-import { decode } from '@msgpack/msgpack';
 
 interface ListOrbitsProps {
   sphereAh?: ActionHashB64; // Optional prop to filter orbits by sphere
@@ -29,7 +28,6 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereAh }: ListOrbitsProps) =>
   const { loading: loadingOrbits, error, data } = useFetchAndCacheSphereOrbits({sphereAh});
   const sortedOrbits : Orbit[] = useSortedOrbits(data?.orbits);
   const loading = !sphereAh || loadingOrbits;
-  console.log('sortedOrbits :>> ', sortedOrbits);
   if (loading) return <Spinner aria-label="Loading!" className='full-spinner' size="xl" />;
   if (error) return <p>Error : {error.message}</p>;
   return (

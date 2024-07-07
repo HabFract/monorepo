@@ -94,7 +94,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       frequency,
       scale,
     });
-    const entryRecord = new EntryRecord<Orbit>(rawRecord);
+    const entryRecord = new EntryRecord<Orbit>(rawRecord as any);
     return {
       actionHash: entryRecord.actionHash as any,
       entryHash: encodeHashToBase64(entryRecord.entryHash),
@@ -131,7 +131,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
         scale,
       },
     });
-    const entryRecord = new EntryRecord<Orbit>(rawRecord);
+    const entryRecord = new EntryRecord<Orbit>(rawRecord as any);
     return {
       actionHash: entryRecord.actionHash as any,
       entryHash: encodeHashToBase64(entryRecord.entryHash),

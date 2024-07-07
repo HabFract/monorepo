@@ -33,7 +33,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   return {
     sphere: async (_, args): Promise<Partial<Sphere>> => {
       const rawRecord = await read(args.id)
-      const entryRecord = new EntryRecord<Sphere>(rawRecord);
+      const entryRecord = new EntryRecord<Sphere>(rawRecord as any);
       return {
         ...entryRecord.entry,
         id: encodeHashToBase64(entryRecord.actionHash),

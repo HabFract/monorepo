@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { DateTime } from "luxon"
-import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
+import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, OrbitUpdateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
@@ -51,7 +51,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
   const originPage : AppState = inOnboarding ? 'Onboarding2' : !!(parentOrbitEh || childOrbitEh) ? 'Vis' : 'ListOrbits';
 
   const [addOrbit] = useCreateOrbitMutation({
-    awaitRefetchQueries: !!(parentOrbitEh || childOrbitEh),
+    awaitRefetchQueries: !inOnboarding && !!(parentOrbitEh || childOrbitEh),
     refetchQueries: () => [
       {
         query: GetOrbitHierarchyDocument,
@@ -85,7 +85,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
     }
   });
   const [updateOrbit] = useUpdateOrbitMutation({
-    refetchQueries: state.match("Onboarding") ? [] : [
+    refetchQueries: inOnboarding ? [] : [
       'getOrbits',
     ],
   });
@@ -112,11 +112,11 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
       onSubmit={async (values, { setSubmitting }) => {
         try {
           if (!values.archival) delete values.endTime;
-          delete values.archival;
-          delete values.eH;
+          delete (values as any).archival;
+          delete (values as any).eH;
           let response = editMode
-            ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } } })
-            : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined, childHash: values.childHash || undefined } } })
+            ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId as string, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } as OrbitUpdateParams } })
+            : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined, childHash: values.childHash || undefined } as OrbitCreateParams } })
           setSubmitting(false);
           if(!response.data) return;
   

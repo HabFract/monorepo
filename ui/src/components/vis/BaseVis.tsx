@@ -1134,6 +1134,7 @@ export default class BaseVisualization implements IVisualization {
           .map(([_idx, value]) => [value.id, value]);
         this.cacheOrbits(indexedOrbitData);
       }
+      console.log('refetched orbits :>> ', data);
     } catch (error) {
       console.error(error);
     }

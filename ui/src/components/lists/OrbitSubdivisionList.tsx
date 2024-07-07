@@ -43,7 +43,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
       <Formik
         initialValues={refinementType == Refinement.Update ? { name: "" } : { list: [{ name: "" }], scale: Scale.Atom }}
         validationSchema={ListValidationSchema}
-        onSubmit={async (values, { setSubmitting }) => {
+        onSubmit={async (values: any, { setSubmitting }) => {
           setSubmitting(false);
           const sphere = store.get(currentSphere);
           if(!sphere?.entryHash || !currentHash) throw new Error("No sphere set or parent hash, cannot refine orbits")

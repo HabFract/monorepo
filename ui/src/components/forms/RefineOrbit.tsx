@@ -39,14 +39,6 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
               { headerDiv }
 
               <h2 className='onboarding-subtitle'>Refine Your Orbit</h2>
-              <p className='form-description mb-2'>
-                {values.scale == Scale.Atom
-                  ? <span>Make sure that you have been thoughtful about the best name for your Atomic Orbit before you continue</span>
-                  : <span>Make sure that you have <em>broken down</em> your Orbit into smaller scales (as desired) before you are ready to start tracking!</span>
-                }
-              </p>
-              
-              {/* <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText> */}
 
               {values?.name && 
                 <OrbitCard
@@ -66,6 +58,15 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
                       }
                   }} 
               ></OrbitCard>}
+              <p className='form-description mb-2'>
+                {values.scale == Scale.Atom
+                  ? <span>Make sure that you have been thoughtful about the best name for your Atomic Orbit before you continue</span>
+                  : <span>Make sure that you have <em>broken down</em> your Orbit into smaller scales (as desired) before you are ready to start tracking!</span>
+                }
+              </p>
+              
+              {/* <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText> */}
+
               <OrbitSubdivisionList submitBtn={submitBtn} currentOrbitValues={values} refinementType={values.scale == Scale.Atom ? Refinement.Update : Refinement.Split}></OrbitSubdivisionList>
           </>
       )}}
