@@ -9,7 +9,8 @@
   padding: 0.25rem .5rem;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  outline: 2px solid rgba(107,125,127, 0.25);
+  min-height: 2rem;
+  outline: 2px solid rgba(107, 125, 127, 0.25);
 }
 
 .layout {

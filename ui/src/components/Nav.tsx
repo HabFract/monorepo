@@ -14,7 +14,7 @@ import { ItemType } from "antd/es/menu/hooks/useItems";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const TOOLTIP_TIMEOUT = 2500; // milliseconds
+const TOOLTIP_TIMEOUT = 4500; // milliseconds
 
 function getItem(
   label: React.ReactNode,

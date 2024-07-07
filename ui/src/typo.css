@@ -56,7 +56,7 @@ p.form-description, *[data-testid=modal-overlay]>div>div h3 {
   font-weight: 300;
   @apply font-sans;
   max-width: 28rem;
-  margin: 0 auto;
+  margin: 0 auto 1rem auto;
 }
 *[data-testid=modal-overlay]>div>div h3 {
   font-family: TTSupermolot, Arial, sans-serif;
