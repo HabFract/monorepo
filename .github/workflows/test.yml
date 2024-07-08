@@ -49,6 +49,9 @@ jobs:
         with:
           version: 8
 
+      - name: Install vite
+        run: nix develop -c $SHELL -c "pnpm i vite -D"
+
       - name: Build packages
         run: nix develop -c $SHELL -c "cd design-system && pnpm build"
 
