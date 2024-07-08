@@ -61,11 +61,16 @@ jobs:
             libsoup-3.0 \
             webkit2gtk-4.1
 
+      - name: add vite so we can build
+        run: "pnpm i vite -D -w"
+
+      - name: build design system
+        run: "cd design-system && pnpm build"
+
       - name: Install and prepare
         run: |
           pnpm install
 
-          
       - name: build the app
         run: |
           pnpm i @tauri-apps/cli@2.0.0-beta.21 -D -w
