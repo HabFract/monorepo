@@ -33,9 +33,10 @@ export const OrbitTree: ComponentType<VisProps> = ({
 
   // Get and set node traversal bound state
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
-  const [_, setBreadthBounds] = useAtom(setBreadths);
+  const [, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
   const {x,y} = useAtomValue(currentOrbitCoords)
+  
   // Helper to form the query parameter object
   const getQueryParams = (customDepth?: number): OrbitHierarchyQueryParams => visCoverage == VisCoverage.Complete
     ? { orbitEntryHashB64: params.orbitEh }
@@ -65,7 +66,8 @@ export const OrbitTree: ComponentType<VisProps> = ({
     if (error || isModalOpen) return;
     const query = depthBounds
       ? { ...getQueryParams(), orbitLevel: 0}//(depthBounds![params?.currentSphereEhB64] as any).minDepth } 
-      : getQueryParams(0)//(y)
+      : getQueryParams(y)//(y)
+      console.log('query :>> ', query);
     getHierarchy({ variables: { params: { ...query } } })
   }
 
@@ -141,7 +143,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
       // Depending on query type, set the state of the parsed JSON to the relevant part of the payload
       setJson(JSON.stringify(visCoverage == VisCoverage.Complete ? parsedData.result : parsedData.result.level_trees.sort(byStartTime)));
     }
-  }, [data, sphere.actionHash])
+  }, [data])
 
   useEffect(instantiateVisObject, [json]);
 

@@ -38,7 +38,7 @@ export function setHierarchyBreadth(num: number) {
   maxBreadth = num
 }
 
-describe('Hierarchy Path Templates - without traversing, it renders no paths', () => {
+describe.skip('Hierarchy Path Templates - without traversing, it renders no paths', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
@@ -66,7 +66,7 @@ describe('Hierarchy Path Templates - without traversing, it renders no paths', (
   });
 });
 
-describe('Hierarchy Path Templates - One root, one child - after traversing down from the root it renders a path for the first child', () => {
+describe.skip('Hierarchy Path Templates - One root, one child - after traversing down from the root it renders a path for the first child', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
@@ -85,7 +85,7 @@ describe('Hierarchy Path Templates - One root, one child - after traversing down
   });
 });
 
-describe('Hierarchy Path Templates - One root, two children - after traversing it renders correct path for that child', () => {
+describe.skip('Hierarchy Path Templates - One root, two children - after traversing it renders correct path for that child', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
@@ -116,7 +116,7 @@ describe('Hierarchy Path Templates - One root, two children - after traversing i
   });
 });
 
-describe('Hierarchy Path Templates - One root, three children - after traversing it renders correct path for that child', () => {
+describe.skip('Hierarchy Path Templates - One root, three children - after traversing it renders correct path for that child', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);

@@ -4,6 +4,7 @@ import { TextDecoder } from "util";
 //@ts-ignore
 global.TextDecoder = TextDecoder;
 
+import '@testing-library/react/dont-cleanup-after-each';
 import { mockedCacheEntries } from "./e2e/mocks/cache";
 import { SPHERE_ID } from "./e2e/mocks/spheres";
 
