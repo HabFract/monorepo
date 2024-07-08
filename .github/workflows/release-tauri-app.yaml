@@ -21,6 +21,13 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       # Checks out a copy of your repository on the ubuntu-latest machine
+      - uses: actions/checkout@v3
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3 # docs https://pnpm.io/continuous-integration#github-actions
+        with:
+            version: 8  # Optional: specify a pnpm version
+
       - uses: actions/checkout@v2
 
       - name: setup node
@@ -56,7 +63,7 @@ jobs:
 
       - name: Install and prepare
         run: |
-          npm install
+          pnpm install
 
       - name: build the app
         uses: tauri-apps/tauri-action@v0
