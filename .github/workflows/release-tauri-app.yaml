@@ -72,7 +72,8 @@ jobs:
           pnpm i vite -D -w
           cd design-system && pnpm build
           pnpm install 
-          nix develop -c $SHELL -c "npx tauri build"
+          ls
+          cd src-tauri && npx tauri build
 
 
       - name: Release
