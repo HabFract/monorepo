@@ -19,8 +19,6 @@ jobs:
         if: matrix.platform != 'ubuntu-22.04'
         run: sudo git config --system core.longpaths true
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      # Checks out a copy of your repository on the ubuntu-latest machine
       - uses: actions/checkout@v3
       
       - name: Setup pnpm
@@ -28,6 +26,8 @@ jobs:
         with:
             version: 8  # Optional: specify a pnpm version
 
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checks out a copy of your repository on the ubuntu-latest machine
       - uses: actions/checkout@v2
 
       - name: setup node
@@ -66,7 +66,7 @@ jobs:
           pnpm install
 
       - name: build the app
-        uses: tauri-apps/tauri-action@v0
+        uses: tauri-apps/tauri-action@v0.5.9
         env:
           GITHUB_TOKEN: $
         with:
