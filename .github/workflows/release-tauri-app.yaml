@@ -67,11 +67,9 @@ jobs:
       - name: build design system
         run: "cd design-system && pnpm build"
 
-      - name: Install and prepare
+      - name: Install and prepare, build the app
         run: |
-          pnpm install
-
-      - name: build the app
-        run: |
-          pnpm i @tauri-apps/cli@2.0.0-beta.21 -D -w
+          pnpm i vite -D -w
+          cd design-system && pnpm build
+          pnpm install 
           npx tauri build
