@@ -53,7 +53,7 @@ jobs:
         run: nix develop -c $SHELL -c "pnpm i"
 
       - name: Build Happ
-        run: nix develop -c $SHELL -c "pnpm run build:backend"
+        run: nix develop -c $SHELL -c "pnpm run build:happ"
 
       - name: Test with tryorama
         run: nix develop -c $SHELL -c "pnpm test"
