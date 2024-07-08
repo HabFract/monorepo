@@ -72,4 +72,11 @@ jobs:
           pnpm i vite -D -w
           cd design-system && pnpm build
           pnpm install 
-          npx tauri build
+          nix develop -c $SHELL -c "npx tauri build"
+
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: Release.txt
