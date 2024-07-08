@@ -6,6 +6,7 @@ on:
     branches:
       - "develop"
       - "main"
+      - "tauri-deployment"
 
 concurrency:
   group: ${{ github.ref_name }}
