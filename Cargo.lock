@@ -3080,7 +3080,7 @@ dependencies = [
  "fixt",
  "futures",
  "holochain_serialized_bytes",
- "holochain_util 0.3.1",
+ "holochain_util",
  "holochain_wasmer_common",
  "kitsune_p2p_dht_arc",
  "must_future",
@@ -3129,7 +3129,7 @@ dependencies = [
  "holochain_state",
  "holochain_trace",
  "holochain_types",
- "holochain_util 0.3.1",
+ "holochain_util",
  "holochain_wasm_test_utils",
  "holochain_wasmer_host",
  "holochain_websocket",
@@ -3202,7 +3202,7 @@ dependencies = [
  "holochain_state",
  "holochain_trace",
  "holochain_types",
- "holochain_util 0.3.1",
+ "holochain_util",
  "holochain_zome_types",
  "kitsune_p2p",
  "opentelemetry_api",
@@ -3285,7 +3285,7 @@ dependencies = [
  "holo_hash",
  "holochain_secure_primitive",
  "holochain_serialized_bytes",
- "holochain_util 0.3.1",
+ "holochain_util",
  "kitsune_p2p_timestamp",
  "serde",
  "serde_bytes",
@@ -3306,7 +3306,7 @@ dependencies = [
  "holo_hash",
  "holochain_secure_primitive",
  "holochain_serialized_bytes",
- "holochain_util 0.3.1",
+ "holochain_util",
  "holochain_zome_types",
  "kitsune_p2p_types",
  "lair_keystore",
@@ -3428,7 +3428,7 @@ dependencies = [
  "holo_hash",
  "holochain_nonce",
  "holochain_serialized_bytes",
- "holochain_util 0.3.1",
+ "holochain_util",
  "holochain_zome_types",
  "kitsune_p2p_bin_data",
  "kitsune_p2p_dht",
@@ -3539,7 +3539,7 @@ dependencies = [
  "holochain_serialized_bytes",
  "holochain_sqlite",
  "holochain_trace",
- "holochain_util 0.3.1",
+ "holochain_util",
  "holochain_zome_types",
  "itertools 0.12.1",
  "kitsune_p2p_dht",
@@ -3562,22 +3562,6 @@ dependencies = [
  "strum_macros 0.18.0",
  "tempfile",
  "thiserror",
- "tokio",
- "tracing",
-]
-
-[[package]]
-name = "holochain_util"
-version = "0.3.1-rc.0"
-source = "git+https://github.com/guillemcordoba/holochain?branch=develop-0.3#a5b01df4c9c4329d7a6f16ab61a6bf0220a5174f"
-dependencies = [
- "cfg-if 1.0.0",
- "colored",
- "dunce",
- "futures",
- "once_cell",
- "rpassword",
- "sodoken",
  "tokio",
  "tracing",
 ]
@@ -3607,7 +3591,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a40e26e66deae54185dd9a48ac5d160ddc90925b4fb2e5b3ebb493337ea3040f"
 dependencies = [
  "holochain_types",
- "holochain_util 0.3.1",
+ "holochain_util",
  "strum",
  "strum_macros 0.18.0",
  "toml 0.8.14",
@@ -4547,7 +4531,7 @@ checksum = "820631479f0e3e6a843a34d8fbe96c11c0cbedfaaeb290a559f8c7cfb09384df"
 dependencies = [
  "base64 0.22.1",
  "derive_more",
- "holochain_util 0.3.1",
+ "holochain_util",
  "kitsune_p2p_dht_arc",
  "serde",
  "serde_bytes",
@@ -5253,13 +5237,14 @@ checksum = "7843ec2de400bcbc6a6328c958dc38e5359da6e93e72e37bc5246bf1ae776389"
 
 [[package]]
 name = "mr_bundle"
-version = "0.3.1-rc.0"
-source = "git+https://github.com/guillemcordoba/holochain?branch=develop-0.3#a5b01df4c9c4329d7a6f16ab61a6bf0220a5174f"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0d57525022d61a753a0ce52bbee5aeeb60b42f715918e1af81def36565fe49f"
 dependencies = [
  "derive_more",
  "flate2",
  "futures",
- "holochain_util 0.3.1-rc.0",
+ "holochain_util",
  "reqwest 0.12.4",
  "rmp-serde 1.1.2",
  "serde",
@@ -10994,8 +10979,3 @@ dependencies = [
  "cc",
  "pkg-config",
 ]
-
-[[patch.unused]]
-name = "kitsune_p2p_timestamp"
-version = "0.3.1-rc.0"
-source = "git+https://github.com/guillemcordoba/holochain?branch=develop-0.3#a5b01df4c9c4329d7a6f16ab61a6bf0220a5174f"
