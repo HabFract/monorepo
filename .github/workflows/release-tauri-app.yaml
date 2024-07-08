@@ -69,4 +69,4 @@ jobs:
       - name: build the app
         run: |
           pnpm i @tauri-apps/cli@2.0.0-beta.21 -D -w
-          npmx tauri build
+          npx tauri build
