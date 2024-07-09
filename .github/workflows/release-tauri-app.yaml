@@ -17,7 +17,7 @@ jobs:
 
       - name: Support longpaths
         if: matrix.platform != 'ubuntu-22.04'
-        run: sudo git config --system core.longpaths true
+        run: git config --system core.longpaths true
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3 # docs https://pnpm.io/continuous-integration#github-actions
