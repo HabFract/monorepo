@@ -1,6 +1,8 @@
 name: "release-tauri-app"
 on:
-  push
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   release-tauri-app:
@@ -59,18 +61,11 @@ jobs:
             libsoup-3.0 \
             webkit2gtk-4.1
 
-      - name: add vite so we can build
-        run: "pnpm i vite -D -w"
-
-      - name: build design system
-        run: "cd design-system && pnpm build"
-
       - name: Install and prepare
         run: |
           pnpm i vite -D -w
           cd design-system && pnpm build
-          pnpm install 
-          ls
+          pnpm install
 
       - name: build the app
         uses: tauri-apps/tauri-action@v0
@@ -83,9 +78,3 @@ jobs:
           releaseBody: "See assets below to download and install this version."
           releaseDraft: true
           prerelease: true
-
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: Release.txt
