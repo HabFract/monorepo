@@ -13,14 +13,14 @@ jobs:
     env:
       MACOSX_DEPLOYMENT_TARGET: 10.13
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform }}
     steps:
+      - uses: actions/checkout@v4
+
       - name: Support longpaths
         if: matrix.platform != 'ubuntu-22.04'
         run: sudo git config --system core.longpaths true
 
-      - uses: actions/checkout@v3
-      
       - name: Setup pnpm
         uses: pnpm/action-setup@v3 # docs https://pnpm.io/continuous-integration#github-actions
         with:
@@ -67,14 +67,24 @@ jobs:
       - name: build design system
         run: "cd design-system && pnpm build"
 
-      - name: Install and prepare, build the app
+      - name: Install and prepare
         run: |
           pnpm i vite -D -w
           cd design-system && pnpm build
           pnpm install 
           ls
-          cd src-tauri && npx tauri build
 
+      - name: build the app
+        uses: tauri-apps/tauri-action@v0
+        env:  
+          GITHUB_TOKEN: $
+        with:
+          projectPath: src-tauri
+          tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+          releaseName: "Test v__VERSION__"
+          releaseBody: "See assets below to download and install this version."
+          releaseDraft: true
+          prerelease: true
 
       - name: Release
         uses: softprops/action-gh-release@v2
