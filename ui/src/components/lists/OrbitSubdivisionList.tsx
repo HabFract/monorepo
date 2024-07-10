@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { Button, HelperText, TextInputField, SelectInputField } from 'habit-fract-design-system';
 import List from '../icons/List';
 import { MinusCircleFilled, PlusCircleFilled } from '@ant-design/icons';
-import React from 'react';
+import React, { useRef } from 'react';
 import { Frequency, Orbit, Scale, useCreateOrbitMutation, useUpdateOrbitMutation } from '../../graphql/generated';
 import { getDisplayName } from '../forms/CreateOrbit';
 import { Label } from 'flowbite-react';
@@ -37,7 +37,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
 
   const [addOrbit] = useCreateOrbitMutation({});
   const [updateOrbit] = useUpdateOrbitMutation({});
-  
+  const submitRefineBtn = useRef<HTMLElement>(null);
   return (
     <div className='layout orbit-subdivision-list'>
       <Formik
@@ -70,11 +70,12 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                 )
               );
             }
-            
-            setTimeout(() => {
-              //@ts-ignore
-              (submitBtn.props).onClick.call(null);
-            }, 500);
+            if(submitRefineBtn.current) {
+              // Prevent double click
+              (submitRefineBtn.current as any).firstElementChild.loading = true
+            }
+            //@ts-ignore
+            (submitBtn.props).onClick.call(null);
           } catch (error) {
             console.error(error)
           }
@@ -176,8 +177,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                     </>
                   }
                 </div>
-                <Button type={'onboarding'} onClick={() => submitForm()}>{refinementType == Refinement.Update ? "Update Name" : "Create Orbits"}</Button>
-              </Form>
+                <span ref={submitRefineBtn}><Button type={'onboarding'} onClick={() => submitForm()}>{refinementType == Refinement.Update ? "Update Name" : "Create Orbits"}</Button></span> </Form>
             </>
           )
         }}

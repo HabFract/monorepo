@@ -55,8 +55,12 @@ function App({ children: pageComponent }: any) {
                   </>)(),
                   submitBtn:
                     <Button
+                      loading={false}
                       type={"onboarding"}
-                      onClick={(e) => state.match("Onboarding3") ? transition(getNextOnboardingState(state), {sphereAh: store.get(currentSphere)?.actionHash}) : transition(getNextOnboardingState(state))}
+                      onClick={(e) => {
+                        //, {sphereAh: store.get(currentSphere)?.actionHash}
+                        return state.match("Onboarding3") ? transition(getNextOnboardingState(state)) : transition(getNextOnboardingState(state))
+                      }}
                     >Save & Continue</Button>
               })}
 
@@ -107,6 +111,6 @@ function getLastOnboardingState(state: string) {
   return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) - 1}`
 };
 function getNextOnboardingState(state: string) {
-  if (state == 'Onboarding3') return 'ListOrbits';
+  if (state == 'Onboarding3') return 'Cache';
   return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) + 1}`
 };
