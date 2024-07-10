@@ -46,7 +46,6 @@ function calculateSphereCounts(orbitScales: Scale[]) {
 
 const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition, runDelete } : SphereCardProps) => {
   const { name, metadata, id } = sphere;
-  const sphereNodes = id && store.get(nodeCache.items) && store.get(nodeCache.items)![id as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
 
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
@@ -75,7 +74,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
               <span>Create Orbit</span>
             </Button>}
 
-            <Button disabled={!sphereNodes || typeof sphereNodes == 'object' && !(Object.values(sphereNodes).length > 0)} className="btn responsive btn-primary w-full" size="sm" onClick={() => {
+            <Button className="btn responsive btn-primary w-full" size="sm" onClick={() => {
                 store.set(currentSphere, {entryHash: sphere.eH, actionHash: sphere.id});
                 store.set(currentOrbitCoords, {x: 0, y: 0});
                   transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })

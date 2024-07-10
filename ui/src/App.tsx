@@ -21,7 +21,7 @@ function App({ children: pageComponent }: any) {
   
   // Don't start at the home page for established users...
   const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
-  state.match('Home') && userHasSpheres && transition('ListSpheres');
+  state.match('Home') && userHasSpheres && transition('PreloadAndCache');
   
     return loadingSpheres
       ? <Spinner aria-label="Loading!"size="xl" className='full-spinner' />
@@ -57,8 +57,7 @@ function App({ children: pageComponent }: any) {
                     <Button
                       loading={false}
                       type={"onboarding"}
-                      onClick={(e) => {
-                        //, {sphereAh: store.get(currentSphere)?.actionHash}
+                      onClick={(_e) => {
                         return state.match("Onboarding3") ? transition(getNextOnboardingState(state)) : transition(getNextOnboardingState(state))
                       }}
                     >Save & Continue</Button>
@@ -111,6 +110,6 @@ function getLastOnboardingState(state: string) {
   return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) - 1}`
 };
 function getNextOnboardingState(state: string) {
-  if (state == 'Onboarding3') return 'Cache';
+  if (state == 'Onboarding3') return 'PreloadAndCache';
   return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) + 1}`
 };

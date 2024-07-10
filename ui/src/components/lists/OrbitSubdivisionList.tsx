@@ -59,23 +59,32 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                 scale: values.scale,
                 parentHash: values.parentHash,
                 sphereHash: sphere?.entryHash,
-              }}}) 
+              }}});
+              (submitBtn as any).props.onClick.call(null) // TODO: pass the new EH through this callback to Complete the onboarding transition
+          
             } else {
               const { list, scale } = values;
               serializeAsyncActions<any>(
-                list!.map(
-                  (orbit) => {
-                    return async () => {await sleep(2500); return addOrbit({ variables: {variables: {name: orbit.name, scale, frequency: Frequency.Day, startTime: +(new Date()), sphereHash: sphere.entryHash as string, parentHash: currentHash as string}}})}
-                  }
-                )
+                [
+                  ...list!.map(
+                    (orbit) => 
+                      async () => {
+                        addOrbit(
+                          { variables: {variables: {name: orbit.name, scale, frequency: Frequency.Day, startTime: +(new Date()), sphereHash: sphere.entryHash as string, parentHash: currentHash as string } } }
+                        );
+                        await sleep(500);
+                    }
+                  ),
+                  async() => Promise.resolve(console.log('New orbit subdivisions created! :>> ')),
+                  async() => ((submitBtn as any).props).onClick.call(null) // Complete the onboarding transition
+                ]
               );
             }
             if(submitRefineBtn.current) {
-              // Prevent double click
-              (submitRefineBtn.current as any).firstElementChild.loading = true
+              // TODO: Prevent double click
+              (submitRefineBtn.current as any).firstElementChild.loading = true;
+              console.log((submitRefineBtn.current as any).firstElementChild)
             }
-            //@ts-ignore
-            (submitBtn.props).onClick.call(null);
           } catch (error) {
             console.error(error)
           }
@@ -108,17 +117,18 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                 <div className="flex flex-col gap-0">
                   {refinementType == Refinement.Update
                     ? <Field
-                    component={TextInputField}
-                    size="base"
-                    name="name"
-                    id="atomic-name"
-                    icon={"tag"}
-                    iconSide={"left"}
-                    withInfo={false}
-                    required={true}
-                    labelValue={"Refined Name:"}
-                    placeholder={"E.g. Run for 10 minutes"}
-                  />
+                        component={TextInputField}
+                        size="base"
+                        name="name"
+                        value={values.name}
+                        id="atomic-name"
+                        icon={"tag"}
+                        iconSide={"left"}
+                        withInfo={false}
+                        required={true}
+                        labelValue={"Refined Name:"}
+                        placeholder={"E.g. Run for 10 minutes"}
+                      />
                     : <>
                       <Field
                         component={SelectInputField}

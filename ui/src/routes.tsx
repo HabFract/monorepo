@@ -10,7 +10,7 @@ import { Spinner } from "flowbite-react";
 
 export type AppState = // Currently just for routing in the state machine
   | 'Boot'
-  | 'Cache'
+  | 'PreloadAndCache'
   | 'Onboarding1'
   | 'Onboarding2'
   | 'Onboarding3'
@@ -40,7 +40,7 @@ export const initialState: AppStateStore = { // Home route
 
 export const routes: Routes = {
   Boot: <Spinner aria-label="Loading!"size="xl" className="absolute top-1/2 bottom-1/2" />,
-  Cache: <PreloadOrbitData />,
+  PreloadAndCache: <PreloadOrbitData />,
   Vis: renderVis(OrbitTree),
   Home: <Home />,
   Onboarding1: <CreateSphere editMode={false} />,
@@ -57,11 +57,11 @@ const lists = ['ListSpheres', 'ListOrbits'];
 
 export const AppTransitions: StateTransitions<AppState> = {
   Boot: ['Home'],
-  Cache: ['Vis', 'CreateSphere'],
-  Home: [ "Onboarding1", "ListSpheres"],
+  PreloadAndCache: ['Vis', 'CreateSphere', 'PreloadAndCache'],
+  Home: [ "Onboarding1", "PreloadAndCache"],
   Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding2', 'Onboarding3'],
-  Onboarding3: ['Onboarding2', 'Onboarding3', 'Onboarding4', 'Cache'],
+  Onboarding3: ['Onboarding2', 'Onboarding3', 'Onboarding4', 'PreloadAndCache'],
   Onboarding4: ['Onboarding3', 'Home'],
 
   Vis: ['Home', ...forms, ...lists, 'Vis'],

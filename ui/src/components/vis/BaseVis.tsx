@@ -1063,7 +1063,7 @@ export default class BaseVisualization implements IVisualization {
           <span class="title">Name:</span>
           <p>${name}</p>
           <span class="title">Description:</span>
-          <p>${description}</p>
+          <p>${description || "<br />"}</p>
           </div>
         </div>`
       });
@@ -1078,12 +1078,6 @@ export default class BaseVisualization implements IVisualization {
         if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
         const { checked } = this.nodeDetails[d.data.content];
         return checked
-      })
-      .attr("style", (d) => {
-        if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
-        const { scale } = this.nodeDetails[d.data.content];
-        // return scale == 'Astro' ? "filter: saturate(0.45)" : "filter: brightness(1.25)"
-
       });
     this._gTooltip = this.clearAndRedrawLabels()
   }
