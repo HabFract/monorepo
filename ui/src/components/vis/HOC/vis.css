@@ -161,7 +161,7 @@ g.tooltip rect:first-of-type {
 }
 
 .tooltip-inner {
-  background: url(assets/line-corner-vectornew.svg);
+  background: url(assets/line-corner-vector.svg);
   background-position: right;
   background-position-y: .5rem;
   background-size: contain;

@@ -9,10 +9,9 @@ import { TreeLayout } from "d3-hierarchy";
 // import propagating from "propagating-hammerjs";
 import _ from "lodash";
 
-import astroIncomplete from "/assets/astro-incomplete-new.svg?raw";
-import subAstroIncomplete from "/assets/astro-incomplete-new.svg?raw";
-import atomIncomplete from "/assets/astro-incomplete-new.svg?raw";
-import subAtomIncomplete from "/assets/astro-incomplete-new.svg?raw";
+import astroIncomplete from "/assets/astro-incomplete.svg?raw";
+import subAstroIncomplete from "/assets/sub-astro-incomplete.svg?raw";
+import atomIncomplete from "/assets/atom-incomplete.svg?raw";
 
 import {
   ONE_CHILD,

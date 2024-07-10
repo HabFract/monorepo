@@ -6,7 +6,7 @@ import { Scale, Sphere } from '../../../ui/src/graphql/generated';
 import { Button } from 'flowbite-react';
 import { currentOrbitCoords, currentSphere } from '../../../ui/src/state/currentSphereHierarchyAtom';
 import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../../ui/src/state/jotaiKeyValueStore';
-import TreeVisIcon from '../../../ui/src/components/TreeVisIcon';
+import TreeVisIcon from '../../../ui/src/components/icons/TreeVisIcon';
 
 type SphereCardProps = {
   sphere: Sphere;

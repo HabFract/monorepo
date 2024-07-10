@@ -1,5 +1,5 @@
 import "./style.css";
-import TreeVisIcon from "./TreeVisIcon";
+import TreeVisIcon from "./icons/TreeVisIcon";
 
 import { UnorderedListOutlined, PieChartFilled, PlusCircleFilled, ArrowsAltOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
