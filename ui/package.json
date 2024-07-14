@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "vite --clearScreen false",
-    "build": "tsc; vite build && npm run zip",
+    "build": "vite build && npm run zip",
     "generate": "graphql-codegen --config codegen.ts",
     "generate:watch": "graphql-codegen --watch --config codegen.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
