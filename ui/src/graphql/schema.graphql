@@ -148,8 +148,8 @@ enum Frequency {
 # Scale Enum
 enum Scale {
   Sub
-  Atom
   Astro
+  Atom
 }
 
 type OrbitMetaData {
