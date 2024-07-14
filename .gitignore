@@ -27,5 +27,4 @@ dist-ssr
 **/node_modules/
 .aider*
 target/
-workdir/
-workdir/*
+workdir/*.yaml
