@@ -66,6 +66,9 @@ jobs:
           cd design-system && pnpm build
           pnpm install
 
+      - name: drop into nix shell
+        uses: nicknovitski/nix-develop@v1
+
       - name: build the app
         uses: tauri-apps/tauri-action@v0
         env:  
