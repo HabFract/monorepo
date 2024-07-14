@@ -28,3 +28,4 @@ dist-ssr
 .aider*
 target/
 workdir/*.yaml
+!habit_fract.happ
