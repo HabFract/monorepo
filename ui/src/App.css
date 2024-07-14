@@ -161,6 +161,12 @@ nav + main.page-container .orbits-list {
   display: flex;
 }
 
+.back-to-orbit-list {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
 @media screen and (min-width: 440px) {
   .ant-app {
     grid-template-columns: 10% 80% 10%;
@@ -251,6 +257,12 @@ nav + main.page-container .orbits-list {
     margin-top: .5rem;
     z-index: -1;
     left: 24rem;
+  }
+
+  .back-to-orbit-list {
+    transform: scale(2);
+    top: 3.5rem;
+    left: 2rem;
   }
 }
 

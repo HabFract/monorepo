@@ -143,7 +143,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
         <>
           {!inModal ? headerDiv : null}
 
-          <h2 className='onboarding-subtitle'>Create an Orbit</h2>
+          <h2 className='onboarding-subtitle'>{ editMode ? "Edit Orbit Details" : "Create an Orbit"}</h2>
           <p className='form-description'>An orbit is a <em>specific life action</em> that your wish to track over time.</p>
           <Form noValidate={true}>
             {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
@@ -184,7 +184,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                 icon={"scale-planets"}
                 iconSide={"left"}
                 withInfo={true}
-                options={Object.values(Scale).sort((a: any, b: any) => a - b).map((scale, i) => {
+                options={Object.values(Scale).map((scale) => {
                   const cannotBeAstro = !(editMode && state.match("Onboarding")) && values.parentHash !== '' && values.parentHash !== 'root';
                   return cannotBeAstro && scale == 'Astro'
                     ? null

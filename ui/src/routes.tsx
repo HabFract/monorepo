@@ -5,8 +5,14 @@ import PreloadOrbitData from "./components/Preload";
 import Home from "./components/layouts/Home";
 import OrbitTree from "./components/vis/OrbitTree";
 import { renderVis } from "./components/vis/helpers";
+
+import { Button} from 'habit-fract-design-system';
 import { StateTransitions } from "./state/stateMachine";
 import { Spinner } from "flowbite-react";
+import BackCaret from "./components/icons/BackCaret";
+import { AppMachine } from "./main";
+import { store } from "./state/jotaiKeyValueStore";
+import { currentSphere } from "./state/currentSphereHierarchyAtom";
 
 export type AppState = // Currently just for routing in the state machine
   | 'Boot'
@@ -48,7 +54,22 @@ export const routes: Routes = {
   Onboarding3: <RefineOrbit />,
   CreateSphere: <CreateSphere headerDiv={<></>} editMode={false} />,
   ListSpheres: <ListSpheres />,
-  CreateOrbit: <CreateOrbit headerDiv={<></>} editMode={false} inModal={false} sphereEh="" parentOrbitEh="" />,
+  CreateOrbit: <CreateOrbit headerDiv={
+                      <div className="back-to-orbit-list">
+                        <Button
+                        type={"icon"}
+                        icon={<BackCaret />}
+                        onClick={() => {
+                          const sphere = store.get(currentSphere);
+                          if(!sphere.actionHash) {
+                            console.error("Cannot got back when no current Sphere exists");
+                            return;
+                          }
+                          AppMachine.to("ListOrbits", { sphereAh: sphere.actionHash });
+                          }}
+                        ></Button>
+                      </div>
+                  } editMode={false} inModal={false} sphereEh="" parentOrbitEh="" />,
   ListOrbits: <ListOrbits />,
 };
 
