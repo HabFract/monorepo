@@ -125,7 +125,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: selectedSphere.actionHash}) 
           } else {
             const orbitAh = editMode ? payload.updateOrbit.actionHash : payload.createOrbit.actionHash
-            console.log('orbitAh :>> ', orbitAh);
             const props = inOnboarding
               ? { refiningOrbitAh: orbitAh }
               : { sphereAh: selectedSphere.actionHash }
@@ -292,7 +291,7 @@ export function getDisplayName(scale: Scale) {
     case Scale.Astro:
       return "Astronomic"
     case Scale.Sub:
-      return "Sub Astronomic"
+      return "Sub-astronomic"
     case Scale.Atom:
       return "Atomic"
   }

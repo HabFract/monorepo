@@ -31,7 +31,6 @@ function getOrbitScaleImg(scale: Scale) {
 
 const OrbitVis: React.FC<OrbitVisProps> = ({ scale }: OrbitVisProps) => {
   return (
-    // @ts-ignore
     <div className="orbit-vis">
       <div>
         <img className="w-24" alt={getOrbitScaleImg(scale)?.alt} src={getOrbitScaleImg(scale)?.src} />

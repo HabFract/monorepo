@@ -31,7 +31,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runD
       <main className="card-body-bg col-c">
         <div className="orbit-description flex items-center justify-center">
           {orbit?.metadata?.description && orbit?.metadata?.description !== '' && <p className='card-copy'>{orbit.metadata?.description}</p>}        </div>
-        <div className="row-c-around h-full big-gap">
+        <div className="row-c-around h-full big-gap-sm">
           {!displayOnly && <div className="orbit-actions col-c gap-2">
             <div className="orbit-actions-crud flex-col row-c-around">
             <Dropdown label="Manage" dismissOnClick={false} className="bg-secondary p-2">
