@@ -15,8 +15,6 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v4
-
       - name: Support longpaths
         if: matrix.platform != 'ubuntu-22.04'
         run: git config --system core.longpaths true
@@ -70,9 +68,8 @@ jobs:
       - name: build the app
         uses: tauri-apps/tauri-action@v0
         env:  
-          GITHUB_TOKEN: $
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          projectPath: src-tauri
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
           releaseName: "Test v__VERSION__"
           releaseBody: "See assets below to download and install this version."
