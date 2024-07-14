@@ -43,9 +43,6 @@ jobs:
         with:
           go-version: "stable"
 
-      - name: Install nix
-        uses: cachix/install-nix-action@v22
-
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
@@ -68,9 +65,6 @@ jobs:
           pnpm i vite -D -w
           cd design-system && pnpm build
           pnpm install
-
-      - name: drop into nix shell
-        uses: nicknovitski/nix-develop@v1
 
       - name: build the app
         uses: tauri-apps/tauri-action@v0
