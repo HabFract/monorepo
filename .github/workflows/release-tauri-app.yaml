@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows-2019, macos-11, ubuntu-22.04]
+        platform: [windows-2019, macos-latest, ubuntu-22.04]
     env:
       MACOSX_DEPLOYMENT_TARGET: 10.13
 
@@ -37,6 +37,7 @@ jobs:
         with:
           override: true
           toolchain: stable
+          target: wasm32-unknown-unknown
       - name: install Go stable
         uses: actions/setup-go@v4
         with:
