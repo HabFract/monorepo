@@ -71,7 +71,7 @@
 }
 @media screen and (min-width: 960px) {
   .orbits-list {
-    @apply grid-cols-3;
+    @apply grid-cols-2;
     grid-column: 1/-1;
   }
 
@@ -125,7 +125,7 @@
     grid-template-rows: 3rem 2rem auto;
   }
   .spheres-list {
-    @apply grid grid-cols-3;
+    @apply grid grid-cols-2;
   }
 }
 @media screen and (min-width: 1680px) {
@@ -133,7 +133,7 @@
     grid-template-rows: 3rem 2rem min-content;
     grid-template-columns: 1fr 1fr 1fr;
   }
-  .orbits-list, .spheres-list {
+  .orbits-list {
     @apply grid-cols-3;
   }
 }
