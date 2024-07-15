@@ -8,13 +8,16 @@ import { client } from '../graphql/client';
 import { useSetAtom } from 'jotai';
 import { currentSphere } from '../state/currentSphereHierarchyAtom';
 import { Spinner } from 'flowbite-react';
+import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 
 type PreloadOrbitDataProps = {
+  landingSphereEh?: EntryHashB64
+  landingSphereId?: ActionHashB64
 };
 
-const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({}) => {
+const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, landingSphereId }) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
- 
+
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
   const clear = useSetAtom(nodeCache.clear)
@@ -28,13 +31,16 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({}) => {
   useEffect(() => {
     if(!sphereNodes) return;
 
+    // Use either first returned Sphere as the landing vis (this will always work for Onboarding) or a passed in parameter
+    const { id, eH } = sphereNodes[0];
+    const landingId = landingSphereId || id;
+    const landingEh = landingSphereEh || eH;
+
+    store.set(currentSphere, { actionHash: landingId, entryHash: landingEh });
+    if(landingSphereEh && landingSphereId) transition('Vis', {currentSphereEhB64: landingEh, currentSphereAhB64: landingId }); // Skip cacheing when we are just transitioning
+
     // Clean up the current cache first
     clear()
-
-    // For now we will just use the first returned Sphere as the landing vis (this will always work for Onboarding)
-    const { id: landingId, eH: landingEh } = sphereNodes[0];
-    store.set(currentSphere, { actionHash: landingId, entryHash: landingEh });
-    console.log('Current Sphere is now (eh, ah): :>> ', landingEh, landingId);
     try {
       serializeAsyncActions<any>(
         [...sphereNodes!.map(
