@@ -1,7 +1,7 @@
 import "./style.css";
 import TreeVisIcon from "./icons/TreeVisIcon";
 
-import { UnorderedListOutlined, PieChartFilled, PlusCircleFilled, ArrowsAltOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { UnorderedListOutlined, PlusCircleFilled, ArrowsAltOutlined, PlusCircleOutlined, MailOutlined } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
 import { Sphere, useGetSpheresQuery } from "../graphql/generated";
@@ -99,6 +99,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   function createFixedMenuItems() {
     return [
       getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
+      getItem('Feedback', 'fb', <MailOutlined />),
       // getItem('Dashboard', 'db', <PieChartFilled />, undefined, undefined, true),
     ]  
   }
@@ -160,6 +161,12 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         return // TEMP
         setCurrentPage(Page.Dashboard)
         transition('Dashboard', {})
+        break;
+      case e.key == 'fb':
+        setTooltipText("To report bugs, give feedback or suggestions, please visit this link:  https://habitfract.net/feedback")
+        openMenu()
+        if(tooltipRef.current) {(tooltipRef.current as HTMLElement).style.top = "0rem"}
+        activatePageContextTooltip(15000)
         break;
 
       case e.key == 'add-sphere':
@@ -287,12 +294,12 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
     }
   }
 
-  function activatePageContextTooltip() {
+  function activatePageContextTooltip(customTimeout?: number) {
     setTooltipVisible(true);
     setTimeout(() => {
       setTooltipVisible(false);
       if(tooltipRef.current) (tooltipRef.current as HTMLElement).style.top = "initial"
-    }, TOOLTIP_TIMEOUT);
+    }, customTimeout || TOOLTIP_TIMEOUT);
   }
   
   return (
