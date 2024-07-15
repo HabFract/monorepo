@@ -3,7 +3,7 @@ import { useStateTransition } from './hooks/useStateTransition';
 
 import Nav from './components/Nav';
 import { Flowbite, Spinner } from 'flowbite-react';
-import { cloneElement, useState } from 'react';
+import { cloneElement, useEffect, useState } from 'react';
 
 import BackCaret from './components/icons/BackCaret';
 import Onboarding from './components/layouts/Onboarding';
@@ -12,13 +12,18 @@ import { Button, ProgressBar, darkTheme } from 'habit-fract-design-system';
 import { store } from './state/jotaiKeyValueStore';
 import { currentOrbitId, currentSphere } from './state/currentSphereHierarchyAtom';
 import { useGetSpheresQuery } from './graphql/generated';
+import { AppMachine } from './main';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
-  
+  const [mainContainerClass, setMainContainerClass] = useState<string>("page-container");  
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
+  useEffect(() => { // Apply main container class conditionally based on page
+    setMainContainerClass(getMainContainerClassString(AppMachine.state.currentState))
+  }, [AppMachine.state.currentState])
+
   // Don't start at the home page for established users...
   const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
   state.match('Home') && userHasSpheres && transition('PreloadAndCache');
@@ -67,7 +72,7 @@ function App({ children: pageComponent }: any) {
           </main>
         : <>
           {!state.match('Home') && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded}></Nav>}
-          <main className={state ? (() => getMainContainerClass(state))() : "page-container"}>
+          <main className={mainContainerClass}>
             {pageComponent && cloneElement(pageComponent, { startBtn:
                   state.match('Home') && <Button
                   type={"onboarding"}
@@ -84,7 +89,7 @@ function App({ children: pageComponent }: any) {
   )
 }
 
-function getMainContainerClass(state) {
+function getMainContainerClassString(state) {
   switch (state) {
     case 'Home':
       return "home page-container"
