@@ -142,6 +142,9 @@ nav + main.page-container .orbits-list {
   @apply text-line fill-primary;
 }
 
+.grayed {
+  @apply text-gray-300 !important;
+}
 
 .onboarding-subtitle {
   line-height: 2rem;
@@ -222,11 +225,11 @@ nav + main.page-container .orbits-list {
     min-width: 6rem;
   }
 
-  .page-container:not(.home) {
-    grid-column: 2/-2;
-  }
   .page-container.create-form, .page-container.list {
     overflow: auto;
+  }
+  .page-container:not(.home) {
+    grid-column: 2/-2;
   }
   .page-container.create-form {
     justify-content: center;

@@ -90,7 +90,7 @@
     grid-column: 1/-1;
   }
   .layout.spheres .page-header, .layout.spheres .list-sort-filter {
-    grid-column: 2/3;
+    grid-column: 1/-1;
   }
   .layout.orbit-subdivision-list {
     grid-template-columns: 1fr 1fr;

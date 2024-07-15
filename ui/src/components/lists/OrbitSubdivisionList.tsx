@@ -47,7 +47,6 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
           setSubmitting(false);
           const sphere = store.get(currentSphere);
           if(!sphere?.entryHash || !currentHash) throw new Error("No sphere set or parent hash, cannot refine orbits")
-            debugger;
           try {
             if(refinementType == Refinement.Update) {
               await updateOrbit({ variables: {orbitFields: {
