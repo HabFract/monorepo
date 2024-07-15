@@ -74,7 +74,6 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
   function cacheOrbitPaths(d3Hierarchy: object): boolean {
     let cached = false;
     let workingSphereNodes : SphereOrbitNodes = {...sphereNodes};
-    console.log('currentSphereId :>> ', currentSphereId);
     try {
       if(!currentSphereId || currentSphereId == '') throw new Error('Cannot cache paths without a currentSphere id');
       const existingCache = store.get(nodeCache.items) as SphereNodeDetailsCache;

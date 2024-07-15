@@ -48,7 +48,7 @@ function ListSpheres() {
   if (error) return <p>Error : {error.message}</p>;
 
   const spheres = extractEdges(data!.spheres) as Sphere[];
-  const sortedSpheres = spheres.sort((s1: Sphere, s2: Sphere) => sortSpheres(s1, s2));
+  const sortedSpheres = spheres//.sort((s1: Sphere, s2: Sphere) => sortSpheres(s1, s2));
 
   if(!spheres.length) return <></>;
 
