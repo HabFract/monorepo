@@ -218,6 +218,10 @@ nav + main.page-container .orbits-list {
     overflow-y: auto;
   }
   
+  .page-container.onboarding-page .orbit-vis {
+    min-width: 6rem;
+  }
+
   .page-container:not(.home) {
     grid-column: 2/-2;
   }
