@@ -6,11 +6,12 @@ import "./common.css";
 import WithLabel from "./label";
 import ErrorLabel from "./errorlabel";
 
-const Select: React.FC<SelectProps> = ({ id, value, name, theme, onChange, labelValue, withInfo, required, disabled, size, icon, iconSide, options } : SelectProps) => {
+const Select: React.FC<SelectProps> = ({ id, value, name, theme, onChange, onBlur, labelValue, withInfo, required, disabled, size, icon, iconSide, options } : SelectProps) => {
   return (
     <WithLabel id={id} labelValue={labelValue} required={required} withInfo={withInfo}>
       <FBSelect id={id} 
         onChange={(e) => !!onChange ? onChange(e) : null}
+        onBlur={(e) => !!onBlur ? onBlur(e) : null}
         className={icon ? "input-with-icon text-input-text" : "text-input-text"}
         icon={iconSide == "left" ? getIconSvg(icon) : undefined}
         sizing={size}
@@ -35,7 +36,7 @@ export const SelectInputField: React.FC<{ field: any, form: any, props: SelectPr
   form: { touched, errors, setFieldValue, setFieldTouched, values },
   ...props
 } : any) => {
-  const { id, name, labelValue, value, options, iconSide, size, placeholder, required, withInfo, disabled, onBlur: ___ } = props;
+  const { id, name, labelValue, value, options, iconSide, size, placeholder, required, withInfo, disabled, onBlur } = props;
 
   let icon = props.icon;
   if(icon == "scale-planets") icon = getIconForPlanetValue(values.scale);
@@ -55,6 +56,7 @@ export const SelectInputField: React.FC<{ field: any, form: any, props: SelectPr
         withInfo={!!withInfo}
         iconSide={iconSide || "left"}
         icon={icon}
+        onBlur={onBlur}
         onChange={(e) => { setFieldValue(field.name, e.target.value); setFieldTouched(field.name) }}
         theme={(touched[field.name] && errors[field.name]?.match("required")) ? "warning" : (touched[field.name] && errors[field.name]) ? "danger" : "default"}
       >
