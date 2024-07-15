@@ -3,7 +3,8 @@ import { Field, Form, Formik, FieldArray } from 'formik';
 import './common.css';
 import * as Yup from 'yup';
 import { Button, HelperText, TextInputField, SelectInputField } from 'habit-fract-design-system';
-import List from '../icons/List';
+import Split from '../icons/Split';
+import Pencil from '../icons/Pencil';
 import { MinusCircleFilled, PlusCircleFilled } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { Frequency, Orbit, Scale, useCreateOrbitMutation, useUpdateOrbitMutation } from '../../graphql/generated';
@@ -92,7 +93,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
               { refinementType == Refinement.Update && <OrbitFetcher orbitToEditId={id}></OrbitFetcher>}
               <HelperText
                 title={refinementType == Refinement.Update ? "Refine Atomic Orbit Name" : "Break Up High Scale Orbits"}
-                titleIcon={<List />}
+                titleIcon={refinementType == Refinement.Update ? <Pencil /> : <Split />}
                 withInfo={false}
               >
                 {refinementType == Refinement.Update
@@ -103,7 +104,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
 
               { refinementType == Refinement.Split && values.scale == Scale.Atom && <HelperText
                 title={"Refine Atomic Orbit Names"}
-                titleIcon={<List />}
+                titleIcon={<Pencil />}
                 withInfo={false}
               >
                 <span>Since you have chosen the Atomic scale for your new Orbits, it's best to make sure the new Orbits are named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable.</span>

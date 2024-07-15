@@ -7,6 +7,8 @@ import { Button } from 'flowbite-react';
 import { currentOrbitCoords, currentSphere } from '../../../ui/src/state/currentSphereHierarchyAtom';
 import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../../ui/src/state/jotaiKeyValueStore';
 import TreeVisIcon from '../../../ui/src/components/icons/TreeVisIcon';
+import Exclaim from '../../../ui/src/components/icons/Exclaim';
+import { HelperText } from '../copy';
 
 type SphereCardProps = {
   sphere: Sphere;
@@ -90,9 +92,21 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
             </Button>}
           </div>
         </div>
-        { isHeader && <div className="mini-vis col-c flex-1">
-          <SphereVis spherePercentages={calculateSpherePercentages(calculateSphereCounts(orbitScales))}/>
-        </div>}
+        { isHeader && orbitScales.length > 0 
+          ? <div className="mini-vis col-c flex-1">
+            <SphereVis spherePercentages={calculateSpherePercentages(calculateSphereCounts(orbitScales))}/>
+          </div>
+          : isHeader && <div style={{ position: "relative", top: "-2rem" }}>
+              <HelperText
+                  onClickInfo={null}
+                  title={"Cannot Visualise"}
+                  titleIcon={<Exclaim />}
+                  withInfo={false}
+                >
+                  You don't have any Orbits to visualise, yet. Create some by clicking 'Create Orbit'
+                </HelperText>
+            </div>
+        }
       </section>
       {isHeader && <div className="flex flex-col gap-2">
         <Button onClick={() => {
