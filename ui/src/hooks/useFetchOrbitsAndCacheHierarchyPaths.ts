@@ -63,8 +63,8 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
           const idA: ActionHashB64 = a.data.content;
           const idB: ActionHashB64 = b.data.content;
           return (
-            (sphereNodes[idA].startTime as number) -
-            (sphereNodes[idB as keyof SphereOrbitNodes].startTime as number)
+            (sphereNodes?.[idA]?.startTime as number) || 0 -
+            (sphereNodes?.[idB as keyof SphereOrbitNodes]?.startTime as number) || 0
           );
         })
       );
