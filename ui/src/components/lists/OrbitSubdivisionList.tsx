@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { Button, HelperText, TextInputField, SelectInputField } from 'habit-fract-design-system';
 import List from '../icons/List';
 import { MinusCircleFilled, PlusCircleFilled } from '@ant-design/icons';
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { Frequency, Orbit, Scale, useCreateOrbitMutation, useUpdateOrbitMutation } from '../../graphql/generated';
 import { getDisplayName } from '../forms/CreateOrbit';
 import { Label } from 'flowbite-react';
@@ -37,7 +37,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
 
   const [addOrbit] = useCreateOrbitMutation({});
   const [updateOrbit] = useUpdateOrbitMutation({});
-  const submitRefineBtn = useRef<HTMLElement>(null);
+  const [submitRefineBtnIsLoading, setSubmitRefineBtnIsLoading] = useState<boolean>(false);
   return (
     <div className='layout orbit-subdivision-list'>
       <Formik
@@ -47,7 +47,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
           setSubmitting(false);
           const sphere = store.get(currentSphere);
           if(!sphere?.entryHash || !currentHash) throw new Error("No sphere set or parent hash, cannot refine orbits")
-
+            debugger;
           try {
             if(refinementType == Refinement.Update) {
               await updateOrbit({ variables: {orbitFields: {
@@ -60,7 +60,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                 parentHash: values.parentHash,
                 sphereHash: sphere?.entryHash,
               }}});
-              (submitBtn as any).props.onClick.call(null) // TODO: pass the new EH through this callback to Complete the onboarding transition
+              (submitBtn as any).props.onClick.call(null)
           
             } else {
               const { list, scale } = values;
@@ -80,11 +80,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                 ]
               );
             }
-            if(submitRefineBtn.current) {
-              // TODO: Prevent double click
-              (submitRefineBtn.current as any).firstElementChild.loading = true;
-              console.log((submitRefineBtn.current as any).firstElementChild)
-            }
+            setSubmitRefineBtnIsLoading(true)
           } catch (error) {
             console.error(error)
           }
@@ -187,7 +183,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                     </>
                   }
                 </div>
-                <span ref={submitRefineBtn}><Button type={'onboarding'} onClick={() => submitForm()}>{refinementType == Refinement.Update ? "Update Name" : "Create Orbits"}</Button></span> </Form>
+                <span><Button type={'onboarding'} loading={submitRefineBtnIsLoading} onClick={() => submitForm()}>{refinementType == Refinement.Update ? "Update Name" : "Create Orbits"}</Button></span> </Form>
             </>
           )
         }}
