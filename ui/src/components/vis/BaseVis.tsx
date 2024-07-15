@@ -1108,7 +1108,7 @@ export default class BaseVisualization implements IVisualization {
         if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
         const { checked, scale, parentEh } = this.nodeDetails[d.data.content];
         return `<div class="buttons">
-          <button class="tooltip-action-button higher-button ${!parentEh && scale !== 'Astro' ? '' : 'hide'}"></button>
+          <button class="tooltip-action-button higher-button ${!parentEh && scale !== 'Astro' ? 'hide' : 'hide'}"></button>
           <button class="tooltip-action-button checkbox-button ${checked ? 'checked' : ''}"></button>
           <button class="tooltip-action-button lower-button"></button>
         </div>`

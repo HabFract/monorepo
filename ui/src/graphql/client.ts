@@ -110,6 +110,5 @@ export async function initGraphQLClient({ dnaConfig, conductorUri }) {
 export const client = async() => {
   const connection = await autoConnect();
   const options = {...connection, conductorUri: connection.client.client.url!.href };
-  console.log('options :>> ', options);
   return await initGraphQLClient(options);
 }

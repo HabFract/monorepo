@@ -49,8 +49,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   })
   const [json, setJson] = useState<string | null>(null);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<BaseVisualization | null>(null);
-  // const clear = useSetAtom(nodeCache.clear);
-  // clear();
+
   // Modal state, set to open when there is an error or if initial Visualisation is not possible
   const [modalErrorMsg, setModalErrorMsg] = useState<string>("");
   const toggleModal = () => setIsModalOpen(!isModalOpen);
@@ -67,7 +66,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
     const query = depthBounds
       ? { ...getQueryParams(), orbitLevel: 0}//(depthBounds![params?.currentSphereEhB64] as any).minDepth } 
       : getQueryParams(y)//(y)
-      console.log('query :>> ', query);
+
     getHierarchy({ variables: { params: { ...query } } })
   }
 

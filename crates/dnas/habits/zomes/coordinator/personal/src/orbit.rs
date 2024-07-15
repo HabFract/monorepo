@@ -81,11 +81,12 @@ pub fn update_orbit(input: UpdateOrbitInput) -> ExternResult<Option<Record>> {
 
     // Create sphere link to updated header
     create_link(
-        input.updated_orbit.sphere_hash.clone(), // Assume the Sphere cannot be change and validation will be added to ensure this
+        input.updated_orbit.sphere_hash.clone(), // Assume the Sphere cannot be changed and validation will be added to ensure this
         updated_orbit_hash.clone(),
         LinkTypes::SphereToOrbit,
         (),
     )?;
+    // TODO: update parent-child links so that the tree builder doesn't return stale entry hashes
 
     // Create anchor link to updated header
     create_link(
