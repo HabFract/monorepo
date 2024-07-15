@@ -78,8 +78,8 @@ export const OrbitTree: ComponentType<VisProps> = ({
         const idB : ActionHashB64 = b.data.content;
       if(!nodeDetailsCache[params.currentSphereAhB64]) return;
         const sphereNodes = nodeDetailsCache[params.currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
-        if(!sphereNodes[idA as keyof SphereOrbitNodes] || !sphereNodes[idB as keyof SphereOrbitNodes]) return 1
-        return (sphereNodes[idA].startTime as number) - (sphereNodes[idB as keyof SphereOrbitNodes].startTime as number)
+        if(!sphereNodes?.[idA as keyof SphereOrbitNodes] || !sphereNodes?.[idB as keyof SphereOrbitNodes]) return 1
+        return (sphereNodes?.[idA]?.startTime || 0 as number) - (sphereNodes?.[idB as keyof SphereOrbitNodes]?.startTime || 0 as number)
       });
       
       setDepthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.Complete ? 100 : hierarchyData.height])
@@ -155,7 +155,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
         const idA : ActionHashB64 = a.data.content;
         const idB : ActionHashB64 = b.data.content;
         const sphereNodes = nodeDetailsCache[params.currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
-        return (sphereNodes[idA].startTime as number) - (sphereNodes[idB as keyof SphereOrbitNodes].startTime as number)
+        return (sphereNodes?.[idA]?.startTime || 0 as number) - (sphereNodes?.[idB as keyof SphereOrbitNodes]?.startTime || 0 as number)
       });
       currentOrbitTree._nextRootData._translationCoords = [x, y, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1];
       currentOrbitTree.render();
