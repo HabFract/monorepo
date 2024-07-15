@@ -225,6 +225,9 @@ nav + main.page-container .orbits-list {
   .page-container:not(.home) {
     grid-column: 2/-2;
   }
+  .page-container.create-form, .page-container.list {
+    overflow: auto;
+  }
   .page-container.create-form {
     justify-content: center;
   }
