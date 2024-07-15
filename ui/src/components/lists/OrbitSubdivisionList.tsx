@@ -47,6 +47,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
           setSubmitting(false);
           const sphere = store.get(currentSphere);
           if(!sphere?.entryHash || !currentHash) throw new Error("No sphere set or parent hash, cannot refine orbits")
+          setSubmitRefineBtnIsLoading(true)
           try {
             if(refinementType == Refinement.Update) {
               await updateOrbit({ variables: {orbitFields: {
@@ -59,8 +60,8 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                 parentHash: values.parentHash,
                 sphereHash: sphere?.entryHash,
               }}});
+
               (submitBtn as any).props.onClick.call(null)
-          
             } else {
               const { list, scale } = values;
               serializeAsyncActions<any>(
@@ -79,8 +80,8 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                 ]
               );
             }
-            setSubmitRefineBtnIsLoading(true)
           } catch (error) {
+            setSubmitRefineBtnIsLoading(false)
             console.error(error)
           }
         }}
@@ -115,7 +116,6 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                         component={TextInputField}
                         size="base"
                         name="name"
-                        value={values.name}
                         id="atomic-name"
                         icon={"tag"}
                         iconSide={"left"}

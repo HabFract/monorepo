@@ -44,14 +44,14 @@ export const TextInputField: React.FC<{ field: any, form: any, props: TextInputP
   form: { touched, errors, setFieldValue, setFieldTouched },
   ...props
 } : any) => {
-  const { name, labelValue, _value, icon, iconSide, size, id, placeholder, required, withInfo, disabled, onBlur, isListItem } = props;
+  const { name, labelValue, value, icon, iconSide, size, id, placeholder, required, withInfo, disabled, onBlur, isListItem } = props;
   return (
     <>
       <TextInput
         name={name}
         id={id}
         size={size}
-        value={field.value}
+        // value={field?.value || value}
         placeholder={placeholder}
         labelValue={labelValue}
         isListItem={isListItem}

@@ -16,7 +16,7 @@ type PreloadOrbitDataProps = {
 };
 
 const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, landingSphereId }) => {
-  const [state, transition] = useStateTransition(); // Top level state machine and routing
+  const [_, transition] = useStateTransition(); // Top level state machine and routing
 
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
