@@ -11,6 +11,7 @@ import { SphereNodeDetailsCache, nodeCache, store } from "../state/jotaiKeyValue
 import { extractEdges } from "../graphql/utils";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { ItemType } from "antd/es/menu/hooks/useItems";
+import { AppMachine } from "../main";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -55,10 +56,11 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
   const tooltipRef = useRef(null);
-  const [currentPage, setCurrentPage] = useState<Page>(Page.Home);
+  const [_, setCurrentPage] = useState<Page>(Page.Home);
   const [collapsed, setCollapsed] = useState(true);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipText, setTooltipText] = useState<string>("");
+  const currentPage = AppMachine.state.currentState; // This is more reliable than the hook for tracking updated page state
 
   // Nav open, close, selected states handler bound and unbound by useEffect:
   useEffect(() => {
@@ -84,6 +86,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   function closeMenu () {
     setCollapsed(true);
     setSideNavExpanded(false)
+    return true;
   };
   function openMenu () {
     setCollapsed(false);
@@ -104,10 +107,10 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
       getItem(
         'New Sphere',
         'add-sphere',
-        <PlusCircleFilled />,
+        <PlusCircleFilled className={spheresArray.length >= 4 ? "grayed" : ""} />,
         undefined,
         undefined,
-        (() => !!(typeof spheresArray == 'object' && spheresArray.length >= 4))() // Disable when we have 4 already),
+        false
       ),
       ...spheres!.map((sphere: Sphere, _idx: number) => {
       return getItem(
@@ -131,8 +134,13 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
 
   let loading = loadingSpheres || !spheres;
 
-  const spheresArray = loading ? [] : extractEdges(spheres!.spheres); 
+  const spheresArray = loading ? [] : extractEdges(spheres!.spheres);
   const [menuItems, setMenuItems] = useState<ItemType[]>(createSphereMenuItems({spheres: spheresArray}));
+
+  useEffect(() => {
+    spheresArray && setMenuItems(createSphereMenuItems({spheres: spheresArray}))
+  }, [spheres, currentPage]);
+
   store.sub(currentSphere, () => {
     spheresArray && setMenuItems(createSphereMenuItems({spheres: spheresArray}))
   })
@@ -158,7 +166,9 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         if(spheresArray.length >= 4) {
           setTooltipText(tooltipMsg + "before you can add another Sphere. These are the 4 burners of your habit life!")
           if(tooltipRef.current) {(tooltipRef.current as HTMLElement).style.top = "0rem"}
+          openMenu()
           activatePageContextTooltip()
+          return;
         }
         store.set(currentSphere, {});
         setCurrentPage(Page.CreateSphere)
@@ -187,21 +197,22 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         // Check conditions where the current page would cause errors for the new Sphere selection
         if([Page.Vis].includes(currentPage as Page) && noSphereOrbits(e.key)) {
           // If there is a problem, just show a tooltip
-          setTooltipText("Please change page to Orbit list and ensure you have Orbits before attempting to Visualise a new Sphere")
+          setTooltipText("Ensure you have Orbits before attempting to Visualise another Sphere")
           openMenu()
           activatePageContextTooltip()
-        } else if([Page.Vis].includes(currentPage as Page) && (e.key !== store.get(currentSphere).actionHash)) {
-          // If there is a problem, just show a tooltip
-          openMenu()
-          setTooltipText("Please change page to Orbit list before attempting to Visualise a new Sphere...")
-          activatePageContextTooltip()
+        } else if([Page.ListSpheres].includes(currentPage as Page)) {
+          if(!(e.key == store.get(currentSphere).actionHash)) {
+            store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
+            openMenu()
+          }
+        } else if([Page.Vis].includes(currentPage as Page)) {
+          (e.key == store.get(currentSphere).actionHash)
+            ? closeMenu()
+            : closeMenu() && transition('PreloadAndCache', {landingSphereEh: sphere(e.key)?.eH, landingSphereId: e.key })
         } else {
           setTooltipVisible(false)
           // Set current sphere from action hash of sphere clicked
           store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
-
-          // expand menu for action buttons
-          if(collapsed && !sideNavExpanded) openMenu();
 
           const pageString = currentPage as string;
           if(currentPage== Page.Home) return
