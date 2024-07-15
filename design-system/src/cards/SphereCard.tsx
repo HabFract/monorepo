@@ -47,7 +47,6 @@ function calculateSphereCounts(orbitScales: Scale[]) {
 const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition, runDelete } : SphereCardProps) => {
   const { name, metadata, id } = sphere;
   const sphereNodes = id && store.get(nodeCache.items) && store.get(nodeCache.items)![id as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
-
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
       <header className={"sphere-header card-header"}>
@@ -59,7 +58,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
           <p>{}</p>
         </div> */}
       </header>
-      <main className="card-body-bg sphere-card col-c">
+      <section className="card-body-bg sphere-card col-c">
         <div className="sphere-description flex items-center justify-center">
           {metadata?.description && metadata?.description !== '' && <p className='card-copy'>{metadata.description}</p>}
         </div>
@@ -94,7 +93,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
         { isHeader && <div className="mini-vis col-c flex-1">
           <SphereVis spherePercentages={calculateSpherePercentages(calculateSphereCounts(orbitScales))}/>
         </div>}
-      </main>
+      </section>
       {isHeader && <div className="flex flex-col gap-2">
         <Button onClick={() => {
             transition('CreateOrbit', { sphereEh: sphere.eH })

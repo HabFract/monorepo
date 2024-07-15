@@ -28,7 +28,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runD
           <p>{new Date(orbit?.metadata!.timeframe?.startTime)?.toLocaleDateString('en-us')}</p>
         </div>
       </header>
-      <main className="card-body-bg col-c">
+      <section className="card-body-bg col-c">
         <div className="orbit-description flex items-center justify-center">
           {orbit?.metadata?.description && orbit?.metadata?.description !== '' && <p className='card-copy'>{orbit.metadata?.description}</p>}        </div>
         <div className="row-c-around h-full big-gap-sm">
@@ -61,7 +61,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runD
             {orbit?.scale && <OrbitVis scale={orbit.scale} />}
           </div>
         </div>
-      </main>
+      </section>
     </div>
   );
 };
