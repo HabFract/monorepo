@@ -5,7 +5,9 @@ query getOrbit($id: ID!) {
     name
     sphereHash
     frequency
-      scale
+    scale
+    parentHash
+    childHash
     metadata {
       description
       timeframe {

@@ -45,6 +45,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
         validationSchema={ListValidationSchema}
         onSubmit={async (values: any, { setSubmitting }) => {
           setSubmitting(false);
+          delete values.childHash;
           const sphere = store.get(currentSphere);
           if(!sphere?.entryHash || !currentHash) throw new Error("No sphere set or parent hash, cannot refine orbits")
           setSubmitRefineBtnIsLoading(true)
@@ -86,7 +87,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
           }
         }}
       >
-        {({ values, errors, touched, handleChange, handleBlur, submitForm }) => {
+        {({ values, errors, submitForm }) => {
           return (
             <>
               { refinementType == Refinement.Update && <OrbitFetcher orbitToEditId={id}></OrbitFetcher>}

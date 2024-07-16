@@ -114,6 +114,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
           if (!values.archival) delete values.endTime;
           delete (values as any).archival;
           delete (values as any).eH;
+          delete (values as any).childHash;
+
           let response = editMode
             ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId as string, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } as OrbitUpdateParams } })
             : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined, childHash: values.childHash || undefined } as OrbitCreateParams } })

@@ -13,9 +13,9 @@ export const OrbitFetcher = ({orbitToEditId}) => {
   });
   useEffect(() => {
       if(typeof getData == "undefined") return;
-      const {  name, sphereHash: parentHash, frequency, scale, metadata: {description, timeframe:  {startTime, endTime} }} = getData!.orbit as any;
+      const {  name, frequency, scale, metadata: {description, timeframe:  {startTime, endTime} }} = getData!.orbit as any;
       setValues({
-        id: orbitToEditId, name, description, startTime, endTime: endTime || undefined, frequency, scale, archival: !!endTime, parentHash, eH: getData.orbit.eH
+        id: orbitToEditId, name, description, startTime, endTime: endTime || undefined, frequency, scale, archival: !!endTime, parentHash: getData.orbit?.parentHash, childHash: getData.orbit?.childHash, eH: getData.orbit.eH
       })
   }, [getData])
   return null;
