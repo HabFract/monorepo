@@ -1,10 +1,10 @@
 [package]
 name = "habit_fract"
-version = "0.0.0"
+version = "0.1.0"
 description = "Habit Fract"
 authors = ["Nick Stebbings"]
 license = "Apache-2.0"
-repository = ""
+repository = "https://github.com/HabFract/monorepo"
 edition = "2021"
 rust-version = "1.70"
 
