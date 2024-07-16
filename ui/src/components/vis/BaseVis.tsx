@@ -1366,7 +1366,7 @@ export default class BaseVisualization implements IVisualization {
       this.setCircleAndLabelGroups();
 
       this.appendNodeDetailsAndControls();
-      this.appendLinkPath();
+      // this.appendLinkPath();
 
       this.appendCirclesAndLabels();
 
