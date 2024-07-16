@@ -27,7 +27,11 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
   const ListValidationSchema = Yup.object().shape({
     list: Yup.array().of(
       Yup.object().shape({
-        name: Yup.string().min(3, 'Must be 4 characters or more').max(55, 'Must be 55 characters or less').required('Required'),
+        name: Yup.string()
+          .matches(/(?!^\d+$)^.+$/, 'Name must contain letters.')
+          .min(3, 'Must be 4 characters or more')
+          .max(55, 'Must be 55 characters or less')
+          .required('Required'),
       }),
     ),
     scale: Yup.mixed()
@@ -98,7 +102,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
               >
                 {refinementType == Refinement.Update
                   ? <span>Since you have chosen the Atomic scale for your Orbit, it's best to make sure it is named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable:</span>
-                  : <span>Since you have chosen a big scale for your Orbit (shooting for the stars!) you can now <em>break it up</em> into incremental actions - so start by <em>subdividing into Orbits of a smaller scale</em>:</span>
+                  : <span>Since you have chosen a big scale for your Orbit (shooting for the stars!) you can now <em>break it up</em> into <em>smaller actions</em> - so start by <em>subdividing</em> into Orbits of a smaller scale.</span>
                 }
               </HelperText>
 
