@@ -1022,11 +1022,15 @@ export default class BaseVisualization implements IVisualization {
       .append("path")
       .classed("link", true)
       .attr("stroke-width", "3")
-      .attr("stroke-opacity", (d) =>
-        !this.activeNode ||
-          (this.activeNode && this.activeNode.descendants().includes(d.source))
-          ? 0.5
-          : 0.3
+      .attr("stroke-opacity", (d) => {
+          const parent = d.source?.data?.content;
+          const child = d.target?.data?.content;
+          if (!parent || !this.nodeDetails[parent] || !child || !this.nodeDetails[child]) return
+          const cachedNodeParent = Object.values(this.nodeDetails).find(n => n.eH == parent);
+          const cachedNodeChild = Object.values(this.nodeDetails).find(n => n.eH == child);
+          if(cachedNodeChild?.checked && cachedNodeParent?.checked) return 1;
+          return 0.5
+        }
       )
       .attr("d", this.getLinkPathGenerator())
       .attr("transform", (d) => {
@@ -1109,7 +1113,7 @@ export default class BaseVisualization implements IVisualization {
         const { checked, scale, parentEh } = this.nodeDetails[d.data.content];
         return `<div class="buttons">
           <button class="tooltip-action-button higher-button ${!parentEh && scale !== 'Astro' ? 'hide' : 'hide'}"></button>
-          <button class="tooltip-action-button checkbox-button ${checked ? 'checked' : ''}"></button>
+          <img data-button="true" class="tooltip-action-button checkbox-button" src="${checked ? "assets/checkbox-checked.svg" : "assets/checkbox-empty.svg"}" />
           <button class="tooltip-action-button lower-button"></button>
         </div>`
       });
@@ -1147,15 +1151,28 @@ export default class BaseVisualization implements IVisualization {
     selection
       .on("contextmenu", this.eventHandlers.rgtClickOrDoubleTap)
       .on("click", (e, d) => {
-        if (e.target.tagName !== "BUTTON") return;
+        if (!["BUTTON", 'IMG'].includes(e.target.tagName)) return;
+        if(e.target.tagName == "IMG" && !e.target.dataset.button) return;
 
         this.eventHandlers.handleNodeFocus.call(this, e, d);
         switch (true) {
           case e.target.classList.contains('checkbox-button'):
             if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
-            this.nodeDetails[d.data.content].checked = !this.nodeDetails[d.data.content];
+            this.nodeDetails[d.data.content].checked = !(this.nodeDetails[d.data.content].checked);
             e.target.classList.toggle('checked');
             e.target.closest('.the-node').firstChild.classList.toggle('checked');
+
+            this._enteringLinks
+              .attr("stroke-opacity", (d) => {
+                const parent = d.source?.data?.content;
+                const child = d.target?.data?.content;
+                if (!parent || !this.nodeDetails[parent] || !child || !this.nodeDetails[child]) return
+                const cachedNodeParent = Object.values(this.nodeDetails).find(n => n.eH == parent);
+                const cachedNodeChild = Object.values(this.nodeDetails).find(n => n.eH == child);
+                if(cachedNodeChild?.checked && cachedNodeParent?.checked) return 1;
+                return 0.35
+            }
+          )
             this.render();
             break;
 
