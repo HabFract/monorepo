@@ -109,20 +109,18 @@ g.tooltip rect:first-of-type {
   cursor: initial;
 }
 
-.buttons button:hover {
-  outline: 8px solid rgb(54, 175, 152);
-}
-
 .tooltip-action-button {
   border-radius: 100%;
-  background-repeat: no-repeat;
   height: 6rem;
   width: 6rem;
-  background-size: cover !important;
+  object-fit: cover;
 }
 
 .tooltip-action-button:nth-child(2) {
-  border-radius: 1rem;
+  border-radius: 1.125rem;
+}
+.tooltip-action-button:nth-child(3) {
+  background-size: cover;
 }
 
 .tooltip-action-button.hide {
@@ -135,16 +133,17 @@ g.tooltip rect:first-of-type {
   background: url(assets/higher-scale-icon.svg);
 }
 
-.checkbox-button {
-  background: url(assets/checkbox-empty.svg);
-  background-repeat: no-repeat !important;
+.buttons *:hover {
+  outline: 8px solid rgb(54, 175, 152);
+  cursor: pointer;
 }
 
-.tooltip-action-button button:focus, .tooltip-action-button button:focus-visible {
+/* .tooltip-action-button button:focus, .tooltip-action-button button:focus-visible {
   outline: 6px solid #91caff
-}
+} */
 .checkbox-button.checked {
   background: url(assets/checkbox-checked.svg);
+  background-size: cover;
 }
 
 .lower-button {
