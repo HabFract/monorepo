@@ -75,4 +75,4 @@ jobs:
           releaseName: "App v__VERSION__"
           releaseBody: "See assets below to download and install this version."
           releaseDraft: true
-          prerelease: false
+          prerelease: true
