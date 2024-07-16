@@ -163,7 +163,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         transition('Dashboard', {})
         break;
       case e.key == 'fb':
-        setTooltipText("To report bugs, give feedback or suggestions, please visit this link:  https://habitfract.net/feedback")
+        setTooltipText(`feedback`)
         openMenu()
         if(tooltipRef.current) {(tooltipRef.current as HTMLElement).style.top = "0rem"}
         activatePageContextTooltip(15000)
@@ -317,7 +317,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
           <div className={"main-actions-menu"}>
             <div style={{ display: collapsed ? "none" : "flex" }} className={"sphere-context-actions"} data-tooltip-target="tooltip-left" data-tooltip-placement="left" >
               <div ref={tooltipRef} id="tooltip-left" role="tooltip" className={tooltipVisible ? "" : "invisible"}>
-                {`${tooltipText}`}
+                {tooltipText == "feedback" ? <a href="https://habitfract.net/feedback">To report bugs, give feedback or suggestions, click HERE</a> : `${tooltipText}`}
                 <div className="tooltip-arrow" data-popper-arrow></div>
               </div>
               {buttonWithTooltipHandling('neutral')}
