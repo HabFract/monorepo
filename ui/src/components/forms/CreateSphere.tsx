@@ -89,7 +89,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
         }
       }}
     >
-      {({ errors, touched }) => {
+      {({ values, errors, touched }) => {
         return (
         <>
           { headerDiv }
@@ -105,6 +105,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
                   name="name"
                   id="name"
                   icon={"tag"}
+                  value={editMode ? values.name : undefined}
                   iconSide={"left"}
                   required={true}
                   labelValue={"Name:"}
