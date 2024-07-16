@@ -8,7 +8,7 @@ const meta: Meta<HelperTextProps> = {
   component: HelperText,
   argTypes: {
   },
-  render: (args: any) => <HelperText title={args.title} titleIcon={args.titleIcon} withInfo={args.withInfo} onClickInfo={(e) => console.log("Clicked!") as any}>{args.content}</HelperText> 
+  render: (args: any) => <HelperText title={args.title} titleIcon={args.titleIcon} withInfo={args.withInfo} onClickInfo={() => ({title: "Clicked!", body: "That was cool"})}>{args.content}</HelperText> 
 };
 
 export default meta;

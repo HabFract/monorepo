@@ -7,9 +7,9 @@ import { TextInput as FBTextInput } from "flowbite-react";
 import WithLabel from "./label";
 import ErrorLabel from "./errorlabel";
 
-const TextInput: React.FC<TextInputProps> = ({ id, name, theme, value, placeholder, labelValue, isListItem, onChange, onBlur, required, withInfo, disabled, size, icon, iconSide } : TextInputProps) => {
+const TextInput: React.FC<TextInputProps> = ({ id, name, theme, value, placeholder, labelValue, isListItem, onChange, onBlur, required, withInfo, onClickInfo, disabled, size, icon, iconSide } : TextInputProps) => {
   return (
-    <WithLabel id={id} labelValue={labelValue} isListItem={isListItem} required={required} withInfo={withInfo}>
+    <WithLabel id={id} labelValue={labelValue} isListItem={isListItem} required={required} withInfo={withInfo} onClickInfo={onClickInfo}>
       <FBTextInput
         id={id}
         name={name}
@@ -44,7 +44,7 @@ export const TextInputField: React.FC<{ field: any, form: any, props: TextInputP
   form: { touched, errors, setFieldValue, setFieldTouched },
   ...props
 } : any) => {
-  const { name, labelValue, value, icon, iconSide, size, id, placeholder, required, withInfo, disabled, onBlur, isListItem } = props;
+  const { name, labelValue, value, icon, iconSide, size, id, placeholder, required, withInfo, onClickInfo, disabled, onBlur, isListItem } = props;
   return (
     <>
       <TextInput
@@ -59,6 +59,7 @@ export const TextInputField: React.FC<{ field: any, form: any, props: TextInputP
         required={required}
         disabled={!!disabled}
         withInfo={!!withInfo}
+        onClickInfo={onClickInfo}
         iconSide={iconSide || "left"}
         icon={icon}
         onBlur={onBlur}

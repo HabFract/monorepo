@@ -163,6 +163,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                   icon={"tag"}
                   iconSide={"left"}
                   withInfo={true}
+                  onClickInfo={() => ({
+                    title: "The name should be scale-appropriate",
+                    body: "Try to make the name in line with the scale of the Orbit. For example, an Atomic Orbit might be called 'Meditate for 10 minutes'",
+                  })}
                   required={true}
                   value={editMode ? values.name : undefined}
                   labelValue={"Name:"}
@@ -191,6 +195,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                 icon={"scale-planets"}
                 iconSide={"left"}
                 withInfo={true}
+                onClickInfo={() => ({
+                  title: "Scales, Explained",
+                  body: "This refers to the magnitude of your behaviour. Astronomic goes well with anything vast, like running a marathon. Atomic is for small, incremental actions, like putting on your running shoes. Sub-astronomic is anything inbetween!",
+                })}
                 options={Object.values(Scale).map((scale) => {
                   const cannotBeAstro = !(editMode && state.match("Onboarding")) && values.parentHash !== '' && values.parentHash !== 'root';
                   return cannotBeAstro && scale == 'Astro'
@@ -210,6 +218,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                 name="parentHash"
                 id="parent-hash"
                 withInfo={true}
+                onClickInfo={() => ({
+                  title: "Good Parenting",
+                  body: "Choose the parent which describes behaviour of a bigger scope. For instance, if the name of your Orbit is 'Run a 10k', maybe the next biggest scope is 'Run a 20k'. Setting your parent to 'None' will make it the top of a new hierarchy.",
+                })}
                 options={[
                   <option value={'root'}>{'None'}</option>,
                   ...(childOrbitEh ? [] : (extractEdges((orbits as any)?.orbits) as Orbit[]).map((orbit, i) =>

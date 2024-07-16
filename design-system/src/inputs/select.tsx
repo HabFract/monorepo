@@ -6,9 +6,9 @@ import "./common.css";
 import WithLabel from "./label";
 import ErrorLabel from "./errorlabel";
 
-const Select: React.FC<SelectProps> = ({ id, value, name, theme, onChange, onBlur, labelValue, withInfo, required, disabled, size, icon, iconSide, options } : SelectProps) => {
+const Select: React.FC<SelectProps> = ({ id, value, name, theme, onChange, onBlur, labelValue, withInfo, onClickInfo, required, disabled, size, icon, iconSide, options } : SelectProps) => {
   return (
-    <WithLabel id={id} labelValue={labelValue} required={required} withInfo={withInfo}>
+    <WithLabel id={id} labelValue={labelValue} required={required} withInfo={withInfo} onClickInfo={onClickInfo}>
       <FBSelect id={id} 
         onChange={(e) => !!onChange ? onChange(e) : null}
         onBlur={(e) => !!onBlur ? onBlur(e) : null}
@@ -36,7 +36,7 @@ export const SelectInputField: React.FC<{ field: any, form: any, props: SelectPr
   form: { touched, errors, setFieldValue, setFieldTouched, values },
   ...props
 } : any) => {
-  const { id, name, labelValue, value, options, iconSide, size, placeholder, required, withInfo, disabled, onBlur } = props;
+  const { id, name, labelValue, value, options, iconSide, size, placeholder, required, withInfo, onClickInfo, disabled, onBlur } = props;
 
   let icon = props.icon;
   if(icon == "scale-planets") icon = getIconForPlanetValue(values.scale);
@@ -54,6 +54,7 @@ export const SelectInputField: React.FC<{ field: any, form: any, props: SelectPr
         options={options}
         disabled={!!disabled}
         withInfo={!!withInfo}
+        onClickInfo={onClickInfo}
         iconSide={iconSide || "left"}
         icon={icon}
         onBlur={onBlur}

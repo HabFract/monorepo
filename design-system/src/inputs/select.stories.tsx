@@ -16,6 +16,7 @@ export interface SelectProps {
   icon: string;
   iconSide: "left" | "right";
   onChange?: Function,
+  onClickInfo?: () => any,
   onBlur?: Function,
   theme?: string,
 }

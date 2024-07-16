@@ -14,3 +14,40 @@ span.helper-content {
   font-weight: light;
   @apply font-sans font-light mb-2;
 }
+
+#tooltip-right {
+  @apply transition-opacity duration-300 absolute z-10 inline-block px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700;
+  left: 1rem;
+  top: 1rem;
+  right: 2rem;
+}
+
+#tooltip-right:before{
+  content:'';
+  display:block;
+  width:0;
+  height:0;
+  position:absolute;
+
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right:8px solid rgb(17 24 39 / 1);
+  right:-8px;
+  top:12px;
+  rotate: 180deg;
+}
+#tooltip-right.invisible:before, .side-nav:not(.expanded) #tooltip-right:before{
+  display: none;
+}
+
+p {
+  @apply mb-2 font-light font-sans;
+}
+h3 {
+  font-size: 1rem;
+  @apply mb-2 font-medium;
+}
+h4 {
+  font-size: .75rem;
+  @apply mb-2;
+}

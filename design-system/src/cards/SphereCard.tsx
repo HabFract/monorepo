@@ -98,7 +98,6 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
           </div>
           : isHeader && <div style={{ position: "relative", top: "-1.25rem" }}>
               <HelperText
-                  onClickInfo={null}
                   title={"Cannot Visualise"}
                   titleIcon={<Exclaim />}
                   withInfo={false}
