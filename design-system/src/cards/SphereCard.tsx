@@ -96,7 +96,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
           ? <div className="mini-vis col-c flex-1">
             <SphereVis spherePercentages={calculateSpherePercentages(calculateSphereCounts(orbitScales))}/>
           </div>
-          : isHeader && <div style={{ position: "relative", top: "-2rem" }}>
+          : isHeader && <div style={{ position: "relative", top: "-1.25rem" }}>
               <HelperText
                   onClickInfo={null}
                   title={"Cannot Visualise"}

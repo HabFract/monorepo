@@ -121,6 +121,10 @@ g.tooltip rect:first-of-type {
   background-size: cover !important;
 }
 
+.tooltip-action-button:nth-child(2) {
+  border-radius: 1rem;
+}
+
 .tooltip-action-button.hide {
   pointer-events: none;
   cursor: not-allowed;
