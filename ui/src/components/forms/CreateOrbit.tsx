@@ -158,6 +158,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                   iconSide={"left"}
                   withInfo={true}
                   required={true}
+                  value={editMode ? values.name : undefined}
                   labelValue={"Name:"}
                   placeholder={"E.g. Run for 10 minutes"}
                 />

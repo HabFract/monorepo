@@ -1,4 +1,3 @@
-
 import { Field, Form, Formik, FieldArray } from 'formik';
 import './common.css';
 import * as Yup from 'yup';
@@ -28,7 +27,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
   const ListValidationSchema = Yup.object().shape({
     list: Yup.array().of(
       Yup.object().shape({
-        name: Yup.string().max(55, 'Must be 55 characters or less').required('Required'),
+        name: Yup.string().min(3, 'Must be 4 characters or more').max(55, 'Must be 55 characters or less').required('Required'),
       }),
     ),
     scale: Yup.mixed()
@@ -119,6 +118,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                         name="name"
                         id="atomic-name"
                         icon={"tag"}
+                        value={values.name}
                         iconSide={"left"}
                         withInfo={false}
                         required={true}

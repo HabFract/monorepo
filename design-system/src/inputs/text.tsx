@@ -13,7 +13,7 @@ const TextInput: React.FC<TextInputProps> = ({ id, name, theme, value, placehold
       <FBTextInput
         id={id}
         name={name}
-        value={value}
+        defaultValue={value}
         onKeyDown={(e) => {           
           if(e.key === 'Enter'){
             e.currentTarget.blur(); 
@@ -51,7 +51,7 @@ export const TextInputField: React.FC<{ field: any, form: any, props: TextInputP
         name={name}
         id={id}
         size={size}
-        // value={field?.value || value}
+        value={value}
         placeholder={placeholder}
         labelValue={labelValue}
         isListItem={isListItem}
