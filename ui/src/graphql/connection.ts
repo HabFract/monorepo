@@ -41,7 +41,7 @@ export function getCellId(cellInfo: CellInfo): CellId {
 const DEFAULT_CONNECTION_URI = (`ws://localhost:${APP_WS_PORT}` as string) || ''
 const HOLOCHAIN_APP_ID = (HAPP_ID as string) || ''
 
-const CONNECTION_CACHE: { [i: string]: object } = {}
+const CONNECTION_CACHE: { [i: string]: any } = {}
 
 export async function autoConnect(
   conductorUri?: string,
