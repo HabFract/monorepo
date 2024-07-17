@@ -6,7 +6,7 @@ g.nodes {
 }
 
 .node-subgroup {
-  transform: scale(4) translate(-62px, -52px);
+  transform: scale(2) translate(-62px, -52px);
   color: #ccc;
 }
 
@@ -176,4 +176,15 @@ g.tooltip rect:first-of-type {
   padding-right: 3px;
   font-size: 2rem;
   margin-left: 0rem;
+}
+
+@media screen and (min-width: 768px) {
+  .node-subgroup {
+    transform: scale(3) translate(-62px, -52px);
+  }
+}
+@media screen and (min-width: 1280px) {
+  .node-subgroup {
+    transform: scale(4) translate(-62px, -52px);
+  }
 }
