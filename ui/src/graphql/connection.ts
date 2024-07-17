@@ -13,20 +13,14 @@
 
  */
 import { DNAIdMappings } from './types'
-import { APP_WS_PORT, HAPP_DNA_NAME, HAPP_ID, HAPP_ZOME_NAME_PERSONAL_HABITS } from '../constants'
-import { AdminWebsocket, AppSignalCb, AppWebsocket, CellId, CellInfo, HoloHash } from '@holochain/client'
+import { ADMIN_WS_PORT, APP_WS_PORT, HAPP_DNA_NAME, HAPP_ID, HAPP_ZOME_NAME_PERSONAL_HABITS, NODE_ENV } from '../constants'
+import { AdminWebsocket, AppAuthenticationToken, AppSignalCb, AppWebsocket, CellId, CellInfo, HoloHash } from '@holochain/client'
 import deepForEach from 'deep-for-each'
 import { format, parse } from 'fecha'
 import isObject from 'is-object'
 import { Base64 } from 'js-base64'
 
 type RecordId = [HoloHash, HoloHash]
-
-type ActualInstalledCell = {
-  // :TODO: remove this when fixed in tryorama
-  cell_id: CellId
-  role_id: string
-}
 
 export function getCellId(cellInfo: CellInfo): CellId {
   if ("provisioned" in cellInfo) {
@@ -44,60 +38,48 @@ export function getCellId(cellInfo: CellInfo): CellId {
 
 // :NOTE: when calling AppWebsocket.connect for the Launcher Context
 // it just expects an empty string for the socketURI. Other environments require it.
-const DEFAULT_CONNECTION_URI = (`ws://localhost:${"NONE"}` as string) || ''
+const DEFAULT_CONNECTION_URI = (`ws://localhost:${APP_WS_PORT}` as string) || ''
 const HOLOCHAIN_APP_ID = (HAPP_ID as string) || ''
 
-const CONNECTION_CACHE: { [i: string]: Promise<AppWebsocket> } = {}
+const CONNECTION_CACHE: { [i: string]: object } = {}
 
 export async function autoConnect(
   conductorUri?: string,
 ) {
+  console.log(`Environment: `, NODE_ENV);
+  const dev = NODE_ENV == 'dev';
+  let dnaConfig, appWs;
   if (!conductorUri) {
-    conductorUri = DEFAULT_CONNECTION_URI
+    conductorUri = (dev ? DEFAULT_CONNECTION_URI : `ws://localhost:NONE`)
   }
+  if(!dev) {
+    appWs = await openConnection();
+    dnaConfig = await sniffHolochainAppCells(appWs)
+  } else {
+    const adminWs = await AdminWebsocket.connect({ url: new URL(`ws://localhost:${ADMIN_WS_PORT}`)} as any);
+    const token = await adminWs.issueAppAuthenticationToken({installed_app_id: HAPP_ID});
+    appWs = await openConnection(token.token);
+    dnaConfig = await sniffHolochainAppCells(appWs)
+    await adminWs.authorizeSigningCredentials(dnaConfig[HAPP_DNA_NAME]!.cell_id!);
+  }
+  CONNECTION_CACHE[HAPP_ID] = { client: appWs, dnaConfig, conductorUri }
 
-  const appWs = await openConnection(conductorUri);
-  const dnaConfig = await sniffHolochainAppCells(appWs)
-    // const adminWs = await AdminWebsocket.connect(new URL(`ws://localhost:NONE`));
-    // console.log("adminWs", adminWs)
-    // await adminWs.authorizeSigningCredentials(dnaConfig[HAPP_DNA_NAME]!.cell_id!);
-
-  return { client: appWs, dnaConfig, conductorUri }
+  return CONNECTION_CACHE[HAPP_ID];
 }
 
-/**
- * Inits a connection for the given websocket URI. If no `socketURI` is provided,
- * a connection is attempted via the `REACT_APP_HC_CONN_URL` environment variable.
- *
- * This method gives calling code an opportunity to register globals for all future
- * instances of a connection of the same `socketURI`. To ensure this is done reliably,
- * a runtime error will be thrown by `getConnection` if no `openConnection` has
- * been previously performed for the same `socketURI`.
- */
-export const openConnection = (
-  socketURI: string,
-) => {
-  console.log(`Init Holochain connection: ${socketURI}`)
-  CONNECTION_CACHE["habit_fract"] = AppWebsocket.connect(
-    // new URL("habit_fract"),
-    // new URL(`ws://UNUSED`)
-    // undefined,
-  ).then((client) => {
-    console.log(`Holochain connection to ${"habit_fract"} OK:`, client)
+export const openConnection = (token?: AppAuthenticationToken) => {  
+  return AppWebsocket.connect(NODE_ENV == 'dev' ? { token, url: DEFAULT_CONNECTION_URI} : undefined as any).then((client) => {
+    console.log(`Holochain connection to ${HAPP_ID} OK:`, client)
     return client
   })
-
-  return CONNECTION_CACHE["habit_fract"]
 }
 
-export const getConnection = (socketURI: string) => {
-  if (!CONNECTION_CACHE[socketURI]) {
-    throw new Error(
-      `Connection for ${socketURI} not initialised! Please call openConnection() first.`,
-    )
+export const getConnection = async () => {
+  if (!CONNECTION_CACHE[HAPP_ID]) {
+    return autoConnect()
   }
 
-  return CONNECTION_CACHE[socketURI]
+  return CONNECTION_CACHE[HAPP_ID]
 }
 
 /**
@@ -303,8 +285,8 @@ const zomeFunction =
     skipEncodeDecode?: boolean,
   ): BoundZomeFn<InputType, Promise<OutputType>> =>
   async (args): Promise<OutputType> => {
-    const conn = await getConnection("habit_fract");
-    const res = await conn.callZome(
+    const conn = await getConnection();
+    const res = await (conn as any).client.callZome(
       {
         cap_secret: null,
         cell_id,

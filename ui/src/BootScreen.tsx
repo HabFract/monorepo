@@ -4,7 +4,7 @@ import { AppMachine, WithCacheStore } from './main';
 import { ApolloProvider } from '@apollo/client';
 import { App } from 'antd';
 import { StateMachineContext } from './contexts/state-machine';
-import { autoConnect } from './graphql/connection';
+import { getConnection } from './graphql/connection';
 import { initGraphQLClient } from './graphql/client';
 
 import './App.css'
@@ -18,7 +18,7 @@ function BootScreen({ children }: any) {
 
   useEffect(() => {
     if(connected) return;
-    autoConnect().then(connection => {
+    getConnection().then(connection => {
       
       AppMachine.state.client = {...connection, conductorUri: connection.client.client.url!.href }
       initGraphQLClient(AppMachine.state.client).then(client => {

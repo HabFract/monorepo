@@ -171,6 +171,10 @@ nav + main.page-container .orbits-list {
   top: 0.5rem;
 }
 
+#vis-root {
+  width: 100%;
+}
+
 @media screen and (min-width: 440px) {
   .ant-app {
     grid-template-columns: 10% 80% 10%;
@@ -187,7 +191,8 @@ nav + main.page-container .orbits-list {
 
 @media screen and (min-width: 768px) {
   .ant-app {
-    grid-template-columns: 20% 60% 20%;
+    grid-template-columns: 5% 90% 5%;
+    grid-template-rows: 5% 90% 5%;
   }
 
   .page-container {
@@ -195,6 +200,12 @@ nav + main.page-container .orbits-list {
     @apply p-8;
     position: initial;
     overflow: hidden;
+  }
+  .page-container.onboarding-page {
+    overflow-y: auto;
+  }
+  .page-container.vis {
+    padding: 0;
   }
   .page-container.home::before {
     background-position-y: -8vh;
@@ -218,10 +229,6 @@ nav + main.page-container .orbits-list {
   .page-container.home, .page-container.onboarding-page {
     grid-column: 3/-3;
   }
-  .page-container.onboarding-page {
-    overflow-y: auto;
-  }
-  
   .page-container.onboarding-page .orbit-vis {
     min-width: 6rem;
   }
@@ -237,9 +244,6 @@ nav + main.page-container .orbits-list {
   }
   .page-container.vis {
     padding: 0;
-  }
-  #vis-root {
-    width: 100%;
   }
   .onboarding-title {
     height: 3rem;

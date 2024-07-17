@@ -11,8 +11,7 @@ export default ({ mode }) => {
   return defineConfig({
     server: {
       host: "0.0.0.0",
-      port: 1420,
-      // port: parseInt(process.env.VITE_UI_PORT as string),
+      port: process.env.VITE_NODE_ENV == 'dev' ? parseInt(process.env.VITE_UI_PORT as string) : 1420,
       strictPort: true,
       hmr: {
         protocol: "ws",
@@ -28,7 +27,8 @@ export default ({ mode }) => {
     graphql()
     ],
     define: {
-      "process.env": {},
+      "process.env": {
+      },
     },
   })
 }
