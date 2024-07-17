@@ -47,12 +47,18 @@ jobs:
       - uses: pnpm/action-setup@v3
         with:
           version: 8
-            
+
+      - name: Install vite
+        run: nix develop -c $SHELL -c "pnpm i vite -D -w"
+
+      - name: Build design system
+        run: nix develop -c $SHELL -c "cd design-system && pnpm build"
+
       - name: Install JS packages
         run: nix develop -c $SHELL -c "pnpm i"
 
       - name: Build Happ
-        run: nix develop -c $SHELL -c "pnpm run build:backend"
+        run: nix develop -c $SHELL -c "pnpm run build:happ"
 
       - name: Test with tryorama
         run: nix develop -c $SHELL -c "pnpm test"

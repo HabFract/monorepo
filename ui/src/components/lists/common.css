@@ -1,0 +1,139 @@
+.orbits-list, .spheres-list {
+  @apply flex flex-col items-center gap-2;
+}
+
+.list-sort-filter {
+  @apply bg-transparent rounded-md overflow-hidden;
+  margin-top: -0.3rem;
+  font-size: 2rem;
+  padding: 0.25rem .5rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  min-height: 2rem;
+  outline: 2px solid rgba(107, 125, 127, 0.25);
+}
+
+.layout {
+  @apply bg-bg p-2 flex flex-col gap-2;
+  min-height: 100%;
+  padding-top: 4px;
+}
+
+.layout.orbit-subdivision-list {
+  @apply bg-bg p-0 flex flex-col gap-2;
+  min-height: initial;
+}
+
+.sort-filter-icon {
+  @apply text-white text-xl md:text-xl;
+}
+
+.sort-filter-label {
+  @apply text-xs md:text-sm text-title font-semibold;
+  text-align: center;
+  width: 100%;
+  padding-left: 56px;
+}
+
+.sort-filter-icon:hover {
+  @apply text-link;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.orbit-card {
+  @apply w-full;
+}
+
+@media screen and (min-width: 768px) {
+  .layout {
+    min-height: initial;
+  }
+
+  .orbits-list {
+    @apply grid grid-cols-2 gap-2;
+  }
+  .layout.spheres {
+    @apply grid-cols-3;
+  }
+  .spheres-list {
+    grid-column: 1/-1;
+  }
+  .layout.orbits {
+    width: 100%;
+  }
+  .layout.spheres .page-header, .layout.spheres .list-sort-filter {
+    grid-column: 2/3;
+  }
+  .orbit-card, .orbit-card main, .sphere-card, .sphere-card main {
+    height: 100%;
+  }
+}
+@media screen and (min-width: 960px) {
+  .orbits-list {
+    @apply grid-cols-2;
+    grid-column: 1/-1;
+  }
+
+  .spheres-list {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .layout:not(.spheres) {
+    display: grid;
+    grid-template-columns: 400px 1fr 1fr 1fr;
+    grid-template-rows: auto auto 1fr;
+  }
+  .layout.spheres {
+    grid-column: 1/-1;
+  }
+  .layout.spheres .page-header, .layout.spheres .list-sort-filter {
+    grid-column: 1/-1;
+  }
+  .layout.orbit-subdivision-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .layout > div:nth-child(1),
+  .layout > div:nth-child(2),
+  .layout.orbits > div:nth-child(3) {
+    grid-column: 1/2
+  }
+
+  .orbits-list{
+    grid-column: 2/-1;
+    grid-row: 1/-1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+  }
+  .sphere-card.list-header {
+    align-self: start;
+  }
+
+  .orbits-list {
+    @apply grid-cols-2;
+  }
+
+  .spheres {
+    @apply grid grid-cols-1;
+    grid-template-rows: 3rem 2rem auto;
+  }
+  .spheres-list {
+    @apply grid grid-cols-2;
+  }
+}
+@media screen and (min-width: 1680px) {
+  .layout {
+    grid-template-rows: 3rem 2rem min-content;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .orbits-list {
+    @apply grid-cols-3;
+  }
+}

@@ -41,7 +41,10 @@ pub fn get_my_orbit(original_orbit_hash: ActionHash) -> ExternResult<Option<Reco
 }
 
 pub fn get_orbit(original_orbit_hash: ActionHash) -> ExternResult<Option<Record>> {
-    let links = get_links(original_orbit_hash.clone(), LinkTypes::OrbitUpdates, None)?;
+    let links = get_links(
+        GetLinksInputBuilder::try_new(original_orbit_hash.clone(), LinkTypes::OrbitUpdates)?
+            .build()
+        )?;
     let latest_link = links
         .into_iter()
         .max_by(|link_a, link_b| link_a.timestamp.cmp(&link_b.timestamp));
@@ -66,7 +69,13 @@ pub struct UpdateOrbitInput {
 }
 #[hdk_extern]
 pub fn update_orbit(input: UpdateOrbitInput) -> ExternResult<Option<Record>> {
-    let updated_orbit_hash = update_entry(input.original_orbit_hash.clone(), &input.updated_orbit)?;
+    let updated_orbit_hash = update_entry(input.original_orbit_hash.clone(), &input.updated_orbit.clone())?;
+    let old_record = get(input.original_orbit_hash.clone(), GetOptions::default())?.ok_or(wasm_error!(
+        WasmErrorInner::Guest(String::from("Could not find the original Orbit"))
+    ))?;
+    let old_orbit = entry_from_record::<Orbit>(old_record.clone())?;
+    let old_entry_hash = hash_entry(&old_orbit)?;
+    let new_entry_hash = hash_entry(&input.updated_orbit)?;
 
     let path = prefix_path(input.updated_orbit.name.clone())?;
     path.ensure()?;
@@ -78,11 +87,17 @@ pub fn update_orbit(input: UpdateOrbitInput) -> ExternResult<Option<Record>> {
 
     // Create sphere link to updated header
     create_link(
-        input.updated_orbit.sphere_hash.clone(), // Assume the Sphere cannot be change and validation will be added to ensure this
+        input.updated_orbit.sphere_hash.clone(), // Assume the Sphere cannot be changed and validation will be added to ensure this
         updated_orbit_hash.clone(),
         LinkTypes::SphereToOrbit,
         (),
     )?;
+
+    if let Some(valid_parent_hash) = input.updated_orbit.parent_hash {
+        replace_parent_child_link(valid_parent_hash.into(), old_entry_hash.clone().into(), new_entry_hash.clone().into());
+    }
+    // A level link was created with the Create action, recreate it from the update eH
+    copy_level_link(input.updated_orbit.sphere_hash.clone().into(), old_entry_hash.into(),new_entry_hash.into());
 
     // Create anchor link to updated header
     create_link(
@@ -105,6 +120,12 @@ pub fn delete_orbit(original_orbit_hash: ActionHash) -> ExternResult<ActionHash>
             orbit.sphere_hash.clone().into(),
             original_orbit_hash.clone(),
         )?;
+        if let Some(parent) = orbit.parent_hash {
+            let _link_2_deleted = delete_parent_child_link(
+                parent.into(),
+                original_orbit_hash.clone(),
+            )?;
+        }
 
         delete_entry(original_orbit_hash)
     } else {
@@ -360,11 +381,31 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
             .entry_hashes(filtered_descendant_hashes)
             .entry_type(orbit_entry_type)
             .include_entries(true);
-        let selected_orbits = query(filter)?;
+        let maybe_stale_selected_orbits = query(filter)?; // Does not exclude deletes, does not get_latest
 
-        let maybe_node_hashmap = build_tree(&selected_orbits);
+        let latest_records: Vec<Record> = maybe_stale_selected_orbits
+            .into_iter()
+            .filter_map(|maybe_stale_record| Some(maybe_stale_record.action_address().clone()))
+            .map(|ah| get_latest(ah.clone()))
+            .filter_map(|result| match result {
+                Ok(Some(record)) => Some(record),
+                _ => None,
+            })
+            .collect();
+
+        let maybe_node_hashmap = build_tree(&latest_records);
+
         if let Ok(hashmap) = maybe_node_hashmap {
-            Ok(hashmap.get(&entry_hash).unwrap().borrow().to_json())
+            if let Some(node) = hashmap.get(&entry_hash) {
+                Ok(node.borrow().to_json())
+            } else { // This is not present in the hashmap ergo it was deleted
+                let dummy_value: serde_json::Value = serde_json::json!({
+                    "content": "deleted",
+                    "name": "unknown",
+                    "children":Vec::<serde_json::Value>::new(),
+                });
+                Ok(dummy_value)
+            }
         } else {
             Err(wasm_error!(WasmErrorInner::Guest(
                 "Could not build tree from the given Orbit hash".to_string()
@@ -382,7 +423,6 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
                 // and a level to query
                 if let Some(links) = orbit_level_links(hash.clone().into(), level)? {
                     // so get the linked orbit entry hashes
-
                     let target_ehs_mapped_to_trees: Vec<serde_json::Value> =
                         links // and map recursively to get entry hashes
                             .into_iter()
@@ -392,16 +432,35 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
                                 )
                             })
                             .map(|eh| {
-                                get_orbit_hierarchy_json(OrbitHierarchyInput {
+                                let tree = get_orbit_hierarchy_json(OrbitHierarchyInput {
                                     orbit_entry_hash_b64: Some(eh.into()),
                                     level_query: Some(HierarchyLevelQueryInput {
                                         orbit_level,
                                         sphere_hash_b64: Some(hash.clone()),
                                     }),
-                                })
+                                });
+                                debug!(
+                                    "_+_+_+_+_+_+_+_+_+_ Tree recursion: {:#?}",
+                                    tree.clone(),
+                                );
+                                tree
                             })
-                            .filter_map(Result::ok)
+                            .filter_map(|tree| {// Filter out delete nodes
+                                    if let Ok(tree_json) = tree {
+                                        let deleted_tree =  match tree_json.get("content").expect("By this point all nodes have content").as_str() {
+                                            Some("deleted") => true,
+                                            _ => false
+                                        };
+                                        if deleted_tree { return None }
+                                        return Some(tree_json)
+                                    } else { None }
+                                }
+                            )
                             .collect();
+                        // debug!(
+                        //     "_+_+_+_+_+_+_+_+_+_ target_ehs_mapped_to_trees?: {:#?}",
+                        //     target_ehs_mapped_to_trees.clone(),
+                        // );
 
                     return Ok(serde_json::json!({
                         "level_trees": target_ehs_mapped_to_trees
@@ -539,6 +598,98 @@ fn build_tree(
 }
 
 // Link helpers
+// TODO: refactor all these helpers once functionality is stable.
+fn replace_parent_child_link(parent_hash: EntryHash, old_target_hash: EntryHash, new_target_hash: EntryHash) -> ExternResult<bool> {
+    let old_parent_child_links: Vec<Vec<Link>> =
+        parent_to_child_links(parent_hash.clone())
+            .into_iter()
+            .filter(|all_links| {
+                all_links.clone().is_some_and(|l| {
+                    l.iter()
+                        .find(|l| l.target == old_target_hash.clone().into())
+                        .take()
+                        .is_some()
+                })
+            })
+            .map(|maybe_links| maybe_links.unwrap_or_else(Vec::new))
+            .collect();
+
+    match old_parent_child_links.len() {
+        1 => { // We have found the specific link
+            if let Some(target_link) = old_parent_child_links[0]
+                .iter()
+                .find(|&l| l.target == old_target_hash.clone().into())
+                .take()
+            {
+                delete_link(target_link.create_link_hash.clone())?;
+                create_link(
+                    parent_hash.clone(),
+                    new_target_hash.clone(),
+                    LinkTypes::OrbitParentToChild,
+                    (),
+                )?;
+            }
+            
+            Ok(true)
+        }
+        _ => Ok(false),
+    }
+}
+
+fn delete_parent_child_link(parent_hash: EntryHash, target_hash: ActionHash) -> ExternResult<bool> {
+    let parent_child_links: Vec<Vec<Link>> =
+        parent_to_child_links(parent_hash.clone().into())
+            .into_iter()
+            .filter(|all_links| {
+                all_links.clone().is_some_and(|l| {
+                    l.iter()
+                        .find(|l| l.target == target_hash.clone().into())
+                        .take()
+                        .is_some()
+                })
+            })
+            .map(|maybe_links| maybe_links.unwrap_or_else(Vec::new))
+            .collect();
+
+    match parent_child_links.len() {
+        1 => {
+            if let Some(target_link) = parent_child_links[0]
+                .iter()
+                .find(|&l| l.target == target_hash.clone().into())
+                .take()
+            {
+                delete_link(target_link.create_link_hash.clone())?;
+            }
+            Ok(true)
+        }
+        _ => Ok(false),
+    }
+}
+
+fn copy_level_link(sphere_hash: EntryHash, old_hash: EntryHash, new_hash: EntryHash) -> ExternResult<bool> {
+    let sphere_level_links = get_links_from_base(
+        sphere_hash.clone(),
+        LinkTypes::OrbitHierarchyLevel,
+        None,
+    )?;
+
+    if let Some(links) = sphere_level_links {
+        let mut target_level_link = links
+            .into_iter()
+            .filter(|link| link.clone().target == old_hash.clone().into())
+            .take(1)
+            .next();
+        if let Some(ref link) = target_level_link {
+            create_link(
+                sphere_hash.clone(),
+                new_hash,
+                LinkTypes::OrbitHierarchyLevel,
+                link.tag.clone(),
+            )?;
+        }
+    }    
+    Ok(true)
+}
 
 fn delete_sphere_hash_link(sphere_hash: EntryHash, target_hash: ActionHash) -> ExternResult<bool> {
     let replaceable_sphere_links: Vec<Vec<Link>> =

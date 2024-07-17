@@ -8,14 +8,14 @@ integrity:
   zomes:
     - name: personal_integrity
       hash: ~
-      bundled: "../../../target/wasm32-unknown-unknown/release/personal_integrity.wasm"
+      bundled: "../../../../target/wasm32-unknown-unknown/release/personal_integrity.wasm"
       dependencies: ~
       dylib: ~
 coordinator:
   zomes:
     - name: personal
       hash: ~
-      bundled: "../../../target/wasm32-unknown-unknown/release/personal.wasm"
+      bundled: "../../../../target/wasm32-unknown-unknown/release/personal.wasm"
       dependencies:
         - name: personal_integrity
       dylib: ~

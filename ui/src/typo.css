@@ -1,0 +1,70 @@
+@font-face {
+  font-family: 'TTSupermolot';
+  src: url('assets/fonts/TTSupermolot400.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-size: 16px;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1.onboarding-title {
+  display: flex;
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  font-family: TTSupermolot, Arial, sans-serif;
+  line-height: 2.2em;
+  font-weight: 400;
+  @apply text-primary;
+}
+
+p.form-description, *[data-testid=modal-overlay]>div>div h3 {
+  line-height: 24px;
+  font-size: 1em;
+  font-weight: 300;
+  @apply font-sans;
+  max-width: 28rem;
+  margin: 0 auto 1rem auto;
+}
+*[data-testid=modal-overlay]>div>div h3 {
+  font-family: TTSupermolot, Arial, sans-serif;
+  color: white;
+  margin: 1rem 0 .5rem 0
+}
+
+p.form-description em, .helper-text em {
+  font-weight: medium;
+  @apply text-text-prim;
+}

@@ -6,11 +6,6 @@ label {
   @apply font-heading uppercase text-xs text-white;
 }
 
-.sphere-pie-label {    
-  /* padding-left: 1rem;
-  margin-top: -1.5rem; */
-}
-
 div[role="progressbar"] {
   @apply pt-2;
 }
@@ -18,14 +13,14 @@ div[role="progressbar"] {
 div[role="progressbar"] > div > div {
   @apply bg-link;
 }
-div[role="progressbar"] > div.sub > div {
+div[role="progressbar"] > div.atom > div {
   margin-left: 0;
 }
-div[role="progressbar"] > div.atom > div {
-  margin-left: 23%;
+div[role="progressbar"] > div.sub > div {
+  margin-left: 28%;
 }
 div[role="progressbar"] > div.astro > div {
-  margin-left: 58%;
+  margin-left: 65%;
 }
 
 .sphere-pie svg {
@@ -83,9 +78,4 @@ div[role="progressbar"] > div.astro > div {
     height: 100%;
   }
 
-}
-@media screen and (min-width: 1280px) {
-  .orbit-vis {
-    max-width: 80%;
-  }
 }

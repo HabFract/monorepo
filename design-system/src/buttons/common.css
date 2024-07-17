@@ -7,10 +7,13 @@
   @apply text-white bg-primary-500 border-primary-500 !important;
 }
 .btn-secondary, .btn-secondary.nohover:hover {
-  @apply bg-secondary border-primary-500 border-2;
+  @apply border-primary-500 border-2;
+  background-color: #A2EAC4;
+  color: #4E5454;
 }
 .btn-secondary:not(.nohover):hover {
-  @apply text-white bg-secondary-500 border-primary !important;
+  @apply text-white border-primary !important;
+  background-color: rgba(162, 234, 196, 0.5)
 }
 .btn-warn, .btn-warn.nohover:hover {
   @apply bg-warn-500 border-warn border-2;
@@ -86,9 +89,16 @@ div[data-testid="flowbite-dropdown"] button {
   @apply border-0 bg-transparent;
 }
 
+.sphere-actions-vis .btn *[role="img"] + span {
+  min-height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Hide icon test on smaller viewports */
 .btn.responsive span[role="img"] {
-  @apply m-0-sm;
+  @apply m-0-sm justify-center;
 }
 .btn.responsive span[role="img"] + span {
   @apply hidden-sm;
@@ -120,11 +130,12 @@ div[data-testid="flowbite-dropdown"] button {
 /* Upload image button */
 
 .upload-img-btn:hover {
-  @apply bg-secondary-500 text-white;
+  @apply opacity-100;
 }
 .upload-img-btn {
   top: 0.425rem;
-  left: -0.375rem;
+  left: -1rem;
+  position: relative;
 }
 
 /* Onboarding submit button */

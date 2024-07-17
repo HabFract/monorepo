@@ -63,7 +63,7 @@ const darkRadioTheme: CustomFlowbiteTheme["radio"] = {
 }
 
 const darkThemeButton: CustomFlowbiteTheme["button"] = {
-  "base" : "w-auto flex justify-center text-center border border-gray-300" 
+  "base" : "w-auto flex justify-center items-center text-center border border-gray-300" 
 };
 
 const darkThemeInputLabel: CustomFlowbiteTheme["label"] = {

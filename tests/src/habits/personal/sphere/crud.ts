@@ -1,4 +1,4 @@
-import { Orbit, Sphere } from './../../../../../app/src/graphql/generated';
+import { Orbit, Sphere } from './../../../../../ui/src/graphql/generated';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import {
   DnaSource,

@@ -77,6 +77,10 @@ span.reqd {
   @apply text-link text-base;
 }
 
+.error-label {
+  text-align: center;
+}
+
 .error-label span {
   @apply mt-1 ml-0 font-std text-std-input leading-std;
 }
@@ -85,4 +89,10 @@ span.reqd {
 }
 .error-label span.danger {
   @apply text-danger;
+}
+
+@media screen and (min-width: 768px) {
+  .error-label {
+    min-height: 2rem;
+  }
 }

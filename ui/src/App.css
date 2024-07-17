@@ -1,0 +1,301 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.placeholder-input-std::placeholder {
+  @apply text-input-placeholder text-std-input font-std text-base font-sans !important;
+}
+
+.input-icon {
+  @apply h-5 w-5;
+  padding: 0 2px; 
+  /* 12 in total (10 for input) */
+}
+
+.input-with-icon-right input{
+  padding-right: 40px;
+}
+
+.input-with-icon input{
+  padding-left: 40px;
+}
+
+#root {
+}
+
+.ant-app {
+  color: white;
+  @apply bg-gray-500;
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  place-content: flex-start;
+}
+
+.page-container {
+  min-height: 8rem;
+  @apply flex gap-2 bg-bg overflow-auto p-0 w-full;
+  flex-direction: column;
+  height: 100vh;
+  overflow-x: hidden;
+  min-width: 100vw;
+  z-index: 5;
+  align-items: center;
+}
+
+.home-layout {
+  @apply flex justify-around h-full;
+  flex-direction: column-reverse;
+  width: fit-content;
+  margin: 0 auto;
+  z-index: 5;
+}
+
+.onboarding-layout {
+  @apply flex justify-between flex-col gap-2 p-2 w-full;
+}
+
+.home-layout .top {
+  @apply flex justify-between flex-col gap-2;
+}
+.home-layout .bottom:hover + .top {
+  background: url(assets/circled-pen.svg) no-repeat;
+  background-position: 5% 4rem;
+  background-size: contain;
+  background-size: 8rem;
+}
+
+.page-container.home {
+  background: radial-gradient(circle, rgba(69,97,95,1) 0%, rgba(36,36,36,1) 100%);
+  position: relative;
+}
+
+.page-container.home::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  right: 0;
+  background: url(assets/mask.svg) 0 -32vh no-repeat;
+  opacity: 0.25;
+  width: 100%;
+  height: 75%;
+  background-size: cover;
+  z-index: 2;
+}
+
+div#root::before, div#root::after {
+  position: absolute;
+  content: "";
+  top: 45vh;
+  height: 50%;
+  background-size: cover;
+  opacity: 0.45;
+  width: 50vw;
+  z-index: 0;
+}
+
+div#root::before {
+  left: 2rem;
+  background: url(assets/HAB.svg) top left no-repeat;
+}
+div#root::after {
+  right: 2rem;
+  background: url(assets/FRACT.svg) top right no-repeat;
+}
+
+nav + main.page-container .sphere-card .row-c-around {
+  align-items: flex-start;
+}
+
+nav + main.page-container .sphere-card .row-c-around .sphere-actions {
+  flex-direction: row;
+  padding: 0;
+  margin: 0;
+}
+
+nav + main.page-container .sphere-card .row-c-around .sphere-actions button {
+  height: 3rem;
+}
+
+
+nav + main.page-container .sphere-card .row-c-around #pie-chart {
+  padding-left: 25%;
+}
+
+nav + main.page-container .sphere-card.list-header {
+  width: 100%;
+}
+
+nav + main.page-container .orbits-list {
+  padding-left: 72px;
+      
+}
+
+.full-spinner {
+  position: fixed;
+  height: 6rem;
+  width: 6rem;
+  left: calc(50vw - 3rem);
+  top: calc(50vh - 3rem);
+  animation: spin 2s linear infinite;
+  @apply text-line fill-primary;
+}
+
+.grayed {
+  @apply text-gray-300 !important;
+}
+
+.onboarding-subtitle {
+  line-height: 2rem;
+  font-size: 1rem;
+  width: 100%;
+  text-align: center;
+  margin: 1rem 0 0 0;
+  font-family: 'Nunito', Arial, sans-serif;
+}
+
+/* Modal */
+*[data-testid=modal-overlay]>div>div {
+  @apply bg-input-bg;
+}
+*[data-testid=modal-overlay]>div>div button {
+  padding: 0 1rem;
+  border-radius: 1rem;
+  display: flex;
+}
+
+.back-to-orbit-list {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+#vis-root {
+  width: 100%;
+}
+
+@media screen and (min-width: 440px) {
+  .ant-app {
+    grid-template-columns: 10% 80% 10%;
+    place-content: center;
+  }
+
+  .page-container {
+    grid-column: 2/3;
+    grid-row: 2/3;
+    border-radius: 1rem;
+    @apply p-6 h-full;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .ant-app {
+    grid-template-columns: 5% 90% 5%;
+    grid-template-rows: 5% 90% 5%;
+  }
+
+  .page-container {
+    min-width: calc(50vw - 6rem);
+    @apply p-8;
+    position: initial;
+    overflow: hidden;
+  }
+  .page-container.onboarding-page {
+    overflow-y: auto;
+  }
+  .page-container.vis {
+    padding: 0;
+  }
+  .page-container.home::before {
+    background-position-y: -8vh;
+  }
+  .onboarding-layout {
+    @apply gap-4 p-4;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .ant-app {
+    grid-template-columns: 8% 22% 40% 22% 8%;
+    grid-template-rows: 4% 1fr 4%;
+  }
+  .page-container {
+    font-size: 130%;
+    @apply p-12;
+  }
+  .page-container.home::before {
+    background-position-y: -12vh;
+  }
+  .page-container.home, .page-container.onboarding-page {
+    grid-column: 3/-3;
+  }
+  .page-container.onboarding-page .orbit-vis {
+    min-width: 6rem;
+  }
+
+  .page-container.create-form, .page-container.list {
+    overflow: auto;
+  }
+  .page-container:not(.home) {
+    grid-column: 2/-2;
+  }
+  .page-container.create-form {
+    justify-content: center;
+  }
+  .page-container.vis {
+    padding: 0;
+  }
+  .onboarding-title {
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 1.5rem;
+  }
+  .onboarding-subtitle {
+    line-height: 2.5rem;
+    font-size: 1.25rem;
+  }
+  .onboarding-layout > div {
+    position: relative;
+  }
+  
+  .onboarding-layout > div > div:nth-child(1) .btn {
+    height: 3rem;
+    z-index: 1;
+  }
+
+  .onboarding-layout > div > div:nth-child(1) {
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .onboarding-layout > div > div:nth-child(2) {
+    @apply absolute;
+    margin-top: .5rem;
+    z-index: -1;
+    left: 24rem;
+  }
+
+  .back-to-orbit-list {
+    transform: scale(2);
+    top: 3.5rem;
+    left: 2rem;
+  }
+}
+
+@media screen and (min-width: 1680px) {
+  .page-container.home::before {
+    background-position-y: -3vw;
+  }
+
+  .onboarding-layout > div > div:nth-child(1) {
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .onboarding-layout > div > div:nth-child(1) .btn {
+    height: 3rem;
+  }
+  .onboarding-layout > div > div:nth-child(2) {
+    @apply absolute;
+    right: 11rem;
+    margin-top: .5rem;
+  }
+}

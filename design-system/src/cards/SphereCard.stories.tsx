@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import SphereCard from './SphereCard';
-import { Scale, Sphere } from '../../../app/src/graphql/generated';
+import { Scale, Sphere } from '../../../ui/src/graphql/generated';
 
 export default {
   title: 'Components/Cards/SphereCard',

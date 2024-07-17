@@ -26,3 +26,6 @@ dist-ssr
 *.sw?
 **/node_modules/
 .aider*
+target/
+workdir/*.yaml
+!habit_fract.happ

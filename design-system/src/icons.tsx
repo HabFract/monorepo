@@ -1,14 +1,14 @@
 import React, { FC, ComponentProps } from "react"
-import { Scale } from "../../app/src/graphql/generated";
+import { Scale } from "../../ui/src/graphql/generated";
 
 export function getIconForPlanetValue(scale: Scale) : FC<ComponentProps<'svg'>> | undefined {
   switch (scale) {
     case Scale.Astro:
-      return () => <img style={{height: "24px", width: "24px"}} src="../assets/icons/astro-incomplete-react.svg" />;
+      return () => <img style={{height: "24px", width: "24px"}} src="../assets/icons/astro-incomplete-react.png" />;
     case Scale.Atom:
-      return () => <img style={{height: "24px", width: "24px", marginBottom: "5px"}} src="../assets/icons/atom-incomplete-react.svg" />;
+      return () => <img style={{height: "24px", width: "24px"}} src="../assets/icons/atom-incomplete-react.png" />;
     case Scale.Sub:
-      return () => <img style={{height: "24px", width: "24px", marginBottom: "3px"}} src="../assets/icons/sub-astro-incomplete-react.svg" />;
+      return () => <img style={{height: "24px", width: "24px"}} src="../assets/icons/sub-astro-incomplete-react.png" />;
   }
 }
 export function getIconSvg(icon: string | FC<ComponentProps<'svg'>>) : FC<ComponentProps<'svg'>> | undefined {

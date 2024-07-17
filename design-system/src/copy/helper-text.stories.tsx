@@ -1,14 +1,14 @@
 import React from 'react';
 import { StoryFn, Meta, StoryObj } from '@storybook/react';
 import HelperText, { HelperTextProps } from './helper-text';
-import List from '../../../app/src/components/icons/List';
+import List from '../../../ui/src/components/icons/List';
 
 const meta: Meta<HelperTextProps> = {
   title: "Components/Onboarding/HelperText",
   component: HelperText,
   argTypes: {
   },
-  render: (args: any) => <HelperText title={args.title} titleIcon={args.titleIcon} withInfo={args.withInfo} onClickInfo={(e) => console.log("Clicked!") as any}>{args.content}</HelperText> 
+  render: (args: any) => <HelperText title={args.title} titleIcon={args.titleIcon} withInfo={args.withInfo} onClickInfo={() => ({title: "Clicked!", body: "That was cool"})}>{args.content}</HelperText> 
 };
 
 export default meta;

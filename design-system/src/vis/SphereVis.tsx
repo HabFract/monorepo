@@ -17,8 +17,8 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
     const getChartOptions = () => {
       const series = Object.fromEntries(Object.entries(spherePercentages).map(([type, number]) => [type, isNaN(number) ? 0 : number]));
       return {
-        series: [series.Sub, series.Atom, series.Astro],
-        colors: ["#c0dea9", "#688acc","#9e5fcb"],
+        series: [series.Astro, series.Sub, series.Atom],
+        colors: ["#92a8d4", "#5380e5","#997ae8"],
         
         chart: {
           width: "auto",
@@ -53,7 +53,7 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
             }
           },
         },
-        labels: ["Atomic", "Subatomic", "Astronomic"],
+        labels: ["Astronomic", "Sub-astronomic", "Atomic", ],
         dataLabels: {
           enabled: true,
           style: {
@@ -69,9 +69,10 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
     if(typeof pieChart?.current === "undefined" || (pieChart.current as HTMLElement)!.children?.length > 0) return;
     const chart = new ApexCharts(pieChart.current, getChartOptions());
     chart.render();
+    return () => chart.destroy()
   }, [])
   
-  return (
+  return Object.values(spherePercentages).length > 0 && (
     //@ts-ignore
     <div className="sphere-pie relative">
       <div ref={pieChart} className="pie" id="pie-chart"></div>

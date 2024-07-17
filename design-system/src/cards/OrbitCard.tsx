@@ -5,7 +5,7 @@ import '../buttons/common.css';
 
 import { Button, Dropdown } from 'flowbite-react';
 import { EditOutlined, DeleteOutlined, PieChartOutlined } from '@ant-design/icons'; // Import icons
-import { Orbit } from '../../../app/src/graphql/generated';
+import { Orbit } from '../../../ui/src/graphql/generated';
 import { OrbitVis } from '../vis';
 
 type OrbitCardProps = {
@@ -16,7 +16,7 @@ type OrbitCardProps = {
   displayOnly: boolean
 };
 
-const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, displayOnly }: OrbitCardProps) => {
+const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runDelete, displayOnly }: OrbitCardProps) => {
   return (
     <div className={ displayOnly ? "orbit-card display-only" : "orbit-card"}>
       <header className="orbit-header card-header">
@@ -28,20 +28,20 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, disp
           <p>{new Date(orbit?.metadata!.timeframe?.startTime)?.toLocaleDateString('en-us')}</p>
         </div>
       </header>
-      <main className="card-body-bg col-c">
+      <section className="card-body-bg col-c">
         <div className="orbit-description flex items-center justify-center">
           {orbit?.metadata?.description && orbit?.metadata?.description !== '' && <p className='card-copy'>{orbit.metadata?.description}</p>}        </div>
-        <div className="row-c-around h-full big-gap">
+        <div className="row-c-around h-full big-gap-sm">
           {!displayOnly && <div className="orbit-actions col-c gap-2">
             <div className="orbit-actions-crud flex-col row-c-around">
-            <Dropdown label="Manage" dismissOnClick={false} className="bg-red-500 hover:bg-red-600">
+            <Dropdown label="Manage" dismissOnClick={false} className="bg-secondary p-2">
               <Dropdown.Item onClick={() => {transition('CreateOrbit', { editMode: true, orbitToEditId: orbit.id, sphereEh })}}>
                 <span>
                   <EditOutlined className="icon" />
                   Edit
                 </span>
               </Dropdown.Item>
-              <Dropdown.Item>
+              <Dropdown.Item onClick={() => {runDelete()}}>
                 <span>
                   <DeleteOutlined className="icon" />
                   Delete
@@ -61,7 +61,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, disp
             {orbit?.scale && <OrbitVis scale={orbit.scale} />}
           </div>
         </div>
-      </main>
+      </section>
     </div>
   );
 };

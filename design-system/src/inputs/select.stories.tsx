@@ -4,6 +4,7 @@ import Select, { SelectInputField } from "./select";
 export interface SelectProps {
   id: string;
   name: string;
+  value: string;
   placeholder: string;
   labelValue: string;
   errored: boolean;
@@ -15,6 +16,8 @@ export interface SelectProps {
   icon: string;
   iconSide: "left" | "right";
   onChange?: Function,
+  onClickInfo?: () => any,
+  onBlur?: Function,
   theme?: string,
 }
 

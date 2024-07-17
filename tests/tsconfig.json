@@ -12,7 +12,7 @@
   },
   "include": ["e2e/*.tsx"],
   "exclude": [
-    "../app/src/graphql/**/*.ts",
-    "../app/src/graphql/generated/mocks-type-fixed"
+    "../ui/src/graphql/**/*.ts",
+    "../ui/src/graphql/generated/mocks-type-fixed"
   ]
 }

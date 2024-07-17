@@ -1,5 +1,5 @@
 packages:
-  - "app"
+  - "ui"
   - "crates"
   - "design-system"
   - "tests"

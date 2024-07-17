@@ -1,0 +1,190 @@
+
+
+g.nodes {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.node-subgroup {
+  transform: scale(2) translate(-62px, -52px);
+  color: #ccc;
+}
+
+.node-subgroup.checked {
+  color: rgba(11,254,184, 1);
+}
+
+.expand-arrow {
+  stroke: #f8f8f8;
+  stroke-width: 2px;
+}
+
+.instruct-legend .cell,
+.legend-svg .cell {
+  position: relative;
+  pointer-events: none;
+}
+
+.controls-div {
+  height: 15vh;
+  background-color: #dddddd;
+  opacity: 0.4;
+  z-index: 10;
+}
+
+.help-svg,
+.legend-svg {
+  z-index: 17;
+}
+.legend-svg {
+  z-index: 19;
+}
+
+.swipe-zone {
+  color: #ddd;
+  font-weight: 900;
+}
+
+svg path.link {
+  stroke: #fefefe;
+  fill: none;
+}
+
+g.tooltip rect {
+  fill: #f8f8f8;
+  stroke: #1a140e !important;
+  stroke-width: 1px;
+}
+
+g.tooltip text {
+  fill: #FDFEFE !important;
+  stroke: #FDFEFE !important;
+  stroke-width: 1px;
+}
+
+body[class^="scroll"] .legend-svg,
+body[class^="scroll"] .controls-div {
+  opacity: 0;
+  visibility: none;
+  transition: opacity 0.2s ease-out;
+}
+
+.habit-label-dash-button text {
+  fill: #f8f8f8 !important;
+  stroke-width: 1px;
+}
+
+.habit-label-dash-button {
+  fill: #1a140e !important;
+  stroke: #f8f8f8 !important;
+  stroke-width: 1px;
+}
+
+g.tooltip rect:first-of-type {
+  fill: #6B7D7F !important;
+}
+
+.tooltip-inner .content {
+  padding: 0.75rem 1.5rem;
+  color: rgba(219,228,226, 1);
+  background: linear-gradient(0deg, rgba(69, 97, 95, 1) -20%, rgba(69, 97, 95, 0.5) 100%);
+  border-radius: 1.75rem;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  opacity: 1;
+  margin-top: 12px;
+  margin-right: 4px;
+} 
+
+.tooltip-inner .content span.title {
+  text-transform: uppercase;
+  @apply font-sans font-semibold tracking-wider;
+}
+
+.tooltip-inner .content p {
+  @apply font-normal tracking-normal mb-2;
+}
+
+.buttons, .tooltip-inner {
+  cursor: initial;
+}
+
+.tooltip-action-button {
+  border-radius: 100%;
+  height: 6rem;
+  width: 6rem;
+  object-fit: cover;
+}
+
+.tooltip-action-button:nth-child(2) {
+  border-radius: 1.125rem;
+}
+.tooltip-action-button:nth-child(3) {
+  background-size: cover;
+}
+
+.tooltip-action-button.hide {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.25;
+}
+
+.higher-button {
+  background: url(assets/higher-scale-icon.svg);
+}
+
+.buttons *:hover {
+  outline: 8px solid rgb(54, 175, 152);
+  cursor: pointer;
+}
+
+/* .tooltip-action-button button:focus, .tooltip-action-button button:focus-visible {
+  outline: 6px solid #91caff
+} */
+.checkbox-button.checked {
+  background: url(assets/checkbox-checked.svg);
+  background-size: cover;
+}
+
+.lower-button {
+  background: url(assets/lower-scale-icon.svg);
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.tooltip-actions {
+  display: block;
+  margin: -39rem 0 0 -8rem;
+}
+
+.tooltip-actions .buttons {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.tooltip-inner {
+  background: url(assets/line-corner-vector.svg);
+  background-position: right;
+  background-position-y: .5rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 100%;
+  width: 100%;
+  padding-top: calc(50% + .5rem);
+  padding-left: 3%;
+  padding-right: 3px;
+  font-size: 2rem;
+  margin-left: 0rem;
+}
+
+@media screen and (min-width: 768px) {
+  .node-subgroup {
+    transform: scale(3) translate(-62px, -52px);
+  }
+}
+@media screen and (min-width: 1280px) {
+  .node-subgroup {
+    transform: scale(4) translate(-62px, -52px);
+  }
+}

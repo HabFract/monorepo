@@ -17,6 +17,7 @@ export interface TextInputProps {
   icon: string;
   onChange?: Function
   onBlur?: FocusEventHandler
+  onClickInfo?: () => any
   value?: string
   theme?: string
 }

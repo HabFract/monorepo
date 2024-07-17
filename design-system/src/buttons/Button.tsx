@@ -20,6 +20,7 @@ const Button: React.FC<ButtonProps> = ({ children, type, icon, touched, loading,
     <FBButton
       disabled={loading || !(typeof errors == 'undefined' || typeof touched == 'undefined') && ((Object.values(errors).length > 0) || !!(Object.values(touched).filter(value => value).length < 1))}
       theme={darkThemeButton}
+      style={{maxWidth: "30rem"}}
       type={type == "onboarding" ? "submit" : "button"}
       className={type ? `btn btn-${type}` : "btn"}
       onClick={onClick}

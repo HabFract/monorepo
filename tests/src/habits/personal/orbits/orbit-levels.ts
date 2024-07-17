@@ -3,7 +3,7 @@ import pkg from "tape-promise/tape";
 import { setUpAliceandBob } from "../../../../utils";
 import { anOrbit, aSphere, createOrbitChildren, serializeAsyncActions, setupHierarchy3, setupHierarchy4, setupHierarchy5, setupSphere } from './utils';
 import { encodeHashToBase64 } from "@holochain/client";
-import { Orbit } from "../../../../../app/src/graphql/generated";
+import { Orbit } from "../../../../../ui/src/graphql/generated";
 const { test } = pkg;
 
 export default () => {

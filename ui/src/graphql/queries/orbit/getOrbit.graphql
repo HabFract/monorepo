@@ -1,0 +1,19 @@
+query getOrbit($id: ID!) {
+  orbit(id: $id) {
+    id
+    eH
+    name
+    sphereHash
+    frequency
+    scale
+    parentHash
+    childHash
+    metadata {
+      description
+      timeframe {
+        startTime
+        endTime
+      }
+    }
+  }
+}

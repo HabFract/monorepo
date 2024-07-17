@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@holochain-open-dev/utils": "^0.16.3",
-    "@holochain/client": "^0.16.7",
+    "@holochain/client": "^0.17.0-rc",
     "vitest": "^1.1.0"
   },
   "devDependencies": {

@@ -23,7 +23,10 @@ pub fn get_my_sphere(original_sphere_hash: ActionHash) -> ExternResult<Option<Re
 
 #[hdk_extern]
 pub fn get_sphere(original_sphere_hash: ActionHash) -> ExternResult<Option<Record>> {
-    let links = get_links(original_sphere_hash.clone(), LinkTypes::SphereUpdates, None)?;
+    let links = get_links(
+            GetLinksInputBuilder::try_new(original_sphere_hash.clone(), LinkTypes::SphereUpdates)?
+                .build()
+            )?;
     let latest_link = links
         .into_iter()
         .max_by(|link_a, link_b| link_a.timestamp.cmp(&link_b.timestamp));
@@ -162,7 +165,10 @@ pub fn get_all_my_spheres(_ : ()) -> ExternResult<Vec<Record>> {
 
 fn _agent_to_sphere_links() -> ExternResult<Option<Vec<Link>>> {
     let agent_address = agent_info()?.agent_initial_pubkey.clone();
-    let links = get_links(agent_address, LinkTypes::AgentToSphere, None)?;
+    let links = get_links(
+        GetLinksInputBuilder::try_new(agent_address.clone(), LinkTypes::AgentToSphere)?
+            .build()
+        )?;
     // debug!("---- LINKS ---- {:#?}", links);
     if links.len() == 0 {
         return Ok(None);
@@ -203,7 +209,7 @@ fn sphere_prefix_path_links(path_hash: EntryHash) -> ExternResult<Option<Vec<Lin
     get_links_from_base(path_hash, LinkTypes::SpheresAnchor, None)
 }
 
-fn delete_sphere_hash_link(sphere_hash: EntryHash, target_hash: ActionHash) -> ExternResult<bool> {
+fn _delete_sphere_hash_link(sphere_hash: EntryHash, target_hash: ActionHash) -> ExternResult<bool> {
     let replaceable_sphere_links: Vec<Vec<Link>> =
         sphere_to_orbit_links(sphere_hash.clone().into())
             .into_iter()
