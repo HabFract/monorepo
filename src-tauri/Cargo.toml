@@ -1,6 +1,6 @@
 [package]
 name = "habit_fract"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 description = "Habit Fract"
 authors = ["Nick Stebbings"]
 license = "Apache-2.0"
