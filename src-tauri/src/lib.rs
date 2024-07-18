@@ -36,6 +36,8 @@ pub fn run() {
             tauri::async_runtime::block_on(async move {
                 setup(handle).await
             })?;
+            #[cfg(desktop)]
+            app.handle().plugin(tauri_plugin_updater::Builder::new().build())?;
 
             // After set up we can be sure our app is installed and up to date, so we can just open it
             app.holochain()?
