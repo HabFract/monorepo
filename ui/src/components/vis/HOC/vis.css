@@ -46,7 +46,6 @@ g.nodes {
 }
 
 svg path.link {
-  stroke: #fefefe;
   fill: none;
 }
 
@@ -133,18 +132,18 @@ g.tooltip rect:first-of-type {
   background: url(assets/higher-scale-icon.svg);
 }
 
-.buttons *:hover {
+/* .buttons *:hover {
   outline: 8px solid rgb(54, 175, 152);
   cursor: pointer;
-}
+} */
 
 /* .tooltip-action-button button:focus, .tooltip-action-button button:focus-visible {
   outline: 6px solid #91caff
 } */
-.checkbox-button.checked {
+/* .checkbox-button.checked {
   background: url(assets/checkbox-checked.svg);
   background-size: cover;
-}
+} */
 
 .lower-button {
   background: url(assets/lower-scale-icon.svg);
