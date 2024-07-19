@@ -65,7 +65,12 @@ jobs:
           pnpm i vite -D -w
           cd design-system && pnpm build
           pnpm install
-
+      - name: setup for codesigning (macos only)
+        if: ${{ runner.os == 'macOs' }}
+        uses: figleafteam/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.APPLE_CERTIFICATE_B64 }}
+          p12-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
       - name: build the app
         uses: tauri-apps/tauri-action@v0
         env:
