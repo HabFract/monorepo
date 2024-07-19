@@ -155,14 +155,13 @@ checksum = "5ecc8056bf6ab9892dcd53216c83d1597487d7dacac16c8df6b877d127df9937"
 
 [[package]]
 name = "android_logger"
-version = "0.13.3"
+version = "0.14.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c494134f746c14dc653a35a4ea5aca24ac368529da5370ecf41fe0341c35772f"
+checksum = "05b07e8e73d720a1f2e4b6014766e6039fd2e96a4fa44e2a78d0e1fa2ff49826"
 dependencies = [
  "android_log-sys",
- "env_logger",
+ "env_filter",
  "log",
- "once_cell",
 ]
 
 [[package]]
@@ -1935,13 +1934,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "env_filter"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a009aa4810eb158359dda09d0c87378e4bbb89b5a801f016885a4707ba24f7ea"
+dependencies = [
+ "log",
+ "regex",
+]
+
+[[package]]
 name = "env_logger"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4cd405aab171cb85d6735e5c8d9db038c17d3ca007a4d2c25f337935c3d90580"
 dependencies = [
  "log",
- "regex",
 ]
 
 [[package]]
@@ -2821,7 +2829,7 @@ dependencies = [
 
 [[package]]
 name = "habit_fract"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 dependencies = [
  "anyhow",
  "app_dirs2",
@@ -2829,6 +2837,7 @@ dependencies = [
  "holochain_types",
  "lair_keystore",
  "log",
+ "serde_json",
  "tauri",
  "tauri-build",
  "tauri-plugin-holochain",
@@ -2836,6 +2845,7 @@ dependencies = [
  "tauri-plugin-updater",
  "tempdir",
  "url2",
+ "uuid 1.8.0",
 ]
 
 [[package]]
@@ -2902,9 +2912,9 @@ dependencies = [
 
 [[package]]
 name = "hc_sleuth"
-version = "0.2.1-rc.1"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "308ba7cd4066a77101d70261158824f7fdaf93dd4a61544e46c488e24a29ec81"
+checksum = "4a7efed3147390828944b367c49fbea3eb460c3639fe11b0801ab773cf11aeed"
 dependencies = [
  "aitia",
  "anyhow",
@@ -3083,9 +3093,9 @@ dependencies = [
 
 [[package]]
 name = "holochain"
-version = "0.3.1-rc.2"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "501b7eeed5d4b9319f718af7e69845e0ceff8b320ad9a4e77dd1cc84c90a368b"
+checksum = "b96a002f56e650f706f62a83db1d7e546d08e07b6152238d94a3dc1427202df8"
 dependencies = [
  "aitia",
  "anyhow",
@@ -3177,9 +3187,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_cascade"
-version = "0.3.1-rc.1"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7f72c67d0bb25c2acbc27cb7d053278c23fabb57451b22a0dcf6cf74e40b898"
+checksum = "de843583dc40742822f96db9bd7dea7ff508afcb120a0652e89d91d0662a6cb7"
 dependencies = [
  "async-trait",
  "fixt",
@@ -3203,9 +3213,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_client"
-version = "0.5.0-rc.4"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1edd7fb6a7835e0a56c588b9b0e9ff5073a2eeff7d21a48e8efe19b25806ecad"
+checksum = "c7d6dcf32ba4296867568fb46dc7971590b8ebfd7a1b09fefe9e986e8abe5fb1"
 dependencies = [
  "again",
  "anyhow",
@@ -3219,6 +3229,7 @@ dependencies = [
  "holochain_types",
  "holochain_websocket",
  "holochain_zome_types",
+ "kitsune_p2p_types",
  "lair_keystore_api",
  "parking_lot 0.12.3",
  "rand 0.8.5",
@@ -3228,9 +3239,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_conductor_api"
-version = "0.3.1-rc.1"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14875094601b112014c6d9a907a5f2542ec91ff50f20c8e53f6fc8caac7a7d84"
+checksum = "7749c521f500aaf7fb1b34a8385d56707ce8076e319580dc74d75e5a02b4671d"
 dependencies = [
  "derive_more",
  "holo_hash",
@@ -3251,9 +3262,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_conductor_services"
-version = "0.2.1-rc.1"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62966f8cd6e8c38f50c154409d37c234301291fab92f4dc42d0b4d6a16753a60"
+checksum = "03d9240549cb4680e076ed6b586673404b7b0ae9c0a8f496dd99a672755c7254"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -3337,9 +3348,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_p2p"
-version = "0.3.1-rc.1"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d96ebf75d85df0e91275b082a40cb27aec935b0fc6c7d8e02648e518a771f1c7"
+checksum = "0d5013eee774b657e36fcfff96285f78a166901ab4389245b41d37f9b3354ede"
 dependencies = [
  "aitia",
  "async-trait",
@@ -3448,9 +3459,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_state"
-version = "0.3.1-rc.1"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82bc37228db734b2a79b33f5cf3155f9147d6534ae0bd1024482bdf04070c8b7"
+checksum = "9f1c0a0587a78ab53a747939a245201250a91bcd61a59c0f5c58a9615e2c0b17"
 dependencies = [
  "aitia",
  "async-recursion",
@@ -3509,9 +3520,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_types"
-version = "0.3.1-rc.1"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a9c78f6290d8ef36581e39c69b335d21d41afe7df9cc4f3757268be08257283"
+checksum = "2b4358d68ae3aef3bcd990c046ce6cce7fbe0d924251b5aad81db1548e7abc03"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -3576,9 +3587,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_wasm_test_utils"
-version = "0.3.1-rc.1"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a40e26e66deae54185dd9a48ac5d160ddc90925b4fb2e5b3ebb493337ea3040f"
+checksum = "da2fc8acf79df349b48c5dc40444b7acfa93d20775c59f54f935deabfac96b4e"
 dependencies = [
  "holochain_types",
  "holochain_util",
@@ -3637,9 +3648,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_websocket"
-version = "0.3.1-rc.1"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cbdc4b1f9108b8aceab889201becc8f00b20163158f1aded65e52b058876a4a0"
+checksum = "c86f7b4866e33556abbcaff03967ba52df1df2daa12555dcb8d620218f92fb2f"
 dependencies = [
  "async-trait",
  "futures",
@@ -4976,6 +4987,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "643cb0b8d4fcc284004d5fd0d67ccf61dfffadb7f75e1e71bc420f4688a3a704"
 
 [[package]]
+name = "local-ip-address"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "136ef34e18462b17bf39a7826f8f3bbc223341f8e83822beb8b77db9a3d49696"
+dependencies = [
+ "libc",
+ "neli",
+ "thiserror",
+ "windows-sys 0.48.0",
+]
+
+[[package]]
 name = "lock_api"
 version = "0.4.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5398,6 +5421,31 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3cf2aae958bd232cac5069850591667ad422d263686d75b52a065f9badeee5a3"
 dependencies = [
  "jni-sys",
+]
+
+[[package]]
+name = "neli"
+version = "0.6.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1100229e06604150b3becd61a4965d5c70f3be1759544ea7274166f4be41ef43"
+dependencies = [
+ "byteorder",
+ "libc",
+ "log",
+ "neli-proc-macros",
+]
+
+[[package]]
+name = "neli-proc-macros"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c168194d373b1e134786274020dae7fc5513d565ea2ebb9bc9ff17ffb69106d4"
+dependencies = [
+ "either",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "syn 1.0.109",
 ]
 
 [[package]]
@@ -8602,9 +8650,10 @@ dependencies = [
 [[package]]
 name = "tauri-plugin-holochain"
 version = "0.0.0"
-source = "git+https://github.com/darksoil-studio/p2p-shipyard?branch=main#a8b4bb167cc147b5d414635aeb7dde278bdf1a29"
+source = "git+https://github.com/darksoil-studio/p2p-shipyard?branch=develop#dbac886a7c7822628fd01c6bd1da0f0fba93478f"
 dependencies = [
  "async-std",
+ "base64 0.22.1",
  "bzip2",
  "either",
  "futures",
@@ -8617,8 +8666,11 @@ dependencies = [
  "http-body-util",
  "hyper 1.3.1",
  "hyper-util",
+ "kitsune_p2p_mdns",
+ "kitsune_p2p_types",
  "lair_keystore",
  "lair_keystore_api",
+ "local-ip-address",
  "log",
  "mime_guess",
  "mr_bundle",
@@ -8634,6 +8686,8 @@ dependencies = [
  "thiserror",
  "tls-listener",
  "tokio",
+ "tx5-signal",
+ "tx5-signal-srv",
  "url",
  "url2",
  "zip 0.6.6",
@@ -8641,9 +8695,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-log"
-version = "2.0.0-beta.6"
+version = "2.0.0-beta.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "28be50bb36ac6b5181a360cee0606a4364d9e0bdcdd8974c40710d7af12e60ec"
+checksum = "4cc0912ad72022b4d931c909582f06edb0c5e696cb945f16189ed6abf48a0ebd"
 dependencies = [
  "android_logger",
  "byte-unit",
