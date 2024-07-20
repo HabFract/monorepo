@@ -76,7 +76,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE_B64 }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE_B64_LEGACY }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           APPLE_ID: ${{ secrets.APPLE_ID_EMAIL }}
           APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
