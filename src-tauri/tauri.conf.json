@@ -1,6 +1,6 @@
 {
   "productName": "habit_fract",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0",
   "identifier": "net.habitfract.personal",
   "build": {
     "beforeBuildCommand": "npm run build:frontend",
