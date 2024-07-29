@@ -36,7 +36,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           override: true
-          toolchain: stable
+          toolchain: 1.79
           target: wasm32-unknown-unknown
       - name: install Go stable
         uses: actions/setup-go@v4
@@ -66,6 +66,7 @@ jobs:
           cd design-system && pnpm build
           pnpm install
       - name: Prepare mac codesign
+        if: matrix.platform == 'macos-12'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
