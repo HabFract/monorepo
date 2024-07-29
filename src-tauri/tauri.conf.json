@@ -15,6 +15,9 @@
     "windows": []
   },
   "bundle": {
+    "iOS": {
+      "developmentTeam": "XD92A88BSZ"
+    },
     "active": true,
     "targets": "all",
     "icon": [

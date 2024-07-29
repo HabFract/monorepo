@@ -76,6 +76,7 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           pnpm tauri ios init
+          pnpm tauri info
       - name: build the app
         uses: tauri-apps/tauri-action@v0
         env:
