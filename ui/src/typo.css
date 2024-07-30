@@ -61,7 +61,14 @@ p.form-description, *[data-testid=modal-overlay]>div>div h3 {
 *[data-testid=modal-overlay]>div>div h3 {
   font-family: TTSupermolot, Arial, sans-serif;
   color: white;
-  margin: 1rem 0 .5rem 0
+  margin: 1rem 0 .5rem 0;
+  @apply text-2xl;
+}
+
+*[data-testid=modal-overlay] p {
+  font-family: Nunito, Arial, sans-serif;
+  color: white;
+  @apply m-4 mb-0 text-xl;
 }
 
 p.form-description em, .helper-text em {
