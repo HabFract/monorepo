@@ -30,7 +30,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDhEM0M5MTBFRkIwQ0FEQQpSV1RheXJEdkVNblRDSTdFbkNhbGYrNmtUQzF2VmEzYUQ4VTI1THVLbndROE56VjMxblBpeE53Ngo=%"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDhEM0M5MTBFRkIwQ0FEQQpSV1RheXJEdkVNblRDSTdFbkNhbGYrNmtUQzF2VmEzYUQ4VTI1THVLbndROE56VjMxblBpeE53Ngo="
     }
   }
 }
