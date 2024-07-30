@@ -1,6 +1,6 @@
 {
   "productName": "habit_fract",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "identifier": "net.habitfract.personal",
   "build": {
     "beforeBuildCommand": "npm run build:frontend",
@@ -30,7 +30,7 @@
   },
   "plugins": {
     "updater": {
-      "endpoints": ["https://github.com/HabFract/monorepo/releases/download/v0.1.0/latest.json"],
+      "endpoints": ["https://github.com/HabFract/monorepo/releases/download/v0.1.1/latest.json"],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDhEM0M5MTBFRkIwQ0FEQQpSV1RheXJEdkVNblRDSTdFbkNhbGYrNmtUQzF2VmEzYUQ4VTI1THVLbndROE56VjMxblBpeE53Ngo="
     }
   }
