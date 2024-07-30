@@ -1021,6 +1021,7 @@ export default class BaseVisualization implements IVisualization {
       .enter()
       .append("path")
       .classed("link", true)
+      .attr("stroke", "#fefefe")
       .attr("stroke-width", "3")
       .attr("stroke-opacity", (d) => {
           const parent = d.source?.data?.content;
@@ -1111,9 +1112,10 @@ export default class BaseVisualization implements IVisualization {
       .html((d) => {
         if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
         const { checked, scale, parentEh } = this.nodeDetails[d.data.content];
+        console.log('checked :>> ', checked);
         return `<div class="buttons">
           <button class="tooltip-action-button higher-button ${!parentEh && scale !== 'Astro' ? 'hide' : 'hide'}"></button>
-          <img data-button="true" class="tooltip-action-button checkbox-button" src="${checked ? "assets/checkbox-checked.svg" : "assets/checkbox-empty.svg"}" />
+          <img data-button="true" class="tooltip-action-button checkbox-button" src=${checked ? "assets/checkbox-checked.svg" : "assets/checkbox-empty.svg"} />
           <button class="tooltip-action-button lower-button"></button>
         </div>`
       });
@@ -1162,17 +1164,31 @@ export default class BaseVisualization implements IVisualization {
             e.target.classList.toggle('checked');
             e.target.closest('.the-node').firstChild.classList.toggle('checked');
 
+            const parentAndChildChecked = (d: any) => {
+              const parent = d.source?.data?.content;
+              const child = d.target?.data?.content;
+              if (!parent || !this.nodeDetails[parent] || !child || !this.nodeDetails[child]) return
+              const cachedNodeParent = Object.values(this.nodeDetails).find(n => n.eH == parent);
+              const cachedNodeChild = Object.values(this.nodeDetails).find(n => n.eH == child);
+              return cachedNodeChild?.checked && cachedNodeParent?.checked
+            };
             this._enteringLinks
+              .attr("stroke", (d) => {
+                return parentAndChildChecked(d) ? 'rgba(11,254,184, 1)' : '#fefefe'
+              })
               .attr("stroke-opacity", (d) => {
-                const parent = d.source?.data?.content;
-                const child = d.target?.data?.content;
-                if (!parent || !this.nodeDetails[parent] || !child || !this.nodeDetails[child]) return
-                const cachedNodeParent = Object.values(this.nodeDetails).find(n => n.eH == parent);
-                const cachedNodeChild = Object.values(this.nodeDetails).find(n => n.eH == child);
-                if(cachedNodeChild?.checked && cachedNodeParent?.checked) return 1;
-                return 0.35
-            }
-          )
+                return parentAndChildChecked(d) ? 1 : 0.35
+              }
+            )
+            this._gTooltip.select(".tooltip-inner foreignObject").html((d) => {
+              if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
+              const { checked, scale, parentEh } = this.nodeDetails[d.data.content];
+              return `<div class="buttons">
+                <button class="tooltip-action-button higher-button ${!parentEh && scale !== 'Astro' ? 'hide' : 'hide'}"></button>
+                <img data-button="true" class="tooltip-action-button checkbox-button" src=${checked ? "assets/checkbox-checked.svg" : "assets/checkbox-empty.svg"} />
+                <button class="tooltip-action-button lower-button"></button>
+              </div>`
+            });
             this.render();
             break;
 

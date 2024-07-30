@@ -155,14 +155,23 @@ nav + main.page-container .orbits-list {
   font-family: 'Nunito', Arial, sans-serif;
 }
 
+.app-version-disclaimer button{
+  height: 1.5rem;
+}
+
 /* Modal */
 *[data-testid=modal-overlay]>div>div {
   @apply bg-input-bg;
 }
 *[data-testid=modal-overlay]>div>div button {
-  padding: 0 1rem;
+  padding: 1rem;
   border-radius: 1rem;
   display: flex;
+  @apply bg-gray-300 text-white;
+}
+
+.disclaimer {
+  white-space: pre-line;
 }
 
 .back-to-orbit-list {

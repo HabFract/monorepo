@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows-2019, macos-latest, ubuntu-22.04]
+        platform: [windows-2019, macos-12, ubuntu-22.04]
     env:
       MACOSX_DEPLOYMENT_TARGET: 10.13
 
@@ -36,7 +36,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           override: true
-          toolchain: stable
+          toolchain: 1.79
           target: wasm32-unknown-unknown
       - name: install Go stable
         uses: actions/setup-go@v4
@@ -65,14 +65,31 @@ jobs:
           pnpm i vite -D -w
           cd design-system && pnpm build
           pnpm install
+      - name: Prepare mac codesign
+        if: matrix.platform == 'macos-12'
+        run: |
+          echo "${{ secrets.APPLE_CERTIFICATE }}" | base64 --decode > cert.p12
+          openssl pkcs12 -in cert.p12 -nodes \
+          -passin pass:"${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" | openssl x509 -noout -subject
 
       - name: build the app
         uses: tauri-apps/tauri-action@v0
-        env:  
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
+          IOS_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
           releaseName: "App v__VERSION__"
           releaseBody: "See assets below to download and install this version."
           releaseDraft: true
           prerelease: true
+          args: --verbose

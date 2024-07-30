@@ -4,7 +4,8 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use tauri_plugin_holochain::{HolochainPluginConfig, HolochainExt};
 use url2::Url2;
-use tauri::AppHandle;
+    
+use tauri::{AppHandle, Listener};
 
 const APP_ID: &'static str = "habit_fract";
 const PRODUCTION_SIGNAL_URL: &'static str = "wss://signal.holo.host";
@@ -17,13 +18,19 @@ pub fn happ_bundle() -> AppBundle {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let mut context = tauri::generate_context!();
+    if tauri::is_dev() {
+        let identifier = context.config().identifier.clone();
+        context.config_mut().identifier = format!("{}{}", identifier, uuid::Uuid::new_v4());
+    }
+    
     tauri::Builder::default()
         .plugin(
             tauri_plugin_log::Builder::default()
                 .level(log::LevelFilter::Warn)
                 .build(),
         )
-        .plugin(tauri_plugin_holochain::init(
+        .plugin(tauri_plugin_holochain::async_init(
             vec_to_locked(vec![]).expect("Can't build passphrase"),
             HolochainPluginConfig {
                 signal_url: signal_url(),
@@ -32,19 +39,31 @@ pub fn run() {
             },
         ))
         .setup(|app| {
-            let handle = app.handle().clone();
-            tauri::async_runtime::block_on(async move {
-                setup(handle).await
-            })?;
+            #[cfg(desktop)]
+            app.handle()
+            .plugin(tauri_plugin_updater::Builder::new().build())?;
 
-            // After set up we can be sure our app is installed and up to date, so we can just open it
-            app.holochain()?
-                .main_window_builder(String::from("main"), false, Some(String::from("habit_fract")), None)?
-                .build()?;
+            let handle = app.handle().clone();
+            app.handle().listen("holochain-setup-completed", move |_event| {
+                let handle = handle.clone();
+                tauri::async_runtime::spawn(async move {
+                    setup(handle.clone()).await.expect("Failed to setup");
+
+                    handle
+                        .holochain()
+                        .expect("Failed to get holochain")
+                        .main_window_builder(String::from("main"), false, Some(APP_ID.into()), None).await
+                        .expect("Failed to build window")
+                        .build()
+                        .expect("Failed to open main window");
+                });
+            });
 
             Ok(())
         })
-        .run(tauri::generate_context!())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_process::init())
+        .run(context)
         .expect("error while running tauri application");
 }
 
@@ -71,6 +90,7 @@ async fn setup(handle: AppHandle) -> anyhow::Result<()> {
                 String::from(APP_ID),
                 happ_bundle(),
                 HashMap::new(),
+                None,
                 None,
             )
             .await?;

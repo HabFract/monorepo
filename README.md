@@ -6,9 +6,11 @@
 
 3: Run `pnpm i` (assuming `pnpm` is installed globally)
 
-4: `pnpm run dev`
+4: Rename `example.env` to `.env` (changing the port numbers are required)
 
-5: Open a browser at http://localhost:8888/
+5: `pnpm run dev`
+
+6: Wait for a browser to open at http://localhost:8888/
 
 
 For graphql intellisense based on the schema:

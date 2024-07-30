@@ -2,7 +2,7 @@
 import { useStateTransition } from './hooks/useStateTransition';
 
 import Nav from './components/Nav';
-import { Flowbite, Spinner } from 'flowbite-react';
+import { Flowbite, Modal, Spinner } from 'flowbite-react';
 import { cloneElement, useEffect, useState } from 'react';
 
 import BackCaret from './components/icons/BackCaret';
@@ -13,16 +13,26 @@ import { store } from './state/jotaiKeyValueStore';
 import { currentOrbitId, currentSphere } from './state/currentSphereHierarchyAtom';
 import { useGetSpheresQuery } from './graphql/generated';
 import { AppMachine } from './main';
+import { getVersion } from '@tauri-apps/api/app';
+import { ALPHA_RELEASE_DISCLAIMER } from './constants';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
   const [mainContainerClass, setMainContainerClass] = useState<string>("page-container");  
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);  
+  const [currentVersion, setCurrentVersion] = useState<string>();  
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
   useEffect(() => { // Apply main container class conditionally based on page
     setMainContainerClass(getMainContainerClassString(AppMachine.state.currentState))
   }, [AppMachine.state.currentState])
+
+  useEffect(() => {
+    getVersion().then(version => {
+      setCurrentVersion(version)
+    });
+  }, [])
 
   // Don't start at the home page for established users...
   const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
@@ -31,6 +41,18 @@ function App({ children: pageComponent }: any) {
     return loadingSpheres
       ? <Spinner aria-label="Loading!"size="xl" className='full-spinner' />
       : (<Flowbite theme={{theme: darkTheme}}>
+        <div className="app-version-disclaimer flex gap-2 fixed right-1 top-1">
+          <span>v{currentVersion}</span>
+          <Button type={"secondary"} onClick={() => setIsModalOpen(true)}>Disclaimer</Button>
+        </div>
+        <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <Modal.Header>
+            Disclaimer:
+          </Modal.Header>
+          <Modal.Body>
+            <p className='disclaimer'>{ALPHA_RELEASE_DISCLAIMER}</p>
+          </Modal.Body>
+        </Modal>
       {state.match('Onboarding')
         ? <main className={"page-container onboarding-page"}>
             <Onboarding>

@@ -1,6 +1,6 @@
 [package]
 name = "habit_fract"
-version = "0.1.0"
+version = "0.1.1"
 description = "Habit Fract"
 authors = ["Nick Stebbings"]
 license = "Apache-2.0"
@@ -15,19 +15,26 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.0.0-beta.13", default-features = false , features = [] }
+tauri-build = { version = "2.0.0-beta.19", default-features = false, features = [
+] }
 
 [dependencies]
-tauri = { version = "2.0.0-beta.13", features = [] }
-tauri-plugin-holochain = { git = "https://github.com/darksoil-studio/p2p-shipyard", branch = "main" }
-holochain_types = { version = "0.3.1-rc" }
+tauri = { version = "2.0.0-beta.25", features = [] }
+tauri-plugin-holochain = { git = "https://github.com/darksoil-studio/p2p-shipyard", branch = "develop" }
+holochain_types = { version = "0.3.1" }
 lair_keystore = { version = "0.4.0" }
 
-holochain_client = { version = "0.5.0-rc.4" }
+holochain_client = { version = "0.5.0" }
 
 log = "0.4"
-tauri-plugin-log = "2.0.0-beta"
+tauri-plugin-log = "2.0.0-beta.8"
 url2 = "0.0.6"
 app_dirs2 = "2.5.5"
 tempdir = "0.3.7"
 anyhow = "1"
+serde_json = { workspace = true }
+uuid = "1"
+tauri-plugin-dialog = "2.0.0-beta"
+tauri-plugin-process = "2.0.0-beta.8"
+[target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
+tauri-plugin-updater = "2.0.0-beta"
