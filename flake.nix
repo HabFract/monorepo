@@ -3,7 +3,7 @@
 
   inputs = {
     p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard";
-    holochain-nix-versions.url  = "github:holochain/holochain?dir=versions/0_2";
+    holochain-nix-versions.url  = "github:holochain/holochain?dir=versions/0_3";
 
     holochain-flake = {
       url = "github:holochain/holochain";
