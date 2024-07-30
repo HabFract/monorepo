@@ -39,6 +39,10 @@ pub fn run() {
             },
         ))
         .setup(|app| {
+            #[cfg(desktop)]
+            app.handle()
+            .plugin(tauri_plugin_updater::Builder::new().build())?;
+
             let handle = app.handle().clone();
             app.handle().listen("holochain-setup-completed", move |_event| {
                 let handle = handle.clone();
@@ -57,6 +61,8 @@ pub fn run() {
 
             Ok(())
         })
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_process::init())
         .run(context)
         .expect("error while running tauri application");
 }
