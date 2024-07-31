@@ -30,9 +30,6 @@ export const habits_dna = path.join(
 export const installAgent = async (
   conductor: Conductor,
   agentName: string,
-  ca_key?: Uint8Array,
-  with_config: boolean = false,
-  resource_base_type?: any
 ) => {
   let agentsHapps: Array<any> = [];
   let appAgentWs: AppAgentWebsocket;
@@ -106,10 +103,7 @@ export const installAgent = async (
   };
 };
 
-export const setUpAliceandBob = async (
-  with_config: boolean = false,
-  resource_base_type?: any
-) => {
+export const setUpAliceandBob = async () => {
   const { servicesProcess, signalingServerUrl } = await runLocalServices();
   const alice_conductor = await createConductor(signalingServerUrl);
   const bob_conductor = await createConductor(signalingServerUrl);
@@ -120,10 +114,7 @@ export const setUpAliceandBob = async (
     habits_cell: habits_cell_alice,
   } = await installAgent(
     alice_conductor,
-    "alice",
-    undefined,
-    with_config,
-    resource_base_type
+    "alice"
   );
   const {
     appAgentWs: bob,
@@ -132,10 +123,7 @@ export const setUpAliceandBob = async (
     habits_cell: habits_cell_bob,
   } = await installAgent(
     bob_conductor,
-    "bob",
-    alice_agent_key,
-    with_config,
-    resource_base_type
+    "bob"
   );
   await addAllAgentsToAllConductors([alice_conductor, bob_conductor]);
   return {

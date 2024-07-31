@@ -828,33 +828,33 @@ export default class BaseVisualization implements IVisualization {
       .on("dblclick.zoom", null);
   }
 
-  static sumHierarchyData(data): void {
-    if (!data?.sum) return;
-    data.sum((d) => {
-      // Return a binary interpretation of whether the habit was completed that day
-      // const thisNode = data.descendants().find((node) => node.data == d);
-      // let content = parseTreeValues(thisNode.data.content);
+  // static sumHierarchyData(data): void {
+  //   if (!data?.sum) return;
+  //   data.sum((d) => {
+  //     // Return a binary interpretation of whether the habit was completed that day
+  //     // const thisNode = data.descendants().find((node) => node.data == d);
+  //     // let content = parseTreeValues(thisNode.data.content);
 
-      // if (content!.status === "") return 0;
-      // if (content!.status === "OOB") return 0;
+  //     // if (content!.status === "") return 0;
+  //     // if (content!.status === "OOB") return 0;
 
-      // const statusValue = JSON.parse(content!.status);
-      // return +statusValue;
-      return 1
-    });
-  }
+  //     // const statusValue = JSON.parse(content!.status);
+  //     // return +statusValue;
+  //     return 1
+  //   });
+  // }
 
-  static accumulateNodeValues(node): void {
-    if (!node?.descendants) return;
-    while (node.descendants().some((node) => node.value > 1)) {
-      // Convert node values to binary based on whether their descendant nodes are all completed
-      node.each((node) => {
-        if (node.value > 1) {
-          node.value = cumulativeValue(node);
-        }
-      });
-    }
-  }
+  // static accumulateNodeValues(node): void {
+  //   if (!node?.descendants) return;
+  //   while (node.descendants().some((node) => node.value > 1)) {
+  //     // Convert node values to binary based on whether their descendant nodes are all completed
+  //     node.each((node) => {
+  //       if (node.value > 1) {
+  //         node.value = cumulativeValue(node);
+  //       }
+  //     });
+  //   }
+  // }
 
   activeOrNonActiveOpacity(d, dimmedOpacity: string): string {
     if (
@@ -1422,15 +1422,5 @@ export default class BaseVisualization implements IVisualization {
       this.addLegend();
       this.bindLegendEventHandler();
     }
-  }
-}
-
-export function accumulateTree(json, thisArg) {
-  try {
-    BaseVisualization.sumHierarchyData.call(null, json);
-    BaseVisualization.accumulateNodeValues.call(thisArg, json);
-    // TODO memoise
-  } catch (error) {
-    console.error("Could not manipulate tree: ", error);
   }
 }
