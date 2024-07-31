@@ -1,5 +1,5 @@
 {
-  "productName": "habit_fract",
+  "productName": "Habit Fract",
   "version": "0.1.1",
   "identifier": "net.habitfract.personal",
   "build": {
@@ -17,6 +17,13 @@
   "bundle": {
     "iOS": {
       "developmentTeam": "XD92A88BSZ"
+    },
+    "macOS": {
+      "frameworks": [],
+      "minimumSystemVersion": "",
+      "exceptionDomain": "",
+      "signingIdentity": null,
+      "entitlements": "entitlements.plist"
     },
     "active": true,
     "targets": "all",
