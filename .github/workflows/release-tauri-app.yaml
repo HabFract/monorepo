@@ -65,12 +65,6 @@ jobs:
           pnpm i vite -D -w
           cd design-system && pnpm build
           pnpm install
-      - name: Prepare mac codesign
-        if: matrix.platform == 'macos-12'
-        run: |
-          echo "${{ secrets.APPLE_CERTIFICATE }}" | base64 --decode > cert.p12
-          openssl pkcs12 -in cert.p12 -nodes \
-          -passin pass:"${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" | openssl x509 -noout -subject
 
       - name: build the app
         uses: tauri-apps/tauri-action@v0
