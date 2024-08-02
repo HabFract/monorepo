@@ -38,6 +38,7 @@
     "antd": "^5.11.0",
     "apexcharts": "^3.44.0",
     "autoprefixer": "^10.4.16",
+    "broadcastchannel-polyfill": "^1.0.1",
     "buffer": "^6.0.3",
     "d3-array": "^3.2.4",
     "d3-ease": "^3.0.1",

@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import BootScreen from './BootScreen'
+import 'broadcastchannel-polyfill'
 import App from './App'
 import { StateMachine } from './state/stateMachine'
 import { AppState, AppStateStore, AppTransitions, initialState, routes } from './routes'
