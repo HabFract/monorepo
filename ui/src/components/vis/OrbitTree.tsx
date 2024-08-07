@@ -9,7 +9,7 @@ import { useStateTransition } from '../../hooks/useStateTransition';
 import { SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { currentOrbitCoords, currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 
-import { Modal } from 'flowbite-react';
+import { Modal, Spinner } from 'flowbite-react';
 import { Form, Formik } from 'formik';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
@@ -163,7 +163,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   }, [json, x, y, data])
   return (
     <>
-      {loading && <div>Loading!</div>}
+      {loading &&  <Spinner aria-label="Loading!"size="xl" className='full-spinner' />}
       {isModalOpen && (
         <Modal show={isModalOpen} onClose={toggleModal}>
           <Modal.Header>
