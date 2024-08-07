@@ -9,18 +9,10 @@ resolver = "2"
 members = ["crates/dnas/*/zomes/coordinator/*", "crates/dnas/*/zomes/integrity/*", "src-tauri"]
 
 [workspace.dependencies]
-hdk = "0.3.1"
-hdi = "0.4.1"
+hdk = "0.3.2"
+hdi = "0.4.2"
 serde = "1.0"
 serde_json = "1"
-holo_hash = "^0.3.1-rc.0"
-holochain_zome_types = "^0.3.1"
-holochain_integrity_types = "^0.3.1"
-holochain_types = "^0.3.1"
-holochain_nonce = "^0.3.1"
-holochain_keystore = "^0.3.1"
-holochain_holochain_conductor_api = "^0.3.1"
-holochain = "^0.3.1"
 
 [workspace.dependencies.personal]
 path = "crates/dnas/habits/zomes/coordinator/personal"
