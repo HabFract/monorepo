@@ -14,7 +14,7 @@ import { currentOrbitId, currentSphere } from './state/currentSphereHierarchyAto
 import { useGetSpheresQuery } from './graphql/generated';
 import { AppMachine } from './main';
 import { getVersion } from '@tauri-apps/api/app';
-import { ALPHA_RELEASE_DISCLAIMER } from './constants';
+import { ALPHA_RELEASE_DISCLAIMER, NODE_ENV } from './constants';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
@@ -29,6 +29,7 @@ function App({ children: pageComponent }: any) {
   }, [AppMachine.state.currentState])
 
   useEffect(() => {
+    if(NODE_ENV == 'dev') return
     getVersion().then(version => {
       setCurrentVersion(version)
     });

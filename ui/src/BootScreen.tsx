@@ -14,6 +14,7 @@ import './App.css'
 import 'habit-fract-design-system/dist/style.css';
 import './typo.css'
 import { Spinner } from 'flowbite-react';
+import { NODE_ENV } from './constants';
 
 async function checkForAppUpdates(onUserClick: false) {
   const update = await check();
@@ -40,11 +41,12 @@ function BootScreen({ children }: any) {
 
   useEffect(() => {
     if(connected) return;
-    checkForAppUpdates(false).then(update => {
+    
+    if(NODE_ENV !== 'dev') {checkForAppUpdates(false).then(update => {
       console.log(update)
     }).catch(err => {
       console.error(err)
-    });
+    });}
     getConnection().then(connection => {
       
       AppMachine.state.client = {...connection, conductorUri: connection.client.client.url!.href }
