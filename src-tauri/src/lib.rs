@@ -30,7 +30,7 @@ pub fn run() {
                 .level(log::LevelFilter::Warn)
                 .build(),
         )
-        .plugin(tauri_plugin_holochain::async_init(
+        .plugin(tauri_plugin_holochain::init(
             vec_to_locked(vec![]).expect("Can't build passphrase"),
             HolochainPluginConfig {
                 signal_url: signal_url(),
@@ -44,20 +44,18 @@ pub fn run() {
             .plugin(tauri_plugin_updater::Builder::new().build())?;
 
             let handle = app.handle().clone();
-            app.handle().listen("holochain-setup-completed", move |_event| {
-                let handle = handle.clone();
-                tauri::async_runtime::spawn(async move {
-                    setup(handle.clone()).await.expect("Failed to setup");
+            let result: anyhow::Result<()> = tauri::async_runtime::block_on(async move {
+                setup(handle).await?;
 
-                    handle
-                        .holochain()
-                        .expect("Failed to get holochain")
-                        .main_window_builder(String::from("main"), false, Some(APP_ID.into()), None).await
-                        .expect("Failed to build window")
-                        .build()
-                        .expect("Failed to open main window");
-                });
+                // After set up we can be sure our app is installed and up to date, so we can just open it
+                app.holochain()?
+                    .main_window_builder(String::from("main"), false, Some(String::from("habit_fract")), None).await?
+                    .build()?;
+
+                Ok(())
             });
+
+            result?;
 
             Ok(())
         })
@@ -138,12 +136,26 @@ fn signal_url() -> Url2 {
 
 fn holochain_dir() -> PathBuf {
     if tauri::is_dev() {
-        let tmp_dir = tempdir::TempDir::new("habit_fract").expect("Could not create temporary directory");
+        #[cfg(target_os = "android")]
+        {
+            app_dirs2::app_root(
+                app_dirs2::AppDataType::UserCache,
+                &app_dirs2::AppInfo {
+                    name: "hello",
+                    author: std::env!("CARGO_PKG_AUTHORS"),
+                },
+            ).expect("Could not get the UserCache directory")
+        }
+        #[cfg(not(target_os = "android"))]
+        {
+            let tmp_dir =
+                tempdir::TempDir::new("habit_fract").expect("Could not create temporary directory");
 
-        // Convert `tmp_dir` into a `Path`, destroying the `TempDir`
-        // without deleting the directory.
-        let tmp_path = tmp_dir.into_path();
-        tmp_path
+            // Convert `tmp_dir` into a `Path`, destroying the `TempDir`
+            // without deleting the directory.
+            let tmp_path = tmp_dir.into_path();
+            tmp_path
+        }
     } else {
         app_dirs2::app_root(
             app_dirs2::AppDataType::UserData,
