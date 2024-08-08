@@ -53,6 +53,7 @@
 
 .onboarding-layout {
   @apply flex justify-between flex-col gap-2 p-2 w-full;
+  overflow-y: auto;
 }
 
 .home-layout .top {
@@ -76,7 +77,7 @@
   top: 0;
   left: 0;
   right: 0;
-  background: url(assets/mask.svg) 0 -32vh no-repeat;
+  background: url(assets/mask.svg) -8px -32vh no-repeat;
   opacity: 0.25;
   width: 100%;
   height: 75%;
@@ -142,21 +143,10 @@ nav + main.page-container .orbits-list {
   @apply text-line fill-primary;
 }
 
-.grayed {
-  @apply text-gray-300 !important;
-}
-
-.onboarding-subtitle {
-  line-height: 2rem;
-  font-size: 1rem;
-  width: 100%;
-  text-align: center;
-  margin: 1rem 0 0 0;
-  font-family: 'Nunito', Arial, sans-serif;
-}
-
 .app-version-disclaimer button{
   height: 1.5rem;
+  max-width: 2rem !important;
+  text-overflow: ellipsis;
 }
 
 .side-nav.expanded + .framer-motion {
@@ -164,8 +154,9 @@ nav + main.page-container .orbits-list {
 }
 
 .framer-motion {
-  width: 100vw !important;
-  height: 100vh !important;
+  width: 100% !important;
+  height: 100% !important;
+  position: relative;
 }
 
 /* Modal */
@@ -198,6 +189,9 @@ nav + main.page-container .orbits-list {
     grid-template-columns: 10% 80% 10%;
     place-content: center;
   }
+  .app-version-disclaimer button{
+    max-width: initial !important;
+  }
 
   .page-container {
     grid-column: 2/3;
@@ -211,6 +205,9 @@ nav + main.page-container .orbits-list {
   .ant-app {
     grid-template-columns: 5% 90% 5%;
     grid-template-rows: 5% 90% 5%;
+  }
+  .home-layout {
+    max-height: 80vh;
   }
 
   .page-container {
@@ -259,14 +256,10 @@ nav + main.page-container .orbits-list {
   }
   .page-container.create-form {
     justify-content: center;
+    overflow-y: auto;
   }
   .page-container.vis {
     padding: 0;
-  }
-  .onboarding-title {
-    height: 3rem;
-    line-height: 3rem;
-    font-size: 1.5rem;
   }
   .onboarding-subtitle {
     line-height: 2.5rem;
@@ -314,6 +307,6 @@ nav + main.page-container .orbits-list {
   .onboarding-layout > div > div:nth-child(2) {
     @apply absolute;
     right: 11rem;
-    margin-top: .5rem;
+    margin-top: .5rem;  
   }
 }

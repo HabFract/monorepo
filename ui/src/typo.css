@@ -39,24 +39,37 @@ body {
   min-height: 100vh;
 }
 
-h1.onboarding-title {
+.onboarding-title {
   display: flex;
   flex: 1;
   text-align: center;
   margin: 0;
   font-family: TTSupermolot, Arial, sans-serif;
-  line-height: 2.2em;
+  line-height: 2.2rem;
   font-weight: 400;
   @apply text-primary;
+  font-size: 1rem;
+}
+
+.grayed {
+  @apply text-gray-300 !important;
+}
+
+.onboarding-subtitle {
+  line-height: 2rem;
+  font-size: 1rem;
+  width: 100%;
+  text-align: center;
+  margin: 1rem 0 0 0;
+  font-family: 'Nunito', Arial, sans-serif;
 }
 
 p.form-description, *[data-testid=modal-overlay]>div>div h3 {
   line-height: 24px;
-  font-size: 1em;
+  font-size: 1rem;
   font-weight: 300;
   @apply font-sans;
-  max-width: 28rem;
-  margin: 0 auto 1rem auto;
+  text-align: center;
 }
 *[data-testid=modal-overlay]>div>div h3 {
   font-family: TTSupermolot, Arial, sans-serif;
@@ -74,4 +87,36 @@ p.form-description, *[data-testid=modal-overlay]>div>div h3 {
 p.form-description em, .helper-text em {
   font-weight: medium;
   @apply text-text-prim;
+}
+
+
+@media screen and (min-width: 440px) {
+  .onboarding-subtitle, p.form-description, .onboarding-progress {
+    max-width: 80vw;
+  }
+  .onboarding-title {
+    font-size: 1.5rem;
+  }
+  .onboarding-subtitle {
+    line-height: 2.5rem;
+    font-size: 1.5rem;
+    margin: 1rem 0 .5rem 0;
+  }
+  p.form-description {
+    line-height: 2rem;
+    font-size: 1.2rem;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .onboarding-title {
+    font-size: 2rem;
+    line-height: 3.5rem;
+    @apply mb-4;
+  }
+}
+@media screen and (min-width: 1680px) {
+  .onboarding-title {
+    font-size: 2.5rem;
+  }
 }

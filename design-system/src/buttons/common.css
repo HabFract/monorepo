@@ -150,3 +150,16 @@ div[data-testid="flowbite-dropdown"] button {
   background: rgba(162,234,196, 0.8);
   background: linear-gradient(90deg, rgba(162,234,196,0.8) 50%, rgba(0,177,151,0.8) 100%);
 }
+
+@media screen and (min-width: 1200px) {
+  .btn-icon .icon {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+@media screen and (min-width: 1680px) {
+  .btn-icon .icon {
+    width: 4rem;
+    height: 4rem;
+  }
+}

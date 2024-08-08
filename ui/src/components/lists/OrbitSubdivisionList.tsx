@@ -115,7 +115,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
               </HelperText>}
 
               <Form noValidate={true} style={{gridColumn: "-2/-1", gridRow: "1/-1", }}>
-                <div className="flex flex-col gap-0">
+                <div className="flex flex-col gap-2 md:gap-4">
                   {refinementType == Refinement.Update
                     ? <Field
                         component={TextInputField}
