@@ -9,8 +9,7 @@ import { useStateTransition } from '../../hooks/useStateTransition';
 import { SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { currentOrbitCoords, currentSphere, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 
-import { Modal, Spinner } from 'flowbite-react';
-import { Form, Formik } from 'formik';
+import { Spinner } from 'flowbite-react';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
 
@@ -101,10 +100,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   }
   useEffect(() => {
     if (typeof error != 'object') return;
-    setIsModalOpen(true)
-    const errorObject = Object.values(error)[1]?.[0];
-    const parsedGuestError = errorObject.stack.match(/Guest\("([\w\s]+)"\)/);
-    setModalErrorMsg(parsedGuestError?.[1] || "There was an error")
+    console.log('error :>> ', error);
   }, [error])
 
   useEffect(() => {
@@ -164,44 +160,6 @@ export const OrbitTree: ComponentType<VisProps> = ({
   return (
     <>
       {loading &&  <Spinner aria-label="Loading!"size="xl" className='full-spinner' />}
-      {isModalOpen && (
-        <Modal show={isModalOpen} onClose={toggleModal}>
-          <Modal.Header>
-            You are unable to visualise right now...
-          </Modal.Header>
-          <Modal.Body>
-            {modalErrorMsg}
-            <Formik
-              initialValues={{
-
-              }}
-              onSubmit={(_values) => {
-                toggleModal();
-              }}
-            >
-              {({ handleSubmit }) => (
-                <Form onSubmit={handleSubmit}>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex flex-col">
-                        <label className='text-xl lowercase capitalize'>
-                        </label>
-                        <label className='text-xl lowercase capitalize'>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <button type="submit" className="btn btn-primary">
-                      Ok
-                    </button>
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          </Modal.Body>
-        </Modal>
-      )}
       {!error && json && currentOrbitTree && render(currentOrbitTree, visCoverage, x, y, hierarchy(getJsonDerivation(json)))}
     </>
   )
