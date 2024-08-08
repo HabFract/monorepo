@@ -35,7 +35,7 @@ export class StateMachine<S extends State, T extends StateStore<S>> {
       this.go()
     } else {
       const currState = this.state.currentState
-      throw new Error(
+      console.warn(
         `Could not set state to ${String(state)} while at current state ${String(currState)}.`
       )
     }
