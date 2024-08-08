@@ -98,7 +98,6 @@ export const cache = new InMemoryCache({
 });
 
 export async function initGraphQLClient({ dnaConfig, conductorUri }) {
-  
   const schema = await bindSchema({ dnaConfig, conductorUri }) // {conductorUri: `ws://localhost:${APP_WS_PORT}`} as APIOptions)
 
   return new ApolloClient({
@@ -107,8 +106,11 @@ export async function initGraphQLClient({ dnaConfig, conductorUri }) {
   })
 }
 
-export const client = async() => {
+const createClient = async() => {
   const connection = await autoConnect();
   const options = {...connection, conductorUri: connection.client.client.url!.href };
   return await initGraphQLClient(options);
 }
+
+export const client = createClient();
+

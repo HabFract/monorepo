@@ -48,7 +48,7 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, l
               const variables = { sphereEntryHashB64: eH };
               let data;
               try {
-                const gql = await client();
+                const gql = await client;
                 data = await gql.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only'} )
                 if(data?.data?.orbits) {
                   const orbits = (extractEdges(data.data.orbits) as Orbit[]);
@@ -69,7 +69,7 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, l
     } catch (error) {
       console.error(error)
     }
-  }, [sphereNodes])
+  }, [])
 
   return <Spinner aria-label="Loading!"size="xl" className='full-spinner' />
 };

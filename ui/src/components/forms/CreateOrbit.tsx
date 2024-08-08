@@ -70,7 +70,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
       const variables = { sphereEntryHashB64: sphereEh };
       let data;
       try {
-        const gql = await client();
+        const gql = await client;
         data = await gql.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only'} )
         if(data?.data?.orbits) {
           const orbits = (extractEdges(data.data.orbits) as Orbit[]);
