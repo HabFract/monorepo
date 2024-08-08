@@ -3,7 +3,7 @@ import { useStateTransition } from './hooks/useStateTransition';
 
 import Nav from './components/Nav';
 import { Flowbite, Modal, Spinner } from 'flowbite-react';
-import { cloneElement, ReactComponentElement, ReactNode, useEffect, useState } from 'react';
+import { cloneElement, ReactNode, useEffect, useState } from 'react';
 
 import BackCaret from './components/icons/BackCaret';
 import Onboarding from './components/layouts/Onboarding';
@@ -38,9 +38,9 @@ function App({ children: pageComponent }: any) {
   
   function withPageTransition(page: ReactNode) {
     return (
-      <AnimatePresence mode='wait'>
+      <AnimatePresence  mode='wait'>
         <motion.div
-        style={{width: '100vw', height: '100vh'}}
+          className='framer-motion'
           key={+(new Date)}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

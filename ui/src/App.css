@@ -159,6 +159,15 @@ nav + main.page-container .orbits-list {
   height: 1.5rem;
 }
 
+.side-nav.expanded + .framer-motion {
+  opacity: 0.3 !important;
+}
+
+.framer-motion {
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
 /* Modal */
 *[data-testid=modal-overlay]>div>div {
   @apply bg-input-bg;
