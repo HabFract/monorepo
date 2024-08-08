@@ -1,4 +1,4 @@
-import { CreateProfile, CreateSphere, CreateOrbit, RefineOrbit } from "./components/forms";
+import { CreateSphere, CreateOrbit, RefineOrbit } from "./components/forms";
 import { ListOrbits, ListSpheres } from "./components/lists";
 import PreloadOrbitData from "./components/Preload";
 
@@ -78,7 +78,7 @@ const lists = ['ListSpheres', 'ListOrbits'];
 
 export const AppTransitions: StateTransitions<AppState> = {
   Boot: ['Home'],
-  PreloadAndCache: ['Vis', 'CreateSphere', 'PreloadAndCache'],
+  PreloadAndCache: ['Vis', 'CreateSphere'],
   Home: [ "Onboarding1", "PreloadAndCache"],
   Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding2', 'Onboarding3'],

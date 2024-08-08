@@ -1,7 +1,6 @@
 function HomeLayout({ startBtn, firstVisit, loading } : any) {
   return (
     <div className="home-layout">
-      
       <div className="bottom">{startBtn}</div>
       <div className="top">
         <img className="w-64 pt-2 pl-1 mb-2" src="assets/logo-dark-transparent-horizontal.svg" />
