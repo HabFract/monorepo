@@ -37,7 +37,6 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, l
     const landingEh = landingSphereEh || eH;
 
     store.set(currentSphere, { actionHash: landingId, entryHash: landingEh });
-    if(landingSphereEh && landingSphereId) transition('Vis', {currentSphereEhB64: landingEh, currentSphereAhB64: landingId }); // Skip cacheing when we are just transitioning
 
     // Clean up the current cache first
     clear()
