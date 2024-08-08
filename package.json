@@ -52,6 +52,7 @@
     "flowbite": "^2.0.0",
     "flowbite-react": "^0.6.4",
     "formik": "^2.4.5",
+    "framer-motion": "^11.3.24",
     "graphql-tag": "^2.12.6",
     "habit-fract-design-system": "workspace:*",
     "jotai": "^2.5.1",
