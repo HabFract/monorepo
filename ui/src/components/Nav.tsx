@@ -1,7 +1,7 @@
 import "./style.css";
 import TreeVisIcon from "./icons/TreeVisIcon";
 
-import { UnorderedListOutlined, PlusCircleFilled, ArrowsAltOutlined, PlusCircleOutlined, MailOutlined } from "@ant-design/icons";
+import { UnorderedListOutlined, PlusCircleFilled, ArrowsAltOutlined, PlusCircleOutlined, SettingFilled } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
 import { Sphere, useGetSpheresQuery } from "../graphql/generated";
@@ -48,10 +48,11 @@ enum Page {
 export interface INav {
   transition: (newState: string, params?: object) => void;
   setSideNavExpanded: Function;
+  setSettingsOpen: Function;
   sideNavExpanded: boolean;
 }
 
-const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded } : INav) => {
+const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, setSideNavExpanded } : INav) => {
   const ref = useRef(null);
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
@@ -99,7 +100,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
   function createFixedMenuItems() {
     return [
       getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
-      getItem('Feedback', 'fb', <MailOutlined />),
+      getItem('Settings', 'settings', <SettingFilled />),
       // getItem('Dashboard', 'db', <PieChartFilled />, undefined, undefined, true),
     ]  
   }
@@ -167,6 +168,9 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSideNavExpanded }
         openMenu()
         if(tooltipRef.current) {(tooltipRef.current as HTMLElement).style.top = "0rem"}
         activatePageContextTooltip(15000)
+        break;
+      case e.key == 'settings':
+        setSettingsOpen(true)
         break;
 
       case e.key == 'add-sphere':

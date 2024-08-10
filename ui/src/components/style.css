@@ -251,6 +251,7 @@ nav > .ant-menu:first-child .ant-menu-item:last-child {
 .ant-menu-item {
   border-radius: .5rem !important;
 }
+
 .ant-menu-item:active {
   border-radius: 1.25rem !important;
   @apply bg-secondary-500 text-white;
@@ -350,6 +351,7 @@ button[data-testid="dark-themetheme-toggle"]:active, .toggle-expanded-menu:activ
 .side-nav .ant-menu-title-content {
   margin-top: .25rem;
   margin-left: 1.6rem !important;
+  @apply text-white;
 }
 .side-nav:not(.expanded) > .ant-menu-root .ant-menu-title-content {
   display: none;

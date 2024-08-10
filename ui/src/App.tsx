@@ -7,6 +7,7 @@ import { cloneElement, ReactNode, useEffect, useState } from 'react';
 
 import BackCaret from './components/icons/BackCaret';
 import Onboarding from './components/layouts/Onboarding';
+import Settings from './components/Settings';
 
 import { Button, ProgressBar, darkTheme } from 'habit-fract-design-system';
 import { store } from './state/jotaiKeyValueStore';
@@ -23,6 +24,7 @@ function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // Displays top level modal
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
 
   const [mainContainerClass, setMainContainerClass] = useState<string>("page-container");
   useEffect(() => { // Apply main container class conditionally based on page
@@ -86,7 +88,7 @@ function App({ children: pageComponent }: any) {
       </div>
       {/* Return users can see a Nav */}
       {state !== 'Home' && !state.match('Onboarding')
-        && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded}></Nav>
+        && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSettingsOpen={() => {setIsModalOpen(true); setIsSettingsOpen(true)}} setSideNavExpanded={setSideNavExpanded}></Nav>
       }
 
       {loadingSpheres
@@ -101,12 +103,12 @@ function App({ children: pageComponent }: any) {
         ))
       }
     </main>
-    <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
+    <Modal show={isModalOpen} onClose={() => {setIsSettingsOpen(false); setIsModalOpen(false)}}>
       <Modal.Header>
-        Disclaimer:
+        {isSettingsOpen ? "Settings" : "Disclaimer:"}
       </Modal.Header>
       <Modal.Body>
-        <p className='disclaimer'>{ALPHA_RELEASE_DISCLAIMER}</p>
+        {isSettingsOpen ? <Settings /> : <p className='disclaimer'>{ALPHA_RELEASE_DISCLAIMER}</p>}
       </Modal.Body>
     </Modal>
   </Flowbite>
