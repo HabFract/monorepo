@@ -141,7 +141,7 @@ fn holochain_dir() -> PathBuf {
             app_dirs2::app_root(
                 app_dirs2::AppDataType::UserCache,
                 &app_dirs2::AppInfo {
-                    name: "hello",
+                    name: "habit_fract",
                     author: std::env!("CARGO_PKG_AUTHORS"),
                 },
             ).expect("Could not get the UserCache directory")
