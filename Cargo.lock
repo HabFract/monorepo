@@ -2974,7 +2974,7 @@ dependencies = [
 
 [[package]]
 name = "habit_fract"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "app_dirs2",

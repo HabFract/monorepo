@@ -1,7 +1,10 @@
 {
-  "name": "habitfract-monorepo",
-  "version": "0.1.1",
-  "description": "",
+  "name": "habit-fract",
+  "version": "0.1.2",
+  "description": "A peer-to-peer personal habit tracking application built on Holochain",
+  "keywords": ["habits", "self-improvement", "holochain", "peer-to-peer"],
+  "author": "Nick Stebbings",
+  "license": "Apache-2.0",
   "main": "index.js",
   "scripts": {
     "start": "AGENTS=1 pnpm network",
@@ -26,9 +29,6 @@
     "launch": "concurrently-repeat \"pnpm run tauri dev --verbose --no-watch\" $AGENTS",
     "tauri": "tauri"
   },
-  "keywords": [],
-  "author": "",
-  "license": "Apache-2.0",
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
     "@tauri-apps/api": "2.0.0-beta.13",
