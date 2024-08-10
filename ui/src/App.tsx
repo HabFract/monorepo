@@ -17,6 +17,7 @@ import { getVersion } from '@tauri-apps/api/app';
 import { ALPHA_RELEASE_DISCLAIMER, NODE_ENV } from './constants';
 
 import { motion, AnimatePresence } from "framer-motion";
+import { checkForAppUpdates } from './update';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
@@ -27,7 +28,7 @@ function App({ children: pageComponent }: any) {
   useEffect(() => { // Apply main container class conditionally based on page
     setMainContainerClass(getMainContainerClassString(AppMachine.state.currentState))
   }, [AppMachine.state.currentState])
-  
+
   const [currentVersion, setCurrentVersion] = useState<string>();
   useEffect(() => {
     if (NODE_ENV == 'dev') return
@@ -35,17 +36,17 @@ function App({ children: pageComponent }: any) {
       setCurrentVersion(version)
     });
   }, [])
-  
+
   function withPageTransition(page: ReactNode) {
     return (
-      <AnimatePresence  mode='wait'>
+      <AnimatePresence mode='wait'>
         <motion.div
           className='framer-motion'
           key={+(new Date)}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          >
+        >
           {page}
         </motion.div>
       </AnimatePresence>
@@ -61,14 +62,21 @@ function App({ children: pageComponent }: any) {
         return withPageTransition(component)
       default:
         return component
-      }
     }
-    
+  }
+
   // Don't start at the home page for return users (those with at least one Sphere)
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
   state.match('Home') && userHasSpheres && transition('PreloadAndCache');
 
+  if (NODE_ENV == 'tauri') {
+    checkForAppUpdates(false).then(update => {
+      console.log(update)
+    }).catch(err => {
+      console.error(err)
+    });
+  }
   return <Flowbite theme={{ theme: darkTheme }}>
     <main className={mainContainerClass}>
       {/* Version and alpha status disclaimer */}
@@ -80,16 +88,16 @@ function App({ children: pageComponent }: any) {
       {state !== 'Home' && !state.match('Onboarding')
         && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSideNavExpanded={setSideNavExpanded}></Nav>
       }
-  
+
       {loadingSpheres
         ? <Spinner aria-label="Loading!" size="xl" className='full-spinner' />
         : pageComponent && withLayout(cloneElement(pageComponent, {
-            // Only Renders when state == "Home"
-            startBtn: HomeContinue(state, transition),  
-            // Only Renders when state includes "Onboarding"
-            headerDiv: OnboardingHeader(state, transition),
-            submitBtn: OnboardingContinue(state, transition)
-          }
+          // Only Renders when state == "Home"
+          startBtn: HomeContinue(state, transition),
+          // Only Renders when state includes "Onboarding"
+          headerDiv: OnboardingHeader(state, transition),
+          submitBtn: OnboardingContinue(state, transition)
+        }
         ))
       }
     </main>
@@ -107,7 +115,7 @@ function App({ children: pageComponent }: any) {
 function HomeContinue(state: any, transition: any): any {
   return state.match('Home') && <Button
     type={"onboarding"}
-    onClick={() => { return transition("Onboarding1"); } }>
+    onClick={() => { return transition("Onboarding1"); }}>
     Start Tracking Habits
   </Button>;
 }
@@ -118,11 +126,11 @@ function OnboardingContinue(state: any, transition: any) {
     type={"onboarding"}
     onClick={(_e) => {
       return state.match("Onboarding3") ? transition(getNextOnboardingState(state)) : transition(getNextOnboardingState(state));
-    } }>Save & Continue</Button>;
+    }}>Save & Continue</Button>;
 }
 
 function OnboardingHeader(state: string, transition: any) {
-  if(!state.match("Onboarding")) return <></>
+  if (!state.match("Onboarding")) return <></>
   return <>
     <div className={"flex w-full justify-between gap-2"}>
       <Button
@@ -138,7 +146,7 @@ function OnboardingHeader(state: string, transition: any) {
               : { orbitToEditId: orbit?.id };
 
           return transition(getLastOnboardingState(state), { editMode: true, ...props });
-        } }>
+        }}>
       </Button>
       <h1 className={"onboarding-title"}>Make a Positive Habit</h1>
     </div>
