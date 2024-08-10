@@ -1,7 +1,9 @@
 {
-  "$schema": "../gen/schemas/desktop-schema.json",
-  "identifier": "main-capability",
-  "description": "Capability for the main window",
+  "$schema": "../gen/schemas/mobile-schema.json",
+  "identifier": "mobile-capability",
+  "description": "Capability for mobile",
+  "platforms": ["iOS", "android"],
+  "local": true,
   "windows": ["main"],
   "permissions": [
     "core:path:default",
