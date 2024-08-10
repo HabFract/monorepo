@@ -200,7 +200,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                   body: "This refers to the magnitude of your behaviour. Astronomic goes well with anything vast, like running a marathon. Atomic is for small, incremental actions, like putting on your running shoes. Sub-astronomic is anything inbetween!",
                 })}
                 options={Object.values(Scale).map((scale) => {
-                  const cannotBeAstro = !(editMode && state.match("Onboarding")) && values.parentHash !== '' && values.parentHash !== 'root';
+                  const cannotBeAstro = !(editMode && state.match("Onboarding")) && values.parentHash !== null && values.parentHash !== 'root';
                   return cannotBeAstro && scale == 'Astro'
                     ? null
                     : <option key={scale} value={scale}>{getDisplayName(scale)}</option>
