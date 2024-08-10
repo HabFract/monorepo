@@ -1,8 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
-import { TextDecoder } from "util";
+import { vi } from 'vitest';
 import "fake-indexeddb/auto";
-//@ts-ignore
-global.TextDecoder = TextDecoder;
 
 import '@testing-library/react/dont-cleanup-after-each';
 import { mockedCacheEntries } from "./e2e/mocks/cache";
@@ -118,12 +115,17 @@ vi.mock("../ui/src/state/jotaiKeyValueStore", () => ({
 }));
 
 // Mock app level constants
-vi.mock("../ui/src/constants", () => ({
-  HAPP_ID: 'test',
-  APP_WS_PORT: 1234,
-  ADMIN_WS_PORT: 4321,
-  HAPP_DNA_NAME: "habits",
-}));
+vi.mock("../ui/src/constants", async (importOriginal) => {
+  const actual = await importOriginal() as any
+  return {
+      ...actual,
+    NODE_ENV: 'test',
+    HAPP_ID: 'test',
+    APP_WS_PORT: 1234,
+    ADMIN_WS_PORT: 4321,
+    HAPP_DNA_NAME: "habits",
+  }
+});
 
 vi.mock("../ui/src/main", () => ({
   client: () => ({

@@ -2,7 +2,7 @@ import React from 'react';
 import '../setupTests'
 import { describe, expect, test, it } from 'vitest'
 import { render, waitFor, screen, act } from '@testing-library/react';
-
+import { prettyDOM } from '@testing-library/react';
 import { renderVis } from '../../ui/src/components/vis/helpers';
   
 import OrbitTree from '../../ui/src/components/vis/OrbitTree';
@@ -17,13 +17,13 @@ test('renders a loading state, then an orbit tree vis with one node', async () =
   let Tree = renderVis(OrbitTree);
 
   // Arrange
-  const { getByText, getAllByTestId } = render(
+  const { getByText, getByTestId } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
       {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
   
   // Assert
   await waitFor(() => {
-    expect(getByText('Loading!')).toBeTruthy();
+    expect(getByTestId('vis-spinner')).toBeTruthy();
   });
 
   await waitFor(() => {
@@ -51,35 +51,37 @@ test.skip('renders a loading state, then an orbit tree vis with two nodes', asyn
   let Tree = renderVis(OrbitTree);
 
   // Arrange
-  const { getByText, getAllByTestId } = render(
+  const { container, getByTestId } = render(
     <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
       {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
   
   // Assert
   await waitFor(() => {
-    expect(getByText('Loading!')).toBeTruthy();
+    expect(getByTestId('vis-spinner')).toBeTruthy();
   });
 
   await waitFor(() => {
+    
+console.log(prettyDOM(container));
     expect(screen.getAllByTestId("test-node").length).toBe(2);
     expect(screen.getByTestId("svg")).toBeTruthy();
   });
 });
 
-test.skip('renders details about two orbits', async () => { // There is some kind of mounting issue of the root vis which has come up since Tauri deployment. Skip for now to get CI working at least
-  let Tree = renderVis(OrbitTree);
+// test('renders details about two orbits', async () => { // There is some kind of mounting issue of the root vis which has come up since Tauri deployment. Skip for now to get CI working at least
+//   let Tree = renderVis(OrbitTree);
   
-  // Arrange
-  const { getByText } = render(
-    <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
-      {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+//   // Arrange
+//   const { getByText } = render(
+//     <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
+//       {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
 
-  const mockOrbits = ORBITS_MOCKS[0].result.data.orbits!.edges;
-  const rootOrbitName = mockOrbits[0].node.name;
-  const childOrbitName = mockOrbits[1].node.name;
+//   const mockOrbits = ORBITS_MOCKS[0].result.data.orbits!.edges;
+//   const rootOrbitName = mockOrbits[0].node.name;
+//   const childOrbitName = mockOrbits[1].node.name;
   
-  await waitFor(() => {
-    expect(getByText(rootOrbitName)).toBeTruthy();
-    expect(getByText(childOrbitName)).toBeTruthy();
-  });
-});
+//   await waitFor(() => {
+//     expect(getByText(rootOrbitName)).toBeTruthy();
+//     expect(getByText(childOrbitName)).toBeTruthy();
+//   });
+// });

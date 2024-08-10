@@ -10,6 +10,11 @@
     "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true
   },
+  "ts-node": {
+    "experimentalSpecifierResolution": "node",
+    "transpileOnly": true,
+    "esm": true,
+  },
   "types": ["vitest/globals"],
   "include": ["e2e/*.tsx"],
   "exclude": [

@@ -1,7 +1,7 @@
 import {
   AppEntryDef,
   AppInfo,
-  AppAgentWebsocket,
+  AppWebsocket,
   InstallAppRequest,
   encodeHashToBase64,
   CellInfo,
@@ -32,7 +32,7 @@ export const installAgent = async (
   agentName: string,
 ) => {
   let agentsHapps: Array<any> = [];
-  let appAgentWs: AppAgentWebsocket;
+  let appAgentWs: AppWebsocket;
   let agent_key;
   let habits_cell;
   try {
@@ -85,9 +85,10 @@ export const installAgent = async (
     await admin.enableApp({ installed_app_id: agentHapp.installed_app_id });
     // console.log("app installed", agentHapp);
     const port = await conductor.attachAppInterface();
-    appAgentWs = await conductor.connectAppAgentWs(
-      port,
-      agentHapp.installed_app_id
+    const tokenRequest = await admin.issueAppAuthenticationToken({installed_app_id: agentHapp.installed_app_id});
+    appAgentWs = await conductor.connectAppWs(
+      tokenRequest.token,
+      port
     );
     agentsHapps.push(agentHapp);
   } catch (e) {

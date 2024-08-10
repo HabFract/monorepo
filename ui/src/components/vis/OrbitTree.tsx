@@ -159,7 +159,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   }, [json, x, y, data])
   return (
     <>
-      {loading &&  <Spinner aria-label="Loading!"size="xl" className='full-spinner' />}
+      {loading &&  <Spinner aria-label="Loading!"size="xl" data-testid={'vis-spinner'} className='full-spinner' />}
       {!error && json && currentOrbitTree && render(currentOrbitTree, visCoverage, x, y, hierarchy(getJsonDerivation(json)))}
     </>
   )

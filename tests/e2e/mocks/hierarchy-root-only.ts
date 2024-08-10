@@ -1,4 +1,5 @@
 import {
+  GetLowestSphereHierarchyLevelDocument,
   GetOrbitHierarchyDocument,
 } from "../../../ui/src/graphql/generated/index";
 import { SPHERE_ID } from "./spheres";
@@ -12,7 +13,7 @@ export const HIERARCHY_MOCKS = [
       query: GetOrbitHierarchyDocument,
       variables: {
         params: {
-          orbitEntryHashB64:"R28gZm9yIGEgd2Fsay=="
+          orbitEntryHashB64: "R28gZm9yIGEgd2Fsay==",
         },
       },
     },
@@ -31,13 +32,24 @@ export const HIERARCHY_MOCKS = [
             sphereHashB64: SPHERE_ID,
             orbitLevel: 0,
           },
-        }
+        },
       },
     },
     result: {
       data: {
         getOrbitHierarchy: `{"result": { "level_trees": [{"content":"R28gZm9yIGEgd2Fsay==","name":"R28gZm9yIGEgd2Fsay==","children":[]}]}}`,
       },
+    },
+  },
+  {
+    request: {
+      query: GetLowestSphereHierarchyLevelDocument,
+      variables: {
+        sphereEntryHashB64: "SGVhbHRoMQ==e",
+      },
+    },
+    result: {
+      data: { getLowestSphereHierarchyLevel: 0 },
     },
   },
 ];

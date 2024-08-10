@@ -1,3 +1,4 @@
+import { NODE_ENV } from './../constants';
 import bindSchema, { autoConnect, APIOptions, DNAIdMappings } from '.'
 import { InMemoryCache, ApolloClient, from, makeVar } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
@@ -108,9 +109,9 @@ export async function initGraphQLClient({ dnaConfig, conductorUri }) {
 
 const createClient = async() => {
   const connection = await autoConnect();
-  const options = {...connection, conductorUri: connection.client.client.url!.href };
+  const options = {...connection, conductorUri: connection?.client?.client?.url!.href };
   return await initGraphQLClient(options);
 }
 
-export const client = createClient();
+export const client = NODE_ENV !== 'test' && createClient();
 

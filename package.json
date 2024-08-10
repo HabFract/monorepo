@@ -16,7 +16,7 @@
     "start:backend-services": "cd crates && npm run start:precheck ",
     "start:backend-dev": "cd crates && npm run start:dev",
     "start:backend-prod": "cd crates && npm run start:prod",
-    "test:zomes": "cd tests && npm run test",
+    "test:zomes": "pnpm run --dir tests test:zomes",
     "check-env": "test ! -f .env && cp .env.example .env && cp .env crates/.env; exit 0",
     "network": "pnpm build:happ && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"pnpm local-services\" \"VITE_NODE_ENV=tauri pnpm run start:frontend\" \"pnpm launch\"",
     "build:happ": "npm run build:zomes && hc app pack workdir --recursive",

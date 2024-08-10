@@ -1,3 +1,4 @@
+import { GetLowestSphereHierarchyLevelDocument } from './../../../ui/src/graphql/generated/index';
 
 import { anOrbitConnection } from '../../../ui/src/graphql/generated/mocks-types-fixed'
 import { GetOrbitsDocument, Frequency, Scale, DeleteOrbitDocument, GetSphereDocument } from '../../../ui/src/graphql/generated/index'
@@ -62,8 +63,9 @@ export const ORBITS_MOCKS = [
                     endTime: 1617321600, // Mocked Unix timestamp for example
                   },
                 },
-                  frequency: Frequency.Week,
-                  scale: Scale.Atom,
+                frequency: Frequency.Week,
+                scale: Scale.Atom,
+                parentHash: null,
                 sphereHash: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
                 eH: 'TGlmdCB3ZWlnaHRz'
               },
@@ -82,6 +84,7 @@ export const ORBITS_MOCKS = [
                 },
                 frequency: Frequency.Day,
                 scale: Scale.Atom,
+                parentHash: null,
                 sphereHash: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
                 eH: "TWFrZSBhIGhlYWx0aHkgbWVhbA==",
               },
@@ -100,6 +103,7 @@ export const ORBITS_MOCKS = [
                 },
                 frequency: Frequency.Week,
                 scale: Scale.Atom,
+                parentHash: null,
                 sphereHash: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
                 eH: "UHJhY3RpY2UgeW9nYQ=="
               },
