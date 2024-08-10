@@ -72,7 +72,7 @@ function App({ children: pageComponent }: any) {
   const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
   state.match('Home') && userHasSpheres && transition('PreloadAndCache');
 
-  if (NODE_ENV == 'tauri') {
+  if (!['dev', 'test'].includes(NODE_ENV)) {
     checkForAppUpdates(false).then(update => {
       console.log(update)
     }).catch(err => {
