@@ -30,7 +30,8 @@ export const OrbitValidationSchema = Yup.object().shape({
   scale: Yup.mixed()
     .oneOf(Object.values(Scale))
     .required('Choose a scale'),
-  parentHash: Yup.string(),
+  parentHash: Yup.string().nullable("Can be null"),
+  childHash: Yup.string().nullable("Can be null"),
   archival: Yup.boolean(),
 });
 
@@ -105,8 +106,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
     frequency: Frequency.Day,
     scale: !!parentOrbitEh && parentOrbitEh !== 'root' ? Scale.Atom : Scale.Astro, // TODO make helper for including childOrbitEh
     archival: false,
-    parentHash: !!childOrbitEh ? 'root' : parentOrbitEh ||'',
-    childHash: childOrbitEh ||''
+    parentHash: !!childOrbitEh ? 'root' : parentOrbitEh || null,
+    childHash: childOrbitEh ||null
   });
 
   return (
@@ -118,7 +119,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
           if (!values.archival) delete values.endTime;
           delete (values as any).archival;
           delete (values as any).eH;
-          delete (values as any).childHash;
+          if(editMode) delete (values as any).childHash;
 
           let response = editMode
             ? await updateOrbit({ variables: { orbitFields: { id: orbitToEditId as string, ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined } as OrbitUpdateParams } })
@@ -144,7 +145,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
       }}
       >
       {({ values, errors, touched }) => {
-
       return  (
         <>
           {!inModal ? headerDiv : null}

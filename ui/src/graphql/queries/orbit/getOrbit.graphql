@@ -7,7 +7,6 @@ query getOrbit($id: ID!) {
     frequency
     scale
     parentHash
-    childHash
     metadata {
       description
       timeframe {

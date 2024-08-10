@@ -79,7 +79,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
           const payload = (response.data as any);
           const eH = payload?.createSphere?.entryHash || payload?.updateSphere?.entryHash
           const aH = payload?.createSphere?.actionHash || payload?.updateSphere?.actionHash
-          const props = state == 'Onboarding1' && !editMode
+          const props = state == 'Onboarding1'
             ? { sphereEh: eH }
             : { sphereAh: aH };
           store.set(currentSphere, {entryHash: eH, actionHash: aH});
