@@ -1,6 +1,6 @@
-import { jest } from "@jest/globals";
-
+import { describe, expect, it, vi } from 'vitest';
 import { TextDecoder } from "util";
+import "fake-indexeddb/auto";
 //@ts-ignore
 global.TextDecoder = TextDecoder;
 
@@ -31,12 +31,12 @@ const initialState = {
   currentSphereAhB64: SPHERE_ID,
 };
 
-let mockUseStateTransitionResponse = ["Home", jest.fn(() => {}), initialState];
+let mockUseStateTransitionResponse = ["Home", vi.fn(() => {}), initialState];
 export function setMockUseStateTransitionResponse(params: typeof initialState) {
-  mockUseStateTransitionResponse = ["Home", jest.fn(() => {}), params];
+  mockUseStateTransitionResponse = ["Home", vi.fn(() => {}), params];
 }
 
-jest.mock("../ui/src/hooks/useStateTransition", () => ({
+vi.mock("../ui/src/hooks/useStateTransition", () => ({
   useStateTransition: () => mockUseStateTransitionResponse,
   setMockUseStateTransitionResponse,
 }));
@@ -58,7 +58,7 @@ export function setMockNodeDetailsCache(params: typeof mockedCacheEntries) {
   mockNodeDetailsCacheItems = Object.fromEntries(params);
 }
 
-jest.mock("../ui/src/state/jotaiKeyValueStore", () => ({
+vi.mock("../ui/src/state/jotaiKeyValueStore", () => ({
   nodeCache: {
     entries: atom(mockNodeDetailsCache),
     keys: atom(mockNodeDetailsCacheKeys),
@@ -118,19 +118,20 @@ jest.mock("../ui/src/state/jotaiKeyValueStore", () => ({
 }));
 
 // Mock app level constants
-jest.mock("../ui/src/constants", () => ({
+vi.mock("../ui/src/constants", () => ({
+  HAPP_ID: 'test',
   APP_WS_PORT: 1234,
   ADMIN_WS_PORT: 4321,
   HAPP_DNA_NAME: "habits",
 }));
 
-jest.mock("../ui/src/main", () => ({
+vi.mock("../ui/src/main", () => ({
   client: () => ({
     query: () => {},
   }),
 }));
 
-jest.mock("@holochain/client", () => ({
+vi.mock("@holochain/client", () => ({
   AdminWebsocket: {
     appInfo: () => {},
     connect: () =>
@@ -150,17 +151,17 @@ jest.mock("@holochain/client", () => ({
 
 // Mock ES6 modules that cause problems
 
-jest.mock("@holochain-open-dev/utils", () => ({
+vi.mock("@holochain-open-dev/utils", () => ({
   EntryRecord: null,
 }));
 
-jest.mock("@msgpack/msgpack", () => ({
+vi.mock("@msgpack/msgpack", () => ({
   decode: {
     TextEncoder: () => ({}), // Chain other methods as needed
   },
 }));
 
-jest.mock("antd", () => ({
+vi.mock("antd", () => ({
   DatePicker: {
     generatePicker: () => ({}), // Chain other methods as needed
   },
@@ -169,28 +170,28 @@ jest.mock("antd", () => ({
   },
 }));
 
-jest.mock("antd/es/menu/menu", () => ({
+vi.mock("antd/es/menu/menu", () => ({
   default: () => null,
   MenuProps: () => null,
 }));
 
-jest.mock("@dicebear/core", () => ({
+vi.mock("@dicebear/core", () => ({
   createAvatar: () => null,
 }));
-jest.mock("@dicebear/collection", () => ({
+vi.mock("@dicebear/collection", () => ({
   icons: null,
 }));
 
-jest.mock("d3-scale", () => ({
+vi.mock("d3-scale", () => ({
   scaleLinear: () => ({
     domain: () => () => {}, // Chain other methods as needed
   }),
   scaleOrdinal: () => null,
 }));
-jest.mock("d3-svg-legend", () => ({
+vi.mock("d3-svg-legend", () => ({
   legendColor: () => null,
 }));
-jest.mock("d3-zoom", () => ({
+vi.mock("d3-zoom", () => ({
   zoom: () => ({
     apply: () => false,
     call: () => false,

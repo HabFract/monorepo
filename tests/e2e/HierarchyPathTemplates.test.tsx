@@ -1,6 +1,6 @@
 import React from 'react';
-import '@testing-library/jest-dom';
-import { expect, describe, test, it } from '@jest/globals';
+import '../setupTests'
+import { describe, expect, vi, it } from 'vitest'
 
 import { MockedProvider } from '@apollo/client/testing';
 import OrbitTree from '../../ui/src/components/vis/OrbitTree';
@@ -17,13 +17,13 @@ let y = 0;
 let maxBreadth: number = 0;
 
 // The following are rough versions of what is happening in internal state of jotai atoms.
-const incrementBreadth = jest.fn(() => { x += 1 }) as Function;
-const incrementDepth = jest.fn(() => { y -= 1 ; }) as Function;
-const decrementBreadth = jest.fn(() => { x -= 1  }) as Function;
-const decrementDepth = jest.fn(() => { y-=1  }) as Function;
+const incrementBreadth = vi.fn(() => { x += 1 }) as Function;
+const incrementDepth = vi.fn(() => { y -= 1 ; }) as Function;
+const decrementBreadth = vi.fn(() => { x -= 1  }) as Function;
+const decrementDepth = vi.fn(() => { y-=1  }) as Function;
 
 
-jest.mock("../../ui/src/hooks/useNodeTraversal", () => ({
+vi.mock("../../ui/src/hooks/useNodeTraversal", () => ({
   useNodeTraversal: (_, __) => ({
     incrementBreadth,
     incrementDepth,

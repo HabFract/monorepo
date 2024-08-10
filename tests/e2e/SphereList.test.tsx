@@ -1,7 +1,7 @@
 import React from 'react';
-import '@testing-library/jest-dom'
+import '../setupTests'
+import { describe, expect, test, it } from 'vitest'
 import { render, waitFor } from '@testing-library/react';
-import { describe, expect, test, it } from '@jest/globals'
 
 import SphereList from '../../ui/src/components/lists/ListSpheres';
 import { SPHERES_MOCKS } from './mocks/spheres';

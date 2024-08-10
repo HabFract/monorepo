@@ -1,6 +1,6 @@
 import React from 'react';
-import '@testing-library/jest-dom'
-import { expect, describe, test, it } from '@jest/globals';
+import '../setupTests'
+import { describe, expect, test, it } from 'vitest'
 import { screen, render, waitFor } from '@testing-library/react';
 
 import OrbitList from '../../ui/src/components/lists/ListOrbits';
