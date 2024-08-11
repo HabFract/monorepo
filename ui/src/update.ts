@@ -15,8 +15,15 @@ export async function checkForAppUpdates(onUserClick: false) {
         cancelLabel: 'Cancel'
       });
       if (yes) {
+        message('Update will download in the background... as you were!')
         await update.downloadAndInstall();
-        await relaunch();
+        const restart = await ask(`Note: AppImage users will need to re-set the .AppImage as executable after this, and then re-run the file manually. MacOS users may need to move the program into the Applications folder if this update doesn't work, then re-run the update. Debian users may need to set write-access to successfully update.`, { 
+          title: 'Update complete! Restart now?',
+          kind: 'info',
+          okLabel: 'Restart',
+          cancelLabel: 'Cancel'
+        });
+        restart && await relaunch();
       }
     }
 }
