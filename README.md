@@ -1,3 +1,15 @@
+Welcome to Habit/Fract, the innovative habit tracking application that revolutionizes the way you connect daily actions to your greatest ambitions. Born from the need to visualize the journey from grand ideas to the smallest units of habit (and back again), Habit/Fract offers a unique visualisation of your daily behaviours that helps you see the bigger picture while staying grounded in day-to-day progress.
+
+When we release HabitFract 1.x, you will be able to:
+
+    Create a never-ending fractal structure of goals and habits.
+    Visualize your progress with intuitive, dynamic graphics.
+    Maintain full control over your data with Holochain's encryption and data sovereignty features.
+    Share and trade valuable behavior visualizations within a peer-to-peer network.
+    Create private channels with other agents to share progress with, remain accountable to, or help mentor others.
+
+Dive into the world of fractal habit tracking and join us on a quest to make consistent progress towards our goals. Whether you're a visionary thinker or a meticulous planner, Habit/Fract is your companion in the journey of self-improvement and achievement.
+
 ## Setup:
 1: Install nix using the following command
 `bash <(curl https://holochain.github.io/holochain/setup.sh)`
@@ -6,11 +18,13 @@
 
 3: Run `pnpm i` (assuming `pnpm` is installed globally)
 
-4: Rename `example.env` to `.env` (changing the port numbers are required)
+4: Run `pnpm run --dir design-system build`
+
+4: Rename `example.env` to `.env` (changing the port numbers as required)
 
 5: `pnpm run dev`
 
-6: Wait for a browser to open at http://localhost:8888/
+6: Wait for a browser to open at http://localhost:8888/  (you may also need to refresh after a few moments)
 
 
 For graphql intellisense based on the schema:
@@ -25,7 +39,7 @@ If you get errors, check the output tab of your console under 'GraphQL - monorep
 
 In a nix shell, run `pnpm test` from the workspace root.
 
-## Production:
+## Production (after dev installation steps):
 
 1. Open nix shell: `nix develop`
 2. Build: `pnpm run build:frontend`
