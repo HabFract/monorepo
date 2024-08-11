@@ -2,10 +2,8 @@ import React, { useEffect } from 'react';
 import { useStateTransition } from '../hooks/useStateTransition';
 import { GetOrbitsDocument, Orbit, Sphere, useGetSpheresQuery } from '../graphql/generated';
 import { extractEdges, serializeAsyncActions } from '../graphql/utils';
-import { sleep } from './lists/OrbitSubdivisionList';
 import { mapToCacheObject, nodeCache, store } from '../state/jotaiKeyValueStore';
 import { client } from '../graphql/client';
-import { useSetAtom } from 'jotai';
 import { currentSphere } from '../state/currentSphereHierarchyAtom';
 import { Spinner } from 'flowbite-react';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
@@ -20,8 +18,6 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, l
 
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
-
-
   // Don't start at the home page for established users...
   const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
   !userHasSpheres && transition('CreateSphere');
@@ -30,16 +26,16 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, l
 
   useEffect(() => {
     if(!sphereNodes) return;
-
+    
     // Use either first returned Sphere as the landing vis (this will always work for Onboarding) or a passed in parameter
     const { id, eH } = sphereNodes[0];
     const landingId = landingSphereId || id;
     const landingEh = landingSphereEh || eH;
-
+    
     store.set(currentSphere, { actionHash: landingId, entryHash: landingEh });
-
+    
     try {
-      serializeAsyncActions<any>(
+    serializeAsyncActions<any>(
         [...sphereNodes!.map(
           ({id, eH}) => 
             async () => {
@@ -55,7 +51,6 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, l
                   store.set(nodeCache.set, id, Object.fromEntries(indexedOrbitData))
                   console.log('ALL Sphere orbits fetched and cached!')
                 }
-                await sleep(500);
               } catch(error) {
                 console.error(error)
               }
@@ -67,7 +62,7 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, l
     } catch (error) {
       console.error(error)
     }
-  }, [])
+  }, [landingSphereEh])
 
   return <Spinner aria-label="Loading!"size="xl" className='full-spinner' />
 };

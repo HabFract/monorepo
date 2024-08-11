@@ -45,9 +45,10 @@ interface CreateOrbitProps {
   childOrbitEh: string | undefined; // Link to a child Orbit to create hierarchies
   headerDiv?: React.ReactNode;
   submitBtn?: React.ReactNode;
+  forwardTo?: string;
 }
 
-const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, parentOrbitEh, childOrbitEh, onCreateSuccess, headerDiv, submitBtn }: CreateOrbitProps) => {
+const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = false, orbitToEditId, sphereEh, forwardTo, parentOrbitEh, childOrbitEh, onCreateSuccess, headerDiv, submitBtn }: CreateOrbitProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   const selectedSphere = store.get(currentSphere);
   const {x, y} = store.get(currentOrbitCoords);
@@ -79,6 +80,9 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             .map(([_idx, value]) => [value.eH, value]);
           store.set(nodeCache.set, selectedSphere.actionHash as ActionHashB64, Object.fromEntries(indexedOrbitData))
           console.log('Sphere orbits fetched and cached!')
+          if(originPage == 'Vis' || forwardTo == 'Vis') {
+            transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: selectedSphere.actionHash}) 
+          }
         }
 
         if(typeof onCreateSuccess !== 'undefined') {

@@ -25,7 +25,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
 
   // Get sphere and sphere orbit nodes details
   const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries));
-  const sphereNodeDetails = nodeDetailsCache[params.currentSphereAhB64] || {}
+  const sphereNodeDetails = nodeDetailsCache[params?.currentSphereAhB64] || {}
   
   // Does this vis cover the whole tree, or just a window over the whole tree?
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;
@@ -39,7 +39,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   // Helper to form the query parameter object
   const getQueryParams = (customDepth?: number): OrbitHierarchyQueryParams => visCoverage == VisCoverage.Complete
     ? { orbitEntryHashB64: params.orbitEh }
-    : { levelQuery: { sphereHashB64: params.currentSphereEhB64, orbitLevel: customDepth || 0 } };
+    : { levelQuery: { sphereHashB64: params?.currentSphereEhB64, orbitLevel: customDepth || 0 } };
   // Helper to determine which part of the returned query data should be used in the Vis object
   const getJsonDerivation = (json: string) => visCoverage == VisCoverage.Complete ? JSON.parse(json) : JSON.parse(json)[x]
   // GQL Query hook, parsed JSON state, and Vis object state
@@ -70,13 +70,13 @@ export const OrbitTree: ComponentType<VisProps> = ({
   }
 
   const instantiateVisObject = () => {
-    if (!error && json && !currentOrbitTree && nodeDetailsCache[params.currentSphereAhB64]) {
+    if (!error && json && !currentOrbitTree && nodeDetailsCache[params?.currentSphereAhB64]) {
       const currentTreeJson = getJsonDerivation(json);
       const hierarchyData = hierarchy(currentTreeJson).sort((a, b) => {
         const idA : ActionHashB64 = a.data.content;
         const idB : ActionHashB64 = b.data.content;
-      if(!nodeDetailsCache[params.currentSphereAhB64]) return;
-        const sphereNodes = nodeDetailsCache[params.currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
+      if(!nodeDetailsCache[params?.currentSphereAhB64]) return;
+        const sphereNodes = nodeDetailsCache[params?.currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
         if(!sphereNodes?.[idA as keyof SphereOrbitNodes] || !sphereNodes?.[idB as keyof SphereOrbitNodes]) return 1
         return (sphereNodes?.[idA]?.startTime || 0 as number) - (sphereNodes?.[idB as keyof SphereOrbitNodes]?.startTime || 0 as number)
       });
@@ -91,8 +91,8 @@ export const OrbitTree: ComponentType<VisProps> = ({
         canvasWidth,
         margin,
         transition,
-        params.currentSphereEhB64 as EntryHashB64,
-        params.currentSphereAhB64 as ActionHashB64,
+        params?.currentSphereEhB64 as EntryHashB64,
+        params?.currentSphereAhB64 as ActionHashB64,
         sphereNodeDetails as SphereOrbitNodes,
       );
       setCurrentOrbitTree(orbitVis)
@@ -150,7 +150,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
       currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string)).sort((a, b) => {
         const idA : ActionHashB64 = a.data.content;
         const idB : ActionHashB64 = b.data.content;
-        const sphereNodes = nodeDetailsCache[params.currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
+        const sphereNodes = nodeDetailsCache[params?.currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
         return (sphereNodes?.[idA]?.startTime || 0 as number) - (sphereNodes?.[idB as keyof SphereOrbitNodes]?.startTime || 0 as number)
       });
       currentOrbitTree._nextRootData._translationCoords = [x, y, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1];
@@ -159,7 +159,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
   }, [json, x, y, data])
   return (
     <>
-      {loading &&  <Spinner aria-label="Loading!"size="xl" data-testid={'vis-spinner'} className='full-spinner' />}
+      {loading &&  <span data-testid={'vis-spinner'} />}
       {!error && json && currentOrbitTree && render(currentOrbitTree, visCoverage, x, y, hierarchy(getJsonDerivation(json)))}
     </>
   )

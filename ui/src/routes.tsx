@@ -47,7 +47,7 @@ export const initialState: AppStateStore = { // Home route
 export const routes: Routes = {
   Boot: <Spinner aria-label="Loading!"size="xl" className="absolute top-1/2 bottom-1/2" />,
   PreloadAndCache: <PreloadOrbitData />,
-  Vis: renderVis(OrbitTree),
+  Vis: (() => renderVis(OrbitTree))(),
   Home: <Home />,
   Onboarding1: <CreateSphere editMode={false} />,
   Onboarding2: <CreateOrbit editMode={false} />,
@@ -87,7 +87,7 @@ export const AppTransitions: StateTransitions<AppState> = {
 
   Vis: ['Home', ...forms, ...lists, 'Vis', 'PreloadAndCache'],
   CreateSphere: ['Home', ...lists, ...forms, 'Vis'],
-  ListSpheres: ['Home', ...lists, ...forms, 'Vis'],
+  ListSpheres: ['Home', ...lists, ...forms, 'Vis', 'PreloadAndCache'],
   CreateOrbit: ['Home', ...lists, ...forms, 'Vis'],
-  ListOrbits: ['Home', ...lists, ...forms,, 'Vis'],
+  ListOrbits: ['Home', ...lists, ...forms,, 'Vis', 'PreloadAndCache'],
 }

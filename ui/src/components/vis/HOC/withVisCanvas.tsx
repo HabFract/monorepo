@@ -56,7 +56,6 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
       setAppendedSvg(appended)
     }, [selectedSphere.actionHash]);
     const { canvasHeight, canvasWidth } = getCanvasDimensions()
-    
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [currentParentOrbitEh, setCurrentParentOrbitEh] = useState<EntryHashB64>();
     const [currentChildOrbitEh, setCurrentChildOrbitEh] = useState<EntryHashB64>();

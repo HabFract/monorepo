@@ -21,6 +21,7 @@ import {
   TWO_CHILDREN_RIGHT,
 } from "../components/vis/PathTemplates/paths";
 import { currentSphere } from '../state/currentSphereHierarchyAtom';
+import { useStateTransition } from './useStateTransition';
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
   params: OrbitHierarchyQueryParams;
@@ -41,6 +42,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
   if(!currentSphereId) return { loading: false, error: new Error("Cannot run hook withou a sphere Ah"), cache: null}
 
+  const [_, transition] = useStateTransition(); // Top level state machine and routing
   const { data, loading, error } = useGetOrbitHierarchyQuery({
     skip: hasCached,
     variables: { params },
@@ -49,7 +51,8 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
   const [hierarchyObject, setHierarchyObject] = useState()
 
   const sphereNodes = store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
-  if(!currentSphere || !sphereNodes) throw new Error('Cannot cache paths without a currentSphereId or existing cache');
+  
+  if(Object.values(sphereNodes).length ==0) transition('CreateOrbit', { editMode: false, forwardTo: "Vis", sphereEh: store.get(currentSphere)?.entryHash })
   
   useEffect(() => {
     if (data) {
