@@ -10,7 +10,7 @@ When we release HabitFract 1.x, you will be able to:
 
 Dive into the world of fractal habit tracking and join us on a quest to make consistent progress towards our goals. Whether you're a visionary thinker or a meticulous planner, Habit/Fract is your companion in the journey of self-improvement and achievement.
 
-## Setup:
+## Dev Environment Setup:
 1: Install nix using the following command
 `bash <(curl https://holochain.github.io/holochain/setup.sh)`
 
