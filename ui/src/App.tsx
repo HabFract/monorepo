@@ -12,13 +12,12 @@ import Settings from './components/Settings';
 import { Button, ProgressBar, darkTheme } from 'habit-fract-design-system';
 import { store } from './state/jotaiKeyValueStore';
 import { currentOrbitId, currentSphere } from './state/currentSphereHierarchyAtom';
-import { useGetSpheresQuery } from './graphql/generated';
+import { SphereConnection, useGetSpheresQuery } from './graphql/generated';
 import { AppMachine } from './main';
 import { getVersion } from '@tauri-apps/api/app';
 import { ALPHA_RELEASE_DISCLAIMER, NODE_ENV } from './constants';
 
 import { motion, AnimatePresence } from "framer-motion";
-import { checkForAppUpdates } from './update';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
@@ -72,18 +71,11 @@ function App({ children: pageComponent }: any) {
   const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
   state.match('Home') && userHasSpheres && transition('PreloadAndCache');
 
-  if (!['dev', 'test'].includes(NODE_ENV)) {
-    checkForAppUpdates(false).then(update => {
-      console.log(update)
-    }).catch(err => {
-      console.error(err)
-    });
-  }
   return <Flowbite theme={{ theme: darkTheme }}>
     <main className={mainContainerClass}>
       {/* Version and alpha status disclaimer */}
       <div className="app-version-disclaimer flex gap-2 fixed right-1 top-1">
-        {NODE_ENV == 'tauri' && <span>v{currentVersion}</span>}
+        {NODE_ENV !== 'dev' && <span>v{currentVersion}</span>}
         <Button type={"secondary"} onClick={() => setIsModalOpen(true)}>Disclaimer</Button>
       </div>
       {/* Return users can see a Nav */}
@@ -108,7 +100,7 @@ function App({ children: pageComponent }: any) {
         {isSettingsOpen ? "Settings" : "Disclaimer:"}
       </Modal.Header>
       <Modal.Body>
-        {isSettingsOpen ? <Settings /> : <p className='disclaimer'>{ALPHA_RELEASE_DISCLAIMER}</p>}
+        {isSettingsOpen ? <Settings spheres={spheres?.spheres as SphereConnection} setIsModalOpen={setIsModalOpen} /> : <p className='disclaimer'>{ALPHA_RELEASE_DISCLAIMER}</p>}
       </Modal.Body>
     </Modal>
   </Flowbite>

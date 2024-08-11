@@ -1,12 +1,95 @@
+import { PlusCircleOutlined } from '@ant-design/icons';
+import { Button } from 'flowbite-react';
+import { HelperText } from 'habit-fract-design-system';
 import React from 'react';
+import './style.css'
+import '../typo.css'
+import { useSetAtom } from 'jotai';
+import { nodeCache } from '../state/jotaiKeyValueStore';
+import { useStateTransition } from '../hooks/useStateTransition';
+import { Sphere, SphereConnection, useDeleteSphereMutation } from '../graphql/generated';
+import { extractEdges, serializeAsyncActions } from '../graphql/utils';
+import { sleep } from './lists/OrbitSubdivisionList';
+import { relaunch } from '@tauri-apps/plugin-process';
+import { ask } from '@tauri-apps/plugin-dialog';
+import { checkForAppUpdates } from '../update';
 
 type SettingsProps = {
+  spheres: SphereConnection,
+  setIsModalOpen: Function
 };
 
-const Settings : React.FC<SettingsProps> = () => (
-  <div className="p-4 settings">
-    Hello worlds
-  </div>
-);
+const Settings: React.FC<SettingsProps> = ({ spheres, setIsModalOpen }) => {
+  const [_, transition] = useStateTransition(); // Top level state machine and routing
+  const clear = useSetAtom(nodeCache.clear)
+
+  const [runDelete, { loading: loadingDelete, error: errorDelete, data: dataDelete }] = useDeleteSphereMutation({
+    refetchQueries: ['getSpheres']
+  });
+
+  function deleteAllData() {
+    serializeAsyncActions<any>(
+      [...(extractEdges(spheres) as Sphere[]).map(
+        (sphereNode) =>
+          async () => {
+            try {
+              runDelete({variables: {id: sphereNode.id}})
+              await sleep(500);
+            } catch (error) {
+              console.error(error)
+            }
+          }),
+        async () => Promise.resolve(console.log('Deleted all! :>> ')),
+        async () => {setIsModalOpen(false); return relaunch()},
+      ]
+    )
+  }
+
+  return (
+    <div className="p-4 settings flex flex-col h-full justify-between">
+      <section>
+        <div className="check-updates">
+          <HelperText>Updates</HelperText>
+          <Button onClick={() => {
+            checkForAppUpdates(true)
+          }} className="btn btn-primary w-64 h-12 my-2" size="sm">
+            <span>Check/Download</span>
+          </Button>
+        </div>
+        <div className="cache-settings">
+          <HelperText withInfo={true} onClickInfo={() => ({
+            title: "Clear Your Cache",
+            body: "Some data is stored in your application runtime (currently not encrypted) to make the experience smoother. Click here to get rid of it all.",
+          })}>Clear Cache</HelperText>
+          <Button onClick={() => {
+            clear();
+            transition('Home');
+          }} className="btn btn-warn w-48 h-12 my-2" size="sm">
+            <span>Clear</span>
+          </Button>
+        </div>
+      </section>
+      <section className="danger-zone">
+        <HelperText withInfo={true} onClickInfo={() => ({
+          title: "Delete All Data",
+          body: "Your data is persisted in an encrypted personal ledger. Click 'Reset Data' to reset that ledger and start again.",
+        })}>Danger Zone</HelperText>
+        <Button onClick={() => {
+          ask(`Delete all data and restart?`, { 
+            title: 'Delete All Data',
+            kind: 'info',
+            okLabel: 'Delete and Restart',
+            cancelLabel: 'Cancel'
+          }).then((confirm) => {
+            if(confirm) deleteAllData()
+          }
+          );
+        }} className="btn btn-danger w-64 h-12 my-2" size="sm">
+          <span>Reset Data</span>
+        </Button>
+      </section>
+    </div>
+  )
+};
 
 export default Settings;

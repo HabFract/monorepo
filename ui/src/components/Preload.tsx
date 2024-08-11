@@ -20,7 +20,7 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, l
 
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
-  const clear = useSetAtom(nodeCache.clear)
+
 
   // Don't start at the home page for established users...
   const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
@@ -38,8 +38,6 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, l
 
     store.set(currentSphere, { actionHash: landingId, entryHash: landingEh });
 
-    // Clean up the current cache first
-    clear()
     try {
       serializeAsyncActions<any>(
         [...sphereNodes!.map(
