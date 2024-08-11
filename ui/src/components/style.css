@@ -413,6 +413,13 @@ ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] {
   width: initial;
 }
 
+.danger-zone, .cache-settings, .check-updates {
+  @apply flex gap-8 mb-4 justify-between items-center pr-2 pb-2 pl-4 border-2;
+  border-radius: 1.5rem;
+}
+.danger-zone {
+  @apply border-danger;
+}
 
 @media screen and (min-width: 420px) {
   .page-header h1 {

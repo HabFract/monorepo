@@ -227,9 +227,8 @@ nav + main.page-container .orbits-list {
 
   .page-container {
     min-width: calc(50vw - 6rem);
-    @apply p-8;
+    @apply p-4;
     position: initial;
-    overflow: hidden;
   }
   .page-container.onboarding-page {
     overflow-y: auto;
@@ -270,8 +269,7 @@ nav + main.page-container .orbits-list {
     grid-column: 2/-2;
   }
   .page-container.create-form {
-    justify-content: center;
-    overflow-y: auto;
+    overflow-y: auto !important;
   }
   .page-container.vis {
     padding: 0;

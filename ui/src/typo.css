@@ -81,7 +81,7 @@ p.form-description, *[data-testid=modal-overlay]>div>div h3 {
 *[data-testid=modal-overlay] p {
   font-family: Nunito, Arial, sans-serif;
   color: white;
-  @apply m-4 mb-0 text-xl;
+  @apply m-4 mb-2 text-xl;
 }
 
 p.form-description em, .helper-text em {
@@ -89,6 +89,9 @@ p.form-description em, .helper-text em {
   @apply text-text-prim;
 }
 
+.danger-zone .helper-content {
+  @apply p-0;
+}
 
 @media screen and (min-width: 440px) {
   .onboarding-subtitle, p.form-description, .onboarding-progress {

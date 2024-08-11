@@ -8,6 +8,10 @@
   overflow-x: auto;
 }
 
+.onboarding-progress::-webkit-scrollbar {
+  width: 24px;
+}
+
 .onboarding-progress::after {
   content: "";
   width: 100%;

@@ -83,6 +83,7 @@
 @media screen and (min-width: 1200px) {
   .layout:not(.spheres) {
     display: grid;
+    gap: 1rem;
     grid-template-columns: 400px 1fr 1fr 1fr;
     grid-template-rows: auto auto 1fr;
   }
