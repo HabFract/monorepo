@@ -1,6 +1,6 @@
 {
   "name": "habit-fract",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A peer-to-peer personal habit tracking application built on Holochain",
   "keywords": ["habits", "self-improvement", "holochain", "peer-to-peer"],
   "author": "Nick Stebbings",
