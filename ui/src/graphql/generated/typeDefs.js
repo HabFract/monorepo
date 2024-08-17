@@ -1,2 +1,193 @@
 import {gql} from '@apollo/client';
-export const typeDefs = gql`schema{query:Query mutation:Mutation}type AgentProfile{agentPubKey:String!profile:Profile!}type CreateResponsePayload{actionHash:String!entryHash:String!}scalar DateTime enum Frequency{Day Month Quarter Week}type Mutation{createOrbit(orbit:OrbitCreateParams):CreateResponsePayload!createProfile(profile:UserProfileCreateUpdateParams):AgentProfile!createSphere(sphere:SphereCreateParams):CreateResponsePayload!deleteOrbit(orbitHash:ID!):ID!deleteSphere(sphereHash:ID!):ID!updateOrbit(orbit:OrbitUpdateParams):CreateResponsePayload!updateProfile(profile:UserProfileCreateUpdateParams):AgentProfile!updateSphere(sphere:SphereUpdateParams):CreateResponsePayload!}interface Node{eH:String!id:ID!}type Orbit implements Node{eH:String!frequency:Frequency!id:ID!metadata:OrbitMetaData name:String!parentHash:String scale:Scale!sphereHash:String!}type OrbitConnection{edges:[OrbitEdge!]!pageInfo:PageInfo!}input OrbitCreateParams{description:String endTime:Float frequency:Frequency!name:String!parentHash:String childHash:String scale:Scale!sphereHash:String!startTime:Float!}type OrbitEdge{cursor:String!node:Orbit!}input OrbitHierarchyQueryParams{levelQuery:QueryParamsLevel orbitEntryHashB64:String}type OrbitMetaData{description:String timeframe:TimeFrame!}input OrbitUpdateParams{description:String endTime:Float frequency:Frequency!id:ID!name:String!parentHash:String scale:Scale!sphereHash:String!startTime:Float!}type PageInfo{endCursor:String!hasNextPage:Boolean!hasPreviousPage:Boolean!startCursor:String!}type Profile{fields:ProfileFields nickname:String!}type ProfileFields{avatar:String isPublic:String location:String}type Query{getOrbitHierarchy(params:OrbitHierarchyQueryParams!):String!getLowestSphereHierarchyLevel(sphereEntryHashB64:String!):Int!me:AgentProfile!orbit(id:ID!):Orbit!orbits(sphereEntryHashB64:String):OrbitConnection!sphere(id:ID!):Sphere!spheres:SphereConnection!}input QueryParamsLevel{orbitLevel:Float!sphereHashB64:String}enum Scale{Astro Atom Sub}type Sphere implements Node{eH:String!id:ID!metadata:SphereMetaData name:String!}type SphereConnection{edges:[SphereEdge!]!pageInfo:PageInfo!}input SphereCreateParams{description:String hashtag:String image:String name:String!}type SphereEdge{cursor:String!node:Sphere!}type SphereMetaData{description:String!hashtag:String image:String}input SphereUpdateParams{description:String hashtag:String id:ID!image:String name:String!}type TimeFrame{endTime:Float startTime:Float!}input UserProfileCreateUpdateParams{avatar:String isPublic:String location:String nickname:String!}`;
+export const typeDefs = gql`# General GQL Types
+type Query {
+  sphere(id: ID!): Sphere!
+  spheres: SphereConnection!
+  orbit(id: ID!): Orbit!
+  orbits(sphereEntryHashB64: String): OrbitConnection!
+  getOrbitHierarchy(params: OrbitHierarchyQueryParams!) : String! 
+  getLowestSphereHierarchyLevel(sphereEntryHashB64: String!) : Int! 
+  me: AgentProfile!
+}
+
+type Mutation {
+  createSphere(sphere: SphereCreateParams): CreateResponsePayload!
+  updateSphere(sphere: SphereUpdateParams): CreateResponsePayload!
+  deleteSphere(sphereHash: ID!): ID!
+  createOrbit(orbit: OrbitCreateParams): CreateResponsePayload!
+  updateOrbit(orbit: OrbitUpdateParams): CreateResponsePayload!
+  deleteOrbit(orbitHash: ID!): ID!
+  createProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
+  updateProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String!
+  endCursor: String!
+}
+
+interface Node {
+  id: ID!
+  eH: String!
+}
+
+# Holochain Specific Types
+type CreateResponsePayload {
+  actionHash: String!
+  entryHash: String!
+}
+
+# ---- Profiles ----- #
+# Profiles GQL Types
+
+# Profiles Types
+type AgentProfile {
+  agentPubKey: String!
+  profile: Profile!
+}
+
+type Profile {
+  nickname: String!
+  fields: ProfileFields
+}
+
+type ProfileFields {
+  location: String
+  isPublic: String
+  avatar: String
+}
+
+# Profile Input/Output
+input UserProfileCreateUpdateParams {
+  nickname: String!
+  location: String
+  isPublic: String
+  avatar: String
+}
+
+# ---- Sphere ----- #
+# Sphere GQL Types
+type SphereConnection {
+  edges: [SphereEdge!]!
+  pageInfo: PageInfo!
+}
+
+type SphereEdge {
+  cursor: String!
+  node: Sphere!
+}
+
+# Sphere Types
+type Sphere implements Node {
+  id: ID!
+  eH: String!
+  name: String!
+  metadata: SphereMetaData
+}
+
+type SphereMetaData {
+  description: String!
+  hashtag: String
+  image: String
+}
+
+# Sphere Input/Outputs
+input SphereCreateParams {
+  name: String!
+  description: String
+  hashtag: String
+  image: String
+}
+input SphereUpdateParams {
+  id: ID!
+  name: String!
+  description: String
+  hashtag: String
+  image: String
+}
+
+# ---- Orbit ----- #
+# Orbit GQL Types
+type OrbitConnection {
+  edges: [OrbitEdge!]!
+  pageInfo: PageInfo!
+}
+
+type OrbitEdge {
+  cursor: String!
+  node: Orbit!
+}
+
+# Orbit Types
+type Orbit implements Node {
+  id: ID!
+  eH: String!
+  name: String!
+  sphereHash: String!
+  parentHash: String
+  childHash: String
+  frequency: Frequency!
+  scale: Scale!
+  metadata: OrbitMetaData
+}
+
+type TimeFrame {
+  startTime: Float!
+  endTime: Float
+}
+
+# Frequency Enum
+enum Frequency {
+  Day
+  Week
+  Month
+  Quarter
+}
+
+# Scale Enum
+enum Scale {
+  Astro
+  Sub
+  Atom
+}
+
+type OrbitMetaData {
+  description: String
+  timeframe: TimeFrame!
+}
+
+# Orbit Input/Outputs
+input OrbitCreateParams {
+  name: String!
+  startTime: Float!
+  endTime: Float
+  description: String
+  frequency: Frequency!
+  scale: Scale!
+  sphereHash: String!
+  parentHash: String
+  childHash: String
+}
+input OrbitUpdateParams {
+  id: ID!
+  name: String!
+  startTime: Float!
+  endTime: Float
+  description: String
+  frequency: Frequency!
+  scale: Scale!
+  sphereHash: String!
+  parentHash: String
+}
+
+input OrbitHierarchyQueryParams {
+  orbitEntryHashB64: String
+  levelQuery: QueryParamsLevel
+}
+
+input QueryParamsLevel {
+  sphereHashB64: String
+  orbitLevel: Float!
+}`;
