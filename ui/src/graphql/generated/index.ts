@@ -323,7 +323,7 @@ export type GetOrbitQueryVariables = Exact<{
 }>;
 
 
-export type GetOrbitQuery = { __typename?: 'Query', orbit: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, frequency: Frequency, scale: Scale, parentHash?: string | null, childHash?: string | null, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
+export type GetOrbitQuery = { __typename?: 'Query', orbit: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, frequency: Frequency, scale: Scale, parentHash?: string | null, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
 
 export type GetOrbitHierarchyQueryVariables = Exact<{
   params: OrbitHierarchyQueryParams;
@@ -567,7 +567,6 @@ export const GetOrbitDocument = gql`
     frequency
     scale
     parentHash
-    childHash
     metadata {
       description
       timeframe {
