@@ -2,14 +2,13 @@ use holochain_types::prelude::AppBundle;
 use lair_keystore::dependencies::sodoken::{BufRead, BufWrite};
 use std::collections::HashMap;
 use std::path::PathBuf;
-use tauri_plugin_holochain::{HolochainPluginConfig, HolochainExt};
-use url2::Url2;
+use tauri_plugin_holochain::{HolochainExt, HolochainPluginConfig, WANNetworkConfig};
     
 use tauri::{AppHandle, Listener};
 
 const APP_ID: &'static str = "habit_fract";
-const PRODUCTION_SIGNAL_URL: &'static str = "wss://signal.holo.host";
-const PRODUCTION_BOOTSTRAP_URL: &'static str = "https://bootstrap.holo.host";
+const SIGNAL_URL: &'static str = "wss://signal.holo.host";
+const BOOTSTRAP_URL: &'static str = "https://bootstrap.holo.host";
 
 pub fn happ_bundle() -> AppBundle {
     let bytes = include_bytes!("../../workdir/habit_fract.happ");
@@ -33,9 +32,8 @@ pub fn run() {
         .plugin(tauri_plugin_holochain::init(
             vec_to_locked(vec![]).expect("Can't build passphrase"),
             HolochainPluginConfig {
-                signal_url: signal_url(),
-                bootstrap_url: bootstrap_url(),
                 holochain_dir: holochain_dir(),
+                wan_network_config: wan_network_config(),
             },
         ))
         .setup(|app| {
@@ -104,33 +102,15 @@ async fn setup(handle: AppHandle) -> anyhow::Result<()> {
     }
 }
 
-fn internal_ip() -> String {
-    std::option_env!("INTERNAL_IP")
-        .expect("Environment variable INTERNAL_IP was not set")
-        .to_string()
-}
-
-fn bootstrap_url() -> Url2 {
+fn wan_network_config() -> Option<WANNetworkConfig> {
     // Resolved at compile time to be able to point to local services
     if tauri::is_dev() {
-        let internal_ip = internal_ip();
-        let port = std::option_env!("BOOTSTRAP_PORT")
-            .expect("Environment variable BOOTSTRAP_PORT was not set");
-        url2::url2!("http://{internal_ip}:{port}")
+        None
     } else {
-        url2::url2!("{}", PRODUCTION_BOOTSTRAP_URL)
-    }
-}
-
-fn signal_url() -> Url2 {
-    // Resolved at compile time to be able to point to local services
-    if tauri::is_dev() {
-        let internal_ip = internal_ip();
-        let signal_port =
-            std::option_env!("SIGNAL_PORT").expect("Environment variable INTERNAL_IP was not set");
-        url2::url2!("ws://{internal_ip}:{signal_port}")
-    } else {
-        url2::url2!("{}", PRODUCTION_SIGNAL_URL)
+        Some(WANNetworkConfig {
+            signal_url: url2::url2!("{}", SIGNAL_URL),
+            bootstrap_url: url2::url2!("{}", BOOTSTRAP_URL)
+        })
     }
 }
 
