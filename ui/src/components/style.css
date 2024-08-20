@@ -51,7 +51,7 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
   justify-content: space-around;
 }
 
-.side-nav.expanded + .page-container {
+.side-nav.expanded + * {
   filter: opacity(0.3);
   pointer-events: none;
 }

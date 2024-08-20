@@ -20,9 +20,6 @@
   padding-left: 40px;
 }
 
-#root {
-}
-
 .ant-app {
   color: white;
   @apply bg-gray-500;
@@ -88,7 +85,7 @@
 div#root::before, div#root::after {
   position: absolute;
   content: "";
-  top: 45vh;
+  
   height: 50%;
   background-size: cover;
   opacity: 0.45;
@@ -97,11 +94,15 @@ div#root::before, div#root::after {
 }
 
 div#root::before {
-  left: 2rem;
+  left: 0;
+  top: 8rem;
+  width: 100%;
   background: url(assets/HAB.svg) top left no-repeat;
 }
 div#root::after {
   right: 2rem;
+  bottom: 4rem;
+  width: 100%;
   background: url(assets/FRACT.svg) top right no-repeat;
 }
 
@@ -149,10 +150,6 @@ nav + main.page-container .orbits-list {
   text-overflow: ellipsis;
 }
 
-.side-nav.expanded + .framer-motion {
-  opacity: 0.3 !important;
-}
-
 .framer-motion {
   width: 100% !important;
   height: 100% !important;
@@ -163,7 +160,9 @@ nav + main.page-container .orbits-list {
 *[data-testid=modal-overlay]>div>div {
   @apply bg-input-bg;
 }
-*[data-testid=modal-overlay]>div>div button {
+
+*[data-testid=modal-overlay]>div>div button[aria-label="Close"],
+*[data-testid=modal-overlay]>div>div section button {
   padding: 1rem;
   border-radius: 1rem;
   display: flex;
@@ -172,6 +171,12 @@ nav + main.page-container .orbits-list {
 
 .disclaimer {
   white-space: pre-line;
+}
+
+.version-number {
+  position: relative;
+  bottom: -.75rem;
+  @apply flex items-center justify-center h-2;
 }
 
 .spheres-girl-img, .make-or-break-img {
@@ -199,6 +204,12 @@ nav + main.page-container .orbits-list {
   }
   .app-version-disclaimer button{
     max-width: initial !important;
+  }
+
+  div#root::before, div#root::after {
+    top: 45vh;
+    bottom: initial;
+    width: 50vw;
   }
 
   .make-or-break-img {

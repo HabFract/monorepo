@@ -14,6 +14,7 @@ import { store } from '../../state/jotaiKeyValueStore';
 import { currentSphere } from '../../state/currentSphereHierarchyAtom';
 import { Refinement } from '../forms/RefineOrbit';
 import { OrbitFetcher } from '../forms/utils';
+import { isSmallScreen } from '../vis/helpers';
 
 interface OrbitSubdivisionListProps {
   currentOrbitValues: Orbit;
@@ -106,13 +107,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                 }
               </HelperText>
 
-              { refinementType == Refinement.Split && values.scale == Scale.Atom && <HelperText
-                title={"Refine Atomic Orbit Names"}
-                titleIcon={<Pencil />}
-                withInfo={false}
-              >
-                <span>Since you have chosen the Atomic scale for your new Orbits, it's best to make sure the new Orbits are named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable.</span>
-              </HelperText>}
+              { !isSmallScreen() && refinementType == Refinement.Split && values.scale == Scale.Atom && RenamingHelperText()}
 
               <Form noValidate={true} style={{gridColumn: "-2/-1", gridRow: "1/-1", }}>
                 <div className="flex flex-col gap-2 md:gap-4">
@@ -146,6 +141,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                         required={true}
                         labelValue={"Scale for New Orbits:"}
                       />
+                      { isSmallScreen() && refinementType == Refinement.Split && values.scale == Scale.Atom && RenamingHelperText()}
                       <Label htmlFor='list'>New Orbit Names: <span className="reqd">*</span></Label>
                       <FieldArray
                         name="list"
@@ -198,6 +194,16 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
 }
 
 export default OrbitSubdivisionList;
+
+function RenamingHelperText() {
+  return <HelperText
+    title={"Refine Atomic Orbit Names"}
+    titleIcon={<Pencil />}
+    withInfo={false}
+  >
+    <span>Since you have chosen the Atomic scale for your new Orbits, it's best to make sure the new Orbits are named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable.</span>
+  </HelperText>
+}
 
 function chooseLowerScales(scale: Scale) : Scale[] {
   switch (scale) {

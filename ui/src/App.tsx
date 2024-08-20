@@ -18,6 +18,8 @@ import { getVersion } from '@tauri-apps/api/app';
 import { ALPHA_RELEASE_DISCLAIMER, NODE_ENV } from './constants';
 
 import { motion, AnimatePresence } from "framer-motion";
+import { AlertOutlined } from '@ant-design/icons';
+import { isSmallScreen } from './components/vis/helpers';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
@@ -62,7 +64,7 @@ function App({ children: pageComponent }: any) {
       case ["Home", "PreloadAndCache"].includes(state):
         return withPageTransition(component)
       default:
-        return component
+        return <div className='p-1 w-full'>{component}</div>
     }
   }
 
@@ -74,10 +76,7 @@ function App({ children: pageComponent }: any) {
   return <Flowbite theme={{ theme: darkTheme }}>
     <main className={mainContainerClass}>
       {/* Version and alpha status disclaimer */}
-      <div className="app-version-disclaimer flex gap-2 fixed right-1 top-1">
-        {NODE_ENV !== 'dev' && <span>v{currentVersion}</span>}
-        <Button type={"secondary"} onClick={() => setIsModalOpen(true)}>Disclaimer</Button>
-      </div>
+      {(state == 'Home') && VersionDisclaimer(currentVersion, () => setIsModalOpen(true), true)}
       {/* Return users can see a Nav */}
       {state !== 'Home' && !state.match('Onboarding')
         && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSettingsOpen={() => {setIsModalOpen(true); setIsSettingsOpen(true)}} setSideNavExpanded={setSideNavExpanded}></Nav>
@@ -100,10 +99,17 @@ function App({ children: pageComponent }: any) {
         {isSettingsOpen ? "Settings" : "Disclaimer:"}
       </Modal.Header>
       <Modal.Body>
-        {isSettingsOpen ? <Settings spheres={spheres?.spheres as SphereConnection} setIsModalOpen={setIsModalOpen} /> : <p className='disclaimer'>{ALPHA_RELEASE_DISCLAIMER}</p>}
+        {isSettingsOpen ? <Settings version={currentVersion} spheres={spheres?.spheres as SphereConnection} setIsModalOpen={setIsModalOpen} setSettingsOpen={setIsSettingsOpen} /> : <p className='disclaimer'>{ALPHA_RELEASE_DISCLAIMER}</p>}
       </Modal.Body>
     </Modal>
   </Flowbite>
+}
+
+export function VersionDisclaimer(currentVersion: string | undefined, open : Function, isFrontPage?: boolean): ReactNode {
+  return <div className={isFrontPage ? "app-version-disclaimer z-100 flex gap-2 fixed right-1 top-1" : "app-version-disclaimer z-60 flex gap-2 fixed right-1 bottom-1"}>
+    {NODE_ENV !== 'dev' && <div className='version-number'>v{currentVersion}</div>}
+    <Button type={"secondary"} onClick={() => {console.log('HI'); open()}}>{isSmallScreen() ? <AlertOutlined className="text-bg" /> : "Disclaimer"}</Button>
+  </div>;
 }
 
 function HomeContinue(state: any, transition: any): any {
@@ -157,9 +163,9 @@ function getMainContainerClassString(state) {
     case 'Vis':
       return "vis page-container"
     case 'CreateSphere':
-      return "create-form page-container"
+      return "create-form page-container form-container"
     case 'CreateOrbit':
-      return "create-form page-container"
+      return "create-form page-container form-container"
     case 'ListOrbits':
       return "list page-container"
     case 'ListSpheres':

@@ -1,10 +1,5 @@
 .form-container {
-  @apply py-2 px-4 text-title relative bg-gradient-to-l to-transparent from-secondary;
-  min-height: 100vh;
-}
-
-.form-container h2 {
-  @apply text-title text-center;
+  @apply px-2;
 }
 
 .form-title {

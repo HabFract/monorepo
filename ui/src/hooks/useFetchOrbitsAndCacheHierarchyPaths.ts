@@ -22,6 +22,7 @@ import {
 } from "../components/vis/PathTemplates/paths";
 import { currentSphere } from '../state/currentSphereHierarchyAtom';
 import { useStateTransition } from './useStateTransition';
+import { isSmallScreen } from '../components/vis/helpers';
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
   params: OrbitHierarchyQueryParams;
@@ -101,9 +102,6 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
       workingSphereNodes[id] = cacheNodeItem
     }
   }
-  function isMobile() {
-    return document.body.getBoundingClientRect().width < 768 
-  }
 
   function getPath(node) : string | null {
     // Skip the root node
@@ -118,11 +116,11 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
     const isMiddleNode = (numberOfSiblings % 2 !== 0) && relativeIndex === middleIndex;
     switch (true) {
       case isMiddleNode:
-        return isMobile() ? ONE_CHILD_XS : ONE_CHILD;
+        return isSmallScreen() ? ONE_CHILD_XS : ONE_CHILD;
       case relativeIndex <= numberOfSiblings / 2:
-        return isMobile() ? getLeftSidePathXS(relativeIndex, numberOfSiblings) : getLeftSidePath(relativeIndex, numberOfSiblings);
+        return isSmallScreen() ? getLeftSidePathXS(relativeIndex, numberOfSiblings) : getLeftSidePath(relativeIndex, numberOfSiblings);
       default:
-        return isMobile() ? getRightSidePathXS(relativeIndex, numberOfSiblings) : getRightSidePath(relativeIndex, numberOfSiblings);
+        return isSmallScreen() ? getRightSidePathXS(relativeIndex, numberOfSiblings) : getRightSidePath(relativeIndex, numberOfSiblings);
     }
   }
   

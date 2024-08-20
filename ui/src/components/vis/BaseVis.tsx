@@ -754,7 +754,7 @@ export default class BaseVisualization implements IVisualization {
       +(this.type == VisType.Tree && this._viewConfig.isSmallScreen()) * 250 -
       +(this.type == VisType.Cluster && this._viewConfig.isSmallScreen()) * 210;
     this._viewConfig.dy =
-      this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number * 2);
+      this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number * 4);
     //adjust for taller aspect ratio
     this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 4.25 : 2;
     this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3.25 : 2;
@@ -1052,6 +1052,9 @@ export default class BaseVisualization implements IVisualization {
       .append("g")
       .classed("tooltip", true)
       .append("foreignObject")
+      .attr("transform", () => {
+        return `scale(${this._viewConfig.isSmallScreen() ? 0.5 : 1})`
+      })
       .attr("x", "-375")
       .attr("y", "-10")
       .attr("width", "650")
@@ -1178,15 +1181,17 @@ export default class BaseVisualization implements IVisualization {
                 return parentAndChildChecked(d) ? 1 : 0.35
               }
             )
-            this._gTooltip.select(".tooltip-inner foreignObject").html((d) => {
-              if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
-              const { checked, scale, parentEh } = this.nodeDetails[d.data.content];
-              return `<div class="buttons">
-                <button class="tooltip-action-button higher-button ${!parentEh && scale !== 'Astro' ? 'hide' : 'hide'}"></button>
-                <img data-button="true" class="tooltip-action-button checkbox-button" src=${checked ? "assets/checkbox-checked.svg" : "assets/checkbox-empty.svg"} />
-                <button class="tooltip-action-button lower-button"></button>
-              </div>`
-            });
+            if(false){ //TODO: Add condition to stop tearing
+              this._gTooltip.select(".tooltip-inner foreignObject").html((d) => {
+                if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
+                const { checked, scale, parentEh } = this.nodeDetails[d.data.content];
+                return `<div class="buttons">
+                  <button class="tooltip-action-button higher-button ${!parentEh && scale !== 'Astro' ? 'hide' : 'hide'}"></button>
+                  <img data-button="true" class="tooltip-action-button checkbox-button" src=${checked ? "assets/checkbox-checked.svg" : "assets/checkbox-empty.svg"} />
+                  <button class="tooltip-action-button lower-button"></button>
+                </div>`
+              });
+            }
             this.render();
             break;
 

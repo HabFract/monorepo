@@ -1,6 +1,6 @@
 import { Button } from 'flowbite-react';
 import { HelperText } from 'habit-fract-design-system';
-import React from 'react';
+import React, { useState } from 'react';
 import './style.css'
 import '../typo.css'
 import { useSetAtom } from 'jotai';
@@ -12,15 +12,21 @@ import { sleep } from './lists/OrbitSubdivisionList';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { ask } from '@tauri-apps/plugin-dialog';
 import { checkForAppUpdates } from '../update';
+import { VersionDisclaimer } from '../App';
+import { ALPHA_RELEASE_DISCLAIMER } from '../constants';
+import { isSmallScreen } from './vis/helpers';
 
 type SettingsProps = {
   spheres: SphereConnection,
-  setIsModalOpen: Function
+  setIsModalOpen: Function,
+  setIsSettingsOpen: Function,
+  version: string
 };
 
-const Settings: React.FC<SettingsProps> = ({ spheres, setIsModalOpen }) => {
+const Settings: React.FC<SettingsProps> = ({ version, spheres, setIsModalOpen }) => {
   const [_, transition] = useStateTransition(); // Top level state machine and routing
   const clear = useSetAtom(nodeCache.clear)
+  const [isDisclaimer, setIsDisclaimer] = useState(false);
 
   const [runDelete, { loading: loadingDelete, error: errorDelete, data: dataDelete }] = useDeleteSphereMutation({
     refetchQueries: ['getSpheres']
@@ -44,17 +50,17 @@ const Settings: React.FC<SettingsProps> = ({ spheres, setIsModalOpen }) => {
     )
   }
 
-  return (
+  return isDisclaimer ? <p className='disclaimer'>{ALPHA_RELEASE_DISCLAIMER}</p> : (
     <div className="p-4 settings flex flex-col h-full justify-between">
       <section>
-        <div className="check-updates">
+        {!isSmallScreen() && <div className="check-updates">
           <HelperText withInfo={false}>Updates</HelperText>
           <Button onClick={() => {
             checkForAppUpdates(true)
           }} className="btn btn-primary w-64 h-12 my-2" size="sm">
             <span>Check/Download</span>
           </Button>
-        </div>
+        </div>}
         <div className="cache-settings">
           <HelperText withInfo={true} onClickInfo={() => ({
             title: "Clear Your Cache",
@@ -70,7 +76,7 @@ const Settings: React.FC<SettingsProps> = ({ spheres, setIsModalOpen }) => {
         <div className="feedback-link">
           <HelperText withInfo={true} onClickInfo={() => ({
             title: "Open Feedback Form",
-            body: "Click this link to open a window to a feedback form (requires an internet connection) so that you can report comments, feedback or bug reports. If you are reporting a bug, please let me know which operating system you are using and any other relevant information. You will need to right click and press back (or restart) to come back to the app. Thanks!",
+            body: `Click this link to open a window to a feedback form (requires an internet connection) so that you can report comments, feedback or bug reports. If you are reporting a bug, please let me know which operating system you are using and any other relevant information. You will need to ${isSmallScreen() ? "" : "right click and "}press back (or restart) to come back to the app. Thanks!`,
           })}><span>Bugs/Feedback</span></HelperText>
           <Button className="btn btn-secondary w-48 h-12 my-2" size="sm" onClick={(e) => {e.currentTarget.querySelector('a')?.click()}}>
             <a href="https://habitfract.net/feedback/" className='text-white'>Link</a>
@@ -96,6 +102,7 @@ const Settings: React.FC<SettingsProps> = ({ spheres, setIsModalOpen }) => {
           <span>Reset Data</span>
         </Button>
       </section>
+      {VersionDisclaimer(version, () => {setIsDisclaimer(true)})}
     </div>
   )
 };

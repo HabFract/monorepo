@@ -150,10 +150,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
       >
       {({ values, errors, touched }) => {
       return  (
-        <>
+        <div className={inModal ? 'px-2 w-full' : ''}>
           {!inModal ? headerDiv : null}
 
-          <h2 className='onboarding-subtitle'>{ editMode ? "Edit Orbit Details" : "Create an Orbit"}</h2>
+          {!inModal && <h2 className='onboarding-subtitle'>{ editMode ? "Edit Orbit Details" : "Create an Orbit"}</h2>}
           <p className='form-description'>An orbit is a <em>specific life action</em> that your wish to track over time.</p>
           <Form noValidate={true}>
             {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
@@ -301,7 +301,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             </Flex>} */}
             { submitBtn && React.cloneElement(submitBtn as React.ReactElement, { loading, errors, touched }) || <DefaultSubmitBtn loading={loading} editMode={editMode} errors={errors} touched={touched}></DefaultSubmitBtn> }
           </Form>
-        </>
+        </div>
       )}}
     </Formik>
   );

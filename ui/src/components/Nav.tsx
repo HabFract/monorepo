@@ -1,7 +1,7 @@
 import "./style.css";
 import TreeVisIcon from "./icons/TreeVisIcon";
 
-import { UnorderedListOutlined, PlusCircleFilled, ArrowsAltOutlined, PlusCircleOutlined, SettingFilled } from "@ant-design/icons";
+import { UnorderedListOutlined, AppstoreOutlined, PlusCircleFilled, ArrowsAltOutlined, PlusCircleOutlined, SettingFilled } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
 import { Sphere, useGetSpheresQuery } from "../graphql/generated";
@@ -99,7 +99,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   // Helpers for creating menu items
   function createFixedMenuItems() {
     return [
-      getItem('List Spheres', 'list-spheres', <UnorderedListOutlined />),
+      getItem('List Spheres', 'list-spheres', <AppstoreOutlined />),
       getItem('Settings', 'settings', <SettingFilled />),
       // getItem('Dashboard', 'db', <PieChartFilled />, undefined, undefined, true),
     ]  
@@ -222,6 +222,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
             : closeMenu() && transition('PreloadAndCache', {landingSphereEh: sphere(e.key)?.eH, landingSphereId: e.key })
         } else {
           setTooltipVisible(false)
+          if(store.get(currentSphere)?.actionHash == e.key) openMenu();
           // Set current sphere from action hash of sphere clicked
           store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
 
