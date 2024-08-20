@@ -1,11 +1,11 @@
 import "./style.css";
 import TreeVisIcon from "./icons/TreeVisIcon";
 
-import { UnorderedListOutlined, AppstoreOutlined, PlusCircleFilled, ArrowsAltOutlined, PlusCircleOutlined, SettingFilled } from "@ant-design/icons";
+import { UnorderedListOutlined, AppstoreOutlined, PlusCircleFilled, ArrowsAltOutlined, PlusCircleOutlined, SettingFilled, WarningOutlined } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
 import { Sphere, useGetSpheresQuery } from "../graphql/generated";
-import { Button, DarkThemeToggle, Spinner } from "flowbite-react";
+import { Button, DarkThemeToggle, Spinner, Toast } from "flowbite-react";
 import { currentOrbitCoords, currentSphere } from "../state/currentSphereHierarchyAtom";
 import { SphereNodeDetailsCache, nodeCache, store } from "../state/jotaiKeyValueStore";
 import { extractEdges } from "../graphql/utils";
@@ -56,11 +56,11 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   const ref = useRef(null);
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
-  const tooltipRef = useRef(null);
   const [_, setCurrentPage] = useState<Page>(Page.Home);
   const [collapsed, setCollapsed] = useState(true);
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipText, setTooltipText] = useState<string>("");
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastText, setToastText] = useState<string>("");
   const currentPage = AppMachine.state.currentState; // This is more reliable than the hook for tracking updated page state
 
   // Nav open, close, selected states handler bound and unbound by useEffect:
@@ -163,20 +163,13 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
         setCurrentPage(Page.Dashboard)
         transition('Dashboard', {})
         break;
-      case e.key == 'fb':
-        setTooltipText(`feedback`)
-        openMenu()
-        if(tooltipRef.current) {(tooltipRef.current as HTMLElement).style.top = "0rem"}
-        activatePageContextTooltip(15000)
-        break;
       case e.key == 'settings':
         setSettingsOpen(true)
         break;
 
       case e.key == 'add-sphere':
         if(spheresArray.length >= 4) {
-          setTooltipText(tooltipMsg + "before you can add another Sphere. These are the 4 burners of your habit life!")
-          if(tooltipRef.current) {(tooltipRef.current as HTMLElement).style.top = "0rem"}
+          setToastText(tooltipMsg + "before you can add another Sphere. These are the 4 burners of your habit life!")
           openMenu()
           activatePageContextTooltip()
           return;
@@ -189,10 +182,9 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
 
       case e.key == 'list-spheres':
         if(spheresArray.length == 0) {
-          // If there is a problem, just show a tooltip
+          // If there is a problem, just show a toast
 
-          setTooltipText(tooltipMsg + "before you can view the Spheres list")
-          if(tooltipRef.current) {(tooltipRef.current as HTMLElement).style.top = "0rem"}
+          setToastText(tooltipMsg + "before you can view the Spheres list")
           activatePageContextTooltip()
           openMenu()
           return;
@@ -208,7 +200,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
         // Check conditions where the current page would cause errors for the new Sphere selection
         if([Page.Vis].includes(currentPage as Page) && noSphereOrbits(e.key)) {
           // If there is a problem, just show a tooltip
-          setTooltipText("Ensure you have Orbits before attempting to Visualise another Sphere")
+          setToastText("Ensure you have Orbits before attempting to Visualise another Sphere")
           openMenu()
           activatePageContextTooltip()
         } else if([Page.ListSpheres].includes(currentPage as Page)) {
@@ -221,7 +213,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
             ? closeMenu()
             : closeMenu() && transition('PreloadAndCache', {landingSphereEh: sphere(e.key)?.eH, landingSphereId: e.key })
         } else {
-          setTooltipVisible(false)
+          setShowToast(false)
           if(store.get(currentSphere)?.actionHash == e.key) openMenu();
           // Set current sphere from action hash of sphere clicked
           store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
@@ -257,15 +249,14 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
     function goToPage(type: string) {
       switch (type) {
         case 'neutral': 
-          setTooltipVisible(false);
+          setShowToast(false);
           setCurrentPage(Page.ListOrbits)
           transition('ListOrbits', {sphereAh: sphere().id})
           closeMenu()
           return
         case 'primary':
           if(noSphereOrbits()) {
-            setTooltipText("Select a Sphere with existing Orbits to enable Visualisation")
-            if(tooltipRef.current) {(tooltipRef.current as HTMLElement).style.top = "0rem"}
+            setToastText("Select a Sphere with existing Orbits to enable Visualisation")
             activatePageContextTooltip()
             return
           }
@@ -276,7 +267,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
           closeMenu()
           return
         case 'secondary': 
-          setTooltipVisible(false);
+          setShowToast(false);
           setCurrentPage(Page.CreateOrbit)
           transition('CreateOrbit', {sphereEh: sphere().eH})   
           closeMenu()
@@ -300,47 +291,53 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   }
 
   function activatePageContextTooltip(customTimeout?: number) {
-    setTooltipVisible(true);
+    setShowToast(true);
     setTimeout(() => {
-      setTooltipVisible(false);
-      if(tooltipRef.current) (tooltipRef.current as HTMLElement).style.top = "initial"
+      setShowToast(false);
     }, customTimeout || TOOLTIP_TIMEOUT);
   }
   
   return (
-    <nav ref={ref} className={sideNavExpanded ? "side-nav expanded" : "side-nav"}>
-      { loading
-        ? <Spinner aria-label="Loading!" className='menu-spinner' size="xl" />
-        : <>
-          <Menu
-            inlineCollapsed={collapsed}
-            onClick={onClick}
-            style={{ width: collapsed ? 72 : 256 }}
-            mode="inline"
-            items={menuItems}
-          />
-          <div className={"main-actions-menu"}>
-            <div style={{ display: collapsed ? "none" : "flex" }} className={"sphere-context-actions"} data-tooltip-target="tooltip-left" data-tooltip-placement="left" >
-              <div ref={tooltipRef} id="tooltip-left" role="tooltip" className={tooltipVisible ? "" : "invisible"}>
-                {tooltipText == "feedback" ? <a href="https://habitfract.net/feedback">To report bugs, give feedback or suggestions, click HERE</a> : `${tooltipText}`}
-                <div className="tooltip-arrow" data-popper-arrow></div>
-              </div>
-              {buttonWithTooltipHandling('neutral')}
-              {buttonWithTooltipHandling('secondary')}
-              {buttonWithTooltipHandling('primary')}
-            </div>
+    <>
+      {showToast && (
+        <Toast className="mt-2">
+          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-cyan-100 text-cyan-500 dark:bg-cyan-800 dark:text-cyan-200">
+            <WarningOutlined className="h-5 w-5" />
+          </div>
+          <div className="ml-3 text-sm font-normal">{toastText}</div>
+          <Toast.Toggle onDismiss={() => setShowToast(false)} />
+        </Toast>
+      )}
+      <nav ref={ref} className={sideNavExpanded ? "side-nav expanded" : "side-nav"}>
+        { loading
+          ? <Spinner aria-label="Loading!" className='menu-spinner' size="xl" />
+          : <>
             <Menu
               inlineCollapsed={collapsed}
-              onClick={(e) => onClick(e)}
+              onClick={onClick}
               style={{ width: collapsed ? 72 : 256 }}
               mode="inline"
-              items={createFixedMenuItems()}
+              items={menuItems}
             />
-            {<ToggleMenuExpand></ToggleMenuExpand>}
-          </div>
-        </>
-      }
-    </nav>
+            <div className={"main-actions-menu"}>
+              <div style={{ display: collapsed ? "none" : "flex" }} className={"sphere-context-actions"} data-tooltip-target="tooltip-left" data-tooltip-placement="left" >
+                {buttonWithTooltipHandling('neutral')}
+                {buttonWithTooltipHandling('secondary')}
+                {buttonWithTooltipHandling('primary')}
+              </div>
+              <Menu
+                inlineCollapsed={collapsed}
+                onClick={(e) => onClick(e)}
+                style={{ width: collapsed ? 72 : 256 }}
+                mode="inline"
+                items={createFixedMenuItems()}
+              />
+              {<ToggleMenuExpand></ToggleMenuExpand>}
+            </div>
+          </>
+        }
+      </nav>
+    </>
   );
 };
 
