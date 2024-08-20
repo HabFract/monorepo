@@ -34,6 +34,10 @@ div[role="progressbar"] > div.astro > div {
   padding-left: 50%;
 }
 
+.sphere-pie-label {  
+  position: relative; 
+  left: calc(50% - 2rem);
+}
 .apexcharts-pie-area {
   transform: rotate(90deg) translate(-10%,-40%) !important;
 }

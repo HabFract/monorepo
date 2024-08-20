@@ -89,6 +89,10 @@ div[data-testid="flowbite-dropdown"] button {
   @apply border-0 bg-transparent;
 }
 
+.sphere-actions-vis .btn {
+  height: 3rem;
+}
+
 .sphere-actions-vis .btn *[role="img"] + span {
   min-height: 2.5rem;
   display: flex;
@@ -97,10 +101,10 @@ div[data-testid="flowbite-dropdown"] button {
 }
 
 /* Hide icon test on smaller viewports */
-.btn.responsive span[role="img"] {
+.btn.responsive span[role="img"], .btn.responsive svg[role="img"] {
   @apply m-0-sm justify-center;
 }
-.btn.responsive span[role="img"] + span {
+.btn.responsive span[role="img"] + span, .btn.responsive svg[role="img"] + span {
   @apply hidden-sm;
 }
 
