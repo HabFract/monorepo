@@ -8,18 +8,20 @@ import { cloneElement, ReactNode, useEffect, useState } from 'react';
 import BackCaret from './components/icons/BackCaret';
 import Onboarding from './components/layouts/Onboarding';
 import Settings from './components/Settings';
+import Breadcrumbs from './components/Breadcrumbs';
 
 import { Button, ProgressBar, darkTheme } from 'habit-fract-design-system';
-import { store } from './state/jotaiKeyValueStore';
+import { nodeCache, SphereOrbitNodes, store } from './state/jotaiKeyValueStore';
 import { currentOrbitId, currentSphere } from './state/currentSphereHierarchyAtom';
-import { SphereConnection, useGetSpheresQuery } from './graphql/generated';
+import { Sphere, SphereConnection, useGetSpheresQuery } from './graphql/generated';
 import { AppMachine } from './main';
 import { getVersion } from '@tauri-apps/api/app';
 import { ALPHA_RELEASE_DISCLAIMER, NODE_ENV } from './constants';
 
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertOutlined } from '@ant-design/icons';
+import { HomeOutlined, AlertOutlined } from '@ant-design/icons';
 import { isSmallScreen } from './components/vis/helpers';
+import { extractEdges } from './graphql/utils';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
@@ -40,6 +42,11 @@ function App({ children: pageComponent }: any) {
     });
   }, [])
 
+  // Don't start at the home page for return users (those with at least one Sphere)
+  const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
+  const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
+  state.match('Home') && userHasSpheres && transition('PreloadAndCache');
+
   function withPageTransition(page: ReactNode) {
     return (
       <AnimatePresence mode='wait'>
@@ -56,6 +63,11 @@ function App({ children: pageComponent }: any) {
     )
   }
   function withLayout(component: ReactNode) {
+    const sphere = store.get(currentSphere);
+    const orbit = store.get(currentOrbitId);
+    const sphereNodes = sphere?.actionHash && store.get(nodeCache.items) && store.get(nodeCache.items)![sphere.actionHash] as SphereOrbitNodes;
+    const currentSphereDetails = userHasSpheres && extractEdges(spheres.spheres).find(possibleSphere => possibleSphere.id == sphere.actionHash);
+
     switch (true) {
       case !!(state.match("Onboarding")):
         return <Onboarding>
@@ -64,14 +76,12 @@ function App({ children: pageComponent }: any) {
       case ["Home", "PreloadAndCache"].includes(state):
         return withPageTransition(component)
       default:
-        return <div className='p-1 w-full'>{component}</div>
+        return <div className='p-1 w-full'>
+          <Breadcrumbs currentSphere={currentSphereDetails}></Breadcrumbs>
+          {component}
+        </div>
     }
   }
-
-  // Don't start at the home page for return users (those with at least one Sphere)
-  const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
-  const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
-  state.match('Home') && userHasSpheres && transition('PreloadAndCache');
 
   return <Flowbite theme={{ theme: darkTheme }}>
     <main className={mainContainerClass}>
@@ -79,7 +89,7 @@ function App({ children: pageComponent }: any) {
       {(state == 'Home') && VersionDisclaimer(currentVersion, () => setIsModalOpen(true), true)}
       {/* Return users can see a Nav */}
       {state !== 'Home' && !state.match('Onboarding')
-        && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSettingsOpen={() => {setIsModalOpen(true); setIsSettingsOpen(true)}} setSideNavExpanded={setSideNavExpanded}></Nav>
+        && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSettingsOpen={() => { setIsModalOpen(true); setIsSettingsOpen(true) }} setSideNavExpanded={setSideNavExpanded}></Nav>
       }
 
       {loadingSpheres
@@ -94,7 +104,7 @@ function App({ children: pageComponent }: any) {
         ))
       }
     </main>
-    <Modal show={isModalOpen} onClose={() => {setIsSettingsOpen(false); setIsModalOpen(false)}}>
+    <Modal show={isModalOpen} onClose={() => { setIsSettingsOpen(false); setIsModalOpen(false) }}>
       <Modal.Header>
         {isSettingsOpen ? "Settings" : "Disclaimer:"}
       </Modal.Header>
@@ -105,10 +115,10 @@ function App({ children: pageComponent }: any) {
   </Flowbite>
 }
 
-export function VersionDisclaimer(currentVersion: string | undefined, open : Function, isFrontPage?: boolean): ReactNode {
+export function VersionDisclaimer(currentVersion: string | undefined, open: Function, isFrontPage?: boolean): ReactNode {
   return <div className={isFrontPage ? "app-version-disclaimer z-100 flex gap-2 fixed right-1 top-1" : "app-version-disclaimer z-60 flex gap-2 fixed right-1 bottom-1"}>
     {NODE_ENV !== 'dev' && <div className='version-number'>v{currentVersion}</div>}
-    <Button type={"secondary"} onClick={() => {console.log('HI'); open()}}>{isSmallScreen() ? <AlertOutlined className="text-bg" /> : "Disclaimer"}</Button>
+    <Button type={"secondary"} onClick={() => { console.log('HI'); open() }}>{isSmallScreen() ? <AlertOutlined className="text-bg" /> : "Disclaimer"}</Button>
   </div>;
 }
 

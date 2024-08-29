@@ -155,6 +155,25 @@ div[data-testid="flowbite-dropdown"] button {
   background: linear-gradient(90deg, rgba(162,234,196,0.8) 50%, rgba(0,177,151,0.8) 100%);
 }
 
+/* Breadcrumbs */
+.ant-breadcrumb  {
+  @apply ml-1 mb-1;
+}
+.ant-breadcrumb .ant-breadcrumb-link  {
+  line-height: 24px;
+  font-size: 1rem;
+  font-weight: 300;
+  @apply font-sans;
+}
+.ant-breadcrumb .ant-breadcrumb-separator, .ant-breadcrumb .ant-breadcrumb-link  {
+  @apply text-title !important;
+}
+
+@media screen and (min-width: 768px) {
+  .ant-breadcrumb  {
+    @apply ml-2 mb-2;
+  }
+}
 @media screen and (min-width: 1200px) {
   .btn-icon .icon {
     width: 3rem;
