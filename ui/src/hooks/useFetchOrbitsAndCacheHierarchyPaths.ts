@@ -53,7 +53,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
 
   const sphereNodes = store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
   
-  if(Object.values(sphereNodes).length ==0) transition('CreateOrbit', { editMode: false, forwardTo: "Vis", sphereEh: store.get(currentSphere)?.entryHash })
+  if(sphereNodes && typeof sphereNodes == 'object' && Object.values(sphereNodes).length ==0) transition('CreateOrbit', { editMode: false, forwardTo: "Vis", sphereEh: store.get(currentSphere)?.entryHash })
   
   useEffect(() => {
     if (data) {

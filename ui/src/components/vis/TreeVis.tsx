@@ -1,11 +1,10 @@
 import { tree, TreeLayout } from "d3-hierarchy";
 import { DefaultLinkObject, Link, linkVertical } from "d3-shape";
-import { zoom } from "d3-zoom";
+import { zoom, ZoomBehavior } from "d3-zoom";
 import { EventHandlers, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
 import { BASE_SCALE, FOCUS_MODE_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS } from "./constants";
 import { BaseVisualization } from "./BaseVis";
 import { select } from "d3-selection";
-import { store, nodeCache } from "habit-fract-design-system/dist/index.cjs60";
 import { OrbitNodeDetails } from "../../state/jotaiKeyValueStore";
 import { ONE_CHILD, ONE_CHILD_XS, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT, TWO_CHILDREN_LEFT_XS, TWO_CHILDREN_RIGHT_XS, THREE_CHILDREN_LEFT, THREE_CHILDREN_RIGHT, THREE_CHILDREN_LEFT_XS, THREE_CHILDREN_RIGHT_XS, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1_XS, FOUR_CHILDREN_LEFT_2_XS, FOUR_CHILDREN_RIGHT_1_XS, FOUR_CHILDREN_RIGHT_2_XS, FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FIVE_CHILDREN_LEFT_1_XS, FIVE_CHILDREN_LEFT_2_XS, FIVE_CHILDREN_RIGHT_1_XS, FIVE_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3, SIX_CHILDREN_LEFT_1_XS, SIX_CHILDREN_LEFT_2_XS, SIX_CHILDREN_LEFT_3_XS, SIX_CHILDREN_RIGHT_1_XS, SIX_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_RIGHT_3_XS } from "./PathTemplates/paths";
 import { getInitialXTranslate, getInitialYTranslate, newXTranslate, newYTranslate } from "./helpers";
@@ -76,7 +75,7 @@ export class TreeVisualization extends BaseVisualization {
         this.modalIsOpen = true;
         this.modalParentOrbitEh(parentOrbitEh)
       },
-      handleNodeZoom(e, node, forParent) {
+      handleNodeZoom(e) {
         let t = { ...e.transform };
         let scale;
         let x, y;
@@ -99,8 +98,10 @@ export class TreeVisualization extends BaseVisualization {
     }
   }
 
-  initializeZoomer(): any {
-    return zoom().scaleExtent([0.1, 1.5]).on("zoom", this.eventHandlers.handleNodeZoom.bind(this) as any);
+  initializeZoomer(): ZoomBehavior<Element, unknown> {
+    const zoomer:ZoomBehavior<Element, unknown> = zoom().scaleExtent([0.1, 1.5]).on("zoom", this.eventHandlers.handleNodeZoom.bind(this) as any);
+    this.visBase().call(zoomer as any);
+    return zoomer
   }
 
   setupLayout(): void {
@@ -278,6 +279,11 @@ export class TreeVisualization extends BaseVisualization {
           : "the-node solid";
       })
       .attr("data-testid", (d, i) => "test-node")
+      .attr("transform", (d) => {
+        return this.type == VisType.Cluster
+          ? `translate(${d.y},${d.x})`
+          : `translate(${d.x},${d.y})`;
+      })
       .call(this.bindEventHandlers.bind(this));
 
     // Links enter selection
@@ -316,7 +322,7 @@ export class TreeVisualization extends BaseVisualization {
         if (!["BUTTON", 'IMG'].includes(e.target.tagName)) return;
         if(e.target.tagName == "IMG" && !e.target.dataset.button) return;
 
-        this.eventHandlers.handleNodeFocus.call(this, e, d);
+        // this.eventHandlers.handleNodeFocus.call(this, e, d);
         switch (true) {
           case e.target.classList.contains('checkbox-button'):
             if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
@@ -342,7 +348,7 @@ export class TreeVisualization extends BaseVisualization {
             )
             this._gTooltip!
               .select(".tooltip-inner foreignObject").html((d):string => {
-              if (!d?.data?.content || !this.nodeDetails[d.data.content]) return
+              if (!d?.data?.content || !this.nodeDetails[d.data.content]) return ""
               const { checked, scale, parentEh } = this.nodeDetails[d.data.content];
               return `<div class="buttons">
                 <button class="tooltip-action-button higher-button ${!parentEh && scale !== 'Astro' ? 'hide' : 'hide'}"></button>

@@ -1,54 +1,8 @@
 import { select, Selection } from "d3-selection";
 import { zoom, ZoomBehavior } from "d3-zoom";
-import { linkVertical, linkHorizontal } from "d3-shape";
 import { HierarchyLink, HierarchyNode, tree } from "d3-hierarchy";
 import { easeCubic, easeLinear } from "d3-ease";
-import { TreeLayout } from "d3-hierarchy";
 import _ from "lodash";
-
-import {
-  ONE_CHILD,
-  ONE_CHILD_XS,
-  TWO_CHILDREN_LEFT,
-  TWO_CHILDREN_RIGHT,
-  THREE_CHILDREN_LEFT,
-  THREE_CHILDREN_RIGHT,
-  FOUR_CHILDREN_LEFT_1,
-  FOUR_CHILDREN_LEFT_2,
-  FOUR_CHILDREN_RIGHT_1,
-  FOUR_CHILDREN_RIGHT_2,
-  FIVE_CHILDREN_LEFT_1,
-  FIVE_CHILDREN_LEFT_2,
-  FIVE_CHILDREN_RIGHT_1,
-  FIVE_CHILDREN_RIGHT_2,
-  SIX_CHILDREN_LEFT_1,
-  SIX_CHILDREN_LEFT_2,
-  SIX_CHILDREN_LEFT_3,
-  SIX_CHILDREN_RIGHT_1,
-  SIX_CHILDREN_RIGHT_2,
-  SIX_CHILDREN_RIGHT_3,
-
-  TWO_CHILDREN_RIGHT_XS,
-  TWO_CHILDREN_LEFT_XS,
-  THREE_CHILDREN_LEFT_XS,
-  THREE_CHILDREN_RIGHT_XS,
-  FOUR_CHILDREN_LEFT_1_XS,
-  FOUR_CHILDREN_LEFT_2_XS,
-  FOUR_CHILDREN_RIGHT_1_XS,
-  FOUR_CHILDREN_RIGHT_2_XS,
-  FIVE_CHILDREN_LEFT_1_XS,
-  FIVE_CHILDREN_LEFT_2_XS,
-  FIVE_CHILDREN_RIGHT_1_XS,
-  FIVE_CHILDREN_RIGHT_2_XS,
-  SIX_CHILDREN_LEFT_1_XS,
-  SIX_CHILDREN_LEFT_2_XS,
-  SIX_CHILDREN_LEFT_3_XS,
-  SIX_CHILDREN_RIGHT_1_XS,
-  SIX_CHILDREN_RIGHT_2_XS,
-  SIX_CHILDREN_RIGHT_3_XS
-} from './PathTemplates/paths';
-
-import { expand, collapse, contentEqual, nodeStatusColours, parseTreeValues, cumulativeValue, outOfBoundsNode, getInitialXTranslate, getInitialYTranslate, newXTranslate, newYTranslate, debounce } from "./helpers";
 
 import { noNodeCol, parentPositiveBorderCol, positiveColLighter, BASE_SCALE, FOCUS_MODE_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS } from "./constants";
 import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
@@ -57,6 +11,7 @@ import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
 import { client } from "../../graphql/client";
 import { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject, nodeCache } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
 /**
  * Base class for creating D3 hierarchical visualizations.
@@ -156,6 +111,42 @@ export abstract class BaseVisualization implements IVisualization {
     this.zoomer = this.initializeZoomer();
   }
 
+  // Allow data to be re-cached after certain vis interactions:
+  /**
+   * Fetches Orbit data for a given Sphere.
+   */
+  async refetchOrbits() {
+    const variables = { sphereEntryHashB64: this.sphereEh };
+    let data;
+    try {
+      const gql: ApolloClient<NormalizedCacheObject> = await client as ApolloClient<NormalizedCacheObject>;
+      data = await gql.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only' })
+      if (data?.data?.orbits) {
+        const orbits = (extractEdges(data.data.orbits) as Orbit[]);
+        const indexedOrbitData: Array<[ActionHashB64, OrbitNodeDetails]> = Object.entries(orbits.map(mapToCacheObject))
+          .map(([_idx, value]) => [value.id, value]);
+        this.cacheOrbits(indexedOrbitData);
+      }
+      console.log('refetched orbits :>> ', data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /**
+   * Caches Orbit data for a given Sphere.
+   */
+  async cacheOrbits(orbitEntries: Array<[ActionHashB64, OrbitNodeDetails]>) {
+    try {
+      store.set(nodeCache.setMany, orbitEntries)
+      //@ts-ignore
+      this.nodeDetails = Object.entries(orbitEntries);
+      console.log('Sphere orbits fetched and cached!')
+    } catch (error) {
+      console.error('error :>> ', error);
+    }
+  }
+
   /**
    * Set up the canvas for rendering.
    */
@@ -171,6 +162,65 @@ export abstract class BaseVisualization implements IVisualization {
    * Set up the layout for the visualization.
    */
   abstract setupLayout(): void;
+
+  /**
+   * Applies the initial transform to the visualization.
+   * This method should be implemented by subclasses to set up the initial view of the visualization.
+   * TODO: implement
+   */
+  abstract applyInitialTransform(): void;
+
+  /**
+   * Set width/height view config variables from constants
+   */
+  setLevelsHighAndWide(): void {
+    if (this._viewConfig.isSmallScreen()) {
+      this._viewConfig.levelsHigh = XS_LEVELS_HIGH;
+      this._viewConfig.levelsWide = XS_LEVELS_WIDE;
+    } else {
+      this._viewConfig.levelsHigh = LG_LEVELS_HIGH;
+      this._viewConfig.levelsWide = LG_LEVELS_WIDE;
+    }
+  }
+
+  /**
+   * Set up SVG viewport attributes
+   */
+  calibrateViewPortAttrs(): void {
+    this._viewConfig.viewportW =
+      this._viewConfig.canvasWidth * (this._viewConfig.levelsWide as number);
+    this._viewConfig.viewportH =
+      this._viewConfig.canvasHeight * (this._viewConfig.levelsHigh as number);
+
+    this._viewConfig.viewportX = 0;
+    this._viewConfig.viewportY = 0;
+
+    this._viewConfig.defaultView = `${this._viewConfig.viewportX} ${this._viewConfig.viewportY} ${this._viewConfig.viewportW} ${this._viewConfig.viewportH}`;
+  }
+
+  /**
+   * Set up SVG viewbox attributes
+   */
+  calibrateViewBox(): void {
+    this.visBase()
+      .attr("viewBox", this._viewConfig.defaultView)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .on("dblclick.zoom", null);
+  }
+
+  /**
+   * Set up x/y differential needed for the vis layout
+   */
+  setdXdY(): void {
+    this._viewConfig.dx =
+      this._viewConfig.canvasWidth / (this._viewConfig.levelsHigh as number * 2) - // Adjust for tree horizontal spacing on different screens
+      +(this._viewConfig.isSmallScreen()) * 250;
+    this._viewConfig.dy =
+      this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number * 4);
+    //adjust for taller aspect ratio
+    this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 4.25 : 2;
+    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3.25 : 2;
+  }
 
   /**
    * Set up node and link groups.
@@ -192,10 +242,18 @@ export abstract class BaseVisualization implements IVisualization {
    * Render the visualization.
    */
   public render(): void {
+    if (this.skipMainRender) { this.skipMainRender = false; return };
     if (this.noCanvas()) {
       this.setupCanvas();
     }
 
+    if (this.firstRender()) {
+      this.setLevelsHighAndWide();
+      this.calibrateViewPortAttrs();
+      this.calibrateViewBox();
+      this.setdXdY();
+    }
+    
     if (this.firstRender() || this.hasNextData()) {
       this.clearCanvas();
 
@@ -207,6 +265,7 @@ export abstract class BaseVisualization implements IVisualization {
       this.setupLayout();
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
+      this.setNodeAndLabelGroups();
       this.appendNodesAndLabels();
 
       this.applyInitialTransform();
@@ -215,11 +274,35 @@ export abstract class BaseVisualization implements IVisualization {
     }
   }
 
-  // Utility methods:
+  // Utility methods for getting data about the state of the render:
   /**
-     * Checks if the canvas element exists in the DOM.
-     * @returns {boolean} True if the canvas doesn't exist or is empty, false otherwise.
-     */
+   * Determines if this is the first render of the visualization.
+   * @returns {boolean} True if this is the first render, false otherwise.
+   */
+  firstRender(): boolean {
+    return !this._hasRendered;
+  }
+
+  /**
+   * Checks if there is new data to be rendered.
+   * @returns {boolean} True if there is new data (_nextRootData is not null), false otherwise.
+   */
+  hasNextData(): boolean {
+    return this._nextRootData !== null;
+  }
+
+  // Utility methods to do with base/canvas elements and clearing sub-elements:
+  /**
+   * Get a base/mounting element for the svg
+   * @returns {Selection<SVGForeignObjectElement, HierarchyNode<any>, HTMLElement, any>} A d3 selection of the base HTML element
+   */
+  visBase(): Selection<SVGForeignObjectElement, HierarchyNode<any>, HTMLElement, any> {
+    return select(`#${this._svgId}`);
+  }
+  /**
+   * Checks if the canvas element exists in the DOM.
+   * @returns {boolean} True if the canvas doesn't exist or is empty, false otherwise.
+   */
   noCanvas(): boolean {
     return (
       typeof this._canvas === "undefined" ||
@@ -265,33 +348,10 @@ export abstract class BaseVisualization implements IVisualization {
   }
 
   /**
-   * Determines if this is the first render of the visualization.
-   * @returns {boolean} True if this is the first render, false otherwise.
-   */
-  firstRender(): boolean {
-    return !this._hasRendered;
-  }
-
-  /**
-   * Checks if there is new data to be rendered.
-   * @returns {boolean} True if there is new data (_nextRootData is not null), false otherwise.
-   */
-  hasNextData(): boolean {
-    return this._nextRootData !== null;
-  }
-
-  /**
    * Clears all child elements from the canvas.
    * This is typically called before re-rendering the visualization with new data.
    */
   clearCanvas(): void {
     select(".canvas").selectAll("*").remove();
   }
-
-  /**
-   * Applies the initial transform to the visualization.
-   * This method should be implemented by subclasses to set up the initial view of the visualization.
-   */
-  abstract applyInitialTransform(): void;
-
 }

@@ -203,6 +203,9 @@ nav + main.page-container .orbits-list {
   margin-left: 4rem;
 }
 
+.page-container.vis, .page-container.vis > div:last-child {
+  overflow: hidden;
+}
 @media screen and (min-width: 440px) {
   .ant-app {
     grid-template-columns: 10% 80% 10%;
