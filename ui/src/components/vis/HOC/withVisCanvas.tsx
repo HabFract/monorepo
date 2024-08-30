@@ -2,9 +2,9 @@ import React, { ComponentType, ReactNode, useEffect, useState } from 'react'
 
 import "./vis.css";
 
-import { Margins, VisProps, VisCoverage } from '../types';
+import { Margins, VisProps, VisCoverage, IVisualization } from '../types';
 import { select } from "d3-selection";
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { useNodeTraversal } from '../../../hooks/useNodeTraversal';
 import { HierarchyBounds, SphereHierarchyBounds, currentOrbitCoords, currentOrbitId as currentOrbitIdAtom, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
 import { DownOutlined, EnterOutlined, LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
@@ -12,7 +12,7 @@ import { WithVisCanvasProps } from '../types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { Modal } from 'flowbite-react';
 import { CreateOrbit } from '../../forms';
-import { nodeCache, store } from '../../../state/jotaiKeyValueStore';
+import { nodeCache, SphereOrbitNodes, store } from '../../../state/jotaiKeyValueStore';
 
 const defaultMargins: Margins = {
   top: 0,
@@ -40,7 +40,7 @@ const appendSvg = (mountingDivId: string, divId: string) => {
       .attr("style", "pointer-events: all");
 };
 
-export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
+export function withVisCanvas<T extends IVisualization>(Component: ComponentType<VisProps<T>>): ReactNode {
   const ComponentWithVis: React.FC<WithVisCanvasProps> = (_visParams: WithVisCanvasProps) => {
     const mountingDivId = 'vis-root'; // Declared at the router level
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
@@ -55,6 +55,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
       const appended = !!appendSvg(mountingDivId, svgId);
       setAppendedSvg(appended)
     }, [selectedSphere.actionHash]);
+
     const { canvasHeight, canvasWidth } = getCanvasDimensions()
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [currentParentOrbitEh, setCurrentParentOrbitEh] = useState<EntryHashB64>();
@@ -77,7 +78,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
           canvasWidth={canvasWidth}
           margin={defaultMargins}
           selectedSphere={selectedSphere}
-          render={(currentVis: any, queryType: VisCoverage,x,y, newRootData) => {
+          render={(currentVis: T, queryType: VisCoverage,x,y, newRootData) => {
             // Determine need for traversal controls
             const withTraversal: boolean = queryType == VisCoverage.Partial;
             let onlyChildParent: boolean = true;
@@ -85,11 +86,11 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
             let hasOneChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length == 1;
 
             if(appendedSvg) {
-              // Pass through setState handlers for the modal opening and current append/prepend Node parent entry hash
-              currentVis.modalOpen = setIsModalOpen;
+              currentVis.isModalOpen = false;
+              // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
               currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
               currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
-              if(currentVis && currentVis.rootData && coordsChanged(currentVis?.rootData?._translationCoords)) {
+              if(currentVis && currentVis.rootData && coordsChanged((currentVis?.rootData as any)?._translationCoords)) {
                 const currentOrbit = newRootData?.find(d => {
                   if(!d) return false
                   const siblings = d?.parent && d.parent.children.map(d => d.data.content)
@@ -103,7 +104,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                 hasChild = newRootData?.data.children && newRootData?.data.children.length > 0  
               }
   
-              onlyChildParent = currentVis.rootData.parent == null || currentVis.rootData.parent?.children && currentVis.rootData.parent?.children.length == 1;
+              onlyChildParent = currentVis.rootData.parent == null ||( currentVis.rootData.parent?.children && currentVis.rootData.parent?.children.length == 1 || true);
               // Trigger the Vis object render function only once the SVG is appended to the DOM
               currentVis?.render();
 
@@ -137,7 +138,7 @@ export function withVisCanvas(Component: ComponentType<VisProps>): ReactNode {
                     <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh} childOrbitEh={currentChildOrbitEh} onCreateSuccess={() => {
                       setIsModalOpen(false);
                       currentVis.isModalOpen = false; // TODO, let this happen on cancel by adding onCancel callback
-                      currentVis.nodeDetails = store.get(nodeCache.items)![selectedSphere.actionHash as ActionHashB64]
+                      currentVis.nodeDetails = store.get(nodeCache.items)![selectedSphere.actionHash as ActionHashB64] as SphereOrbitNodes;
                       currentVis.setNodeAndLinkGroups.call(currentVis);
                       currentVis.setNodeAndLinkEnterSelections.call(currentVis);
                       currentVis.setCircleAndLabelGroups.call(currentVis);

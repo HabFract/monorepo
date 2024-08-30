@@ -1,7 +1,7 @@
 import React, { ComponentType, useEffect, useState } from 'react';
 import BaseVisualization from "./BaseVis";
 import { VisProps, VisCoverage, VisType } from './types';
-import { hierarchy } from "d3-hierarchy";
+import { hierarchy, HierarchyNode } from "d3-hierarchy";
 import { OrbitHierarchyQueryParams, useGetLowestSphereHierarchyLevelQuery, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
@@ -12,6 +12,7 @@ import { currentOrbitCoords, currentSphere, currentSphereHierarchyBounds, setBre
 import { Spinner } from 'flowbite-react';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
+import { TreeVisualization } from './TreeVis';
 
 export const OrbitTree: ComponentType<VisProps> = ({
   selectedSphere: sphere,
@@ -47,7 +48,7 @@ export const OrbitTree: ComponentType<VisProps> = ({
     fetchPolicy: "network-only"
   })
   const [json, setJson] = useState<string | null>(null);
-  const [currentOrbitTree, setCurrentOrbitTree] = useState<BaseVisualization | null>(null);
+  const [currentOrbitTree, setCurrentOrbitTree] = useState<TreeVisualization | null>(null);
 
   // Modal state, set to open when there is an error or if initial Visualisation is not possible
   const [modalErrorMsg, setModalErrorMsg] = useState<string>("");
@@ -72,18 +73,18 @@ export const OrbitTree: ComponentType<VisProps> = ({
   const instantiateVisObject = () => {
     if (!error && json && !currentOrbitTree && nodeDetailsCache[params?.currentSphereAhB64]) {
       const currentTreeJson = getJsonDerivation(json);
-      const hierarchyData = hierarchy(currentTreeJson).sort((a, b) => {
+      const hierarchyData = hierarchy(currentTreeJson).sort((a: HierarchyNode<any>, b: HierarchyNode<any>) : number => {
         const idA : ActionHashB64 = a.data.content;
         const idB : ActionHashB64 = b.data.content;
-      if(!nodeDetailsCache[params?.currentSphereAhB64]) return;
+      if(!nodeDetailsCache[params?.currentSphereAhB64]) return 0;
         const sphereNodes = nodeDetailsCache[params?.currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
         if(!sphereNodes?.[idA as keyof SphereOrbitNodes] || !sphereNodes?.[idB as keyof SphereOrbitNodes]) return 1
-        return (sphereNodes?.[idA]?.startTime || 0 as number) - (sphereNodes?.[idB as keyof SphereOrbitNodes]?.startTime || 0 as number)
+        return +(sphereNodes?.[idA]?.startTime || 0 as number) - (sphereNodes?.[idB as keyof SphereOrbitNodes]?.startTime || 0 as number)
       });
       
       setDepthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.Complete ? 100 : hierarchyData.height])
 
-      const orbitVis = new BaseVisualization(
+      const orbitVis = new TreeVisualization(
         VisType.Tree,
         'vis',
         hierarchyData,

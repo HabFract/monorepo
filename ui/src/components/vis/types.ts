@@ -1,48 +1,126 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { SphereHashes } from "../../state/currentSphereHierarchyAtom";
-import BaseVisualization from "./BaseVis";
+import { HierarchyNode } from "d3-hierarchy";
+import { D3ZoomEvent } from "d3-zoom";
+import { SphereOrbitNodes } from "../../state/jotaiKeyValueStore";
 
-export type WithVisCanvasProps = { // Passed to the finite state machine which renders the HOC
-  orbitEh: EntryHashB64 // For partial VisCoverage
-} | {
-  currentSphereEhB64: EntryHashB64, // For complete VisCoverage
-  currentSphereAhB64: ActionHashB64 
+/**
+ * Enum for visualization types.
+ */
+export enum VisType {
+  Tree = "Tree",
+  Cluster = "Cluster",
+  Radial = "Radial"
 }
 
-export type VisProps = { // for e.g. OrbitTree, OrbitCluster
+/**
+ * Enum for visualization coverage types.
+ */
+export enum VisCoverage {
+  Partial = "partial", // Uses co-ordinates for navigation
+  Complete = "complete" // Uses zoom for navigation
+}
+
+/**
+ * Props for the higher order component that wraps all vis types with a canvas and navigation controls,
+ * depending on the coverage type.
+ */
+export type WithVisCanvasProps = 
+  | { orbitEh: EntryHashB64 } // Entry hash of the root node used for partial VisCoverage.
+  | { currentSphereEhB64: EntryHashB64; currentSphereAhB64: ActionHashB64 }; // For complete VisCoverage
+
+
+/**
+ * Interface for the base visualization class.
+ */
+export interface IVisualization {
+  /** Type of visualization */
+  type: VisType;
+  /** ID of the SVG element */
+  _svgId: string;
+  /** Root data for the hierarchy */
+  rootData: HierarchyNode<unknown>;
+  /** View configuration */
+  _viewConfig: ViewConfig;
+  /** Zoom configuration */
+  _zoomConfig: ZoomConfig;
+  /** Event handlers */
+  eventHandlers: EventHandlers;
+  /** Flag indicating if the visualization has been rendered */
+  _hasRendered: boolean;
+
+  /** Flag showing current status of is modal */
+  isModalOpen: boolean;
+  /** Allows setting/re-setting of the parent entry hash in the modal form */
+  modalParentOrbitEh: React.Dispatch<React.SetStateAction<EntryHashB64 | undefined>>;
+  /** Allows setting/re-setting of the child entry hash in the modal form */
+  modalChildOrbitEh: React.Dispatch<React.SetStateAction<EntryHashB64 | undefined>>;
+
+  /** Details of the current Sphere's nodes that are cached **/ 
+  nodeDetails: SphereOrbitNodes;
+
+  /** A flag that can be used to bypass the main render function before manually triggering partial renders **/
+  skipMainRender: boolean;
+
+  // The following public methods may be called after addition/deletion of nodes to manually trigger a partial re-render 
+  setNodeAndLinkGroups: () => void;
+  setNodeAndLinkEnterSelections: () => void;
+  setCircleAndLabelGroups: () => void;
+  appendCirclesAndLabels: () => void;
+  appendNodeDetailsAndControls: () => void;
+  appendLinkPath: () => void;
+
+  /** Method to fully render the visualization */
+  render: () => void;
+}
+
+/**
+ * Props for the visualization component.
+ * @template T - The type of visualization, extending IVisualization.
+ */
+export type VisProps<T extends IVisualization> = {
   canvasHeight: number;
   canvasWidth: number;
   margin: Margins;
+  /** Selected sphere action and entry hash as base64 */
   selectedSphere: SphereHashes;
-  render: (currentVis: BaseVisualization, queryType: VisCoverage, x, y,newRootData) => React.ReactNode;
-}
+  /**
+   * Render function for the visualization
+   * @param currentVis - The current visualization instance
+   * @param queryType - The type of query (partial or complete)
+   * @param x - X coordinate (used for navigation of partial coverage vis)
+   * @param y - Y coordinate (used for navigation of partial coverage vis)
+   * @param newRootData - New root data for the hierarchy
+   * @returns React node to render
+   */
+  render: (
+    currentVis: T,
+    queryType: VisCoverage,
+    x: number,
+    y: number,
+    newRootData: HierarchyNode<unknown>
+  ) => React.ReactNode;
+};
 
-export enum VisCoverage {
-  Partial = "partial",
-  Complete = "complete"
-}
-
-// BaseVisualization class property types/interfaces
-
+/**
+ * Interface for event handlers used in the visualization.
+ */
 export interface EventHandlers {
   handlePrependNode: ({ childOrbitEh }: { childOrbitEh: EntryHashB64 }) => void;
   handleAppendNode: ({ parentOrbitEh }: { parentOrbitEh: EntryHashB64 }) => void;
-  handleDeleteNode: (event: any, node: any) => void; // Replace 'any' with specific event and node types
-  rgtClickOrDoubleTap: (event: any, d: any) => void; // Replace 'any' with specific event and node types
-  handleNodeZoom: (event: any, node: any, forParent?: boolean) => void; // Replace 'any' with specific event and node types
-  handleNodeFocus: (event: any, node: any) => void; // Replace 'any' with specific event and node types
-  handleMouseEnter: (event: any) => void; // Replace 'any' with specific event type
-  handleMouseLeave: (event: any) => void; // Replace 'any' with specific event type
-  handleHover: (event: any, d: any) => void; // Replace 'any' with specific event and node types
+  handleDeleteNode: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
+  handleNodeZoom: (event: D3ZoomEvent<SVGSVGElement, unknown>, node: HierarchyNode<unknown>, forParent?: boolean) => void;
+  handleNodeFocus: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
 }
 
+/**
+ * Configuration for the visualization view.
+ */
 export interface ViewConfig {
   dx?: number;
   dy?: number;
   scale: number;
   clickScale: number;
-  nodeRadius?: number;
   margin: Margins;
   viewportX?: number;
   viewportY?: number;
@@ -58,39 +136,26 @@ export interface ViewConfig {
   defaultView: string;
 }
 
+/**
+ * Margins for the visualization canvas.
+ */
 export type Margins = {
   top: number;
   right: number;
   bottom: number;
   left: number;
-}
+};
 
+/**
+ * Configuration for zoom functionality.
+ */
 export interface ZoomConfig {
   focusMode: boolean;
   previousRenderZoom: {
-    event?: any; // Replace 'any' with a more specific type if possible
-    node?: any; // Replace 'any' with a more specific type if possible
+    event?: D3ZoomEvent<SVGSVGElement, unknown>;
+    node?: HierarchyNode<unknown>;
     scale?: number;
   };
   zoomedInView: () => boolean;
   globalZoomScale?: number;
-}
-
-export enum VisType {
-  Tree = "Tree",
-  Cluster = "Cluster",
-  Radial = "Radial"
-}
-
-// Now define the interface to be implemented by the BaseVisualization class
-export interface IVisualization {
-  type: VisType;
-  _svgId: string;
-  rootData: any; // Replace 'any' with a more specific type representing the input tree structure
-  _viewConfig: ViewConfig;
-  _zoomConfig: ZoomConfig;
-  eventHandlers: EventHandlers;
-  expand: () => void;
-  collapse: () => void;
-  _hasRendered: boolean;
 }
