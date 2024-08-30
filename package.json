@@ -85,6 +85,8 @@
     "@tauri-apps/cli": "2.0.0-rc.1",
     "@testing-library/react": "^14.2.1",
     "@types/d3-hierarchy": "^3.1.7",
+    "@types/d3-selection": "^3.0.10",
+    "@types/d3-shape": "^3.1.6",
     "@types/d3-zoom": "^3.0.8",
     "@types/node": "^22.2.0",
     "@types/react": "^18.2.37",

@@ -46,12 +46,12 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
     const selectedSphere = store.get(currentSphere);
-    
-    if(!selectedSphere.actionHash) {
+
+    if (!selectedSphere.actionHash) {
       console.error("No sphere context has been set!")
     }
     useEffect(() => {
-      if(document.querySelector(`#${mountingDivId} #${svgId}`)) return
+      if (document.querySelector(`#${mountingDivId} #${svgId}`)) return
       const appended = !!appendSvg(mountingDivId, svgId);
       setAppendedSvg(appended)
     }, [selectedSphere.actionHash]);
@@ -60,16 +60,16 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [currentParentOrbitEh, setCurrentParentOrbitEh] = useState<EntryHashB64>();
     const [currentChildOrbitEh, setCurrentChildOrbitEh] = useState<EntryHashB64>();
-    
-    const sphereHierarchyBounds : SphereHierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
-    const { incrementBreadth, 
-            decrementBreadth, 
-            incrementDepth, 
-            decrementDepth,
-            maxBreadth,
-            setBreadthIndex,
-            maxDepth
-          } = useNodeTraversal(sphereHierarchyBounds[selectedSphere!.entryHash as keyof SphereHierarchyBounds] as HierarchyBounds);
+
+    const sphereHierarchyBounds: SphereHierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
+    const { incrementBreadth,
+      decrementBreadth,
+      incrementDepth,
+      decrementDepth,
+      maxBreadth,
+      setBreadthIndex,
+      maxDepth
+    } = useNodeTraversal(sphereHierarchyBounds[selectedSphere!.entryHash as keyof SphereHierarchyBounds] as HierarchyBounds);
 
     return (
       <>
@@ -78,40 +78,40 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
           canvasWidth={canvasWidth}
           margin={defaultMargins}
           selectedSphere={selectedSphere}
-          render={(currentVis: T, queryType: VisCoverage,x,y, newRootData) => {
+          render={(currentVis: T, queryType: VisCoverage, x, y, newRootData) => {
             // Determine need for traversal controls
             const withTraversal: boolean = queryType == VisCoverage.Partial;
             let onlyChildParent: boolean = true;
             let hasChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length > 0;
             let hasOneChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length == 1;
 
-            if(appendedSvg) {
+            if (appendedSvg) {
               currentVis.isModalOpen = false;
               // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
               currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
               currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
-              if(currentVis && currentVis.rootData && coordsChanged((currentVis?.rootData as any)?._translationCoords)) {
+              if (currentVis && currentVis.rootData && coordsChanged((currentVis?.rootData as any)?._translationCoords)) {
                 const currentOrbit = newRootData?.find(d => {
-                  if(!d) return false
+                  if (!d) return false
                   const siblings = d?.parent && d.parent.children.map(d => d.data.content)
                   return siblings && siblings.length > 0 && d.parent?.children[x] ? (d.parent?.children[x].data.content == d.data.content) && d.depth == y
                     : false
                 });
-                if(currentOrbit?.data?.content) {
+                if (currentOrbit?.data?.content) {
                   const node = currentVis.nodeDetails[selectedSphere.actionHash as ActionHashB64];
                   // currentOrbit && store.set(currentOrbitIdAtom, currentOrbit.data.content);
                 }
-                hasChild = newRootData?.data.children && newRootData?.data.children.length > 0  
+                hasChild = newRootData?.data.children && newRootData?.data.children.length > 0
               }
-  
-              onlyChildParent = currentVis.rootData.parent == null ||( currentVis.rootData.parent?.children && currentVis.rootData.parent?.children.length == 1 || true);
+
+              onlyChildParent = currentVis.rootData.parent == null || (currentVis.rootData.parent?.children && currentVis.rootData.parent?.children.length == 1 || true);
               // Trigger the Vis object render function only once the SVG is appended to the DOM
               currentVis?.render();
 
             }
-            
-            function coordsChanged(translationCoords) : boolean {
-              if(typeof translationCoords == 'undefined') return false
+
+            function coordsChanged(translationCoords): boolean {
+              if (typeof translationCoords == 'undefined') return false
               return translationCoords[0] !== x || translationCoords[1] !== y
             }
             // console.log('UP :>> ', y !== 0);
@@ -121,16 +121,16 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
             // console.log('RIGHT :>> ', !!(withTraversal && maxBreadth && x < maxBreadth));
             // console.log('x,y,maxBreadth,maxDepth :>> ', x,y,maxBreadth,maxDepth);
             return (
-              <> 
+              <>
                 {/* {!!(withTraversal && y !== 0) && <EnterOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "23vh", transform: "scaley(-1)"}}  onClick={decrementDepth} />} */}
                 {/* {!!(withTraversal && x !== 0) && <LeftOutlined data-testid={"traversal-button-left"} className='fixed left-1 text-3xl text-title hover:text-primary hover:cursor-pointer' style={{top: "29vh"}} onClick={decrementBreadth} />} */}
                 {/* {!!(withTraversal && hasChild && !hasOneChild) && <EnterOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "35vh", transform: "rotate(90deg), scalex(-1)"}}  onClick={incrementDepth} />} */}
-                
+
                 {/* {!!(withTraversal && maxBreadth && x < maxBreadth) && <RightOutlined data-testid={"traversal-button-right"} className='fixed right-1 text-3xl text-title hover:text-primary hover:cursor-pointer' style={{top: "29vh"}}  onClick={incrementBreadth} />} */}
                 {/* {!!(withTraversal && hasChild && hasOneChild) && <RightOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{right: "43vw", bottom: "43vh", transform: "rotate(90deg)"}}  onClick={incrementDepth} />}
               {!!(withTraversal && maxDepth && y < maxDepth && !onlyChildParent) && <DownOutlined data-testid={"traversal-button-down-right"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{right: "12vw", bottom: "45vh", transform: "rotate(-45deg)"}}  onClick={() => {incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length-1);}} />} */}
 
-                <Modal show={isModalOpen} onClose={() => {setIsModalOpen(false)}}>
+                <Modal show={isModalOpen} onClose={() => { setIsModalOpen(false) }}>
                   <Modal.Header>
                     Create Orbit
                   </Modal.Header>
@@ -141,8 +141,8 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
                       currentVis.nodeDetails = store.get(nodeCache.items)![selectedSphere.actionHash as ActionHashB64] as SphereOrbitNodes;
                       currentVis.setNodeAndLinkGroups.call(currentVis);
                       currentVis.setNodeAndLinkEnterSelections.call(currentVis);
-                      currentVis.setCircleAndLabelGroups.call(currentVis);
-                      currentVis.appendCirclesAndLabels.call(currentVis);
+                      currentVis.setNodeAndLabelGroups.call(currentVis);
+                      currentVis.appendNodesAndLabels.call(currentVis);
                       currentVis.appendNodeDetailsAndControls.call(currentVis);
                       currentVis.appendLinkPath.call(currentVis);
                       currentVis.skipMainRender = true;
@@ -157,5 +157,5 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
     );
   }
   //@ts-ignore
-  return <ComponentWithVis  />
+  return <ComponentWithVis />
 }

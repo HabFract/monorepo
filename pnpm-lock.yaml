@@ -153,6 +153,12 @@ importers:
       '@types/d3-hierarchy':
         specifier: ^3.1.7
         version: 3.1.7
+      '@types/d3-selection':
+        specifier: ^3.0.10
+        version: 3.0.10
+      '@types/d3-shape':
+        specifier: ^3.1.6
+        version: 3.1.6
       '@types/d3-zoom':
         specifier: ^3.0.8
         version: 3.0.8

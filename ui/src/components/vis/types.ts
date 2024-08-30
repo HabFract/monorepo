@@ -65,8 +65,8 @@ export interface IVisualization {
   // The following public methods may be called after addition/deletion of nodes to manually trigger a partial re-render 
   setNodeAndLinkGroups: () => void;
   setNodeAndLinkEnterSelections: () => void;
-  setCircleAndLabelGroups: () => void;
-  appendCirclesAndLabels: () => void;
+  setNodeAndLabelGroups: () => void;
+  appendNodesAndLabels: () => void;
   appendNodeDetailsAndControls: () => void;
   appendLinkPath: () => void;
 
@@ -108,9 +108,9 @@ export type VisProps<T extends IVisualization> = {
 export interface EventHandlers {
   handlePrependNode: ({ childOrbitEh }: { childOrbitEh: EntryHashB64 }) => void;
   handleAppendNode: ({ parentOrbitEh }: { parentOrbitEh: EntryHashB64 }) => void;
-  handleDeleteNode: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
+  handleDeleteNode?: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
   handleNodeZoom: (event: D3ZoomEvent<SVGSVGElement, unknown>, node: HierarchyNode<unknown>, forParent?: boolean) => void;
-  handleNodeFocus: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
+  handleNodeFocus?: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
 }
 
 /**
