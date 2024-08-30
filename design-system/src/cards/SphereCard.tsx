@@ -83,7 +83,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
               <span>Create Orbit</span>
             </Button>}
 
-            {!isHeader && <Button  className="btn responsive btn-primary w-full" size="sm" onClick={() => {
+            {!isHeader && <Button  className="btn btn-primary w-full" size="sm" onClick={() => {
                 store.set(currentSphere, {entryHash: sphere.eH, actionHash: sphere.id});
                 store.set(currentOrbitCoords, {x: 0, y: 0});
                 setTimeout(() => {

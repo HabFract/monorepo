@@ -178,7 +178,9 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
     bg-gradient-to-b
     from-secondary
     to-secondary
-    text-base;
+    text-base
+    text-center
+    hidden;
 
   font-family: 'Nunito', Arial, sans-serif;
   line-height: 2.2em;
@@ -345,9 +347,13 @@ button[data-testid="dark-themetheme-toggle"]:active, .toggle-expanded-menu:activ
 }
 .ant-menu-item span[role="img"] {
   /* icon selected */
-  color: rgba(80, 227, 194, 0.9) !important;
+  color: rgba(80, 227, 194, 0.9);
   
 }
+.anticon-plus-circle.grayed svg {
+  @apply text-gray-300 !important;
+}
+
 .side-nav .ant-menu-title-content {
   margin-top: .25rem;
   margin-left: 1.6rem !important;
@@ -421,9 +427,12 @@ ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] {
   @apply border-danger;
 }
 
-@media screen and (min-width: 420px) {
+@media screen and (min-width: 440px) {
   .page-header h1 {
     @apply text-2xl
+  }
+  .page-header {
+    display: block;
   }
 }
 

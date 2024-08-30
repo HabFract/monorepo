@@ -28,7 +28,7 @@ export default {
     },
     fontFamily: {
       sans: ["Lexend, Nunito", "Arial"],
-      heading: ["Poppins", "Arial"],
+      heading: ["Nunito", "Arial"],
     },
     extend: {
       fontWeight: {

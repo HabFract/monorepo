@@ -197,6 +197,12 @@ nav + main.page-container .orbits-list {
   width: 100%;
 }
 
+.spheres-girl-img.indented {
+  /* Allow room for the menu */
+  width: calc(100% - 5.5rem);
+  margin-left: 4rem;
+}
+
 @media screen and (min-width: 440px) {
   .ant-app {
     grid-template-columns: 10% 80% 10%;
@@ -218,25 +224,19 @@ nav + main.page-container .orbits-list {
   .spheres-girl-img {
     max-height: 33vh;
   }
-  .spheres-girl-img.indented {
-    width: calc(100% - 8rem);
-    margin-left: 8rem;
-  }
-
   .page-container {
     grid-column: 2/3;
     grid-row: 2/3;
     border-radius: 1rem;
     @apply p-6 h-full;
   }
-}
-
-@media screen and (min-width: 768px) {
   .spheres-girl-img.indented {
     width: 100%;
     margin-left: initial;
   }
+}
 
+@media screen and (min-width: 768px) {
   .ant-app {
     grid-template-columns: 5% 90% 5%;
     grid-template-rows: 5% 90% 5%;

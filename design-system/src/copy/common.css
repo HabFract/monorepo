@@ -18,11 +18,16 @@ span.helper-content, .toast-text {
   @apply mx-8 text-xl text-white font-normal;
 }
 
+.flowbite-toast {
+  min-width: 25vw;
+  z-index: 150;
+}
+
 #tooltip-right {
-  @apply transition-opacity duration-300 absolute z-10 inline-block px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700;
-  left: 1rem;
-  top: 1rem;
-  right: 2rem;
+  @apply transition-opacity duration-300 fixed z-10 inline-block px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700;
+  left: .5rem;
+  top: .5rem;
+  right: .5rem;
 }
 
 #tooltip-right:before{

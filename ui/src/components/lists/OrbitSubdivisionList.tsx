@@ -93,18 +93,23 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
         }}
       >
         {({ values, errors, submitForm }) => {
+          const refineTitle = refinementType == Refinement.Update ? "Refine Atomic Orbit Name" : "Break Up High Scale Orbits";
+          const refineMessage = refinementType == Refinement.Update
+            ? "Since you have chosen the Atomic scale for your Orbit, it's best to make sure it is named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable:"
+            : "Since you have chosen a big scale for your Orbit (shooting for the stars!) you can now break it up into smaller actions - so start by subdividing into Orbits of a smaller scale.";
           return (
             <>
               { refinementType == Refinement.Update && <OrbitFetcher orbitToEditId={id}></OrbitFetcher>}
               <HelperText
-                title={refinementType == Refinement.Update ? "Refine Atomic Orbit Name" : "Break Up High Scale Orbits"}
+                title={refineTitle}
                 titleIcon={refinementType == Refinement.Update ? <Pencil /> : <Split />}
-                withInfo={false}
+                withInfo={isSmallScreen()}
+                onClickInfo={() => ({title: refineTitle, body: refineMessage})}
               >
-                {refinementType == Refinement.Update
+                {!isSmallScreen() && (refinementType == Refinement.Update
                   ? <span>Since you have chosen the Atomic scale for your Orbit, it's best to make sure it is named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable:</span>
                   : <span>Since you have chosen a big scale for your Orbit (shooting for the stars!) you can now <em>break it up</em> into <em>smaller actions</em> - so start by <em>subdividing</em> into Orbits of a smaller scale.</span>
-                }
+                )}
               </HelperText>
 
               { !isSmallScreen() && refinementType == Refinement.Split && values.scale == Scale.Atom && RenamingHelperText()}

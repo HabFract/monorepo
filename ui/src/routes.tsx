@@ -4,11 +4,10 @@ import PreloadOrbitData from "./components/Preload";
 
 import Home from "./components/layouts/Home";
 import OrbitTree from "./components/vis/OrbitTree";
-import { isSmallScreen, renderVis } from "./components/vis/helpers";
+import { renderVis } from "./components/vis/helpers";
 
 import { StateTransitions } from "./state/stateMachine";
 import { Spinner } from "flowbite-react";
-import { nodeCache, store } from "./state/jotaiKeyValueStore";
 
 export type AppState = // Currently just for routing in the state machine
   | 'Boot'
@@ -43,11 +42,7 @@ export const routes: Routes = {
   Boot: <Spinner aria-label="Loading!"size="xl" className="absolute top-1/2 bottom-1/2" />,
   PreloadAndCache: <PreloadOrbitData />,
   Vis: (() => renderVis(OrbitTree))(),
-  Home: (() => {
-    const cache = store.get(nodeCache.items) && store.get(nodeCache.items) as any;
-    // Add flag to indent image on mobile to allow room for nav after first visit
-    return <Home firstVisit={!(typeof cache == 'object' && Object.values(cache).length > 0)}/>}
-  )(),
+  Home: <Home/>,
   Onboarding1: <CreateSphere editMode={false} />,
   Onboarding2: <CreateOrbit editMode={false} />,
   Onboarding3: <RefineOrbit />,

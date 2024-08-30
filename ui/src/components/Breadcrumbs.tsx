@@ -19,6 +19,8 @@ function Breadcrumbs({ currentSphere, state, transition }: any) {
         return [
           baseBreadcrumbs[0]
         ]
+      case 'Vis':
+        return baseBreadcrumbs
       case 'CreateSphere':
         return baseBreadcrumbs
       case 'ListSpheres':
@@ -50,7 +52,7 @@ function Breadcrumbs({ currentSphere, state, transition }: any) {
 function getPageName(state) {
   switch (state) {
     case 'Vis':
-      return "vis page-container"
+      return "Visualise"
     case 'CreateSphere':
       return "Create a Sphere"
     case 'CreateOrbit':

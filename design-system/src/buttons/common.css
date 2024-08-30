@@ -104,7 +104,7 @@ div[data-testid="flowbite-dropdown"] button {
 .btn.responsive span[role="img"], .btn.responsive svg[role="img"] {
   @apply m-0-sm justify-center;
 }
-.btn.responsive span[role="img"] + span, .btn.responsive svg[role="img"] + span {
+.btn.responsive span[role="img"] + span {
   @apply hidden-sm;
 }
 
@@ -124,7 +124,7 @@ div[data-testid="flowbite-dropdown"] button {
 }
 
 .btn .icon {
-  @apply h-8 w-8 mr-2;
+  @apply h-8 w-8 mr-2 flex justify-end;
 }
 
 .btn.btn-icon .icon {
@@ -161,8 +161,8 @@ div[data-testid="flowbite-dropdown"] button {
 }
 .ant-breadcrumb .ant-breadcrumb-link  {
   line-height: 24px;
-  font-size: 1.2rem;
-  font-weight: 300;
+  font-size: 1.2rem !important;
+  font-weight: 300 !important;
   font-family: TTSupermolot, Arial, sans-serif;
 }
 .ant-breadcrumb .ant-breadcrumb-separator, .ant-breadcrumb .ant-breadcrumb-link  {

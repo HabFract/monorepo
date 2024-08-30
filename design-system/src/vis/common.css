@@ -28,14 +28,11 @@ div[role="progressbar"] > div.astro > div {
   width: 100%;
 }
 .sphere-pie svg {
-  @apply -ml-10 mt-1 sm:ml-2;
   overflow: inherit;
 }
 
 .sphere-pie .pie {
   padding-top: 1.5rem;
-  padding-bottom: 3.5rem;
-  padding-left: 50%;
 }
 
 .sphere-pie-label {  
@@ -62,10 +59,6 @@ div[role="progressbar"] > div.astro > div {
 @media screen and (min-width: 420px) {
   .sphere-pie svg {
     @apply -ml-2;
-  }
-
-  .sphere-pie .pie {
-    padding-left: 23%;
   }
 
   .sphere-pie-label {    

@@ -300,7 +300,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   return (
     <>
       {showToast && (
-        <Toast className="mt-2 fixed bottom-2 right-2 bg-menu-bg">
+        <Toast className="mt-2 fixed bottom-2 bg-menu-bg">
           <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-title">
             <WarningOutlined className="h-5 w-5" />
           </div>

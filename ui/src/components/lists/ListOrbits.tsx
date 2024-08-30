@@ -33,8 +33,8 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereAh }: ListOrbitsProps) =>
   return (
     <div className='layout orbits'>
       <PageHeader title="Orbits Breakdown " />
-      <ListSortFilter label={''} />
       {data?.sphere && <SphereCard sphere={data.sphere} isHeader={true} transition={transition} orbitScales={data.orbits.map((orbit: Orbit) => orbit?.scale)} />}
+      <ListSortFilter label={''} />
       <div className="orbits-list">
         {sortedOrbits.map((orbit: Orbit) => <OrbitCard key={orbit.id} sphereEh={data!.sphere.eH} transition={transition} orbit={orbit} runDelete={() => runDelete({variables: {id: orbit.id}})}/>)}
       </div>

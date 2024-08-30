@@ -22,6 +22,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AlertOutlined } from '@ant-design/icons';
 import { isSmallScreen } from './components/vis/helpers';
 import { extractEdges } from './graphql/utils';
+import Home from './components/layouts/Home';
 
 function App({ children: pageComponent }: any) {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
@@ -76,10 +77,13 @@ function App({ children: pageComponent }: any) {
           {withPageTransition(component)}
         </Onboarding>;
       case ["Home", "PreloadAndCache"].includes(state):
+        if(state == "Home" && typeof sphereNodes == 'object' && (Object.values(sphereNodes as object).length > 0)) {
+          return <Home firstVisit={false}></Home>
+        }
         return withPageTransition(component)
       default:
         return <div className='p-1 w-full'>
-          <Breadcrumbs state={state} transition={transition} currentSphere={currentSphereDetails}></Breadcrumbs>
+          <Breadcrumbs state={AppMachine.state.currentState} transition={transition} currentSphere={currentSphereDetails}></Breadcrumbs>
           {component}
         </div>
     }
@@ -90,17 +94,17 @@ function App({ children: pageComponent }: any) {
     const stage = +(state.match(/Onboarding(\d+)/)?.[1]);
     if(!stage || progressBarRef.current == null) return;
     setTimeout(() => {
-      (progressBarRef.current as any).querySelector(".onboarding-progress").scrollTo(stage * 80,0)
-    }, 1000);
+      (progressBarRef.current as any).querySelector(".onboarding-progress").scrollTo(stage * 130,0)
+    }, 500);
   }, [progressBarRef.current]);
 
   // Perform reset of vertical scroll bar on onboarding.
   useEffect(() => {
     if(mainPageRef.current == null) return;
     setTimeout(() => {
-      console.log('progressBarRef.current :>> ',(mainPageRef.current as any).querySelector(".onboarding-layout").scrollTo(0,0));
-    }, 1000);
-  }, [mainPageRef.current]);
+      (mainPageRef.current as any)?.querySelector(".onboarding-layout")?.scrollTo(0,0);
+    }, 500);
+  }, [progressBarRef.current]);
   
   const OnboardingHeader = forwardRef((_props, ref: ForwardedRef<HTMLDivElement>) => {
     if (!state.match("Onboarding")) return <></>
@@ -137,7 +141,7 @@ function App({ children: pageComponent }: any) {
       {/* Version and alpha status disclaimer */}
       {state == 'Home' && !userHasSpheres && VersionDisclaimer(currentVersion, () => setIsModalOpen(true), true)}
       {/* Return users can see a Nav */}
-      {userHasSpheres && !(isSmallScreen() && ['CreateSphere','ListSpheres','CreateOrbit','ListOrbits'].includes(state) || state.match('Onboarding'))
+      {userHasSpheres && !((isSmallScreen() && ['CreateSphere','ListSpheres','CreateOrbit','ListOrbits'].includes(state)) || state.match('Onboarding'))
         && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSettingsOpen={() => { setIsModalOpen(true); setIsSettingsOpen(true) }} setSideNavExpanded={setSideNavExpanded}></Nav>
       }
 
