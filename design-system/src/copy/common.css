@@ -8,11 +8,14 @@
   max-width: 32rem;
 }
 
-span.helper-content {
+span.helper-content, .toast-text {
   line-height: 24px;
   font-size: 1em;
   font-weight: light;
   @apply font-sans font-light mb-2;
+}
+.toast-text {
+  @apply mx-8 text-xl text-white font-normal;
 }
 
 #tooltip-right {

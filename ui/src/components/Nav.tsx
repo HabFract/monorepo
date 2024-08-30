@@ -300,11 +300,11 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   return (
     <>
       {showToast && (
-        <Toast className="mt-2">
-          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-cyan-100 text-cyan-500 dark:bg-cyan-800 dark:text-cyan-200">
+        <Toast className="mt-2 fixed bottom-2 right-2 bg-menu-bg">
+          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-title">
             <WarningOutlined className="h-5 w-5" />
           </div>
-          <div className="ml-3 text-sm font-normal">{toastText}</div>
+          <div className="toast-text">{toastText}</div>
           <Toast.Toggle onDismiss={() => setShowToast(false)} />
         </Toast>
       )}

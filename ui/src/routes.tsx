@@ -4,15 +4,11 @@ import PreloadOrbitData from "./components/Preload";
 
 import Home from "./components/layouts/Home";
 import OrbitTree from "./components/vis/OrbitTree";
-import { renderVis } from "./components/vis/helpers";
+import { isSmallScreen, renderVis } from "./components/vis/helpers";
 
-import { Button} from 'habit-fract-design-system';
 import { StateTransitions } from "./state/stateMachine";
 import { Spinner } from "flowbite-react";
-import BackCaret from "./components/icons/BackCaret";
-import { AppMachine } from "./main";
-import { store } from "./state/jotaiKeyValueStore";
-import { currentSphere } from "./state/currentSphereHierarchyAtom";
+import { nodeCache, store } from "./state/jotaiKeyValueStore";
 
 export type AppState = // Currently just for routing in the state machine
   | 'Boot'
@@ -20,7 +16,6 @@ export type AppState = // Currently just for routing in the state machine
   | 'Onboarding1'
   | 'Onboarding2'
   | 'Onboarding3'
-  | 'Onboarding4'
   | 'Home'
   | 'Vis'
   | 'CreateSphere'
@@ -48,28 +43,17 @@ export const routes: Routes = {
   Boot: <Spinner aria-label="Loading!"size="xl" className="absolute top-1/2 bottom-1/2" />,
   PreloadAndCache: <PreloadOrbitData />,
   Vis: (() => renderVis(OrbitTree))(),
-  Home: <Home />,
+  Home: (() => {
+    const cache = store.get(nodeCache.items) && store.get(nodeCache.items) as any;
+    // Add flag to indent image on mobile to allow room for nav after first visit
+    return <Home firstVisit={!(typeof cache == 'object' && Object.values(cache).length > 0)}/>}
+  )(),
   Onboarding1: <CreateSphere editMode={false} />,
   Onboarding2: <CreateOrbit editMode={false} />,
   Onboarding3: <RefineOrbit />,
   CreateSphere: <CreateSphere headerDiv={<></>} editMode={false} />,
   ListSpheres: <ListSpheres />,
-  CreateOrbit: <CreateOrbit headerDiv={
-                      <div className="back-to-orbit-list">
-                        <Button
-                        type={"icon"}
-                        icon={<BackCaret />}
-                        onClick={() => {
-                          const sphere = store.get(currentSphere);
-                          if(!sphere.actionHash) {
-                            console.error("Cannot got back when no current Sphere exists");
-                            return;
-                          }
-                          AppMachine.to("ListOrbits", { sphereAh: sphere.actionHash });
-                          }}
-                        ></Button>
-                      </div>
-                  } editMode={false} inModal={false} sphereEh="" parentOrbitEh="" />,
+  CreateOrbit: <CreateOrbit editMode={false} inModal={false} sphereEh="" parentOrbitEh="" />,
   ListOrbits: <ListOrbits />,
 };
 
@@ -79,12 +63,10 @@ const lists = ['ListSpheres', 'ListOrbits'];
 export const AppTransitions: StateTransitions<AppState> = {
   Boot: ['Home'],
   PreloadAndCache: ['Vis', 'CreateSphere'],
-  Home: [ "Onboarding1", "PreloadAndCache"],
+  Home: ['Home', ...lists, ...forms, 'Vis', "Onboarding1", "PreloadAndCache"],
   Onboarding1: ['Home', 'Onboarding2'],
   Onboarding2: ['Onboarding1', 'Onboarding2', 'Onboarding3'],
-  Onboarding3: ['Onboarding2', 'Onboarding3', 'Onboarding4', 'PreloadAndCache'],
-  Onboarding4: ['Onboarding3', 'Home'],
-
+  Onboarding3: ['Onboarding2', 'Onboarding3', 'PreloadAndCache'],
   Vis: ['Home', ...forms, ...lists, 'Vis', 'PreloadAndCache'],
   CreateSphere: ['Home', ...lists, ...forms, 'Vis'],
   ListSpheres: ['Home', ...lists, ...forms, 'Vis', 'PreloadAndCache'],

@@ -1,30 +1,48 @@
 import { Breadcrumb } from "antd";
-import { useStateTransition } from "../hooks/useStateTransition";
 import { HomeOutlined } from "@ant-design/icons";
 import { Sphere } from "../graphql/generated";
+import { BreadcrumbItemType, BreadcrumbSeparatorType } from "antd/es/breadcrumb/Breadcrumb";
 
-function Breadcrumbs({ currentSphere }: any) {
-  const [state, transition] = useStateTransition(); // Top level state machine and routing
-
+function Breadcrumbs({ currentSphere, state, transition }: any) {
+  function getItemsForPage() : Partial<BreadcrumbItemType & BreadcrumbSeparatorType>[] {
+    const baseBreadcrumbs = [
+      {
+        onClick: (e) => { transition("Home") },
+        title: <HomeOutlined />
+      },
+      {
+        title: getPageName(state)
+      },
+    ];
+    switch (state) {
+      case 'Home':
+        return [
+          baseBreadcrumbs[0]
+        ]
+      case 'CreateSphere':
+        return baseBreadcrumbs
+      case 'ListSpheres':
+        return baseBreadcrumbs
+      default:
+        return [
+          baseBreadcrumbs[0],
+          {
+            onClick: (e) => { transition('ListOrbits', { sphereAh: currentSphere.id }) },
+            title: (
+              <>
+                <span>{(currentSphere as Sphere)?.name}</span>
+              </>
+            ),
+          },
+          baseBreadcrumbs[1]
+        ]
+    }
+  
+  }
+  
   return (
     <Breadcrumb
-      items={[
-        {
-          onClick: (e) => { transition("Home") },
-          title: <HomeOutlined />
-        },
-        {
-          onClick: (e) => { transition('ListOrbits', { sphereAh: currentSphere.id }) },
-          title: (
-            <>
-              <span>{(currentSphere as Sphere)?.name}</span>
-            </>
-          ),
-        },
-        {
-          title: getPageName(state),
-        },
-      ]}
+      items={getItemsForPage()}
     />
   )
 }

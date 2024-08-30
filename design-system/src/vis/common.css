@@ -23,6 +23,10 @@ div[role="progressbar"] > div.astro > div {
   margin-left: 65%;
 }
 
+.sphere-pie {
+  min-width: 50vw;
+  width: 100%;
+}
 .sphere-pie svg {
   @apply -ml-10 mt-1 sm:ml-2;
   overflow: inherit;

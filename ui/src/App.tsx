@@ -3,7 +3,7 @@ import { useStateTransition } from './hooks/useStateTransition';
 
 import Nav from './components/Nav';
 import { Flowbite, Modal, Spinner } from 'flowbite-react';
-import { cloneElement, ReactNode, useEffect, useState } from 'react';
+import { cloneElement, ForwardedRef, forwardRef, ReactNode, RefObject, useEffect, useRef, useState } from 'react';
 
 import BackCaret from './components/icons/BackCaret';
 import Onboarding from './components/layouts/Onboarding';
@@ -13,13 +13,13 @@ import Breadcrumbs from './components/Breadcrumbs';
 import { Button, ProgressBar, darkTheme } from 'habit-fract-design-system';
 import { nodeCache, SphereOrbitNodes, store } from './state/jotaiKeyValueStore';
 import { currentOrbitId, currentSphere } from './state/currentSphereHierarchyAtom';
-import { Sphere, SphereConnection, useGetSpheresQuery } from './graphql/generated';
+import { SphereConnection, useGetSpheresQuery } from './graphql/generated';
 import { AppMachine } from './main';
 import { getVersion } from '@tauri-apps/api/app';
 import { ALPHA_RELEASE_DISCLAIMER, NODE_ENV } from './constants';
 
 import { motion, AnimatePresence } from "framer-motion";
-import { HomeOutlined, AlertOutlined } from '@ant-design/icons';
+import { AlertOutlined } from '@ant-design/icons';
 import { isSmallScreen } from './components/vis/helpers';
 import { extractEdges } from './graphql/utils';
 
@@ -42,10 +42,12 @@ function App({ children: pageComponent }: any) {
     });
   }, [])
 
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const mainPageRef = useRef<HTMLDivElement>(null);
+
   // Don't start at the home page for return users (those with at least one Sphere)
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
-  state.match('Home') && userHasSpheres && transition('PreloadAndCache');
 
   function withPageTransition(page: ReactNode) {
     return (
@@ -77,18 +79,65 @@ function App({ children: pageComponent }: any) {
         return withPageTransition(component)
       default:
         return <div className='p-1 w-full'>
-          <Breadcrumbs currentSphere={currentSphereDetails}></Breadcrumbs>
+          <Breadcrumbs state={state} transition={transition} currentSphere={currentSphereDetails}></Breadcrumbs>
           {component}
         </div>
     }
   }
 
+  // Perform scrolling of progress bar on onboarding.
+  useEffect(() => {
+    const stage = +(state.match(/Onboarding(\d+)/)?.[1]);
+    if(!stage || progressBarRef.current == null) return;
+    setTimeout(() => {
+      (progressBarRef.current as any).querySelector(".onboarding-progress").scrollTo(stage * 80,0)
+    }, 1000);
+  }, [progressBarRef.current]);
+
+  // Perform reset of vertical scroll bar on onboarding.
+  useEffect(() => {
+    if(mainPageRef.current == null) return;
+    setTimeout(() => {
+      console.log('progressBarRef.current :>> ',(mainPageRef.current as any).querySelector(".onboarding-layout").scrollTo(0,0));
+    }, 1000);
+  }, [mainPageRef.current]);
+  
+  const OnboardingHeader = forwardRef((_props, ref: ForwardedRef<HTMLDivElement>) => {
+    if (!state.match("Onboarding")) return <></>
+  
+    return <>
+      <div className={"flex w-full justify-between gap-2"}>
+        <Button
+          type={"icon"}
+          icon={<BackCaret />}
+          onClick={() => {
+            const sphere = store.get(currentSphere);
+            const orbit = store.get(currentOrbitId);
+            const props = getLastOnboardingState(state).match("Onboarding1")
+              ? { sphereToEditId: sphere?.actionHash }
+              : getLastOnboardingState(state).match("Onboarding2")
+                ? { sphereEh: sphere.entryHash, orbitToEditId: orbit?.id }
+                : { orbitToEditId: orbit?.id };
+  
+            return transition(getLastOnboardingState(state), { editMode: true, ...props });
+          }}>
+        </Button>
+        <h1 className={"onboarding-title"}>Make a Positive Habit</h1>
+      </div>
+      <div ref={ref}>
+        <ProgressBar
+          stepNames={['Create Profile', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize']}
+          currentStep={+(state.match(/Onboarding(\d+)/)?.[1])} />
+      </div>
+    </>;
+  });
+
   return <Flowbite theme={{ theme: darkTheme }}>
-    <main className={mainContainerClass}>
+    <main ref={mainPageRef} className={mainContainerClass}>
       {/* Version and alpha status disclaimer */}
-      {(state == 'Home') && VersionDisclaimer(currentVersion, () => setIsModalOpen(true), true)}
+      {state == 'Home' && !userHasSpheres && VersionDisclaimer(currentVersion, () => setIsModalOpen(true), true)}
       {/* Return users can see a Nav */}
-      {state !== 'Home' && !state.match('Onboarding')
+      {userHasSpheres && !(isSmallScreen() && ['CreateSphere','ListSpheres','CreateOrbit','ListOrbits'].includes(state) || state.match('Onboarding'))
         && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSettingsOpen={() => { setIsModalOpen(true); setIsSettingsOpen(true) }} setSideNavExpanded={setSideNavExpanded}></Nav>
       }
 
@@ -98,7 +147,7 @@ function App({ children: pageComponent }: any) {
           // Only Renders when state == "Home"
           startBtn: HomeContinue(state, transition),
           // Only Renders when state includes "Onboarding"
-          headerDiv: OnboardingHeader(state, transition),
+          headerDiv: <OnboardingHeader ref={progressBarRef}/>,
           submitBtn: OnboardingContinue(state, transition)
         }
         ))
@@ -118,7 +167,7 @@ function App({ children: pageComponent }: any) {
 export function VersionDisclaimer(currentVersion: string | undefined, open: Function, isFrontPage?: boolean): ReactNode {
   return <div className={isFrontPage ? "app-version-disclaimer z-100 flex gap-2 fixed right-1 top-1" : "app-version-disclaimer z-60 flex gap-2 fixed right-1 bottom-1"}>
     {NODE_ENV !== 'dev' && <div className='version-number'>v{currentVersion}</div>}
-    <Button type={"secondary"} onClick={() => { console.log('HI'); open() }}>{isSmallScreen() ? <AlertOutlined className="text-bg" /> : "Disclaimer"}</Button>
+    <Button type={"secondary"} onClick={() => { open() }}>{isSmallScreen() ? <AlertOutlined className="text-bg" /> : "Disclaimer"}</Button>
   </div>;
 }
 
@@ -137,33 +186,6 @@ function OnboardingContinue(state: any, transition: any) {
     onClick={(_e) => {
       return state.match("Onboarding3") ? transition(getNextOnboardingState(state)) : transition(getNextOnboardingState(state));
     }}>Save & Continue</Button>;
-}
-
-function OnboardingHeader(state: string, transition: any) {
-  if (!state.match("Onboarding")) return <></>
-  return <>
-    <div className={"flex w-full justify-between gap-2"}>
-      <Button
-        type={"icon"}
-        icon={<BackCaret />}
-        onClick={() => {
-          const sphere = store.get(currentSphere);
-          const orbit = store.get(currentOrbitId);
-          const props = getLastOnboardingState(state).match("Onboarding1")
-            ? { sphereToEditId: sphere?.actionHash }
-            : getLastOnboardingState(state).match("Onboarding2")
-              ? { sphereEh: sphere.entryHash, orbitToEditId: orbit?.id }
-              : { orbitToEditId: orbit?.id };
-
-          return transition(getLastOnboardingState(state), { editMode: true, ...props });
-        }}>
-      </Button>
-      <h1 className={"onboarding-title"}>Make a Positive Habit</h1>
-    </div>
-    <ProgressBar
-      stepNames={['Create Profile', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize']}
-      currentStep={+(state.match(/Onboarding(\d+)/)?.[1])} />
-  </>;
 }
 
 function getMainContainerClassString(state) {

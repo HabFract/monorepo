@@ -161,9 +161,9 @@ div[data-testid="flowbite-dropdown"] button {
 }
 .ant-breadcrumb .ant-breadcrumb-link  {
   line-height: 24px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 300;
-  @apply font-sans;
+  font-family: TTSupermolot, Arial, sans-serif;
 }
 .ant-breadcrumb .ant-breadcrumb-separator, .ant-breadcrumb .ant-breadcrumb-link  {
   @apply text-title !important;

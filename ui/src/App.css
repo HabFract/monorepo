@@ -54,7 +54,7 @@
 }
 
 .home-layout .top {
-  @apply flex justify-between flex-col gap-2;
+  @apply flex justify-between flex-col gap-2 items-start;
 }
 .home-layout .bottom:hover + .top {
   background: url(assets/circled-pen.svg) no-repeat;
@@ -218,6 +218,10 @@ nav + main.page-container .orbits-list {
   .spheres-girl-img {
     max-height: 33vh;
   }
+  .spheres-girl-img.indented {
+    width: calc(100% - 8rem);
+    margin-left: 8rem;
+  }
 
   .page-container {
     grid-column: 2/3;
@@ -228,6 +232,11 @@ nav + main.page-container .orbits-list {
 }
 
 @media screen and (min-width: 768px) {
+  .spheres-girl-img.indented {
+    width: 100%;
+    margin-left: initial;
+  }
+
   .ant-app {
     grid-template-columns: 5% 90% 5%;
     grid-template-rows: 5% 90% 5%;
@@ -275,6 +284,7 @@ nav + main.page-container .orbits-list {
 
   .page-container.create-form, .page-container.list {
     overflow: auto;
+    padding: 1rem;
   }
   .page-container:not(.home) {
     grid-column: 2/-2;

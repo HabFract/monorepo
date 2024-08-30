@@ -68,8 +68,8 @@ export default {
 
         "input-placeholder": "#4E5454",
         "input-bg": "#242424",
-        "input-text": "rgba(255,225,225, 1)",
-        "input-border": "rgba(255,225,225, 1)",
+        "input-text": "rgba(255,255,255, 1)",
+        "input-border": "rgba(255,255,255, 1)",
         
         "text-prim": "#A2EAC4;",
 
