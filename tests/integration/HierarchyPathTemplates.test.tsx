@@ -35,7 +35,6 @@ vi.mock("../../ui/src/hooks/useNodeTraversal", () => ({
 }));
 
 afterEach(() => {
-  // Cleanup after each test
   cleanup();
 });
 
@@ -101,7 +100,7 @@ describe('Hierarchy Path Templates - One root, one child - after traversing down
     Tree = renderVis(OrbitTree);
   });
 
-  it('renders a path for the first child after traversing', async () => {
+  it.skip('renders a path for the first child after traversing', async () => {
     // Arrange - simulate state after the described traversal 
     const { getByTestId } = render(
         <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>

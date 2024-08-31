@@ -30,7 +30,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   
   // Does this vis cover the whole tree, or just a window over the whole tree?
   const visCoverage = params?.orbitEh ? VisCoverage.Complete : VisCoverage.Partial;
-
   // Get and set node traversal bound state
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [, setBreadthBounds] = useAtom(setBreadths);
@@ -65,7 +64,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     if (error || isModalOpen) return;
     const query = depthBounds
       ? { ...getQueryParams(), orbitLevel: 0}//(depthBounds![params?.currentSphereEhB64] as any).minDepth } 
-      : getQueryParams(y)//(y)
+      : getQueryParams(y)
 
     getHierarchy({ variables: { params: { ...query } } })
   }
@@ -99,10 +98,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       setCurrentOrbitTree(orbitVis)
     }
   }
-  useEffect(() => {
-    if (typeof error != 'object') return;
-    console.log('error :>> ', error);
-  }, [error])
 
   useEffect(() => {
     if(!hasCached && cache !== null) { // Check that the hook has finished fetching data and returned a cache function

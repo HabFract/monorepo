@@ -6,13 +6,14 @@ import { Margins, VisProps, VisCoverage, IVisualization } from '../types';
 import { select } from "d3-selection";
 import { useAtomValue } from 'jotai';
 import { useNodeTraversal } from '../../../hooks/useNodeTraversal';
-import { HierarchyBounds, SphereHierarchyBounds, currentOrbitCoords, currentOrbitId as currentOrbitIdAtom, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
+import { HierarchyBounds, SphereHashes, SphereHierarchyBounds, currentOrbitCoords, currentOrbitId as currentOrbitIdAtom, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
 import { DownOutlined, EnterOutlined, LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
 import { WithVisCanvasProps } from '../types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { Modal } from 'flowbite-react';
 import { CreateOrbit } from '../../forms';
 import { nodeCache, SphereOrbitNodes, store } from '../../../state/jotaiKeyValueStore';
+import VisModal from '../../VisModal';
 
 const defaultMargins: Margins = {
   top: 0,
@@ -114,41 +115,23 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
               if (typeof translationCoords == 'undefined') return false
               return translationCoords[0] !== x || translationCoords[1] !== y
             }
-            // console.log('UP :>> ', y !== 0);
-            // console.log('LEFT :>> ', x !== 0);
-            // console.log('DOWN :>> ', hasChild && hasOneChild);
-            // console.log('DOWNLEFT :>> ', hasChild && !hasOneChild);
-            // console.log('RIGHT :>> ', !!(withTraversal && maxBreadth && x < maxBreadth));
-            // console.log('x,y,maxBreadth,maxDepth :>> ', x,y,maxBreadth,maxDepth);
+            console.log('UP :>> ', y !== 0);
+            console.log('LEFT :>> ', x !== 0);
+            console.log('DOWN :>> ', hasChild && hasOneChild);
+            console.log('DOWNLEFT :>> ', hasChild && !hasOneChild);
+            console.log('RIGHT :>> ', !!(withTraversal && maxBreadth && x < maxBreadth));
+            console.log('x,y,maxBreadth,maxDepth :>> ', x,y,maxBreadth,maxDepth);
             return (
               <>
-                {/* {!!(withTraversal && y !== 0) && <EnterOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "23vh", transform: "scaley(-1)"}}  onClick={decrementDepth} />} */}
-                {/* {!!(withTraversal && x !== 0) && <LeftOutlined data-testid={"traversal-button-left"} className='fixed left-1 text-3xl text-title hover:text-primary hover:cursor-pointer' style={{top: "29vh"}} onClick={decrementBreadth} />} */}
-                {/* {!!(withTraversal && hasChild && !hasOneChild) && <EnterOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "35vh", transform: "rotate(90deg), scalex(-1)"}}  onClick={incrementDepth} />} */}
+                {!!(withTraversal && y !== 0) && <EnterOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "23vh", transform: "scaley(-1)"}}  onClick={decrementDepth} />}
+                {!!(withTraversal && x !== 0) && <LeftOutlined data-testid={"traversal-button-left"} className='fixed left-1 text-3xl text-title hover:text-primary hover:cursor-pointer' style={{top: "29vh"}} onClick={decrementBreadth} />}
+                {!!(withTraversal && hasChild && !hasOneChild) && <EnterOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "35vh", transform: "rotate(90deg), scalex(-1)"}}  onClick={incrementDepth} />}
 
-                {/* {!!(withTraversal && maxBreadth && x < maxBreadth) && <RightOutlined data-testid={"traversal-button-right"} className='fixed right-1 text-3xl text-title hover:text-primary hover:cursor-pointer' style={{top: "29vh"}}  onClick={incrementBreadth} />} */}
-                {/* {!!(withTraversal && hasChild && hasOneChild) && <RightOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{right: "43vw", bottom: "43vh", transform: "rotate(90deg)"}}  onClick={incrementDepth} />}
-              {!!(withTraversal && maxDepth && y < maxDepth && !onlyChildParent) && <DownOutlined data-testid={"traversal-button-down-right"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{right: "12vw", bottom: "45vh", transform: "rotate(-45deg)"}}  onClick={() => {incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length-1);}} />} */}
+                {!!(withTraversal && maxBreadth && x < maxBreadth) && <RightOutlined data-testid={"traversal-button-right"} className='fixed right-1 text-3xl text-title hover:text-primary hover:cursor-pointer' style={{top: "29vh"}}  onClick={incrementBreadth} />}
+                {!!(withTraversal && hasChild && hasOneChild) && <RightOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{right: "43vw", bottom: "43vh", transform: "rotate(90deg)"}}  onClick={incrementDepth} />}
+                {!!(withTraversal && maxDepth && y < maxDepth && !onlyChildParent) && <DownOutlined data-testid={"traversal-button-down-right"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{right: "12vw", bottom: "45vh", transform: "rotate(-45deg)"}}  onClick={() => {incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length-1);}} />}
 
-                <Modal show={isModalOpen} onClose={() => { setIsModalOpen(false) }}>
-                  <Modal.Header>
-                    Create Orbit
-                  </Modal.Header>
-                  <Modal.Body>
-                    <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh} childOrbitEh={currentChildOrbitEh} onCreateSuccess={() => {
-                      setIsModalOpen(false);
-                      currentVis.isModalOpen = false; // TODO, let this happen on cancel by adding onCancel callback
-                      currentVis.nodeDetails = store.get(nodeCache.items)![selectedSphere.actionHash as ActionHashB64] as SphereOrbitNodes;
-                      currentVis.setNodeAndLinkGroups.call(currentVis);
-                      currentVis.setNodeAndLinkEnterSelections.call(currentVis);
-                      currentVis.setNodeAndLabelGroups.call(currentVis);
-                      currentVis.appendNodesAndLabels.call(currentVis);
-                      currentVis.appendNodeDetailsAndControls.call(currentVis);
-                      currentVis.appendLinkPath.call(currentVis);
-                      currentVis.skipMainRender = true;
-                    }}></CreateOrbit>
-                  </Modal.Body>
-                </Modal>
+                {VisModal<T>(isModalOpen, setIsModalOpen, selectedSphere, currentParentOrbitEh, currentChildOrbitEh, currentVis)}
               </>
             )
           }}
@@ -159,3 +142,4 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
   //@ts-ignore
   return <ComponentWithVis />
 }
+

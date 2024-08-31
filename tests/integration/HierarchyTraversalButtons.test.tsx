@@ -1,13 +1,13 @@
 import React from 'react';
 import '../setupTests'
-import { describe, expect, vi, it } from 'vitest'
+import { describe, expect, vi, it, beforeEach, afterEach } from 'vitest'
 import { HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS } from './mocks/hierarchy-root-2-children-2-grandchildren-unbalanced';
 
 
 import { MockedProvider } from '@apollo/client/testing';
 import OrbitTree from '../../ui/src/components/vis/OrbitTree';
 import { renderVis } from '../../ui/src/components/vis/helpers';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
 import { WithCurrentOrbitCoordsMockedAtom } from '../utils-frontend';
@@ -33,12 +33,16 @@ vi.mock("../../ui/src/hooks/useNodeTraversal", () => ({
   }),
 }));
 
+afterEach(() => {
+  cleanup();
+});
+
 // Mock the value that would be set in the traversal hook to the length of the 'level_trees' array - 1
 export function setHierarchyBreadth(num: number) {
   maxBreadth = num
 }
 
-describe.skip('Hierarchy Traversal -  renders traversal buttons for parent with 1 child', () => {
+describe('Hierarchy Traversal -  renders traversal buttons for parent with 1 child', () => {
   let Tree;
   beforeEach(() => {
     Tree = renderVis(OrbitTree);
@@ -63,6 +67,7 @@ describe.skip('Hierarchy Traversal -  renders traversal buttons for parent with 
     expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-up')).not.toBeTruthy();
   });
+
   it('given y = 1, renders traversal button for going up a level', async () => {
     // Arrange
     const { getByTestId, queryByTestId } = render(
@@ -84,7 +89,7 @@ describe.skip('Hierarchy Traversal -  renders traversal buttons for parent with 
   });
 });
 
-describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers events - parent with 2 children', () => {
+describe('Hierarchy Traversal - it renders traversal buttons and triggers events - parent with 2 children', () => {
   let Tree;
   beforeEach(() => {
     Tree = renderVis(OrbitTree);
@@ -235,7 +240,7 @@ describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers e
   });
 });
 
-describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers events - unbalanced tree with 2 children and 2 grandchildren (for depth first side)', () => {
+describe('Hierarchy Traversal - it renders traversal buttons and triggers events - unbalanced tree with 2 children and 2 grandchildren (for depth first side)', () => {
   let Tree;
   beforeEach(() => {
     Tree = renderVis(OrbitTree);
