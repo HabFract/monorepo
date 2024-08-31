@@ -18,7 +18,8 @@ export enum VisType {
  */
 export enum VisCoverage {
   Partial = "partial", // Uses co-ordinates for navigation
-  Complete = "complete" // Uses zoom for navigation
+  CompleteOrbit = "complete-orbit", // Uses zoom for navigation, starts at a given Orbit
+  CompleteSphere = "complete-sphere" // Uses zoom for navigation, starts at the Sphere's root Orbits
 }
 
 /**
@@ -36,6 +37,8 @@ export type WithVisCanvasProps =
 export interface IVisualization {
   /** Type of visualization */
   type: VisType;
+  /** Whether we need zoom or traversal controls depends on the visualisation coverage type */
+  coverageType: VisCoverage;
   /** ID of the SVG element */
   _svgId: string;
   /** Root data for the hierarchy */
@@ -49,6 +52,8 @@ export interface IVisualization {
   /** Flag indicating if the visualization has been rendered */
   _hasRendered: boolean;
 
+  /** Set state handler for triggering modal open in the parent React component */
+  modalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   /** Flag showing current status of is modal */
   isModalOpen: boolean;
   /** Allows setting/re-setting of the parent entry hash in the modal form */

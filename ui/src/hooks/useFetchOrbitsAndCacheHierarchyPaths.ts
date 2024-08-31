@@ -87,7 +87,6 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
 
       existingCache[currentSphereId] = workingSphereNodes;
       store.set(nodeCache.setMany, Object.entries(existingCache));
-
       cached = true;
       console.log('cached paths:>> ', cached);
     } catch (error) {

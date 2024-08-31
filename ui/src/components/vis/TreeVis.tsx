@@ -5,7 +5,7 @@ import { EventHandlers, Margins, ViewConfig, VisType, ZoomConfig } from "./types
 import { BASE_SCALE, FOCUS_MODE_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS } from "./constants";
 import { BaseVisualization } from "./BaseVis";
 import { select } from "d3-selection";
-import { OrbitNodeDetails } from "../../state/jotaiKeyValueStore";
+import { OrbitNodeDetails, store, nodeCache } from "../../state/jotaiKeyValueStore";
 import { ONE_CHILD, ONE_CHILD_XS, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT, TWO_CHILDREN_LEFT_XS, TWO_CHILDREN_RIGHT_XS, THREE_CHILDREN_LEFT, THREE_CHILDREN_RIGHT, THREE_CHILDREN_LEFT_XS, THREE_CHILDREN_RIGHT_XS, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1_XS, FOUR_CHILDREN_LEFT_2_XS, FOUR_CHILDREN_RIGHT_1_XS, FOUR_CHILDREN_RIGHT_2_XS, FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FIVE_CHILDREN_LEFT_1_XS, FIVE_CHILDREN_LEFT_2_XS, FIVE_CHILDREN_RIGHT_1_XS, FIVE_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3, SIX_CHILDREN_LEFT_1_XS, SIX_CHILDREN_LEFT_2_XS, SIX_CHILDREN_LEFT_3_XS, SIX_CHILDREN_RIGHT_1_XS, SIX_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_RIGHT_3_XS } from "./PathTemplates/paths";
 import { getInitialXTranslate, getInitialYTranslate, newXTranslate, newYTranslate } from "./helpers";
 
@@ -129,13 +129,14 @@ export class TreeVisualization extends BaseVisualization {
       .classed("link", true)
       .classed("appended-path", true)
       .attr("stroke-width", "3")
+      .attr("stroke", "#fefefe")  
       .attr("stroke-opacity", "0.3")
       .attr("data-testid", getTestId(cacheItem.path));
 
     //@ts-ignore
     const pathElement = newPath._groups[0][0];
     const { height, width } = pathElement.getBoundingClientRect();
-    select(pathElement).attr("transform", `translate(${getPathXTranslation(cacheItem.path, width, (this._viewConfig.isSmallScreen() ? 30 : 250) / this._viewConfig.scale) * this._viewConfig.scale},${-((height + (this._viewConfig.isSmallScreen() ? 0 : 100)) * this._viewConfig.scale)})`);
+    select(pathElement).attr("transform", `translate(${getPathXTranslation(cacheItem.path, width, (this._viewConfig.isSmallScreen() ? 30 : 250) / this._viewConfig.scale) * this._viewConfig.scale},${-((height + (this._viewConfig.isSmallScreen() ? 120 : 100)) * this._viewConfig.scale)})`);
 
     // Helper function to get exact x translation based on path
     function getPathXTranslation(path: string, width: number, offset: number): number {

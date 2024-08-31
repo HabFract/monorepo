@@ -100,7 +100,7 @@ describe('Hierarchy Path Templates - One root, one child - after traversing down
     Tree = renderVis(OrbitTree);
   });
 
-  it.skip('renders a path for the first child after traversing', async () => {
+  it('renders a path for the first child after traversing', async () => {
     // Arrange - simulate state after the described traversal 
     const { getByTestId } = render(
         <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
@@ -113,7 +113,7 @@ describe('Hierarchy Path Templates - One root, one child - after traversing down
   });
 });
 
-describe.skip('Hierarchy Path Templates - One root, two children - after traversing it renders correct path for that child', () => {
+describe('Hierarchy Path Templates - One root, two children - after traversing it renders correct path for that child', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
@@ -144,7 +144,7 @@ describe.skip('Hierarchy Path Templates - One root, two children - after travers
   });
 });
 
-describe.skip('Hierarchy Path Templates - One root, three children - after traversing it renders correct path for that child', () => {
+describe('Hierarchy Path Templates - One root, three children - after traversing it renders correct path for that child', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);

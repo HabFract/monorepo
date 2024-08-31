@@ -81,7 +81,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
           selectedSphere={selectedSphere}
           render={(currentVis: T, queryType: VisCoverage, x, y, newRootData) => {
             // Determine need for traversal controls
-            const withTraversal: boolean = queryType == VisCoverage.Partial;
+            const withTraversal: boolean = queryType !== VisCoverage.CompleteOrbit;
             let onlyChildParent: boolean = true;
             let hasChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length > 0;
             let hasOneChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length == 1;
@@ -89,6 +89,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
             if (appendedSvg) {
               currentVis.isModalOpen = false;
               // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
+              currentVis.modalOpen = setIsModalOpen;
               currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
               currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
               if (currentVis && currentVis.rootData && coordsChanged((currentVis?.rootData as any)?._translationCoords)) {

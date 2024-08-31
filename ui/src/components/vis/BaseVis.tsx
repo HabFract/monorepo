@@ -1,11 +1,11 @@
 import { select, Selection } from "d3-selection";
-import { zoom, ZoomBehavior } from "d3-zoom";
+import { ZoomBehavior } from "d3-zoom";
 import { HierarchyLink, HierarchyNode, tree } from "d3-hierarchy";
 import { easeCubic, easeLinear } from "d3-ease";
 import _ from "lodash";
 
-import { noNodeCol, parentPositiveBorderCol, positiveColLighter, BASE_SCALE, FOCUS_MODE_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS } from "./constants";
-import { EventHandlers, IVisualization, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
+import { BASE_SCALE, FOCUS_MODE_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, XS_LEVELS_HIGH, XS_LEVELS_WIDE } from "./constants";
+import { EventHandlers, IVisualization, Margins, ViewConfig, VisCoverage, VisType, ZoomConfig } from "./types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
 import { client } from "../../graphql/client";
@@ -20,6 +20,7 @@ import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
  */
 export abstract class BaseVisualization implements IVisualization {
   type: VisType;
+  coverageType: VisCoverage;
   rootData: HierarchyNode<any>;
   nodeDetails: SphereOrbitNodes;
   _nextRootData: HierarchyNode<any> | null;
@@ -38,7 +39,7 @@ export abstract class BaseVisualization implements IVisualization {
   globalStateTransition: Function;
 
   eventHandlers: EventHandlers;
-  zoomer: ZoomBehavior<Element, unknown>;
+  zoomer!: ZoomBehavior<Element, unknown>;
 
   _gLink?: typeof this._canvas;
   _gNode?: typeof this._canvas;
@@ -49,7 +50,6 @@ export abstract class BaseVisualization implements IVisualization {
   _enteringNodes?: Selection<SVGGElement, HierarchyNode<any>, SVGGElement, unknown>;  
 
   // Methods for procedures at different parts of the vis render:
-
   abstract setNodeAndLinkEnterSelections(): void;
   abstract appendNodesAndLabels(): void;
   abstract appendNodeDetailsAndControls(): void;
@@ -63,6 +63,7 @@ export abstract class BaseVisualization implements IVisualization {
   abstract initializeEventHandlers(): EventHandlers;
   abstract initializeZoomer(): ZoomBehavior<Element, unknown>;
 
+  modalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   isModalOpen: boolean = false;
   skipMainRender: boolean = false;
   activeNode: any = null;
@@ -85,6 +86,7 @@ export abstract class BaseVisualization implements IVisualization {
    */
   constructor(
     type: VisType,
+    coverageType: VisCoverage,
     svgId: string,
     inputTree: HierarchyNode<any>,
     canvasHeight: number,
@@ -96,6 +98,7 @@ export abstract class BaseVisualization implements IVisualization {
     nodeDetails: SphereOrbitNodes
   ) {
     this.type = type;
+    this.coverageType = coverageType;
     this._svgId = svgId;
     this.rootData = inputTree;
     this.globalStateTransition = globalStateTransition;
@@ -108,7 +111,10 @@ export abstract class BaseVisualization implements IVisualization {
     this._zoomConfig = this.initializeZoomConfig();
     this.eventHandlers = this.initializeEventHandlers();
 
-    this.zoomer = this.initializeZoomer();
+    if(this.coverageType !== VisCoverage.Partial) {
+      this.zoomer = this.initializeZoomer();
+      console.log('zoom activated! :>> ');
+    }
   }
 
   // Allow data to be re-cached after certain vis interactions:
@@ -265,6 +271,8 @@ export abstract class BaseVisualization implements IVisualization {
       this.setNodeAndLinkEnterSelections();
       this.setNodeAndLabelGroups();
       this.appendNodesAndLabels();
+      this.appendNodeDetailsAndControls();
+      this.appendLinkPath();
 
       this.applyInitialTransform();
 

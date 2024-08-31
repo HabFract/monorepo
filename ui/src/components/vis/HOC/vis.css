@@ -1,28 +1,15 @@
-
-
 g.nodes {
   cursor: pointer;
   pointer-events: all;
 }
 
 .node-subgroup {
-  transform: scale(2) translate(-62px, -52px);
+  transform: scale(2.2) translate(-62px, -52px);
   color: #ccc;
 }
 
 .node-subgroup.checked {
   color: rgba(11,254,184, 1);
-}
-
-.expand-arrow {
-  stroke: #f8f8f8;
-  stroke-width: 2px;
-}
-
-.instruct-legend .cell,
-.legend-svg .cell {
-  position: relative;
-  pointer-events: none;
 }
 
 .controls-div {
@@ -32,55 +19,8 @@ g.nodes {
   z-index: 10;
 }
 
-.help-svg,
-.legend-svg {
-  z-index: 17;
-}
-.legend-svg {
-  z-index: 19;
-}
-
-.swipe-zone {
-  color: #ddd;
-  font-weight: 900;
-}
-
 svg path.link {
   fill: none;
-}
-
-g.tooltip rect {
-  fill: #f8f8f8;
-  stroke: #1a140e !important;
-  stroke-width: 1px;
-}
-
-g.tooltip text {
-  fill: #FDFEFE !important;
-  stroke: #FDFEFE !important;
-  stroke-width: 1px;
-}
-
-body[class^="scroll"] .legend-svg,
-body[class^="scroll"] .controls-div {
-  opacity: 0;
-  visibility: none;
-  transition: opacity 0.2s ease-out;
-}
-
-.habit-label-dash-button text {
-  fill: #f8f8f8 !important;
-  stroke-width: 1px;
-}
-
-.habit-label-dash-button {
-  fill: #1a140e !important;
-  stroke: #f8f8f8 !important;
-  stroke-width: 1px;
-}
-
-g.tooltip rect:first-of-type {
-  fill: #6B7D7F !important;
 }
 
 .tooltip-inner .content {
