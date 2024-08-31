@@ -242,10 +242,8 @@ export abstract class BaseVisualization implements IVisualization {
    * Render the visualization.
    */
   public render(): void {
-    if (this.skipMainRender) { this.skipMainRender = false; return };
-    if (this.noCanvas()) {
-      this.setupCanvas();
-    }
+    if (this.skipMainRender) { this.skipMainRender = false; return }
+    if (this.noCanvas()) { this.setupCanvas() }
 
     if (this.firstRender()) {
       this.setLevelsHighAndWide();

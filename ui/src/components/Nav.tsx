@@ -99,7 +99,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   // Helpers for creating menu items
   function createFixedMenuItems() {
     return [
-      getItem('List Spheres', 'list-spheres', <AppstoreOutlined />),
+      getItem('Sphere Breakdown', 'list-spheres', <AppstoreOutlined />),
       getItem('Settings', 'settings', <SettingFilled />),
       // getItem('Dashboard', 'db', <PieChartFilled />, undefined, undefined, true),
     ]  

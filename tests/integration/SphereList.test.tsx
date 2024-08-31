@@ -15,6 +15,6 @@ test('renders a sphere list', async () => {
     </MockedProvider>
   );
   await waitFor(() => {
-    expect(getByText('List Spheres')).toBeTruthy();
+    expect(getByText('Sphere Breakdown')).toBeTruthy();
   });
 });

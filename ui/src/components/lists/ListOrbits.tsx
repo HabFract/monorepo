@@ -32,7 +32,7 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({ sphereAh }: ListOrbitsProps) =>
   if (error) return <p>Error : {error.message}</p>;
   return (
     <div className='layout orbits'>
-      <PageHeader title="Orbits Breakdown " />
+      <PageHeader title="Orbit Breakdown " />
       {data?.sphere && <SphereCard sphere={data.sphere} isHeader={true} transition={transition} orbitScales={data.orbits.map((orbit: Orbit) => orbit?.scale)} />}
       <ListSortFilter label={''} />
       <div className="orbits-list">

@@ -1,4 +1,4 @@
-import { GetLowestSphereHierarchyLevelDocument } from './../../../ui/src/graphql/generated/index';
+import { GetLowestSphereHierarchyLevelDocument } from '../../../ui/src/graphql/generated/index';
 
 import { anOrbitConnection } from '../../../ui/src/graphql/generated/mocks-types-fixed'
 import { GetOrbitsDocument, Frequency, Scale, DeleteOrbitDocument, GetSphereDocument } from '../../../ui/src/graphql/generated/index'

@@ -198,7 +198,7 @@ nav + main.page-container .orbits-list {
 }
 
 .spheres-girl-img.indented {
-  /* Allow room for the menu */
+  /* Allow room for the side menu */
   width: calc(100% - 5.5rem);
   margin-left: 4rem;
 }
@@ -206,6 +206,7 @@ nav + main.page-container .orbits-list {
 .page-container.vis, .page-container.vis > div:last-child {
   overflow: hidden;
 }
+
 @media screen and (min-width: 440px) {
   .ant-app {
     grid-template-columns: 10% 80% 10%;

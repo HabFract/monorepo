@@ -3,7 +3,7 @@ import { Provider } from "jotai/react";
 import { useHydrateAtoms } from "jotai/utils";
 
 import { currentOrbitCoords, currentSphere } from '../ui/src/state/currentSphereHierarchyAtom';
-import { SPHERE_ID } from "./e2e/mocks/spheres";
+import { SPHERE_ID } from "./integration/mocks/spheres";
 import { ReactNode } from "react";
 
 const HydrateAtoms = ({ initialValues, children }) => {

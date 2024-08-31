@@ -296,7 +296,7 @@ export class TreeVisualization extends BaseVisualization {
           //     !outOfBoundsNode(source, this.rootData) &&
           //     !outOfBoundsNode(target, this.rootData)
           // ) // Remove habits that weren't being tracked then
-      );
+    );
     this._enteringLinks = links
       .enter()
       .append("path")

@@ -58,7 +58,7 @@ function getPageName(state) {
     case 'CreateOrbit':
       return "Create an Orbit"
     case 'ListOrbits':
-      return "Orbits Breakdown"
+      return "Orbit Breakdown"
     case 'ListSpheres':
       return "Sphere Breakdown"
     default:

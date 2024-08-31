@@ -1,11 +1,11 @@
 import React from 'react';
 import '../setupTests'
-import { describe, expect, vi, it } from 'vitest'
+import { describe, expect, vi, it, afterEach, beforeAll } from 'vitest'
 
 import { MockedProvider } from '@apollo/client/testing';
 import OrbitTree from '../../ui/src/components/vis/OrbitTree';
 import { renderVis } from '../../ui/src/components/vis/helpers';
-import { render, waitFor } from '@testing-library/react';
+import { cleanup, render, waitFor } from '@testing-library/react';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
 import { WithCurrentOrbitCoordsMockedAtom } from '../utils-frontend';
@@ -33,12 +33,17 @@ vi.mock("../../ui/src/hooks/useNodeTraversal", () => ({
   }),
 }));
 
+afterEach(() => {
+  // Cleanup after each test
+  cleanup();
+});
+
 // Mock the value that would be set in the traversal hook to the length of the 'level_trees' array - 1
 export function setHierarchyBreadth(num: number) {
   maxBreadth = num
 }
 
-describe.skip('Hierarchy Path Templates - without traversing, it renders no paths', () => {
+describe('Hierarchy Path Templates - without traversing, it renders no paths', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);

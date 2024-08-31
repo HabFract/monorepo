@@ -54,7 +54,7 @@ function ListSpheres() {
 
   return (
     <div className='layout spheres'>
-      <PageHeader title="List Spheres" />
+      <PageHeader title="Sphere Breakdown" />
       {/* <ListSortFilter label='' /> */}
       <div></div>
       <div className="spheres-list">

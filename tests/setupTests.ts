@@ -2,8 +2,8 @@ import { vi } from 'vitest';
 import "fake-indexeddb/auto";
 
 import '@testing-library/react/dont-cleanup-after-each';
-import { mockedCacheEntries } from "./e2e/mocks/cache";
-import { SPHERE_ID } from "./e2e/mocks/spheres";
+import { mockedCacheEntries } from "./integration/mocks/cache";
+import { SPHERE_ID } from "./integration/mocks/spheres";
 
 import { atom } from "jotai";
 import { SortCriteria, SortOrder } from "../ui/src/state/listSortFilterAtom";

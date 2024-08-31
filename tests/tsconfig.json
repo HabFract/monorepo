@@ -16,7 +16,7 @@
     "esm": true,
   },
   "types": ["vitest/globals"],
-  "include": ["e2e/*.tsx"],
+  "include": ["integration/*.tsx"],
   "exclude": [
     "../ui/src/graphql/**/*.ts",
     "../ui/src/graphql/generated/mocks-type-fixed"
