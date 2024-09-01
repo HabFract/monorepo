@@ -116,12 +116,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
               if (typeof translationCoords == 'undefined') return false
               return translationCoords[0] !== x || translationCoords[1] !== y
             }
-            console.log('UP :>> ', y !== 0);
-            console.log('LEFT :>> ', x !== 0);
-            console.log('DOWN :>> ', hasChild && hasOneChild);
-            console.log('DOWNLEFT :>> ', hasChild && !hasOneChild);
-            console.log('RIGHT :>> ', !!(withTraversal && maxBreadth && x < maxBreadth));
-            console.log('x,y,maxBreadth,maxDepth :>> ', x,y,maxBreadth,maxDepth);
+
             return (
               <>
                 {!!(withTraversal && y !== 0) && <EnterOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "23vh", transform: "scaley(-1)"}}  onClick={decrementDepth} />}

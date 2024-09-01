@@ -13,7 +13,6 @@ export default function VisModal<T extends IVisualization>(isModalOpen: boolean,
     <Modal.Body>
       <CreateOrbit editMode={false} inModal={true} sphereEh={selectedSphere!.entryHash as EntryHashB64} parentOrbitEh={currentParentOrbitEh} childOrbitEh={currentChildOrbitEh} onCreateSuccess={() => {
         setIsModalOpen(false);
-        currentVis.modalOpen = setIsModalOpen;
         currentVis.isModalOpen = false; // TODO, let this happen on cancel by adding onCancel callback
         currentVis.nodeDetails = store.get(nodeCache.items)![selectedSphere.actionHash as ActionHashB64] as SphereOrbitNodes;
         currentVis.setNodeAndLinkGroups.call(currentVis);

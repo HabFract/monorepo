@@ -1,5 +1,9 @@
 // @ts-nocheck
 
+import { select } from "d3-selection";
+import { ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
+import { ReactNode } from "react";
+import { withVisCanvas } from "./HOC/withVisCanvas";
 import {
   BASE_SCALE,
 } from "./constants";
@@ -34,13 +38,6 @@ export const debounce = function (func, delay) {
     timeout = setTimeout(() => func.apply(null, args), delay);
   };
 };
-
-
-import { select } from "d3-selection";
-// import { selectInUnpersisted } from "features/habitDate/selectors";
-import { ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
-import { ReactNode } from "react";
-import { withVisCanvas } from "./HOC/withVisCanvas";
 
 // General helpers
 

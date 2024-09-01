@@ -168,6 +168,10 @@ div[data-testid="flowbite-dropdown"] button {
 .ant-breadcrumb .ant-breadcrumb-separator, .ant-breadcrumb .ant-breadcrumb-link  {
   @apply text-title !important;
 }
+.vis.page-container nav.ant-breadcrumb {
+  width: 8rem;
+  position: absolute;
+}
 
 @media screen and (min-width: 768px) {
   .ant-breadcrumb  {

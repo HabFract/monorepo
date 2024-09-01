@@ -1,5 +1,5 @@
 import { select, Selection } from "d3-selection";
-import { ZoomBehavior } from "d3-zoom";
+import { zoom, ZoomBehavior } from "d3-zoom";
 import { HierarchyLink, HierarchyNode, tree } from "d3-hierarchy";
 import { easeCubic, easeLinear } from "d3-ease";
 import _ from "lodash";
@@ -111,10 +111,7 @@ export abstract class BaseVisualization implements IVisualization {
     this._zoomConfig = this.initializeZoomConfig();
     this.eventHandlers = this.initializeEventHandlers();
 
-    if(this.coverageType !== VisCoverage.Partial) {
-      this.zoomer = this.initializeZoomer();
-      console.log('zoom activated! :>> ');
-    }
+    if(this.coverageType !== VisCoverage.Partial) { this.initializeZoomer(); }
   }
 
   // Allow data to be re-cached after certain vis interactions:
@@ -224,8 +221,8 @@ export abstract class BaseVisualization implements IVisualization {
     this._viewConfig.dy =
       this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number * 4);
     //adjust for taller aspect ratio
-    this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 4.25 : 2;
-    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3.25 : 2;
+    this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 4.25 : 3;
+    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3.25 : 4;
   }
 
   /**
@@ -351,6 +348,14 @@ export abstract class BaseVisualization implements IVisualization {
           </div>
         </div>`
       });
+  }
+  
+  /**
+   * Reset the zoom on the vis base
+   */
+  resetZoomer(): void {
+    const zoomer: ZoomBehavior<Element, unknown> = zoom();
+    this.visBase().call(zoomer as any);
   }
 
   /**

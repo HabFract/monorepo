@@ -41,9 +41,6 @@ importers:
       d3-array:
         specifier: ^3.2.4
         version: 3.2.4
-      d3-ease:
-        specifier: ^3.0.1
-        version: 3.0.1
       d3-hierarchy:
         specifier: ^3.1.2
         version: 3.1.2
@@ -180,6 +177,9 @@ importers:
       concurrently-repeat:
         specifier: ^0.0.1
         version: 0.0.1
+      d3-ease:
+        specifier: ^3.0.1
+        version: 3.0.1
       dotenv-cli:
         specifier: ^7.3.0
         version: 7.4.2
@@ -8996,7 +8996,6 @@ packages:
   /d3-ease@3.0.1:
     resolution: {integrity: sha512-wR/XK3D3XcLIZwpbvQwQ5fK+8Ykds1ip7A2Txe0yxncXSdq1L9skcG7blcedkOX+ZcgxGAmLX1FrRGbADwzi0w==}
     engines: {node: '>=12'}
-    dev: false
 
   /d3-format@1.0.2:
     resolution: {integrity: sha512-VHFdLLjGkeGrRL8T/rlIIDhI3vvVX/oOTM/GaDJfB1sIb4dU5ZgiEjg3EeidJdQ/70u60tM015TSWa1gqqLRhg==}

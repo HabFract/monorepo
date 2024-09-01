@@ -1,8 +1,9 @@
 import { tree, TreeLayout } from "d3-hierarchy";
 import { DefaultLinkObject, Link, linkVertical } from "d3-shape";
 import { zoom, ZoomBehavior } from "d3-zoom";
+import { easeLinear } from "d3-ease";
 import { EventHandlers, Margins, ViewConfig, VisType, ZoomConfig } from "./types";
-import { BASE_SCALE, FOCUS_MODE_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, LG_NODE_RADIUS, XS_LEVELS_HIGH, XS_LEVELS_WIDE, XS_NODE_RADIUS } from "./constants";
+import { BASE_SCALE, FOCUS_MODE_SCALE, LG_TREE_PATH_OFFSET_X, LG_TREE_PATH_OFFSET_Y, XS_TREE_PATH_OFFSET_X, XS_TREE_PATH_OFFSET_Y } from "./constants";
 import { BaseVisualization } from "./BaseVis";
 import { select } from "d3-selection";
 import { OrbitNodeDetails, store, nodeCache } from "../../state/jotaiKeyValueStore";
@@ -90,7 +91,7 @@ export class TreeVisualization extends BaseVisualization {
         }
         this._canvas
           .transition()
-          // .ease(easeLinear)
+          .ease(easeLinear)
           .duration(200)
           .attr("transform", `translate(${x},${y}), scale(${scale})`);
         this._zoomConfig.focusMode = false;
@@ -99,9 +100,9 @@ export class TreeVisualization extends BaseVisualization {
   }
 
   initializeZoomer(): ZoomBehavior<Element, unknown> {
-    const zoomer:ZoomBehavior<Element, unknown> = zoom().scaleExtent([0.1, 1.5]).on("zoom", this.eventHandlers.handleNodeZoom.bind(this) as any);
+    const zoomer: ZoomBehavior<Element, unknown> = zoom().scaleExtent([0.1, 1.5]).on("zoom", this.eventHandlers.handleNodeZoom.bind(this) as any);
     this.visBase().call(zoomer as any);
-    return zoomer
+    return  this.zoomer = zoomer
   }
 
   setupLayout(): void {
@@ -136,7 +137,15 @@ export class TreeVisualization extends BaseVisualization {
     //@ts-ignore
     const pathElement = newPath._groups[0][0];
     const { height, width } = pathElement.getBoundingClientRect();
-    select(pathElement).attr("transform", `translate(${getPathXTranslation(cacheItem.path, width, (this._viewConfig.isSmallScreen() ? 30 : 250) / this._viewConfig.scale) * this._viewConfig.scale},${-((height + (this._viewConfig.isSmallScreen() ? 120 : 100)) * this._viewConfig.scale)})`);
+    select(pathElement).attr("transform", `translate(${
+      getPathXTranslation(
+        cacheItem.path,
+        width,
+        (this._viewConfig.isSmallScreen() ? XS_TREE_PATH_OFFSET_X : LG_TREE_PATH_OFFSET_X) / this._viewConfig.scale)
+         * this._viewConfig.scale
+    },${
+      -((height + (this._viewConfig.isSmallScreen() ? XS_TREE_PATH_OFFSET_Y : LG_TREE_PATH_OFFSET_Y)) * this._viewConfig.scale)
+    })`);
 
     // Helper function to get exact x translation based on path
     function getPathXTranslation(path: string, width: number, offset: number): number {
@@ -146,9 +155,9 @@ export class TreeVisualization extends BaseVisualization {
         case ONE_CHILD_XS:
           return 0
         case TWO_CHILDREN_LEFT:
-          return width + offset
+          return width + offset * 1.7
         case TWO_CHILDREN_RIGHT:
-          return -(width + offset)
+          return -(width + offset * 1.7)
         case TWO_CHILDREN_LEFT_XS:
           return width + offset
         case TWO_CHILDREN_RIGHT_XS:

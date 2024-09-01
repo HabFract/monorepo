@@ -23,6 +23,7 @@ import {
 import { currentSphere } from '../state/currentSphereHierarchyAtom';
 import { useStateTransition } from './useStateTransition';
 import { isSmallScreen } from '../components/vis/helpers';
+import { byStartTime } from '../components/vis/OrbitTree';
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
   params: OrbitHierarchyQueryParams;
@@ -41,7 +42,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
   hasCached = false,
   currentSphereId
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
-  if(!currentSphereId) return { loading: false, error: new Error("Cannot run hook withou a sphere Ah"), cache: null}
+  if(!currentSphereId) return { loading: false, error: new Error("Cannot run hook without a sphere Id"), cache: null}
 
   const [_, transition] = useStateTransition(); // Top level state machine and routing
   const { data, loading, error } = useGetOrbitHierarchyQuery({
@@ -62,6 +63,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
       while (typeof parsedData === "string") {
         parsedData = JSON.parse(parsedData);
       }
+      
       setHierarchyObject(
         hierarchy(parsedData.result.level_trees[0]).sort((a, b) => {
           const idA: ActionHashB64 = a.data.content;
@@ -83,12 +85,12 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
       const existingCache = store.get(nodeCache.items) as SphereNodeDetailsCache;
       if(!existingCache[currentSphereId]) throw new Error('No existing cache for this currentSphere id');
 
-      (d3Hierarchy as any).each((node) => cachePath(node?.data?.content, getPath(node)));
+      (d3Hierarchy as any).sort(byStartTime(existingCache, currentSphereId)).each((node) => cachePath(node?.data?.content, getPath(node)));
 
       existingCache[currentSphereId] = workingSphereNodes;
       store.set(nodeCache.setMany, Object.entries(existingCache));
       cached = true;
-      console.log('cached paths:>> ', cached);
+      console.log('cached paths:>> ', existingCache);
     } catch (error) {
       console.error("Error caching hierarch paths:" + error);
     }
