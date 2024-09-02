@@ -4,6 +4,7 @@ import { SphereVis, OrbitVis } from './vis';
 import { ProgressBar } from './onboarding';
 import { Button } from './buttons';
 import { HelperText } from './copy';
+import { VisControls } from './controls';
 import { default as darkTheme } from './darkTheme';
 
 import './inputs/common.css';
