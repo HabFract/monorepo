@@ -53,10 +53,10 @@
   overflow-y: auto;
 }
 
-.home-layout .top {
+.home-layout .cta {
   @apply flex justify-between flex-col gap-2 items-start;
 }
-.home-layout .bottom:hover + .top {
+.home-layout .action:hover + .cta {
   background: url(assets/circled-pen.svg) no-repeat;
   background-position: 5% 4rem;
   background-size: contain;

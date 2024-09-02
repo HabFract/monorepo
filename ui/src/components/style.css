@@ -52,7 +52,7 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
 }
 
 .side-nav.expanded + * {
-  filter: opacity(0.3);
+  filter: opacity(0.1);
   pointer-events: none;
 }
 
@@ -105,6 +105,7 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
 
 .side-nav.expanded > .ant-menu-root .ant-menu-item:not(.ant-menu-item-selected):first-child span {
   display: grid;
+  place-content: center;
 }
 
 .side-nav.expanded > .ant-menu-root .ant-menu-item-selected span.ant-menu-title-content {
@@ -133,6 +134,7 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
 
 .ant-menu-item-icon, .ant-menu-item-icon.selected, .ant-menu-submenu-title img {
   height:60px !important;
+  width:60px !important;
   object-fit: cover;
   margin-left: -.125rem;
   border-radius: 1.05rem;

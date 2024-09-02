@@ -1,6 +1,6 @@
 import React from 'react';
 import './common.css';
-import { DeleteOutlined, EditOutlined, PieChartOutlined, OrderedListOutlined, PlusCircleFilled, PlusCircleOutlined } from '@ant-design/icons';
+import { OrderedListOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { SphereVis } from '../vis';
 import { Scale, Sphere } from '../../../ui/src/graphql/generated';
 import { Button } from 'flowbite-react';
@@ -21,24 +21,21 @@ type SphereCardProps = {
 function calculateSpherePercentages(counts: object) : any {
   const total = Object.values(counts).reduce((acc: number, count: number) => acc + count, 0);
   return Object.entries(counts).reduce((acc: object, [scale, count]: [string, number]) => {
-    //@ts-ignore
     acc[scale] = count / total * 100;
     return acc;
   }, {Sub: 0, Atom: 0, Astro: 0});
 }
+
 function calculateSphereCounts(orbitScales: Scale[]) {
   return orbitScales.reduce((acc: object, orbitScale: Scale) => {
     switch (orbitScale) {
       case Scale.Sub:
-        //@ts-ignore
         acc['Sub'] += 1;
         break;
       case Scale.Atom:
-        //@ts-ignore
         acc['Atom'] += 1;
         break;
         case Scale.Astro:
-          //@ts-ignore
         acc['Astro'] += 1;
         break;
     }
@@ -50,6 +47,15 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
   const { name, metadata, id } = sphere;
   const sphereNodes = id && store.get(nodeCache.items) && store.get(nodeCache.items)![id as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
 
+  function setSphereAndTransition() {
+    store.set(currentSphere, {entryHash: sphere.eH, actionHash: sphere.id});
+    store.set(currentOrbitCoords, {x: 0, y: 0});
+    if(store.get(currentSphere)?.actionHash !== sphere.id || !sphereNodes?.[sphere.id]) {
+      transition('PreloadAndCache', {landingSphereEh: sphere.eH, landingSphereId: sphere.id })
+    } else {
+      transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })
+    }
+  }
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
       <header className={"sphere-header card-header"}>
@@ -83,17 +89,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
               <span>Create Orbit</span>
             </Button>}
 
-            {!isHeader && <Button  className="btn btn-primary w-full" size="sm" onClick={() => {
-                store.set(currentSphere, {entryHash: sphere.eH, actionHash: sphere.id});
-                store.set(currentOrbitCoords, {x: 0, y: 0});
-                setTimeout(() => {
-                  if(store.get(currentSphere)?.actionHash !== sphere.id || !sphereNodes?.[sphere.id]) {
-                    transition('PreloadAndCache', {landingSphereEh: sphere.eH, landingSphereId: sphere.id })
-                  } else {
-                    transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })
-                  }
-                }, 1);
-                }}>
+            {!isHeader && <Button  className="btn btn-primary w-full" size="sm" onClick={setSphereAndTransition}>
               <TreeVisIcon />
               <span>Visualise</span>
             </Button>}
@@ -121,17 +117,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
           <PlusCircleOutlined className="icon" />
           <span>Create Orbit</span>
         </Button>
-        <Button className="btn responsive btn-primary w-full" size="sm" onClick={() => {
-            store.set(currentSphere, {entryHash: sphere.eH, actionHash: sphere.id});
-            store.set(currentOrbitCoords, {x: 0, y: 0});
-            setTimeout(() => {
-              if(store.get(currentSphere)?.actionHash !== sphere.id || !sphereNodes?.[sphere.id]) {
-                transition('PreloadAndCache', {landingSphereEh: sphere.eH, landingSphereId: sphere.id })
-              } else {
-                transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })
-              }
-            }, 1);
-            }}>
+        <Button className="btn responsive btn-primary w-full" size="sm" onClick={setSphereAndTransition}>
           <TreeVisIcon />
           <span>Visualise</span>
         </Button>

@@ -85,31 +85,20 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
             let onlyChildParent: boolean = true;
             let hasChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length > 0;
             let hasOneChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length == 1;
-
+            
+            console.log('coordsChanged! :>> ', currentVis?._nextRootData?._translationCoords);
             if (appendedSvg) {
               currentVis.isModalOpen = false;
               // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
               currentVis.modalOpen = setIsModalOpen;
               currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
               currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
-              if (currentVis && currentVis.rootData && coordsChanged((currentVis?.rootData as any)?._translationCoords)) {
-                const currentOrbit = newRootData?.find(d => {
-                  if (!d) return false
-                  const siblings = d?.parent && d.parent.children.map(d => d.data.content)
-                  return siblings && siblings.length > 0 && d.parent?.children[x] ? (d.parent?.children[x].data.content == d.data.content) && d.depth == y
-                    : false
-                });
-                if (currentOrbit?.data?.content) {
-                  const node = currentVis.nodeDetails[selectedSphere.actionHash as ActionHashB64];
-                  // currentOrbit && store.set(currentOrbitIdAtom, currentOrbit.data.content);
-                }
-                hasChild = newRootData?.data.children && newRootData?.data.children.length > 0
-              }
+
+
 
               onlyChildParent = currentVis.rootData.parent == null || (currentVis.rootData.parent?.children && currentVis.rootData.parent?.children.length == 1 || true);
               // Trigger the Vis object render function only once the SVG is appended to the DOM
               currentVis?.render();
-
             }
 
             function coordsChanged(translationCoords): boolean {

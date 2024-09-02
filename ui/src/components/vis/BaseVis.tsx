@@ -325,29 +325,29 @@ export abstract class BaseVisualization implements IVisualization {
 
     return this._enteringNodes!
       .append("g")
-      .classed("tooltip", true)
-      .append("foreignObject")
-      .attr("transform", () => {
-        return `scale(${this._viewConfig.isSmallScreen() ? 0.5 : 1})`
-      })
-      .attr("x", "-375")
-      .attr("y", "-10")
-      .attr("width", "650")
-      .style("overflow", "visible")
-      .attr("height", "650")
-      .html((d): string => {
-        if (!d?.data?.content || !this.nodeDetails[d.data.content]) return ""
-        const cachedNode = this.nodeDetails[d.data.content];
-        const { name, description, scale } = cachedNode;
-        return `<div class="tooltip-inner">
-          <div class="content">
-          <span class="title">Name:</span>
-          <p>${name}</p>
-          <span class="title">Description:</span>
-          <p>${description || "<br />"}</p>
-          </div>
-        </div>`
-      });
+      // .classed("tooltip", true)
+      // .append("foreignObject")
+      // .attr("transform", () => {
+      //   return `scale(${this._viewConfig.isSmallScreen() ? 0.5 : 1})`
+      // })
+      // .attr("x", "-375")
+      // .attr("y", "-10")
+      // .attr("width", "650")
+      // .style("overflow", "visible")
+      // .attr("height", "650")
+      // .html((d): string => {
+      //   if (!d?.data?.content || !this.nodeDetails[d.data.content]) return ""
+      //   const cachedNode = this.nodeDetails[d.data.content];
+      //   const { name, description, scale } = cachedNode;
+      //   return `<div class="tooltip-inner">
+      //     <div class="content">
+      //     <span class="title">Name:</span>
+      //     <p>${name}</p>
+      //     <span class="title">Description:</span>
+      //     <p>${description || "<br />"}</p>
+      //     </div>
+      //   </div>`
+      // });
   }
   
   /**

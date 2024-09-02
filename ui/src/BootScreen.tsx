@@ -11,8 +11,6 @@ import './App.css'
 import 'habit-fract-design-system/dist/style.css';
 import './typo.css'
 import { Spinner } from 'flowbite-react';
-import { NODE_ENV } from './constants';
-
 
 function BootScreen({ children }: any) {
   const [connected, setConnected] = useState<boolean>(false); // Top level state machine and routing

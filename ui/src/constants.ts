@@ -18,7 +18,7 @@ Notably:
 You may encounter bugs or unexpected behavior while using the app!
 ***
 
-If you experience any issues, the best course of action is to reload the app. If you want to be super helpful, you could report the bug using the form on the Habit/Fract website. Click the envelope icon on the menu for a link.
+If you experience any issues, the best course of action is to reload the app. If you want to be super helpful, you could report the bug using the form on the Habit/Fract website. Click the feedback button on the settings menu (accessible from Home/Visualize pages) for a link.
 
 We are actively working on improvements and appreciate your patience and feedback during this phase..
 `

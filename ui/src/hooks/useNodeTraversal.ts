@@ -12,10 +12,11 @@ export const useNodeTraversal = (hierarchyBounds: HierarchyBounds) => {
   const [breadthIndex, setBreadthIndex] = useState<number>(y);
 
   const currentOrbitId = store.get(currentOrbitDetails);
-  // console.log('currentOrbitId :>> ', currentOrbitId);
+  console.log('currentOrbitId :>> ', currentOrbitId);
   // const currentOrbitDetails = store.get(currentOrbitDetails);
 
-  store.get(currentOrbitCoords)
+  const coords = store.get(currentOrbitCoords);
+  console.log('coords :>> ', coords);
 
   const incrementBreadth = () => {
     if (hierarchyBounds) {

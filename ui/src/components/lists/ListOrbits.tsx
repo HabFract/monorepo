@@ -1,7 +1,7 @@
 import React from 'react';
 import './common.css';
 
-import PageHeader from '../PageHeader';
+import PageHeader from '../header/PageHeader';
 import ListSortFilter from './ListSortFilter';
 
 import { OrbitCard, SphereCard } from 'habit-fract-design-system';

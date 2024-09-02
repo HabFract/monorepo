@@ -6,7 +6,7 @@ import { SphereCreateParams, useCreateSphereMutation, useGetSphereQuery, useUpda
 import { ImageUpload } from './input';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { ActionHashB64 } from '@holochain/client';
-import DefaultSubmitBtn from './DefaultSubmitButton';
+import DefaultSubmitBtn from './buttons/DefaultSubmitButton';
 import { TextAreaField, TextInputField } from 'habit-fract-design-system';
 import { store } from '../../state/jotaiKeyValueStore';
 import { currentSphere } from '../../state/currentSphereHierarchyAtom';

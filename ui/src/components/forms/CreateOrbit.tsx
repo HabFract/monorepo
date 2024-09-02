@@ -10,7 +10,7 @@ import { currentOrbitCoords, currentOrbitId, currentSphere } from '../../state/c
 import { AppState } from '../../routes';
 import { mapToCacheObject, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { client } from '../../graphql/client';
-import DefaultSubmitBtn from './DefaultSubmitButton';
+import DefaultSubmitBtn from './buttons/DefaultSubmitButton';
 import { TextAreaField, TextInputField, SelectInputField } from 'habit-fract-design-system';
 import { OrbitFetcher } from './utils';
 

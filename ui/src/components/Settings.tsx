@@ -12,7 +12,7 @@ import { sleep } from './lists/OrbitSubdivisionList';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { ask } from '@tauri-apps/plugin-dialog';
 import { checkForAppUpdates } from '../update';
-import { VersionDisclaimer } from '../App';
+import VersionDisclaimer from './home/VersionWithDisclaimerButton';
 import { ALPHA_RELEASE_DISCLAIMER } from '../constants';
 import { isSmallScreen } from './vis/helpers';
 
@@ -102,7 +102,7 @@ const Settings: React.FC<SettingsProps> = ({ version, spheres, setIsModalOpen })
           <span>Reset Data</span>
         </Button>
       </section>
-      {VersionDisclaimer(version, () => {setIsDisclaimer(true)})}
+      <VersionDisclaimer currentVersion={version} open={ () => {setIsDisclaimer(true)}} />
     </div>
   )
 };

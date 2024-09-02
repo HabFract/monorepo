@@ -4,18 +4,17 @@ import './common.css';
 import { Button as FBButton } from 'flowbite-react';
 import { darkThemeButton } from '../darkTheme';
 
-export type ButtonProps = {
+export interface ButtonProps {
   type: "onboarding" | "primary" | "secondary" | "icon";
+  onClick: () => {},
   children?: any,
   icon?: React.ReactElement,
-  onClick: () => {},
   touched?: object,
   loading?: boolean,
   errors?: object,
 }
 
-const Button: React.FC<ButtonProps> = ({ children, type, icon, touched, loading, errors, onClick }: ButtonProps) => {
-  
+const Button: React.FC<ButtonProps> = ({ children, type, icon, touched, loading, errors, onClick }: ButtonProps) => {  
   return (
     <FBButton
       disabled={loading || !(typeof errors == 'undefined' || typeof touched == 'undefined') && ((Object.values(errors).length > 0) || !!(Object.values(touched).filter(value => value).length < 1))}
