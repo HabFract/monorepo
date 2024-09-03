@@ -3,6 +3,7 @@ import { currentOrbitId, currentSphere } from "../../state/currentSphereHierarch
 import { store } from "../../state/jotaiKeyValueStore";
 import BackCaret from "../icons/BackCaret";
 import { ForwardedRef, forwardRef } from "react";
+import { isSmallScreen } from "../vis/helpers";
 
 const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{state: any, transition: any} & unknown>> = forwardRef(({state, transition}, ref: ForwardedRef<HTMLDivElement>) => {
   if (!state.match("Onboarding")) return <></>
@@ -28,7 +29,7 @@ const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{s
     </div>
     <div ref={ref}>
       <ProgressBar
-        stepNames={['Create Profile (N/A)', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize']}
+        stepNames={isSmallScreen() ? ['Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize'] : ['Create Profile (N/A)', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize']}
         currentStep={+(state.match(/Onboarding(\d+)/)?.[1])} />
     </div>
   </>;
