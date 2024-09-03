@@ -6,16 +6,16 @@ import { Margins, VisProps, VisCoverage, IVisualization } from '../vis/types';
 import { select } from "d3-selection";
 import { useAtomValue } from 'jotai';
 import { useNodeTraversal } from '../../hooks/useNodeTraversal';
-import { HierarchyBounds, SphereHashes, SphereHierarchyBounds, currentOrbitCoords, currentOrbitId as currentOrbitIdAtom, currentSphere, currentSphereHierarchyBounds } from '../../state/currentSphereHierarchyAtom';
-import { DownOutlined, EnterOutlined, LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
+import { HierarchyBounds, SphereHashes, SphereHierarchyBounds, currentSphere, currentSphereHierarchyBounds } from '../../state/currentSphereHierarchyAtom';
+
+import { currentOrbitDetails, setOrbit } from '../../state/orbit';
 import { WithVisCanvasProps } from '../vis/types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
-import { Modal } from 'flowbite-react';
-import { CreateOrbit } from '../forms';
-import { nodeCache, SphereOrbitNodes, store } from '../../state/jotaiKeyValueStore';
+import { OrbitNodeDetails, store } from '../../state/jotaiKeyValueStore';
 import VisModal from '../VisModal';
 import TraversalButton from '../navigation/TraversalButton';
 import { VisControls } from 'habit-fract-design-system';
+import { currentDayAtom } from '../../state/date';
 
 const defaultMargins: Margins = {
   top: -400,
@@ -49,6 +49,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
     const selectedSphere = store.get(currentSphere);
+    const cachedCurrentOrbit: OrbitNodeDetails | undefined = useAtomValue(currentOrbitDetails);
 
     if (!selectedSphere.actionHash) {
       console.error("No sphere context has been set!")
@@ -87,16 +88,14 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
             let onlyChildParent: boolean = true;
             let hasChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length > 0;
             let hasOneChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length == 1;
-            
-            console.log('coordsChanged! :>> ', currentVis?._nextRootData?._translationCoords);
+            const dateToday = store.get(currentDayAtom);
+            // console.log('coordsChanged! :>> ', currentVis?._nextRootData?._translationCoords);
             if (appendedSvg) {
               currentVis.isModalOpen = false;
               // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
               currentVis.modalOpen = setIsModalOpen;
               currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
               currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
-
-
 
               onlyChildParent = currentVis.rootData.parent == null || (currentVis.rootData.parent?.children && currentVis.rootData.parent?.children.length == 1 || true);
               // Trigger the Vis object render function only once the SVG is appended to the DOM
@@ -107,10 +106,13 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
               if (typeof translationCoords == 'undefined') return false
               return translationCoords[0] !== x || translationCoords[1] !== y
             }
-
+console.log('cachedCurrentOrbit :>> ', cachedCurrentOrbit);
             return (
               <>
-                <VisControls toggleIsCompleted={() => console.log("HEY")} completed={false} buttons={[
+                <VisControls orbitDetails={cachedCurrentOrbit} setOrbitDetailsWin={(dateIndex: string, newValue: boolean) => {
+                  store.set(setOrbit, { orbitEh: cachedCurrentOrbit!.eH, update: { ...cachedCurrentOrbit, wins: { ...cachedCurrentOrbit!.wins, [dateIndex]: newValue } } })
+                  const a = store.get(currentOrbitDetails);
+                }} dateIndex={dateToday.toISODate()} buttons={[
                   <TraversalButton
                     condition={withTraversal && y !== 0}
                     iconType="up"

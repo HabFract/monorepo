@@ -1,11 +1,12 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { atom } from "jotai";
-import { OrbitNodeDetails } from "./jotaiKeyValueStore";
+import { OrbitNodeDetails, sphereNodesAtom } from "./jotaiKeyValueStore";
 
 export interface SphereHashes {
   entryHash?: EntryHashB64;
   actionHash?: ActionHashB64;
 }
+export const currentSphere = atom<SphereHashes>({ entryHash: "",  actionHash: "", });
 
 export interface HierarchyBounds {
   minDepth: number;
@@ -18,12 +19,7 @@ export interface SphereHierarchyBounds {
   [sphereId: EntryHashB64] : HierarchyBounds
 }
 
-export const currentSphere = atom<SphereHashes>({ entryHash: "",  actionHash: "", });
-
-export const currentOrbitCoords = atom<{x: number, y: number}>({ x:0, y:0 });
-export const currentOrbitId = atom<{id: ActionHashB64 | null}>({id: null});
-export const currentOrbitDetails = atom<{details: OrbitNodeDetails | null}>({details: null});
-
+// Exposed by the useNodeTraversal hook
 export const currentSphereHierarchyBounds = atom<SphereHierarchyBounds>({});
 
 export const setDepths = atom(

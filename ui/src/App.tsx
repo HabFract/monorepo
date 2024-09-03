@@ -10,7 +10,8 @@ import Settings from './components/Settings';
 
 import { darkTheme } from 'habit-fract-design-system';
 import { store } from './state/jotaiKeyValueStore';
-import { currentOrbitId, currentSphere } from './state/currentSphereHierarchyAtom';
+import { currentSphere } from './state/currentSphereHierarchyAtom';
+import { currentOrbitId } from './state/orbit';
 import { SphereConnection, useGetSpheresQuery } from './graphql/generated';
 import { ALPHA_RELEASE_DISCLAIMER } from './constants';
 

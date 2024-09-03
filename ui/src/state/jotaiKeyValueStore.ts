@@ -31,7 +31,7 @@ export interface OrbitNodeDetails {
   startTime?: number;
   endTime?: number;
   path?: string;
-  checked: boolean;
+  wins: { [dayIndex: string]: boolean };
 }
 
 export type SphereOrbitNodes = {
@@ -51,5 +51,5 @@ export const mapToCacheObject = (orbit: Orbit): OrbitNodeDetails => ({
   description: orbit.metadata?.description || "",
   startTime: orbit.metadata?.timeframe.startTime,
   endTime: orbit.metadata?.timeframe.endTime || undefined,
-  checked: false,
+  wins: {},
 });

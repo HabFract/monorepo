@@ -83,7 +83,7 @@ vi.mock("../ui/src/state/jotaiKeyValueStore", () => ({
           return { x:0, y:0 }
         case !!(atom.init && atom.init?.[SPHERE_ID] !== undefined): // Node cache items
           return mockNodeDetailsCacheItems
-        case !!(atom.init && atom.init?.details == null): // Current Node details
+        case !!(atom.init && atom.init?.wins != undefined): // Current Node details
           return {
             id: 'ActionHashB64',
             eH: 'EntryHashB64',
@@ -92,7 +92,7 @@ vi.mock("../ui/src/state/jotaiKeyValueStore", () => ({
             scale: 'Scale',
             startTime: 232434,
             endTime: null,
-            checked: false,
+            wins: {}
           }
         default: 
         console.log('atom------------------', atom)
@@ -110,7 +110,7 @@ vi.mock("../ui/src/state/jotaiKeyValueStore", () => ({
     description: orbit.metadata?.description,
     startTime: orbit.metadata?.timeframe.startTime,
     endTime: orbit.metadata?.timeframe.endTime,
-    checked: false
+    wins: {},
   }),
 }));
 

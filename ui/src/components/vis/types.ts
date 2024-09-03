@@ -116,6 +116,7 @@ export interface EventHandlers {
   handleDeleteNode?: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
   handleNodeZoom: (event: D3ZoomEvent<SVGSVGElement, unknown>, node: HierarchyNode<unknown>, forParent?: boolean) => void;
   handleNodeFocus?: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
+  handleNodeClick?: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
 }
 
 /**

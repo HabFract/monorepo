@@ -33,7 +33,12 @@
 .is-completed {
   background: transparent;
   object-fit: cover;
+  cursor: pointer;
   @apply w-16 h-16;
+}
+.is-completed:hover {
+  @apply border-2 border-primary;
+  border-radius: 100%;
 }
 
 .lower-button {

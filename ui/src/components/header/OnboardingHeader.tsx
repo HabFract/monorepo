@@ -1,5 +1,7 @@
 import { Button, ProgressBar } from "habit-fract-design-system";
-import { currentOrbitId, currentSphere } from "../../state/currentSphereHierarchyAtom";
+import { currentSphere } from "../../state/currentSphereHierarchyAtom";
+import { currentOrbitId } from '../../state/orbit';
+
 import { store } from "../../state/jotaiKeyValueStore";
 import BackCaret from "../icons/BackCaret";
 import { ForwardedRef, forwardRef } from "react";

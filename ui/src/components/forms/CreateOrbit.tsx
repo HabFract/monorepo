@@ -6,7 +6,9 @@ import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCr
 import { extractEdges } from '../../graphql/utils';
 import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { currentOrbitCoords, currentOrbitId, currentSphere } from '../../state/currentSphereHierarchyAtom';
+import { currentSphere } from '../../state/currentSphereHierarchyAtom';
+import { currentOrbitId,currentOrbitCoords } from '../../state/orbit';
+
 import { AppState } from '../../routes';
 import { mapToCacheObject, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { client } from '../../graphql/client';

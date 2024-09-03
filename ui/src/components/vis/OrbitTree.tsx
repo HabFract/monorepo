@@ -6,7 +6,8 @@ import { OrbitHierarchyQueryParams, useGetLowestSphereHierarchyLevelQuery, useGe
 import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
-import { currentOrbitCoords, currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
+import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
+import { currentOrbitCoords, currentOrbitId } from '../../state/orbit';
 
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
@@ -100,8 +101,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   useEffect(fetchHierarchyData, [y])
 
   useEffect(() => {
-    const cacheEntries = nodeDetailsCache[params?.currentSphereAhB64] as SphereOrbitNodes;
-
     if (!error && typeof data?.getOrbitHierarchy === 'string') {
       let parsedData = JSON.parse(data.getOrbitHierarchy);
       // Continue parsing if the result is still a string, this undoes more than one level of JSONification
@@ -111,13 +110,18 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       if(!!currentOrbitTree) { visCoverage == VisCoverage.Partial ? currentOrbitTree.resetZoomer() : currentOrbitTree.initializeZoomer() }
       // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
       setBreadthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.CompleteOrbit ? 100 : parsedData.result.level_trees.length - 1])
+
       // Trigger path caching if we have appended a node
       const newHierarchyDescendants = hierarchy(parsedData.result.level_trees)?.sort(byStartTime(nodeDetailsCache, params?.currentSphereAhB64))?.descendants()?.length;
       const oldHierarchyDescendants = currentOrbitTree?.rootData.descendants().length;
       setHasCached(newHierarchyDescendants == oldHierarchyDescendants);
-
+      
       // Depending on query type, set the state of the parsed JSON to the relevant part of the payload
       setJson(JSON.stringify(visCoverage == VisCoverage.CompleteOrbit ? parsedData.result : parsedData.result.level_trees.sort(byStartTime)));
+
+      const rootNode = visCoverage == VisCoverage.CompleteOrbit ? parsedData.result : parsedData.result.level_trees.sort(byStartTime)[0];
+      // Set the default current Orbit
+      store.set(currentOrbitId, {id: rootNode.content})
     }
   }, [data])
 
