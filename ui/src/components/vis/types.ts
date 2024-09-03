@@ -71,7 +71,7 @@ export interface IVisualization {
   setNodeAndLinkGroups: () => void;
   setNodeAndLinkEnterSelections: () => void;
   setNodeAndLabelGroups: () => void;
-  appendNodesAndLabels: () => void;
+  appendNodeVectors: () => void;
   appendNodeDetailsAndControls: () => void;
   appendLinkPath: () => void;
 

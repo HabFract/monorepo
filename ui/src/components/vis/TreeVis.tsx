@@ -417,7 +417,7 @@ export class TreeVisualization extends BaseVisualization {
     this._gTooltip = this.clearAndRedrawLabels()
   }
 
-  appendNodesAndLabels(): void {
+  appendNodeVectors(): void {
     this._gCircle!
       .html((d): string => {
         if (!d?.data?.content || !this.nodeDetails[d.data.content]) return ""

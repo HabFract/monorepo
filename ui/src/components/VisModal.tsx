@@ -18,7 +18,7 @@ export default function VisModal<T extends IVisualization>(isModalOpen: boolean,
         currentVis.setNodeAndLinkGroups.call(currentVis);
         currentVis.setNodeAndLinkEnterSelections.call(currentVis);
         currentVis.setNodeAndLabelGroups.call(currentVis);
-        currentVis.appendNodesAndLabels.call(currentVis);
+        currentVis.appendNodeVectors.call(currentVis);
         currentVis.appendNodeDetailsAndControls.call(currentVis);
         currentVis.appendLinkPath.call(currentVis);
         currentVis.skipMainRender = true;

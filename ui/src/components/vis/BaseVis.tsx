@@ -51,7 +51,7 @@ export abstract class BaseVisualization implements IVisualization {
 
   // Methods for procedures at different parts of the vis render:
   abstract setNodeAndLinkEnterSelections(): void;
-  abstract appendNodesAndLabels(): void;
+  abstract appendNodeVectors(): void;
   abstract appendNodeDetailsAndControls(): void;
   abstract setNodeAndLabelGroups(): void;
   abstract appendLinkPath(): void;
@@ -267,7 +267,7 @@ export abstract class BaseVisualization implements IVisualization {
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
       this.setNodeAndLabelGroups();
-      this.appendNodesAndLabels();
+      this.appendNodeVectors();
       this.appendNodeDetailsAndControls();
       this.appendLinkPath();
 
