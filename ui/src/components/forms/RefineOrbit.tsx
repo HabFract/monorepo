@@ -2,8 +2,7 @@ import React from 'react';
 import { Formik } from 'formik';
 
 import { Scale } from '../../graphql/generated';
-import { useStateTransition } from '../../hooks/useStateTransition';
-import { OrbitCard, HelperText } from 'habit-fract-design-system';
+import { OrbitCard } from 'habit-fract-design-system';
 import { OrbitSubdivisionList } from '../lists';
 import { OrbitFetcher } from './utils';
 import { OrbitValidationSchema } from './CreateOrbit';
@@ -21,14 +20,12 @@ export enum Refinement {
 }
 
 const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, headerDiv, submitBtn }: RefineOrbitProps) => {
-  const [state, transition] = useStateTransition(); // Top level state machine and routing
-
   return (
     <Formik
       style="max-width: 28rem;" 
       initialValues={{} as any}
       validationSchema={OrbitValidationSchema}
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={async (_values, { setSubmitting }) => {
         // This doesn't actually need submitting, just using the context to use the Orbit Fetcher.
       }}
     >
@@ -65,8 +62,6 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
                 }
               </p>
               
-              {/* <HelperText onClickInfo={() => console.log("clicked!")}>WHY THIS MATTERS: </HelperText> */}
-
               <OrbitSubdivisionList submitBtn={submitBtn} currentOrbitValues={values} refinementType={values.scale == Scale.Atom ? Refinement.Update : Refinement.Split}></OrbitSubdivisionList>
           </>
       )}}

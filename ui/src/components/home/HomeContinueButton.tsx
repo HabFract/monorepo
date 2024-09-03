@@ -2,13 +2,12 @@ import React, { FC } from 'react';
 import { Button } from 'habit-fract-design-system';
 
 interface HomeContinueProps {
-  state: any;
-  transition: (state: string) => void;
+  onClick: () => void;
 }
 
-const HomeContinue: FC<HomeContinueProps> = ({ state, transition }) => {
-  return state.match('Home') && (
-    <Button type={"onboarding"} onClick={() => transition("Onboarding1")}>
+const HomeContinue: FC<HomeContinueProps> = ({ onClick }) => {
+  return (
+    <Button type={"onboarding"} onClick={onClick}>
       Start Tracking Habits
     </Button>
   );

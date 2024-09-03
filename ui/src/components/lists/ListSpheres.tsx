@@ -7,7 +7,6 @@ import PageHeader from '../header/PageHeader';
 import { SphereCard } from 'habit-fract-design-system';
 import { extractEdges } from '../../graphql/utils';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { store } from '../../state/jotaiKeyValueStore';
 
 function ListSpheres() {
   const [runDelete, { loading: loadingDelete, error: errorDelete, data: dataDelete }] = useDeleteSphereMutation({
@@ -18,7 +17,6 @@ function ListSpheres() {
 
   const { loading, error, data } = useGetSpheresQuery();
 
-  const listSortFilter = store.get(listSortFilterAtom);
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
 
   if (loading) return <p>Loading...</p>;

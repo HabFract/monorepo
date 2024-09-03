@@ -1,18 +1,16 @@
 import React, { FC } from 'react';
 import { Button } from 'habit-fract-design-system';
-import { getNextOnboardingState } from '../../header/OnboardingHeader';
 
 interface OnboardingContinueProps {
-  state: any;
-  transition: (state: string) => void;
+  onClick: () => void;
 }
 
-const OnboardingContinue: FC<OnboardingContinueProps> = ({ state, transition }) => {
+const OnboardingContinue: FC<OnboardingContinueProps> = ({ onClick }) => {
   return (
     <Button
       loading={false}
       type={"onboarding"}
-      onClick={() => transition(getNextOnboardingState(state))}
+      onClick={onClick}
     >
       Save & Continue
     </Button>
