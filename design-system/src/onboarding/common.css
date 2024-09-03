@@ -68,14 +68,6 @@
   background-color: #A3BEB7;
 }
 
-/* TEMP, TODO: remove when there are profiles */
-.ant-steps-item-finish:first-of-type .ant-steps-item-icon {
-  @apply bg-warn !important;
-}
-.ant-steps-item-finish:first-of-type .ant-steps-item-icon svg{ 
-  opacity: 0 !important;
-}
-
 @media screen and (min-width: 440px) {
   .onboarding-progress::after {
     position: absolute;

@@ -48,48 +48,8 @@ svg path.link {
   cursor: initial;
 }
 
-.tooltip-action-button {
-  border-radius: 100%;
-  height: 6rem;
-  width: 6rem;
-  object-fit: cover;
-}
 
-.tooltip-action-button:nth-child(2) {
-  border-radius: 1.125rem;
-}
-.tooltip-action-button:nth-child(3) {
-  background-size: cover;
-}
 
-.tooltip-action-button.hide {
-  pointer-events: none;
-  cursor: not-allowed;
-  opacity: 0.25;
-}
-
-.higher-button {
-  background: url(assets/higher-scale-icon.svg);
-}
-
-/* .buttons *:hover {
-  outline: 8px solid rgb(54, 175, 152);
-  cursor: pointer;
-} */
-
-/* .tooltip-action-button button:focus, .tooltip-action-button button:focus-visible {
-  outline: 6px solid #91caff
-} */
-/* .checkbox-button.checked {
-  background: url(assets/checkbox-checked.svg);
-  background-size: cover;
-} */
-
-.lower-button {
-  background: url(assets/lower-scale-icon.svg);
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-}
 
 .tooltip-actions {
   display: block;

@@ -122,7 +122,7 @@
   margin-top: 0 !important;
 }
 
-@media screen and (min-width: 420px) {
+@media screen and (min-width: 440px) {
   .card-h1 {
     @apply py-4 text-xl;
   }

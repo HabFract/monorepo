@@ -1,14 +1,28 @@
 import React, { useRef, useEffect } from 'react';
 
-interface VisControlsProps {
+import './common.css';
+
+export interface VisControlsProps {
+  allowAppend: boolean;
+  allowPrepend: boolean;
+  onAppend: Function;
+  onPrepend: Function;
+  toggleIsCompleted: Function;
+  completed: boolean;
 }
 
-const VisControls: React.FC<VisControlsProps> = ({}) => {
-  
+const VisControls: React.FC<VisControlsProps> = ({ toggleIsCompleted, completed = false }) => {
+
   return (
-    <div className="sphere-pie relative">
-      <div className="pie" id="pie-chart"></div>
-      <label><div className="sphere-pie-label absolute w-full top-1/2">Breakdown</div></label>
+    <div className="vis-controls">
+      <button className="add-node-button higher-button"></button>
+      <img
+        onClick={() => { toggleIsCompleted() }}
+        className='is-completed'
+        src={completed
+          ? 'assets/checkbox-checked-is.svg' : 'assets/checkbox-empty-is.svg'}
+      ></img>
+      <button className="add-node-button lower-button"></button>
     </div>
   );
 };

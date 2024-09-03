@@ -73,7 +73,6 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
   }, [])
   
   return Object.values(spherePercentages).length > 0 && (
-    //@ts-ignore
     <div className="sphere-pie relative">
       <div ref={pieChart} className="pie" id="pie-chart"></div>
       <label><div className="sphere-pie-label absolute w-full top-1/2">Breakdown</div></label>

@@ -1,0 +1,41 @@
+
+.vis-controls {
+  @apply flex gap-2 bg-gradient-to-t from-menu-bg to-transparent justify-between items-center fixed bottom-12 right-0;
+  left: 60px;
+  width: calc(100% - 60px);
+}
+
+.add-node-button {
+  border-radius: 100%;
+  height: 6rem;
+  width: 6rem;
+  object-fit: cover;
+  border-radius: 1.125rem;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.add-node-button.hide {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.25;
+}
+
+.higher-button {
+  background-image: url(assets/higher-scale-icon.svg);
+}
+
+.lower-button {
+  background-image: url(assets/lower-scale-icon.svg);
+}
+
+.is-completed {
+  @apply w-16 h-16;
+  object-fit: cover;
+}
+
+@media screen and (min-width: 440px) {
+  .vis-controls {
+    @apply left-1/4 right-1/4 w-1/2;
+  }  
+}
