@@ -16,7 +16,7 @@ import { ALPHA_RELEASE_DISCLAIMER } from './constants';
 
 import { isSmallScreen } from './components/vis/helpers';
 import { extractEdges } from './graphql/utils';
-import OnboardingHeader from './components/header/OnboardingHeader';
+import OnboardingHeader, { getNextOnboardingState } from './components/header/OnboardingHeader';
 import VersionWithDisclaimerButton from './components/home/VersionWithDisclaimerButton';
 import { useOnboardingScroll } from './hooks/useOnboardingScroll';
 import { useMainContainerClass } from './hooks/useMainContainerClass';
@@ -57,10 +57,10 @@ function App({ children: pageComponent }) {
         ? <Spinner aria-label="Loading!" size="xl" className='full-spinner' />
         : pageComponent && withLayout(cloneElement(pageComponent, {
           // Only Renders when state == "Home"
-          startBtn: <HomeContinue state={state} transition={transition} />,
+          startBtn: state.match('Home') ? <HomeContinue onClick={() => transition("Onboarding1")} /> : <></>,
           // Only Renders when state includes "Onboarding"
           headerDiv: <OnboardingHeader state={state} transition={transition} ref={progressBarRef} />,
-          submitBtn: <OnboardingContinue state={state} transition={transition} />
+          submitBtn: <OnboardingContinue onClick={() => transition(getNextOnboardingState(state))} />
         }
         ), state, transition, params)({currentSphereDetails, newUser: !!userHasSpheres})
       }
