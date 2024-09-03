@@ -1,9 +1,9 @@
 import { ReactNode, FC } from "react";
-import Breadcrumbs from "../../navigation/Breadcrumbs";
-import Home from "../../layouts/Home";
-import Onboarding from "../../layouts/Onboarding";
+import Breadcrumbs from "../navigation/Breadcrumbs";
+import Home from "../layouts/Home";
+import Onboarding from "../layouts/Onboarding";
 import { AnimatePresence, motion } from "framer-motion";
-import { Sphere } from "../../../graphql/generated";
+import { Sphere } from "../../graphql/generated";
 
 function withPageTransition(page: ReactNode) {
   return (

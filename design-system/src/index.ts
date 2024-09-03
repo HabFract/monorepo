@@ -22,7 +22,7 @@ export {
   Label,
   ErrorLabel,
   HelperText,
-
+  VisControls,
   SphereCard,
   OrbitCard,
   Button,

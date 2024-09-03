@@ -1,5 +1,5 @@
-import { TWO_CHILDREN_LEFT_XS, THREE_CHILDREN_LEFT_XS, TWO_CHILDREN_RIGHT_XS, THREE_CHILDREN_RIGHT_XS, FOUR_CHILDREN_LEFT_1_XS, FOUR_CHILDREN_LEFT_2_XS, FIVE_CHILDREN_LEFT_1_XS, FIVE_CHILDREN_LEFT_2_XS, SIX_CHILDREN_LEFT_1_XS, SIX_CHILDREN_LEFT_2_XS, SIX_CHILDREN_LEFT_3_XS, FIVE_CHILDREN_RIGHT_1_XS, FIVE_CHILDREN_RIGHT_2_XS, FOUR_CHILDREN_RIGHT_1_XS, FOUR_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_RIGHT_1_XS, SIX_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_RIGHT_3_XS } from './../components/vis/PathTemplates/paths';
-import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, ONE_CHILD_XS, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3 } from '../components/vis/PathTemplates/paths';
+import { TWO_CHILDREN_LEFT_XS, THREE_CHILDREN_LEFT_XS, TWO_CHILDREN_RIGHT_XS, THREE_CHILDREN_RIGHT_XS, FOUR_CHILDREN_LEFT_1_XS, FOUR_CHILDREN_LEFT_2_XS, FIVE_CHILDREN_LEFT_1_XS, FIVE_CHILDREN_LEFT_2_XS, SIX_CHILDREN_LEFT_1_XS, SIX_CHILDREN_LEFT_2_XS, SIX_CHILDREN_LEFT_3_XS, FIVE_CHILDREN_RIGHT_1_XS, FIVE_CHILDREN_RIGHT_2_XS, FOUR_CHILDREN_RIGHT_1_XS, FOUR_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_RIGHT_1_XS, SIX_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_RIGHT_3_XS } from '../components/vis/links/paths';
+import { FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, ONE_CHILD_XS, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3 } from '../components/vis/links/paths';
 import { useEffect, useState } from "react";
 import {
   OrbitHierarchyQueryParams,
@@ -10,6 +10,7 @@ import {
   store,
   SphereNodeDetailsCache,
   SphereOrbitNodes,
+  sphereNodesAtom,
 } from "../state/jotaiKeyValueStore";
 import { hierarchy } from "d3-hierarchy";
 import { ActionHashB64 } from "@holochain/client";
@@ -19,7 +20,7 @@ import {
   THREE_CHILDREN_RIGHT,
   TWO_CHILDREN_LEFT,
   TWO_CHILDREN_RIGHT,
-} from "../components/vis/PathTemplates/paths";
+} from "../components/vis/links/paths";
 import { currentSphere } from '../state/currentSphereHierarchyAtom';
 import { useStateTransition } from './useStateTransition';
 import { isSmallScreen } from '../components/vis/helpers';
@@ -52,7 +53,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
 
   const [hierarchyObject, setHierarchyObject] = useState()
 
-  const sphereNodes = store.get(nodeCache.items)![currentSphereId as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
+  const sphereNodes = store.get(sphereNodesAtom);
   
   if(sphereNodes && typeof sphereNodes == 'object' && Object.values(sphereNodes).length ==0) transition('CreateOrbit', { editMode: false, forwardTo: "Vis", sphereEh: store.get(currentSphere)?.entryHash })
   

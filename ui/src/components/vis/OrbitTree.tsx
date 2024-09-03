@@ -10,7 +10,7 @@ import { currentOrbitCoords, currentSphereHierarchyBounds, setBreadths, setDepth
 
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
-import { TreeVisualization } from './TreeVis';
+import { TreeVisualization } from './base-classes/TreeVis';
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   selectedSphere: sphere,

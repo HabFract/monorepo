@@ -1,6 +1,6 @@
 
 import { useStateTransition } from './hooks/useStateTransition';
-import withLayout from './components/vis/HOC/withLayout';
+import withLayout from './components/HOC/withLayout';
 
 import Nav from './components/navigation/Nav';
 import { Flowbite, Modal, Spinner } from 'flowbite-react';

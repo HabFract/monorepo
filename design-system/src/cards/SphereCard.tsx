@@ -5,7 +5,7 @@ import { SphereVis } from '../vis';
 import { Scale, Sphere } from '../../../ui/src/graphql/generated';
 import { Button } from 'flowbite-react';
 import { currentOrbitCoords, currentSphere } from '../../../ui/src/state/currentSphereHierarchyAtom';
-import { SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../../ui/src/state/jotaiKeyValueStore';
+import { sphereNodesAtom, store } from '../../../ui/src/state/jotaiKeyValueStore';
 import TreeVisIcon from '../../../ui/src/components/icons/TreeVisIcon';
 import Exclaim from '../../../ui/src/components/icons/Exclaim';
 import { HelperText } from '../copy';
@@ -14,16 +14,16 @@ type SphereCardProps = {
   sphere: Sphere;
   isHeader: boolean;
   orbitScales: Scale[];
-  transition: (newState: string, params?: object) => void
+  transition?: (newState: string, params?: object) => void
   runDelete?: () => void
 };
 
-function calculateSpherePercentages(counts: object) : any {
+function calculateSpherePercentages(counts: object): any {
   const total = Object.values(counts).reduce((acc: number, count: number) => acc + count, 0);
   return Object.entries(counts).reduce((acc: object, [scale, count]: [string, number]) => {
     acc[scale] = count / total * 100;
     return acc;
-  }, {Sub: 0, Atom: 0, Astro: 0});
+  }, { Sub: 0, Atom: 0, Astro: 0 });
 }
 
 function calculateSphereCounts(orbitScales: Scale[]) {
@@ -35,29 +35,27 @@ function calculateSphereCounts(orbitScales: Scale[]) {
       case Scale.Atom:
         acc['Atom'] += 1;
         break;
-        case Scale.Astro:
+      case Scale.Astro:
         acc['Astro'] += 1;
         break;
     }
     return acc
-  }, {Sub: 0, Atom: 0, Astro: 0});
+  }, { Sub: 0, Atom: 0, Astro: 0 });
 }
 
-const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition, runDelete } : SphereCardProps) => {
+const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition, runDelete }: SphereCardProps) => {
   const { name, metadata, id } = sphere;
-  const sphereNodes = id && store.get(nodeCache.items) && store.get(nodeCache.items)![id as keyof SphereNodeDetailsCache] as SphereOrbitNodes;
+  const sphereNodes = store.get(sphereNodesAtom);
 
-  function setSphereAndTransition() {
-    store.set(currentSphere, {entryHash: sphere.eH, actionHash: sphere.id});
-    store.set(currentOrbitCoords, {x: 0, y: 0});
-    if(store.get(currentSphere)?.actionHash !== sphere.id || !sphereNodes?.[sphere.id]) {
-      transition('PreloadAndCache', {landingSphereEh: sphere.eH, landingSphereId: sphere.id })
+  function routeToVis() {    
+    if (store.get(currentSphere)?.actionHash !== id || !sphereNodes) {
+      transition('PreloadAndCache', { landingSphereEh: sphere.eH, landingSphereId: id })
     } else {
-      transition('Vis', {currentSphereEhB64: sphere.eH, currentSphereAhB64: sphere.id })
+      transition('Vis', { currentSphereEhB64: sphere.eH, currentSphereAhB64: id })
     }
   }
   return (
-    <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
+    <div onMouseEnter={() => {store.set(currentOrbitCoords, { x: 0, y: 0 }); store.set(currentSphere, { entryHash: sphere.eH, actionHash: id })}} className={isHeader ? "sphere-card list-header" : "sphere-card"}>
       <header className={"sphere-header card-header"}>
         <div className="sphere-title">
           <h2 className="card-name card-h1">{name}</h2>
@@ -74,50 +72,50 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
         <div className="card-actions">
           <div className="sphere-actions-vis col-c w-full">
             {!isHeader && <Button onClick={() => {
-                store.set(currentSphere, {entryHash: sphere.eH, actionHash: sphere.id});
-                transition('ListOrbits', { sphereAh: sphere.id })
+              store.set(currentSphere, { entryHash: sphere.eH, actionHash: id });
+              transition('ListOrbits', { sphereAh: id })
             }} className="btn mt-2 responsive btn-neutral w-full" size="sm">
               <OrderedListOutlined className="icon" />
               <span>List Orbits</span>
             </Button>}
 
             {!isHeader && <Button onClick={() => {
-              store.set(currentSphere, {entryHash: sphere.eH, actionHash: sphere.id});
+              store.set(currentSphere, { entryHash: sphere.eH, actionHash: sphere.id });
               transition('CreateOrbit', { sphereEh: sphere.eH })
             }} className="btn responsive btn-secondary add-orbit border-0 w-full" size="sm">
               <PlusCircleOutlined className="icon" />
               <span>Create Orbit</span>
             </Button>}
 
-            {!isHeader && <Button  className="btn btn-primary w-full" size="sm" onClick={setSphereAndTransition}>
+            {!isHeader && <Button className="btn btn-primary w-full" size="sm" onClick={routeToVis}>
               <TreeVisIcon />
               <span>Visualise</span>
             </Button>}
           </div>
         </div>
-        { isHeader && orbitScales.length > 0 
+        {isHeader && orbitScales.length > 0
           ? <div className="mini-vis col-c flex-1">
-            <SphereVis spherePercentages={calculateSpherePercentages(calculateSphereCounts(orbitScales))}/>
+            <SphereVis spherePercentages={calculateSpherePercentages(calculateSphereCounts(orbitScales))} />
           </div>
           : isHeader && <div style={{ position: "relative", top: "-1.25rem" }}>
-              <HelperText
-                  title={"Cannot Visualise"}
-                  titleIcon={<Exclaim />}
-                  withInfo={false}
-                >
-                  You don't have any Orbits to visualise, yet. Create some by clicking 'Create Orbit'
-                </HelperText>
-            </div>
+            <HelperText
+              title={"Cannot Visualise"}
+              titleIcon={<Exclaim />}
+              withInfo={false}
+            >
+              You don't have any Orbits to visualise, yet. Create some by clicking 'Create Orbit'
+            </HelperText>
+          </div>
         }
       </section>
       {isHeader && <div className="flex flex-col gap-2">
         <Button onClick={() => {
-            transition('CreateOrbit', { sphereEh: sphere.eH })
-          }} className="btn mt-2 btn-secondary add-orbit border-0 w-full" size="sm">
+          transition('CreateOrbit', { sphereEh: sphere.eH })
+        }} className="btn mt-2 btn-secondary add-orbit border-0 w-full" size="sm">
           <PlusCircleOutlined className="icon" />
           <span>Create Orbit</span>
         </Button>
-        <Button className="btn responsive btn-primary w-full" size="sm" onClick={setSphereAndTransition}>
+        <Button className="btn responsive btn-primary w-full" size="sm" onClick={routeToVis}>
           <TreeVisIcon />
           <span>Visualise</span>
         </Button>

@@ -1,19 +1,19 @@
 import React, { ComponentType, ReactNode, useEffect, useState } from 'react'
 
-import "./vis.css";
+import "../vis/vis.css";
 
-import { Margins, VisProps, VisCoverage, IVisualization } from '../types';
+import { Margins, VisProps, VisCoverage, IVisualization } from '../vis/types';
 import { select } from "d3-selection";
 import { useAtomValue } from 'jotai';
-import { useNodeTraversal } from '../../../hooks/useNodeTraversal';
-import { HierarchyBounds, SphereHashes, SphereHierarchyBounds, currentOrbitCoords, currentOrbitId as currentOrbitIdAtom, currentSphere, currentSphereHierarchyBounds } from '../../../state/currentSphereHierarchyAtom';
+import { useNodeTraversal } from '../../hooks/useNodeTraversal';
+import { HierarchyBounds, SphereHashes, SphereHierarchyBounds, currentOrbitCoords, currentOrbitId as currentOrbitIdAtom, currentSphere, currentSphereHierarchyBounds } from '../../state/currentSphereHierarchyAtom';
 import { DownOutlined, EnterOutlined, LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons';
-import { WithVisCanvasProps } from '../types';
+import { WithVisCanvasProps } from '../vis/types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { Modal } from 'flowbite-react';
-import { CreateOrbit } from '../../forms';
-import { nodeCache, SphereOrbitNodes, store } from '../../../state/jotaiKeyValueStore';
-import VisModal from '../../VisModal';
+import { CreateOrbit } from '../forms';
+import { nodeCache, SphereOrbitNodes, store } from '../../state/jotaiKeyValueStore';
+import VisModal from '../VisModal';
 
 const defaultMargins: Margins = {
   top: 0,

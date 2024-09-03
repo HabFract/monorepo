@@ -358,7 +358,6 @@ button[data-testid="dark-themetheme-toggle"]:active, .toggle-expanded-menu:activ
 
 .side-nav .ant-menu-title-content {
   margin-top: .25rem;
-  margin-left: 1.6rem !important;
   @apply text-white;
 }
 .side-nav:not(.expanded) > .ant-menu-root .ant-menu-title-content {

@@ -132,7 +132,7 @@ span.reqd {
   align-items: flex-start;
 }
 
-@media screen and (min-width: 420px) {
+@media screen and (min-width: 440px) {
   form {
     gap: 1.25rem;
     @apply py-4;

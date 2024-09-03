@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { Sphere, useGetSpheresQuery } from "../../graphql/generated";
 import { Button, DarkThemeToggle, Spinner, Toast } from "flowbite-react";
 import { currentOrbitCoords, currentSphere } from "../../state/currentSphereHierarchyAtom";
-import { SphereNodeDetailsCache, nodeCache, store } from "../../state/jotaiKeyValueStore";
+import { SphereNodeDetailsCache, nodeCache, sphereNodesAtom, store } from "../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../graphql/utils";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { ItemType } from "antd/es/menu/hooks/useItems";
@@ -152,7 +152,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   const noSphereOrbits = (sphereAh?: EntryHashB64) =>  {
     const cacheId = (sphereAh || sphere()?.id);
     if(!cacheId) return true;
-    const sphereNodes =  store.get(nodeCache.items)?.[cacheId as keyof SphereNodeDetailsCache];
+    const sphereNodes = store.get(sphereNodesAtom);
     return (!sphereNodes || (typeof sphereNodes == 'object' && !(Object.values(sphereNodes).length > 0)));
   }
   // Main routing logic for menus

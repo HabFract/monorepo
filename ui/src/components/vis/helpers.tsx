@@ -3,14 +3,16 @@
 import { select } from "d3-selection";
 import { ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
 import { ReactNode } from "react";
-import { withVisCanvas } from "./HOC/withVisCanvas";
+import { withVisCanvas } from "../HOC/withVisCanvas";
 import {
   BASE_SCALE,
 } from "./constants";
 
 // Helper function to return a ReactNode that is a combination of the Vis component, wrapped by the withCanvas higher order component, contained by a mounting div
-export const renderVis = (visComponent: React.ComponentType<VisProps>) : ReactNode => <>
-  <div id="vis-root" className="h-full"></div>{(withVisCanvas(visComponent))}
+export const renderVis = (visComponent: React.ComponentType<VisProps>): ReactNode => <>
+  <div id="vis-root" className="h-full">
+  </div>
+  {(withVisCanvas(visComponent))}
 </>
 
 export const isTouchDevice = () => {
@@ -72,7 +74,7 @@ export const hierarchyStateHasChanged = (currentHierarchy, visObject) => {
   return (
     JSON.stringify(visObject.rootData.data) !== compareString ||
     concatenateHierarchyNodeValues(visObject.rootData) !==
-      currentHierNodeValueString
+    currentHierNodeValueString
   );
 };
 
@@ -101,7 +103,7 @@ export const updateVisRootData = (
 
 export const getInitialXTranslate = ({ levelsWide, defaultView }) => {
   const [_x, _y, w, _h] = defaultView.split` `;
-  return w / levelsWide / (BASE_SCALE * 2) ;
+  return w / levelsWide / (BASE_SCALE * 2);
 };
 
 export const getInitialYTranslate = (
@@ -127,7 +129,7 @@ export const newXTranslate = (type: VisType, viewConfig: ViewConfig, zoomConfig:
   }
 };
 
-export const newYTranslate = (type: VisType, viewConfig: ViewConfig, zoomConfig: ZoomConfig) : number => {
+export const newYTranslate = (type: VisType, viewConfig: ViewConfig, zoomConfig: ZoomConfig): number => {
   const scale = viewConfig.scale;
   switch (type) {
     // case "cluster":

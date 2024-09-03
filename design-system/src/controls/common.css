@@ -22,16 +22,19 @@
 }
 
 .higher-button {
-  background-image: url(assets/higher-scale-icon.svg);
+  background-image: url(../../assets/higher-scale-icon.svg);
+}
+
+
+.is-completed {
+  object-fit: cover;
+  @apply w-16 h-16;
 }
 
 .lower-button {
-  background-image: url(assets/lower-scale-icon.svg);
-}
-
-.is-completed {
-  @apply w-16 h-16;
-  object-fit: cover;
+  width: 5rem;
+  height: 5rem;
+  background-image: url(../../assets/lower-scale-icon.svg);
 }
 
 @media screen and (min-width: 440px) {

@@ -4,13 +4,13 @@ import { HierarchyLink, HierarchyNode, tree } from "d3-hierarchy";
 import { easeCubic, easeLinear } from "d3-ease";
 import _ from "lodash";
 
-import { BASE_SCALE, FOCUS_MODE_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, XS_LEVELS_HIGH, XS_LEVELS_WIDE } from "./constants";
-import { EventHandlers, IVisualization, Margins, ViewConfig, VisCoverage, VisType, ZoomConfig } from "./types";
+import { BASE_SCALE, FOCUS_MODE_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, XS_LEVELS_HIGH, XS_LEVELS_WIDE } from "../constants";
+import { EventHandlers, IVisualization, Margins, ViewConfig, VisCoverage, VisType, ZoomConfig } from "../types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { GetOrbitsDocument, Orbit } from "../../graphql/generated";
-import { client } from "../../graphql/client";
-import { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject, nodeCache } from "../../state/jotaiKeyValueStore";
-import { extractEdges } from "../../graphql/utils";
+import { GetOrbitsDocument, Orbit } from "../../../graphql/generated";
+import { client } from "../../../graphql/client";
+import { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject, nodeCache } from "../../../state/jotaiKeyValueStore";
+import { extractEdges } from "../../../graphql/utils";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
 /**
@@ -320,7 +320,7 @@ export abstract class BaseVisualization implements IVisualization {
   }
 
   /** Clear labels and re-append  **/
-  clearAndRedrawLabels(): Selection<SVGForeignObjectElement, HierarchyNode<any>, SVGGElement, unknown> {
+  clearAndRedrawLabels(): Selection<unknown, HierarchyNode<any>, SVGGElement, unknown> {
     !this.firstRender() && this._canvas!.selectAll(".tooltip").remove();
 
     return this._enteringNodes!
