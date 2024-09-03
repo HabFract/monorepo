@@ -219,7 +219,7 @@ export abstract class BaseVisualization implements IVisualization {
       this._viewConfig.canvasWidth / (this._viewConfig.levelsHigh as number * 2) - // Adjust for tree horizontal spacing on different screens
       +(this._viewConfig.isSmallScreen()) * 250;
     this._viewConfig.dy =
-      this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number * 4);
+      this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number * 5);
     //adjust for taller aspect ratio
     this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 4.25 : 3;
     this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3.25 : 4;

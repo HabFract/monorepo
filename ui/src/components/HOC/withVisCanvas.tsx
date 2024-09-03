@@ -14,9 +14,11 @@ import { Modal } from 'flowbite-react';
 import { CreateOrbit } from '../forms';
 import { nodeCache, SphereOrbitNodes, store } from '../../state/jotaiKeyValueStore';
 import VisModal from '../VisModal';
+import TraversalButton from '../navigation/TraversalButton';
+import { VisControls } from 'habit-fract-design-system';
 
 const defaultMargins: Margins = {
-  top: 0,
+  top: -400,
   right: 0,
   bottom: 0,
   left: 60,
@@ -108,14 +110,44 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
 
             return (
               <>
-                {!!(withTraversal && y !== 0) && <EnterOutlined data-testid={"traversal-button-up"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "23vh", transform: "scaley(-1)"}}  onClick={decrementDepth} />}
-                {!!(withTraversal && x !== 0) && <LeftOutlined data-testid={"traversal-button-left"} className='fixed left-1 text-3xl text-title hover:text-primary hover:cursor-pointer' style={{top: "29vh"}} onClick={decrementBreadth} />}
-                {!!(withTraversal && hasChild && !hasOneChild) && <EnterOutlined data-testid={"traversal-button-down-left"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{left: "3px", top: "35vh", transform: "rotate(90deg), scalex(-1)"}}  onClick={incrementDepth} />}
-
-                {!!(withTraversal && maxBreadth && x < maxBreadth) && <RightOutlined data-testid={"traversal-button-right"} className='fixed right-1 text-3xl text-title hover:text-primary hover:cursor-pointer' style={{top: "29vh"}}  onClick={incrementBreadth} />}
-                {!!(withTraversal && hasChild && hasOneChild) && <RightOutlined data-testid={"traversal-button-down"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{right: "43vw", bottom: "43vh", transform: "rotate(90deg)"}}  onClick={incrementDepth} />}
-                {!!(withTraversal && maxDepth && y < maxDepth && !onlyChildParent) && <DownOutlined data-testid={"traversal-button-down-right"} className='fixed text-3xl text-title hover:text-primary hover:cursor-pointer' style={{right: "12vw", bottom: "45vh", transform: "rotate(-45deg)"}}  onClick={() => {incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length-1);}} />}
-
+                <VisControls toggleIsCompleted={() => console.log("HEY")} completed={false} buttons={[
+                  <TraversalButton
+                    condition={withTraversal && y !== 0}
+                    iconType="up"
+                    onClick={decrementDepth}
+                    dataTestId="traversal-button-up"
+                  />,
+                  <TraversalButton
+                    condition={withTraversal && x !== 0}
+                    iconType="left"
+                    onClick={decrementBreadth}
+                    dataTestId="traversal-button-left"
+                  />,
+                  <TraversalButton
+                    condition={!!(withTraversal && hasChild && !hasOneChild)}
+                    iconType="down-left"
+                    onClick={incrementDepth}
+                    dataTestId="traversal-button-down-left"
+                  />,
+                  <TraversalButton
+                    condition={!!(withTraversal && maxBreadth && x < maxBreadth)}
+                    iconType="right"
+                    onClick={incrementBreadth}
+                    dataTestId="traversal-button-right"
+                  />,
+                  <TraversalButton
+                    condition={withTraversal && hasChild && hasOneChild}
+                    iconType="down"
+                    onClick={incrementDepth}
+                    dataTestId="traversal-button-down"
+                  />,
+                  <TraversalButton
+                    condition={!!(withTraversal && maxDepth && y < maxDepth && !onlyChildParent)}
+                    iconType="down-right"
+                    onClick={() => { incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length - 1); }}
+                    dataTestId="traversal-button-down-right"
+                  />]}
+                />
                 {VisModal<T>(isModalOpen, setIsModalOpen, selectedSphere, currentParentOrbitEh, currentChildOrbitEh, currentVis)}
               </>
             )

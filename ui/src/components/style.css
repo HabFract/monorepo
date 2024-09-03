@@ -199,7 +199,7 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
 }
 
 .main-actions-menu {
-  @apply flex flex-col items-center mb-4 gap-2;
+  @apply flex flex-col items-center gap-2;
   border-radius: 1rem;
 }
 
