@@ -43,6 +43,32 @@ const appendSvg = (mountingDivId: string, divId: string) => {
       .attr("style", "pointer-events: all");
 };
 
+interface TraversalButtonVisibilityConditions {
+  withTraversal: boolean; // Top level flag
+  hasChild: boolean;
+  hasOneChild: boolean;
+  onlyChildParent: boolean;
+}
+
+function getTraversalConditions(queryType: VisCoverage, newRootData: any): TraversalButtonVisibilityConditions {
+  const withTraversal: boolean = queryType !== VisCoverage.CompleteOrbit;
+  const hasChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length > 0;
+  const hasOneChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length == 1;
+  const onlyChildParent: boolean = true;
+
+  return { withTraversal, hasChild, hasOneChild, onlyChildParent };
+}
+
+type Coordinates = {
+  x: number;
+  y: number;
+}
+
+function coordsChanged(translationCoords, x, y): boolean {
+  if (typeof translationCoords == 'undefined') return false
+  return translationCoords[0] !== x || translationCoords[1] !== y
+}
+
 export function withVisCanvas<T extends IVisualization>(Component: ComponentType<VisProps<T>>): ReactNode {
   const ComponentWithVis: React.FC<WithVisCanvasProps> = (_visParams: WithVisCanvasProps) => {
     const mountingDivId = 'vis-root'; // Declared at the router level
@@ -84,71 +110,41 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
           selectedSphere={selectedSphere}
           render={(currentVis: T, queryType: VisCoverage, x, y, newRootData) => {
             // Determine need for traversal controls
-            const withTraversal: boolean = queryType !== VisCoverage.CompleteOrbit;
-            let onlyChildParent: boolean = true;
-            let hasChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length > 0;
-            let hasOneChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length == 1;
+            const traversalConditions = getTraversalConditions(queryType, newRootData);
             const dateToday = store.get(currentDayAtom);
+
             // console.log('coordsChanged! :>> ', currentVis?._nextRootData?._translationCoords);
             if (appendedSvg) {
-              currentVis.isModalOpen = false;
+              // currentVis.isModalOpen = false;
               // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
               currentVis.modalOpen = setIsModalOpen;
               currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
               currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
 
-              onlyChildParent = currentVis.rootData.parent == null || (currentVis.rootData.parent?.children && currentVis.rootData.parent?.children.length == 1 || true);
+              // traversalConditions.onlyChildParent = currentVis.rootData.parent == null || (currentVis.rootData.parent?.children && currentVis.rootData.parent?.children.length == 1 || true);
+
               // Trigger the Vis object render function only once the SVG is appended to the DOM
               currentVis?.render();
             }
 
-            function coordsChanged(translationCoords): boolean {
-              if (typeof translationCoords == 'undefined') return false
-              return translationCoords[0] !== x || translationCoords[1] !== y
-            }
-console.log('cachedCurrentOrbit :>> ', cachedCurrentOrbit);
             return (
               <>
-                <VisControls orbitDetails={cachedCurrentOrbit} setOrbitDetailsWin={(dateIndex: string, newValue: boolean) => {
-                  store.set(setOrbit, { orbitEh: cachedCurrentOrbit!.eH, update: { ...cachedCurrentOrbit, wins: { ...cachedCurrentOrbit!.wins, [dateIndex]: newValue } } })
-                  const a = store.get(currentOrbitDetails);
-                }} dateIndex={dateToday.toISODate()} buttons={[
-                  <TraversalButton
-                    condition={withTraversal && y !== 0}
-                    iconType="up"
-                    onClick={decrementDepth}
-                    dataTestId="traversal-button-up"
-                  />,
-                  <TraversalButton
-                    condition={withTraversal && x !== 0}
-                    iconType="left"
-                    onClick={decrementBreadth}
-                    dataTestId="traversal-button-left"
-                  />,
-                  <TraversalButton
-                    condition={!!(withTraversal && hasChild && !hasOneChild)}
-                    iconType="down-left"
-                    onClick={incrementDepth}
-                    dataTestId="traversal-button-down-left"
-                  />,
-                  <TraversalButton
-                    condition={!!(withTraversal && maxBreadth && x < maxBreadth)}
-                    iconType="right"
-                    onClick={incrementBreadth}
-                    dataTestId="traversal-button-right"
-                  />,
-                  <TraversalButton
-                    condition={withTraversal && hasChild && hasOneChild}
-                    iconType="down"
-                    onClick={incrementDepth}
-                    dataTestId="traversal-button-down"
-                  />,
-                  <TraversalButton
-                    condition={!!(withTraversal && maxDepth && y < maxDepth && !onlyChildParent)}
-                    iconType="down-right"
-                    onClick={() => { incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length - 1); }}
-                    dataTestId="traversal-button-down-right"
-                  />]}
+                <VisControls
+                  orbitDetails={cachedCurrentOrbit}
+                  setOrbitDetailsWin={(dateIndex: string, newValue: boolean) => {
+                    store.set(setOrbit, {
+                      orbitEh: cachedCurrentOrbit!.eH as string,
+                      update: {
+                        ...cachedCurrentOrbit,
+                        wins: {
+                          ...cachedCurrentOrbit!.wins,
+                          [dateIndex]: newValue
+                        }
+                      }
+                    })
+                  }}
+                  dateIndex={dateToday.toISODate()}
+                  buttons={renderTraversalButtons(traversalConditions, { x, y }, currentVis)}
                 />
                 {VisModal<T>(isModalOpen, setIsModalOpen, selectedSphere, currentParentOrbitEh, currentChildOrbitEh, currentVis)}
               </>
@@ -157,6 +153,54 @@ console.log('cachedCurrentOrbit :>> ', cachedCurrentOrbit);
         ></Component>
       </>
     );
+
+    function renderTraversalButtons<T extends IVisualization>(
+      conditions: TraversalButtonVisibilityConditions,
+      coords: Coordinates,
+      currentVis: T
+    ) {
+      const { withTraversal, hasChild, hasOneChild, onlyChildParent } = conditions;
+      const { x, y } = coords;
+
+      return [
+        <TraversalButton
+          condition={withTraversal && y !== 0}
+          iconType="up"
+          onClick={decrementDepth}
+          dataTestId="traversal-button-up"
+        />,
+        <TraversalButton
+          condition={withTraversal && x !== 0}
+          iconType="left"
+          onClick={decrementBreadth}
+          dataTestId="traversal-button-left"
+        />,
+        <TraversalButton
+          condition={!!(withTraversal && hasChild && !hasOneChild)}
+          iconType="down-left"
+          onClick={incrementDepth}
+          dataTestId="traversal-button-down-left"
+        />,
+        <TraversalButton
+          condition={!!(withTraversal && maxBreadth && x < maxBreadth)}
+          iconType="right"
+          onClick={incrementBreadth}
+          dataTestId="traversal-button-right"
+        />,
+        <TraversalButton
+          condition={withTraversal && hasChild && hasOneChild}
+          iconType="down"
+          onClick={incrementDepth}
+          dataTestId="traversal-button-down"
+        />,
+        <TraversalButton
+          condition={!!(withTraversal && maxDepth && y < maxDepth && !onlyChildParent)}
+          iconType="down-right"
+          onClick={() => { incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length - 1); }}
+          dataTestId="traversal-button-down-right"
+        />
+      ];
+    };
   }
   //@ts-ignore
   return <ComponentWithVis />
