@@ -20,24 +20,6 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const TOOLTIP_TIMEOUT = 4500; // milliseconds
 
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[],
-  type?: 'group',
-  disabled?
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-    type,
-    disabled
-  } as MenuItem;
-}
-
 enum Page {
   CreateSphere = 'CreateSphere',
   ListSpheres = 'ListSpheres',
@@ -67,40 +49,6 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   const sideMenuRef = useRef(null);
   useSideMenuToggle(sideMenuRef, setSideNavExpanded);
 
-  // Menu state/dom helpers
-  function closeMenu () {
-    setSideNavExpanded(false)
-    return true;
-  };
-  function openMenu () {
-    setSideNavExpanded(true)
-  };
-  // Helpers for creating menu items
-  function createFixedMenuItems() {
-    return [
-      getItem('Sphere Breakdown', 'list-spheres', <AppstoreOutlined />),
-      getItem('Settings', 'settings', <SettingFilled />),
-      // getItem('Dashboard', 'db', <PieChartFilled />, undefined, undefined, true),
-    ]  
-  }
-  function createSphereMenuItems({ spheres }: { spheres: Sphere[] }) {
-    return [    
-      getItem(
-        'New Sphere',
-        'add-sphere',
-        <PlusCircleFilled className={spheresArray.length >= 4 ? "grayed" : ""} />,
-        undefined,
-        undefined,
-        false
-      ),
-      ...spheres!.map((sphere: Sphere, _idx: number) => {
-      return getItem(
-        `${sphere.name}`,
-        sphere.id,
-        <img className={store.get(currentSphere)?.actionHash == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string}/>,
-      )})
-    ] 
-  }
 
   let loading = loadingSpheres || !spheres;
 
@@ -133,13 +81,13 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
       case e.key == 'add-sphere':
         if(spheresArray.length >= 4) {
           setToastText(tooltipMsg + "before you can add another Sphere. These are the 4 burners of your habit life!")
-          openMenu()
+          setSideNavExpanded(true)()
           setToastToTimeOut()
           return;
         }
         store.set(currentSphere, {});
         setCurrentPage(Page.CreateSphere)
-        closeMenu()
+        setSideNavExpanded(false)()
         transition('CreateSphere')
         break;
 
@@ -149,13 +97,13 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
 
           setToastText(tooltipMsg + "before you can view the Spheres list")
           setToastToTimeOut()
-          openMenu()
+          setSideNavExpanded(true)()
           return;
         }
         setCurrentPage(Page.ListSpheres)
         transition('ListSpheres')
         
-        if(sideNavExpanded) closeMenu();
+        if(sideNavExpanded) setSideNavExpanded(false)();
         break;
 
       default:
@@ -166,20 +114,18 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
             // If there is a problem, just show a tooltip
             setToastText("Ensure you have Orbits before attempting to Visualise another Sphere")
             setToastToTimeOut()
-            openMenu()
+            setSideNavExpanded(true)()
           } else {
-            (e.key == store.get(currentSphere).actionHash)
-            ? openMenu()
-            : closeMenu() && transition('PreloadAndCache', {landingSphereEh: sphere(e.key)?.eH, landingSphereId: e.key })
+            if (e.key == store.get(currentSphere).actionHash) { setSideNavExpanded(true)() } else {setSideNavExpanded(false)(); transition('PreloadAndCache', {landingSphereEh: sphere(e.key)?.eH, landingSphereId: e.key })}
           }
         } else if([Page.ListSpheres].includes(currentPage as Page)) {
           if(!(e.key == store.get(currentSphere).actionHash)) {
             store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
           }
-          openMenu()
+          setSideNavExpanded(true)()
         } else {
           setShowToast(false)
-          if(store.get(currentSphere)?.actionHash == e.key) openMenu();
+          if(store.get(currentSphere)?.actionHash == e.key) setSideNavExpanded(true)();
           // Set current sphere from action hash of sphere clicked
           store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
 
@@ -218,7 +164,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
           setShowToast(false);
           setCurrentPage(Page.ListOrbits)
           transition('ListOrbits', {sphereAh: sphere().id})
-          closeMenu()
+          setSideNavExpanded(false)()
           return
         case 'primary':
           if(noSphereOrbits()) {
@@ -230,13 +176,13 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
 
           setCurrentPage(Page.Vis)
           transition('Vis', {currentSphereEhB64: sphere().eH, currentSphereAhB64: sphere().id})   
-          closeMenu()
+          setSideNavExpanded(false)()
           return
         case 'secondary': 
           setShowToast(false);
           setCurrentPage(Page.CreateOrbit)
           transition('CreateOrbit', {sphereEh: sphere().eH})   
-          closeMenu()
+          setSideNavExpanded(false)()
         return
       }
     }
@@ -304,6 +250,53 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
       </nav>
     </>
   );
+
+
+  // Helpers for creating menu items
+
+  function getItem(
+    label: React.ReactNode,
+    key: React.Key,
+    icon?: React.ReactNode,
+    children?: MenuItem[],
+    type?: 'group',
+    disabled?
+  ): MenuItem {
+    return {
+      key,
+      icon,
+      children,
+      label,
+      type,
+      disabled
+    } as MenuItem;
+  }
+
+  function createFixedMenuItems() {
+    return [
+      getItem('Sphere Breakdown', 'list-spheres', <AppstoreOutlined />),
+      getItem('Settings', 'settings', <SettingFilled />),
+      // getItem('Dashboard', 'db', <PieChartFilled />, undefined, undefined, true),
+    ]  
+  }
+  function createSphereMenuItems({ spheres }: { spheres: Sphere[] }) {
+    return [    
+      getItem(
+        'New Sphere',
+        'add-sphere',
+        <PlusCircleFilled className={spheresArray.length >= 4 ? "grayed" : ""} />,
+        undefined,
+        undefined,
+        false
+      ),
+      ...spheres!.map((sphere: Sphere, _idx: number) => {
+      return getItem(
+        `${sphere.name}`,
+        sphere.id,
+        <img className={store.get(currentSphere)?.actionHash == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string}/>,
+      )})
+    ] 
+  }
 };
 
 export default Nav;
