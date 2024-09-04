@@ -8,7 +8,7 @@ import { useAtomValue } from 'jotai';
 import { useNodeTraversal } from '../../hooks/useNodeTraversal';
 import { HierarchyBounds, SphereHashes, SphereHierarchyBounds, currentSphere, currentSphereHierarchyBounds } from '../../state/currentSphereHierarchyAtom';
 
-import { currentOrbitDetails, setOrbit } from '../../state/orbit';
+import { currentOrbitDetails, currentOrbitId, setOrbit } from '../../state/orbit';
 import { WithVisCanvasProps } from '../vis/types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { OrbitNodeDetails, store } from '../../state/jotaiKeyValueStore';
@@ -16,9 +16,10 @@ import VisModal from '../VisModal';
 import TraversalButton from '../navigation/TraversalButton';
 import { VisControls } from 'habit-fract-design-system';
 import { currentDayAtom } from '../../state/date';
+import { isSmallScreen } from '../vis/helpers';
 
 const defaultMargins: Margins = {
-  top: -400,
+  top: 0,
   right: 0,
   bottom: 0,
   left: 60,
@@ -109,8 +110,9 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
           margin={defaultMargins}
           selectedSphere={selectedSphere}
           render={(currentVis: T, queryType: VisCoverage, x, y, newRootData) => {
+            const currentOrbitIsRoot = cachedCurrentOrbit && cachedCurrentOrbit.eH === currentVis.rootData.data.content;
             // Determine need for traversal controls
-            const traversalConditions = getTraversalConditions(queryType, newRootData);
+            const traversalConditions = getTraversalConditions(queryType, currentOrbitIsRoot ? currentVis.rootData : newRootData);
             const dateToday = store.get(currentDayAtom);
 
             // console.log('coordsChanged! :>> ', currentVis?._nextRootData?._translationCoords);
@@ -144,7 +146,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
                     })
                   }}
                   dateIndex={dateToday.toISODate()}
-                  buttons={renderTraversalButtons(traversalConditions, { x, y }, currentVis)}
+                  buttons={renderTraversalButtons(traversalConditions, { x, y }, currentVis, currentOrbitIsRoot)}
                 />
                 {VisModal<T>(isModalOpen, setIsModalOpen, selectedSphere, currentParentOrbitEh, currentChildOrbitEh, currentVis)}
               </>
@@ -157,11 +159,29 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
     function renderTraversalButtons<T extends IVisualization>(
       conditions: TraversalButtonVisibilityConditions,
       coords: Coordinates,
-      currentVis: T
+      currentVis: T,
+      currentOrbitIsRoot: boolean
     ) {
       const { withTraversal, hasChild, hasOneChild, onlyChildParent } = conditions;
       const { x, y } = coords;
 
+      const currentOrbitChildren = currentVis.rootData.children;
+      const children = currentVis.rootData?.children
+
+      const moveDown = () => {
+        const childrenMiddle = Math.floor(children!.length / 2)
+        const newId = (children![childrenMiddle] as any).data.content.eH
+        store.set(currentOrbitId, {id: newId})
+      }
+      const moveDownLeft = () => {
+        debugger;
+        const newId = (children![0] as any).data.content.eH
+        store.set(currentOrbitId, {id: newId})
+      }
+      const moveDownRight = () => {
+        const newId = (children![children!.length - 1] as any).data.content.eH
+        store.set(currentOrbitId, {id: newId})
+      }
       return [
         <TraversalButton
           condition={withTraversal && y !== 0}
@@ -176,9 +196,9 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
           dataTestId="traversal-button-left"
         />,
         <TraversalButton
-          condition={!!(withTraversal && hasChild && !hasOneChild)}
+          condition={!!(withTraversal && hasChild && !hasOneChild) }
           iconType="down-left"
-          onClick={incrementDepth}
+          onClick={currentOrbitIsRoot ? moveDownLeft : incrementDepth}
           dataTestId="traversal-button-down-left"
         />,
         <TraversalButton
@@ -188,15 +208,15 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
           dataTestId="traversal-button-right"
         />,
         <TraversalButton
-          condition={withTraversal && hasChild && hasOneChild}
+          condition={withTraversal && hasChild && hasOneChild || (currentOrbitIsRoot && hasChild && currentOrbitChildren!.length > 1)}
           iconType="down"
-          onClick={incrementDepth}
+          onClick={currentOrbitIsRoot ? moveDown : incrementDepth}
           dataTestId="traversal-button-down"
         />,
         <TraversalButton
-          condition={!!(withTraversal && maxDepth && y < maxDepth && !onlyChildParent)}
+          condition={!!((withTraversal && maxDepth && y < maxDepth && !onlyChildParent)|| (currentOrbitIsRoot && hasChild && currentOrbitChildren!.length > 1))}
           iconType="down-right"
-          onClick={() => { incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length - 1); }}
+          onClick={currentOrbitIsRoot ? moveDownRight : () => { incrementDepth(); setBreadthIndex(currentVis.rootData.data.children.length - 1); }}
           dataTestId="traversal-button-down-right"
         />
       ];

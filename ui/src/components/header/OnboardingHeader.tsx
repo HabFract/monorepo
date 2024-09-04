@@ -31,7 +31,7 @@ const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{s
     </div>
     <div ref={ref}>
       <ProgressBar
-        stepNames={isSmallScreen() ? ['Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize'] : ['Create Profile (N/A)', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize']}
+        stepNames={isSmallScreen() ? ['Welcome', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize'] : ['Create Profile (N/A)', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize']}
         currentStep={+(state.match(/Onboarding(\d+)/)?.[1])} />
     </div>
   </>;

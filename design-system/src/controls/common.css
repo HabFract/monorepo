@@ -1,10 +1,8 @@
 
 .vis-controls {
-  @apply gap-2 bg-gradient-to-t from-menu-bg to-transparent justify-around p-2 mx-2 items-end fixed right-0;
+  @apply gap-2 bg-gradient-to-t from-menu-bg to-transparent justify-around p-2 items-end fixed right-0;
   width: 100%;
-  left: 60px;
   bottom: 0;
-  width: calc(100% - 60px);
   min-height: 8rem;
   border-radius: 1rem;
   border-top-left-radius: 0;
@@ -94,7 +92,7 @@
 }
 
 .date-nav-button:hover {
-  transform: scale(1.2);
+  transform: scaleY(calc(2.5* 1.25)) scaleX(calc(1.5* 1.25));
   transition: .2s transform ease-in;
 }
   

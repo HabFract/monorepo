@@ -1,12 +1,12 @@
 nav.side-nav {
-  @apply bg-gray-500 fixed inset-y-0 left-0 z-10 h-full flex justify-between flex-col;
-  /* transition: 1s all ease-in; */
+  @apply bg-gray-500 fixed left-0 z-10 h-full flex justify-between flex-col;
+
+  bottom: calc(50vh - 8rem);
 }
 nav.side-nav {
   height: auto;
   top: initial;
   gap: 0.5rem;
-  /* transition: 1s all ease-in; */
   background: transparent;
   border-radius: 1rem; 
   border-bottom: 0;
@@ -15,6 +15,14 @@ nav.side-nav {
 }
 nav.side-nav ul[role="menu"] {
   border-radius: 1.25rem;
+}
+.vis.page-container nav.side-nav {
+  opacity: 0.25;
+}
+
+.vis.page-container nav.side-nav:hover {
+  transition: opacity .4s cubic-bezier(0.075, 0.82, 0.165, 1);
+  opacity: 1;
 }
 
 nav.side-nav + .page-container .sphere-card.list-header button.add-orbit,

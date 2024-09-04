@@ -8,7 +8,7 @@ import { BaseVisualization } from "./BaseVis";
 import { select } from "d3-selection";
 import { OrbitNodeDetails, store, nodeCache } from "../../../state/jotaiKeyValueStore";
 import { ONE_CHILD, ONE_CHILD_XS, TWO_CHILDREN_LEFT, TWO_CHILDREN_RIGHT, TWO_CHILDREN_LEFT_XS, TWO_CHILDREN_RIGHT_XS, THREE_CHILDREN_LEFT, THREE_CHILDREN_RIGHT, THREE_CHILDREN_LEFT_XS, THREE_CHILDREN_RIGHT_XS, FOUR_CHILDREN_LEFT_1, FOUR_CHILDREN_LEFT_2, FOUR_CHILDREN_RIGHT_1, FOUR_CHILDREN_RIGHT_2, FOUR_CHILDREN_LEFT_1_XS, FOUR_CHILDREN_LEFT_2_XS, FOUR_CHILDREN_RIGHT_1_XS, FOUR_CHILDREN_RIGHT_2_XS, FIVE_CHILDREN_LEFT_1, FIVE_CHILDREN_LEFT_2, FIVE_CHILDREN_RIGHT_1, FIVE_CHILDREN_RIGHT_2, FIVE_CHILDREN_LEFT_1_XS, FIVE_CHILDREN_LEFT_2_XS, FIVE_CHILDREN_RIGHT_1_XS, FIVE_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_LEFT_1, SIX_CHILDREN_LEFT_2, SIX_CHILDREN_LEFT_3, SIX_CHILDREN_RIGHT_1, SIX_CHILDREN_RIGHT_2, SIX_CHILDREN_RIGHT_3, SIX_CHILDREN_LEFT_1_XS, SIX_CHILDREN_LEFT_2_XS, SIX_CHILDREN_LEFT_3_XS, SIX_CHILDREN_RIGHT_1_XS, SIX_CHILDREN_RIGHT_2_XS, SIX_CHILDREN_RIGHT_3_XS } from "../links/paths";
-import { getInitialXTranslate, getInitialYTranslate, newXTranslate, newYTranslate } from "../helpers";
+import { getInitialXTranslate, getInitialYTranslate, isSmallScreen, newXTranslate, newYTranslate } from "../helpers";
 import { currentOrbitId } from "../../../state/orbit";
 
 export class TreeVisualization extends BaseVisualization {
@@ -18,7 +18,7 @@ export class TreeVisualization extends BaseVisualization {
     return {
       scale: BASE_SCALE,
       clickScale: FOCUS_MODE_SCALE,
-      margin: margin,
+      margin: {...margin, top: isSmallScreen() ? -200 : -400},
       canvasHeight,
       canvasWidth,
       defaultView: 'Tree',
@@ -340,6 +340,9 @@ export class TreeVisualization extends BaseVisualization {
         store.set(currentOrbitId, { id: d.data.content });
         this.eventHandlers.handleNodeClick!.call(this, e, d);
       })
+    store.sub(currentOrbitId, () => {
+      console.log("HI", )
+    })
   }
 
   setNodeAndLabelGroups(): void {

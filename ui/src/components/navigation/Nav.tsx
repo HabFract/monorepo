@@ -8,6 +8,7 @@ import { Sphere, useGetSpheresQuery } from "../../graphql/generated";
 import { Button, DarkThemeToggle, Spinner, Toast } from "flowbite-react";
 import { currentSphere } from "../../state/currentSphereHierarchyAtom";
 import { currentOrbitCoords } from "../../state/orbit";
+import useSideMenuToggle from "../../hooks/useSideMenuToggle";
 import { store } from "../../state/jotaiKeyValueStore";
 import { sphereNodesAtom } from '../../state/sphere';
 import { extractEdges } from "../../graphql/utils";
@@ -55,48 +56,24 @@ export interface INav {
 }
 
 const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, setSideNavExpanded } : INav) => {
-  const ref = useRef(null);
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
   const [_, setCurrentPage] = useState<Page>(Page.Home);
-  const [collapsed, setCollapsed] = useState(true);
-
+  
   const [showToast, setShowToast] = useState(false);
   const [toastText, setToastText] = useState<string>("");
   const currentPage = AppMachine.state.currentState; // This is more reliable than the hook for tracking updated page state
-
-  // Nav open, close, selected states handler bound and unbound by useEffect:
-  useEffect(() => {
-    const handleClick = (event) => {
-      if(event.target.isConnected && !(ref as any).current.contains(event.target)){
-        closeMenu();
-      } 
-      const iconBtn = !!event.target.closest('.toggle-expanded-menu');
-      const subMenuSelected = event.target.closest('.ant-menu-sub')?.classList?.contains('ant-menu-vertical');
-      const bottomMenuSelected = !!event.target.closest('.main-actions-menu');
-      const plusSelected = !!event.target.closest('.side-nav > .ant-menu-root .ant-menu-item:first-of-type');
-      if(!iconBtn && (subMenuSelected || bottomMenuSelected || plusSelected)) {
-        removeOtherActiveNavItemStates()
-      } 
-    }
-    document.addEventListener('click', handleClick, true);
-    return () => {
-      document.removeEventListener('click', handleClick, true);
-    };
-  }, []);
+  
+  const sideMenuRef = useRef(null);
+  useSideMenuToggle(sideMenuRef, setSideNavExpanded);
 
   // Menu state/dom helpers
   function closeMenu () {
-    setCollapsed(true);
     setSideNavExpanded(false)
     return true;
   };
   function openMenu () {
-    setCollapsed(false);
     setSideNavExpanded(true)
-  };
-  function removeOtherActiveNavItemStates() {
-    [...document.querySelectorAll(".ant-menu-item-selected")]?.forEach(item => item.classList.remove("ant-menu-item-selected"))
   };
   // Helpers for creating menu items
   function createFixedMenuItems() {
@@ -123,17 +100,6 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
         <img className={store.get(currentSphere)?.actionHash == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string}/>,
       )})
     ] 
-  }
-
-  // Small single use component:
-  const ToggleMenuExpand = () => {
-    return (
-      <div className={!sideNavExpanded ? "flex flex-col gap-1 w-full " : "flex flex-col gap-1 w-full items-start"} >
-        <button className="toggle-expanded-menu" onClick={() => {sideNavExpanded ? closeMenu() : openMenu()}}>
-          <ArrowsAltOutlined className={!sideNavExpanded ? "collapsed" : "expanded"}/>
-        </button>
-      </div>
-    )
   }
 
   let loading = loadingSpheres || !spheres;
@@ -189,7 +155,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
         setCurrentPage(Page.ListSpheres)
         transition('ListSpheres')
         
-        if(!collapsed && sideNavExpanded) closeMenu();
+        if(sideNavExpanded) closeMenu();
         break;
 
       default:
@@ -209,8 +175,8 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
         } else if([Page.ListSpheres].includes(currentPage as Page)) {
           if(!(e.key == store.get(currentSphere).actionHash)) {
             store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
-            openMenu()
           }
+          openMenu()
         } else {
           setShowToast(false)
           if(store.get(currentSphere)?.actionHash == e.key) openMenu();
@@ -308,31 +274,30 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
           <Toast.Toggle onDismiss={() => setShowToast(false)} />
         </Toast>
       )}
-      <nav ref={ref} className={sideNavExpanded ? "side-nav expanded" : "side-nav"}>
+      <nav ref={sideMenuRef} className={sideNavExpanded ? "side-nav expanded" : "side-nav"}>
         { loading
           ? <Spinner aria-label="Loading!" className='menu-spinner' size="xl" />
           : <>
             <Menu
-              inlineCollapsed={collapsed}
+              inlineCollapsed={!sideNavExpanded}
               onClick={onClick}
-              style={{ width: collapsed ? 72 : 256 }}
+              style={{ width: !sideNavExpanded ? 72 : 256 }}
               mode="inline"
               items={menuItems}
             />
             <div className={"main-actions-menu"}>
-              <div style={{ display: collapsed ? "none" : "flex" }} className={"sphere-context-actions"} data-tooltip-target="tooltip-left" data-tooltip-placement="left" >
+              <div style={{ display: !sideNavExpanded ? "none" : "flex" }} className={"sphere-context-actions"} data-tooltip-target="tooltip-left" data-tooltip-placement="left" >
                 {buttonWithTooltipHandling('neutral')}
                 {buttonWithTooltipHandling('secondary')}
                 {buttonWithTooltipHandling('primary')}
               </div>
               <Menu
-                inlineCollapsed={collapsed}
+                inlineCollapsed={!sideNavExpanded}
                 onClick={(e) => onClick(e)}
-                style={{ width: collapsed ? 72 : 256 }}
+                style={{ width: !sideNavExpanded ? 72 : 256 }}
                 mode="inline"
                 items={createFixedMenuItems()}
               />
-              {<ToggleMenuExpand></ToggleMenuExpand>}
             </div>
           </>
         }
