@@ -11,10 +11,10 @@ export const useRedirect = () => {
   const sphereNodeDetails = useAtomValue(sphereNodesAtom);
   const sphere = useAtomValue(currentSphere);
   const { showToast } = useToast();
-
+console.log('used RedirecT!')
   useEffect(() => {
     const redirectToCreatePage = sphereNodeDetails && Object.values(sphereNodeDetails).length === 0;
-    showToast("You need to create an Orbit before you can Visualise!", redirectToCreatePage ? 5000 : 0)
+    // showToast("You need to create an Orbit before you can Visualise!", redirectToCreatePage ? 5000 : 0)
     if (redirectToCreatePage) {
       transition("CreateOrbit", {
         editMode: false,

@@ -16,6 +16,7 @@ import { extractEdges } from "../../graphql/utils";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { AppMachine } from "../../main";
+import { useAtomValue } from "jotai";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -59,15 +60,12 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   store.sub(currentSphere, () => {
     spheresArray && setMenuItems(createSphereMenuItems({spheres: spheresArray}))
   })
+  const sphereOrbitsCached = useAtomValue(sphereNodesAtom);
+  console.log('sphereOrbitsCached :>> ', sphereOrbitsCached);
   const tooltipMsg = `You need to ${ spheresArray.length == 0 ? "create" : spheresArray.length == 4 ? "delete" : "select"} a Sphere `;
 
   const sphere = (sphereAh?: EntryHashB64) => spheresArray.find((sphere: any) => (sphereAh || store.get(currentSphere)?.actionHash) == sphere.id) as Sphere & {id: ActionHashB64};
-  const noSphereOrbits = (sphereAh?: EntryHashB64) =>  {
-    const cacheId = (sphereAh || sphere()?.id);
-    if(!cacheId) return true;
-    const sphereNodes = store.get(sphereNodesAtom);
-    return (!sphereNodes || (typeof sphereNodes == 'object' && !(Object.values(sphereNodes).length > 0)));
-  }
+
   // Main routing logic for menus
   const onClick: MenuProps['onClick'] = (e) => {
     switch (true) {
@@ -105,17 +103,11 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
         // Falls through to current Sphere selection context
         // Check conditions where the current page would cause errors for the new Sphere selection
         if([Page.Vis].includes(currentPage as Page)) {
-          if(noSphereOrbits(e.key)) {
-            // If there is a problem, just show a tooltip
-            showToast("Ensure you have Orbits before attempting to Visualise another Sphere")
-            setSideNavExpanded(true)
-          } else {
             if (e.key == store.get(currentSphere).actionHash)
               { setSideNavExpanded(true) } 
             else {
               setSideNavExpanded(false);
               transition('PreloadAndCache', {landingSphereEh: sphere(e.key)?.eH, landingSphereId: e.key })}
-          }
         } else if([Page.ListSpheres].includes(currentPage as Page)) {
           if(!(e.key == store.get(currentSphere).actionHash)) {
             store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
@@ -149,7 +141,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
     return <Button
       type="button"
       onClick={(_e) => {goToPage(type)}}
-      disabled={spheresArray.length == 0 || !store.get(currentSphere)?.actionHash || (currentPage == Page.Vis && noSphereOrbits())}
+      disabled={spheresArray.length == 0 || !store.get(currentSphere)?.actionHash || (currentPage == Page.Vis && !sphereOrbitsCached)}
       className={`btn btn-sq btn-${type} ` +  (isCurrentPage(type) ? "nohover" : "")}
       style={{cursor: isCurrentPage(type) ? "initial" : "pointer", borderColor: "transparent", outlineOffset: "1px", outline: isCurrentPage(type) ? "3px solid rgb(17 24 39 / 1)" : ""}}
     >
@@ -165,7 +157,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
           setSideNavExpanded(false)
           return
         case 'primary':
-          if(noSphereOrbits()) {
+          if(typeof sphereOrbitsCached == 'object' && Object.values(sphereOrbitsCached).length == 0) {
             showToast("Select a Sphere with existing Orbits to enable Visualisation", 100000)
             return
           }

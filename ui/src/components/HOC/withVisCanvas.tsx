@@ -17,6 +17,7 @@ import TraversalButton from '../navigation/TraversalButton';
 import { VisControls } from 'habit-fract-design-system';
 import { currentDayAtom } from '../../state/date';
 import { isSmallScreen } from '../vis/helpers';
+import { useRedirect } from '../../hooks/useRedirect';
 
 const defaultMargins: Margins = {
   top: 0,
@@ -77,7 +78,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
     const selectedSphere = store.get(currentSphere);
     const cachedCurrentOrbit: OrbitNodeDetails | undefined = useAtomValue(currentOrbitDetails);
-
+    useRedirect()
     if (!selectedSphere.actionHash) {
       console.error("No sphere context has been set!")
     }

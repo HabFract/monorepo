@@ -23,7 +23,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 }) => {
   // Top level state machine and routing
   const [_state, transition, params] = useStateTransition();
-  useRedirect()
 
   // Get sphere and sphere orbit nodes details
   const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries));

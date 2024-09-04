@@ -47,14 +47,9 @@ function calculateSphereCounts(orbitScales: Scale[]) {
 
 const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition, runDelete }: SphereCardProps) => {
   const { name, metadata, id } = sphere;
-  const sphereNodes = store.get(sphereNodesAtom);
 
   function routeToVis() {    
-    if (store.get(currentSphere)?.actionHash !== id || !sphereNodes) {
-      transition('PreloadAndCache', { landingSphereEh: sphere.eH, landingSphereId: id })
-    } else {
       transition('Vis', { currentSphereEhB64: sphere.eH, currentSphereAhB64: id })
-    }
   }
   return (
     <div onMouseEnter={() => {store.set(currentOrbitCoords, { x: 0, y: 0 }); store.set(currentSphere, { entryHash: sphere.eH, actionHash: id })}} className={isHeader ? "sphere-card list-header" : "sphere-card"}>

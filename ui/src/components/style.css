@@ -16,14 +16,6 @@ nav.side-nav {
 nav.side-nav ul[role="menu"] {
   border-radius: 1.25rem;
 }
-.vis.page-container nav.side-nav {
-  opacity: 0.25;
-}
-
-.vis.page-container nav.side-nav:hover {
-  transition: opacity .4s cubic-bezier(0.075, 0.82, 0.165, 1);
-  opacity: 1;
-}
 
 nav.side-nav + .page-container .sphere-card.list-header button.add-orbit,
 nav.side-nav + .page-container form .field:nth-child(3),
