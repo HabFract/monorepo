@@ -4,6 +4,7 @@ import { AppMachine, WithCacheStore } from './main';
 import { ApolloProvider } from '@apollo/client';
 import { App } from 'antd';
 import { StateMachineContext } from './contexts/state-machine';
+import { ToastProvider } from './contexts/toast';
 import { getConnection } from './graphql/connection';
 import { initGraphQLClient } from './graphql/client';
 
@@ -17,10 +18,10 @@ function BootScreen({ children }: any) {
   const [apolloClient, setApolloClient] = useState<any>(); // Top level state machine and routing
 
   useEffect(() => {
-    if(connected) return;
-    
+    if (connected) return;
+
     getConnection().then(connection => {
-      AppMachine.state.client = {...connection, conductorUri: connection.client.client.url!.href }
+      AppMachine.state.client = { ...connection, conductorUri: connection.client.client.url!.href }
       initGraphQLClient(AppMachine.state.client).then(client => {
         setApolloClient(client)
       });
@@ -28,15 +29,17 @@ function BootScreen({ children }: any) {
       setConnected(true);
     })
   }, [connected])
-  
-  return !connected ? <Spinner aria-label="Loading!"size="xl" className='full-spinner' /> : (
-      <ApolloProvider client={apolloClient}>
+
+  return !connected ? <Spinner aria-label="Loading!" size="xl" className='full-spinner' /> : (
+    <ApolloProvider client={apolloClient}>
       {/* <MyProfileProvider> */}
-        <StateMachineContext.Provider value={AppMachine as any}>
-          <App>
-            {WithCacheStore(children)}
-          </App>
-        </StateMachineContext.Provider>
+      <StateMachineContext.Provider value={AppMachine as any}>
+          <ToastProvider>
+            <App>
+                {WithCacheStore(children)}
+            </App>
+          </ToastProvider>
+      </StateMachineContext.Provider>
       {/* </MyProfileProvider> */}
     </ApolloProvider>
   )

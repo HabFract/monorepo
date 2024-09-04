@@ -24,16 +24,20 @@ import { useMainContainerClass } from './hooks/useMainContainerClass';
 import { useCurrentVersion } from './hooks/useCurrentVersion';
 import OnboardingContinue from './components/forms/buttons/OnboardingContinueButton';
 import HomeContinue from './components/home/HomeContinueButton';
+import Toast from './components/Toast';
+import { useToast } from './contexts/toast';
 
 function App({ children: pageComponent }) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
 
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
+
+  const { showToast, isToastVisible } = useToast();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // Displays top level modal
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const mainContainerClass = useMainContainerClass();
   const currentVersion = useCurrentVersion();
-  
+
   // Allow auto scrolling back to top of onboarding stages/to relevant progress step
   const progressBarRef = useRef<HTMLDivElement>(null);
   const mainPageRef = useRef<HTMLDivElement>(null);
@@ -46,6 +50,7 @@ function App({ children: pageComponent }) {
   const currentSphereDetails = userHasSpheres && extractEdges(spheres.spheres).find(possibleSphere => possibleSphere.id == sphere.actionHash);
 
   return <Flowbite theme={{ theme: darkTheme }}>
+    <Toast />
     <main ref={mainPageRef} className={mainContainerClass}>
       {/* Version and alpha status disclaimer */}
       {state == 'Home' && !userHasSpheres && <VersionWithDisclaimerButton currentVersion={currentVersion} open={() => setIsModalOpen(true)} isFrontPage={true} />}
@@ -63,7 +68,7 @@ function App({ children: pageComponent }) {
           headerDiv: <OnboardingHeader state={state} transition={transition} ref={progressBarRef} />,
           submitBtn: <OnboardingContinue onClick={() => transition(getNextOnboardingState(state))} />
         }
-        ), state, transition, params)({currentSphereDetails, newUser: !!userHasSpheres})
+        ), state, transition, params)({ currentSphereDetails, newUser: !!userHasSpheres })
       }
     </main>
     <Modal dismissible show={isModalOpen} onClose={() => { setIsSettingsOpen(false); setIsModalOpen(false) }}>

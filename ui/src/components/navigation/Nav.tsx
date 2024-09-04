@@ -9,6 +9,7 @@ import { Button, DarkThemeToggle, Spinner, Toast } from "flowbite-react";
 import { currentSphere } from "../../state/currentSphereHierarchyAtom";
 import { currentOrbitCoords } from "../../state/orbit";
 import useSideMenuToggle from "../../hooks/useSideMenuToggle";
+import { useToast } from '../../contexts/toast';
 import { store } from "../../state/jotaiKeyValueStore";
 import { sphereNodesAtom } from '../../state/sphere';
 import { extractEdges } from "../../graphql/utils";
@@ -17,8 +18,6 @@ import { ItemType } from "antd/es/menu/hooks/useItems";
 import { AppMachine } from "../../main";
 
 type MenuItem = Required<MenuProps>['items'][number];
-
-const TOOLTIP_TIMEOUT = 4500; // milliseconds
 
 enum Page {
   CreateSphere = 'CreateSphere',
@@ -42,14 +41,12 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   
   const [_, setCurrentPage] = useState<Page>(Page.Home);
   
-  const [showToast, setShowToast] = useState(false);
-  const [toastText, setToastText] = useState<string>("");
   const currentPage = AppMachine.state.currentState; // This is more reliable than the hook for tracking updated page state
   
   const sideMenuRef = useRef(null);
   useSideMenuToggle(sideMenuRef, setSideNavExpanded);
-
-
+  
+  const { showToast, hideToast } = useToast();
   let loading = loadingSpheres || !spheres;
 
   const spheresArray = loading ? [] : extractEdges(spheres!.spheres);
@@ -80,14 +77,13 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
 
       case e.key == 'add-sphere':
         if(spheresArray.length >= 4) {
-          setToastText(tooltipMsg + "before you can add another Sphere. These are the 4 burners of your habit life!")
-          setSideNavExpanded(true)()
-          setToastToTimeOut()
+          showToast(tooltipMsg + "before you can add another Sphere. These are the 4 burners of your habit life!")
+          setSideNavExpanded(true)
           return;
         }
         store.set(currentSphere, {});
         setCurrentPage(Page.CreateSphere)
-        setSideNavExpanded(false)()
+        setSideNavExpanded(false)
         transition('CreateSphere')
         break;
 
@@ -95,15 +91,14 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
         if(spheresArray.length == 0) {
           // If there is a problem, just show a toast
 
-          setToastText(tooltipMsg + "before you can view the Spheres list")
-          setToastToTimeOut()
-          setSideNavExpanded(true)()
+          showToast(tooltipMsg + "before you can view the Spheres list")
+          setSideNavExpanded(true)
           return;
         }
         setCurrentPage(Page.ListSpheres)
         transition('ListSpheres')
         
-        if(sideNavExpanded) setSideNavExpanded(false)();
+        if(sideNavExpanded) setSideNavExpanded(false);
         break;
 
       default:
@@ -112,20 +107,23 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
         if([Page.Vis].includes(currentPage as Page)) {
           if(noSphereOrbits(e.key)) {
             // If there is a problem, just show a tooltip
-            setToastText("Ensure you have Orbits before attempting to Visualise another Sphere")
-            setToastToTimeOut()
-            setSideNavExpanded(true)()
+            showToast("Ensure you have Orbits before attempting to Visualise another Sphere")
+            setSideNavExpanded(true)
           } else {
-            if (e.key == store.get(currentSphere).actionHash) { setSideNavExpanded(true)() } else {setSideNavExpanded(false)(); transition('PreloadAndCache', {landingSphereEh: sphere(e.key)?.eH, landingSphereId: e.key })}
+            if (e.key == store.get(currentSphere).actionHash)
+              { setSideNavExpanded(true) } 
+            else {
+              setSideNavExpanded(false);
+              transition('PreloadAndCache', {landingSphereEh: sphere(e.key)?.eH, landingSphereId: e.key })}
           }
         } else if([Page.ListSpheres].includes(currentPage as Page)) {
           if(!(e.key == store.get(currentSphere).actionHash)) {
             store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
           }
-          setSideNavExpanded(true)()
+          setSideNavExpanded(true)
         } else {
-          setShowToast(false)
-          if(store.get(currentSphere)?.actionHash == e.key) setSideNavExpanded(true)();
+          hideToast()
+          if(store.get(currentSphere)?.actionHash == e.key) setSideNavExpanded(true);
           // Set current sphere from action hash of sphere clicked
           store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
 
@@ -161,28 +159,27 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
     function goToPage(type: string) {
       switch (type) {
         case 'neutral': 
-          setShowToast(false);
+          hideToast();
           setCurrentPage(Page.ListOrbits)
           transition('ListOrbits', {sphereAh: sphere().id})
-          setSideNavExpanded(false)()
+          setSideNavExpanded(false)
           return
         case 'primary':
           if(noSphereOrbits()) {
-            setToastText("Select a Sphere with existing Orbits to enable Visualisation")
-            setToastToTimeOut()
+            showToast("Select a Sphere with existing Orbits to enable Visualisation", 100000)
             return
           }
           store.set(currentOrbitCoords, {x: 0, y: 0});
 
           setCurrentPage(Page.Vis)
           transition('Vis', {currentSphereEhB64: sphere().eH, currentSphereAhB64: sphere().id})   
-          setSideNavExpanded(false)()
+          setSideNavExpanded(false)
           return
         case 'secondary': 
-          setShowToast(false);
+          hideToast();
           setCurrentPage(Page.CreateOrbit)
           transition('CreateOrbit', {sphereEh: sphere().eH})   
-          setSideNavExpanded(false)()
+          setSideNavExpanded(false)
         return
       }
     }
@@ -202,24 +199,8 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
     }
   }
 
-  function setToastToTimeOut(customTimeout?: number) {
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-    }, customTimeout || TOOLTIP_TIMEOUT);
-  }
-  
   return (
     <>
-      {showToast && (
-        <Toast className="mt-2 fixed bottom-2 bg-menu-bg">
-          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-title">
-            <WarningOutlined className="h-5 w-5" />
-          </div>
-          <div className="toast-text">{toastText}</div>
-          <Toast.Toggle onDismiss={() => setShowToast(false)} />
-        </Toast>
-      )}
       <nav ref={sideMenuRef} className={sideNavExpanded ? "side-nav expanded" : "side-nav"}>
         { loading
           ? <Spinner aria-label="Loading!" className='menu-spinner' size="xl" />

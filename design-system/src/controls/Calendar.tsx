@@ -33,7 +33,7 @@ const Calendar: React.FC<CalendarProps> = ({ mainCheckbox }) => {
     const renderSecondaryTickBox = (day: DateTime) => {
         const dayKey = day.toISODate();
         return (
-            <div className='flex flex-1 relative'>
+            <div key={day} className='flex flex-1 relative'>
                 <TickBox
                     completed={true}
                     toggleIsCompleted={() => console.log('hi')}
