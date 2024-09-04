@@ -5,6 +5,7 @@ import { OrbitHierarchyQueryParams, useGetLowestSphereHierarchyLevelQuery, useGe
 
 import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
+import { useRedirect } from '../../hooks/useRedirect';
 import { SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 import { currentOrbitCoords, currentOrbitId } from '../../state/orbit';
@@ -22,6 +23,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 }) => {
   // Top level state machine and routing
   const [_state, transition, params] = useStateTransition();
+  useRedirect()
 
   // Get sphere and sphere orbit nodes details
   const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries));
@@ -90,6 +92,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   useEffect(() => {
     if(!hasCached && cache !== null) { // Check that the hook has finished fetching data and returned a cache function
       try {
+        console.log('hasCached :>> ', hasCached);
         cache()
         setHasCached(true);
       } catch (error) {
