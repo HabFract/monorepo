@@ -2,24 +2,12 @@ import { Atom, atom, createStore } from "jotai";
 import { MiniDb } from "jotai-minidb";
 import { Orbit, Scale } from "../graphql/generated";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { currentSphere, SphereHashes } from "./currentSphereHierarchyAtom";
 
 export const nodeCache = new MiniDb();
 
 export const store = createStore();
 
-const nodeCacheItemsAtom = atom((get) => get(nodeCache.items));
-
-// Derived atom for SphereOrbitNodes
-export const sphereNodesAtom = atom((get) => {
-  const items = get(nodeCacheItemsAtom);
-  const currentSphereHashes: SphereHashes = get(currentSphere as Atom<SphereHashes>);
-  return currentSphereHashes?.actionHash && items
-    ? (items[
-        currentSphereHashes.actionHash as keyof SphereNodeDetailsCache
-      ] as SphereOrbitNodes)
-    : undefined;
-});
+export const nodeCacheItemsAtom = atom((get) => get(nodeCache.items));
 
 export interface OrbitNodeDetails {
   id: ActionHashB64;

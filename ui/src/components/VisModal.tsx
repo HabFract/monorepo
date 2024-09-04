@@ -1,7 +1,9 @@
 import { EntryHashB64, ActionHashB64 } from "@holochain/client";
 import { Modal } from "flowbite-react";
 import { SphereHashes } from "../state/currentSphereHierarchyAtom";
-import { nodeCache, sphereNodesAtom, SphereOrbitNodes, store } from "../state/jotaiKeyValueStore";
+
+import { sphereNodesAtom } from '../state/sphere';
+import { SphereOrbitNodes, store } from "../state/jotaiKeyValueStore";
 import { CreateOrbit } from "./forms";
 import { IVisualization } from "./vis/types";
 
@@ -19,7 +21,6 @@ export default function VisModal<T extends IVisualization>(isModalOpen: boolean,
         currentVis.setNodeAndLinkEnterSelections.call(currentVis);
         currentVis.setNodeAndLabelGroups.call(currentVis);
         currentVis.appendNodeVectors.call(currentVis);
-        currentVis.appendNodeDetailsAndControls.call(currentVis);
         currentVis.appendLinkPath.call(currentVis);
         currentVis.skipMainRender = true;
       } }></CreateOrbit>

@@ -1,6 +1,7 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { atom } from "jotai";
-import { nodeCache, OrbitNodeDetails, sphereNodesAtom } from "./jotaiKeyValueStore";
+import { nodeCache, OrbitNodeDetails } from "./jotaiKeyValueStore";
+import { sphereNodesAtom } from "./sphere";
 import { currentSphere } from "./currentSphereHierarchyAtom";
 
 export const currentOrbitId = atom<{id: ActionHashB64 | null}>({id: null});

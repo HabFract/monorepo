@@ -12,6 +12,7 @@ import { client } from "../../../graphql/client";
 import { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject, nodeCache } from "../../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../../graphql/utils";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
+import { currentOrbitId } from "../../../state/orbit";
 
 /**
  * Base class for creating D3 hierarchical visualizations.
@@ -52,7 +53,6 @@ export abstract class BaseVisualization implements IVisualization {
   // Methods for procedures at different parts of the vis render:
   abstract setNodeAndLinkEnterSelections(): void;
   abstract appendNodeVectors(): void;
-  abstract appendNodeDetailsAndControls(): void;
   abstract setNodeAndLabelGroups(): void;
   abstract appendLinkPath(): void;
   abstract bindEventHandlers(selection: any): void;
@@ -268,7 +268,6 @@ export abstract class BaseVisualization implements IVisualization {
       this.setNodeAndLinkEnterSelections();
       this.setNodeAndLabelGroups();
       this.appendNodeVectors();
-      this.appendNodeDetailsAndControls();
       this.appendLinkPath();
 
       this.applyInitialTransform();
@@ -320,34 +319,22 @@ export abstract class BaseVisualization implements IVisualization {
   }
 
   /** Clear labels and re-append  **/
-  clearAndRedrawLabels(): Selection<unknown, HierarchyNode<any>, SVGGElement, unknown> {
+  clearAndRedrawLabels(): Selection<SVGForeignObjectElement, HierarchyNode<any>, SVGGElement, unknown> {
     !this.firstRender() && this._canvas!.selectAll(".tooltip").remove();
 
     return this._enteringNodes!
       .append("g")
-      // .classed("tooltip", true)
-      // .append("foreignObject")
-      // .attr("transform", () => {
-      //   return `scale(${this._viewConfig.isSmallScreen() ? 0.5 : 1})`
-      // })
-      // .attr("x", "-375")
-      // .attr("y", "-10")
-      // .attr("width", "650")
-      // .style("overflow", "visible")
-      // .attr("height", "650")
-      // .html((d): string => {
-      //   if (!d?.data?.content || !this.nodeDetails[d.data.content]) return ""
-      //   const cachedNode = this.nodeDetails[d.data.content];
-      //   const { name, description, scale } = cachedNode;
-      //   return `<div class="tooltip-inner">
-      //     <div class="content">
-      //     <span class="title">Name:</span>
-      //     <p>${name}</p>
-      //     <span class="title">Description:</span>
-      //     <p>${description || "<br />"}</p>
-      //     </div>
-      //   </div>`
-      // });
+      .classed("tooltip", true)
+      .append("foreignObject")
+      .attr("transform", () => {
+        return `scale(${this._viewConfig.isSmallScreen() ? 0.5 : 1})`
+      })
+      .attr("x", "-375")
+      .attr("y", "-10")
+      .attr("width", "650")
+      .style("overflow", "visible")
+      .attr("height", "650")
+      .html(this.appendLabelHtml);
   }
   
   /**
@@ -364,5 +351,22 @@ export abstract class BaseVisualization implements IVisualization {
    */
   clearCanvas(): void {
     select(".canvas").selectAll("*").remove();
+  }
+
+  appendLabelHtml = (d): string => {
+    if (!d?.data?.content || !this.nodeDetails[d.data.content]) return ""
+    const isCurrentOrbit = store.get(currentOrbitId).id === d.data.content
+    if (!isCurrentOrbit) return ""
+
+    const cachedNode = this.nodeDetails[d.data.content];
+    const { name, description, scale } = cachedNode;
+    return `<div class="tooltip-inner">
+      <div class="content">
+      <span class="title">Name:</span>
+      <p>${name}</p>
+      <span class="title">Description:</span>
+      <p>${description || "<br />"}</p>
+      </div>
+    </div>`
   }
 }

@@ -7,6 +7,7 @@ import { SPHERE_ID } from "./integration/mocks/spheres";
 
 import { atom } from "jotai";
 import { SortCriteria, SortOrder } from "../ui/src/state/listSortFilterAtom";
+import { nodeCacheItemsAtom } from '../ui/src/state/jotaiKeyValueStore';
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -55,7 +56,8 @@ export function setMockNodeDetailsCache(params: typeof mockedCacheEntries) {
   mockNodeDetailsCacheItems = Object.fromEntries(params);
 }
 
-vi.mock("../ui/src/state/jotaiKeyValueStore", () => ({
+vi.mock("../ui/src/state/jotaiKeyValueStore", (importOriginal) => ({
+  ...importOriginal,
   nodeCache: {
     entries: atom(mockNodeDetailsCache),
     keys: atom(mockNodeDetailsCacheKeys),
@@ -79,11 +81,15 @@ vi.mock("../ui/src/state/jotaiKeyValueStore", () => ({
           }
         case !!(atom.init && atom.init?.entryHash == ''): // Current Sphere
           return { entryHash: SPHERE_ID, actionHash: SPHERE_ID }
+        case !!(atom.init && atom.init?.zone): // Current Date in ISO string
+          return { toISODate() { return "04/09/2024"} }
         case !!(atom.init && typeof atom.init?.x !== 'undefined'): // Current node coordinates
           return { x:0, y:0 }
         case !!(atom.init && atom.init?.[SPHERE_ID] !== undefined): // Node cache items
           return mockNodeDetailsCacheItems
-        case !!(atom.init && atom.init?.wins != undefined): // Current Node details
+        case !!(atom.init && atom.init?.id !== undefined): // Current orbit id
+          return { id: "UHJhY3RpY2UR28gZm9yIGEgd2Fsay==eW9nYQ==" }
+        case !!(atom.init && typeof atom.init?.wins != 'undefined'): // Current Node details
           return {
             id: 'ActionHashB64',
             eH: 'EntryHashB64',
@@ -112,7 +118,18 @@ vi.mock("../ui/src/state/jotaiKeyValueStore", () => ({
     endTime: orbit.metadata?.timeframe.endTime,
     wins: {},
   }),
+  nodeCacheItemsAtom: atom(mockNodeDetailsCacheItems)
 }));
+
+vi.mock("../ui/src/state/sphere", async (importOriginal) => {
+  const actual = await importOriginal()
+  return actual
+})
+
+vi.mock("../ui/src/state/orbit", async (importOriginal) => {
+  const actual = await importOriginal()
+  return actual
+})
 
 // Mock app level constants
 vi.mock("../ui/src/constants", async (importOriginal) => {
@@ -189,9 +206,6 @@ vi.mock("d3-scale", () => ({
     domain: () => () => {}, // Chain other methods as needed
   }),
   scaleOrdinal: () => null,
-}));
-vi.mock("d3-svg-legend", () => ({
-  legendColor: () => null,
 }));
 vi.mock("d3-zoom", () => ({
   zoom: () => ({

@@ -98,6 +98,8 @@ export class TreeVisualization extends BaseVisualization {
         this._zoomConfig.focusMode = false;
       },
       handleNodeClick(e) {
+        this._enteringNodes.select("foreignObject")
+          .html(this.appendLabelHtml);
         this._gCircle
           .classed("checked", (d): boolean => {
             if (!d?.data?.content || !this.nodeDetails[d.data.content]) return false
@@ -338,25 +340,6 @@ export class TreeVisualization extends BaseVisualization {
         store.set(currentOrbitId, { id: d.data.content });
         this.eventHandlers.handleNodeClick!.call(this, e, d);
       })
-  }
-
-  appendNodeDetailsAndControls(): void {
-    this._gButton = this._gTooltip!.select(".tooltip-inner")
-      .append("g")
-      .classed("tooltip-actions", true)
-      .append("foreignObject")
-      .attr("width", "550")
-      .style("overflow", "visible")
-      .attr("height", "550")
-      .html((d): string => {
-        if (!d?.data?.content || !this.nodeDetails[d.data.content]) return ""
-        const { checked, scale, parentEh } = this.nodeDetails[d.data.content];
-        return `<div class="buttons">
-        <button class="tooltip-action-button higher-button ${!parentEh && scale !== 'Astro' ? 'hide' : 'hide'}"></button>
-        <img data-button="true" class="tooltip-action-button checkbox-button" src=${checked ? "assets/checkbox-checked.svg" : "assets/checkbox-empty.svg"} />
-        <button class="tooltip-action-button lower-button"></button>
-      </div>`
-      });
   }
 
   setNodeAndLabelGroups(): void {

@@ -10,8 +10,8 @@ import {
   store,
   SphereNodeDetailsCache,
   SphereOrbitNodes,
-  sphereNodesAtom,
 } from "../state/jotaiKeyValueStore";
+import { sphereNodesAtom } from '../state/sphere';
 import { hierarchy } from "d3-hierarchy";
 import { ActionHashB64 } from "@holochain/client";
 import {
