@@ -1,8 +1,9 @@
 
 .vis-controls {
-  @apply flex gap-2 bg-gradient-to-t from-menu-bg to-transparent justify-around p-2 mx-2 items-end fixed right-0;
+  @apply gap-2 bg-gradient-to-t from-menu-bg to-transparent justify-around p-2 mx-2 items-end fixed right-0;
+  width: 100%;
   left: 60px;
-  bottom: 3rem;
+  bottom: 0;
   width: calc(100% - 60px);
   min-height: 8rem;
   border-radius: 1rem;
@@ -10,14 +11,22 @@
   border-top-right-radius: 0;
 }
 
+.tickbox-container {
+  @apply relative;
+  top: -7rem;
+  right: 1rem;
+}
+
 .add-node-button {
   border-radius: 100%;
-  height: 3rem;
-  width: 3rem;
+  width: 4rem;
+  height: 4rem;
   background-size: contain;
   border-radius: 1.125rem;
   background-position: center;
   background-repeat: no-repeat;
+  @apply border-4;
+  max-width: 12.5vw;
 }
 
 .add-node-button.hide {
@@ -28,6 +37,17 @@
 
 .higher-button {
   background-image: url(../../assets/higher-scale-icon.svg);
+  @apply absolute;
+  top: -2.5rem;
+  left: 15%;
+}
+
+.lower-button {
+  margin-bottom: -.75rem;
+  background-image: url(../../assets/lower-scale-icon.svg);
+  @apply absolute;
+  top: -2.5rem;
+  right: 15%;
 }
 
 .is-completed {
@@ -48,7 +68,11 @@
 
 .date-nav-button {
   @apply text-xl px-1 pb-1;
+  transform: scaleY(2.5) scaleX(1.5);
+  position: relative;
+  bottom: 2rem;
 }
+
 .date-nav-button.disabled {
   @apply text-gray-200
 }
@@ -63,8 +87,9 @@
 .is-completed.checked:hover {
   animation: wiggle .9s cubic-bezier(.36,.07,.19,.97) infinite;
 }
-.is-completed.unchecked:hover {
-  @apply border-2 border-primary;
+.is-completed.unchecked:hover,
+.add-node-button:hover  {
+  @apply border-4 border-primary;
   border-radius: 100%;
 }
 
@@ -74,8 +99,8 @@
 }
   
 .current-date-label {
-  bottom: -4.45rem;
-  @apply text-center pr-2 relative;
+  bottom: -0.5rem;
+  @apply text-center relative;
 }
 
 .tickbox-label {
@@ -92,15 +117,16 @@
   text-decoration: none;
 }
 
-.lower-button {
-  width: 4rem;
-  height: 4rem;
-  margin-bottom: -.75rem;
-  background-image: url(../../assets/lower-scale-icon.svg);
-}
-
 @media screen and (min-width: 440px) {
   .vis-controls {
     @apply left-1/4 right-1/4 w-1/2;
-  }  
+  }
+
+  .higher-button {
+    left: 20%;
+  }
+
+  .lower-button {
+    right: 20%;
+  }
 }

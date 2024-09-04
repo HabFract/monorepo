@@ -14,7 +14,8 @@ const TickBox: React.FC<TickBoxProps> = ({ id, completed, toggleIsCompleted, siz
   return (
     <img
       id={id}
-      className={size == 'main' ? ('relative -top-8 main is-completed' + completedClass) : ('secondary is-completed' + completedClass) }
+      style={{maxWidth: size == 'main' ? 'initial' : '48px'}}
+      className={size == 'main' ? ('relative main is-completed' + completedClass) : ('secondary is-completed' + completedClass) }
       onClick={toggleIsCompleted}
       src={completed ? 'assets/checkbox-checked-is.svg' : 'assets/checkbox-empty-is.svg'}
       alt="Check/Uncheck"

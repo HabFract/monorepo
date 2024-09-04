@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 import TickBox from './TickBox';
 import './common.css';
 import { OrbitNodeDetails } from '../../../ui/src/state/jotaiKeyValueStore';
+import Calendar from './Calendar';
 
 export interface VisControlsProps {
   dateIndex: string;
@@ -19,10 +20,12 @@ const VisControls: React.FC<VisControlsProps> = ({ buttons, dateIndex, orbitDeta
   return (
     <div className="vis-controls">
       <button className="add-node-button higher-button"></button>
-      <div className="relative">
-        <TickBox completed={currentDayStatus} toggleIsCompleted={() => {setOrbitDetailsWin(dateIndex, !currentDayStatus)}} size="main" />
-        {...buttons}
-      </div>
+      <Calendar mainCheckbox={
+        <div className="tickbox-container">
+          <TickBox completed={currentDayStatus} toggleIsCompleted={() => { setOrbitDetailsWin(dateIndex, !currentDayStatus) }} size="main" />
+          {...buttons}
+        </div>
+      }></Calendar>
       <button className="add-node-button lower-button"></button>
     </div>
   );

@@ -30,7 +30,7 @@ const Calendar: React.FC<CalendarProps> = ({ mainCheckbox }) => {
         }
     };
 
-    const renderTickBoxes = (day: DateTime) => {
+    const renderSecondaryTickBox = (day: DateTime) => {
         const dayKey = day.toISODate();
         return (
             <div className='flex flex-1 relative'>
@@ -42,7 +42,6 @@ const Calendar: React.FC<CalendarProps> = ({ mainCheckbox }) => {
                 />
                 <label className='tickbox-label' htmlFor={`tickbox-${dayKey}`}>
                     {day.weekdayShort}
-                    <br />
                     <br />
                     <br />
                     <br />
@@ -61,12 +60,13 @@ const Calendar: React.FC<CalendarProps> = ({ mainCheckbox }) => {
                 <button className={isLastDay ? "date-nav-button disabled" : "date-nav-button"} onClick={handleNextDay} disabled={currentDate.toISODate() === now.toISODate()}><VerticalLeftOutlined /></button>
             </div>
             <div className='flex'>
-                {/* Render checkboxes for the previous 3 days */
-                    [-3, -2, -1].map(offset => renderTickBoxes(currentDate.minus({ days: -offset })))}
-                <div className='flex flex-1'>{mainCheckbox}</div>
-                {/* Render checkboxes for upto the next 3 days */}
-                {daysAfterCurrent >= 0 && [...Array(daysAfterCurrent).keys()].map(offset => renderTickBoxes(currentDate.plus({ days: offset + 1 })))}
-                {spacerDays > 0 && [...Array(spacerDays).keys()].map((_, i) => <div className='spacer flex flex-1' key={i} />)}
+                {/* Render tickboxes for the previous 3 days */
+                    <div className="flex justify-end flex-1 gap-1">{[-3, -2, -1].map(offset => renderSecondaryTickBox(currentDate.minus({ days: -offset })))}</div>}
+                <div className='flex flex-2 w-8'>{mainCheckbox}</div>
+                {/* Render tickboxes for upto the next 3 days, or spacers for the gaps */}
+                <div className="flex justify-start gap-1 flex-1">{daysAfterCurrent >= 0 && [...Array(daysAfterCurrent).keys()].map(offset => renderSecondaryTickBox(currentDate.plus({ days: offset + 1 })))}
+                    {spacerDays > 0 && [...Array(spacerDays).keys()].map((_, i) => <div className='spacer flex flex-1' key={i} />)}
+                </div>
             </div>
         </div>
     );
