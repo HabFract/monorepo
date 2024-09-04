@@ -32,13 +32,64 @@
 
 .is-completed {
   background: transparent;
-  object-fit: cover;
   cursor: pointer;
-  @apply w-16 h-16;
+  animation: none;
+  @apply border-2 border-transparent;
 }
-.is-completed:hover {
+
+.is-completed.main {
+    @apply w-16 h-16;
+}
+
+.is-completed.secondary {
+  padding-bottom: 10px;
+  opacity: 0.5;
+}
+
+.date-nav-button {
+  @apply text-xl px-1 pb-1;
+}
+.date-nav-button.disabled {
+  @apply text-gray-200
+}
+
+@keyframes wiggle {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  75% { transform: rotate(-10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.is-completed.checked:hover {
+  animation: wiggle .9s cubic-bezier(.36,.07,.19,.97) infinite;
+}
+.is-completed.unchecked:hover {
   @apply border-2 border-primary;
   border-radius: 100%;
+}
+
+.date-nav-button:hover {
+  transform: scale(1.2);
+  transition: .2s transform ease-in;
+}
+  
+.current-date-label {
+  bottom: -4.45rem;
+  @apply text-center pr-2 relative;
+}
+
+.tickbox-label {
+  line-height: .75rem;
+  font-size: .75rem;
+  font-weight: 300;
+  width: 100%;
+  padding-right: .25rem;
+  @apply font-sans absolute left-0 -bottom-2 text-center; 
+}
+
+.tickbox-label em {
+  @apply font-medium; 
+  text-decoration: none;
 }
 
 .lower-button {

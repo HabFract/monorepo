@@ -16,7 +16,6 @@ export interface VisControlsProps {
 
 const VisControls: React.FC<VisControlsProps> = ({ buttons, dateIndex, orbitDetails, setOrbitDetailsWin }) => {
   const currentDayStatus = !!(orbitDetails?.wins?.[dateIndex]);
-  console.log('currentDayStatus :>> ',dateIndex,  currentDayStatus, orbitDetails);
   return (
     <div className="vis-controls">
       <button className="add-node-button higher-button"></button>
