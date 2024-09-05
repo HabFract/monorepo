@@ -158,16 +158,16 @@ div[data-testid="flowbite-dropdown"] button {
 /* Breadcrumbs */
 .ant-breadcrumb  {
   @apply ml-1 mb-1;
-  height: 2.25rem;
+  height: 3rem;
   max-width: 100vw;
   text-overflow: ellipsis;
 }
 
 .ant-breadcrumb > ol {
   display: flex;
+  height: 3rem;
   overflow: hidden;
   flex-wrap: nowrap;
-  max-height: 2rem;
 }
 
 .ant-breadcrumb > ol > li:last-of-type {
@@ -204,7 +204,7 @@ div[data-testid="flowbite-dropdown"] button {
 
 @media screen and (min-width: 768px) {
   .ant-breadcrumb  {
-    @apply ml-2 mb-2;
+    @apply ml-2 mb-2 mt-2;
   }
 }
 @media screen and (min-width: 1200px) {

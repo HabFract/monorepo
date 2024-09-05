@@ -4,11 +4,9 @@
 
 .list-sort-filter {
   @apply bg-transparent rounded-md overflow-hidden;
-  margin-top: -0.3rem;
   font-size: 2rem;
   padding: 0.25rem .5rem;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+  margin: 2px;
   min-height: 2rem;
   outline: 2px solid rgba(107, 125, 127, 0.25);
 }

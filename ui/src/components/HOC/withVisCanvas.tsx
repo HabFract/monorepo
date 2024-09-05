@@ -104,6 +104,11 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
       maxDepth
     } = useNodeTraversal(sphereHierarchyBounds[selectedSphere!.entryHash as keyof SphereHierarchyBounds] as HierarchyBounds);
 
+    // Store and update date in local component state to ensure re-render with VisControls, Calendar
+    const [currentDate, setCurrentDate] = useState(store.get(currentDayAtom));
+    store.sub(currentDayAtom, () => {
+      setCurrentDate(store.get(currentDayAtom))
+    });
     return (
         <Component
           canvasHeight={canvasHeight}
@@ -114,7 +119,6 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
             const currentOrbitIsRoot = cachedCurrentOrbit && cachedCurrentOrbit.eH === currentVis.rootData.data.content;
             // Determine need for traversal controls
             const traversalConditions = getTraversalConditions(queryType, currentOrbitIsRoot ? currentVis.rootData : newRootData);
-            const dateToday = store.get(currentDayAtom);
 
             // console.log('coordsChanged! :>> ', currentVis?._nextRootData?._translationCoords);
             if (appendedSvg) {
@@ -129,10 +133,11 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
               // Trigger the Vis object render function only once the SVG is appended to the DOM
               currentVis?.render();
             }
-
             return (
               <>
                 <VisControls
+                  currentDate={currentDate}
+                  setNewDate={(val) => {console.log(val.toISODate());setCurrentDate(val)}}
                   orbitDetails={cachedCurrentOrbit}
                   setOrbitDetailsWin={(dateIndex: string, newValue: boolean) => {
                     store.set(setOrbit, {
@@ -146,7 +151,6 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
                       }
                     })
                   }}
-                  dateIndex={dateToday.toISODate()}
                   buttons={renderTraversalButtons(traversalConditions, { x, y }, currentVis, currentOrbitIsRoot)}
                 />
                 {VisModal<T>(isModalOpen, setIsModalOpen, selectedSphere, currentParentOrbitEh, currentChildOrbitEh, currentVis)}

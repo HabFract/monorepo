@@ -58,7 +58,7 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
               <p className='form-description mb-2'>
                 {values.scale == Scale.Atom
                   ? <span>Make sure that you have been thoughtful about the best name for your Atomic Orbit before you continue</span>
-                  : <span>Make sure that you have <em>broken down</em> your Orbit into smaller scales (as desired) before you are ready to start tracking!</span>
+                  : <span>Make sure that you have <em>sub-divided</em> your Orbit into smaller scales (as desired) before you are ready to start tracking!</span>
                 }
               </p>
               

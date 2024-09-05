@@ -7,7 +7,7 @@ import _ from "lodash";
 import { BASE_SCALE, FOCUS_MODE_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, XS_LEVELS_HIGH, XS_LEVELS_WIDE } from "../constants";
 import { EventHandlers, IVisualization, Margins, ViewConfig, VisCoverage, VisType, ZoomConfig } from "../types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { GetOrbitsDocument, Orbit } from "../../../graphql/generated";
+import { GetOrbitsDocument, Orbit, Scale } from "../../../graphql/generated";
 import { client } from "../../../graphql/client";
 import { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject, nodeCache } from "../../../state/jotaiKeyValueStore";
 import { extractEdges } from "../../../graphql/utils";
@@ -330,7 +330,11 @@ export abstract class BaseVisualization implements IVisualization {
         return `scale(${this._viewConfig.isSmallScreen() ? 0.5 : 1})`
       })
       .attr("x", "-375")
-      .attr("y", "-10")
+      .attr("y", (d) => {
+        const cachedNode = this.nodeDetails[d.data.content];
+        const { scale } = cachedNode;
+        return scale == Scale.Atom ? "-150" : Scale.Sub ? "-30" : "-10"
+      })
       .attr("width", "650")
       .style("overflow", "visible")
       .attr("height", "650")

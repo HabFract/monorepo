@@ -204,7 +204,7 @@ nav.side-nav + .page-container .sphere-card.list-header button.add-orbit {
 }
 
 ul[role="menu"] {
-  @apply bg-menu-bg text-title;
+  @apply bg-secondary-500 text-title;
   border-bottom-left-radius: 1.125rem;
   border-bottom-right-radius: 1.125rem;
 }
@@ -230,6 +230,19 @@ ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
 
 li[role="menuitem"] > button {
   justify-content: space-between !important;
+  padding: .5rem !important;
+  display: flex;
+  width: 8rem;
+  flex-direction: row-reverse;
+}
+li[role="menuitem"] > button svg[role='img'] {
+  width: 2rem !important;
+  margin-right: -.5rem !important;
+  min-height: initial !important;
+}
+
+li[role="menuitem"] > button:hover {
+  @apply text-secondary;
 }
 
 .ant-menu-submenu.ant-menu-submenu-vertical {

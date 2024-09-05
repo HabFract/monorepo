@@ -1,42 +1,38 @@
 import React, { ReactNode } from 'react';
 
 import './common.css';
-import { useAtom } from 'jotai';
-import { currentDayAtom } from '../../../ui/src/state/date';
 import { DateTime } from 'luxon';
 import TickBox from './TickBox';
 import { VerticalLeftOutlined, VerticalRightOutlined } from '@ant-design/icons';
 
 export interface CalendarProps {
-    mainCheckbox: ReactNode
+    mainCheckbox: ReactNode,
+    orbitWins: object,
+    currentDate: DateTime;
+    setNewDate: Function;
 }
 
-const Calendar: React.FC<CalendarProps> = ({ mainCheckbox }) => {
-    const [currentDay, setCurrentDay] = useAtom(currentDayAtom);
-    // Initialize the current date in state based on the atom's value
-
-    const now = DateTime.local();
-    const currentDate = DateTime.fromISO(currentDay.toISODate());
+const Calendar: React.FC<CalendarProps> = ({ mainCheckbox, orbitWins, currentDate, setNewDate }) => {
     // Get a reference for the actual current date
     const nowDate = DateTime.local();
-
     const handlePreviousDay = () => {
-        setCurrentDay((prev) => prev.minus({ days: 1 }));
+        setNewDate(currentDate.minus({ days: 1 }));
     };
-    const isLastDay = currentDate.toISODate() == now.toISODate();
+    const isLastDay = currentDate.toISODate() == nowDate.toISODate();
     const handleNextDay = () => {
         if (!isLastDay) {
-            setCurrentDay((prev) => prev.plus({ days: 1 }));
+            setNewDate(currentDate.plus({ days: 1 }));
         }
     };
 
     const renderSecondaryTickBox = (day: DateTime) => {
         const dayKey = day.toISODate();
+        const isCompleted = orbitWins?.[dayKey] || false;
         return (
             <div key={day} className='flex flex-1 relative'>
                 <TickBox
-                    completed={true}
-                    toggleIsCompleted={() => console.log('hi')}
+                    completed={isCompleted}
+                    toggleIsCompleted={null}
                     size="secondary"
                     id={`tickbox-${dayKey}`}
                 />
@@ -57,7 +53,7 @@ const Calendar: React.FC<CalendarProps> = ({ mainCheckbox }) => {
             <div className="flex justify-between">
                 <button className="date-nav-button" onClick={handlePreviousDay}><VerticalRightOutlined /></button>
                 <div className='current-date-label'>{currentDate.weekdayShort}<br /><em>{currentDate.day}</em></div>
-                <button className={isLastDay ? "date-nav-button disabled" : "date-nav-button"} onClick={handleNextDay} disabled={currentDate.toISODate() === now.toISODate()}><VerticalLeftOutlined /></button>
+                <button className={isLastDay ? "date-nav-button disabled" : "date-nav-button"} onClick={handleNextDay} disabled={currentDate.toISODate() === nowDate.toISODate()}><VerticalLeftOutlined /></button>
             </div>
             <div className='flex'>
                 {/* Render tickboxes for the previous 3 days */

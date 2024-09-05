@@ -18,7 +18,7 @@ export class TreeVisualization extends BaseVisualization {
     return {
       scale: BASE_SCALE,
       clickScale: FOCUS_MODE_SCALE,
-      margin: {...margin, top: isSmallScreen() ? -200 : -400},
+      margin: {...margin, top: isSmallScreen() ? -200 : -300},
       canvasHeight,
       canvasWidth,
       defaultView: 'Tree',

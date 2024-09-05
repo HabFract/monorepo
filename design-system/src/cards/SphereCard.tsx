@@ -67,7 +67,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
         <div className="card-actions">
           <div className="sphere-actions-vis col-c w-full">
           {!isHeader && 
-              <Dropdown label="Manage" dismissOnClick={false} className="bg-secondary p-2" onClick={() => {
+              <Dropdown label="Actions" dismissOnClick={false} className="bg-secondary p-2" onClick={() => {
                 store.set(currentSphere, { entryHash: sphere.eH, actionHash: id });
                 transition('ListOrbits', { sphereAh: id })
               }}>

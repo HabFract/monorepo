@@ -206,7 +206,7 @@ function RenamingHelperText() {
     titleIcon={<Pencil />}
     withInfo={false}
   >
-    <span>Since you have chosen the Atomic scale for your new Orbits, it's best to make sure the new Orbits are named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable.</span>
+    <span>Since you have chosen the Atomic scale for your new Orbits, it's best to make sure they are named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable.</span>
   </HelperText>
 }
 
