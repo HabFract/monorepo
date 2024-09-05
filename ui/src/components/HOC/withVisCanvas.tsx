@@ -11,7 +11,7 @@ import { HierarchyBounds, SphereHashes, SphereHierarchyBounds, currentSphere, cu
 import { currentOrbitDetails, currentOrbitId, setOrbit } from '../../state/orbit';
 import { WithVisCanvasProps } from '../vis/types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
-import { OrbitNodeDetails, store } from '../../state/jotaiKeyValueStore';
+import { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes, store } from '../../state/jotaiKeyValueStore';
 import VisModal from '../VisModal';
 import TraversalButton from '../navigation/TraversalButton';
 import { VisControls } from 'habit-fract-design-system';
@@ -174,16 +174,15 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
 
       const moveDown = () => {
         const childrenMiddle = Math.floor(children!.length / 2)
-        const newId = (children![childrenMiddle] as any).data.content.eH
+        const newId = (children![childrenMiddle] as any).data.content;
         store.set(currentOrbitId, {id: newId})
       }
       const moveDownLeft = () => {
-        debugger;
-        const newId = (children![0] as any).data.content.eH
+        const newId = (children![0] as any).data.content
         store.set(currentOrbitId, {id: newId})
       }
       const moveDownRight = () => {
-        const newId = (children![children!.length - 1] as any).data.content.eH
+        const newId = (children![children!.length - 1] as any).data.content
         store.set(currentOrbitId, {id: newId})
       }
       return [

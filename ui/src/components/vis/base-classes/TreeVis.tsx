@@ -97,7 +97,7 @@ export class TreeVisualization extends BaseVisualization {
           .attr("transform", `translate(${x},${y}), scale(${scale})`);
         this._zoomConfig.focusMode = false;
       },
-      handleNodeClick(e) {
+      handleNodeClick() {
         this._enteringNodes.select("foreignObject")
           .html(this.appendLabelHtml);
         this._gCircle
@@ -340,8 +340,8 @@ export class TreeVisualization extends BaseVisualization {
         store.set(currentOrbitId, { id: d.data.content });
         this.eventHandlers.handleNodeClick!.call(this, e, d);
       })
-    store.sub(currentOrbitId, () => {
-      console.log("HI", )
+      store.sub(currentOrbitId, () => {
+        this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
     })
   }
 
