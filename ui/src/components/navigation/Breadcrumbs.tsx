@@ -22,6 +22,10 @@ function Breadcrumbs({ currentSphere, state, transition, isFormEditMode }: any) 
         return [
           baseBreadcrumbs[0]
         ]
+      case 'Vis':
+        return [
+          baseBreadcrumbs[0]
+        ]
       case 'CreateSphere':
         return baseBreadcrumbs
       case 'ListSpheres':

@@ -159,7 +159,25 @@ div[data-testid="flowbite-dropdown"] button {
 .ant-breadcrumb  {
   @apply ml-1 mb-1;
   height: 2.25rem;
+  max-width: 100vw;
+  text-overflow: ellipsis;
 }
+
+.ant-breadcrumb > ol {
+  display: flex;
+  overflow: hidden;
+  flex-wrap: nowrap;
+  max-height: 2rem;
+}
+
+.ant-breadcrumb > ol > li:last-of-type {
+  max-height: 2rem;
+}
+.ant-breadcrumb > ol > li:last-of-type span {
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+}
+
 .ant-breadcrumb-link .anticon-home {
   font-size: 2rem;
 }

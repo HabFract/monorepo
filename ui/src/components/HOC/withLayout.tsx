@@ -4,6 +4,7 @@ import Home from "../layouts/Home";
 import Onboarding from "../layouts/Onboarding";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sphere } from "../../graphql/generated";
+import { AppMachine } from "../../main";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -38,7 +39,7 @@ const withLayout = (component: ReactNode, state: any, transition: any, params: a
         return withPageTransition(component)
       default:
         return <div className='p-1 w-full'>
-          <Breadcrumbs state={state} transition={transition} currentSphere={props?.currentSphereDetails} isFormEditMode={params?.editMode}></Breadcrumbs>
+            <Breadcrumbs state={AppMachine.state.currentState} transition={transition} currentSphere={props?.currentSphereDetails} isFormEditMode={params?.editMode}></Breadcrumbs>
           {component}
         </div>
     }

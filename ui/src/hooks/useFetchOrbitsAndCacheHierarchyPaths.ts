@@ -21,8 +21,6 @@ import {
   TWO_CHILDREN_LEFT,
   TWO_CHILDREN_RIGHT,
 } from "../components/vis/links/paths";
-import { currentSphere } from '../state/currentSphereHierarchyAtom';
-import { useStateTransition } from './useStateTransition';
 import { isSmallScreen } from '../components/vis/helpers';
 import { byStartTime } from '../components/vis/OrbitTree';
 
@@ -30,6 +28,7 @@ interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
   params: OrbitHierarchyQueryParams;
   hasCached?: boolean; // pass true to bypass the hook
   currentSphereId: ActionHashB64
+  bypass: boolean;
 }
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
@@ -41,11 +40,13 @@ interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
 export const useFetchOrbitsAndCacheHierarchyPaths = ({
   params,
   hasCached = false,
-  currentSphereId
+  currentSphereId,
+  bypass
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
+  if(bypass) return { loading: false, error: undefined, cache: null}
   if(!currentSphereId) return { loading: false, error: new Error("Cannot run hook without a sphere Id"), cache: null}
+  const sphereNodes = store.get(sphereNodesAtom);
 
-  const [_, transition] = useStateTransition(); // Top level state machine and routing
   const { data, loading, error } = useGetOrbitHierarchyQuery({
     skip: hasCached,
     variables: { params },
@@ -53,10 +54,6 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
 
   const [hierarchyObject, setHierarchyObject] = useState()
 
-  const sphereNodes = store.get(sphereNodesAtom);
-  
-  if(sphereNodes && typeof sphereNodes == 'object' && Object.values(sphereNodes).length ==0) transition('CreateOrbit', { editMode: false, forwardTo: "Vis", sphereEh: store.get(currentSphere)?.entryHash })
-  
   useEffect(() => {
     if (data) {
       let parsedData = JSON.parse(data.getOrbitHierarchy);
@@ -91,7 +88,6 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
       existingCache[currentSphereId] = workingSphereNodes;
       store.set(nodeCache.setMany, Object.entries(existingCache));
       cached = true;
-      console.log('cached paths:>> ', existingCache);
     } catch (error) {
       console.error("Error caching hierarch paths:" + error);
     }

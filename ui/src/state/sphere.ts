@@ -12,3 +12,9 @@ export const sphereNodesAtom = atom((get) => {
       ] as SphereOrbitNodes)
     : undefined;
 });
+
+// Derived atom for if a Sphere has cached nodes
+export const sphereHasCachedNodesAtom = atom((get) => {
+  const nodeDetails = get(sphereNodesAtom);
+  return typeof nodeDetails == 'object' && Object.values(nodeDetails).length !== 0
+});

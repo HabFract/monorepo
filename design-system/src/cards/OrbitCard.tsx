@@ -34,20 +34,20 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runD
         <div className="row-c-around h-full big-gap-sm">
           {!displayOnly && <div className="orbit-actions col-c gap-2">
             <div className="orbit-actions-crud flex-col row-c-around">
-            <Dropdown label="Manage" dismissOnClick={false} className="bg-secondary p-2">
-              <Dropdown.Item onClick={() => {transition('CreateOrbit', { editMode: true, orbitToEditId: orbit.id, sphereEh })}}>
-                <span>
-                  <EditOutlined className="icon" />
-                  Edit
-                </span>
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => {runDelete()}}>
-                <span>
-                  <DeleteOutlined className="icon" />
-                  Delete
-                </span>
-              </Dropdown.Item>
-            </Dropdown>
+              <Dropdown label="Manage" dismissOnClick={false} className="bg-secondary p-2">
+                <Dropdown.Item onClick={() => {transition('CreateOrbit', { editMode: true, orbitToEditId: orbit.id, sphereEh })}}>
+                  <span>
+                    <EditOutlined className="icon" />
+                    Edit
+                  </span>
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => {runDelete()}}>
+                  <span>
+                    <DeleteOutlined className="icon" />
+                    Delete
+                  </span>
+                </Dropdown.Item>
+              </Dropdown>
             </div>
             <div className="orbit-actions-vis row-c">
               {/* <Button className="btn btn-primary" size="sm" onClick={() => {

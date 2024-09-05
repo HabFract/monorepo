@@ -61,7 +61,6 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
     spheresArray && setMenuItems(createSphereMenuItems({spheres: spheresArray}))
   })
   const sphereOrbitsCached = useAtomValue(sphereNodesAtom);
-  console.log('sphereOrbitsCached :>> ', sphereOrbitsCached);
   const tooltipMsg = `You need to ${ spheresArray.length == 0 ? "create" : spheresArray.length == 4 ? "delete" : "select"} a Sphere `;
 
   const sphere = (sphereAh?: EntryHashB64) => spheresArray.find((sphere: any) => (sphereAh || store.get(currentSphere)?.actionHash) == sphere.id) as Sphere & {id: ActionHashB64};

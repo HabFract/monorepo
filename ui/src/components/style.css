@@ -226,7 +226,10 @@ ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
 .ant-menu-item[role="menuitem"] img.ant-menu-item-icon.selected {
   border: 2px solid rgba(80, 227, 194, 0.8) !important;
   border-radius: 2.15rem;
-  
+}
+
+li[role="menuitem"] > button {
+  justify-content: space-between !important;
 }
 
 .ant-menu-submenu.ant-menu-submenu-vertical {

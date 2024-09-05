@@ -18,6 +18,7 @@ import { VisControls } from 'habit-fract-design-system';
 import { currentDayAtom } from '../../state/date';
 import { isSmallScreen } from '../vis/helpers';
 import { useRedirect } from '../../hooks/useRedirect';
+import { sphereHasCachedNodesAtom } from '../../state/sphere';
 
 const defaultMargins: Margins = {
   top: 0,
@@ -73,15 +74,15 @@ function coordsChanged(translationCoords, x, y): boolean {
 
 export function withVisCanvas<T extends IVisualization>(Component: ComponentType<VisProps<T>>): ReactNode {
   const ComponentWithVis: React.FC<WithVisCanvasProps> = (_visParams: WithVisCanvasProps) => {
+    const hasOrbits = useAtomValue(sphereHasCachedNodesAtom);
+    useRedirect(hasOrbits);
+    
     const mountingDivId = 'vis-root'; // Declared at the router level
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
     const selectedSphere = store.get(currentSphere);
     const cachedCurrentOrbit: OrbitNodeDetails | undefined = useAtomValue(currentOrbitDetails);
-    useRedirect()
-    if (!selectedSphere.actionHash) {
-      console.error("No sphere context has been set!")
-    }
+    
     useEffect(() => {
       if (document.querySelector(`#${mountingDivId} #${svgId}`)) return
       const appended = !!appendSvg(mountingDivId, svgId);
@@ -104,7 +105,6 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
     } = useNodeTraversal(sphereHierarchyBounds[selectedSphere!.entryHash as keyof SphereHierarchyBounds] as HierarchyBounds);
 
     return (
-      <>
         <Component
           canvasHeight={canvasHeight}
           canvasWidth={canvasWidth}
@@ -154,7 +154,6 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
             )
           }}
         ></Component>
-      </>
     );
 
     function renderTraversalButtons<T extends IVisualization>(

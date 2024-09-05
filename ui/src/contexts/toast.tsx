@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 const TOOLTIP_TIMEOUT = 4500;
 
 interface ToastContextProps {
-  showToast: (text: string, timeout?: number) => void;
+  showToast: (text: string, timeout?: number, bypass?: boolean) => void;
   hideToast: () => void;
   toastText: string;
   isToastVisible: boolean;
@@ -15,7 +15,9 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [toastText, setToastText] = useState<string>('');
   const [isToastVisible, setIsToastVisible] = useState<boolean>(false);
 
-  const showToast = (text: string, timeout: number = TOOLTIP_TIMEOUT) => {
+  const showToast = (text: string, timeout: number = TOOLTIP_TIMEOUT, bypass?: boolean) => {
+    if (bypass) return;
+
     setToastText(text);
     setIsToastVisible(true);
     setTimeout(() => {

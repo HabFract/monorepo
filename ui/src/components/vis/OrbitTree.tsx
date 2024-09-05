@@ -5,7 +5,6 @@ import { OrbitHierarchyQueryParams, useGetLowestSphereHierarchyLevelQuery, useGe
 
 import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { useRedirect } from '../../hooks/useRedirect';
 import { SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 import { currentOrbitCoords, currentOrbitId } from '../../state/orbit';
@@ -13,6 +12,7 @@ import { currentOrbitCoords, currentOrbitId } from '../../state/orbit';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
 import { TreeVisualization } from './base-classes/TreeVis';
+import { sphereNodesAtom } from '../../state/sphere';
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   selectedSphere: sphere,
@@ -26,13 +26,14 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // Get sphere and sphere orbit nodes details
   const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries));
-  const sphereNodeDetails = nodeDetailsCache[params?.currentSphereAhB64] || {}
+  const sphereNodeDetails = useAtomValue(sphereNodesAtom);
 
-  // Get and set node traversal bound state
+  // Get and set node traversal bounds state
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
   const {x,y} = useAtomValue(currentOrbitCoords)
+
   // Does this vis cover the whole tree, or just a window over the whole tree?
   const visCoverage = params?.orbitEh ? VisCoverage.CompleteOrbit : y == 0 ? VisCoverage.CompleteSphere : VisCoverage.Partial;
 
@@ -40,6 +41,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const getQueryParams = (customDepth?: number): OrbitHierarchyQueryParams => visCoverage == VisCoverage.CompleteOrbit
     ? { orbitEntryHashB64: params.orbitEh }
     : { levelQuery: { sphereHashB64: params?.currentSphereEhB64, orbitLevel: customDepth || 0 } };
+
   // Helper to determine which part of the returned query data should be used in the Vis object
   const getJsonDerivation = (json: string) => visCoverage == VisCoverage.CompleteOrbit ? JSON.parse(json) : JSON.parse(json)[x]
   // GQL Query hook, parsed JSON state, and Vis object state
@@ -53,7 +55,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // Traverse (but don't render) the root of the sphere's hierarchy so that we can cache the correct path to append at the top of the vis
   const [hasCached, setHasCached] = useState<boolean>(false);
-  const { loading: loadCache, error: errorCache, cache } = useFetchOrbitsAndCacheHierarchyPaths({params: getQueryParams(dataLevel?.getLowestSphereHierarchyLevel || 0), hasCached, currentSphereId: sphere.actionHash as string})
+  const { loading: loadCache, error: errorCache, cache } = useFetchOrbitsAndCacheHierarchyPaths({params: getQueryParams(dataLevel?.getLowestSphereHierarchyLevel || 0), hasCached, currentSphereId: sphere.actionHash as string, bypass: false})
 
   const fetchHierarchyData = () => {
     if (error) return;
@@ -148,7 +150,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   )
 };
 
-export default OrbitTree;
+export default React.memo(OrbitTree);
 
 export function byStartTime(nodeDetailsCache: { [k: string]: unknown; }, currentSphereAhB64: ActionHashB64): (a: HierarchyNode<any>, b: HierarchyNode<any>) => number {
   return (a: HierarchyNode<any>, b: HierarchyNode<any>): number => {

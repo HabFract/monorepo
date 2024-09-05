@@ -1,26 +1,34 @@
 import { useEffect } from 'react';
-import { SphereOrbitNodes } from '../state/jotaiKeyValueStore';
+import { store } from '../state/jotaiKeyValueStore';
 import { useStateTransition } from './useStateTransition';
 import { useAtomValue } from 'jotai';
 import { currentSphere } from '../state/currentSphereHierarchyAtom';
-import { sphereNodesAtom } from '../state/sphere';
+import { sphereHasCachedNodesAtom } from '../state/sphere';
 import { useToast } from '../contexts/toast';
 
-export const useRedirect = () => {
+export const useRedirect = (bypass?: boolean) => {
   const [_state, transition, params] = useStateTransition();
-  const sphereNodeDetails = useAtomValue(sphereNodesAtom);
   const sphere = useAtomValue(currentSphere);
+  const sphereHasCachedOrbits = useAtomValue(sphereHasCachedNodesAtom);
   const { showToast } = useToast();
-console.log('used RedirecT!')
+
+  if(!sphere?.actionHash && params?.currentSphereAhB64) {
+    store.set(currentSphere, {
+        actionHash: params.currentSphereAhB64,
+        entryHash: params.currentSphereEhB64,
+    })
+  }
+
   useEffect(() => {
-    const redirectToCreatePage = sphereNodeDetails && Object.values(sphereNodeDetails).length === 0;
-    // showToast("You need to create an Orbit before you can Visualise!", redirectToCreatePage ? 5000 : 0)
-    if (redirectToCreatePage) {
+    if(bypass) return;
+    showToast("You need to create an Orbit before you can Visualise!", 5000, sphereHasCachedOrbits)
+
+    if (!sphereHasCachedOrbits) {
       transition("CreateOrbit", {
         editMode: false,
         forwardTo: "Vis",
         sphereEh: sphere.entryHash,
       });
     }
-  }, [sphere]);
+  }, [sphereHasCachedOrbits, sphere.actionHash]);
 };
