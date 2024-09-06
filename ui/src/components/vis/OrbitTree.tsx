@@ -1,11 +1,11 @@
-import React, { ComponentType, useEffect, useState } from 'react';
+import React, { ComponentType, useCallback, useEffect, useState } from 'react';
 import { VisProps, VisCoverage, VisType } from './types';
 import { hierarchy, HierarchyNode } from "d3-hierarchy";
 import { OrbitHierarchyQueryParams, useGetLowestSphereHierarchyLevelQuery, useGetOrbitHierarchyLazyQuery } from '../../graphql/generated';
 
 import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
+import { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { currentSphereHierarchyBounds, setBreadths, setDepths } from '../../state/currentSphereHierarchyAtom';
 import { currentOrbitCoords, currentOrbitId } from '../../state/orbit';
 
@@ -13,6 +13,7 @@ import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
 import { TreeVisualization } from './base-classes/TreeVis';
 import { sphereNodesAtom } from '../../state/sphere';
+import { isSmallScreen } from './helpers';
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   selectedSphere: sphere,
@@ -25,7 +26,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const [_state, transition, params] = useStateTransition();
 
   // Get sphere and sphere orbit nodes details
-  const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries));
+  const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries)) as SphereOrbitNodes;
   const sphereNodeDetails = useAtomValue(sphereNodesAtom);
 
   // Get and set node traversal bounds state
@@ -69,7 +70,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const instantiateVisObject = () => {
     if (!error && json && !currentOrbitTree && nodeDetailsCache[params?.currentSphereAhB64]) {
       const currentTreeJson = getJsonDerivation(json);
-      const hierarchyData = hierarchy(currentTreeJson).sort(byStartTime(nodeDetailsCache, params?.currentSphereAhB64));
+      const hierarchyData = hierarchy(currentTreeJson).sort(byStartTime);
       
       setDepthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.CompleteOrbit ? 100 : hierarchyData.height])
 
@@ -93,7 +94,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   useEffect(() => {
     if(!hasCached && cache !== null) { // Check that the hook has finished fetching data and returned a cache function
       try {
-        console.log('hasCached :>> ', hasCached);
         cache()
         setHasCached(true);
       } catch (error) {
@@ -103,7 +103,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   }, [cache, data])
 
   useEffect(fetchHierarchyData, [y])
-
   useEffect(() => {
     if (!error && typeof data?.getOrbitHierarchy === 'string') {
       let parsedData = JSON.parse(data.getOrbitHierarchy);
@@ -115,15 +114,16 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
       setBreadthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.CompleteOrbit ? 100 : parsedData.result.level_trees.length - 1])
 
+      const sorted = parsedData.result.level_trees.sort(byStartTime).reverse()
       // Trigger path caching if we have appended a node
-      const newHierarchyDescendants = hierarchy(parsedData.result.level_trees)?.sort(byStartTime(nodeDetailsCache, params?.currentSphereAhB64))?.descendants()?.length;
+      const newHierarchyDescendants = hierarchy(sorted[0])?.sort(byStartTime)?.descendants()?.length;
       const oldHierarchyDescendants = currentOrbitTree?.rootData.descendants().length;
       setHasCached(newHierarchyDescendants == oldHierarchyDescendants);
       
       // Depending on query type, set the state of the parsed JSON to the relevant part of the payload
-      setJson(JSON.stringify(visCoverage == VisCoverage.CompleteOrbit ? parsedData.result : parsedData.result.level_trees.sort(byStartTime)));
+      setJson(JSON.stringify(visCoverage == VisCoverage.CompleteOrbit ? parsedData.result : sorted));
 
-      const rootNode = visCoverage == VisCoverage.CompleteOrbit ? parsedData.result : parsedData.result.level_trees.sort(byStartTime)[0];
+      const rootNode = visCoverage == VisCoverage.CompleteOrbit ? parsedData.result : sorted[0];
       // Set the default current Orbit
       store.set(currentOrbitId, {id: rootNode.content})
     }
@@ -136,8 +136,9 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       // If there is a change to the parsed JSON or we traverse the parsed json's `level_trees` array (breadth traversal), then 
       // -- set the _nextRootData property of the vis, 
       // -- trigger a re-render
-      currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string)).sort(byStartTime(nodeDetailsCache, params?.currentSphereAhB64));
+      currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string)).sort(byStartTime);
       currentOrbitTree._nextRootData._translationCoords = [x, y, hierarchyBounds[params?.currentSphereEhB64].maxBreadth + 1];
+      store.set(currentOrbitId, {id: currentOrbitTree._nextRootData.data.content})
       currentOrbitTree.render();
     }
   }, [json, x, y, data])
@@ -152,12 +153,14 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
 export default React.memo(OrbitTree);
 
-export function byStartTime(nodeDetailsCache: { [k: string]: unknown; }, currentSphereAhB64: ActionHashB64): (a: HierarchyNode<any>, b: HierarchyNode<any>) => number {
-  return (a: HierarchyNode<any>, b: HierarchyNode<any>): number => {
-      const idA : ActionHashB64 = a.data.content;
-      const idB : ActionHashB64 = b.data.content;
-      const sphereNodes = nodeDetailsCache[currentSphereAhB64 as ActionHashB64] as SphereOrbitNodes;
-      return (sphereNodes?.[idA]?.startTime || 0 as number) - (sphereNodes?.[idB as keyof SphereOrbitNodes]?.startTime || 0 as number)
-  };
+export function byStartTime(a: HierarchyNode<any>, b: HierarchyNode<any>) {
+    const idA : ActionHashB64 = a?.data?.content || a?.content;
+    const idB : ActionHashB64 = b?.data?.content || b?.content;
+    const nodeDetailsCache = store.get(sphereNodesAtom);
+    if((nodeDetailsCache?.[idB]?.startTime || 0  as number) - (nodeDetailsCache?.[idA as keyof SphereOrbitNodes]?.startTime || 0  as number) == 0) {
+      console.error("Sorting error!")
+      return 0
+    }
+    return (nodeDetailsCache?.[idB]?.startTime || 0  as number) - (nodeDetailsCache?.[idA as keyof SphereOrbitNodes]?.startTime || 0  as number)
 }
 

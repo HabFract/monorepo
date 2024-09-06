@@ -219,10 +219,10 @@ export abstract class BaseVisualization implements IVisualization {
       this._viewConfig.canvasWidth / (this._viewConfig.levelsHigh as number * 2) - // Adjust for tree horizontal spacing on different screens
       +(this._viewConfig.isSmallScreen()) * 250;
     this._viewConfig.dy =
-      this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number * 5);
+      this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number * 6);
     //adjust for taller aspect ratio
-    this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 4.25 : 3;
-    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3.25 : 4;
+    this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 2.5 : 1.5;
+    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3 : 4;
   }
 
   /**
@@ -326,14 +326,26 @@ export abstract class BaseVisualization implements IVisualization {
       .append("g")
       .classed("tooltip", true)
       .append("foreignObject")
-      .attr("transform", () => {
-        return `scale(${this._viewConfig.isSmallScreen() ? 0.5 : 1})`
+      .attr("transform", (d) => {
+        const cachedNode = this.nodeDetails[d.data.content];
+        const { scale } = cachedNode;
+        const getScale = () => {
+          switch (scale) {
+            case Scale.Astro:
+              return 0.4
+            case Scale.Sub:
+              return 0.3
+            case Scale.Atom:
+              return 0.25
+          }
+        }
+        return `scale(${this._viewConfig.isSmallScreen() ? getScale() : 1})`
       })
       .attr("x", "-375")
       .attr("y", (d) => {
         const cachedNode = this.nodeDetails[d.data.content];
         const { scale } = cachedNode;
-        return scale == Scale.Atom ? "-150" : Scale.Sub ? "-30" : "-10"
+        return scale == Scale.Atom ? "-150" : Scale.Sub ? "-60" : "-50"
       })
       .attr("width", "650")
       .style("overflow", "visible")

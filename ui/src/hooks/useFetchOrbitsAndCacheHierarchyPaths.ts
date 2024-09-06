@@ -12,7 +12,7 @@ import {
   SphereOrbitNodes,
 } from "../state/jotaiKeyValueStore";
 import { sphereNodesAtom } from '../state/sphere';
-import { hierarchy } from "d3-hierarchy";
+import { hierarchy, HierarchyNode } from "d3-hierarchy";
 import { ActionHashB64 } from "@holochain/client";
 import {
   ONE_CHILD,
@@ -45,14 +45,14 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
   if(bypass) return { loading: false, error: undefined, cache: null}
   if(!currentSphereId) return { loading: false, error: new Error("Cannot run hook without a sphere Id"), cache: null}
-  const sphereNodes = store.get(sphereNodesAtom);
+  const sphereNodes = store.get(sphereNodesAtom) as SphereOrbitNodes;
 
   const { data, loading, error } = useGetOrbitHierarchyQuery({
     skip: hasCached,
     variables: { params },
   });
 
-  const [hierarchyObject, setHierarchyObject] = useState()
+  const [hierarchyObject, setHierarchyObject] = useState<HierarchyNode<unknown>>()
 
   useEffect(() => {
     if (data) {
@@ -63,14 +63,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
       }
       
       setHierarchyObject(
-        hierarchy(parsedData.result.level_trees[0]).sort((a, b) => {
-          const idA: ActionHashB64 = a.data.content;
-          const idB: ActionHashB64 = b.data.content;
-          return (
-            (sphereNodes?.[idA]?.startTime as number) || 0 -
-            (sphereNodes?.[idB as keyof SphereOrbitNodes]?.startTime as number) || 0
-          );
-        })
+        hierarchy(parsedData.result.level_trees[0]).sort(byStartTime)
       );
     }
   }, [data]);
@@ -83,7 +76,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
       const existingCache = store.get(nodeCache.items) as SphereNodeDetailsCache;
       if(!existingCache[currentSphereId]) throw new Error('No existing cache for this currentSphere id');
 
-      (d3Hierarchy as any).sort(byStartTime(existingCache, currentSphereId)).each((node) => cachePath(node?.data?.content, getPath(node)));
+      (d3Hierarchy as any).sort(byStartTime).each((node) => cachePath(node?.data?.content, getPath(node)));
 
       existingCache[currentSphereId] = workingSphereNodes;
       store.set(nodeCache.setMany, Object.entries(existingCache));

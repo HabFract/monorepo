@@ -10,7 +10,7 @@ export const ALPHA_RELEASE_DISCLAIMER = `Thank you for being an early tester of 
 Please note that this is an alpha release. This means the software is still in the early stages of development and may not be fully featured.
 
 Notably:
-  - At this point, you cannot store habit completion across time. It is more like a hierarchical to-do list, currently!
+  - You cannot permanently store habit completion across time. It will reset your progress when you leave!
   - Profiles, social interaction, etc., will come later.
   - There is no password protection, and locally cached data is not encrypted. Please don't store sensitive information if others may access the device.
 

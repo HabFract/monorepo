@@ -4,7 +4,7 @@ g.nodes {
 }
 
 .node-subgroup {
-  transform: scale(2.2) translate(-62px, -52px);
+  transform: scale(1.5) translate(-62px, -52px);
   color: #ccc;
 }
 
@@ -79,11 +79,11 @@ svg path.link {
 
 @media screen and (min-width: 768px) {
   .node-subgroup {
-    transform: scale(3) translate(-62px, -52px);
+    transform: scale(2) translate(-62px, -52px);
   }
 }
 @media screen and (min-width: 1280px) {
   .node-subgroup {
-    transform: scale(4) translate(-62px, -52px);
+    transform: scale(3.5) translate(-62px, -52px);
   }
 }

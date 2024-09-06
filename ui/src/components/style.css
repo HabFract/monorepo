@@ -218,6 +218,7 @@ ul[role="menu"] {
 ul[role="menu"] li:hover span {
   @apply text-link;
 }
+
 ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
   border: 3px solid rgba(80, 227, 194, 0.8);
   border-radius: 1.15rem;
@@ -228,23 +229,35 @@ ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
   border-radius: 2.15rem;
 }
 
-li[role="menuitem"] > button {
+.sphere-actions li[role="menuitem"] > button {
   justify-content: space-between !important;
   padding: .5rem !important;
   display: flex;
   width: 8rem;
   flex-direction: row-reverse;
 }
-li[role="menuitem"] > button svg[role='img'] {
+
+.sphere-actions li[role="menuitem"] > button svg[role='img'] {
   width: 2rem !important;
   margin-right: -.5rem !important;
   min-height: initial !important;
 }
 
-li[role="menuitem"] > button:hover {
+.sphere-actions li[role="menuitem"] > button:hover {
   @apply text-secondary;
 }
+.orbit-actions-crud li > button > span {
+  @apply flex gap-2;
+  width: 100%;
+  justify-content: space-around;
+}
 
+.orbit-actions-crud li:first-child {
+  @apply mb-1;
+}
+.orbit-actions-crud li > button {
+  @apply rounded-lg !important;
+}
 .ant-menu-submenu.ant-menu-submenu-vertical {
   display: flex !important;
   justify-content: center !important;

@@ -83,7 +83,7 @@
     display: grid;
     gap: 1rem;
     grid-template-columns: 400px 1fr 1fr 1fr;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto 2rem auto;
   }
   .layout.spheres {
     grid-column: 1/-1;

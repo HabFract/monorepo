@@ -162,11 +162,15 @@ nav + main.page-container .orbits-list {
 }
 
 *[data-testid=modal-overlay]>div>div button[aria-label="Close"],
-*[data-testid=modal-overlay]>div>div section button {
+*[data-testid=modal-overlay]>div>div section button,
+*[data-testid=modal-overlay] form button {
   padding: 1rem;
   border-radius: 1rem;
   display: flex;
   @apply bg-gray-300 text-white;
+}
+*[data-testid=modal-overlay] form button {
+  @apply bg-primary mb-2 py-1;
 }
 
 .disclaimer {
