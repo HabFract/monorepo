@@ -183,6 +183,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
       const canMoveDownLeft = canMove && currentOrbitIsRoot && children && !hasOneChild;
       const canMoveDownRight = canMove && currentOrbitIsRoot && children && !hasOneChild;
 
+      const canTraverseDownMiddle = !!(children && children.slice(1, -1)?.find(child => child.children && child.children.length > 0)?.data.content == currentId);
       const canTraverseDown = children && hasOneChild && children[0].children && children[0].children.length == 1;
       const canTraverseLeft = x !== 0 && currentOrbitIsRoot;
       const canTraverseRight = currentOrbitIsRoot && maxBreadth && x < maxBreadth;
@@ -205,7 +206,8 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
         store.set(currentOrbitId, { id: newId })
       }
       const moveUp = () => {
-        const newId = rootId;
+        const orbit = store.get(currentOrbitDetails); 
+        const newId = orbit?.parentEh !== rootId ? orbit?.parentEh : rootId;
         store.set(currentOrbitId, { id: newId })
       }
       const moveDownLeft = () => {
@@ -220,11 +222,11 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
         <TraversalButton
           condition={withTraversal && (y !== 0 || canMoveUp)}
           iconType="up"
-          onClick={canMoveUp ? moveUp : decrementDepth}
+          onClick={canMoveUp ? moveUp : () => decrementDepth()}
           dataTestId="traversal-button-up"
         />,
         <TraversalButton
-          condition={!!(withTraversal && (canTraverseDown || canMoveDown))}
+          condition={!!(withTraversal && (canTraverseDown || canTraverseDownMiddle || canMoveDown))}
           iconType="down"
           onClick={canMoveDown ? moveDown : incrementDepth}
           dataTestId="traversal-button-down"
