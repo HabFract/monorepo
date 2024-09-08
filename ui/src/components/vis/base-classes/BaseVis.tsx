@@ -222,7 +222,7 @@ export abstract class BaseVisualization implements IVisualization {
       this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number * 6);
     //adjust for taller aspect ratio
     this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 2.5 : 1.5;
-    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 3 : 4;
+    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 2.5 : 3;
   }
 
   /**
@@ -339,7 +339,7 @@ export abstract class BaseVisualization implements IVisualization {
               return 0.25
           }
         }
-        return `scale(${this._viewConfig.isSmallScreen() ? getScale() : 1})`
+        return `scale(${this._viewConfig.isSmallScreen() ? getScale() : .75})`
       })
       .attr("x", "-375")
       .attr("y", (d) => {

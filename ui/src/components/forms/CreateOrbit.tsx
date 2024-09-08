@@ -7,13 +7,13 @@ import { extractEdges } from '../../graphql/utils';
 import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { currentSphere } from '../../state/currentSphereHierarchyAtom';
-import { currentOrbitId,currentOrbitCoords } from '../../state/orbit';
+import { currentOrbitId,currentOrbitCoords, getOrbitOfCurrentSphereByIdAtom } from '../../state/orbit';
 
 import { AppState } from '../../routes';
 import { mapToCacheObject, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { client } from '../../graphql/client';
 import DefaultSubmitBtn from './buttons/DefaultSubmitButton';
-import { TextAreaField, TextInputField, SelectInputField } from 'habit-fract-design-system';
+import { TextAreaField, TextInputField, SelectInputField, getIconForPlanetValue } from 'habit-fract-design-system';
 import { OrbitFetcher } from './utils';
 
 // Define the validation schema using Yup
@@ -107,10 +107,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
   const [currentOrbitValues, _] = useState<Partial<OrbitCreateParams> & {archival: boolean}>({
     name: '',
     description: '',
-    startTime: DateTime.now().ts,
-    endTime: DateTime.now().ts,
+    startTime: DateTime.now().toMillis(),
+    endTime: DateTime.now().toMillis(),
     frequency: Frequency.Day,
-    scale: !!parentOrbitEh && parentOrbitEh !== 'root' ? Scale.Atom : Scale.Astro, // TODO make helper for including childOrbitEh
+    scale: !!parentOrbitEh && parentOrbitEh !== 'root' ? Scale.Atom : Scale.Astro,
     archival: false,
     parentHash: !!childOrbitEh ? 'root' : parentOrbitEh || null,
     childHash: childOrbitEh ||null
@@ -151,6 +151,9 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
       }}
       >
       {({ values, errors, touched }) => {
+      const cannotBeAstro = !(editMode && state.match("Onboarding")) && values.parentHash !== null && values.parentHash !== 'root';
+      const parentNodeDetails = !(editMode && state.match("Onboarding")) && values.parentHash !== null && store.get(getOrbitOfCurrentSphereByIdAtom(values.parentHash));
+      const cannotBeSub = parentNodeDetails && parentNodeDetails.scale == Scale.Atom;
       return  (
         <div className={inModal ? 'px-2 w-full' : 'px-1'}>
           {!inModal ? headerDiv : null}
@@ -192,31 +195,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
               />
             </div>
 
-            <div className="flex form-field">
-              <Field
-                component={SelectInputField}
-                size="base"
-                name="scale"
-                id="scale"
-                icon={"scale-planets"}
-                iconSide={"left"}
-                withInfo={true}
-                onClickInfo={() => ({
-                  title: "Scales, Explained",
-                  body: "This refers to the magnitude of your behaviour. Astronomic goes well with anything vast, like running a marathon. Atomic is for small, incremental actions, like putting on your running shoes. Sub-astronomic is anything inbetween!",
-                })}
-                options={Object.values(Scale).map((scale) => {
-                  const cannotBeAstro = !(editMode && state.match("Onboarding")) && values.parentHash !== null && values.parentHash !== 'root';
-                  return cannotBeAstro && scale == 'Astro'
-                    ? null
-                    : <option key={scale} value={scale}>{getDisplayName(scale)}</option>
-                  }
-                )}
-                required={true}
-                labelValue={"Scale:"}
-              />
-            </div>
-
             {!parentOrbitEh && !inOnboarding && <div className="flex form-field">
               <Field
                 component={SelectInputField}
@@ -239,6 +217,33 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                 labelValue={"Parent Orbit:"}
               />
             </div>}
+
+            <div className="flex form-field">
+              <Field
+                component={SelectInputField}
+                size="base"
+                name="scale"
+                defaultValue={cannotBeAstro ? (cannotBeSub ? Scale.Atom : Scale.Sub) : Scale.Astro}
+                id="scale"
+                icon={(() => {return getIconForPlanetValue((values.scale == Scale.Sub && cannotBeSub) ? Scale.Atom : ((values.scale == Scale.Astro && cannotBeAstro) ? Scale.Sub : values.scale))})()}
+                iconSide={"left"}
+                disabled={!editMode && !(state.match("Onboarding")) && !(touched?.parentHash || touched?.childHash) && parentOrbitEh !== null}
+                withInfo={true}
+                onClickInfo={() => ({
+                  title: "Scales, Explained",
+                  body: "This refers to the magnitude of your behaviour. Astronomic goes well with anything vast, like running a marathon. Atomic is for small, incremental actions, like putting on your running shoes. Sub-astronomic is anything inbetween!",
+                })}
+                options={Object.values(Scale).map((scale) => {
+                  return cannotBeAstro && scale == Scale.Astro || cannotBeSub && scale == Scale.Sub
+                    ? null
+                    : <option key={scale} value={scale}>{getDisplayName(scale)}</option>
+                  }
+                )}
+                required={true}
+                labelValue={"Scale:"}
+              />
+            </div>
+
 
             {/* FIELD STRIPPED OUT OF MVP: <div className="field">
               <Label htmlFor='frequency'>Frequency: <span className="reqd">*</span>

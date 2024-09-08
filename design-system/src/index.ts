@@ -9,6 +9,7 @@ import { default as darkTheme } from './darkTheme';
 
 import './inputs/common.css';
 import './onboarding/common.css';
+import { getIconForPlanetValue } from './icons';
 
 export {
   Select,
@@ -29,6 +30,6 @@ export {
   ProgressBar,
   SphereVis,
   OrbitVis,
-
+  getIconForPlanetValue,
   darkTheme
 };

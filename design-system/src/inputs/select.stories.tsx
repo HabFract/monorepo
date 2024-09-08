@@ -7,6 +7,7 @@ export interface SelectProps {
   value: string;
   placeholder: string;
   labelValue: string;
+  defaultValue?: string;
   errored: boolean;
   required: boolean;
   withInfo: boolean;

@@ -229,7 +229,7 @@ ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
   border-radius: 2.15rem;
 }
 
-.sphere-actions li[role="menuitem"] > button {
+.layout.spheres li[role="menuitem"] > button {
   justify-content: space-between !important;
   padding: .5rem !important;
   display: flex;
@@ -237,13 +237,13 @@ ul[role="menu"] .ant-menu-submenu-selected > .ant-menu-submenu-title {
   flex-direction: row-reverse;
 }
 
-.sphere-actions li[role="menuitem"] > button svg[role='img'] {
+.layout.spheres li[role="menuitem"] > button svg[role='img'] {
   width: 2rem !important;
   margin-right: -.5rem !important;
   min-height: initial !important;
 }
 
-.sphere-actions li[role="menuitem"] > button:hover {
+.layout.spheres li[role="menuitem"] > button:hover {
   @apply text-secondary;
 }
 .orbit-actions-crud li > button > span {

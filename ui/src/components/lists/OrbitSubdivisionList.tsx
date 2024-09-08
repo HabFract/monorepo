@@ -1,7 +1,7 @@
 import { Field, Form, Formik, FieldArray } from 'formik';
 import './common.css';
 import * as Yup from 'yup';
-import { Button, HelperText, TextInputField, SelectInputField } from 'habit-fract-design-system';
+import { Button, HelperText, TextInputField, SelectInputField, getIconForPlanetValue } from 'habit-fract-design-system';
 import Split from '../icons/Split';
 import Pencil from '../icons/Pencil';
 import { MinusCircleFilled, PlusCircleFilled } from '@ant-design/icons';
@@ -136,7 +136,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
                         size="base"
                         name="scale"
                         id="scale"
-                        icon={"scale-planets"}
+                        icon={getIconForPlanetValue(values.scale)}
                         iconSide={"left"}
                         withInfo={false}
                         options={chooseLowerScales(currentScale)?.sort((a: any, b: any) => a - b).map((scale) => {

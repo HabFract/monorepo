@@ -114,7 +114,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
       setBreadthBounds(params?.currentSphereEhB64, [0, visCoverage == VisCoverage.CompleteOrbit ? 100 : parsedData.result.level_trees.length - 1])
 
-      const sorted = parsedData.result.level_trees.sort(byStartTime).reverse()
+      // Fix for weird sort reversal bug (WTF?)
+      const sorted = isSmallScreen() ? parsedData.result.level_trees.sort(byStartTime).reverse() : parsedData.result.level_trees.sort(byStartTime); 
       // Trigger path caching if we have appended a node
       const newHierarchyDescendants = hierarchy(sorted[0])?.sort(byStartTime)?.descendants()?.length;
       const oldHierarchyDescendants = currentOrbitTree?.rootData.descendants().length;
@@ -161,6 +162,6 @@ export function byStartTime(a: HierarchyNode<any>, b: HierarchyNode<any>) {
       console.error("Sorting error!")
       return 0
     }
-    return (nodeDetailsCache?.[idB]?.startTime || 0  as number) - (nodeDetailsCache?.[idA as keyof SphereOrbitNodes]?.startTime || 0  as number)
+    return (nodeDetailsCache?.[idA]?.startTime || 0  as number) - (nodeDetailsCache?.[idB as keyof SphereOrbitNodes]?.startTime || 0  as number)
 }
 
