@@ -4,6 +4,9 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 const config: CodegenConfig = {
   overwrite: true,
   schema: "src/graphql/schema.graphql",
+  config: {
+    sort: false
+  },
   documents: "src/graphql/**/*.graphql",
   generates: {
     "src/graphql/generated/index.ts": {

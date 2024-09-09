@@ -17,182 +17,20 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
-export type AgentProfile = {
-  __typename?: 'AgentProfile';
-  agentPubKey: Scalars['String']['output'];
-  profile: Profile;
-};
-
-export type CreateResponsePayload = {
-  __typename?: 'CreateResponsePayload';
-  actionHash: Scalars['String']['output'];
-  entryHash: Scalars['String']['output'];
-};
-
-export enum Frequency {
-  Day = 'Day',
-  Month = 'Month',
-  Quarter = 'Quarter',
-  Week = 'Week'
-}
-
-export type Mutation = {
-  __typename?: 'Mutation';
-  createOrbit: CreateResponsePayload;
-  createProfile: AgentProfile;
-  createSphere: CreateResponsePayload;
-  deleteOrbit: Scalars['ID']['output'];
-  deleteSphere: Scalars['ID']['output'];
-  updateOrbit: CreateResponsePayload;
-  updateProfile: AgentProfile;
-  updateSphere: CreateResponsePayload;
-};
-
-
-export type MutationCreateOrbitArgs = {
-  orbit?: InputMaybe<OrbitCreateParams>;
-};
-
-
-export type MutationCreateProfileArgs = {
-  profile?: InputMaybe<UserProfileCreateUpdateParams>;
-};
-
-
-export type MutationCreateSphereArgs = {
-  sphere?: InputMaybe<SphereCreateParams>;
-};
-
-
-export type MutationDeleteOrbitArgs = {
-  orbitHash: Scalars['ID']['input'];
-};
-
-
-export type MutationDeleteSphereArgs = {
-  sphereHash: Scalars['ID']['input'];
-};
-
-
-export type MutationUpdateOrbitArgs = {
-  orbit?: InputMaybe<OrbitUpdateParams>;
-};
-
-
-export type MutationUpdateProfileArgs = {
-  profile?: InputMaybe<UserProfileCreateUpdateParams>;
-};
-
-
-export type MutationUpdateSphereArgs = {
-  sphere?: InputMaybe<SphereUpdateParams>;
-};
-
-export type Node = {
-  eH: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-};
-
-export type Orbit = Node & {
-  __typename?: 'Orbit';
-  childHash?: Maybe<Scalars['String']['output']>;
-  eH: Scalars['String']['output'];
-  frequency: Frequency;
-  id: Scalars['ID']['output'];
-  metadata?: Maybe<OrbitMetaData>;
-  name: Scalars['String']['output'];
-  parentHash?: Maybe<Scalars['String']['output']>;
-  scale: Scale;
-  sphereHash: Scalars['String']['output'];
-};
-
-export type OrbitConnection = {
-  __typename?: 'OrbitConnection';
-  edges: Array<OrbitEdge>;
-  pageInfo: PageInfo;
-};
-
-export type OrbitCreateParams = {
-  childHash?: InputMaybe<Scalars['String']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  endTime?: InputMaybe<Scalars['Float']['input']>;
-  frequency: Frequency;
-  name: Scalars['String']['input'];
-  parentHash?: InputMaybe<Scalars['String']['input']>;
-  scale: Scale;
-  sphereHash: Scalars['String']['input'];
-  startTime: Scalars['Float']['input'];
-};
-
-export type OrbitEdge = {
-  __typename?: 'OrbitEdge';
-  cursor: Scalars['String']['output'];
-  node: Orbit;
-};
-
-export type OrbitHierarchyQueryParams = {
-  levelQuery?: InputMaybe<QueryParamsLevel>;
-  orbitEntryHashB64?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type OrbitMetaData = {
-  __typename?: 'OrbitMetaData';
-  description?: Maybe<Scalars['String']['output']>;
-  timeframe: TimeFrame;
-};
-
-export type OrbitUpdateParams = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  endTime?: InputMaybe<Scalars['Float']['input']>;
-  frequency: Frequency;
-  id: Scalars['ID']['input'];
-  name: Scalars['String']['input'];
-  parentHash?: InputMaybe<Scalars['String']['input']>;
-  scale: Scale;
-  sphereHash: Scalars['String']['input'];
-  startTime: Scalars['Float']['input'];
-};
-
-export type PageInfo = {
-  __typename?: 'PageInfo';
-  endCursor: Scalars['String']['output'];
-  hasNextPage: Scalars['Boolean']['output'];
-  hasPreviousPage: Scalars['Boolean']['output'];
-  startCursor: Scalars['String']['output'];
-};
-
-export type Profile = {
-  __typename?: 'Profile';
-  fields?: Maybe<ProfileFields>;
-  nickname: Scalars['String']['output'];
-};
-
-export type ProfileFields = {
-  __typename?: 'ProfileFields';
-  avatar?: Maybe<Scalars['String']['output']>;
-  isPublic?: Maybe<Scalars['String']['output']>;
-  location?: Maybe<Scalars['String']['output']>;
-};
-
 export type Query = {
   __typename?: 'Query';
-  getLowestSphereHierarchyLevel: Scalars['Int']['output'];
-  getOrbitHierarchy: Scalars['String']['output'];
-  me: AgentProfile;
-  orbit: Orbit;
-  orbits: OrbitConnection;
   sphere: Sphere;
   spheres: SphereConnection;
+  orbit: Orbit;
+  orbits: OrbitConnection;
+  getOrbitHierarchy: Scalars['String']['output'];
+  getLowestSphereHierarchyLevel: Scalars['Int']['output'];
+  me: AgentProfile;
 };
 
 
-export type QueryGetLowestSphereHierarchyLevelArgs = {
-  sphereEntryHashB64: Scalars['String']['input'];
-};
-
-
-export type QueryGetOrbitHierarchyArgs = {
-  params: OrbitHierarchyQueryParams;
+export type QuerySphereArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -206,27 +44,110 @@ export type QueryOrbitsArgs = {
 };
 
 
-export type QuerySphereArgs = {
-  id: Scalars['ID']['input'];
+export type QueryGetOrbitHierarchyArgs = {
+  params: OrbitHierarchyQueryParams;
 };
 
-export type QueryParamsLevel = {
-  orbitLevel: Scalars['Float']['input'];
-  sphereHashB64?: InputMaybe<Scalars['String']['input']>;
+
+export type QueryGetLowestSphereHierarchyLevelArgs = {
+  sphereEntryHashB64: Scalars['String']['input'];
 };
 
-export enum Scale {
-  Astro = 'Astro',
-  Sub = 'Sub',
-  Atom = 'Atom',
-}
+export type Mutation = {
+  __typename?: 'Mutation';
+  createSphere: CreateResponsePayload;
+  updateSphere: CreateResponsePayload;
+  deleteSphere: Scalars['ID']['output'];
+  createOrbit: CreateResponsePayload;
+  updateOrbit: CreateResponsePayload;
+  deleteOrbit: Scalars['ID']['output'];
+  createProfile: AgentProfile;
+  updateProfile: AgentProfile;
+};
 
-export type Sphere = Node & {
-  __typename?: 'Sphere';
-  eH: Scalars['String']['output'];
+
+export type MutationCreateSphereArgs = {
+  sphere?: InputMaybe<SphereCreateParams>;
+};
+
+
+export type MutationUpdateSphereArgs = {
+  sphere?: InputMaybe<SphereUpdateParams>;
+};
+
+
+export type MutationDeleteSphereArgs = {
+  sphereHash: Scalars['ID']['input'];
+};
+
+
+export type MutationCreateOrbitArgs = {
+  orbit?: InputMaybe<OrbitCreateParams>;
+};
+
+
+export type MutationUpdateOrbitArgs = {
+  orbit?: InputMaybe<OrbitUpdateParams>;
+};
+
+
+export type MutationDeleteOrbitArgs = {
+  orbitHash: Scalars['ID']['input'];
+};
+
+
+export type MutationCreateProfileArgs = {
+  profile?: InputMaybe<UserProfileCreateUpdateParams>;
+};
+
+
+export type MutationUpdateProfileArgs = {
+  profile?: InputMaybe<UserProfileCreateUpdateParams>;
+};
+
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor: Scalars['String']['output'];
+  endCursor: Scalars['String']['output'];
+};
+
+export type Node = {
   id: Scalars['ID']['output'];
-  metadata?: Maybe<SphereMetaData>;
-  name: Scalars['String']['output'];
+  eH: Scalars['String']['output'];
+};
+
+export type CreateResponsePayload = {
+  __typename?: 'CreateResponsePayload';
+  actionHash: Scalars['String']['output'];
+  entryHash: Scalars['String']['output'];
+};
+
+export type AgentProfile = {
+  __typename?: 'AgentProfile';
+  agentPubKey: Scalars['String']['output'];
+  profile: Profile;
+};
+
+export type Profile = {
+  __typename?: 'Profile';
+  nickname: Scalars['String']['output'];
+  fields?: Maybe<ProfileFields>;
+};
+
+export type ProfileFields = {
+  __typename?: 'ProfileFields';
+  location?: Maybe<Scalars['String']['output']>;
+  isPublic?: Maybe<Scalars['String']['output']>;
+  avatar?: Maybe<Scalars['String']['output']>;
+};
+
+export type UserProfileCreateUpdateParams = {
+  nickname: Scalars['String']['input'];
+  location?: InputMaybe<Scalars['String']['input']>;
+  isPublic?: InputMaybe<Scalars['String']['input']>;
+  avatar?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SphereConnection = {
@@ -235,17 +156,18 @@ export type SphereConnection = {
   pageInfo: PageInfo;
 };
 
-export type SphereCreateParams = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  hashtag?: InputMaybe<Scalars['String']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-};
-
 export type SphereEdge = {
   __typename?: 'SphereEdge';
   cursor: Scalars['String']['output'];
   node: Sphere;
+};
+
+export type Sphere = Node & {
+  __typename?: 'Sphere';
+  id: Scalars['ID']['output'];
+  eH: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  metadata?: Maybe<SphereMetaData>;
 };
 
 export type SphereMetaData = {
@@ -255,25 +177,103 @@ export type SphereMetaData = {
   image?: Maybe<Scalars['String']['output']>;
 };
 
-export type SphereUpdateParams = {
+export type SphereCreateParams = {
+  name: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
   hashtag?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['ID']['input'];
   image?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SphereUpdateParams = {
+  id: Scalars['ID']['input'];
   name: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  hashtag?: InputMaybe<Scalars['String']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type OrbitConnection = {
+  __typename?: 'OrbitConnection';
+  edges: Array<OrbitEdge>;
+  pageInfo: PageInfo;
+};
+
+export type OrbitEdge = {
+  __typename?: 'OrbitEdge';
+  cursor: Scalars['String']['output'];
+  node: Orbit;
+};
+
+export type Orbit = Node & {
+  __typename?: 'Orbit';
+  id: Scalars['ID']['output'];
+  eH: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  sphereHash: Scalars['String']['output'];
+  parentHash?: Maybe<Scalars['String']['output']>;
+  childHash?: Maybe<Scalars['String']['output']>;
+  frequency: Frequency;
+  scale: Scale;
+  metadata?: Maybe<OrbitMetaData>;
 };
 
 export type TimeFrame = {
   __typename?: 'TimeFrame';
-  endTime?: Maybe<Scalars['Float']['output']>;
   startTime: Scalars['Float']['output'];
+  endTime?: Maybe<Scalars['Float']['output']>;
 };
 
-export type UserProfileCreateUpdateParams = {
-  avatar?: InputMaybe<Scalars['String']['input']>;
-  isPublic?: InputMaybe<Scalars['String']['input']>;
-  location?: InputMaybe<Scalars['String']['input']>;
-  nickname: Scalars['String']['input'];
+export enum Frequency {
+  Day = 'Day',
+  Week = 'Week',
+  Month = 'Month',
+  Quarter = 'Quarter'
+}
+
+export enum Scale {
+  Astro = 'Astro',
+  Sub = 'Sub',
+  Atom = 'Atom'
+}
+
+export type OrbitMetaData = {
+  __typename?: 'OrbitMetaData';
+  description?: Maybe<Scalars['String']['output']>;
+  timeframe: TimeFrame;
+};
+
+export type OrbitCreateParams = {
+  name: Scalars['String']['input'];
+  startTime: Scalars['Float']['input'];
+  endTime?: InputMaybe<Scalars['Float']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  frequency: Frequency;
+  scale: Scale;
+  sphereHash: Scalars['String']['input'];
+  parentHash?: InputMaybe<Scalars['String']['input']>;
+  childHash?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type OrbitUpdateParams = {
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+  startTime: Scalars['Float']['input'];
+  endTime?: InputMaybe<Scalars['Float']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  frequency: Frequency;
+  scale: Scale;
+  sphereHash: Scalars['String']['input'];
+  parentHash?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type OrbitHierarchyQueryParams = {
+  orbitEntryHashB64?: InputMaybe<Scalars['String']['input']>;
+  levelQuery?: InputMaybe<QueryParamsLevel>;
+};
+
+export type QueryParamsLevel = {
+  sphereHashB64?: InputMaybe<Scalars['String']['input']>;
+  orbitLevel: Scalars['Float']['input'];
 };
 
 export type CreateOrbitMutationVariables = Exact<{
