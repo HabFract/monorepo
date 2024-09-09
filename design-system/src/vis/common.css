@@ -24,7 +24,6 @@ div[role="progressbar"] > div.astro > div {
 }
 
 .sphere-pie {
-  min-width: 50vw;
   width: 100%;
 }
 .sphere-pie svg {
@@ -41,6 +40,27 @@ div[role="progressbar"] > div.astro > div {
 }
 .apexcharts-pie-area {
   transform: rotate(90deg) translate(-10%,-40%) !important;
+}
+.sphere-pie .apexcharts-legend {
+  position: relative !important;
+  top: 1rem !important;
+  left: 6rem !important;
+  right: initial !important;
+  width: fit-content !important;
+  height: fit-content !important;
+  padding-top: 1rem !important;
+}
+.sphere-pie .apexcharts-legend > div {
+  gap: .5rem;
+  line-height: initial;
+}
+.sphere-pie .apexcharts-legend > div .apexcharts-legend-marker {
+  width: 1rem !important;
+  height: 1rem !important;
+}
+.sphere-pie .apexcharts-legend .apexcharts-legend-text {
+  @apply font-heading text-xs text-white !important;
+  padding-left: 1rem !important;
 }
 
 /* Flowbite modal overrides */
@@ -63,6 +83,13 @@ div[role="progressbar"] > div.astro > div {
 
   .sphere-pie-label {    
     padding-left: 50%;
+  }
+
+  .sphere-pie .pie {
+    min-width: initial;
+  }
+  .sphere-pie .pie {
+    min-height: 18rem;
   }
 
   /* Flowbite modal overrides */

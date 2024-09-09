@@ -180,6 +180,8 @@ export function byStartTime(a: (HierarchyNode<unknown> | {content: string}), b: 
       console.error("Sorting error!")
       return 0
     }
-    return (nodeDetailsCache?.[idA]?.startTime || 0  as number) - (nodeDetailsCache?.[idB as keyof SphereOrbitNodes]?.startTime || 0  as number)
+    return isSmallScreen()
+      ? (nodeDetailsCache?.[idB]?.startTime || 0  as number) - (nodeDetailsCache?.[idA as keyof SphereOrbitNodes]?.startTime || 0  as number)
+      : (nodeDetailsCache?.[idA]?.startTime || 0  as number) - (nodeDetailsCache?.[idB as keyof SphereOrbitNodes]?.startTime || 0  as number)
 }
 

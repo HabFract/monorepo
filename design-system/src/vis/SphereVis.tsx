@@ -62,7 +62,9 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
           },
         },
         legend: {
-          show: false
+          show: true,
+          position: 'right',
+          floating: true,
         }
       }
     }

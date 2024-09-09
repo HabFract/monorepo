@@ -51,7 +51,7 @@ const OrbitCard: React.FC<OrbitCardProps> = ({ orbit, sphereEh, transition, runD
             </div>
             <div className="orbit-actions-vis row-c">
               {/* <Button className="btn btn-primary" size="sm" onClick={() => {
-        store.set(currentOrbitCoords, {x: 0, y: 0}); transition('Vis', { orbitEh: orbit.eH })}}>
+        store.set(currentOrbitCoordsstore.set(currentOrbitCoords, {x: 0, y: 0}); transition('Vis', { orbitEh: orbit.eH })}}>
                 <PieChartOutlined className="btn-icon" />
                 <span>Visualise</span>
               </Button> */}

@@ -5,7 +5,7 @@ export function useOnboardingScroll(state: string, progressBarRef: RefObject<HTM
     const stage = +(state.match(/Onboarding(\d+)/)?.[1] || 0);
     if (!stage || progressBarRef.current == null) return;
     setTimeout(() => {
-      (progressBarRef.current as any).querySelector(".onboarding-progress").scrollTo(50 + stage * 130, 0)
+      (progressBarRef.current as any).querySelector(".onboarding-progress").scrollTo(65 + stage * 130, 0)
     }, 500);
   }, [state, progressBarRef]);
 

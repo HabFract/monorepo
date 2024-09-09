@@ -109,7 +109,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
     startTime: DateTime.now().toMillis(),
     endTime: DateTime.now().toMillis(),
     frequency: Frequency.Day,
-    scale: Scale.Astro,
+    scale: undefined,
     archival: false,
     parentHash: !!childOrbitEh ? 'root' : parentOrbitEh || null,
     childHash: childOrbitEh ||null
@@ -149,13 +149,13 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
         }
       }}
       >
-      {({ values, errors, touched }) => {
+      {({ values, errors, touched, setFieldValue }) => {
       const cannotBeAstro = !(editMode && state.match("Onboarding")) && values.parentHash !== null && values.parentHash !== 'root';
       const parentNodeDetails = !(editMode && state.match("Onboarding")) && values.parentHash !== null && store.get(getOrbitOfCurrentSphereByIdAtom(values.parentHash));
       const cannotBeSub = parentNodeDetails && parentNodeDetails.scale == Scale.Atom;
       // Rules which dictate which scale planet can be a child of another scale - may change the possible scale options dyamically 
       const scaleDefault = (cannotBeSub ? Scale.Atom : cannotBeAstro ? Scale.Sub : Scale.Astro);
-
+      if(!values?.scale) { setFieldValue('scale', scaleDefault); }
       return  (
         <div className={inModal ? 'px-2 w-full' : 'px-1'}>
           {!inModal ? headerDiv : null}
@@ -208,6 +208,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                   title: "Good Parenting",
                   body: "Choose the parent which describes behaviour of a bigger scope. For instance, if the name of your Orbit is 'Run a 10k', maybe the next biggest scope is 'Run a 20k'. Setting your parent to 'None' will make it the top of a new hierarchy.",
                 })}
+                onBlur={() => {setFieldValue('scale', scaleDefault)}}
                 options={[
                   <option value={'root'}>{'None'}</option>,
                   ...(childOrbitEh ? [] : orbitEdges.map((orbit, i) =>
@@ -225,11 +226,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                 component={SelectInputField}
                 size="base"
                 name="scale"
-                defaultValue={scaleDefault}
+                value={values?.scale || scaleDefault}
                 id="scale"
                 icon={(() => {
                   const currentValue = values.scale || scaleDefault;
-                  values.scale = currentValue;
                   return getIconForPlanetValue((cannotBeAstro && cannotBeSub) ? Scale.Atom : ((currentValue == Scale.Astro && cannotBeAstro) ? Scale.Sub : currentValue))
                 })()}
                 iconSide={"left"}
@@ -239,12 +239,14 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                   title: "Scales, Explained",
                   body: "This refers to the magnitude of your behaviour. Astronomic goes well with anything vast, like running a marathon. Atomic is for small, incremental actions, like putting on your running shoes. Sub-astronomic is anything inbetween!",
                 })}
-                options={Object.values(Scale).map((scale) => {
+                options={[
+                  // values?.scale ? null : <option value={undefined}>{'Select:'}</option>,
+                  ...Object.values(Scale).map((scale) => {
                   return cannotBeAstro && scale == Scale.Astro || cannotBeSub && scale == Scale.Sub
                     ? null
                     : <option key={scale} value={scale}>{getDisplayName(scale)}</option>
                   }
-                )}
+                )]}
                 required={true}
                 labelValue={"Scale:"}
               />

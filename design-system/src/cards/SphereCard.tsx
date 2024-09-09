@@ -1,6 +1,6 @@
 import React from 'react';
 import './common.css';
-import { OrderedListOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, OrderedListOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { SphereVis } from '../vis';
 import { Scale, Sphere } from '../../../ui/src/graphql/generated';
 import { Button, Dropdown } from 'flowbite-react';
@@ -87,7 +87,20 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
                 <TreeVisIcon />
                 <span>Visualise</span>
               </Dropdown.Item>
-            </Dropdown>}
+              {/* <Dropdown.Item onClick={() => {transition('CreateSphere', { editMode: true, sphereToEditId: sphere.id })}}>
+              <span>
+                <EditOutlined className="icon" />
+                Edit
+              </span>
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => {runDelete()}}>
+              <span>
+                <DeleteOutlined className="icon" />
+                Delete
+              </span>
+            </Dropdown.Item> */}
+          </Dropdown>
+            }
           </div>
         </div>
         {isHeader && orbitScales.length > 0

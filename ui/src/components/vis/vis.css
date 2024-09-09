@@ -63,7 +63,7 @@ svg path.link {
 }
 
 .tooltip-inner {
-  background: url(assets/line-corner-vector.svg);
+  background: url(/assets/line-corner-vector.svg);
   background-position: right;
   background-position-y: .5rem;
   background-size: contain;

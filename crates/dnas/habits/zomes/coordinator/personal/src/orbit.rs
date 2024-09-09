@@ -355,7 +355,7 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
             }) => {
                 let lower_bound =
                     orbit_level.expect("Level has been checked higher up the call stack");
-                let levels_range: RangeInclusive<i8> = lower_bound..=(lower_bound.clone() + 2);
+                let levels_range: RangeInclusive<i8> = lower_bound..=(lower_bound.clone() + 3);
 
                 insert_descendants(
                     entry_hash.clone().into(),

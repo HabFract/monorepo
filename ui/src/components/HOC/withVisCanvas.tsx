@@ -187,9 +187,9 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
       const canTraverseDown = children && hasOneChild && children[0].children && children[0].children.length == 1;
       const canTraverseLeft = x !== 0 && currentOrbitIsRoot;
       const canTraverseRight = currentOrbitIsRoot && maxBreadth && x < maxBreadth;
-      const canTraverseDownLeft = !currentOrbitIsRoot && children && !hasOneChild && children[0].children;
-      const canTraverseDownRight = !currentOrbitIsRoot && maxDepth && (y < maxDepth) && children && !hasOneChild && children[children.length - 1].children;
-      console.log('x, maxBreadth :>> ', x, maxBreadth);
+      const canTraverseDownLeft = !canMoveLeft && !currentOrbitIsRoot && children && !hasOneChild && children[0].children;
+      const canTraverseDownRight = !canMoveRight && !currentOrbitIsRoot && maxDepth && (y < maxDepth) && children && !hasOneChild && !!children?.find(child => ((child?.data?.content == currentId) && !!child.children));
+
       const moveLeft = () => {
         const currentIndex = children?.findIndex(child => child.data.content == currentId) as number;
         const newId = (children![currentIndex - 1] as any).data.content;
@@ -201,7 +201,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
         store.set(currentOrbitId, { id: newId })
       }
       const moveDown = () => {
-        const childrenMiddle = Math.max((Math.floor(children!.length / 2) - 1), 0)
+        const childrenMiddle = children!.length > 0 ? Math.ceil(children!.length / 2) - 1 : 0;
         const newId = (children![childrenMiddle] as any).data.content;
         store.set(currentOrbitId, { id: newId })
       }

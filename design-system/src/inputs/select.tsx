@@ -36,14 +36,14 @@ export const SelectInputField: React.FC<{ field: any, form: any, props: SelectPr
   form: { touched, errors, setFieldValue, setFieldTouched },
   ...props
 } : any) => {
-  const { id, name, labelValue, defaultValue, options, iconSide, size, icon, placeholder, required, withInfo, onClickInfo, disabled, onBlur } = props;
+  const { id, name, labelValue, value, options, iconSide, size, icon, placeholder, required, withInfo, onClickInfo, disabled, onBlur } = props;
+  
   return (
     <>
       <Select
         id={id}
         name={name}
-        value={field?.value || defaultValue }
-        // defaultValue={defaultValue}
+        value={field?.value || value}
         size={size}
         placeholder={placeholder}
         labelValue={labelValue}
