@@ -145,7 +145,8 @@ export class TreeVisualization extends BaseVisualization {
       .attr("data-testid", getTestId(cacheItem.path));
 
     //@ts-ignore
-    const pathElement = newPath._groups[0][0];
+    const pathElement = newPath?._groups?.[0]?.[0];
+    if(!pathElement) return;
     const { height, width } = pathElement.getBoundingClientRect();
     select(pathElement).attr("transform", `translate(${getPathXTranslation(
       cacheItem.path,

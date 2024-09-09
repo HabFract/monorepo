@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { DateTime } from "luxon"
-import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, OrbitUpdateParams, Scale, useCreateOrbitMutation, useGetOrbitQuery, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
+import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, OrbitUpdateParams, Scale, useCreateOrbitMutation, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
 import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
@@ -100,8 +100,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
       'getOrbits',
     ],
   });
-
-  const { data: orbits, loading: getAllLoading, error } = useGetOrbitsQuery({ variables: { sphereEntryHashB64: sphereEh } });
+  const { data: orbits, loading: getAllLoading, error } = useGetOrbitsQuery({fetchPolicy: 'network-only', variables: { sphereEntryHashB64: sphereEh } });
   const loading = getAllLoading;
 
   const [currentOrbitValues, _] = useState<Partial<OrbitCreateParams> & {archival: boolean}>({
@@ -110,12 +109,12 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
     startTime: DateTime.now().toMillis(),
     endTime: DateTime.now().toMillis(),
     frequency: Frequency.Day,
-    scale: !!parentOrbitEh && parentOrbitEh !== 'root' ? Scale.Atom : Scale.Astro,
+    scale: Scale.Astro,
     archival: false,
     parentHash: !!childOrbitEh ? 'root' : parentOrbitEh || null,
     childHash: childOrbitEh ||null
   });
-
+  const orbitEdges = extractEdges((orbits as any)?.orbits) as Orbit[];
   return (
     <Formik
       initialValues={currentOrbitValues}
@@ -154,6 +153,9 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
       const cannotBeAstro = !(editMode && state.match("Onboarding")) && values.parentHash !== null && values.parentHash !== 'root';
       const parentNodeDetails = !(editMode && state.match("Onboarding")) && values.parentHash !== null && store.get(getOrbitOfCurrentSphereByIdAtom(values.parentHash));
       const cannotBeSub = parentNodeDetails && parentNodeDetails.scale == Scale.Atom;
+      // Rules which dictate which scale planet can be a child of another scale - may change the possible scale options dyamically 
+      const scaleDefault = (cannotBeSub ? Scale.Atom : cannotBeAstro ? Scale.Sub : Scale.Astro);
+
       return  (
         <div className={inModal ? 'px-2 w-full' : 'px-1'}>
           {!inModal ? headerDiv : null}
@@ -208,7 +210,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                 })}
                 options={[
                   <option value={'root'}>{'None'}</option>,
-                  ...(childOrbitEh ? [] : (extractEdges((orbits as any)?.orbits) as Orbit[]).map((orbit, i) =>
+                  ...(childOrbitEh ? [] : orbitEdges.map((orbit, i) =>
                     <option key={i} value={orbit.eH}>{orbit.name}</option>
                   ))
                 ]}
@@ -223,9 +225,13 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                 component={SelectInputField}
                 size="base"
                 name="scale"
-                defaultValue={cannotBeAstro ? (cannotBeSub ? Scale.Atom : Scale.Sub) : Scale.Astro}
+                defaultValue={scaleDefault}
                 id="scale"
-                icon={(() => {return getIconForPlanetValue((values.scale == Scale.Sub && cannotBeSub) ? Scale.Atom : ((values.scale == Scale.Astro && cannotBeAstro) ? Scale.Sub : values.scale))})()}
+                icon={(() => {
+                  const currentValue = values.scale || scaleDefault;
+                  values.scale = currentValue;
+                  return getIconForPlanetValue((cannotBeAstro && cannotBeSub) ? Scale.Atom : ((currentValue == Scale.Astro && cannotBeAstro) ? Scale.Sub : currentValue))
+                })()}
                 iconSide={"left"}
                 disabled={!editMode && !(state.match("Onboarding")) && !(touched?.parentHash || touched?.childHash) && parentOrbitEh !== null}
                 withInfo={true}

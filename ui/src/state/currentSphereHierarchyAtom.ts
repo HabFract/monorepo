@@ -16,12 +16,37 @@ export interface HierarchyBounds {
   maxBreadth: number;
 }
 
+export interface HierarchyIndices {
+  breadth: number;
+  depth: number;
+}
+
 export interface SphereHierarchyBounds {
   [sphereId: EntryHashB64] : HierarchyBounds
 }
 
 // Exposed by the useNodeTraversal hook
 export const currentSphereHierarchyBounds = atom<SphereHierarchyBounds>({});
+
+export const currentSphereHierarchyIndices = atom<HierarchyIndices>({breadth: 0, depth: 0});
+
+export const setCurrentBreadth = atom(
+    null,
+    (get, set, newBreadth: number) => {
+      const prev = get(currentSphereHierarchyIndices)
+      
+      set(currentSphereHierarchyIndices, { ...prev, breadth: newBreadth })
+    }
+)
+
+export const setCurrentDepth = atom(
+    null,
+    (get, set, newDepth: number) => {
+      const prev = get(currentSphereHierarchyIndices)
+      
+      set(currentSphereHierarchyIndices, { ...prev, depth: newDepth })
+    }
+)
 
 export const setDepths = atom(
     null,

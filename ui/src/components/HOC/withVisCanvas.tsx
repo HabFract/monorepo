@@ -8,7 +8,7 @@ import { useAtomValue } from 'jotai';
 import { useNodeTraversal } from '../../hooks/useNodeTraversal';
 import { HierarchyBounds, SphereHashes, SphereHierarchyBounds, currentSphere, currentSphereHierarchyBounds } from '../../state/currentSphereHierarchyAtom';
 
-import { currentOrbitCoords, currentOrbitDetails, currentOrbitId, setOrbit } from '../../state/orbit';
+import { currentOrbitCoords, currentOrbitDetails, currentOrbitId, newTraversalLevelIndexId, setOrbit } from '../../state/orbit';
 import { WithVisCanvasProps } from '../vis/types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes, store } from '../../state/jotaiKeyValueStore';
@@ -76,8 +76,7 @@ function coordsChanged(translationCoords, x, y): boolean {
 
 export function withVisCanvas<T extends IVisualization>(Component: ComponentType<VisProps<T>>): ReactNode {
   const ComponentWithVis: React.FC<WithVisCanvasProps> = (_visParams: WithVisCanvasProps) => {
-    const hasOrbits = useAtomValue(sphereHasCachedNodesAtom);
-    useRedirect(hasOrbits);
+    useRedirect();
 
     const mountingDivId = 'vis-root'; // Declared at the router level
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
@@ -102,7 +101,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
       incrementDepth,
       decrementDepth,
       maxBreadth,
-      setBreadthEnd,
+      setBreadthIndex,
       maxDepth
     } = useNodeTraversal(sphereHierarchyBounds[selectedSphere!.entryHash as keyof SphereHierarchyBounds] as HierarchyBounds);
 
@@ -174,6 +173,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
       const children = (isSmallScreen() ? data?.children?.reverse() : data?.children) as Array<HierarchyNode<any>> | undefined;
       const rootId = data.data.content;
       const currentId = store.get(currentOrbitId)?.id as ActionHashB64;
+      const currentDetails = store.get(currentOrbitDetails);
 
       const canMove = !isSmallScreen() || (currentVis.coverageType == VisCoverage.CompleteSphere);
       const canMoveUp = canMove && rootId !== currentId;
@@ -189,7 +189,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
       const canTraverseRight = currentOrbitIsRoot && maxBreadth && x < maxBreadth;
       const canTraverseDownLeft = !currentOrbitIsRoot && children && !hasOneChild && children[0].children;
       const canTraverseDownRight = !currentOrbitIsRoot && maxDepth && (y < maxDepth) && children && !hasOneChild && children[children.length - 1].children;
-
+      console.log('x, maxBreadth :>> ', x, maxBreadth);
       const moveLeft = () => {
         const currentIndex = children?.findIndex(child => child.data.content == currentId) as number;
         const newId = (children![currentIndex - 1] as any).data.content;
@@ -201,7 +201,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
         store.set(currentOrbitId, { id: newId })
       }
       const moveDown = () => {
-        const childrenMiddle = Math.floor(children!.length / 2)
+        const childrenMiddle = Math.max((Math.floor(children!.length / 2) - 1), 0)
         const newId = (children![childrenMiddle] as any).data.content;
         store.set(currentOrbitId, { id: newId })
       }
@@ -218,17 +218,37 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
         const newId = (children![children!.length - 1] as any).data.content
         store.set(currentOrbitId, { id: newId })
       }
+      const traverseDownRight = () => {
+        const newX = children!.length - 1;
+        incrementDepth();
+        const newChild = children && (children?.find(child => ((child?.data?.content == currentId) && !!child.children)) as HierarchyNode<any>)?.children?.[0] as HierarchyNode<any>;
+        const newId = newChild && newChild.parent?.data?.content;
+        store.set(newTraversalLevelIndexId, {id: newId})
+        setBreadthIndex(newX);
+      }
+      const traverseDown = () => {
+        incrementDepth()
+        const newChild = children && (children?.find(child => ((child?.data?.content == currentId) && !!child.children)) as HierarchyNode<any>)?.children?.[0] as HierarchyNode<any>;
+        const newId = newChild && newChild.parent?.data?.content;
+        store.set(newTraversalLevelIndexId, {id: newId})
+
+        setBreadthIndex(children?.findIndex(child => child?.data?.content == newId));
+      }
+      const traverseUp = () => {
+        decrementDepth()
+        store.set(newTraversalLevelIndexId, {id: currentDetails?.parentEh as ActionHashB64 })
+      }
       return [
         <TraversalButton
           condition={withTraversal && (y !== 0 || canMoveUp)}
           iconType="up"
-          onClick={canMoveUp ? moveUp : () => decrementDepth()}
+          onClick={canMoveUp ? moveUp : traverseUp}
           dataTestId="traversal-button-up"
         />,
         <TraversalButton
           condition={!!(withTraversal && (canTraverseDown || canTraverseDownMiddle || canMoveDown))}
           iconType="down"
-          onClick={canMoveDown ? moveDown : incrementDepth}
+          onClick={canMoveDown ? moveDown : traverseDown}
           dataTestId="traversal-button-down"
         />,
         <TraversalButton
@@ -240,7 +260,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
         <TraversalButton
           condition={!!(withTraversal && (canTraverseDownLeft || canMoveDownLeft))}
           iconType="down-left"
-          onClick={canMoveDownLeft ? moveDownLeft : incrementDepth}
+          onClick={canMoveDownLeft ? moveDownLeft : traverseDown}
           dataTestId="traversal-button-down-left"
         />,
         <TraversalButton
@@ -252,11 +272,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
         <TraversalButton
           condition={!!(withTraversal && (canTraverseDownRight || canMoveDownRight))}
           iconType="down-right"
-          onClick={canMoveDownRight ? moveDownRight : () => {
-            const newX = children!.length - 1; const newY = incrementDepth(); setBreadthEnd(newX); setTimeout(() => {
-              store.set(currentOrbitCoords, { x: newX, y: newY as number })
-            }, 250);
-          }}
+          onClick={canMoveDownRight ? moveDownRight : traverseDownRight }
           dataTestId="traversal-button-down-right"
         />
       ];

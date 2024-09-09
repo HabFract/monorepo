@@ -15,6 +15,8 @@ export const currentOrbitDetails = atom<OrbitNodeDetails | undefined>((get) => {
 
 export const currentOrbitCoords = atom<{x: number, y: number}>({ x:0, y:0 });
 
+export const newTraversalLevelIndexId = atom<{id: ActionHashB64 | null}>({id: null});
+
 export const getOrbitOfCurrentSphereByIdAtom = (id: ActionHashB64) => atom<OrbitNodeDetails | undefined>((get) => {
     const currentSphereHashes = get(currentSphere);
     if (!currentSphereHashes?.actionHash) return;

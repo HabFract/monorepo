@@ -6,7 +6,7 @@ import "./common.css";
 import WithLabel from "./label";
 import ErrorLabel from "./errorlabel";
 
-const Select: React.FC<SelectProps> = ({ id, value, name, theme, onChange, onBlur, labelValue, defaultValue, withInfo, onClickInfo, required, disabled, size, icon, iconSide, options } : SelectProps) => {
+const Select: React.FC<SelectProps> = ({ id, value, name, theme, onChange, onBlur, labelValue, withInfo, onClickInfo, required, disabled, size, icon, iconSide, options } : SelectProps) => {
   return (
     <WithLabel id={id} labelValue={labelValue} required={required} withInfo={withInfo} onClickInfo={onClickInfo}>
       <FBSelect id={id} 
@@ -16,12 +16,11 @@ const Select: React.FC<SelectProps> = ({ id, value, name, theme, onChange, onBlu
         icon={iconSide == "left" ? getIconSvg(icon) : undefined}
         sizing={size}
         name={name}
-        value={value || defaultValue}
+        value={value}
         color={theme || "default"}
         theme={darkThemeSelect}
         disabled={disabled}
         required={required}
-        defaultValue={defaultValue}
       >
         {typeof options[0] == 'string'
           ? options.map((optionText, idx) => <option key={idx}>{optionText}</option>)
@@ -37,14 +36,14 @@ export const SelectInputField: React.FC<{ field: any, form: any, props: SelectPr
   form: { touched, errors, setFieldValue, setFieldTouched },
   ...props
 } : any) => {
-  const { id, name, labelValue, value, defaultValue, options, iconSide, size, icon, placeholder, required, withInfo, onClickInfo, disabled, onBlur } = props;
+  const { id, name, labelValue, defaultValue, options, iconSide, size, icon, placeholder, required, withInfo, onClickInfo, disabled, onBlur } = props;
   return (
     <>
       <Select
         id={id}
         name={name}
-        value={field?.value || value }
-        defaultValue={defaultValue}
+        value={field?.value || defaultValue }
+        // defaultValue={defaultValue}
         size={size}
         placeholder={placeholder}
         labelValue={labelValue}
