@@ -1,6 +1,6 @@
 {
   "name": "habit-fract",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "A peer-to-peer personal habit tracking application built on Holochain",
   "keywords": [
     "habits",
