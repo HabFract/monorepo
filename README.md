@@ -1,3 +1,5 @@
+![Habit/Fract Desktop Vis]([http://url/to/img.png](https://i0.wp.com/habitfract.net/wp-content/uploads/2024/06/screen1-1.png?fit=1659%2C1024&amp;ssl=1))
+
 Innovative habit tracking application that helps you drill down or build up from any scale. Built on Holochain for complete control over privacy and data sovereignty.
 
 With the release of HabitFract 1.x, you will be able to:
