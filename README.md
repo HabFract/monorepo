@@ -1,4 +1,4 @@
-![alt Habit/Fract](https://github.com/HabFract/monorepo/blob/main/ui/public/assets/logo.svg?raw=true)
+![alt Habit/Fract](https://github.com/HabFract/monorepo/blob/main/ui/public/assets/home-life-spheres-girl.svg?raw=true)
 Innovative habit tracking application that helps you drill down or build up from any scale. Built on Holochain for complete control over privacy and data sovereignty.
 
 With the release of HabitFract 1.x, you will be able to:
