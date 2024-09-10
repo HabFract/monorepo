@@ -1,4 +1,5 @@
-![alt Habit/Fract](https://github.com/HabFract/monorepo/blob/main/ui/public/assets/logo-dark-transparent-horizontal.svg?raw=true)![alt Girl running](https://github.com/HabFract/monorepo/blob/main/ui/public/assets/home-life-spheres-girl.svg?raw=true)
+![alt Habit/Fract](https://github.com/HabFract/monorepo/blob/main/ui/public/assets/logo-dark-transparent-horizontal.svg?raw=true)
+![alt Girl running](https://github.com/HabFract/monorepo/blob/main/ui/public/assets/home-life-spheres-girl.svg?raw=true)
 
 Innovative habit tracking application that helps you drill down or build up from any scale. Built on Holochain for complete control over privacy and data sovereignty.
 
