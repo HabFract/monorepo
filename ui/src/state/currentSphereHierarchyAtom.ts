@@ -1,8 +1,6 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { atom } from "jotai";
 
-import { sphereNodesAtom } from './sphere';
-
 export interface SphereHashes {
   entryHash?: EntryHashB64;
   actionHash?: ActionHashB64;

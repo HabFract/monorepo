@@ -9,6 +9,7 @@ export default defineConfig({
         inline: ["@apollo/client"]
       }
     },
+    setupFiles: ['./setup.ts'],
     environment: 'jsdom',
     globals: true,
     include: ['**/*.test.tsx'],

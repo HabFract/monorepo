@@ -1,6 +1,10 @@
 import { vi } from 'vitest';
 import "fake-indexeddb/auto";
 
+import indexedDB from 'fake-indexeddb';
+
+window.indexedDB = indexedDB;
+
 import '@testing-library/react/dont-cleanup-after-each';
 import { mockedCacheEntries } from "./integration/mocks/cache";
 import { SPHERE_ID } from "./integration/mocks/spheres";

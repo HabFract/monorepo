@@ -13,10 +13,10 @@
   "ts-node": {
     "experimentalSpecifierResolution": "node",
     "transpileOnly": true,
-    "esm": true,
+    "esm": true
   },
   "types": ["vitest/globals"],
-  "include": ["integration/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "../ui/src/**/*.ts", "../ui/src/**/*.tsx"],
   "exclude": [
     "../ui/src/graphql/**/*.ts",
     "../ui/src/graphql/generated/mocks-type-fixed"
