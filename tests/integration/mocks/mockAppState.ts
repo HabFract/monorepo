@@ -65,6 +65,15 @@ export const mockAppState: AppState = {
                 startTime: 1617235200,
                 endTime: undefined,
               },
+              orbit5: {
+                id: 'orbit5',
+                eH: 'orbit5EntryHash',
+                name: 'Go for a walk',
+                scale: Scale.Atom,
+                frequency: Frequency.DAILY_OR_MORE.THREE,
+                startTime: 1617235200,
+                endTime: undefined,
+              },
             },
           },
         },
@@ -85,13 +94,18 @@ export const mockAppState: AppState = {
       '2023-W19': false,
     },
     orbit3: {
-      '2023-05-01': [true, false, true],
-      '2023-05-02': [false, false, false],
-      '2023-05-03': [true, true, true],
+      '2023-05-01': true,
+      '2023-05-02': false,
+      '2023-05-03': true,
     },
     orbit4: {
       '2023-05': true,
       '2023-06': false,
+    },
+    orbit5: {
+      '2023-05-01': [true, false, true],
+      '2023-05-02': [false, false, false],
+      '2023-05-03': [true, true, true],
     },
   },
   listSortFilter: {

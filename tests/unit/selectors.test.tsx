@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { act, useMemo } from 'react';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -10,7 +10,7 @@ import { appStateAtom } from '../../ui/src/state/store';
 import { Frequency } from '../../ui/src/state/types/orbit';
 
 describe('State selectors', () => {
-  describe('currentSphereAtom', () => {
+  describe('currentSphere', () => {
     it('should return the current sphere when it exists', () => {
       const TestComponent = () => {
         const [currentSphere] = useAtom(currentSphereAtom);
@@ -77,7 +77,7 @@ describe('State selectors', () => {
   describe('getOrbitFrequency', () => {
     const TestComponent = ({ orbitId }: { orbitId: string }) => {
       const [frequency] = useAtom(useMemo(() => getOrbitFrequency(orbitId), [orbitId]));
-      return <div data-testid="frequency">{frequency}</div>;
+      return <div data-testid="container">{frequency}</div>;
     };
 
     it('should return the correct frequency for daily orbit', () => {
@@ -87,7 +87,7 @@ describe('State selectors', () => {
         </TestProvider>
       );
 
-      expect(screen.getByTestId('frequency').textContent).toBe(Frequency.DAILY_OR_MORE.DAILY.toString());
+      expect(screen.getByTestId('container').textContent).toBe(Frequency.DAILY_OR_MORE.DAILY.toString());
     });
 
     it('should return the correct frequency for weekly orbit', () => {
@@ -96,7 +96,7 @@ describe('State selectors', () => {
           <TestComponent orbitId="orbit2" />
         </TestProvider>
       );
-      expect(screen.getByTestId('frequency').textContent).toBe(Frequency.LESS_THAN_DAILY.WEEKLY.toString());
+      expect(screen.getByTestId('container').textContent).toBe(Frequency.LESS_THAN_DAILY.WEEKLY.toString());
     });
 
     it('should return the correct frequency for monthly orbit', () => {
@@ -105,7 +105,7 @@ describe('State selectors', () => {
           <TestComponent orbitId="orbit4" />
         </TestProvider>
       );
-      expect(screen.getByTestId('frequency').textContent).toBe(Frequency.LESS_THAN_DAILY.MONTHLY.toString());
+      expect(screen.getByTestId('container').textContent).toBe(Frequency.LESS_THAN_DAILY.MONTHLY.toString());
     });
 
     it('should return null for non-existent orbit', () => {
@@ -114,7 +114,7 @@ describe('State selectors', () => {
           <TestComponent orbitId="non-existent-orbit" />
         </TestProvider>
       );
-      expect(screen.getByTestId('frequency').textContent).toBe('');
+      expect(screen.getByTestId('container').textContent).toBe('');
     });
   });
 
@@ -145,37 +145,118 @@ describe('State selectors', () => {
   });
 
   describe('setWinForNode', () => {
-    const TestComponent = ({ orbitId }: { orbitId: string }) => {
+    const TestComponent = ({ orbitId, date, winIndex, hasWin }: { orbitId: string, date: string, winIndex?: number, hasWin: boolean }) => {
       const [winData] = useAtom(useMemo(() => nodeWinDataAtom(orbitId), [orbitId]));
       const [, setWin] = useAtom(setWinForNode);
       return (
         <div>
           <div data-testid="container">{JSON.stringify(winData)}</div>
-          <button onClick={() => setWin({ nodeId: 'orbit1', date: '2023-05-04', hasWin: true })}>Set Win</button>
+          <button onClick={() => setWin({ nodeId: orbitId, date, winIndex, hasWin })}>Set Win</button>
         </div>
       );
     };
-    it('should set a win for a node', async () => {
+  
+    it('should set a win for a node with frequency == 1', async () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='orbit1' />
+          <TestComponent orbitId='orbit1' date='2023-05-04' hasWin={true} />
         </TestProvider>
       );
-
+  
       await userEvent.click(screen.getByText('Set Win'));
-
+  
       const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
       expect(updatedWinData['2023-05-04']).toBe(true);
     });
-
-    it('should not set a win for a non-existent node', async () => {
+  
+    it('should set a win for a node with frequency < 1', async () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='non-existent-orbit' />
+          <TestComponent orbitId='orbit4' date='2023-05-04' hasWin={true} />
+        </TestProvider>
+      );
+      await act(async () => {
+        await userEvent.click(screen.getByText('Set Win'));
+      });
+  
+      const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
+      expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(false);
+      expect(updatedWinData['2023-05-04']).toBe(true);
+    });
+  
+    it('should set a win for a node with frequency > 1', async () => {
+      render(
+        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+          <TestComponent orbitId='orbit5' date='2023-05-04' winIndex={1} hasWin={true} />
+        </TestProvider>
+      );
+      await act(async () => {
+        await userEvent.click(screen.getByText('Set Win'));
+      });
+  
+      const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
+      console.log('updatedWinData :>> ', updatedWinData);
+      expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(true);
+      expect(updatedWinData['2023-05-04'][1]).toBe(true);
+    });
+  
+    it('should fail to set a win using an array for a node with frequency < 1', async () => {
+      render(
+        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+          <TestComponent orbitId='orbit1' date='2023-05-04' hasWin={true} />
         </TestProvider>
       );
 
-      await userEvent.click(screen.getByText('Set Win'));
+      await act(async () => {
+        await userEvent.click(screen.getByText('Set Win'));
+      });
+
+      const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
+      expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(false);
+      expect(updatedWinData['2023-05-04']).toBe(true);
+    });
+    it('should fail to set a win using an array for a node with frequency == 1', async () => {
+      render(
+        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+          <TestComponent orbitId='orbit3' date='2023-05-04' hasWin={true} />
+        </TestProvider>
+      );
+
+      await act(async () => {
+        await userEvent.click(screen.getByText('Set Win'));
+      });
+
+      const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
+      expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(false);
+      expect(updatedWinData['2023-05-04']).toBe(true);
+    });
+  
+    it('should fail to set a win using a boolean for a node with frequency > 1', async () => {
+      render(
+        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+          <TestComponent orbitId='orbit5' date='2023-05-04' hasWin={true} />
+        </TestProvider>
+      );
+
+      await act(async () => {
+        await userEvent.click(screen.getByText('Set Win'));
+      });
+
+      const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
+      expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(true);
+      expect(updatedWinData['2023-05-04']).toEqual([false, false, false]);
+    });
+  
+    it('should not set a win for a non-existent node', async () => {
+      render(
+        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+          <TestComponent orbitId='non-existent-orbit' date='2023-05-04' hasWin={true} />
+        </TestProvider>
+      );
+
+      await act(async () => {
+        await userEvent.click(screen.getByText('Set Win'));
+      });
 
       expect(screen.getByTestId('container').textContent).toBe('{}');
     });

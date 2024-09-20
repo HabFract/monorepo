@@ -67,6 +67,7 @@ export const setWinForNode = atom(
     }
 
     let newWinData;
+    debugger;
     if (frequency > 1) {
       const currentDayData = Array.isArray(currentWinData[date]) 
         ? currentWinData[date] as boolean[]
