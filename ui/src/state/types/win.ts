@@ -5,7 +5,7 @@ import { Frequency, OrbitNodeDetails } from './orbit';
 type FixedLengthArray<T, L extends number> = [T, ...T[]] & { length: L };
 
 // WinData type that depends on the frequency
-type WinData<F extends Frequency.Rationals> = F extends number & (F extends Frequency.DailyOrMoreRationalRepresentation ? F : never)
+export type WinData<F extends Frequency.Rationals> = F extends number & (F extends Frequency.DailyOrMoreRationalRepresentation ? F : never)
   ? { [dayIndex: string]: FixedLengthArray<boolean, F> }
   : { [dayIndex: string]: boolean };
 
@@ -13,7 +13,5 @@ type WinData<F extends Frequency.Rationals> = F extends number & (F extends Freq
 export type WinState = {
   [nodeId: ActionHashB64]: WinData<OrbitNodeDetails['frequency']>;
 };
-
-let a : WinData<typeof Frequency.LESS_THAN_DAILY.MONTHLY> = { "1/2/3": true}
 
 export default WinState;
