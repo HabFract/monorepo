@@ -2,12 +2,13 @@ import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { atom } from "jotai";
 import { nodeCache, OrbitNodeDetails } from "./jotaiKeyValueStore";
 import { currentSphere } from "./currentSphereHierarchyAtom";
+import { appStateAtom } from "./store";
 
 /**
  * Derived atom for SphereOrbitNodes
  * @returns {Record<ActionHashB64, OrbitNodeDetails> | null} A record of orbit nodes for the current sphere or null if no sphere is selected
  */
-export const sphereNodesAtom = atom((get) => {
+export const currentSphereOrbitNodes = atom((get) => {
   const state = get(appStateAtom);
   const currentSphereHash = state.spheres.currentSphereHash;
   const currentSphere = state.spheres.byHash[currentSphereHash];
@@ -33,7 +34,7 @@ export const sphereNodesAtom = atom((get) => {
 export const currentOrbitId = atom<{id: ActionHashB64 | null}>({id: null});
 
 export const currentOrbitDetails = atom<OrbitNodeDetails | undefined>((get) => {
-  const currentSphereNodes = get(sphereNodesAtom);
+  const currentSphereNodes = get(currentSphereOrbitNodes);
   const currentOrbitAh = get(currentOrbitId)?.id;
   if(!currentSphereNodes || !currentOrbitAh) return;
   return currentSphereNodes[currentOrbitAh];
@@ -47,7 +48,7 @@ export const getOrbitOfCurrentSphereByIdAtom = (id: ActionHashB64) => atom<Orbit
     const currentSphereHashes = get(currentSphere);
     if (!currentSphereHashes?.actionHash) return;
 
-    const currentSphereNodes = get(sphereNodesAtom);
+    const currentSphereNodes = get(currentSphereOrbitNodes);
     if (!currentSphereNodes) return;
 
     const orbitDetails = currentSphereNodes[id];
@@ -62,7 +63,7 @@ export const setOrbit = atom(
     const currentSphereHashes = get(currentSphere);
     if (!currentSphereHashes?.actionHash) return;
 
-    const currentSphereNodes = get(sphereNodesAtom);
+    const currentSphereNodes = get(currentSphereOrbitNodes);
     if (!currentSphereNodes) return;
 
     const orbitDetails = currentSphereNodes[orbitEh];

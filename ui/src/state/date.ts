@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { DateTime } from 'luxon';
-import { sphereNodesAtom } from './orbit';
+import { currentSphereOrbitNodes } from './orbit';
 import { currentOrbitId } from './orbit';
 import { SphereOrbitNodes } from './jotaiKeyValueStore';
 

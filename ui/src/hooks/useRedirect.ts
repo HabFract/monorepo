@@ -3,7 +3,7 @@ import { store } from '../state/jotaiKeyValueStore';
 import { useStateTransition } from './useStateTransition';
 import { useAtomValue } from 'jotai';
 import { currentSphere } from '../state/currentSphereHierarchyAtom';
-import { sphereHasCachedNodesAtom } from '../state/sphere';
+import { currentSphereHasCachedNodesAtom } from '../state/sphere';
 import { useToast } from '../contexts/toast';
 import { Orbit, useGetOrbitsQuery } from '../graphql/generated';
 import { extractEdges } from '../graphql/utils';
@@ -12,7 +12,7 @@ import React from 'react';
 export const useRedirect = (bypass?: boolean) => {
   const [_state, transition, params] = useStateTransition();
   const sphere = useAtomValue(currentSphere);
-  const [sphereHasCachedOrbits, setSphereHasCachedOrbits] = React.useState(store.get(sphereHasCachedNodesAtom));
+  const [sphereHasCachedOrbits, setSphereHasCachedOrbits] = React.useState(store.get(currentSphereHasCachedNodesAtom));
   const { showToast } = useToast();
 
   // First check for a current Sphere context

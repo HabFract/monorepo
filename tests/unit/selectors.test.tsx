@@ -8,8 +8,10 @@ import mockAppState from '../integration/mocks/mockAppState';
 import { TestProvider } from '../utils-frontend';
 import { appStateAtom } from '../../ui/src/state/store';
 import { Frequency } from '../../ui/src/state/types/orbit';
+import { currentSphereHasCachedNodesAtom, currentSphereHashesAtom } from '../../ui/src/state/sphere';
+import { currentSphereOrbitNodes } from '../../ui/src/state/orbit';
 
-describe('State selectors', () => {
+describe('Sphere selectors', () => {
   describe('currentSphere', () => {
     it('should return the current sphere when it exists', () => {
       const TestComponent = () => {
@@ -49,8 +51,136 @@ describe('State selectors', () => {
       expect(screen.getByTestId("container").textContent).toBe("null");
     });
   });
+  describe('currentSphereHasCachedNodesAtom', () => {
+    it('should return true when the current sphere has cached nodes', () => {
+      const TestComponent = () => {
+        const [hasCachedNodes] = useAtom(currentSphereHasCachedNodesAtom);
+        return <div>{hasCachedNodes.toString()}</div>;
+      };
 
+      render(
+        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+          <TestComponent />
+        </TestProvider>
+      );
 
+      expect(screen.getByText('true')).toBeTruthy();
+    });
+
+    it('should return false when the current sphere has no cached nodes', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        hierarchies: {
+          byRootOrbitEntryHash: {
+            [mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash].hierarchyRootOrbitEntryHashes[0]]: {
+              ...mockAppState.hierarchies.byRootOrbitEntryHash[mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash].hierarchyRootOrbitEntryHashes[0]],
+              nodeHashes: [],
+            },
+          },
+        },
+      };
+
+      const TestComponent = () => {
+        const [hasCachedNodes] = useAtom(currentSphereHasCachedNodesAtom);
+        return <div>{hasCachedNodes.toString()}</div>;
+      };
+
+      render(
+        <TestProvider initialValues={[[appStateAtom, modifiedMockState]]}>
+          <TestComponent />
+        </TestProvider>
+      );
+
+      expect(screen.getByText('false')).toBeTruthy();
+    });
+  });
+  describe('currentSphereOrbitNodes', () => {
+    it('should return orbit nodes for the current sphere', () => {
+      const TestComponent = () => {
+        const [sphereNodes] = useAtom(currentSphereOrbitNodes);
+        return <div>{JSON.stringify(sphereNodes)}</div>;
+      };
+
+      render(
+        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+          <TestComponent />
+        </TestProvider>
+      );
+
+      const expectedNodes = JSON.stringify(mockAppState.orbitNodes.byHash);
+      expect(screen.getByText(expectedNodes)).toBeTruthy();
+    });
+
+    it('should return null when there are no orbit nodes', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        orbitNodes: {
+          ...mockAppState.orbitNodes,
+          byHash: {},
+        },
+      };
+
+      const TestComponent = () => {
+        const [sphereNodes] = useAtom(currentSphereOrbitNodes);
+        return <div data-testid="container">{JSON.stringify(sphereNodes)}</div>;
+      };
+
+      render(
+        <TestProvider initialValues={[[appStateAtom, modifiedMockState]]}>
+          <TestComponent />
+        </TestProvider>
+      );
+
+      expect(screen.getByTestId("container").textContent).toBe("null");
+    });
+  });
+
+  describe('currentSphereHashesAtom', () => {
+    it('should return the current sphere hashes when a sphere is selected', () => {
+      const TestComponent = () => {
+        const [sphereHashes] = useAtom(currentSphereHashesAtom);
+        return <div>{JSON.stringify(sphereHashes)}</div>;
+      };
+
+      render(
+        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+          <TestComponent />
+        </TestProvider>
+      );
+
+      const expectedHashes = JSON.stringify({
+        entryHash: mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash].details.entryHash,
+        actionHash: mockAppState.spheres.currentSphereHash,
+      });
+      expect(screen.getByText(expectedHashes)).toBeTruthy();
+    });
+
+    it('should return an empty object when no sphere is selected', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        spheres: {
+          ...mockAppState.spheres,
+          currentSphereHash: '',
+        },
+      };
+
+      const TestComponent = () => {
+        const [sphereHashes] = useAtom(currentSphereHashesAtom);
+        return <div data-testid="container">{JSON.stringify(sphereHashes)}</div>;
+      };
+
+      render(
+        <TestProvider initialValues={[[appStateAtom, modifiedMockState]]}>
+          <TestComponent />
+        </TestProvider>
+      );
+
+      expect(screen.getByTestId("container").textContent).toBe("{}");
+    });
+  });
+});
+
+describe('Orbit selectors', () => {
   describe('getOrbitFrequency', () => {
     const TestComponent = ({ orbitId }: { orbitId: string }) => {
       const [frequency] = useAtom(useMemo(() => getOrbitFrequency(orbitId), [orbitId]));
@@ -94,7 +224,6 @@ describe('State selectors', () => {
       expect(screen.getByTestId('container').textContent).toBe('');
     });
   });
-
 
   describe('orbitWinDataAtom', () => {
     const TestComponent = ({ orbitId }: { orbitId: string }) => {
@@ -205,7 +334,7 @@ describe('State selectors', () => {
     it('should return null completion status for non-existent orbit', () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='non-existent-orbit'/>
+          <TestComponent orbitId='non-existent-orbit' />
         </TestProvider>
       );
 

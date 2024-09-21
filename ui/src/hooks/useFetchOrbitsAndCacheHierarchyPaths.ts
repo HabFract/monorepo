@@ -11,7 +11,7 @@ import {
   SphereNodeDetailsCache,
   SphereOrbitNodes,
 } from "../state/jotaiKeyValueStore";
-import { sphereNodesAtom } from '../state/orbit';
+import { currentSphereOrbitNodes } from '../state/orbit';
 import { hierarchy, HierarchyNode } from "d3-hierarchy";
 import { ActionHashB64 } from "@holochain/client";
 import {
@@ -45,7 +45,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
   if(bypass) return { loading: false, error: undefined, cache: null}
   if(!currentSphereId) return { loading: false, error: new Error("Cannot run hook without a sphere Id"), cache: null}
-  const sphereNodes = store.get(sphereNodesAtom) as SphereOrbitNodes;
+  const sphereNodes = store.get(currentSphereOrbitNodes) as SphereOrbitNodes;
 
   const { data, loading, error } = useGetOrbitHierarchyQuery({
     skip: hasCached,

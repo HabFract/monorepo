@@ -11,7 +11,7 @@ import { currentOrbitCoords } from "../../state/orbit";
 import useSideMenuToggle from "../../hooks/useSideMenuToggle";
 import { useToast } from '../../contexts/toast';
 import { store } from "../../state/jotaiKeyValueStore";
-import { sphereNodesAtom } from '../../state/orbit';
+import { currentSphereOrbitNodes } from '../../state/orbit';
 import { extractEdges } from "../../graphql/utils";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { ItemType } from "antd/es/menu/hooks/useItems";
@@ -60,7 +60,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   store.sub(currentSphere, () => {
     spheresArray && setMenuItems(createSphereMenuItems({spheres: spheresArray}))
   })
-  const sphereOrbitsCached = useAtomValue(sphereNodesAtom);
+  const sphereOrbitsCached = useAtomValue(currentSphereOrbitNodes);
   const tooltipMsg = `You need to ${ spheresArray.length == 0 ? "create" : spheresArray.length == 4 ? "delete" : "select"} a Sphere `;
 
   const sphere = (sphereAh?: EntryHashB64) => spheresArray.find((sphere: any) => (sphereAh || store.get(currentSphere)?.actionHash) == sphere.id) as Sphere & {id: ActionHashB64};

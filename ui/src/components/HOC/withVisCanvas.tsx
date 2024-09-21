@@ -18,7 +18,7 @@ import { VisControls } from 'habit-fract-design-system';
 import { currentDayAtom } from '../../state/date';
 import { isSmallScreen } from '../vis/helpers';
 import { useRedirect } from '../../hooks/useRedirect';
-import { sphereHasCachedNodesAtom } from '../../state/sphere';
+import { currentSphereHasCachedNodesAtom } from '../../state/sphere';
 import { HierarchyNode } from 'd3-hierarchy';
 import { byStartTime } from '../vis/OrbitTree';
 

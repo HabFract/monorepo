@@ -12,7 +12,7 @@ import { currentOrbitCoords, currentOrbitId, newTraversalLevelIndexId } from '..
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
 import { TreeVisualization } from './base-classes/TreeVis';
-import { sphereNodesAtom } from '../../state/orbit';
+import { currentSphereOrbitNodes } from '../../state/orbit';
 import { isSmallScreen } from './helpers';
 import { useNodeTraversal } from '../../hooks/useNodeTraversal';
 
@@ -28,7 +28,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // Get sphere and sphere orbit nodes details
   const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries)) as SphereOrbitNodes;
-  const sphereNodeDetails = useAtomValue(sphereNodesAtom);
+  const sphereNodeDetails = useAtomValue(currentSphereOrbitNodes);
 
   // Get and set node traversal bounds state
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
@@ -175,7 +175,7 @@ export function byStartTime(a: (HierarchyNode<unknown> | {content: string}), b: 
     const idA : ActionHashB64 = a?.data?.content || a?.content;
     //@ts-ignore
     const idB : ActionHashB64 = b?.data?.content || b?.content;
-    const nodeDetailsCache = store.get(sphereNodesAtom);
+    const nodeDetailsCache = store.get(currentSphereOrbitNodes);
     if((nodeDetailsCache?.[idB]?.startTime || 0  as number) - (nodeDetailsCache?.[idA as keyof SphereOrbitNodes]?.startTime || 0  as number) == 0) {
       console.error("Sorting error!")
       return 0

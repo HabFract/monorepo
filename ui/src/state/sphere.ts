@@ -16,7 +16,7 @@ export const currentSphereAtom = atom((get) => {
  * Derived atom to check if a Sphere has cached nodes
  * @returns {boolean} True if the current sphere has cached nodes, false otherwise
  */
-export const sphereHasCachedNodesAtom = atom((get) => {
+export const currentSphereHasCachedNodesAtom = atom((get) => {
   const state = get(appStateAtom);
   const currentSphereHash = state.spheres.currentSphereHash;
   const currentSphere = state.spheres.byHash[currentSphereHash];
