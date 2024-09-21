@@ -1,36 +1,58 @@
 import { atomWithStorage } from 'jotai/utils';
-import OrbitState from './types/orbit';
-import SphereState from './types/sphere';
+import OrbitState, { OrbitDetails, OrbitNodeDetails, RootOrbitEntryHash } from './types/orbit';
+import SphereState, { SphereDetails } from './types/sphere';
 import WinState from './types/win';
+import { ActionHashB64 } from '@holochain/client';
+import { Hierarchy } from './types/hierarchy';
 
 export interface AppState {
-  spheres: SphereState;
-  orbits: OrbitState;
-  wins: WinState;
-  // UI
-  listSortFilter: {
-    sortCriteria: string;
-    sortOrder: string;
+  spheres: {
+    currentSphereHash: ActionHashB64;
+    byHash: Record<ActionHashB64, {
+      details: SphereDetails;
+      hierarchyRootOrbitEntryHashes: RootOrbitEntryHash[];
+    }>;
   };
-  currentDay: string;
-  // Onboarding
-  subdivisionList: string[];
+  hierarchies: {
+    byRootOrbitEntryHash: Record<RootOrbitEntryHash, Hierarchy>;
+  };
+  orbitNodes: {
+    currentOrbitHash: ActionHashB64 | null;
+    byHash: Record<ActionHashB64, OrbitNodeDetails>;
+  };
+  wins: WinState;
+  ui: {
+    listSortFilter: {
+      sortCriteria: string;
+      sortOrder: string;
+    };
+    currentDay: string;
+    subdivisionList: string[];
+  };
 }
 
-// Create a persisted atom for the entire app state
+/**
+ * Persisted atom for the entire app state, can be used to hydrate app state when no Holochain is possible
+ */
 export const appStateAtom = atomWithStorage<AppState>('appState', {
   spheres: {
     currentSphereHash: '',
-    spheres: {},
+    byHash: {},
+  },
+  hierarchies: {
+    byRootOrbitEntryHash: {},
+  },
+  orbitNodes: {
+    currentOrbitHash: null,
+    byHash: {},
   },
   wins: {},
-  orbits: {
-    currentOrbitId: null,
+  ui: {
+    listSortFilter: {
+      sortCriteria: 'name',
+      sortOrder: 'lowestToGreatest',
+    },
+    currentDay: new Date().toISOString(),
+    subdivisionList: [],
   },
-  currentDay: new Date().toISOString(),
-  listSortFilter: {
-    sortCriteria: 'name',
-    sortOrder: 'lowestToGreatest',
-  },
-  subdivisionList: [],
 });

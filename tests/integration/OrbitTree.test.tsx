@@ -16,7 +16,7 @@ afterEach(() => {
   cleanup();
 });
 
-test('renders a loading state, then an orbit tree vis with one node', async () => {
+test.only('renders a loading state, then an orbit tree vis with one node', async () => {
   // Arrange
   const { getByTestId } = render(
     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>

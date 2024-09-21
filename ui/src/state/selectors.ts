@@ -2,72 +2,70 @@ import { ActionHashB64 } from "@holochain/client";
 import { atom } from "jotai";
 import { appStateAtom } from "./store";
 import { WinData, WinState } from "./types/win";
-import SphereState, { SphereEntry } from "./types/sphere";
-import { Frequency } from "./types/orbit";
+import { SphereDetails } from "./types/sphere";
+import { Frequency, OrbitNodeDetails, RootOrbitEntryHash } from "./types/orbit";
+import { Hierarchy } from "./types/hierarchy";
+
 
 /**
  * Gets the details of the current Sphere context
  * @returns The current sphere details or null if no sphere is selected
  */
-export const currentSphereAtom = atom((get) => {
+export const currentSphereAtom = atom<SphereDetails | null>((get) => {
   const state = get(appStateAtom);
   const currentSphereHash = state.spheres.currentSphereHash;
-  return state.spheres.spheres[currentSphereHash] || null;
+  return state.spheres.byHash[currentSphereHash]?.details || null;
 });
 
 /**
  * Gets the frequency of a given Orbit from the AppState
- * @param nodeId The ID of the orbit node
+ * @param orbitHash The ActionHash of the orbit
  * @returns An atom that resolves to the frequency of the orbit, or null if the orbit doesn't exist
  */
-export const getOrbitFrequency = (nodeId: ActionHashB64) => {
-  const selectFrequency = atom((get) => {
+export const getOrbitFrequency = (orbitHash: ActionHashB64) => {
+  const selectFrequency = atom<Frequency.Rationals | null>((get) => {
     const state = get(appStateAtom);
-    const sphere = Object.values(state.spheres.spheres).find(sphere => 
-      Object.values(sphere.hierarchies).some(hierarchy => 
-        hierarchy.nodes[nodeId]
-      )
-    );
-    const node = sphere && Object.values(sphere.hierarchies).flatMap(h => Object.values(h.nodes)).find(n => n.id === nodeId);
-    return node?.frequency || null;
+    const orbit = state.orbitNodes.byHash[orbitHash];
+    return orbit?.frequency || null;
   });
   return selectFrequency;
 };
 
 /**
- * Gets the win data for a specific node
- * @param nodeId The ID of the orbit node
- * @returns An atom that resolves to the win data for the node, or an empty object if no data exists
+ * Gets the win data for a specific orbit
+ * @param orbitHash The ActionHash of the orbit
+ * @returns An atom that resolves to the win data for the orbit, or an empty object if no data exists
  */
-export const nodeWinDataAtom = (nodeId: ActionHashB64) => {
-  const selectWinData = atom((get) => {
+export const orbitWinDataAtom = (orbitHash: ActionHashB64) => {
+  const selectWinData = atom<WinData<Frequency.Rationals>>((get) => {
     const state = get(appStateAtom);
-    return state.wins[nodeId] || {};
+    return state.wins[orbitHash] || {};
   });
   return selectWinData;
 };
 
 /**
- * Sets a win for a specific node on a given date
- * @param nodeId The ID of the orbit node
+ * Sets a win for a specific orbit on a given date
+ * @param orbitHash The ActionHash of the orbit
  * @param date The date for the win
  * @param winIndex The index of the win (for frequencies > 1)
  * @param hasWin Whether the win is achieved or not
  */
-export const setWinForNode = atom(
+export const setWinForOrbit = atom(
   null,
-  (get, set, { nodeId, date, winIndex, hasWin }: { nodeId: ActionHashB64, date: string, winIndex?: number, hasWin: boolean }) => {
+  (get, set, { orbitHash, date, winIndex, hasWin }: { orbitHash: ActionHashB64, date: string, winIndex?: number, hasWin: boolean }) => {
     const state = get(appStateAtom);
-    const frequency = get(getOrbitFrequency(nodeId));
-    const currentWinData = state.wins[nodeId] || {};
-
-    if (frequency === null) {
-      console.warn(`Attempted to set win for non-existent orbit: ${nodeId}`);
+    const orbit = state.orbitNodes.byHash[orbitHash];
+    
+    if (!orbit) {
+      console.warn(`Attempted to set win for non-existent orbit: ${orbitHash}`);
       return;
     }
 
-    let newWinData;
-    debugger;
+    const frequency = orbit.frequency;
+    const currentWinData = state.wins[orbitHash] || {};
+
+    let newWinData: WinData<typeof frequency>;
     if (frequency > 1) {
       const currentDayData = Array.isArray(currentWinData[date]) 
         ? currentWinData[date] as boolean[]
@@ -76,32 +74,33 @@ export const setWinForNode = atom(
       if (winIndex !== undefined && winIndex < Math.round(frequency)) {
         newDayData[winIndex] = hasWin;
       }
-      newWinData = { ...currentWinData, [date]: newDayData };
+      newWinData = { ...currentWinData, [date]: newDayData } as WinData<typeof frequency>;
     } else {
-      newWinData = { ...currentWinData, [date]: hasWin };
+      newWinData = { ...currentWinData, [date]: hasWin } as WinData<typeof frequency>;
     }
 
     set(appStateAtom, {
       ...state,
       wins: {
         ...state.wins,
-        [nodeId]: newWinData,
+        [orbitHash]: newWinData,
       },
     });
   }
 );
 
 /**
- * Calculates the overall completion status for a specific node
- * @param nodeId The ID of the orbit node
+ * Calculates the overall completion status for a specific orbit
+ * @param orbitHash The ActionHash of the orbit
  * @returns An atom that resolves to the completion status (as a percentage), or null if the orbit doesn't exist
  */
-export const calculateCompletionStatusAtom = (nodeId: ActionHashB64) => {
-  const calculateCompletionStatus = atom((get) => {
-    const winData = get(nodeWinDataAtom(nodeId));
-    const frequency = get(getOrbitFrequency(nodeId));
+export const calculateCompletionStatusAtom = (orbitHash: ActionHashB64) => {
+  const calculateCompletionStatus = atom<number | null>((get) => {
+    const state = get(appStateAtom);
+    const orbit = state.orbitNodes.byHash[orbitHash];
+    const winData = state.wins[orbitHash] || {};
 
-    if (frequency === null) {
+    if (!orbit) {
       return null; // Return null for non-existent orbits
     }
 
@@ -113,16 +112,17 @@ export const calculateCompletionStatusAtom = (nodeId: ActionHashB64) => {
 };
 
 /**
- * Calculates the streak information for a specific node
- * @param nodeId The ID of the orbit node
+ * Calculates the streak information for a specific orbit
+ * @param orbitHash The ActionHash of the orbit
  * @returns An atom that resolves to the streak count, or null if the orbit doesn't exist
  */
-export const calculateStreakAtom = (nodeId: ActionHashB64) => {
-  const calculateStreak = atom((get) => {
-    const winData = get(nodeWinDataAtom(nodeId));
-    const frequency = get(getOrbitFrequency(nodeId));
+export const calculateStreakAtom = (orbitHash: ActionHashB64) => {
+  const calculateStreak = atom<number | null>((get) => {
+    const state = get(appStateAtom);
+    const orbit = state.orbitNodes.byHash[orbitHash];
+    const winData = state.wins[orbitHash] || {};
 
-    if (frequency === null) {
+    if (!orbit) {
       return null; // Return null for non-existent orbits
     }
 
@@ -131,4 +131,33 @@ export const calculateStreakAtom = (nodeId: ActionHashB64) => {
     return 0;
   });
   return calculateStreak;
+};
+
+/**
+ * Gets the hierarchy for a given root orbit entry hash
+ * @param rootOrbitEntryHash The EntryHash of the root orbit
+ * @returns An atom that resolves to the hierarchy, or null if it doesn't exist
+ */
+export const getHierarchyAtom = (rootOrbitEntryHash: RootOrbitEntryHash) => {
+  const selectHierarchy = atom<Hierarchy | null>((get) => {
+    const state = get(appStateAtom);
+    return state.hierarchies.byRootOrbitEntryHash[rootOrbitEntryHash] || null;
+  });
+  return selectHierarchy;
+};
+
+/**
+ * Gets all orbits for a given hierarchy
+ * @param rootOrbitEntryHash The EntryHash of the root orbit
+ * @returns An atom that resolves to an array of orbit details
+ */
+export const getHierarchyOrbitsAtom = (rootOrbitEntryHash: RootOrbitEntryHash) => {
+  const selectOrbits = atom<OrbitNodeDetails[]>((get) => {
+    const state = get(appStateAtom);
+    const hierarchy = state.hierarchies.byRootOrbitEntryHash[rootOrbitEntryHash];
+    if (!hierarchy) return [];
+    
+    return hierarchy.nodeHashes.map(hash => state.orbitNodes.byHash[hash]);
+  });
+  return selectOrbits;
 };

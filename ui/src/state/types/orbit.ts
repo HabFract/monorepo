@@ -45,26 +45,32 @@ export namespace Frequency {
   export type Rationals = LessThanDailyRationalRepresentation | DailyOrMoreRationalRepresentation;
 }
 
-
 /**
- * A flat representation of the union of an Orbit's data, metadata, and win data. 
+ * A flat representation of the union of an Orbit's data and metadata 
  */
-export interface OrbitNodeDetails {
+export interface OrbitDetails {
   id: ActionHashB64;
-  eH?: EntryHashB64;
-  parentEh?: EntryHashB64;
-  description?: string;
+  eH: EntryHashB64;
   name: string;
   scale: Scale;
   frequency: Frequency.Rationals;
   startTime?: number;
   endTime?: number;
+  description?: string;
+  parentEh?: EntryHashB64;
+  childEh?: EntryHashB64;
+}
+
+/**
+ * Extra details that are dynamically calculate and cached but not persisted on the source chain
+ */
+export interface OrbitNodeDetails extends OrbitDetails {
   path?: string;
 }
 
-export type RootOrbitId = ActionHashB64;
+export type RootOrbitEntryHash = EntryHashB64;
 export type CurrentOrbitId = ActionHashB64;
 
 export default interface OrbitState {
-  currentOrbitId: ActionHashB64 | null;
+  currentOrbitId: CurrentOrbitId | null;
 }

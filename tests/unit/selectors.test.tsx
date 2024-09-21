@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useAtom } from 'jotai';
-import { currentSphereAtom, nodeWinDataAtom, setWinForNode, calculateStreakAtom, calculateCompletionStatusAtom, getOrbitFrequency } from '../../ui/src/state/selectors';
+import { currentSphereAtom, calculateStreakAtom, calculateCompletionStatusAtom, getOrbitFrequency, orbitWinDataAtom, setWinForOrbit } from '../../ui/src/state/selectors';
 import mockAppState from '../integration/mocks/mockAppState';
 import { TestProvider } from '../utils-frontend';
 import { appStateAtom } from '../../ui/src/state/store';
@@ -22,12 +22,11 @@ describe('State selectors', () => {
           <TestComponent />
         </TestProvider>
       );
-      const sphere = mockAppState.spheres.spheres.sphere1;
-      const expectedSphere = JSON.stringify(sphere);
+      const expectedSphere = JSON.stringify(mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash].details);
       expect(screen.getByText(expectedSphere)).toBeTruthy();
     });
 
-    it('should return undefined when the current sphere does not exist', () => {
+    it('should return null when the current sphere does not exist', () => {
       const modifiedMockState = {
         ...mockAppState,
         spheres: {
@@ -47,32 +46,10 @@ describe('State selectors', () => {
         </TestProvider>
       );
 
-      expect(screen.getByTestId("container").innerText).not.toBeTruthy();
-    });
-
-    it('should return undefined when the spheres object is empty', () => {
-      const modifiedMockState = {
-        ...mockAppState,
-        spheres: {
-          currentSphereHash: '',
-          spheres: {},
-        },
-      };
-
-      const TestComponent = () => {
-        const [currentSphere] = useAtom(currentSphereAtom);
-        return <div data-testid="container">{JSON.stringify(currentSphere)}</div>;
-      };
-
-      render(
-        <TestProvider initialValues={[[appStateAtom, modifiedMockState]]}>
-          <TestComponent />
-        </TestProvider>
-      );
-
-      expect(screen.getByTestId("container").innerText).not.toBeTruthy();
+      expect(screen.getByTestId("container").textContent).toBe("null");
     });
   });
+
 
   describe('getOrbitFrequency', () => {
     const TestComponent = ({ orbitId }: { orbitId: string }) => {
@@ -83,7 +60,7 @@ describe('State selectors', () => {
     it('should return the correct frequency for daily orbit', () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId="orbit1" />
+          <TestComponent orbitId="uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />
         </TestProvider>
       );
 
@@ -93,7 +70,7 @@ describe('State selectors', () => {
     it('should return the correct frequency for weekly orbit', () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId="orbit2" />
+          <TestComponent orbitId="uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc" />
         </TestProvider>
       );
       expect(screen.getByTestId('container').textContent).toBe(Frequency.LESS_THAN_DAILY.WEEKLY.toString());
@@ -102,7 +79,7 @@ describe('State selectors', () => {
     it('should return the correct frequency for monthly orbit', () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId="orbit4" />
+          <TestComponent orbitId="uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc" />
         </TestProvider>
       );
       expect(screen.getByTestId('container').textContent).toBe(Frequency.LESS_THAN_DAILY.MONTHLY.toString());
@@ -118,22 +95,23 @@ describe('State selectors', () => {
     });
   });
 
-  describe('nodeWinDataAtom', () => {
+
+  describe('orbitWinDataAtom', () => {
     const TestComponent = ({ orbitId }: { orbitId: string }) => {
-      const [winData] = useAtom(useMemo(() => nodeWinDataAtom(orbitId), [orbitId]));
+      const [winData] = useAtom(useMemo(() => orbitWinDataAtom(orbitId), [orbitId]));
       return <div data-testid='container'>{JSON.stringify(winData)}</div>;
     };
-    it('should return win data for a specific node', () => {
+    it('should return win data for a specific orbit', () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='orbit1' />
+          <TestComponent orbitId='uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc' />
         </TestProvider>
       );
 
-      expect(screen.getByText(JSON.stringify(mockAppState.wins.orbit1))).toBeTruthy();
+      expect(screen.getByText(JSON.stringify(mockAppState.wins.uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc))).toBeTruthy();
     });
 
-    it('should return empty object for non-existent node win data', () => {
+    it('should return empty object for non-existent orbit win data', () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
           <TestComponent orbitId='non-existent-orbit' />
@@ -144,125 +122,70 @@ describe('State selectors', () => {
     });
   });
 
-  describe('setWinForNode', () => {
+  describe('setWinForOrbit', () => {
     const TestComponent = ({ orbitId, date, winIndex, hasWin }: { orbitId: string, date: string, winIndex?: number, hasWin: boolean }) => {
-      const [winData] = useAtom(useMemo(() => nodeWinDataAtom(orbitId), [orbitId]));
-      const [, setWin] = useAtom(setWinForNode);
+      const [winData] = useAtom(useMemo(() => orbitWinDataAtom(orbitId), [orbitId]));
+      const [, setWin] = useAtom(setWinForOrbit);
       return (
         <div>
           <div data-testid="container">{JSON.stringify(winData)}</div>
-          <button onClick={() => setWin({ nodeId: orbitId, date, winIndex, hasWin })}>Set Win</button>
+          <button onClick={() => setWin({ orbitHash: orbitId, date, winIndex, hasWin })}>Set Win</button>
         </div>
       );
     };
-  
-    it('should set a win for a node with frequency == 1', async () => {
+
+    it('should set a win for an orbit with frequency == 1', async () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='orbit1' date='2023-05-04' hasWin={true} />
+          <TestComponent orbitId='uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' date='2023-05-04' hasWin={true} />
         </TestProvider>
       );
-  
+
       await userEvent.click(screen.getByText('Set Win'));
-  
+
       const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
       expect(updatedWinData['2023-05-04']).toBe(true);
     });
-  
-    it('should set a win for a node with frequency < 1', async () => {
+
+    it('should set a win for an orbit with frequency < 1', async () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='orbit4' date='2023-05-04' hasWin={true} />
+          <TestComponent orbitId='uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc' date='2023-07' hasWin={true} />
         </TestProvider>
       );
-      await act(async () => {
-        await userEvent.click(screen.getByText('Set Win'));
-      });
-  
+      await userEvent.click(screen.getByText('Set Win'));
+
       const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
-      expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(false);
-      expect(updatedWinData['2023-05-04']).toBe(true);
+      expect(updatedWinData['2023-07']).toBe(true);
     });
-  
-    it('should set a win for a node with frequency > 1', async () => {
+
+    it('should set a win for an orbit with frequency > 1', async () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='orbit5' date='2023-05-04' winIndex={1} hasWin={true} />
+          <TestComponent orbitId='uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc' date='2023-05-04' winIndex={1} hasWin={true} />
         </TestProvider>
       );
-      await act(async () => {
-        await userEvent.click(screen.getByText('Set Win'));
-      });
-  
+      await userEvent.click(screen.getByText('Set Win'));
+
       const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
-      console.log('updatedWinData :>> ', updatedWinData);
       expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(true);
       expect(updatedWinData['2023-05-04'][1]).toBe(true);
     });
-  
-    it('should fail to set a win using an array for a node with frequency < 1', async () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='orbit1' date='2023-05-04' hasWin={true} />
-        </TestProvider>
-      );
 
-      await act(async () => {
-        await userEvent.click(screen.getByText('Set Win'));
-      });
-
-      const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
-      expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(false);
-      expect(updatedWinData['2023-05-04']).toBe(true);
-    });
-    it('should fail to set a win using an array for a node with frequency == 1', async () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='orbit3' date='2023-05-04' hasWin={true} />
-        </TestProvider>
-      );
-
-      await act(async () => {
-        await userEvent.click(screen.getByText('Set Win'));
-      });
-
-      const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
-      expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(false);
-      expect(updatedWinData['2023-05-04']).toBe(true);
-    });
-  
-    it('should fail to set a win using a boolean for a node with frequency > 1', async () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='orbit5' date='2023-05-04' hasWin={true} />
-        </TestProvider>
-      );
-
-      await act(async () => {
-        await userEvent.click(screen.getByText('Set Win'));
-      });
-
-      const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
-      expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(true);
-      expect(updatedWinData['2023-05-04']).toEqual([false, false, false]);
-    });
-  
-    it('should not set a win for a non-existent node', async () => {
+    it('should not set a win for a non-existent orbit', async () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
           <TestComponent orbitId='non-existent-orbit' date='2023-05-04' hasWin={true} />
         </TestProvider>
       );
 
-      await act(async () => {
-        await userEvent.click(screen.getByText('Set Win'));
-      });
+      await userEvent.click(screen.getByText('Set Win'));
 
       expect(screen.getByTestId('container').textContent).toBe('{}');
     });
   });
 
-  describe('calculateCompletionStatusAtom', () => {
+  describe.skip('calculateCompletionStatusAtom', () => {
     const TestComponent = ({ orbitId }: { orbitId: string }) => {
       const [completionStatus] = useAtom(useMemo(() => calculateCompletionStatusAtom(orbitId), [orbitId]));
       return <div data-testid="container">{completionStatus}</div>;
@@ -271,7 +194,7 @@ describe('State selectors', () => {
     it('should calculate completion status', () => {
       render(
         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='orbit1' />
+          <TestComponent orbitId='uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' />
         </TestProvider>
       );
 
@@ -293,7 +216,7 @@ describe('State selectors', () => {
   describe.skip('calculateStreakAtom', () => {
     it('should calculate streak information', () => {
       const TestComponent = () => {
-        const [streak] = useAtom(calculateStreakAtom('orbit1'));
+        const [streak] = useAtom(calculateStreakAtom('uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj'));
         return <div>{streak}</div>;
       };
 

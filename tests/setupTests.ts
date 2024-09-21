@@ -13,35 +13,6 @@ import { atom } from "jotai";
 import { SortCriteria, SortOrder } from "../ui/src/state/listSortFilterAtom";
 import { nodeCacheItemsAtom } from '../ui/src/state/jotaiKeyValueStore';
 
-//@ts-ignore
-window.ResizeObserver = require("resize-observer-polyfill");
-
-function channelMock() {}
-channelMock.prototype.onmessage = function () {};
-channelMock.prototype.postMessage = function (data) {
-  this.onmessage({ data });
-};
-//@ts-ignore
-window.BroadcastChannel = channelMock;
-
-/* 
-/ Mocking the top level state machine for component params
-*/
-const initialState = {
-  // orbitEh: 'R28gZm9yIGEgd2Fsay==',
-  currentSphereEhB64: SPHERE_ID,
-  currentSphereAhB64: SPHERE_ID,
-};
-
-let mockUseStateTransitionResponse = ["Home", vi.fn(() => {}), initialState];
-export function setMockUseStateTransitionResponse(params: typeof initialState) {
-  mockUseStateTransitionResponse = ["Home", vi.fn(() => {}), params];
-}
-
-vi.mock("../ui/src/hooks/useStateTransition", () => ({
-  useStateTransition: () => mockUseStateTransitionResponse,
-  setMockUseStateTransitionResponse,
-}));
 
 /* 
 / Mocking the jotai indexdb store atoms for node details in the vis
