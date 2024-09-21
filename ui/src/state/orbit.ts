@@ -1,8 +1,34 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { atom } from "jotai";
 import { nodeCache, OrbitNodeDetails } from "./jotaiKeyValueStore";
-import { sphereNodesAtom } from "./sphere";
 import { currentSphere } from "./currentSphereHierarchyAtom";
+
+/**
+ * Derived atom for SphereOrbitNodes
+ * @returns {Record<ActionHashB64, OrbitNodeDetails> | null} A record of orbit nodes for the current sphere or null if no sphere is selected
+ */
+export const sphereNodesAtom = atom((get) => {
+  const state = get(appStateAtom);
+  const currentSphereHash = state.spheres.currentSphereHash;
+  const currentSphere = state.spheres.byHash[currentSphereHash];
+
+  if (!currentSphere) return null;
+
+  const sphereNodes: Record<ActionHashB64, OrbitNodeDetails> = {};
+  currentSphere.hierarchyRootOrbitEntryHashes.forEach(rootHash => {
+    const hierarchy = state.hierarchies.byRootOrbitEntryHash[rootHash];
+    if (hierarchy) {
+      hierarchy.nodeHashes.forEach(nodeHash => {
+        const node = state.orbitNodes.byHash[nodeHash];
+        if (node) {
+          sphereNodes[nodeHash] = node;
+        }
+      });
+    }
+  });
+
+  return Object.keys(sphereNodes).length > 0 ? sphereNodes : null;
+});
 
 export const currentOrbitId = atom<{id: ActionHashB64 | null}>({id: null});
 

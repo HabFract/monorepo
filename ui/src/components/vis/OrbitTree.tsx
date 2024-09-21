@@ -12,7 +12,7 @@ import { currentOrbitCoords, currentOrbitId, newTraversalLevelIndexId } from '..
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
 import { TreeVisualization } from './base-classes/TreeVis';
-import { sphereNodesAtom } from '../../state/sphere';
+import { sphereNodesAtom } from '../../state/orbit';
 import { isSmallScreen } from './helpers';
 import { useNodeTraversal } from '../../hooks/useNodeTraversal';
 

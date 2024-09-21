@@ -11,7 +11,7 @@ import {
   SphereNodeDetailsCache,
   SphereOrbitNodes,
 } from "../state/jotaiKeyValueStore";
-import { sphereNodesAtom } from '../state/sphere';
+import { sphereNodesAtom } from '../state/orbit';
 import { hierarchy, HierarchyNode } from "d3-hierarchy";
 import { ActionHashB64 } from "@holochain/client";
 import {

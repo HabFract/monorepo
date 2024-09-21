@@ -1,20 +1,48 @@
-import { atom, Atom } from "jotai";
-import { SphereHashes, currentSphere } from "./currentSphereHierarchyAtom";
-import { nodeCacheItemsAtom, SphereNodeDetailsCache, SphereOrbitNodes } from "./jotaiKeyValueStore";
+import { atom } from "jotai";
+import { appStateAtom } from "./store";
+import { SphereHashes } from "./currentSphereHierarchyAtom";
 
-// Derived atom for SphereOrbitNodes
-export const sphereNodesAtom = atom((get) => {
-  const items = get(nodeCacheItemsAtom);
-  const currentSphereHashes: SphereHashes = get(currentSphere as Atom<SphereHashes>);
-  return currentSphereHashes?.actionHash && items
-    ? (items[
-        currentSphereHashes.actionHash as keyof SphereNodeDetailsCache
-      ] as SphereOrbitNodes)
-    : undefined;
+/**
+ * Derived atom for the current sphere details
+ * @returns {object | null} The current sphere object or undefined if no sphere is selected
+ */
+export const currentSphereAtom = atom((get) => {
+  const state = get(appStateAtom);
+  const currentSphereHash = state.spheres.currentSphereHash;
+  return state.spheres.byHash[currentSphereHash] || null;
 });
 
-// Derived atom for if a Sphere has cached nodes
+/**
+ * Derived atom to check if a Sphere has cached nodes
+ * @returns {boolean} True if the current sphere has cached nodes, false otherwise
+ */
 export const sphereHasCachedNodesAtom = atom((get) => {
-  const nodeDetails = get(sphereNodesAtom);
-  return typeof nodeDetails == 'object' && Object.values(nodeDetails).length !== 0
+  const state = get(appStateAtom);
+  const currentSphereHash = state.spheres.currentSphereHash;
+  const currentSphere = state.spheres.byHash[currentSphereHash];
+  
+  if (!currentSphere) return false;
+  
+  const rootOrbitHashes = currentSphere.hierarchyRootOrbitEntryHashes;
+  return rootOrbitHashes.some(hash => {
+    const hierarchy = state.hierarchies.byRootOrbitEntryHash[hash];
+    return hierarchy && hierarchy.nodeHashes.length > 0;
+  });
+});
+
+
+/**
+ * Atom for the current sphere hashes
+ */
+export const currentSphereHashesAtom = atom<SphereHashes>((get) => {
+  const state = get(appStateAtom);
+  const currentSphereHash = state.spheres.currentSphereHash;
+  const currentSphere = state.spheres.byHash[currentSphereHash];
+  
+  return currentSphere
+    ? {
+        entryHash: currentSphere.details.entryHash,
+        actionHash: currentSphereHash,
+      }
+    : {};
 });

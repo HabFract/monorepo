@@ -3,6 +3,7 @@ import { mockAppState } from './integration/mocks/mockAppState';
 import { vi } from "vitest";
 import { atom } from "jotai";
 import { SPHERE_ID } from "./integration/mocks/spheres";
+import { createTestCache, createTestStore } from "./testUtils";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -16,15 +17,15 @@ channelMock.prototype.postMessage = function (data) {
 window.BroadcastChannel = channelMock;
 
 /* 
-/ Mocking the top level state machine for component params
+/ Mocking the top level state machine for routing and page params
 */
-const initialState = {
+const initialStateMachineState = {
   currentSphereEhB64: SPHERE_ID,
   currentSphereAhB64: SPHERE_ID,
 };
 
-let mockUseStateTransitionResponse = ["Home", vi.fn(() => {}), initialState];
-export function setMockUseStateTransitionResponse(params: typeof initialState) {
+let mockUseStateTransitionResponse = ["Home", vi.fn(() => {}), initialStateMachineState];
+export function setMockUseStateTransitionResponse(params: typeof initialStateMachineState) {
   mockUseStateTransitionResponse = ["Home", vi.fn(() => {}), params];
 }
 
@@ -33,37 +34,24 @@ vi.mock("../ui/src/hooks/useStateTransition", () => ({
   setMockUseStateTransitionResponse,
 }));
 
-// Mock the app state as a whole
-vi.mock("../ui/src/state/store", () => ({
-  appStateAtom: atom(mockAppState),
+/* 
+/ Mocking the overall AppState (not routing)
+*/
+vi.mock('../ui/src/state/store', () => ({
+  appStateAtom: createTestStore(),
 }));
 
-// Mock the jotaiKeyValueStore
-vi.mock("../ui/src/state/jotaiKeyValueStore", () => ({
-  nodeCache: {
-    entries: atom(mockAppState.orbitNodes.byHash),
-    keys: atom(Object.keys(mockAppState.orbitNodes.byHash)),
-    items: atom(Object.values(mockAppState.orbitNodes.byHash)),
+vi.mock('../ui/src/state/jotaiKeyValueStore', () => ({
+  nodeCache: createTestCache(mockAppState.orbitNodes.byHash),
+  store: {
+    get: vi.fn(),
+    set: vi.fn(),
+    sub: vi.fn(),
   },
+  mapToCacheObject: vi.fn(),
+  nodeCacheItemsAtom: atom(Object.values(mockAppState.orbitNodes.byHash)),
 }));
 
-// Mock the sphere state
-vi.mock("../ui/src/state/sphere", async (importOriginal) => {
-  const actual = await importOriginal() as object;
-  return {
-    ...actual,
-    // Add any specific sphere state mocks here if needed
-  };
-});
-
-// Mock the orbit state
-vi.mock("../ui/src/state/orbit", async (importOriginal) => {
-  const actual = await importOriginal() as object;
-  return {
-    ...actual,
-    // Add any specific orbit state mocks here if needed
-  };
-});
 
 // Mock app level constants
 vi.mock("../ui/src/constants", async (importOriginal) => {

@@ -11,7 +11,7 @@ import { currentOrbitCoords } from "../../state/orbit";
 import useSideMenuToggle from "../../hooks/useSideMenuToggle";
 import { useToast } from '../../contexts/toast';
 import { store } from "../../state/jotaiKeyValueStore";
-import { sphereNodesAtom } from '../../state/sphere';
+import { sphereNodesAtom } from '../../state/orbit';
 import { extractEdges } from "../../graphql/utils";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { ItemType } from "antd/es/menu/hooks/useItems";
