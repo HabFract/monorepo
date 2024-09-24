@@ -5,9 +5,9 @@ import "../vis/vis.css";
 import { Margins, VisProps, VisCoverage, IVisualization } from '../vis/types';
 import { select } from "d3-selection";
 import { useNodeTraversal } from '../../hooks/useNodeTraversal';
-import { currentSphereHierarchyBounds } from '../../state/hierarchy';
+import { currentSphereHierarchyBounds, newTraversalLevelIndexId } from '../../state/hierarchy';
 
-import { currentOrbitDetailsAtom, currentOrbitIdAtom, newTraversalLevelIndexId, setOrbitWithEntryHashAtom } from '../../state/orbit';
+import { currentOrbitDetailsAtom, currentOrbitIdAtom, setOrbitWithEntryHashAtom } from '../../state/orbit';
 import { WithVisCanvasProps } from '../vis/types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { OrbitNodeDetails, store } from '../../state/jotaiKeyValueStore';

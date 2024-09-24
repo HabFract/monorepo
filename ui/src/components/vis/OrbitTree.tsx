@@ -7,7 +7,8 @@ import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { currentSphereHierarchyBounds, currentSphereHierarchyIndices, setBreadths, setDepths } from '../../state/hierarchy';
-import { currentOrbitIdAtom, newTraversalLevelIndexId } from '../../state/orbit';
+import { currentOrbitIdAtom } from '../../state/orbit';
+import { newTraversalLevelIndexId } from '../../state/hierarchy';
 
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';

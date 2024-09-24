@@ -1,6 +1,6 @@
 import { pause, runScenario } from "@holochain/tryorama";
 import pkg from "tape-promise/tape";
-import { setUpAliceandBob } from "../../../../utils";
+import { setUpAliceandBob } from "../../../../utils-backend";
 import { anOrbit, aSphere, createOrbitChildren, serializeAsyncActions, setupHierarchy3, setupHierarchy4, setupHierarchy5, setupSphere } from './utils';
 import { encodeHashToBase64 } from "@holochain/client";
 import { Orbit } from "../../../../../ui/src/graphql/generated";

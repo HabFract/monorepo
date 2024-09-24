@@ -6,8 +6,7 @@ import Home from "./components/layouts/Home";
 import OrbitTree from "./components/vis/OrbitTree";
 import { renderVis } from "./components/vis/helpers";
 
-import { StateTransitions } from "./state/stateMachine";
-import { Spinner } from "flowbite-react";
+import { StateTransitions } from "./state/types/stateMachine";
 
 export type AppState = // Currently just for routing in the state machine
   | 'Home'

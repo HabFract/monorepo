@@ -13,7 +13,7 @@ import {
 
 import { pause, runScenario } from "@holochain/tryorama";
 import pkg from "tape-promise/tape";
-import { setUpAliceandBob } from "../../../../utils";
+import { setUpAliceandBob } from "../../../../utils-backend";
 import { anOrbit, aSphere, setupSphere } from './utils';
 const { test } = pkg;
 

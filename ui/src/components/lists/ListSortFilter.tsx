@@ -3,7 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import { SortDescendingOutlined, SortAscendingOutlined, FilterOutlined } from '@ant-design/icons';
 import { Modal, Radio } from 'flowbite-react';
 import './common.css';
-import { SortCriteria, SortOrder, listSortFilterAtom } from '../../state/listSortFilterAtom';
+import { SortCriteria, SortOrder, listSortFilterAtom } from '../../state/ui';
 import { store } from '../../state/jotaiKeyValueStore';
 
 const ListSortFilter = ({label} : {label: string}) => {

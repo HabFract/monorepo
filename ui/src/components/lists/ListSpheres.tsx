@@ -1,4 +1,4 @@
-import { listSortFilterAtom } from '../../state/listSortFilterAtom';
+import { listSortFilterAtom } from '../../state/ui';
 import { Sphere, useDeleteSphereMutation, useGetSpheresQuery } from '../../graphql/generated';
 
 import './common.css';

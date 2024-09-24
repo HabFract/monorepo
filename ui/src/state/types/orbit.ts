@@ -53,7 +53,7 @@ export interface OrbitDetails {
   eH: EntryHashB64;
   name: string;
   scale: Scale;
-  frequency?: Frequency.Rationals;
+  frequency: Frequency.Rationals;
   startTime?: number;
   endTime?: number;
   description?: string;

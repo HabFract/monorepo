@@ -3,24 +3,15 @@ import ReactDOM from 'react-dom/client'
 import BootScreen from './BootScreen'
 import 'broadcastchannel-polyfill'
 import App from './App'
-import { StateMachine } from './state/stateMachine'
+import { StateMachine } from './state/types/stateMachine'
 import { AppState, AppStateStore, AppTransitions, initialState, routes } from './routes'
 import { Provider } from 'jotai'
 import { store } from './state/jotaiKeyValueStore'
 
 /*
-
 Application State Management (Courtesy of Ada Burrows for hREA playspace)
 ============================
-
 */
-
-export const WithCacheStore = (component: React.ReactNode) => {
-  return (<Provider store={store}>
-    {component}
-  </Provider>)
-};
-
 export const AppMachine = new StateMachine<AppState, AppStateStore>(initialState, AppTransitions);
 
 Object.entries(routes).forEach(([routeName, component]) => {
@@ -45,3 +36,9 @@ export async function renderComponent(component: React.ReactNode) {
 }
 
 AppMachine.go();
+
+export const WithCacheStore = (component: React.ReactNode) => {
+  return (<Provider store={store}>
+    {component}
+  </Provider>)
+};

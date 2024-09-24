@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai';
-import { listSortFilterAtom } from '../state/listSortFilterAtom';
+import { listSortFilterAtom } from '../state/ui';
 import { Orbit } from '../graphql/generated';
 
 export const useSortedOrbits = (orbits: Orbit[] | undefined): Orbit[] => {

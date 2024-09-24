@@ -5,12 +5,11 @@ import { renderVis } from '../../ui/src/components/vis/helpers';
   
 import OrbitTree from '../../ui/src/components/vis/OrbitTree';
 
-import { renderWithJotai } from './testWrapper';
 import { HIERARCHY_MOCKS } from './mocks/hierarchy-root-only';
 import { ORBITS_MOCKS } from './mocks/orbits';
 import { MockedProvider } from '@apollo/client/testing';
-import { WithCurrentOrbitCoordsMockedAtom } from '../utils-frontend';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
+import { renderWithJotai } from '../utils-frontend';
 
 afterEach(() => {
   cleanup();

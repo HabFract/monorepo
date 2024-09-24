@@ -1,6 +1,6 @@
 import { pause, runScenario } from "@holochain/tryorama";
 import pkg from "tape-promise/tape";
-import { setUpAliceandBob } from "../../../../utils";
+import { setUpAliceandBob } from "../../../../utils-backend";
 import { anOrbit, setupHierarchy3 } from './utils';
 import { encodeHashToBase64 } from "@holochain/client";
 const { test } = pkg;

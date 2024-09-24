@@ -3,10 +3,8 @@ import { mockAppState } from './integration/mocks/mockAppState';
 import { vi } from "vitest";
 import { atom, WritableAtom } from "jotai";
 import { SPHERE_ID } from "./integration/mocks/spheres";
-import { createTestCache, createTestStore } from "./testUtils";
-import { SortCriteria, SortOrder } from "../ui/src/state/listSortFilterAtom";
 import { currentSphereAtom, currentSphereHasCachedNodesAtom, currentSphereHashesAtom } from "../ui/src/state/sphere";
-import { currentSphereHierarchyBounds, currentSphereHierarchyIndices, setBreadths, setCurrentBreadth, setCurrentDepth, setDepths } from "../ui/src/state/hierarchy";
+import { currentSphereHierarchyBounds, currentSphereHierarchyIndices } from "../ui/src/state/hierarchy";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -74,16 +72,6 @@ export const storeMock = {
 vi.mock("../ui/src/state/jotaiKeyValueStore", (importOriginal) => ({
   ...importOriginal,
   store: storeMock,
-  mapToCacheObject: (orbit) => ({
-    id: orbit.id,
-    eH: orbit.eH,
-    name: orbit.name,
-    scale: orbit.scale,
-    description: orbit.metadata?.description,
-    startTime: orbit.metadata?.timeframe.startTime,
-    endTime: orbit.metadata?.timeframe.endTime,
-    wins: {},
-  }),
   nodeCacheItemsAtom: atom(Object.values(mockAppState.orbitNodes.byHash))
 }));
 
