@@ -27,7 +27,6 @@ export interface AppState {
       sortOrder: string;
     };
     currentDay: string;
-    subdivisionList: string[];
   };
 }
 
@@ -52,7 +51,6 @@ export const appStateAtom = atomWithStorage<AppState>('appState', {
       sortCriteria: 'name',
       sortOrder: 'lowestToGreatest',
     },
-    currentDay: new Date().toISOString(),
-    subdivisionList: [],
+    currentDay: new Date().toISOString()
   },
 });

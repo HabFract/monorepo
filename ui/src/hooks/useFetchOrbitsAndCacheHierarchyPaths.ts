@@ -8,7 +8,6 @@ import {
 import {
   nodeCache,
   store,
-  SphereNodeDetailsCache,
 } from "../state/jotaiKeyValueStore";
 import { currentSphereOrbitNodesAtom } from '../state/orbit';
 import { hierarchy, HierarchyNode } from "d3-hierarchy";
@@ -73,7 +72,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
     let workingSphereNodes : SphereOrbitNodes = {...sphereNodes};
     try {
       if(!currentSphereId || currentSphereId == '') throw new Error('Cannot cache paths without a currentSphere id');
-      const existingCache = store.get(nodeCache.items) as SphereNodeDetailsCache;
+      const existingCache = store.get(nodeCache.items) as SphereOrbitNodes;
       if(!existingCache[currentSphereId]) throw new Error('No existing cache for this currentSphere id');
 
       (d3Hierarchy as any).sort(byStartTime).each((node) => cachePath(node?.data?.content, getPath(node)));

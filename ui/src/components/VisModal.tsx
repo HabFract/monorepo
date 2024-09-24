@@ -1,9 +1,8 @@
 import { EntryHashB64, ActionHashB64 } from "@holochain/client";
 import { Modal } from "flowbite-react";
-import { SphereHashes } from "../state/currentSphereHierarchyAtom";
 
 import { currentSphereOrbitNodesAtom } from '../state/orbit';
-import { SphereOrbitNodes } from '../state/types/sphere';
+import { SphereOrbitNodes, SphereHashes } from '../state/types/sphere';
 import { store } from "../state/jotaiKeyValueStore";
 import { CreateOrbit } from "./forms";
 import { IVisualization } from "./vis/types";

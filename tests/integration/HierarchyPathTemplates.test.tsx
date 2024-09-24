@@ -1,5 +1,4 @@
 import React from 'react';
-import '../setupTests'
 import { describe, expect, vi, it, afterEach, beforeAll } from 'vitest'
 
 import { MockedProvider } from '@apollo/client/testing';

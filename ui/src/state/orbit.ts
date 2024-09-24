@@ -1,11 +1,11 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { atom } from "jotai";
 import { nodeCache } from "./jotaiKeyValueStore";
-import { currentSphere } from "./currentSphereHierarchyAtom";
 import { appStateAtom } from "./store";
 import { SphereOrbitNodes } from "./types/sphere";
 import { OrbitNodeDetails } from "./types/orbit";
 import { Orbit } from "../graphql/generated";
+import { currentSphereHashesAtom } from "./sphere";
 
 /**
  * Transforms from graphQL repsonses into a form expected by state management
@@ -30,7 +30,6 @@ export const currentSphereOrbitNodesAtom = atom<SphereOrbitNodes | null>((get) =
   const state = get(appStateAtom);
   const currentSphereHash = state.spheres.currentSphereHash;
   const currentSphere = state.spheres.byHash[currentSphereHash];
-console.log('currentSphere :>> ', currentSphere);
   if (!currentSphere) return null;
 
   const sphereNodes: SphereOrbitNodes = {};
@@ -53,51 +52,83 @@ console.log('currentSphere :>> ', currentSphere);
 * Derived atom for current OrbitNodeDetails
 * @returns {OrbitNodeDetails | null} Details of the current Orbit's Node
 */
-export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | undefined>((get) => {
-  const currentSphereNodes = get(currentSphereOrbitNodesAtom);
-  const currentOrbitAh = get(currentOrbitId)?.id;
-  if(!currentSphereNodes || !currentOrbitAh) return;
-  return currentSphereNodes[currentOrbitAh];
+export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
+  const state = get(appStateAtom);
+  const currentOrbitHash = state.orbitNodes.currentOrbitHash;
+  if (!currentOrbitHash) return null;
+  
+  return state.orbitNodes.byHash[currentOrbitHash] || null;
 });
 
-export const currentOrbitId = atom<{id: ActionHashB64 | null}>({id: null});
+/**
+ * Read-write atom for the current orbit ID
+ * Reads from and writes to the global app state
+ * @returns {{id: ActionHashB64} | null} Details of the current Orbit's Node
+*/
+export const currentOrbitIdAtom = atom(
+  (get) => {
+    const state = get(appStateAtom);
+    return state.orbitNodes.currentOrbitHash
+      ? { id: state.orbitNodes.currentOrbitHash }
+      : null
+  },
+  (get, set, newOrbitId: ActionHashB64) => {
+    set(appStateAtom, (prevState) => ({
+      ...prevState,
+      orbitNodes: {
+        ...prevState.orbitNodes,
+        currentOrbitHash: newOrbitId
+      }
+    }));
+  }
+);
 
-
-export const currentOrbitCoords = atom<{x: number, y: number}>({ x:0, y:0 });
-
-export const newTraversalLevelIndexId = atom<{id: ActionHashB64 | null}>({id: null});
-
-export const getCurrentSphereOrbitByIdAtom = (nodeId: ActionHashB64) => atom<OrbitNodeDetails | undefined>((get) => {
-    const currentSphereHashes = get(currentSphere);
-    if (!currentSphereHashes?.actionHash) return;
-
-    const currentSphereNodes = get(currentSphereOrbitNodesAtom);
-    if (!currentSphereNodes) return;
-
-    const orbitDetails = currentSphereNodes[nodeId];
-    if (!orbitDetails) return;
-
-    return orbitDetails
+/**
+ * Atom factory that creates an atom for getting orbit details by ID.
+ * 
+ * @param orbitId - The ActionHashB64 of the orbit to retrieve.
+ * @returns An atom that, when read, returns the OrbitNodeDetails for the specified orbitId, or null if not found.
+ */
+export const getOrbitAtom = (orbitId: ActionHashB64) => atom<OrbitNodeDetails | null>((get) => {
+  const state = get(appStateAtom);
+  return state.orbitNodes.byHash[orbitId] || null;
 });
 
-export const setOrbit = atom(
+/**
+ * Write-only atom for updating orbit details using its entry hash.
+ * 
+ * @param {EntryHashB64} params.orbitEh - The entry hash of the orbit to update.
+ * @param {Partial<OrbitNodeDetails>} params.update - The partial orbit details to update.
+ * 
+ * This atom directly updates the orbit details in the global app state.
+ * If the orbit is not found, no update occurs.
+ */
+export const setOrbitWithEntryHashAtom = atom(
   null,
   (get, set, { orbitEh, update }: { orbitEh: EntryHashB64; update: Partial<OrbitNodeDetails> }) => {
-    const currentSphereHashes = get(currentSphere);
-    if (!currentSphereHashes?.actionHash) return;
+    set(appStateAtom, (prevState) => {
+      const orbitActionHash = Object.keys(prevState.orbitNodes.byHash).find(
+        key => prevState.orbitNodes.byHash[key].eH === orbitEh
+      );
 
-    const currentSphereNodes = get(currentSphereOrbitNodesAtom);
-    if (!currentSphereNodes) return;
+      if (!orbitActionHash) return prevState; // Orbit not found, no update
 
-    const orbitDetails = currentSphereNodes[orbitEh];
-    if (!orbitDetails) return;
-
-    const updatedOrbitDetails = { ...orbitDetails, ...update };
-
-    // Update the atom state
-    set(nodeCache.set, currentSphereHashes.actionHash, {
-      ...currentSphereNodes,
-      [orbitEh]: updatedOrbitDetails,
+      return {
+        ...prevState,
+        orbitNodes: {
+          ...prevState.orbitNodes,
+          byHash: {
+            ...prevState.orbitNodes.byHash,
+            [orbitActionHash]: {
+              ...prevState.orbitNodes.byHash[orbitActionHash],
+              ...update
+            }
+          }
+        }
+      };
     });
   }
 );
+
+
+export const newTraversalLevelIndexId = atom<{id: ActionHashB64 | null}>({id: null});

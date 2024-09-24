@@ -1,5 +1,4 @@
 import React from 'react';
-import '../setupTests'
 import { describe, expect, test, it } from 'vitest'
 import { render, waitFor } from '@testing-library/react';
 

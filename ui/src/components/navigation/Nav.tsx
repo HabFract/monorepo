@@ -6,8 +6,6 @@ import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
 import { Sphere, useGetSpheresQuery } from "../../graphql/generated";
 import { Button, DarkThemeToggle, Spinner, Toast } from "flowbite-react";
-import { currentSphere } from "../../state/currentSphereHierarchyAtom";
-import { currentOrbitCoords } from "../../state/orbit";
 import useSideMenuToggle from "../../hooks/useSideMenuToggle";
 import { useToast } from '../../contexts/toast';
 import { store } from "../../state/jotaiKeyValueStore";
@@ -17,8 +15,7 @@ import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { AppMachine } from "../../main";
 import { useAtomValue } from "jotai";
-import { currentSphereHashesAtom } from "../../state/sphere";
-import { currentSphereAtom } from "../../state/selectors";
+import { currentSphereHasCachedNodesAtom, currentSphereHashesAtom } from "../../state/sphere";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -59,7 +56,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
     spheresArray && setMenuItems(createSphereMenuItems({spheres: spheresArray}))
   }, [spheres, currentPage]);
 
-  store.sub(currentSphere, () => {
+  store.sub(currentSphereHashesAtom, () => {
     spheresArray && setMenuItems(createSphereMenuItems({spheres: spheresArray}))
   })
   const sphereOrbitsCached = useAtomValue(currentSphereOrbitNodesAtom);
@@ -80,7 +77,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
           setSideNavExpanded(true)
           return;
         }
-        store.set(currentSphere, {});
+        store.set(currentSphereHashesAtom, {});
         setCurrentPage(Page.CreateSphere)
         setSideNavExpanded(false)
         transition('CreateSphere')
@@ -104,21 +101,21 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
         // Falls through to current Sphere selection context
         // Check conditions where the current page would cause errors for the new Sphere selection
         if([Page.Vis].includes(currentPage as Page)) {
-            if (e.key == store.get(currentSphere).actionHash)
+            if (e.key == store.get(currentSphereHashesAtom).actionHash)
               { setSideNavExpanded(true) } 
             else {
               setSideNavExpanded(false);
               transition('PreloadAndCache', {landingSphereEh: sphere(e.key)?.eH, landingSphereId: e.key })}
         } else if([Page.ListSpheres].includes(currentPage as Page)) {
           if(!(e.key == store.get(currentSphereHashesAtom).actionHash)) {
-            store.set(currentSphereAtom, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
+            store.set(currentSphereHashesAtom, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
           }
           setSideNavExpanded(true)
         } else {
           hideToast()
-          if(store.get(currentSphere)?.actionHash == e.key) setSideNavExpanded(true);
+          if(store.get(currentSphereHashesAtom)?.actionHash == e.key) setSideNavExpanded(true);
           // Set current sphere from action hash of sphere clicked
-          store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
+          store.set(currentSphereHashesAtom, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
 
           const pageString = currentPage as string;
           if(currentPage== Page.Home) return
@@ -130,7 +127,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
                 ? {sphereAh: e.key} 
                 : pageString == "CreateOrbit" 
                   ? {sphereEh: sphere(e.key).eH}
-                  : {currentSphereEhB64: store.get(currentSphere).entryHash, currentSphereAhB64: e.key}
+                  : {currentSphereEhB64: store.get(currentSphereHashesAtom).entryHash, currentSphereAhB64: e.key}
           )
         }
         break;
@@ -142,7 +139,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
     return <Button
       type="button"
       onClick={(_e) => {goToPage(type)}}
-      disabled={spheresArray.length == 0 || !store.get(currentSphere)?.actionHash || (currentPage == Page.Vis && !sphereOrbitsCached)}
+      disabled={spheresArray.length == 0 || !store.get(currentSphereHashesAtom)?.actionHash || (currentPage == Page.Vis && !sphereOrbitsCached)}
       className={`btn btn-sq btn-${type} ` +  (isCurrentPage(type) ? "nohover" : "")}
       style={{cursor: isCurrentPage(type) ? "initial" : "pointer", borderColor: "transparent", outlineOffset: "1px", outline: isCurrentPage(type) ? "3px solid rgb(17 24 39 / 1)" : ""}}
     >
@@ -158,11 +155,11 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
           setSideNavExpanded(false)
           return
         case 'primary':
-          if(typeof sphereOrbitsCached == 'object' && Object.values(sphereOrbitsCached).length == 0) {
+          if(store.get(currentSphereHasCachedNodesAtom)) {
             showToast("Select a Sphere with existing Orbits to enable Visualisation", 100000)
             return
           }
-          store.set(currentOrbitCoords, {x: 0, y: 0});
+          store.set(currentSphereHierarchyIndices, {x: 0, y: 0});
 
           setCurrentPage(Page.Vis)
           transition('Vis', {currentSphereEhB64: sphere().eH, currentSphereAhB64: sphere().id})   
@@ -267,7 +264,8 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
       return getItem(
         `${sphere.name}`,
         sphere.id,
-        <img className={store.get(currentSphere)?.actionHash == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string}/>,
+        <img className={store.get(currentSphereHashesAtom)?.actionHash == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string}/>,
+        <img className={store.get(currentSphereHashesAtom)?.actionHash == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string}/>,
       )})
     ] 
   }

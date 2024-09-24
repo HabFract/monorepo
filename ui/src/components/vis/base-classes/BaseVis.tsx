@@ -13,7 +13,7 @@ import { OrbitNodeDetails, store, nodeCache } from "../../../state/jotaiKeyValue
 import { mapToCacheObject } from "../../../state/orbit";
 import { extractEdges } from "../../../graphql/utils";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
-import { currentOrbitId } from "../../../state/orbit";
+import { currentOrbitIdAtom } from "../../../state/orbit";
 import { SphereOrbitNodes } from "../../../state/types/sphere";
 
 /**
@@ -373,7 +373,7 @@ export abstract class BaseVisualization implements IVisualization {
 
   appendLabelHtml = (d): string => {
     if (!d?.data?.content || !this.nodeDetails[d.data.content]) return ""
-    const isCurrentOrbit = store.get(currentOrbitId).id === d.data.content
+    const isCurrentOrbit = store.get(currentOrbitIdAtom)?.id === d.data.content
     if (!isCurrentOrbit) return ""
 
     const cachedNode = this.nodeDetails[d.data.content];

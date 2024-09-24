@@ -11,7 +11,6 @@ import { getDisplayName } from '../forms/CreateOrbit';
 import { Label } from 'flowbite-react';
 import { serializeAsyncActions } from '../../graphql/utils';
 import { store } from '../../state/jotaiKeyValueStore';
-import { currentSphere } from '../../state/currentSphereHierarchyAtom';
 import { Refinement } from '../forms/RefineOrbit';
 import { OrbitFetcher } from '../forms/utils';
 import { isSmallScreen } from '../vis/helpers';

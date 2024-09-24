@@ -1,5 +1,4 @@
 import React from 'react';
-import '../setupTests'
 import { describe, expect, vi, it, beforeEach, afterEach } from 'vitest'
 import { HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS } from './mocks/hierarchy-root-2-children-2-grandchildren-unbalanced';
 
@@ -113,7 +112,7 @@ describe('Hierarchy Traversal - it renders traversal buttons and triggers events
     expect(queryByTestId('traversal-button-up')).not.toBeTruthy();
   });
   
-  it('when you click that button, it triggers internal currentOrbitCoords state to increment y', async () => {
+  it('when you click that button, it triggers internal currentSphereHierarchyIndices state to increment y', async () => {
     // Arrange
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
@@ -132,7 +131,7 @@ describe('Hierarchy Traversal - it renders traversal buttons and triggers events
       });
   });
 
-  it('when you click the up button, it triggers internal currentOrbitCoords state to decrement y', async () => {
+  it('when you click the up button, it triggers internal currentSphereHierarchyIndices state to decrement y', async () => {
     // Arrange
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
@@ -154,7 +153,7 @@ describe('Hierarchy Traversal - it renders traversal buttons and triggers events
     });
   });
 
-  it('when you click the right button, it triggers internal currentOrbitCoords state to increment x', async () => {
+  it('when you click the right button, it triggers internal currentSphereHierarchyIndices state to increment x', async () => {
     // Arrange
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
@@ -176,7 +175,7 @@ describe('Hierarchy Traversal - it renders traversal buttons and triggers events
     });
   });
 
-  it('when you click the left button, it triggers internal currentOrbitCoords state to decrement x', async () => {
+  it('when you click the left button, it triggers internal currentSphereHierarchyIndices state to decrement x', async () => {
     // Arrange
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>

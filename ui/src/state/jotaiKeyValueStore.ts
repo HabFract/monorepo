@@ -21,9 +21,3 @@ export interface OrbitNodeDetails {
   path?: string;
   wins: { [dayIndex: string]: boolean };
 }
-
-
-export type SphereNodeDetailsCache = {
-  [key: ActionHashB64]: {};
-};
-

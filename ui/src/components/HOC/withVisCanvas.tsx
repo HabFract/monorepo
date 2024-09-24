@@ -5,22 +5,22 @@ import "../vis/vis.css";
 import { Margins, VisProps, VisCoverage, IVisualization } from '../vis/types';
 import { select } from "d3-selection";
 import { useNodeTraversal } from '../../hooks/useNodeTraversal';
-import { HierarchyBounds, SphereHashes, SphereHierarchyBounds, currentSphere, currentSphereHierarchyBounds } from '../../state/currentSphereHierarchyAtom';
+import { currentSphereHierarchyBounds } from '../../state/hierarchy';
 
-import { currentOrbitCoords, currentOrbitDetailsAtom, currentOrbitId, newTraversalLevelIndexId, setOrbit } from '../../state/orbit';
+import { currentOrbitDetailsAtom, currentOrbitIdAtom, newTraversalLevelIndexId, setOrbitWithEntryHashAtom } from '../../state/orbit';
 import { WithVisCanvasProps } from '../vis/types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { OrbitNodeDetails, store } from '../../state/jotaiKeyValueStore';
-import { SphereOrbitNodes } from '../../state/types/sphere';
 import VisModal from '../VisModal';
 import TraversalButton from '../navigation/TraversalButton';
 import { VisControls } from 'habit-fract-design-system';
 import { currentDayAtom } from '../../state/date';
 import { isSmallScreen } from '../vis/helpers';
 import { useRedirect } from '../../hooks/useRedirect';
-import { currentSphereHasCachedNodesAtom, currentSphereHashesAtom } from '../../state/sphere';
+import { currentSphereHashesAtom } from '../../state/sphere';
 import { HierarchyNode } from 'd3-hierarchy';
 import { byStartTime } from '../vis/OrbitTree';
+import { SphereHierarchyBounds, HierarchyBounds, Coords } from '../../state/types/hierarchy';
 
 const defaultMargins: Margins = {
   top: 0,
@@ -64,11 +64,6 @@ function getTraversalConditions(queryType: VisCoverage, newRootData: any): Trave
   return { withTraversal, hasChild, hasOneChild, onlyChildParent };
 }
 
-type Coordinates = {
-  x: number;
-  y: number;
-}
-
 export function withVisCanvas<T extends IVisualization>(Component: ComponentType<VisProps<T>>): ReactNode {
   const ComponentWithVis: React.FC<WithVisCanvasProps> = (_visParams: WithVisCanvasProps) => {
     useRedirect();
@@ -77,7 +72,8 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
     const selectedSphere = store.get(currentSphereHashesAtom);
-    const cachedCurrentOrbit: OrbitNodeDetails | undefined = store.get(currentOrbitDetailsAtom);
+    console.log('selectedSphere :>> ', selectedSphere);
+    const cachedCurrentOrbit: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
 
     useEffect(() => {
       if (document.querySelector(`#${mountingDivId} #${svgId}`)) return
@@ -136,14 +132,14 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
                 setNewDate={(val) => { setCurrentDate(val) }}
                 orbitDetails={cachedCurrentOrbit}
                 setOrbitDetailsWin={(dateIndex: string, newValue: boolean) => {
-                  store.set(setOrbit, {
+                  store.set(setOrbitWithEntryHashAtom, {
                     orbitEh: cachedCurrentOrbit!.eH as string,
                     update: {
                       ...cachedCurrentOrbit,
-                      wins: {
-                        ...cachedCurrentOrbit!.wins,
-                        [dateIndex]: newValue
-                      }
+                      // wins: {
+                      //   ...cachedCurrentOrbit!.wins,
+                      //   [dateIndex]: newValue
+                      // }
                     }
                   })
                 }}
@@ -158,7 +154,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
 
     function renderTraversalButtons<T extends IVisualization>(
       conditions: TraversalButtonVisibilityConditions,
-      coords: Coordinates,
+      coords: Coords,
       currentVis: T,
       currentOrbitIsRoot: boolean
     ) {
@@ -167,7 +163,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
       const data = (currentVis.rootData as HierarchyNode<any>).sort(byStartTime);
       const children = (isSmallScreen() ? data?.children?.reverse() : data?.children) as Array<HierarchyNode<any>> | undefined;
       const rootId = data.data.content;
-      const currentId = store.get(currentOrbitId)?.id as ActionHashB64;
+      const currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
       const currentDetails = store.get(currentOrbitDetailsAtom);
 
       const canMove = !isSmallScreen() || (currentVis.coverageType == VisCoverage.CompleteSphere);
@@ -188,30 +184,30 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
       const moveLeft = () => {
         const currentIndex = children?.findIndex(child => child.data.content == currentId) as number;
         const newId = (children![currentIndex - 1] as any).data.content;
-        store.set(currentOrbitId, { id: newId })
+        store.set(currentOrbitIdAtom, newId)
       }
       const moveRight = () => {
         const currentIndex = children?.findIndex(child => child.data.content == currentId) as number;
         const newId = (children![currentIndex + 1] as any).data.content;
-        store.set(currentOrbitId, { id: newId })
+        store.set(currentOrbitIdAtom, newId)
       }
       const moveDown = () => {
         const childrenMiddle = children!.length > 0 ? Math.ceil(children!.length / 2) - 1 : 0;
         const newId = (children![childrenMiddle] as any).data.content;
-        store.set(currentOrbitId, { id: newId })
+        store.set(currentOrbitIdAtom, newId)
       }
       const moveUp = () => {
         const orbit = store.get(currentOrbitDetailsAtom); 
         const newId = orbit?.parentEh !== rootId ? orbit?.parentEh : rootId;
-        store.set(currentOrbitId, { id: newId })
+        store.set(currentOrbitIdAtom, newId)
       }
       const moveDownLeft = () => {
         const newId = (children![0] as any).data.content
-        store.set(currentOrbitId, { id: newId })
+        store.set(currentOrbitIdAtom, newId)
       }
       const moveDownRight = () => {
         const newId = (children![children!.length - 1] as any).data.content
-        store.set(currentOrbitId, { id: newId })
+        store.set(currentOrbitIdAtom, newId)
       }
       const traverseDownRight = () => {
         const newX = children!.length - 1;

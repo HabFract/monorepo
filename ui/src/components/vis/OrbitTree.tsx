@@ -5,9 +5,9 @@ import { OrbitHierarchyQueryParams, useGetLowestSphereHierarchyLevelQuery, useGe
 
 import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { OrbitNodeDetails, SphereNodeDetailsCache, nodeCache, store } from '../../state/jotaiKeyValueStore';
-import { currentSphereHierarchyBounds, setBreadths, setDepths, SphereHierarchyBounds } from '../../state/currentSphereHierarchyAtom';
-import { currentOrbitCoords, currentOrbitId, newTraversalLevelIndexId } from '../../state/orbit';
+import { nodeCache, store } from '../../state/jotaiKeyValueStore';
+import { currentSphereHierarchyBounds, currentSphereHierarchyIndices, setBreadths, setDepths } from '../../state/hierarchy';
+import { currentOrbitIdAtom, newTraversalLevelIndexId } from '../../state/orbit';
 
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
@@ -35,7 +35,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
-  const {x,y} = useAtomValue(currentOrbitCoords)
+  const {x,y} = useAtomValue(currentSphereHierarchyIndices)
   const { breadthIndex, setBreadthIndex } = useNodeTraversal(hierarchyBounds[sphere.entryHash as keyof SphereHierarchyBounds]);
 
 
@@ -139,9 +139,9 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       const rootNode = visCoverage == VisCoverage.CompleteOrbit ? parsedData.result : sorted[newLevelXIndex !== -1 ? newLevelXIndex : 0];
 
       // Set the index of the current array of possible visualisations, based on new value passed through from the traversal controls
-      store.set(currentOrbitId, {id: rootNode?.content})
+      store.set(currentOrbitIdAtom, rootNode?.content)
       if(newLevelXIndex !== -1) {
-        store.set(currentOrbitCoords, {x: newLevelXIndex, y})
+        store.set(currentSphereHierarchyIndices, {x: newLevelXIndex, y})
       }
       setBreadthIndex(newLevelXIndex !== -1 ? newLevelXIndex : breadthIndex)
 
@@ -156,7 +156,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       // -- set the _nextRootData property of the vis, 
       // -- trigger a re-render
       currentOrbitTree._nextRootData = hierarchy(getJsonDerivation(json as string)).sort(byStartTime);
-      store.set(currentOrbitId, {id: currentOrbitTree._nextRootData.data.content})
+      store.set(currentOrbitIdAtom, currentOrbitTree._nextRootData.data.content)
       currentOrbitTree.render();
     }
   }, [json, x, y, data])

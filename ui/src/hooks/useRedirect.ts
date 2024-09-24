@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { store } from '../state/jotaiKeyValueStore';
 import { useStateTransition } from './useStateTransition';
 import { useAtomValue } from 'jotai';
-import { currentSphere } from '../state/currentSphereHierarchyAtom';
 import { currentSphereHasCachedNodesAtom, currentSphereHashesAtom } from '../state/sphere';
 import { useToast } from '../contexts/toast';
 import { Orbit, useGetOrbitsQuery } from '../graphql/generated';
@@ -17,7 +16,7 @@ export const useRedirect = (bypass?: boolean) => {
 
   // First check for a current Sphere context
   if(!sphere?.actionHash && params?.currentSphereAhB64) {
-    store.set(currentSphere, {
+    store.set(currentSphereHashesAtom, {
       actionHash: params.currentSphereAhB64,
       entryHash: params.currentSphereEhB64,
     })

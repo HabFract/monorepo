@@ -1,10 +1,12 @@
 import "fake-indexeddb/auto";
 import { mockAppState } from './integration/mocks/mockAppState';
 import { vi } from "vitest";
-import { atom } from "jotai";
+import { atom, WritableAtom } from "jotai";
 import { SPHERE_ID } from "./integration/mocks/spheres";
 import { createTestCache, createTestStore } from "./testUtils";
 import { SortCriteria, SortOrder } from "../ui/src/state/listSortFilterAtom";
+import { currentSphereAtom, currentSphereHasCachedNodesAtom, currentSphereHashesAtom } from "../ui/src/state/sphere";
+import { currentSphereHierarchyBounds, currentSphereHierarchyIndices, setBreadths, setCurrentBreadth, setCurrentDepth, setDepths } from "../ui/src/state/hierarchy";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -35,89 +37,43 @@ vi.mock("../ui/src/hooks/useStateTransition", () => ({
   setMockUseStateTransitionResponse,
 }));
 
-/* 
-/ Mocking the overall AppState (not routing)
-*/
-vi.mock('../ui/src/state/store', () => ({
-  appStateAtom: createTestStore(),
-}));
+// /* 
+// / Mocking the overall AppState (not routing)
+// */
+// vi.mock('../ui/src/state/store', () => ({
+//   appStateAtom: createTestStore(),
+// }));
+
+const currentSphereHash = mockAppState.spheres.currentSphereHash;
+const currentSphere = mockAppState.spheres.byHash[currentSphereHash];
+const currentHierarchyRootHash = currentSphere.hierarchyRootOrbitEntryHashes[0];
+const currentHierarchy = mockAppState.hierarchies.byRootOrbitEntryHash[currentHierarchyRootHash];
 
 /* 
 / Mocking jotai store functions
 */
+export const storeMock = {
+  get: vi.fn((atom) => {
+    // Direct mapping of atoms to their mocked values
+    const atomMappings = {
+      [currentSphereHashesAtom.toString()]: {
+        entryHash: currentSphere.details.entryHash,
+        actionHash: currentSphereHash,
+      },
+      [currentSphereAtom.toString()]: currentSphere,
+      [currentSphereHasCachedNodesAtom.toString()]: true, 
+      [currentSphereHierarchyBounds.toString()]: currentHierarchy.bounds,
+      [currentSphereHierarchyIndices.toString()]: currentHierarchy.indices,
+    };
+    return atomMappings[atom.toString()] || undefined;
+  }),
+  set: vi.fn(),
+  sub: vi.fn(),
+};
+
 vi.mock("../ui/src/state/jotaiKeyValueStore", (importOriginal) => ({
   ...importOriginal,
-  // nodeCache: {
-  //   entries: atom(mockNodeDetailsCache),
-  //   keys: atom(mockNodeDetailsCacheKeys),
-  //   items: atom(mockNodeDetailsCacheItems),
-  // },
-  store: {
-    sub: (atom) => {
-    },
-    get: (atom) => {
-      // Use a switch to selectively mock different store.get responses by atom type default value
-      switch (true) {
-        // currentSphereHashesAtom
-        case !!(atom.init && atom.init?.entryHash == ''):
-          return { entryHash: SPHERE_ID, actionHash: SPHERE_ID }
-
-        // currentSphereOrbitNodesAtom
-        // case !!(atom.init && atom.init?.entryHash == ''):
-        //   return { [SPHERE_ID]:  Object.values(mockAppState.orbitNodes.byHash)}
-
-        // currentDayAtom
-        case !!(atom.init && atom.init?.zone):
-          return { toISODate() { return "04/09/2024"} }
-
-        // currentOrbitDetailsAtom
-        case !!(atom.init && typeof atom.init?.wins != 'undefined'): // Current Node details
-          return {
-            id: 'ActionHashB64',
-            eH: 'EntryHashB64',
-            description: 'string',
-            name: 'string',
-            scale: 'Scale',
-            startTime: 232434,
-            endTime: null,
-            wins: {}
-          }
-          
-        // currentSphereHasCachedNodesAtom
-        case !!(atom.init && atom.init == true): // Current orbit id
-          return { id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc" }
-              
-        // currentOrbitHash (dep)
-        case !!(atom.init && atom.init?.id !== undefined): // Current orbit id
-          return { id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc" }
-    
-          
-        // getCurrentSphereOrbitByIdAtom
-        case !!(atom.init && atom.init?.id !== undefined): // Current orbit id
-          return {}     
-        //currentOrbitCoords (dep)
-        case !!(atom.init && typeof atom.init?.x !== 'undefined'): // Current node coordinates
-          return { x:0, y:0 }
-        
-        //  Nodecache.items
-        case !!(atom.init && atom.init?.[SPHERE_ID] !== undefined): // Node cache items
-          return {}//mockNodeDetailsCacheItems
-
-
-        // UI - sort criteria
-        case !!(atom.init && atom.init.sortCriteria):
-          return {
-            sortCriteria: SortCriteria.Name,
-            sortOrder: SortOrder.GreatestToLowest,
-          }
-        default:
-        console.log('atom debug for when no mock present ------------------', atom)
-      }
-    }, // Chain other methods as needed
-    set: (val) => {
-        // mockNodeDetailsCache = mockedCacheEntries
-    }, // Chain other methods as needed
-  },
+  store: storeMock,
   mapToCacheObject: (orbit) => ({
     id: orbit.id,
     eH: orbit.eH,
@@ -130,16 +86,6 @@ vi.mock("../ui/src/state/jotaiKeyValueStore", (importOriginal) => ({
   }),
   nodeCacheItemsAtom: atom(Object.values(mockAppState.orbitNodes.byHash))
 }));
-// vi.mock('../ui/src/state/jotaiKeyValueStore', () => ({
-//   nodeCache: createTestCache(mockAppState.orbitNodes.byHash),
-//   store: {
-//     get: vi.fn(),
-//     set: vi.fn(),
-//     sub: vi.fn(),
-//   },
-//   nodeCacheItemsAtom: atom(Object.values(mockAppState.orbitNodes.byHash)),
-// }));
-
 
 // Mock redirect hook
 vi.mock("../ui/src/hooks/useRedirect", async () => {

@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useGetSphereQuery, useGetOrbitsLazyQuery, Orbit, Sphere } from '../graphql/generated';
 import { extractEdges } from '../graphql/utils';
-import { OrbitNodeDetails, SphereNodeDetailsCache } from '../state/jotaiKeyValueStore';
+import { OrbitNodeDetails } from '../state/jotaiKeyValueStore';
 import { mapToCacheObject } from '../state/orbit';
 import { nodeCache, store } from '../state/jotaiKeyValueStore';
 import { ActionHashB64 } from '@holochain/client';
+import { SphereOrbitNodes } from '../state/types/sphere';
 
 interface UseFetchAndCacheSphereOrbitsProps {
   sphereAh?: ActionHashB64;
@@ -42,7 +43,7 @@ export const useFetchAndCacheSphereOrbits = ({ sphereAh }: UseFetchAndCacheSpher
       let orbits: Orbit[] = extractEdges(data.orbits);
       let indexedOrbitData : Array<[string, OrbitNodeDetails]> = Object.entries(orbits.map(mapToCacheObject))
         .map(([_idx, value]) => [value.id, value]);
-      let indexedSphereData: SphereNodeDetailsCache = {};
+      let indexedSphereData: SphereOrbitNodes = {};
 
       const entries = indexedOrbitData.reduce((cacheObject, [_id, entry], idx) => {
         const indexKey = (entry).eH as string;

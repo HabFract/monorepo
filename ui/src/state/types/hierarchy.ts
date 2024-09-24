@@ -1,4 +1,4 @@
-import { ActionHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { CurrentOrbitId, OrbitNodeDetails, RootOrbitEntryHash } from "./orbit";
 
 /**
@@ -13,12 +13,16 @@ export interface HierarchyBounds {
   maxDepth: number;
 }
 
-type Coords = { x: number, y: number };
+export interface SphereHierarchyBounds {
+  [sphereId: EntryHashB64] : HierarchyBounds
+}
+
+export type Coords = { x: number, y: number };
 
 /**
  * Hierarchy's current traversal indices
  */
-type HierarchyTraversalIndices = Coords;
+export type HierarchyTraversalIndices = Coords;
 
 /**
  * A representation of the current hierarchy and its traversal state */

@@ -1,5 +1,4 @@
 import React from 'react';
-import '../setupTests'
 import { expect, test, it, afterEach, describe } from 'vitest'
 import { render, waitFor, screen, act, cleanup } from '@testing-library/react';
 import { renderVis } from '../../ui/src/components/vis/helpers';

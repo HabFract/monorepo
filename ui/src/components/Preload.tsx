@@ -5,7 +5,7 @@ import { extractEdges, serializeAsyncActions } from '../graphql/utils';
 import { nodeCache, store } from '../state/jotaiKeyValueStore';
 import { mapToCacheObject } from '../state/orbit';
 import { client } from '../graphql/client';
-import { currentSphere } from '../state/currentSphereHierarchyAtom';
+import { currentSphereHashesAtom } from '../state/sphere';
 import { Spinner } from 'flowbite-react';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 
@@ -53,13 +53,14 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, l
   
   useEffect(() => {
     if (!sphereNodes.length) return;
+    if (!sphereNodes.length) return;
 
     // Use either first returned Sphere as the landing vis (this will always work for Onboarding) or a passed in parameter
     const { id, eH } = sphereNodes[0];
     const landingId = landingSphereId || id;
     const landingEh = landingSphereEh || eH;
 
-    store.set(currentSphere, { actionHash: landingId, entryHash: landingEh });
+    store.set(currentSphereHashesAtom, { actionHash: landingId, entryHash: landingEh });
 
     fetchData(landingId, landingEh);
   }, [sphereNodes])

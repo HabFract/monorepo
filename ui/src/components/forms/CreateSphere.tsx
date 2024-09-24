@@ -9,7 +9,7 @@ import { ActionHashB64 } from '@holochain/client';
 import DefaultSubmitBtn from './buttons/DefaultSubmitButton';
 import { TextAreaField, TextInputField } from 'habit-fract-design-system';
 import { store } from '../../state/jotaiKeyValueStore';
-import { currentSphere } from '../../state/currentSphereHierarchyAtom';
+import { currentSphereHashesAtom } from '../../state/sphere';
 
 // Define the validation schema using Yup
 const SphereValidationSchema = Yup.object().shape({
@@ -82,7 +82,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
           const props = state == 'Onboarding1'
             ? { sphereEh: eH }
             : { sphereAh: aH };
-          store.set(currentSphere, {entryHash: eH, actionHash: aH});
+          store.set(currentSphereHashesAtom, {entryHash: eH, actionHash: aH});
           transition(state == 'Onboarding1' ? 'Onboarding2' : 'ListSpheres', props)
         } catch (error) {
           console.error(error);

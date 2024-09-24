@@ -1,6 +1,5 @@
 import { Button, ProgressBar } from "habit-fract-design-system";
-import { currentSphere } from "../../state/currentSphereHierarchyAtom";
-import { currentOrbitId } from '../../state/orbit';
+import { currentOrbitIdAtom } from '../../state/orbit';
 
 import { store } from "../../state/jotaiKeyValueStore";
 import BackCaret from "../icons/BackCaret";
@@ -18,7 +17,7 @@ const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{s
         icon={<BackCaret />}
         onClick={() => {
           const sphere = store.get(currentSphereHashesAtom);
-          const orbit = store.get(currentOrbitId);
+          const orbit = store.get(currentOrbitIdAtom);
           const props = getLastOnboardingState(state).match("Onboarding1")
             ? { sphereToEditId: sphere?.actionHash }
             : getLastOnboardingState(state).match("Onboarding2")

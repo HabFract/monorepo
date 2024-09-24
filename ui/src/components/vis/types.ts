@@ -1,8 +1,7 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { SphereHashes } from "../../state/currentSphereHierarchyAtom";
 import { HierarchyNode } from "d3-hierarchy";
 import { D3ZoomEvent } from "d3-zoom";
-import { SphereOrbitNodes } from "../../state/types/sphere";
+import { SphereOrbitNodes, SphereHashes } from "../../state/types/sphere";
 
 /**
  * Enum for visualization types.
