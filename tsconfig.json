@@ -21,4 +21,5 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
+  "include": ["ui/**/*"]
 }

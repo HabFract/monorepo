@@ -4,7 +4,7 @@ import { OrbitNodeDetails, RootOrbitEntryHash } from "./orbit";
 
 export interface SphereDetails {
   entryHash: EntryHashB64;
-  name: string;
+  name?: string;
   description?: string;
   hashtag?: string;
   image?: string;

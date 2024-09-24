@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Label } from 'flowbite-react';
-import { SphereCreateParams, useCreateSphereMutation, useGetSphereQuery, useUpdateSphereMutation } from '../../graphql/generated';
+import { SphereCreateParams, useGetSphereQuery, useUpdateSphereMutation } from '../../graphql/generated';
 import { ImageUpload } from './input';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { ActionHashB64 } from '@holochain/client';
@@ -10,6 +10,7 @@ import DefaultSubmitBtn from './buttons/DefaultSubmitButton';
 import { TextAreaField, TextInputField } from 'habit-fract-design-system';
 import { store } from '../../state/jotaiKeyValueStore';
 import { currentSphereHashesAtom } from '../../state/sphere';
+import { useCreateSphereMutation } from '../../hooks/gql/useCreateSphereMutation';
 
 // Define the validation schema using Yup
 const SphereValidationSchema = Yup.object().shape({
@@ -53,11 +54,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
     image: '',
   });
 
-  const [addSphere, {loading}] = useCreateSphereMutation({
-    refetchQueries: [
-      'getSpheres',
-    ]
-  });
+  const [addSphere, {loading}] = useCreateSphereMutation();
   const [updateSphere] = useUpdateSphereMutation({
     refetchQueries: [
       'getSpheres',
@@ -82,8 +79,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
           const props = state == 'Onboarding1'
             ? { sphereEh: eH }
             : { sphereAh: aH };
-          store.set(currentSphereHashesAtom, {entryHash: eH, actionHash: aH});
-          console.log('store.set(currentSphereHashesAtom, {entryHash: eH, actionHash: aH}) :>> ', store.get(currentSphereHashesAtom));
+          console.log('store.set(currentSphereHashesAtom, {entryHash: eH, actionHash: aH}) :>> ', eH, aH, store.get(currentSphereHashesAtom));
           transition(state == 'Onboarding1' ? 'Onboarding2' : 'ListSpheres', props)
         } catch (error) {
           console.error(error);

@@ -16,6 +16,7 @@ import { ItemType } from "antd/es/menu/hooks/useItems";
 import { AppMachine } from "../../main";
 import { useAtomValue } from "jotai";
 import { currentSphereHasCachedNodesAtom, currentSphereHashesAtom } from "../../state/sphere";
+import { currentSphereHierarchyIndices } from "../../state/hierarchy";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -40,7 +41,6 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   
   const [_, setCurrentPage] = useState<Page>(Page.Home);
-  
   const currentPage = AppMachine.state.currentState; // This is more reliable than the hook for tracking updated page state
   
   const sideMenuRef = useRef(null);
@@ -264,7 +264,6 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
       return getItem(
         `${sphere.name}`,
         sphere.id,
-        <img className={store.get(currentSphereHashesAtom)?.actionHash == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string}/>,
         <img className={store.get(currentSphereHashesAtom)?.actionHash == sphere.id ? 'selected' : ''} src={sphere.metadata!.image as string}/>,
       )})
     ] 

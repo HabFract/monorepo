@@ -72,7 +72,6 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
     const selectedSphere = store.get(currentSphereHashesAtom);
-    console.log('selectedSphere :>> ', selectedSphere);
     const cachedCurrentOrbit: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
 
     useEffect(() => {

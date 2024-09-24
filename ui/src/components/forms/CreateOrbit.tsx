@@ -74,6 +74,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
     async update(){
       if(!!inOnboarding) return;
       const variables = { sphereEntryHashB64: sphereEh };
+      
       let data;
       try {
         const gql = await client;
@@ -117,6 +118,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
     childHash: childOrbitEh ||null
   });
   const orbitEdges = extractEdges((orbits as any)?.orbits) as Orbit[];
+
+  const parentNodeAtom = useMemo(() => getOrbitAtom(currentOrbitValues.parentHash || ''), [currentOrbitValues.parentHash]);
+  const parentNodeDetails = !(editMode && state.match("Onboarding")) && currentOrbitValues.parentHash !== null && store.get(parentNodeAtom);
+  
   return (
     <Formik
       initialValues={currentOrbitValues}
@@ -153,7 +158,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
       >
       {({ values, errors, touched, setFieldValue }) => {
       const cannotBeAstro = !(editMode && state.match("Onboarding")) && values.parentHash !== null && values.parentHash !== 'root';
-      const parentNodeDetails = !(editMode && state.match("Onboarding")) && values.parentHash !== null && store.get(useMemo(() => getOrbitAtom(values.parentHash), [values.parentHash]));
       const cannotBeSub = parentNodeDetails && parentNodeDetails.scale == Scale.Atom;
       // Rules which dictate which scale planet can be a child of another scale - may change the possible scale options dyamically 
       const scaleDefault = (cannotBeSub ? Scale.Atom : cannotBeAstro ? Scale.Sub : Scale.Astro);
@@ -248,7 +252,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                     ? null
                     : <option key={scale} value={scale}>{getDisplayName(scale)}</option>
                   }
-                )]}
+                )].filter(Boolean)}
                 required={true}
                 labelValue={"Scale:"}
               />

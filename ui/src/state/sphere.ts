@@ -22,9 +22,6 @@ export const currentSphereHashesAtom = atom(
   (_get, set, newSphereHashes: SphereHashes) => {
     set(appStateAtom, (prevState) => {
       const newCurrentSphereHash = newSphereHashes.actionHash || '';
-      let newSphere = prevState.spheres.byHash[newCurrentSphereHash];
-
-
       return {
         ...prevState,
         spheres: {
