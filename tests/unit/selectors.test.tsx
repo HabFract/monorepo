@@ -9,7 +9,7 @@ import { TestProvider } from '../utils-frontend';
 import { appStateAtom } from '../../ui/src/state/store';
 import { Frequency } from '../../ui/src/state/types/orbit';
 import { currentSphereHasCachedNodesAtom, currentSphereHashesAtom } from '../../ui/src/state/sphere';
-import { currentSphereOrbitNodes } from '../../ui/src/state/orbit';
+import { currentSphereOrbitNodesAtom } from '../../ui/src/state/orbit';
 
 describe('Sphere selectors', () => {
   describe('currentSphere', () => {
@@ -94,10 +94,10 @@ describe('Sphere selectors', () => {
       expect(screen.getByText('false')).toBeTruthy();
     });
   });
-  describe('currentSphereOrbitNodes', () => {
+  describe('currentSphereOrbitNodesAtom', () => {
     it('should return orbit nodes for the current sphere', () => {
       const TestComponent = () => {
-        const [sphereNodes] = useAtom(currentSphereOrbitNodes);
+        const [sphereNodes] = useAtom(currentSphereOrbitNodesAtom);
         return <div>{JSON.stringify(sphereNodes)}</div>;
       };
 
@@ -121,7 +121,7 @@ describe('Sphere selectors', () => {
       };
 
       const TestComponent = () => {
-        const [sphereNodes] = useAtom(currentSphereOrbitNodes);
+        const [sphereNodes] = useAtom(currentSphereOrbitNodesAtom);
         return <div data-testid="container">{JSON.stringify(sphereNodes)}</div>;
       };
 

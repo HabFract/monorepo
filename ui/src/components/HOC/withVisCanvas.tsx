@@ -4,21 +4,21 @@ import "../vis/vis.css";
 
 import { Margins, VisProps, VisCoverage, IVisualization } from '../vis/types';
 import { select } from "d3-selection";
-import { useAtomValue } from 'jotai';
 import { useNodeTraversal } from '../../hooks/useNodeTraversal';
 import { HierarchyBounds, SphereHashes, SphereHierarchyBounds, currentSphere, currentSphereHierarchyBounds } from '../../state/currentSphereHierarchyAtom';
 
-import { currentOrbitCoords, currentOrbitDetails, currentOrbitId, newTraversalLevelIndexId, setOrbit } from '../../state/orbit';
+import { currentOrbitCoords, currentOrbitDetailsAtom, currentOrbitId, newTraversalLevelIndexId, setOrbit } from '../../state/orbit';
 import { WithVisCanvasProps } from '../vis/types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
-import { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes, store } from '../../state/jotaiKeyValueStore';
+import { OrbitNodeDetails, store } from '../../state/jotaiKeyValueStore';
+import { SphereOrbitNodes } from '../../state/types/sphere';
 import VisModal from '../VisModal';
 import TraversalButton from '../navigation/TraversalButton';
 import { VisControls } from 'habit-fract-design-system';
 import { currentDayAtom } from '../../state/date';
 import { isSmallScreen } from '../vis/helpers';
 import { useRedirect } from '../../hooks/useRedirect';
-import { currentSphereHasCachedNodesAtom } from '../../state/sphere';
+import { currentSphereHasCachedNodesAtom, currentSphereHashesAtom } from '../../state/sphere';
 import { HierarchyNode } from 'd3-hierarchy';
 import { byStartTime } from '../vis/OrbitTree';
 
@@ -69,11 +69,6 @@ type Coordinates = {
   y: number;
 }
 
-function coordsChanged(translationCoords, x, y): boolean {
-  if (typeof translationCoords == 'undefined') return false
-  return translationCoords[0] !== x || translationCoords[1] !== y
-}
-
 export function withVisCanvas<T extends IVisualization>(Component: ComponentType<VisProps<T>>): ReactNode {
   const ComponentWithVis: React.FC<WithVisCanvasProps> = (_visParams: WithVisCanvasProps) => {
     useRedirect();
@@ -81,21 +76,21 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
     const mountingDivId = 'vis-root'; // Declared at the router level
     const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
-    const selectedSphere = store.get(currentSphere);
-    const cachedCurrentOrbit: OrbitNodeDetails | undefined = useAtomValue(currentOrbitDetails);
+    const selectedSphere = store.get(currentSphereHashesAtom);
+    const cachedCurrentOrbit: OrbitNodeDetails | undefined = store.get(currentOrbitDetailsAtom);
 
     useEffect(() => {
       if (document.querySelector(`#${mountingDivId} #${svgId}`)) return
       const appended = !!appendSvg(mountingDivId, svgId);
       setAppendedSvg(appended)
-    }, [selectedSphere.actionHash]);
+    }, [selectedSphere?.actionHash]);
 
     const { canvasHeight, canvasWidth } = getCanvasDimensions()
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [currentParentOrbitEh, setCurrentParentOrbitEh] = useState<EntryHashB64>();
     const [currentChildOrbitEh, setCurrentChildOrbitEh] = useState<EntryHashB64>();
 
-    const sphereHierarchyBounds: SphereHierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
+    const sphereHierarchyBounds: SphereHierarchyBounds = store.get(currentSphereHierarchyBounds);
     const { incrementBreadth,
       decrementBreadth,
       incrementDepth,
@@ -173,7 +168,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
       const children = (isSmallScreen() ? data?.children?.reverse() : data?.children) as Array<HierarchyNode<any>> | undefined;
       const rootId = data.data.content;
       const currentId = store.get(currentOrbitId)?.id as ActionHashB64;
-      const currentDetails = store.get(currentOrbitDetails);
+      const currentDetails = store.get(currentOrbitDetailsAtom);
 
       const canMove = !isSmallScreen() || (currentVis.coverageType == VisCoverage.CompleteSphere);
       const canMoveUp = canMove && rootId !== currentId;
@@ -206,7 +201,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
         store.set(currentOrbitId, { id: newId })
       }
       const moveUp = () => {
-        const orbit = store.get(currentOrbitDetails); 
+        const orbit = store.get(currentOrbitDetailsAtom); 
         const newId = orbit?.parentEh !== rootId ? orbit?.parentEh : rootId;
         store.set(currentOrbitId, { id: newId })
       }

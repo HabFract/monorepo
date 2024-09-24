@@ -4,7 +4,7 @@ import { DeleteOutlined, EditOutlined, OrderedListOutlined, PlusCircleOutlined }
 import { SphereVis } from '../vis';
 import { Scale, Sphere } from '../../../ui/src/graphql/generated';
 import { Button, Dropdown } from 'flowbite-react';
-import { currentSphere } from '../../../ui/src/state/currentSphereHierarchyAtom';
+import { currentSphereHashesAtom } from '../../../ui/src/state/sphere';
 import { store } from '../../../ui/src/state/jotaiKeyValueStore';
 import TreeVisIcon from '../../../ui/src/components/icons/TreeVisIcon';
 import Exclaim from '../../../ui/src/components/icons/Exclaim';
@@ -68,7 +68,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
           <div className="sphere-actions-vis col-c w-full">
           {!isHeader && 
               <Dropdown label="Actions" dismissOnClick={false} className="bg-secondary p-2" onClick={() => {
-                store.set(currentSphere, { entryHash: sphere.eH, actionHash: id });
+                store.set(currentSphereHashesAtom, { entryHash: sphere.eH, actionHash: id });
                 transition('ListOrbits', { sphereAh: id })
               }}>
               <Dropdown.Item onClick={() => {

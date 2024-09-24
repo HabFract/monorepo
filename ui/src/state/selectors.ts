@@ -3,9 +3,8 @@ import { atom } from "jotai";
 import { appStateAtom } from "./store";
 import { WinData, WinState } from "./types/win";
 import { SphereDetails } from "./types/sphere";
-import { Frequency, OrbitNodeDetails, RootOrbitEntryHash } from "./types/orbit";
+import { Frequency, OrbitDetails, OrbitNodeDetails, RootOrbitEntryHash } from "./types/orbit";
 import { Hierarchy } from "./types/hierarchy";
-
 
 /**
  * Gets the details of the current Sphere context
@@ -25,7 +24,7 @@ export const currentSphereAtom = atom<SphereDetails | null>((get) => {
 export const getOrbitFrequency = (orbitHash: ActionHashB64) => {
   const selectFrequency = atom<Frequency.Rationals | null>((get) => {
     const state = get(appStateAtom);
-    const orbit = state.orbitNodes.byHash[orbitHash];
+    const orbit = state.orbitNodes.byHash[orbitHash] as OrbitDetails;
     return orbit?.frequency || null;
   });
   return selectFrequency;

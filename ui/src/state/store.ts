@@ -1,10 +1,9 @@
 import { atomWithStorage } from 'jotai/utils';
-import OrbitState, { RootOrbitEntryHash } from './types/orbit';
-import SphereState, { SphereDetails } from './types/sphere';
+import { RootOrbitEntryHash } from './types/orbit';
+import { SphereDetails, SphereOrbitNodes } from './types/sphere';
 import WinState from './types/win';
 import { ActionHashB64 } from '@holochain/client';
 import { Hierarchy } from './types/hierarchy';
-import { SphereOrbitNodes } from './jotaiKeyValueStore';
 
 export interface AppState {
   spheres: {

@@ -53,7 +53,7 @@ export interface OrbitDetails {
   eH: EntryHashB64;
   name: string;
   scale: Scale;
-  frequency: Frequency.Rationals;
+  frequency?: Frequency.Rationals;
   startTime?: number;
   endTime?: number;
   description?: string;
@@ -70,7 +70,3 @@ export interface OrbitNodeDetails extends OrbitDetails {
 
 export type RootOrbitEntryHash = EntryHashB64;
 export type CurrentOrbitId = ActionHashB64;
-
-export default interface OrbitState {
-  currentOrbitId: CurrentOrbitId | null;
-}

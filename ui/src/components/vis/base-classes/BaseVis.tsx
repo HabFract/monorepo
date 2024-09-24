@@ -9,10 +9,12 @@ import { EventHandlers, IVisualization, Margins, ViewConfig, VisCoverage, VisTyp
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit, Scale } from "../../../graphql/generated";
 import { client } from "../../../graphql/client";
-import { OrbitNodeDetails, store, SphereOrbitNodes, mapToCacheObject, nodeCache } from "../../../state/jotaiKeyValueStore";
+import { OrbitNodeDetails, store, nodeCache } from "../../../state/jotaiKeyValueStore";
+import { mapToCacheObject } from "../../../state/orbit";
 import { extractEdges } from "../../../graphql/utils";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { currentOrbitId } from "../../../state/orbit";
+import { SphereOrbitNodes } from "../../../state/types/sphere";
 
 /**
  * Base class for creating D3 hierarchical visualizations.

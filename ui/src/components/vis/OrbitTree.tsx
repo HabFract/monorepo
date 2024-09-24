@@ -5,16 +5,17 @@ import { OrbitHierarchyQueryParams, useGetLowestSphereHierarchyLevelQuery, useGe
 
 import { useAtom, useAtomValue } from 'jotai';
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { OrbitNodeDetails, SphereNodeDetailsCache, SphereOrbitNodes, nodeCache, store } from '../../state/jotaiKeyValueStore';
+import { OrbitNodeDetails, SphereNodeDetailsCache, nodeCache, store } from '../../state/jotaiKeyValueStore';
 import { currentSphereHierarchyBounds, setBreadths, setDepths, SphereHierarchyBounds } from '../../state/currentSphereHierarchyAtom';
 import { currentOrbitCoords, currentOrbitId, newTraversalLevelIndexId } from '../../state/orbit';
 
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { useFetchOrbitsAndCacheHierarchyPaths } from '../../hooks/useFetchOrbitsAndCacheHierarchyPaths';
 import { TreeVisualization } from './base-classes/TreeVis';
-import { currentSphereOrbitNodes } from '../../state/orbit';
+import { currentSphereOrbitNodesAtom } from '../../state/orbit';
 import { isSmallScreen } from './helpers';
 import { useNodeTraversal } from '../../hooks/useNodeTraversal';
+import { SphereOrbitNodes } from '../../state/types/sphere';
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   selectedSphere: sphere,
@@ -28,7 +29,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // Get sphere and sphere orbit nodes details
   const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries)) as SphereOrbitNodes;
-  const sphereNodeDetails = useAtomValue(currentSphereOrbitNodes);
+  const sphereNodeDetails = useAtomValue(currentSphereOrbitNodesAtom);
 
   // Get and set node traversal bounds state
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
@@ -175,7 +176,7 @@ export function byStartTime(a: (HierarchyNode<unknown> | {content: string}), b: 
     const idA : ActionHashB64 = a?.data?.content || a?.content;
     //@ts-ignore
     const idB : ActionHashB64 = b?.data?.content || b?.content;
-    const nodeDetailsCache = store.get(currentSphereOrbitNodes);
+    const nodeDetailsCache = store.get(currentSphereOrbitNodesAtom);
     if((nodeDetailsCache?.[idB]?.startTime || 0  as number) - (nodeDetailsCache?.[idA as keyof SphereOrbitNodes]?.startTime || 0  as number) == 0) {
       console.error("Sorting error!")
       return 0

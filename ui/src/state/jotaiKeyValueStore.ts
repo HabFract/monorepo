@@ -22,22 +22,8 @@ export interface OrbitNodeDetails {
   wins: { [dayIndex: string]: boolean };
 }
 
-export type SphereOrbitNodes = {
-  [key: ActionHashB64]: OrbitNodeDetails;
-};
 
 export type SphereNodeDetailsCache = {
-  [key: ActionHashB64]: SphereOrbitNodes;
+  [key: ActionHashB64]: {};
 };
 
-export const mapToCacheObject = (orbit: Orbit): OrbitNodeDetails => ({
-  id: orbit.id,
-  eH: orbit.eH,
-  parentEh: orbit.parentHash || undefined,
-  name: orbit.name,
-  scale: orbit.scale,
-  description: orbit.metadata?.description || "",
-  startTime: orbit.metadata?.timeframe.startTime,
-  endTime: orbit.metadata?.timeframe.endTime || undefined,
-  wins: {},
-});

@@ -15,6 +15,7 @@ import { currentSphere } from '../../state/currentSphereHierarchyAtom';
 import { Refinement } from '../forms/RefineOrbit';
 import { OrbitFetcher } from '../forms/utils';
 import { isSmallScreen } from '../vis/helpers';
+import { currentSphereHashesAtom } from '../../state/sphere';
 
 interface OrbitSubdivisionListProps {
   currentOrbitValues: Orbit;
@@ -51,7 +52,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({ submitBtn, 
         onSubmit={async (values: any, { setSubmitting }) => {
           setSubmitting(false);
           delete values.childHash;
-          const sphere = store.get(currentSphere);
+          const sphere = store.get(currentSphereHashesAtom);
           if(!sphere?.entryHash || !currentHash) throw new Error("No sphere set or parent hash, cannot refine orbits")
           setSubmitRefineBtnIsLoading(true)
           try {

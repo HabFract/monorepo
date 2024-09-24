@@ -16,29 +16,29 @@ export const currentSphereAtom = atom((get) => {
  * Derived atom to check if a Sphere has cached nodes
  * @returns {boolean} True if the current sphere has cached nodes, false otherwise
  */
-export const currentSphereHasCachedNodesAtom = atom((get) => {
+export const currentSphereHasCachedNodesAtom = atom<boolean>((get) => {
   const state = get(appStateAtom);
   const currentSphereHash = state.spheres.currentSphereHash;
   const currentSphere = state.spheres.byHash[currentSphereHash];
-  
+
   if (!currentSphere) return false;
-  
+
   const rootOrbitHashes = currentSphere.hierarchyRootOrbitEntryHashes;
-  return rootOrbitHashes.some(hash => {
+  return rootOrbitHashes.some((hash) => {
     const hierarchy = state.hierarchies.byRootOrbitEntryHash[hash];
     return hierarchy && hierarchy.nodeHashes.length > 0;
   });
 });
 
-
 /**
- * Atom for the current sphere hashes
+ * Read-write atom for the current sphere's hashes
+ * @returns {SphereHashes | {}}
  */
 export const currentSphereHashesAtom = atom<SphereHashes>((get) => {
   const state = get(appStateAtom);
   const currentSphereHash = state.spheres.currentSphereHash;
   const currentSphere = state.spheres.byHash[currentSphereHash];
-  
+console.log('currentSphere :>> ', state);
   return currentSphere
     ? {
         entryHash: currentSphere.details.entryHash,

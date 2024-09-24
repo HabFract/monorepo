@@ -25,6 +25,7 @@ import OnboardingContinue from './components/forms/buttons/OnboardingContinueBut
 import HomeContinue from './components/home/HomeContinueButton';
 import Toast from './components/Toast';
 import { useToast } from './contexts/toast';
+import { currentSphereHashesAtom } from './state/sphere';
 
 function App({ children: pageComponent }) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
@@ -45,7 +46,7 @@ function App({ children: pageComponent }) {
   const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
   const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
 
-  const sphere = store.get(currentSphere);
+  const sphere = store.get(currentSphereHashesAtom);
   const currentSphereDetails = userHasSpheres && extractEdges(spheres.spheres).find(possibleSphere => possibleSphere.id == sphere.actionHash);
 
   return <Flowbite theme={{ theme: darkTheme }}>

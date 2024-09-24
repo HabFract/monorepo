@@ -6,6 +6,7 @@ import { store } from "../../state/jotaiKeyValueStore";
 import BackCaret from "../icons/BackCaret";
 import { ForwardedRef, forwardRef } from "react";
 import { isSmallScreen } from "../vis/helpers";
+import { currentSphereHashesAtom } from "../../state/sphere";
 
 const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{state: any, transition: any} & unknown>> = forwardRef(({state, transition}, ref: ForwardedRef<HTMLDivElement>) => {
   if (!state.match("Onboarding")) return <></>
@@ -16,7 +17,7 @@ const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{s
         type={"icon"}
         icon={<BackCaret />}
         onClick={() => {
-          const sphere = store.get(currentSphere);
+          const sphere = store.get(currentSphereHashesAtom);
           const orbit = store.get(currentOrbitId);
           const props = getLastOnboardingState(state).match("Onboarding1")
             ? { sphereToEditId: sphere?.actionHash }

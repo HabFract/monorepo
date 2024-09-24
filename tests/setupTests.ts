@@ -11,8 +11,6 @@ import { SPHERE_ID } from "./integration/mocks/spheres";
 
 import { atom } from "jotai";
 import { SortCriteria, SortOrder } from "../ui/src/state/listSortFilterAtom";
-import { nodeCacheItemsAtom } from '../ui/src/state/jotaiKeyValueStore';
-
 
 /* 
 / Mocking the jotai indexdb store atoms for node details in the vis

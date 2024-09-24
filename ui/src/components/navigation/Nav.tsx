@@ -11,12 +11,14 @@ import { currentOrbitCoords } from "../../state/orbit";
 import useSideMenuToggle from "../../hooks/useSideMenuToggle";
 import { useToast } from '../../contexts/toast';
 import { store } from "../../state/jotaiKeyValueStore";
-import { currentSphereOrbitNodes } from '../../state/orbit';
+import { currentSphereOrbitNodesAtom } from '../../state/orbit';
 import { extractEdges } from "../../graphql/utils";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { AppMachine } from "../../main";
 import { useAtomValue } from "jotai";
+import { currentSphereHashesAtom } from "../../state/sphere";
+import { currentSphereAtom } from "../../state/selectors";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -60,10 +62,10 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
   store.sub(currentSphere, () => {
     spheresArray && setMenuItems(createSphereMenuItems({spheres: spheresArray}))
   })
-  const sphereOrbitsCached = useAtomValue(currentSphereOrbitNodes);
+  const sphereOrbitsCached = useAtomValue(currentSphereOrbitNodesAtom);
   const tooltipMsg = `You need to ${ spheresArray.length == 0 ? "create" : spheresArray.length == 4 ? "delete" : "select"} a Sphere `;
 
-  const sphere = (sphereAh?: EntryHashB64) => spheresArray.find((sphere: any) => (sphereAh || store.get(currentSphere)?.actionHash) == sphere.id) as Sphere & {id: ActionHashB64};
+  const sphere = (sphereAh?: EntryHashB64) => spheresArray.find((sphere: any) => (sphereAh || store.get(currentSphereHashesAtom)?.actionHash) == sphere.id) as Sphere & {id: ActionHashB64};
 
   // Main routing logic for menus
   const onClick: MenuProps['onClick'] = (e) => {
@@ -108,8 +110,8 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
               setSideNavExpanded(false);
               transition('PreloadAndCache', {landingSphereEh: sphere(e.key)?.eH, landingSphereId: e.key })}
         } else if([Page.ListSpheres].includes(currentPage as Page)) {
-          if(!(e.key == store.get(currentSphere).actionHash)) {
-            store.set(currentSphere, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
+          if(!(e.key == store.get(currentSphereHashesAtom).actionHash)) {
+            store.set(currentSphereAtom, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
           }
           setSideNavExpanded(true)
         } else {

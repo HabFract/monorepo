@@ -9,9 +9,8 @@ import {
   nodeCache,
   store,
   SphereNodeDetailsCache,
-  SphereOrbitNodes,
 } from "../state/jotaiKeyValueStore";
-import { currentSphereOrbitNodes } from '../state/orbit';
+import { currentSphereOrbitNodesAtom } from '../state/orbit';
 import { hierarchy, HierarchyNode } from "d3-hierarchy";
 import { ActionHashB64 } from "@holochain/client";
 import {
@@ -23,6 +22,7 @@ import {
 } from "../components/vis/links/paths";
 import { isSmallScreen } from '../components/vis/helpers';
 import { byStartTime } from '../components/vis/OrbitTree';
+import { SphereOrbitNodes } from '../state/types/sphere';
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
   params: OrbitHierarchyQueryParams;
@@ -45,7 +45,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
   if(bypass) return { loading: false, error: undefined, cache: null}
   if(!currentSphereId) return { loading: false, error: new Error("Cannot run hook without a sphere Id"), cache: null}
-  const sphereNodes = store.get(currentSphereOrbitNodes) as SphereOrbitNodes;
+  const sphereNodes = store.get(currentSphereOrbitNodesAtom) as SphereOrbitNodes;
 
   const { data, loading, error } = useGetOrbitHierarchyQuery({
     skip: hasCached,
