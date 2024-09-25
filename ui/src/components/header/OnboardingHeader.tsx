@@ -9,7 +9,7 @@ import { currentSphereHashesAtom } from "../../state/sphere";
 
 const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{state: any, transition: any} & unknown>> = forwardRef(({state, transition}, ref: ForwardedRef<HTMLDivElement>) => {
   if (!state.match("Onboarding")) return <></>
-  const onboardingStageNumber = +(state.match(/Onboarding(\d+)/)?.[1]) || 0;
+
   return <>
     <div className={"flex w-full justify-between gap-2"}>
       <Button
@@ -18,13 +18,13 @@ const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{s
         onClick={() => {
           const sphere = store.get(currentSphereHashesAtom);
           const orbit = store.get(currentOrbitIdAtom);
-          const props = getLastOnboardingState(onboardingStageNumber).match("Onboarding1")
+          const props = getLastOnboardingState(state).match("Onboarding1")
             ? { sphereToEditId: sphere?.actionHash }
-            : getLastOnboardingState(onboardingStageNumber).match("Onboarding2")
+            : getLastOnboardingState(state).match("Onboarding2")
               ? { sphereEh: sphere.entryHash, orbitToEditId: orbit?.id }
               : { orbitToEditId: orbit?.id };
 
-          return transition(getLastOnboardingState(onboardingStageNumber), { editMode: true, ...props });
+          return transition(getLastOnboardingState(state), { editMode: true, ...props });
         }}>
       </Button>
       <h1 className={"onboarding-title"}>Make a Positive Habit</h1>
@@ -32,18 +32,18 @@ const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{s
     <div ref={ref}>
       <ProgressBar
         stepNames={isSmallScreen() ? ['Welcome', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize'] : ['Create Profile (N/A)', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize']}
-        currentStep={onboardingStageNumber} />
+        currentStep={+(state.match(/Onboarding(\d+)/)?.[1])} />
     </div>
   </>;
 });
 
-function getLastOnboardingState(onboardingStageNumber: string) {
-  if (+onboardingStageNumber == 1) return 'Home';
-  return `Onboarding${(+onboardingStageNumber - 1)}`
+function getLastOnboardingState(state: string) {
+  if (state == 'Onboarding1') return 'Home';
+  return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) - 1}`
 };
-const getNextOnboardingState = (onboardingStageNumber: string) => {
-  if (+onboardingStageNumber == 3) return 'PreloadAndCache';
-  return `Onboarding${(+onboardingStageNumber + 1)}`
+const getNextOnboardingState = (state: string) => {
+  if (state == 'Onboarding3') return 'PreloadAndCache';
+  return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) + 1}`
 };
 
 export {getNextOnboardingState}

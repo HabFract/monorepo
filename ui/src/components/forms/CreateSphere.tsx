@@ -79,7 +79,6 @@ const CreateSphere: React.FC<CreateSphereProps> = ({editMode = false, sphereToEd
           const props = state == 'Onboarding1'
             ? { sphereEh: eH }
             : { sphereAh: aH };
-          console.log('store.set(currentSphereHashesAtom, {entryHash: eH, actionHash: aH}) :>> ', eH, aH, store.get(currentSphereHashesAtom));
           transition(state == 'Onboarding1' ? 'Onboarding2' : 'ListSpheres', props)
         } catch (error) {
           console.error(error);
