@@ -11,11 +11,11 @@ type Query {
 }
 
 type Mutation {
-  createSphere(sphere: SphereCreateParams): CreateResponsePayload!
-  updateSphere(sphere: SphereUpdateParams): CreateResponsePayload!
+  createSphere(sphere: SphereCreateParams): CreateSphereResponsePayload!
+  updateSphere(sphere: SphereUpdateParams): CreateSphereResponsePayload!
   deleteSphere(sphereHash: ID!): ID!
-  createOrbit(orbit: OrbitCreateParams): CreateResponsePayload!
-  updateOrbit(orbit: OrbitUpdateParams): CreateResponsePayload!
+  createOrbit(orbit: OrbitCreateParams): CreateOrbitResponsePayload!
+  updateOrbit(orbit: OrbitUpdateParams): CreateOrbitResponsePayload!
   deleteOrbit(orbitHash: ID!): ID!
   createProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
   updateProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
@@ -34,6 +34,29 @@ interface Node {
 }
 
 # Holochain Specific Types
+type CreateSphereResponsePayload {
+  id: ID!
+  actionHash: String!
+  entryHash: String!
+  eH: String!
+  name: String!
+  metadata: SphereMetaData
+}
+
+type CreateOrbitResponsePayload {
+  id: ID!
+  actionHash: String!
+  entryHash: String!
+  eH: String!
+  name: String!
+  sphereHash: String!
+  parentHash: String
+  childHash: String
+  frequency: Frequency!
+  scale: Scale!
+  metadata: OrbitMetaData
+}
+
 type CreateResponsePayload {
   actionHash: String!
   entryHash: String!

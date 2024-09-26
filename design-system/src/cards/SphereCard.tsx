@@ -46,8 +46,8 @@ function calculateSphereCounts(orbitScales: Scale[]) {
 const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, transition, runDelete }: SphereCardProps) => {
   const { name, metadata, id } = sphere;
 
-  function routeToVis() {  
-      transition('Vis', { currentSphereEhB64: sphere.eH, currentSphereAhB64: id })
+  function routeToVis() {
+    transition('PreloadAndCache', {landingSphereEh: sphere.eH, landingSphereId: id })
   }
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>

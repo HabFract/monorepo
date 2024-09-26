@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useAtom } from 'jotai';
-import mockAppState from '../integration/mocks/mockAppState';
+import mockAppState from './mocks/mockAppState';
 import { TestProvider } from '../utils-frontend';
 import { appStateAtom } from '../../ui/src/state/store';
 import { Frequency } from '../../ui/src/state/types/orbit';
@@ -144,7 +144,6 @@ describe('Sphere selectors', () => {
     });
 
     it.skip('should update sphere hashes when set', async () => {
-      // TODO: decide behaviour when sphere doesn't exist.
       const TestComponent = () => {
         const [sphereHashes, setSphereHashes] = useAtom(currentSphereHashesAtom);
 

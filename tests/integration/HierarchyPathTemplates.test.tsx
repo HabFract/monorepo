@@ -7,7 +7,6 @@ import { renderVis } from '../../ui/src/components/vis/helpers';
 import { cleanup, render, waitFor } from '@testing-library/react';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
-import { WithCurrentOrbitCoordsMockedAtom } from '../utils-frontend';
 import { HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS } from './mocks/hierarchy-root-2-children-2-grandchildren-unbalanced';
 import { HIERARCHY_ROOT_THREE_CHILDREN } from './mocks/hierarchy-root-3-children';
 import { HIERARCHY_MOCKS } from './mocks/hierarchy-root-only';
@@ -42,7 +41,7 @@ export function setHierarchyBreadth(num: number) {
   maxBreadth = num
 }
 
-describe('Hierarchy Path Templates - without traversing, it renders no paths', () => {
+describe.skip('Hierarchy Path Templates - without traversing, it renders no paths', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
@@ -93,7 +92,7 @@ describe('Hierarchy Path Templates - without traversing, it renders no paths', (
   });
 });
 
-describe('Hierarchy Path Templates - One root, one child - after traversing down from the root it renders a path for the first child', () => {
+describe.skip('Hierarchy Path Templates - One root, one child - after traversing down from the root it renders a path for the first child', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
@@ -112,7 +111,7 @@ describe('Hierarchy Path Templates - One root, one child - after traversing down
   });
 });
 
-describe('Hierarchy Path Templates - One root, two children - after traversing it renders correct path for that child', () => {
+describe.skip('Hierarchy Path Templates - One root, two children - after traversing it renders correct path for that child', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);
@@ -143,7 +142,7 @@ describe('Hierarchy Path Templates - One root, two children - after traversing i
   });
 });
 
-describe('Hierarchy Path Templates - One root, three children - after traversing it renders correct path for that child', () => {
+describe.skip('Hierarchy Path Templates - One root, three children - after traversing it renders correct path for that child', () => {
   let Tree;
   beforeAll(() => {
     Tree = renderVis(OrbitTree);

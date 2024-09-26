@@ -16,7 +16,10 @@ export const AppMachine = new StateMachine<AppState, AppStateStore>(initialState
 
 Object.entries(routes).forEach(([routeName, component]) => {
   AppMachine.on(routeName as AppState, async (state: any) => {
-    const ComponentWithProps = React.cloneElement(component as React.ReactElement, state.params);
+    const ComponentWithProps = React.cloneElement(component as React.ReactElement, {
+      ...state.params,
+      key: JSON.stringify(state.params), // Use a unique key based on state.params to ensure Vis re-renders when sphere hash changes.
+    });
     renderComponent(ComponentWithProps);
   });
 });

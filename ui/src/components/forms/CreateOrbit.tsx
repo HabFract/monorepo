@@ -2,16 +2,15 @@ import React, { useMemo, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { DateTime } from "luxon"
-import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, OrbitUpdateParams, Scale, useCreateOrbitMutation, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
+import { Frequency, GetOrbitHierarchyDocument, GetOrbitsDocument, Orbit, OrbitCreateParams, OrbitUpdateParams, Scale, useGetOrbitsQuery, useUpdateOrbitMutation } from '../../graphql/generated';
 import { extractEdges } from '../../graphql/utils';
+import { useCreateOrbitMutation } from '../../hooks/gql/useCreateOrbitMutation';
 import { ActionHashB64 } from '@holochain/client';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { currentOrbitIdAtom, getOrbitAtom } from '../../state/orbit';
 
 import { AppState } from '../../routes';
-import { nodeCache, store } from '../../state/jotaiKeyValueStore';
-import { mapToCacheObject } from '../../state/orbit';
-import { client } from '../../graphql/client';
+import { store } from '../../state/jotaiKeyValueStore';
 import DefaultSubmitBtn from './buttons/DefaultSubmitButton';
 import { TextAreaField, TextInputField, SelectInputField, getIconForPlanetValue } from 'habit-fract-design-system';
 import { OrbitFetcher } from './utils';
@@ -70,32 +69,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
         },
       },
     ],
-    
-    async update(){
-      if(!!inOnboarding) return;
-      const variables = { sphereEntryHashB64: sphereEh };
-      
-      let data;
-      try {
-        const gql = await client;
-        data = await gql.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only'} )
-        if(data?.data?.orbits) {
-          const orbits = (extractEdges(data.data.orbits) as Orbit[]);
-          const indexedOrbitData = Object.entries(orbits.map(mapToCacheObject))
-            .map(([_idx, value]) => [value.eH, value]);
-          store.set(nodeCache.set, selectedSphere.actionHash as ActionHashB64, Object.fromEntries(indexedOrbitData))
-          console.log('Sphere orbits fetched and cached!')
-          if(originPage == 'Vis' || forwardTo == 'Vis') {
-            transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: selectedSphere.actionHash}) 
-          }
-        }
-
+    update(){
         if(typeof onCreateSuccess !== 'undefined') {
           onCreateSuccess!.call(this)
         }
-      } catch (error) {
-        console.error(error);
-      }
     }
   });
   const [updateOrbit] = useUpdateOrbitMutation({
@@ -138,12 +115,12 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
             : await addOrbit({ variables: { variables: { ...values, sphereHash: sphereEh, parentHash: parentOrbitEh ? parentOrbitEh : values.parentHash || undefined, childHash: values.childHash || undefined } as OrbitCreateParams } })
           setSubmitting(false);
           if(!response.data) return;
-  
+
           const payload = response.data as any;
           if(originPage == 'Vis') {
             transition('Vis', { currentSphereEhB64: sphereEh, currentSphereAhB64: selectedSphere.actionHash}) 
           } else {
-            const orbitAh = editMode ? payload.updateOrbit.actionHash : payload.createOrbit.actionHash
+            const orbitAh = editMode ? payload.updateOrbit.actionHash : payload.createOrbit.id
             const props = inOnboarding
               ? { refiningOrbitAh: orbitAh }
               : { sphereAh: selectedSphere.actionHash }
@@ -252,7 +229,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({ editMode = false, inModal = f
                     ? null
                     : <option key={scale} value={scale}>{getDisplayName(scale)}</option>
                   }
-                )].filter(Boolean)}
+                )].filter((el) => el !== null)}
                 required={true}
                 labelValue={"Scale:"}
               />

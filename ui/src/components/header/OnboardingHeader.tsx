@@ -38,10 +38,11 @@ const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{s
 });
 
 function getLastOnboardingState(state: string) {
-  if (state == 'Onboarding1') return 'Home';
+  if (state == 'Onboarding1' || (state.match(/Onboarding(\d+)/) == null)) return 'Home';
   return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) - 1}`
 };
 const getNextOnboardingState = (state: string) => {
+  if (state.match(/Onboarding(\d+)/) == null) return 'Home';
   if (state == 'Onboarding3') return 'PreloadAndCache';
   return `Onboarding${+(state.match(/Onboarding(\d+)/)![1]) + 1}`
 };

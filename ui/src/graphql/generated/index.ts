@@ -55,11 +55,11 @@ export type QueryGetLowestSphereHierarchyLevelArgs = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createSphere: CreateResponsePayload;
-  updateSphere: CreateResponsePayload;
+  createSphere: CreateSphereResponsePayload;
+  updateSphere: CreateSphereResponsePayload;
   deleteSphere: Scalars['ID']['output'];
-  createOrbit: CreateResponsePayload;
-  updateOrbit: CreateResponsePayload;
+  createOrbit: CreateOrbitResponsePayload;
+  updateOrbit: CreateOrbitResponsePayload;
   deleteOrbit: Scalars['ID']['output'];
   createProfile: AgentProfile;
   updateProfile: AgentProfile;
@@ -116,6 +116,31 @@ export type PageInfo = {
 export type Node = {
   id: Scalars['ID']['output'];
   eH: Scalars['String']['output'];
+};
+
+export type CreateSphereResponsePayload = {
+  __typename?: 'CreateSphereResponsePayload';
+  id: Scalars['ID']['output'];
+  actionHash: Scalars['String']['output'];
+  entryHash: Scalars['String']['output'];
+  eH: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  metadata?: Maybe<SphereMetaData>;
+};
+
+export type CreateOrbitResponsePayload = {
+  __typename?: 'CreateOrbitResponsePayload';
+  id: Scalars['ID']['output'];
+  actionHash: Scalars['String']['output'];
+  entryHash: Scalars['String']['output'];
+  eH: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  sphereHash: Scalars['String']['output'];
+  parentHash?: Maybe<Scalars['String']['output']>;
+  childHash?: Maybe<Scalars['String']['output']>;
+  frequency: Frequency;
+  scale: Scale;
+  metadata?: Maybe<OrbitMetaData>;
 };
 
 export type CreateResponsePayload = {
@@ -281,7 +306,7 @@ export type CreateOrbitMutationVariables = Exact<{
 }>;
 
 
-export type CreateOrbitMutation = { __typename?: 'Mutation', createOrbit: { __typename?: 'CreateResponsePayload', actionHash: string, entryHash: string } };
+export type CreateOrbitMutation = { __typename?: 'Mutation', createOrbit: { __typename?: 'CreateOrbitResponsePayload', id: string, eH: string, name: string, parentHash?: string | null, sphereHash: string, scale: Scale, frequency: Frequency, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
 
 export type DeleteOrbitMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -295,14 +320,14 @@ export type UpdateOrbitMutationVariables = Exact<{
 }>;
 
 
-export type UpdateOrbitMutation = { __typename?: 'Mutation', updateOrbit: { __typename?: 'CreateResponsePayload', actionHash: string, entryHash: string } };
+export type UpdateOrbitMutation = { __typename?: 'Mutation', updateOrbit: { __typename?: 'CreateOrbitResponsePayload', actionHash: string, entryHash: string } };
 
 export type CreateSphereMutationVariables = Exact<{
   variables: SphereCreateParams;
 }>;
 
 
-export type CreateSphereMutation = { __typename?: 'Mutation', createSphere: { __typename?: 'CreateResponsePayload', actionHash: string, entryHash: string } };
+export type CreateSphereMutation = { __typename?: 'Mutation', createSphere: { __typename?: 'CreateSphereResponsePayload', actionHash: string, entryHash: string } };
 
 export type DeleteSphereMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -316,7 +341,7 @@ export type UpdateSphereMutationVariables = Exact<{
 }>;
 
 
-export type UpdateSphereMutation = { __typename?: 'Mutation', updateSphere: { __typename?: 'CreateResponsePayload', actionHash: string, entryHash: string } };
+export type UpdateSphereMutation = { __typename?: 'Mutation', updateSphere: { __typename?: 'CreateSphereResponsePayload', actionHash: string, entryHash: string } };
 
 export type GetOrbitQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -362,8 +387,20 @@ export type GetSpheresQuery = { __typename?: 'Query', spheres: { __typename?: 'S
 export const CreateOrbitDocument = gql`
     mutation createOrbit($variables: OrbitCreateParams!) {
   createOrbit(orbit: $variables) {
-    actionHash
-    entryHash
+    id
+    eH
+    name
+    parentHash
+    sphereHash
+    scale
+    frequency
+    metadata {
+      description
+      timeframe {
+        startTime
+        endTime
+      }
+    }
   }
 }
     `;

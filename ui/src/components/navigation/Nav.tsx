@@ -105,7 +105,8 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
               { setSideNavExpanded(true) } 
             else {
               setSideNavExpanded(false);
-              transition('PreloadAndCache', {landingSphereEh: sphere(e.key)?.eH, landingSphereId: e.key })}
+              store.set(currentSphereHashesAtom, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
+              transition('Vis', {currentSphereEhB64: sphere(e.key)?.eH, currentSphereAhB64: e.key })}
         } else if([Page.ListSpheres].includes(currentPage as Page)) {
           if(!(e.key == store.get(currentSphereHashesAtom).actionHash)) {
             store.set(currentSphereHashesAtom, {entryHash: sphere(e.key)?.eH, actionHash: e.key})
@@ -155,7 +156,7 @@ const Nav: React.FC<INav> = ({ transition, sideNavExpanded, setSettingsOpen, set
           setSideNavExpanded(false)
           return
         case 'primary':
-          if(store.get(currentSphereHasCachedNodesAtom)) {
+          if(!store.get(currentSphereHasCachedNodesAtom)) {
             showToast("Select a Sphere with existing Orbits to enable Visualisation", 100000)
             return
           }

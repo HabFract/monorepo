@@ -1,6 +1,18 @@
 mutation createOrbit($variables: OrbitCreateParams!) {
   createOrbit(orbit: $variables) {
-    actionHash
-    entryHash
+    id
+    eH
+    name
+    parentHash
+    sphereHash
+    scale
+    frequency
+    metadata {
+      description
+      timeframe {
+        startTime
+        endTime
+      }
+    }
   }
 }

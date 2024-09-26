@@ -1,84 +1,85 @@
+import { currentSphereHashesAtom } from './../../state/sphere';
 import { useCreateOrbitMutation as useCreateOrbitMutationGenerated } from "../../graphql/generated";
 import { appStateAtom } from "../../state/store";
 import { useSetAtom } from "jotai";
-import { Orbit } from "../../graphql/generated";
+import { OrbitNodeDetails } from "../../state/types/orbit";
+import { currentSphereOrbitNodesAtom, decodeFrequency } from "../../state/orbit";
+import { nodeCache, store } from "../../state/jotaiKeyValueStore";
+import { currentSphereHasCachedNodesAtom } from "../../state/sphere";
+import { SphereHashes, SphereOrbitNodes } from '../../state/types/sphere';
+import { ActionHashB64 } from '@holochain/client';
 
-export const useCreateOrbitMutation = () => {
+export const useCreateOrbitMutation = (opts) => {
   const setAppState = useSetAtom(appStateAtom);
 
   return useCreateOrbitMutationGenerated({
-    refetchQueries: ["getOrbits"],
+    ...opts,
     update(_cache, { data }) {
-      if (data?.createOrbit) {
-        const newOrbit = data.createOrbit as Orbit;
+      if (!data?.createOrbit) return;
 
-        setAppState((prevState) => {
-          const updatedState = { ...prevState };
-
-          // Update orbitNodes
-          updatedState.orbitNodes = {
-            ...prevState.orbitNodes,
-            currentOrbitHash: newOrbit.id,
-            byHash: {
-              ...prevState.orbitNodes.byHash,
-              [newOrbit.id]: {
-                id: newOrbit.id,
-                eH: newOrbit.eH,
-                name: newOrbit.name,
-                scale: newOrbit.scale,
-                frequency: newOrbit.frequency,
-                startTime: newOrbit.startTime,
-                endTime: newOrbit.endTime,
-                description: newOrbit.description,
-                parentEh: newOrbit.parentHash,
-                path: "", // You might need to generate this path
-              },
-            },
-          };
-
-          // Update hierarchies if this is a root orbit
-          if (!newOrbit.parentHash) {
-            const sphereHash = newOrbit.sphereHash;
-            updatedState.spheres.byHash[sphereHash].hierarchyRootOrbitEntryHashes.push(newOrbit.eH);
-
-            updatedState.hierarchies.byRootOrbitEntryHash[newOrbit.eH] = {
-              rootNode: newOrbit.eH,
-              json: JSON.stringify({
-                content: newOrbit.eH,
-                name: newOrbit.name,
-                children: [],
-              }),
-              bounds: { minBreadth: 0, maxBreadth: 0, minDepth: 0, maxDepth: 0 },
-              indices: { x: 0, y: 0 },
-              currentNode: newOrbit.eH,
-              nodeHashes: [newOrbit.eH],
-            };
-          } else {
-            // Update parent's children in hierarchy
-            Object.values(updatedState.hierarchies.byRootOrbitEntryHash).forEach((hierarchy) => {
-              const hierarchyJson = JSON.parse(hierarchy.json);
-              const updateChildren = (node: any) => {
-                if (node.content === newOrbit.parentHash) {
-                  if (!node.children) node.children = [];
-                  node.children.push({
-                    content: newOrbit.eH,
-                    name: newOrbit.name,
-                  });
-                  return true;
-                }
-                return node.children?.some(updateChildren);
-              };
-              if (updateChildren(hierarchyJson)) {
-                hierarchy.json = JSON.stringify(hierarchyJson);
-                hierarchy.nodeHashes.push(newOrbit.eH);
-                // Update bounds and indices if necessary
-              }
-            });
-          }
-
-          return updatedState;
-        });
+      const newOrbit = data.createOrbit as any;
+      const newOrbitDetails : OrbitNodeDetails = {
+        id: newOrbit.id,
+        eH: newOrbit.eH,
+        name: newOrbit.name,
+        scale: newOrbit.scale,
+        frequency: decodeFrequency(newOrbit.frequency),
+        startTime: newOrbit.startTime,
+        sphereHash: newOrbit.sphereHash,
+        endTime: newOrbit.endTime,
+        description: newOrbit.description,
+        parentEh: newOrbit.parentHash,
+      };
+      // To be phased out, all appstate will be stored in localstorage anyway
+      if(store.get(currentSphereHasCachedNodesAtom)) {
+        let sphere = store.get(currentSphereHashesAtom) as SphereHashes;
+        let existingNodes = store.get(currentSphereOrbitNodesAtom);
+        let newSphereOrbitNodes : SphereOrbitNodes = {
+          ...existingNodes,
+            [newOrbit.eH]: newOrbitDetails
+        };
+        store.set(nodeCache.set, sphere.actionHash as ActionHashB64, newSphereOrbitNodes);
       }
+
+      setAppState((prevState) => {
+        const updatedState = { ...prevState };
+        // Update orbitNodes
+        updatedState.orbitNodes = {
+          ...prevState.orbitNodes,
+          currentOrbitHash: newOrbit.id,
+          byHash: {
+            ...prevState.orbitNodes.byHash,
+            [newOrbit.id]: newOrbitDetails,
+          },
+        };
+
+        // Update hierarchies if this is a root orbit
+        if (!newOrbit.parentHash && typeof updatedState?.spheres?.byHash === 'object') {
+          const sphereHash = newOrbit.sphereHash;
+          const sphereId = Object.entries(updatedState.spheres.byHash).find(([id, sphere]) => sphere.details.entryHash == sphereHash)?.[0];
+          if(!sphereId || !updatedState.spheres.byHash[sphereId]?.hierarchyRootOrbitEntryHashes) { console.warn("This sphere has an incomplete entry in the store"); return updatedState };
+
+          updatedState.spheres.byHash[sphereId].hierarchyRootOrbitEntryHashes.push(newOrbit.eH);
+
+          updatedState.hierarchies.byRootOrbitEntryHash[newOrbit.eH] = {
+            rootNode: newOrbit.eH,
+            json: "",
+            bounds: {
+              minBreadth: 0,
+              maxBreadth: 0,
+              minDepth: 0,
+              maxDepth: 0,
+            },
+            indices: { x: 0, y: 0 },
+            currentNode: newOrbit.eH,
+            nodeHashes: [newOrbit.eH],
+          };
+        }
+
+        return updatedState;
+      });
+
+      opts?.update && opts.update();
     },
   });
 };

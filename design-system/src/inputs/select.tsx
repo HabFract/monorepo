@@ -5,6 +5,7 @@ import { Select as FBSelect } from "flowbite-react";
 import "./common.css";
 import WithLabel from "./label";
 import ErrorLabel from "./errorlabel";
+import { cloneElement } from "react";
 
 const Select: React.FC<SelectProps> = ({ id, value, name, theme, onChange, onBlur, labelValue, withInfo, onClickInfo, required, disabled, size, icon, iconSide, options } : SelectProps) => {
   return (
@@ -24,7 +25,7 @@ const Select: React.FC<SelectProps> = ({ id, value, name, theme, onChange, onBlu
       >
         {typeof options[0] == 'string'
           ? options.map((optionText, idx) => <option key={idx}>{optionText}</option>)
-          : options.map((option) => option)
+          : options.map((option, i) => cloneElement(option, { key: i }))
         }
       </FBSelect>
     </WithLabel>

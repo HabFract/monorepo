@@ -30,8 +30,9 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // Get sphere and sphere orbit nodes details
   const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries)) as SphereOrbitNodes;
-  const sphereNodeDetails = useAtomValue(currentSphereOrbitNodesAtom);
-
+  const nodes = store.get(currentSphereOrbitNodesAtom);
+  const needToUpdateCache = nodes == null || typeof Object.entries(nodes) !== 'object' || Object.values(nodes).length == 0;
+  const sphereNodeDetails  = !needToUpdateCache && Object.fromEntries(Object.entries(nodes).map(([_, nodeDetails]) => [nodeDetails.eH,nodeDetails]))
   // Get and set node traversal bounds state
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [, setBreadthBounds] = useAtom(setBreadths);
@@ -61,7 +62,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // Traverse (but don't render) the root of the sphere's hierarchy so that we can cache the correct path to append at the top of the vis
   const [hasCached, setHasCached] = useState<boolean>(false);
-  const { loading: loadCache, error: errorCache, cache } = useFetchOrbitsAndCacheHierarchyPaths({params: getQueryParams(dataLevel?.getLowestSphereHierarchyLevel || 0), hasCached, currentSphereId: sphere.actionHash as string, bypass: false})
+  const { loading: loadCache, error: errorCache, cache } = useFetchOrbitsAndCacheHierarchyPaths({params: getQueryParams(dataLevel?.getLowestSphereHierarchyLevel || 0), hasCached, currentSphereId: sphere.actionHash as string, bypass: true})
 
   const fetchHierarchyData = () => {
     if (error) return;
@@ -164,7 +165,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   return (
     <>
-      {loading &&  <span data-testid={'vis-spinner'} />}
+      {loading || needToUpdateCache &&  <span data-testid={'vis-spinner'} />}
       {!error && json && currentOrbitTree && render(currentOrbitTree, visCoverage, x, y, hierarchy(getJsonDerivation(json)))}
     </>
   )

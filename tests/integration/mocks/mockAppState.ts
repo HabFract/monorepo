@@ -61,6 +61,7 @@ export const mockAppState: AppState = {
       uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
         id: "uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
         eH: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+        sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
         name: "Be the best",
         scale: Scale.Astro,
         frequency: Frequency.DAILY_OR_MORE.DAILY,
@@ -72,6 +73,7 @@ export const mockAppState: AppState = {
       uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc: {
         id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
         eH: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+        sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
         name: "Daily Exercise",
         scale: Scale.Sub,
         frequency: Frequency.DAILY_OR_MORE.DAILY,
@@ -84,6 +86,7 @@ export const mockAppState: AppState = {
       uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc: {
         id: "uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
         eH: "uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
+        sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
         name: "Weekly Gym Session",
         scale: Scale.Atom,
         frequency: Frequency.LESS_THAN_DAILY.WEEKLY,
@@ -96,6 +99,7 @@ export const mockAppState: AppState = {
       uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
         id: "uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
         eH: "uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
+        sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
         name: "Daily Meditation",
         scale: Scale.Atom,
         frequency: Frequency.DAILY_OR_MORE.TWO,
@@ -108,6 +112,7 @@ export const mockAppState: AppState = {
       uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
         id: "uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
         eH: "uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
+        sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
         name: "Monthly Health Check",
         scale: Scale.Atom,
         frequency: Frequency.LESS_THAN_DAILY.MONTHLY,
@@ -141,7 +146,6 @@ export const mockAppState: AppState = {
       sortOrder: "lowestToGreatest",
     },
     currentDay: "2024-09-03",
-    subdivisionList: ["Run 5k", "Run 2k more", "Run 1 more km"],
   },
 };
 

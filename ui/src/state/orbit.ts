@@ -6,22 +6,35 @@ import { Frequency, OrbitDetails, OrbitNodeDetails } from "./types/orbit";
 import { Orbit, Frequency as Freq } from "../graphql/generated";
 import { WinData } from "./types/win";
 
+export const decodeFrequency = (frequency: Freq) : Frequency.Rationals => {
+  switch (frequency) {
+    case Freq.Day:
+      return Frequency.DAILY_OR_MORE.DAILY;
+    case Freq.Month:
+      return Frequency.LESS_THAN_DAILY.MONTHLY;
+    case Freq.Quarter:
+      return Frequency.LESS_THAN_DAILY.QUARTERLY;
+    // case Freq.Year:
+    //   return Frequency.LESS_THAN_DAILY.YEARLY;
+    default:
+      return Frequency.DAILY_OR_MORE.DAILY;
+  }
+};
+
 /**
  * Transforms from graphQL repsonses into a form expected by state management
  * @returns {OrbitNodeDetails} A record of orbit nodes for the current sphere or null if no sphere is selected
  */
 export const mapToCacheObject = (orbit: Orbit): OrbitNodeDetails => {
-  // TODO: update this
-  const newFrequency =
-    orbit.frequency == Freq.Day
-      ? Frequency.DAILY_OR_MORE.DAILY
-      : Frequency.LESS_THAN_DAILY.MONTHLY;
+  const newFrequency = decodeFrequency(orbit.frequency);
+
   return {
     id: orbit.id,
     eH: orbit.eH,
     parentEh: orbit.parentHash || undefined,
     name: orbit.name,
     scale: orbit.scale,
+    // parentHash: orbit.parentHash,
     frequency: newFrequency,
     description: orbit.metadata?.description || "",
     startTime: orbit.metadata?.timeframe.startTime,
@@ -41,18 +54,12 @@ export const currentSphereOrbitNodesAtom = atom<SphereOrbitNodes | null>(
     if (!currentSphere) return null;
 
     const sphereNodes: SphereOrbitNodes = {};
-    currentSphere.hierarchyRootOrbitEntryHashes.forEach((rootHash) => {
-      const hierarchy = state.hierarchies.byRootOrbitEntryHash[rootHash];
-      if (hierarchy) {
-        hierarchy.nodeHashes.forEach((nodeHash) => {
-          const node = state.orbitNodes.byHash[nodeHash];
-          if (node) {
-            sphereNodes[nodeHash] = node;
-          }
-        });
+    Object.entries(state.orbitNodes.byHash).forEach(([nodeHash, orbitNode]) => {
+      if (orbitNode.sphereHash === currentSphere.details.entryHash) {
+        sphereNodes[nodeHash] = orbitNode;
       }
     });
-
+  
     return Object.keys(sphereNodes).length > 0 ? sphereNodes : null;
   }
 );

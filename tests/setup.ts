@@ -5,6 +5,7 @@ import { atom, WritableAtom } from "jotai";
 import { SPHERE_ID } from "./integration/mocks/spheres";
 import { currentSphereAtom, currentSphereHasCachedNodesAtom, currentSphereHashesAtom } from "../ui/src/state/sphere";
 import { currentSphereHierarchyBounds, currentSphereHierarchyIndices } from "../ui/src/state/hierarchy";
+import { currentSphereOrbitNodesAtom } from "../ui/src/state/orbit";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -26,21 +27,13 @@ const initialStateMachineState = {
 };
 
 let mockUseStateTransitionResponse = ["Home", vi.fn(() => {}), initialStateMachineState];
-export function setMockUseStateTransitionResponse(params: typeof initialStateMachineState) {
-  mockUseStateTransitionResponse = ["Home", vi.fn(() => {}), params];
+export function setMockUseStateTransitionResponse(route: string, params: typeof initialStateMachineState) {
+  mockUseStateTransitionResponse = [route, vi.fn(() => {}), params];
 }
 
 vi.mock("../ui/src/hooks/useStateTransition", () => ({
   useStateTransition: () => mockUseStateTransitionResponse,
-  setMockUseStateTransitionResponse,
 }));
-
-// /* 
-// / Mocking the overall AppState (not routing)
-// */
-// vi.mock('../ui/src/state/store', () => ({
-//   appStateAtom: createTestStore(),
-// }));
 
 const currentSphereHash = mockAppState.spheres.currentSphereHash;
 const currentSphere = mockAppState.spheres.byHash[currentSphereHash];
@@ -62,6 +55,7 @@ export const storeMock = {
       [currentSphereHasCachedNodesAtom.toString()]: true, 
       [currentSphereHierarchyBounds.toString()]: currentHierarchy.bounds,
       [currentSphereHierarchyIndices.toString()]: currentHierarchy.indices,
+      [currentSphereOrbitNodesAtom.toString()]: mockAppState.orbitNodes.byHash, // currently just mocking one sphere so no need to filter
     };
     return atomMappings[atom.toString()] || undefined;
   }),
@@ -72,6 +66,9 @@ export const storeMock = {
 vi.mock("../ui/src/state/jotaiKeyValueStore", (importOriginal) => ({
   ...importOriginal,
   store: storeMock,
+  nodeCache: {
+    entries: atom(Object.entries(mockAppState.orbitNodes.byHash))
+  },
   nodeCacheItemsAtom: atom(Object.values(mockAppState.orbitNodes.byHash))
 }));
 

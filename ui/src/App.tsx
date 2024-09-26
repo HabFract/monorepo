@@ -64,8 +64,8 @@ function App({ children: pageComponent }) {
           // Only Renders when state == "Home"
           startBtn: state.match('Home') ? <HomeContinue onClick={() => transition("Onboarding1")} /> : <></>,
           // Only Renders when state includes "Onboarding"
-          headerDiv: <OnboardingHeader state={state} transition={transition} ref={progressBarRef} />,
-          submitBtn: <OnboardingContinue onClick={() => transition(getNextOnboardingState(state))} />
+          headerDiv: state.match('Onboarding') && <OnboardingHeader state={state} transition={transition} ref={progressBarRef} />,
+          submitBtn: state.match('Onboarding') && <OnboardingContinue onClick={() => transition(getNextOnboardingState(state))} />
         }
         ), state, transition, params)({ currentSphereDetails, newUser: !!userHasSpheres })
       }

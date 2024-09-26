@@ -103,7 +103,7 @@ export class TreeVisualization extends BaseVisualization {
         this._gCircle
           .classed("checked", (d): boolean => {
             if (!d?.data?.content || !this.nodeDetails[d.data.content]) return false
-            return store.get(currentOrbitIdAtom).id == d.data.content;
+            return store.get(currentOrbitIdAtom) == d.data.content;
           });
       }
     }

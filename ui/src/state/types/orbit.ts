@@ -54,6 +54,7 @@ export interface OrbitDetails {
   name: string;
   scale: Scale;
   frequency: Frequency.Rationals;
+  sphereHash: ActionHashB64;
   startTime?: number;
   endTime?: number;
   description?: string;

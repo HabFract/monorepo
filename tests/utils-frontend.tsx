@@ -17,7 +17,7 @@ export const renderWithJotai = (
 
   return render(
     <Provider store={testStore}>
-      {React.cloneElement(ui, { nodeCache: testCache })}
+      {React.cloneElement(ui)}
     </Provider>
   );
 };

@@ -13,11 +13,11 @@ export const aQuery = (overrides?: Partial<Query>): Query => {
 
 export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
     return {
-        createSphere: overrides && overrides.hasOwnProperty('createSphere') ? overrides.createSphere! : aCreateResponsePayload(),
-        updateSphere: overrides && overrides.hasOwnProperty('updateSphere') ? overrides.updateSphere! : aCreateResponsePayload(),
+        createSphere: overrides && overrides.hasOwnProperty('createSphere') ? overrides.createSphere! : aCreateSphereResponsePayload(),
+        updateSphere: overrides && overrides.hasOwnProperty('updateSphere') ? overrides.updateSphere! : aCreateSphereResponsePayload(),
         deleteSphere: overrides && overrides.hasOwnProperty('deleteSphere') ? overrides.deleteSphere! : 'd656573f-6b5f-48b1-b767-997e497a6673',
-        createOrbit: overrides && overrides.hasOwnProperty('createOrbit') ? overrides.createOrbit! : aCreateResponsePayload(),
-        updateOrbit: overrides && overrides.hasOwnProperty('updateOrbit') ? overrides.updateOrbit! : aCreateResponsePayload(),
+        createOrbit: overrides && overrides.hasOwnProperty('createOrbit') ? overrides.createOrbit! : aCreateOrbitResponsePayload(),
+        updateOrbit: overrides && overrides.hasOwnProperty('updateOrbit') ? overrides.updateOrbit! : aCreateOrbitResponsePayload(),
         deleteOrbit: overrides && overrides.hasOwnProperty('deleteOrbit') ? overrides.deleteOrbit! : '8c4ff9e4-b0db-409d-ba41-9a0a173bfe93',
         createProfile: overrides && overrides.hasOwnProperty('createProfile') ? overrides.createProfile! : anAgentProfile(),
         updateProfile: overrides && overrides.hasOwnProperty('updateProfile') ? overrides.updateProfile! : anAgentProfile(),
@@ -37,6 +37,33 @@ export const aNode = (overrides?: Partial<Node>): Node => {
     return {
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '95bb2f34-6c86-495f-bfdc-f25b025cdba5',
         eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'iure',
+    };
+};
+
+export const aCreateSphereResponsePayload = (overrides?: Partial<CreateSphereResponsePayload>): CreateSphereResponsePayload => {
+    return {
+        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 'f1b184fb-8b2c-4441-9415-a6ca7686126d',
+        actionHash: overrides && overrides.hasOwnProperty('actionHash') ? overrides.actionHash! : 'dicta',
+        entryHash: overrides && overrides.hasOwnProperty('entryHash') ? overrides.entryHash! : 'dolores',
+        eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'nemo',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'id',
+        metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : aSphereMetaData(),
+    };
+};
+
+export const aCreateOrbitResponsePayload = (overrides?: Partial<CreateOrbitResponsePayload>): CreateOrbitResponsePayload => {
+    return {
+        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '5fad755e-8006-4c20-aba3-dd74eea04921',
+        actionHash: overrides && overrides.hasOwnProperty('actionHash') ? overrides.actionHash! : 'porro',
+        entryHash: overrides && overrides.hasOwnProperty('entryHash') ? overrides.entryHash! : 'tempore',
+        eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'magni',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'id',
+        sphereHash: overrides && overrides.hasOwnProperty('sphereHash') ? overrides.sphereHash! : 'quod',
+        parentHash: overrides && overrides.hasOwnProperty('parentHash') ? overrides.parentHash! : 'rerum',
+        childHash: overrides && overrides.hasOwnProperty('childHash') ? overrides.childHash! : 'dicta',
+        frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,
+        scale: overrides && overrides.hasOwnProperty('scale') ? overrides.scale! : Scale.Astro,
+        metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : anOrbitMetaData(),
     };
 };
 
