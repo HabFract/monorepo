@@ -17,6 +17,7 @@ import { currentSphereOrbitNodesAtom } from '../../state/orbit';
 import { isSmallScreen } from './helpers';
 import { useNodeTraversal } from '../../hooks/useNodeTraversal';
 import { SphereOrbitNodes } from '../../state/types/sphere';
+import { SphereHierarchyBounds } from '../../state/types/hierarchy';
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   selectedSphere: sphere,
@@ -30,9 +31,11 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // Get sphere and sphere orbit nodes details
   const nodeDetailsCache =  Object.fromEntries(useAtomValue(nodeCache.entries)) as SphereOrbitNodes;
-  const nodes = store.get(currentSphereOrbitNodesAtom);
-  const needToUpdateCache = nodes == null || typeof Object.entries(nodes) !== 'object' || Object.values(nodes).length == 0;
-  const sphereNodeDetails  = !needToUpdateCache && Object.fromEntries(Object.entries(nodes).map(([_, nodeDetails]) => [nodeDetails.eH,nodeDetails]))
+  const nodes = useAtomValue(currentSphereOrbitNodesAtom);
+  const needToUpdateCache = !nodes || typeof nodes !== 'object' || Object.keys(nodes).length === 0;
+  const sphereNodeDetails = !needToUpdateCache 
+    ? Object.fromEntries(Object.entries(nodes).map(([_, nodeDetails]) => [nodeDetails.eH, nodeDetails]))
+    : {};
   // Get and set node traversal bounds state
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [, setBreadthBounds] = useAtom(setBreadths);

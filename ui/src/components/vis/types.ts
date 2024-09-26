@@ -41,7 +41,7 @@ export interface IVisualization {
   /** ID of the SVG element */
   _svgId: string;
   /** Root data for the hierarchy */
-  rootData: HierarchyNode<unknown>;
+  rootData: HierarchyNode<{content: ActionHashB64}>;
   /** View configuration */
   _viewConfig: ViewConfig;
   /** Zoom configuration */

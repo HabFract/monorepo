@@ -1,6 +1,7 @@
 import { Breadcrumb } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
-import { Sphere } from "../../graphql/generated";
+//@ts-ignore
+import { Sphere } from "../../graphql/generated/index";
 import { BreadcrumbItemType, BreadcrumbSeparatorType } from "antd/es/breadcrumb/Breadcrumb";
 
 function Breadcrumbs({ currentSphere, state, transition, isFormEditMode }: any) {

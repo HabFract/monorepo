@@ -107,7 +107,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
         margin={defaultMargins}
         selectedSphere={selectedSphere}
         render={(currentVis: T, queryType: VisCoverage, x, y, newRootData) => {
-          const currentOrbitIsRoot = cachedCurrentOrbit && cachedCurrentOrbit.eH === currentVis.rootData.data.content;
+          const currentOrbitIsRoot = !!(cachedCurrentOrbit && cachedCurrentOrbit.eH === currentVis.rootData.data.content);
           // Determine need for traversal controls
           const traversalConditions = getTraversalConditions(queryType, currentOrbitIsRoot ? currentVis.rootData : newRootData);
 
@@ -129,7 +129,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
               <VisControls
                 currentDate={currentDate}
                 setNewDate={(val) => { setCurrentDate(val) }}
-                orbitDetails={cachedCurrentOrbit}
+                orbitDetails={cachedCurrentOrbit as OrbitNodeDetails}
                 setOrbitDetailsWin={(dateIndex: string, newValue: boolean) => {
                   store.set(setOrbitWithEntryHashAtom, {
                     orbitEh: cachedCurrentOrbit!.eH as string,
@@ -222,7 +222,7 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
         const newId = newChild && newChild.parent?.data?.content;
         store.set(newTraversalLevelIndexId, {id: newId})
 
-        setBreadthIndex(children?.findIndex(child => child?.data?.content == newId));
+        setBreadthIndex(children?.findIndex(child => child?.data?.content == newId) || 0);
       }
       const traverseUp = () => {
         decrementDepth()

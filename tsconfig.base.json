@@ -1,16 +1,21 @@
 {
   "compilerOptions": {
     "composite": true,
-    "outDir": "dist",
-
+    "outDir": "./dist",
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@design-system/*": ["design-system/src/*"],
+      "@ui/*": ["ui/src/*"]
+    },
 
     /* Linting */
     "strict": true,
@@ -19,7 +24,9 @@
     "noUnusedLocals": false,
     "noImplicitThis": false,
     "noUnusedParameters": false,
+    "types": [],
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["ui/**/*"]
+  "include": ["design-system/src", "ui/src"],
+  "exclude": ["design-system/node_modules", "ui/node_modules", "node_modules"],
 }

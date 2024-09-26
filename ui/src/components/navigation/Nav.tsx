@@ -12,6 +12,7 @@ import { store } from "../../state/jotaiKeyValueStore";
 import { currentSphereOrbitNodesAtom } from '../../state/orbit';
 import { extractEdges } from "../../graphql/utils";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+//@ts-ignore
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { AppMachine } from "../../main";
 import { useAtomValue } from "jotai";

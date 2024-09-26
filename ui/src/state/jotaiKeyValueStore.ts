@@ -5,7 +5,7 @@ import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 
 export const nodeCache = new MiniDb();
 
-export const store = createStore();
+export const store: any = createStore();
 
 export const nodeCacheItemsAtom = atom((get) => get(nodeCache.items));
 
@@ -19,5 +19,5 @@ export interface OrbitNodeDetails {
   startTime?: number;
   endTime?: number;
   path?: string;
-  wins: { [dayIndex: string]: boolean };
+  wins?: { [dayIndex: string]: boolean };
 }

@@ -30,7 +30,7 @@ const PreloadOrbitData : React.FC<PreloadOrbitDataProps> = ({ landingSphereEh, l
             let data;
             try {
               const gql = await client;
-              data = await gql.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only' });
+              data = gql && await gql.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only' });
               if (data?.data?.orbits) {
                 const orbits = extractEdges(data.data.orbits) as Orbit[];
                 const indexedOrbitData = Object.entries(orbits.map(mapToCacheObject))

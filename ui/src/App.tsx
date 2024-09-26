@@ -10,7 +10,7 @@ import Settings from './components/Settings';
 
 import { darkTheme } from 'habit-fract-design-system';
 import { store } from './state/jotaiKeyValueStore';
-import { SphereConnection, useGetSpheresQuery } from './graphql/generated';
+import { Sphere, SphereConnection, useGetSpheresQuery } from './graphql/generated';
 import { ALPHA_RELEASE_DISCLAIMER } from './constants';
 
 import { isSmallScreen } from './components/vis/helpers';
@@ -25,6 +25,8 @@ import HomeContinue from './components/home/HomeContinueButton';
 import Toast from './components/Toast';
 import { useToast } from './contexts/toast';
 import { currentSphereHashesAtom } from './state/sphere';
+import { SphereDetails } from './state/types/sphere';
+import { EntryHashB64 } from '@holochain/client';
 
 function App({ children: pageComponent }) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
@@ -46,7 +48,14 @@ function App({ children: pageComponent }) {
   const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
 
   const sphere = store.get(currentSphereHashesAtom);
-  const currentSphereDetails = userHasSpheres && extractEdges(spheres.spheres).find(possibleSphere => possibleSphere.id == sphere.actionHash);
+  const currentSphere = userHasSpheres && extractEdges(spheres.spheres).find(possibleSphere => possibleSphere.id == sphere.actionHash);
+  const currentSphereDetails = currentSphere ? {
+    entryHash: currentSphere.eH,
+    name: currentSphere.name,
+    description: currentSphere.metadata?.description,
+    hashtag: '',
+    image: currentSphere?.metadata?.image as string || undefined,
+  } : { entryHash: '' as EntryHashB64 } as SphereDetails
 
   return <Flowbite theme={{ theme: darkTheme }}>
     <Toast />
@@ -64,6 +73,7 @@ function App({ children: pageComponent }) {
           // Only Renders when state == "Home"
           startBtn: state.match('Home') ? <HomeContinue onClick={() => transition("Onboarding1")} /> : <></>,
           // Only Renders when state includes "Onboarding"
+          //@ts-ignore
           headerDiv: state.match('Onboarding') && <OnboardingHeader state={state} transition={transition} ref={progressBarRef} />,
           submitBtn: state.match('Onboarding') && <OnboardingContinue onClick={() => transition(getNextOnboardingState(state))} />
         }

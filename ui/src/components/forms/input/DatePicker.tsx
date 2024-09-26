@@ -33,7 +33,8 @@ const DateInput = ({
           disabled={props.disabled}
           // value={DateTime.fromMillis(values[field.name])}
           picker={values.frequency.toLowerCase()} 
-          onChange={async (_date, dateString) => setFieldValue(field.name, DateTime.local(...dateString.split('/').map(n => +n)).ts)}
+          //@ts-ignore
+          onChange={async (_date: any, dateString: string) => setFieldValue(field.name, DateTime.local(...(dateString).split('/').map(n => +n)).ts)}
         />
       </FormItem>
     </div>

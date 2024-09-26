@@ -328,7 +328,8 @@ export class TreeVisualization extends BaseVisualization {
         if (!parent || !this.nodeDetails[parent] || !child || !this.nodeDetails[child]) return 0
         const cachedNodeParent = Object.values(this.nodeDetails).find(n => n.eH == parent);
         const cachedNodeChild = Object.values(this.nodeDetails).find(n => n.eH == child);
-        if (cachedNodeChild?.checked && cachedNodeParent?.checked) return 1;
+        // TODO: wire up to wins
+        // if (cachedNodeChild?.checked && cachedNodeParent?.checked) return 1;
         return 0.5
       }
       )

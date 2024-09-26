@@ -45,7 +45,7 @@ interface CreateOrbitProps {
   orbitToEditId?: ActionHashB64;
   sphereEh: string; // Link to a sphere
   parentOrbitEh: string | undefined; // Link to a parent Orbit to create hierarchies
-  childOrbitEh: string | undefined; // Link to a child Orbit to create hierarchies
+  childOrbitEh?: string | undefined; // Link to a child Orbit to create hierarchies
   headerDiv?: React.ReactNode;
   submitBtn?: React.ReactNode;
   forwardTo?: string;

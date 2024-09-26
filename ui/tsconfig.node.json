@@ -2,11 +2,18 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "ESNext",
-    "target": "ES2019"
+    "target": "ES2019",
+    "noEmit": false,
+    "declaration": true,
+    "declarationDir": "dist/types"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/__tests__/*", 
-  "src/graphql/generated/*.ts",
-  "src/graphql/generated/mocks-types-fixed",
-]
+  "exclude": [
+    "node_modules",
+    "**/node_modules/**/*",
+    "../node_modules/**/*",
+    "../design-system/dist",
+    "./src/graphql/generated/*",
+    "dist"
+  ]
 }

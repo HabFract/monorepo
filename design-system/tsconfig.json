@@ -1,28 +1,12 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist/",
-    "declarationDir": "./dist",
-    "sourceMap": true,
-    "inlineSources": true,
-    "declaration": true,
-    "declarationMap": true,
-    "skipLibCheck": true,
-    "noImplicitAny": false,
-    "module": "ESNext",
-    "lib": ["es2021", "DOM", "DOM.Iterable"],
-    "target": "es2017",
-    "allowJs": false,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "esModuleInterop": false,
-    "jsx": "react-jsx"
   },
-  "include": [
-    "./src/index.ts",
+  "include": ["./src"],
+  "references": [
+    { "path": "../ui" },
   ],
   "exclude": [
     "**/.pnpm",
@@ -31,5 +15,5 @@
     "**/node_modules",
     "**/*.stories.ts",
     "**/__tests__"
-  ],
+  ]
 }

@@ -10,7 +10,7 @@ interface TraversalButtonProps {
   dataTestId: string;
 }
 
-const TraversalButton: React.FC<TraversalButtonProps> = ({ condition, iconType, onClick, dataTestId, style }) => {
+const TraversalButton: React.FC<TraversalButtonProps> = ({ condition, iconType, onClick, dataTestId }) => {
   if (!condition) return <span className="spacer absolute"></span>;
 
   const IconComponent = (() => {

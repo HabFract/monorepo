@@ -6,7 +6,7 @@ import { darkThemeButton } from '../darkTheme';
 
 export interface ButtonProps {
   type: "onboarding" | "primary" | "secondary" | "icon";
-  onClick: () => {},
+  onClick: Function,
   children?: any,
   icon?: React.ReactElement,
   touched?: object,
@@ -22,7 +22,7 @@ const Button: React.FC<ButtonProps> = ({ children, type, icon, touched, loading,
       style={{maxWidth: "30rem"}}
       type={type == "onboarding" ? "submit" : "button"}
       className={type ? `btn btn-${type}` : "btn"}
-      onClick={onClick}
+      onClick={onClick as any}
     >
       {loading
         ? <div role="status">

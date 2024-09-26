@@ -16,5 +16,5 @@ export const Primary: Story = {
   args : {
     type: "onboarding"
   },
-  render: (args) => <Button type={args.type}>Save & Continue</Button>
+  render: (args) => <Button type={args.type} onClick={() => { }}>Save & Continue</Button>
 };

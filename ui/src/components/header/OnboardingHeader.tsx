@@ -3,11 +3,16 @@ import { currentOrbitIdAtom } from '../../state/orbit';
 
 import { store } from "../../state/jotaiKeyValueStore";
 import BackCaret from "../icons/BackCaret";
-import { ForwardedRef, forwardRef } from "react";
+import { ForwardedRef, forwardRef, RefObject } from "react";
 import { isSmallScreen } from "../vis/helpers";
 import { currentSphereHashesAtom } from "../../state/sphere";
 
-const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{state: any, transition: any} & unknown>> = forwardRef(({state, transition}, ref: ForwardedRef<HTMLDivElement>) => {
+type OnboardingHeaderProps = {
+  state: string;
+  transition: Function;
+};
+
+const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<OnboardingHeaderProps>> = forwardRef<HTMLDivElement, OnboardingHeaderProps>(({state, transition}, ref: ForwardedRef<HTMLDivElement>) => {
   if (!state.match("Onboarding")) return <></>
 
   return <>
@@ -32,7 +37,7 @@ const OnboardingHeader: React.ForwardRefExoticComponent<React.PropsWithoutRef<{s
     <div ref={ref}>
       <ProgressBar
         stepNames={isSmallScreen() ? ['Welcome', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize'] : ['Create Profile (N/A)', 'Create Sphere', 'Create Orbit', 'Refine Orbit', 'Visualize']}
-        currentStep={+(state.match(/Onboarding(\d+)/)?.[1])} />
+        currentStep={+(state.match(/Onboarding(\d+)/)?.[1] || 0)} />
     </div>
   </>;
 });

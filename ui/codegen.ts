@@ -13,7 +13,7 @@ const config: CodegenConfig = {
       presetConfig: {
         fragmentMasking: false
       },
-      plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
+      plugins: [ { add: { content: 'import type { DocumentNode } from "graphql/language/ast";'}}, 'typescript', 'typescript-operations', 'typescript-react-apollo'],
       config: {
         withComponent: false,
         withHOC: false,
@@ -26,9 +26,9 @@ const config: CodegenConfig = {
     "src/graphql/generated/mocks.ts": {
       plugins: ["graphql-codegen-typescript-mock-data"]
     },
-    // "src/graphql/generated/typeDefs.js": {
-    //   plugins: ["dist/ui/src/graphql/typescript-typedefs.cjs"]
-    // },
+    "src/graphql/generated/typeDefs.js": {
+      plugins: ["./src/graphql/generated/codegen-typedefs.cjs"]
+    },
   }
 };
 

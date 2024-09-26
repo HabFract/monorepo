@@ -6,9 +6,10 @@ import { OrbitCard } from 'habit-fract-design-system';
 import { OrbitSubdivisionList } from '../lists';
 import { OrbitFetcher } from './utils';
 import { OrbitValidationSchema } from './CreateOrbit';
+import { ActionHashB64 } from '@holochain/client';
 
 interface RefineOrbitProps {
-  refiningOrbitAh: string;
+  refiningOrbitAh: ActionHashB64;
   submitBtn?: React.ReactNode;
   headerDiv?: React.ReactNode;
 }
@@ -32,7 +33,7 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
       {({ values, errors, touched }) => {
         return  (
           <>
-            {refiningOrbitAh && <OrbitFetcher orbitToEditId={refiningOrbitAh} />}
+            {refiningOrbitAh! && <OrbitFetcher orbitToEditId={refiningOrbitAh} />}
               { headerDiv }
 
               <h2 className='onboarding-subtitle'>Refine Your Orbit</h2>
@@ -42,6 +43,9 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({ refiningOrbitAh, he
                   displayOnly={true}
                   sphereEh={values.sphereHash}
                   orbit={{
+                    id: values.id,
+                    eH: values.eH,
+                    sphereHash: values.sphereHash,
                     name: values.name,
                     scale: values.scale,
                     frequency: values.frequency,

@@ -5,6 +5,7 @@ import Onboarding from "../layouts/Onboarding";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sphere } from "../../graphql/generated";
 import { AppMachine } from "../../main";
+import { SphereDetails } from "../../state/types/sphere";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -23,7 +24,7 @@ function withPageTransition(page: ReactNode) {
 }
 
 interface WithLayoutProps {
-  currentSphereDetails: Sphere,
+  currentSphereDetails: SphereDetails,
   newUser: boolean
 }
 

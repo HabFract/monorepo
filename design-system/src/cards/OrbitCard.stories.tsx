@@ -1,16 +1,21 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
-import OrbitCard from './OrbitCard';
-import { Orbit } from '../../../ui/src/graphql/generated';
+import { StoryFn, Meta, StoryObj } from '@storybook/react';
+import OrbitCard, { OrbitCardProps } from './OrbitCard';
+import { Frequency, Orbit, Scale } from '../../../ui/src/graphql/generated';
 
-export default {
+const meta: Meta<OrbitCardProps> = {
   title: 'Components/Cards/OrbitCard',
   component: OrbitCard,
-} as Meta;
+};
 
-const Template: StoryFn<{ orbit: Orbit }> = (args) => <OrbitCard {...args} />;
+export default meta;
 
-export const Subatomic = Template.bind({});
+const Template: StoryFn<{ orbit: Orbit }> = (args) => <OrbitCard displayOnly={false} {...args} />;
+
+type Story = StoryObj<OrbitCardProps>;
+
+export const Subatomic: Story = Template.bind({});
+
 Subatomic.args = {
   orbit: {
     id: 'R28gZm9yIGEgd2Fsay==',
@@ -22,12 +27,13 @@ Subatomic.args = {
         endTime: 1617321600,
       },
     },
-    frequency: 'DAY',
-    scale: 'Sub',
-    isAtomic: true,
+    frequency: Frequency.Day,
+    scale: Scale.Sub,
+    eH: '',
+    sphereHash: ''
   },
 };
-export const Atomic = Template.bind({});
+export const Atomic: Story = Template.bind({});
 Atomic.args = {
   orbit: {
     id: 'R28gZm9yIGEgd2Fsay==',
@@ -39,12 +45,13 @@ Atomic.args = {
         endTime: 1617321600,
       },
     },
-    frequency: 'DAY',
-    scale: 'Atom',
-    isAtomic: true,
+    frequency: Frequency.Day,
+    scale: Scale.Atom,
+    eH: '',
+    sphereHash: ''
   },
 };
-export const Astronomic = Template.bind({});
+export const Astronomic: Story = Template.bind({});
 Astronomic.args = {
   orbit: {
     id: 'R28gZm9yIGEgd2Fsay==',
@@ -56,8 +63,9 @@ Astronomic.args = {
         endTime: 1617321600,
       },
     },
-    frequency: 'DAY',
-    scale: 'Astro',
-    isAtomic: true,
+    frequency: Frequency.Day,
+    scale: Scale.Astro,
+    eH: '',
+    sphereHash: ''
   },
 };

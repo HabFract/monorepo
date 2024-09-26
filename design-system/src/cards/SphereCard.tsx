@@ -10,12 +10,12 @@ import TreeVisIcon from '../../../ui/src/components/icons/TreeVisIcon';
 import Exclaim from '../../../ui/src/components/icons/Exclaim';
 import { HelperText } from '../copy';
 
-type SphereCardProps = {
+export type SphereCardProps = {
   sphere: Sphere;
   isHeader: boolean;
   orbitScales: Scale[];
   transition?: (newState: string, params?: object) => void
-  runDelete?: () => void
+  runDelete?: () => void;
 };
 
 function calculateSpherePercentages(counts: object): any {
@@ -47,7 +47,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
   const { name, metadata, id } = sphere;
 
   function routeToVis() {
-    transition('PreloadAndCache', {landingSphereEh: sphere.eH, landingSphereId: id })
+    transition?.('PreloadAndCache', {landingSphereEh: sphere.eH, landingSphereId: id })
   }
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
@@ -69,16 +69,16 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
           {!isHeader && 
               <Dropdown label="Actions" dismissOnClick={false} className="bg-secondary p-2" onClick={() => {
                 store.set(currentSphereHashesAtom, { entryHash: sphere.eH, actionHash: id });
-                transition('ListOrbits', { sphereAh: id })
+                transition?.('ListOrbits', { sphereAh: id })
               }}>
               <Dropdown.Item onClick={() => {
-                transition('ListOrbits', { sphereAh: id })
+                transition?.('ListOrbits', { sphereAh: id })
               }}>
                 <OrderedListOutlined className="icon" />
                 <span>List Orbits</span>
               </Dropdown.Item>
               <Dropdown.Item onClick={() => {
-                transition('CreateOrbit', { sphereEh: sphere.eH })
+                transition?.('CreateOrbit', { sphereEh: sphere.eH })
               }}>
                 <PlusCircleOutlined className="icon" />
                 <span>Create Orbit</span>
@@ -122,7 +122,7 @@ const SphereCard: React.FC<SphereCardProps> = ({ sphere, isHeader, orbitScales, 
       </section>
       {isHeader && <div className="flex flex-col gap-2">
         <Button onClick={() => {
-          transition('CreateOrbit', { sphereEh: sphere.eH })
+          transition?.('CreateOrbit', { sphereEh: sphere.eH })
         }} className="btn mt-2 btn-secondary add-orbit border-0 w-full" size="sm">
           <PlusCircleOutlined className="icon" />
           <span>Create Orbit</span>

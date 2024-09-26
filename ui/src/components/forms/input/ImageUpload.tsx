@@ -49,7 +49,7 @@ const ImageUpload = ({
       translateX: -10,
       translateY: 20
     });
-    const url = avatar.toDataUriSync();
+    const url = (avatar as any).toDataUriSync();
     setFieldValue(field.name, url);
     setImageUrl(url)
   }, [values.name])

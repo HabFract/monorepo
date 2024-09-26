@@ -76,7 +76,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
       if(!existingCache[currentSphereId]) throw new Error('No existing cache for this currentSphere id');
 
       (d3Hierarchy as any).sort(byStartTime).each((node) => cachePath(node?.data?.content, getPath(node)));
-
+      //@ts-ignore
       existingCache[currentSphereId] = workingSphereNodes;
       store.set(nodeCache.setMany, Object.entries(existingCache));
       cached = true;

@@ -34,7 +34,7 @@ export const mapToCacheObject = (orbit: Orbit): OrbitNodeDetails => {
     parentEh: orbit.parentHash || undefined,
     name: orbit.name,
     scale: orbit.scale,
-    // parentHash: orbit.parentHash,
+    sphereHash: orbit.sphereHash,
     frequency: newFrequency,
     description: orbit.metadata?.description || "",
     startTime: orbit.metadata?.timeframe.startTime,
