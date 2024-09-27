@@ -100,7 +100,7 @@ export class TreeVisualization extends BaseVisualization {
                 this._viewConfig,
                 this._zoomConfig,
               ) as number)
-          : initialX + this._viewConfig.margin.left;
+          : initialX;
       },
       defaultCanvasTranslateY: () => {
         const initialY = getInitialYTranslate.call(this, this.type, {
@@ -116,20 +116,10 @@ export class TreeVisualization extends BaseVisualization {
                 this._viewConfig,
                 this._zoomConfig,
               )) as number)
-          : initialY + this._viewConfig.margin.top;
+          : initialY;
       },
       isSmallScreen: function () {
         return this.canvasWidth < 440;
-      },
-    };
-  }
-
-  initializeZoomConfig(): ZoomConfig {
-    return {
-      focusMode: false,
-      previousRenderZoom: {},
-      zoomedInView: function () {
-        return Object.keys(this.previousRenderZoom).length !== 0;
       },
     };
   }
@@ -146,25 +136,24 @@ export class TreeVisualization extends BaseVisualization {
         this.modalIsOpen = true;
         this.modalParentOrbitEh(parentOrbitEh);
       },
-      handleNodeZoom(e) {
-        let t = { ...e.transform };
-        let scale;
-        let x, y;
-        if (this._zoomConfig.focusMode) {
-          this.resetForExpandedMenu({ justTranslation: true });
-          this._zoomConfig.focusMode = false;
-          return;
-        } else {
-          scale = t.k;
-          x = t.x + this._viewConfig.defaultCanvasTranslateX(scale) * scale;
-          y = t.y + this._viewConfig.defaultCanvasTranslateY(scale) * scale;
-        }
-        this._canvas
+      handleNodeZoom: (event: any, node: any) => {
+        if (!node) return;
+        const scale = FOCUS_MODE_SCALE;
+        const x = -node.x * scale + this._viewConfig.canvasWidth / 2;
+        const y = -node.y * scale + this._viewConfig.canvasHeight / 2;
+
+        this._zoomConfig.globalZoomScale = scale;
+        this._zoomConfig.focusMode = true;
+        this._zoomConfig.previousRenderZoom = { event, node, scale };
+
+        this._canvas!
           .transition()
-          .ease(easeLinear)
-          .duration(200)
-          .attr("transform", `translate(${x},${y}), scale(${scale})`);
-        this._zoomConfig.focusMode = false;
+          .duration(750)
+          .attr("transform", `translate(${x},${y}) scale(${scale})`)
+          .on("end", () => {
+            this._zoomConfig.focusMode = false
+          });
+          
       },
       handleNodeClick() {
         this._enteringNodes.select("foreignObject").html(this.appendLabelHtml);
@@ -197,12 +186,28 @@ export class TreeVisualization extends BaseVisualization {
     this.layout(this.rootData);
   }
 
-  applyInitialTransform(): void {
-    this._canvas!.attr(
-      "transform",
-      `scale(${BASE_SCALE}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})`,
-    );
-  }
+
+
+  handleZoom = (event: any) => {
+    const { transform } = event;
+    this._canvas!.attr("transform", transform);
+  };
+
+  handleNodeZoom = (event: any, node: any) => {
+    if (!node) return;
+    const scale = FOCUS_MODE_SCALE;
+    const x = -node.x * scale + this._viewConfig.canvasWidth / 2;
+    const y = -node.y * scale + this._viewConfig.canvasHeight / 2;
+
+    this._zoomConfig.globalZoomScale = scale;
+    this._zoomConfig.focusMode = true;
+    this._zoomConfig.previousRenderZoom = { event, node, scale };
+
+    this._canvas!
+      .transition()
+      .duration(750)
+      .attr("transform", `translate(${x},${y}) scale(${scale})`);
+  };
 
   appendLinkPath(): void {
     const rootNodeId = this.rootData.data.content;
@@ -440,6 +445,7 @@ export class TreeVisualization extends BaseVisualization {
     selection.on("click", (e, d) => {
       store.set(currentOrbitIdAtom, d.data.content);
       this.eventHandlers.handleNodeClick!.call(this, e, d);
+      this.eventHandlers.handleNodeZoom.call(this, e, d) 
     });
     store.sub(currentOrbitIdAtom, () => {
       this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);

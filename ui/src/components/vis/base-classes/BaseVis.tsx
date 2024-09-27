@@ -105,10 +105,8 @@ export abstract class BaseVisualization implements IVisualization {
     canvasWidth: number,
     margin: Margins,
   ): ViewConfig;
-  abstract initializeZoomConfig(): ZoomConfig;
   abstract initializeEventHandlers(): EventHandlers;
-  abstract initializeZoomer(): ZoomBehavior<Element, unknown>;
-
+  
   modalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   isModalOpen: boolean = false;
   skipMainRender: boolean = false;
@@ -224,13 +222,6 @@ export abstract class BaseVisualization implements IVisualization {
    * Set up the layout for the visualization.
    */
   abstract setupLayout(): void;
-
-  /**
-   * Applies the initial transform to the visualization.
-   * This method should be implemented by subclasses to set up the initial view of the visualization.
-   * TODO: implement
-   */
-  abstract applyInitialTransform(): void;
 
   /**
    * Set width/height view config variables from constants
@@ -431,6 +422,45 @@ export abstract class BaseVisualization implements IVisualization {
     const zoomer: ZoomBehavior<Element, unknown> = zoom();
     this.visBase().call(zoomer as any);
   }
+
+  applyInitialTransform(): void {
+    this._canvas!.attr(
+      "transform",
+      `scale(${this._viewConfig.scale}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})`
+    );
+  }
+
+  initializeZoomConfig(): ZoomConfig {
+    console.log('set :>> ',{
+      focusMode: false,
+      previousRenderZoom: {},
+      globalZoomScale: this._viewConfig.scale,
+      zoomedInView: function () {
+        return Object.keys(this.previousRenderZoom).length !== 0;
+      },
+    });
+    return {
+      focusMode: false,
+      previousRenderZoom: {},
+      globalZoomScale: this._viewConfig.scale,
+      zoomedInView: function () {
+        return Object.keys(this.previousRenderZoom).length !== 0;
+      },
+    };
+  }
+
+  initializeZoomer(): ZoomBehavior<Element, unknown> {
+    const zoomer: ZoomBehavior<Element, unknown> = zoom()
+      .scaleExtent([0.1, 2])
+      .on("zoom", this.handleZoom.bind(this));
+    this.visBase().call(zoomer);
+    return zoomer;
+  }
+
+  handleZoom = (event: any) => {
+    const { transform } = event;
+    this._canvas!.attr("transform", transform);
+  };
 
   /**
    * Clears all child elements from the canvas.

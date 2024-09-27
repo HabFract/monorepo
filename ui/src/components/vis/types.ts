@@ -1,6 +1,6 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { HierarchyNode } from "d3-hierarchy";
-import { D3ZoomEvent } from "d3-zoom";
+import { D3ZoomEvent, ZoomBehavior } from "d3-zoom";
 import { SphereOrbitNodes, SphereHashes } from "../../state/types/sphere";
 
 /**
@@ -75,6 +75,12 @@ export interface IVisualization {
   setNodeAndLabelGroups: () => void;
   appendNodeVectors: () => void;
   appendLinkPath: () => void;
+
+  /** Apply initial transformation and zoom which may be needed when a node is already selected */
+  applyInitialTransform: () => void;
+  initializeZoomConfig: () => ZoomConfig;
+  initializeZoomer: () => ZoomBehavior<Element, unknown>;
+  handleZoom: (event: MouseEvent) => void;
 
   /** Method to fully render the visualization */
   render: () => void;
