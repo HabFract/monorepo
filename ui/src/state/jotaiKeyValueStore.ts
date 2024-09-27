@@ -1,6 +1,6 @@
-import { Atom, atom, createStore } from "jotai";
+import { atom, createStore } from "jotai";
 import { MiniDb } from "jotai-minidb";
-import { Orbit, Scale } from "../graphql/generated";
+import { Scale } from "../graphql/generated";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 
 export const nodeCache = new MiniDb();
@@ -9,7 +9,7 @@ export const store: any = createStore();
 
 export const nodeCacheItemsAtom = atom((get) => get(nodeCache.items));
 
-export interface OrbitNodeDetails {
+export interface OrbitNodeDetailsOld {
   id: ActionHashB64;
   eH?: EntryHashB64;
   parentEh?: EntryHashB64;

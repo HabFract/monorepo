@@ -1,10 +1,19 @@
 
 import { ToggleSwitch as FBSwitch, Label } from "flowbite-react";
-import { ToggleSwitchProps } from "./toggleswitch.stories";
 import { ComponentProps, FC, useState } from "react";
 import { darkThemeToggleSwitch } from "../darkTheme";
 import { getIconSvg } from "../icons";
 import "./common.css";
+
+export interface ToggleSwitchProps {
+  errored: boolean;
+  disabled: boolean;
+  id: string;
+  withInfo: boolean;
+  labelValue: string;
+  size: "sm" | "md" | "lg";
+  onClickInfo?: (e: any) => {};
+}
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ id, labelValue, errored, withInfo, disabled, onClickInfo } : ToggleSwitchProps) => {
   const [switch1, setSwitch1] = useState(false);

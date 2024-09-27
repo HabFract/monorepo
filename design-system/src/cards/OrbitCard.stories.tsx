@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta, StoryObj } from '@storybook/react';
 import OrbitCard, { OrbitCardProps } from './OrbitCard';
-import { Frequency, Orbit, Scale } from '../../../ui/src/graphql/generated';
+import { Frequency, Orbit, Scale } from '../generated-types';
 
 const meta: Meta<OrbitCardProps> = {
   title: 'Components/Cards/OrbitCard',

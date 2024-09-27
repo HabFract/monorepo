@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 
 import TickBox from './TickBox';
 import './common.css';
-import { OrbitNodeDetails } from '../../../ui/src/state/jotaiKeyValueStore';
+import { OrbitNodeDetails } from '@ui/src/state/types';
 import Calendar from './Calendar';
 import { DateTime } from 'luxon';
 
@@ -20,17 +20,17 @@ export interface VisControlsProps {
 const VisControls: React.FC<VisControlsProps> = ({ buttons, orbitDetails, setOrbitDetailsWin, setNewDate, currentDate, allowPrepend = false }) => {
   const dateIndex = currentDate.toISODate();
   // TODO: hook up to new state
-  // const currentDayStatus = !!(orbitDetails?.wins?.[dateIndex]);
+  const currentDayStatus = false //!!(orbitDetails?.wins?.[dateIndex]);
   return (
     <div className="vis-controls">
       {allowPrepend && <button className="add-node-button higher-button"></button>}
       <Calendar
         currentDate={currentDate}
         setNewDate={setNewDate}
-        orbitWins={orbitDetails?.wins}
+        orbitWins={{} as any} // TODO: see above
         mainCheckbox={
         <div className="tickbox-container">
-          <TickBox completed={currentDayStatus} toggleIsCompleted={() => { setOrbitDetailsWin(dateIndex, !currentDayStatus) }} size="main" />
+          <TickBox completed={currentDayStatus} toggleIsCompleted={() => { setOrbitDetailsWin?.(dateIndex, !currentDayStatus); } } size="main" id={''} />
           {...buttons}
         </div>
       }></Calendar>

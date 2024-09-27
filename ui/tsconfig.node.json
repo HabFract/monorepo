@@ -5,15 +5,16 @@
     "target": "ES2019",
     "noEmit": false,
     "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
     "declarationDir": "dist/types"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "dist"],
   "exclude": [
     "node_modules",
     "**/node_modules/**/*",
     "../node_modules/**/*",
     "../design-system/dist",
-    "./src/graphql/generated/*",
-    "dist"
+    "./src/graphql/generated/*"
   ]
 }

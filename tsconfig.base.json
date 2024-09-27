@@ -14,7 +14,7 @@
     "baseUrl": ".",
     "paths": {
       "@design-system/*": ["design-system/src/*"],
-      "@ui/*": ["ui/src/*"]
+      "@ui/*": ["ui/*"]
     },
 
     /* Linting */

@@ -5,7 +5,7 @@ import '../buttons/common.css';
 
 import { Button, Dropdown } from 'flowbite-react';
 import { EditOutlined, DeleteOutlined, PieChartOutlined } from '@ant-design/icons'; // Import icons
-import { Orbit } from '../../../ui/src/graphql/generated';
+import { Orbit } from '../generated-types';
 import { OrbitVis } from '../vis';
 
 export type OrbitCardProps = {

@@ -10,7 +10,8 @@ import { currentSphereHierarchyBounds, newTraversalLevelIndexId } from '../../st
 import { currentOrbitDetailsAtom, currentOrbitIdAtom, setOrbitWithEntryHashAtom } from '../../state/orbit';
 import { WithVisCanvasProps } from '../vis/types';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
-import { OrbitNodeDetails, store } from '../../state/jotaiKeyValueStore';
+import { store } from '../../state/jotaiKeyValueStore';
+import { OrbitNodeDetails } from '../../state/types';
 import VisModal from '../VisModal';
 import TraversalButton from '../navigation/TraversalButton';
 import { VisControls } from 'habit-fract-design-system';

@@ -58,7 +58,6 @@
     "flowbite-react": "^0.6.4",
     "formik": "^2.4.5",
     "framer-motion": "^11.3.24",
-    
     "habit-fract-design-system": "workspace:*",
     "jotai": "^2.9.2",
     "jotai-minidb": "^0.0.7",
@@ -92,21 +91,22 @@
     "@types/d3-zoom": "^3.0.8",
     "@types/node": "^22.2.0",
     "@types/react": "^18.2.37",
-    "@vitejs/plugin-react": "^4.0.3",
+    "@vitejs/plugin-react": "^4.3.1",
     "babel-plugin-import": "^1.13.8",
-    "concurrently": "^8.2.2",
+    "concurrently": "9.0.0",
     "concurrently-repeat": "^0.0.1",
     "d3-ease": "^3.0.1",
     "dotenv-cli": "^7.3.0",
     "fake-indexeddb": "^5.0.2",
     "internal-ip-cli": "^2.0.0",
     "new-port-cli": "^1.0.0",
-    "open-cli": "^7.2.0",
+    "open-cli": "8.0.0",
     "react-dom": "^18.2.0",
     "resize-observer-polyfill": "^1.5.1",
     "typescript": "^5.3.3",
-    "vite": "^4.4.5",
-    "vite-plugin-node-polyfills": "^0.15.0"
+    "vite": "5.4.8",
+    "vite-plugin-dts": "^4.2.2",
+    "vite-plugin-node-polyfills": "0.22.0"
   },
   "packageManager": "pnpm@9.4.0+sha1.9217c800d4ab947a7aee520242a7b70d64fc7638"
 }

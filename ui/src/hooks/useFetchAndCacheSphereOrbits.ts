@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useGetSphereQuery, useGetOrbitsLazyQuery, Orbit, Sphere } from '../graphql/generated';
 import { extractEdges } from '../graphql/utils';
-import { OrbitNodeDetails } from '../state/jotaiKeyValueStore';
+import { OrbitNodeDetails } from '../state/types';
 import { mapToCacheObject } from '../state/orbit';
 import { nodeCache, store } from '../state/jotaiKeyValueStore';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';

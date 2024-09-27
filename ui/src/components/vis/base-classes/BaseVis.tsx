@@ -9,8 +9,9 @@ import { EventHandlers, IVisualization, Margins, ViewConfig, VisCoverage, VisTyp
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit, Scale } from "../../../graphql/generated";
 import { client } from "../../../graphql/client";
-import { OrbitNodeDetails, store, nodeCache } from "../../../state/jotaiKeyValueStore";
+import { store, nodeCache } from "../../../state/jotaiKeyValueStore";
 import { mapToCacheObject } from "../../../state/orbit";
+import { OrbitNodeDetails } from "../../../state/types";
 import { extractEdges } from "../../../graphql/utils";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { currentOrbitIdAtom } from "../../../state/orbit";

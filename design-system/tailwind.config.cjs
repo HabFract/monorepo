@@ -1,8 +1,9 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+const tailwindConfig = {
   content: [
     "./**/*.{js,jsx,ts,tsx}",
     "../../node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
+    '!./node_modules/**/*',
   ],
   plugins: [
     require("flowbite/plugin"),
@@ -103,3 +104,5 @@ export default {
     },
   },
 };
+
+module.exports = tailwindConfig;

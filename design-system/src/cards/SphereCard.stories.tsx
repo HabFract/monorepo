@@ -1,20 +1,21 @@
 import React from 'react';
 import { StoryFn, Meta, StoryObj } from '@storybook/react';
 import SphereCard, { SphereCardProps } from './SphereCard';
-import { Scale, Sphere } from '../../../ui/src/graphql/generated';
+import { Scale } from '../generated-types';
 
 export default {
   title: 'Components/Cards/SphereCard',
   component: SphereCard,
 } as Meta<SphereCardProps>;
 
-const Template: StoryFn<{ sphere: Sphere }> = (args) => <SphereCard {...args} />;
+const Template: StoryFn<SphereCardProps> = (args) => <SphereCard {...args} />;
 
 type Story = StoryObj<SphereCardProps>;
 
 export const Default: Story = Template.bind({});
 Default.args = {
   sphere: {
+    eH: '',
     id: 'SGVhbHRoMQ==',
     name: 'Health and Fitness',
     metadata: {
@@ -22,7 +23,6 @@ Default.args = {
       hashtag: 'fitness exercise nutrition',
     },
   },
-  eH: '',
   isHeader: false,
   orbitScales: [Scale.Astro,Scale.Atom,Scale.Astro,Scale.Sub,Scale.Sub]
 };
@@ -30,6 +30,7 @@ Default.args = {
 export const Header: Story = Template.bind({});
 Header.args = {
   sphere: {
+    eH: '',
     id: 'SGVhbHRoMQ==',
     name: 'Health and Fitness',
     metadata: {
@@ -38,6 +39,5 @@ Header.args = {
     },
   },
   isHeader: true,
-  eH: '',
   orbitScales: [Scale.Astro,Scale.Atom,Scale.Astro,Scale.Sub,Scale.Sub]
 };

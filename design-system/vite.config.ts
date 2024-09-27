@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { nodePolyfills } from "vite-plugin-node-polyfills";
 import dts from 'vite-plugin-dts'
 import postcss from 'rollup-plugin-postcss';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -37,6 +37,11 @@ export default defineConfig({
     },
     sourcemap: true,
     emptyOutDir: true
+  },
+  resolve: {
+    alias: {
+      '@ui': path.resolve(__dirname, '../ui')
+    }
   },
   define: {
     "process.env": {},

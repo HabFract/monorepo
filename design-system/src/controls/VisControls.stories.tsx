@@ -7,7 +7,7 @@ const meta: Meta<VisControlsProps> = {
   component: VisControls,
   argTypes: {
   },
-  render: (args: any) => <VisControls ></VisControls> 
+  render: (args: any) => <VisControls {...args} ></VisControls> 
 };
 
 export default meta;

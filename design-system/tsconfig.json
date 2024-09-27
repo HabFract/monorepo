@@ -4,16 +4,21 @@
     "rootDir": "./src",
     "outDir": "./dist/",
   },
-  "include": ["./src"],
+  "include": [
+    "./src/**/*",
+    "./src/stories",
+  ],
   "references": [
     { "path": "../ui" },
   ],
   "exclude": [
     "**/.pnpm",
     "**/dist",
-    "**/.cargo",
     "**/node_modules",
-    "**/*.stories.ts",
-    "**/__tests__"
+    "../ui/src/graphql/generated/codegen-typedefs.cjs",
+    "../ui/src/graphql/generated/typeDefs.js",
+    "../ui/src/graphql/generated/mocks.*",
+    "../ui/dist/**/*",
+    "./dist/**/*"
   ]
 }

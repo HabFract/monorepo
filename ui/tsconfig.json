@@ -10,16 +10,19 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
+    "declaration": true,
+    "noEmit": false,
+    "emitDeclarationOnly": false,
     "allowSyntheticDefaultImports": true,
     "composite": true,
-    "baseUrl": "./src",
-  },
-  "paths": {
-    "@state/*": ["./src/state/*"],
+    "declarationDir": "./types",
+    "paths": {
+      "@state/*": ["./src/state/*"],
+    },
   },
   "include": [
     "./src", 
-    "../ui/src/graphql/generated"
+    "../ui/src/graphql/generated/**/*"
   ],
   "references": [
     { "path": "../design-system" }
@@ -30,6 +33,6 @@
     "../node_modules/**/*",
     "../design-system/dist",
     "./src/graphql/generated/*",
-    "dist"
+    "./dist/**/*"
   ]
 }

@@ -20,6 +20,17 @@ const config: CodegenConfig = {
         withHooks: true
       },
     },
+    "../design-system/src/generated-types.ts": {
+      presetConfig: {
+        fragmentMasking: false
+      },
+      plugins: [ { add: { content: 'import type { DocumentNode } from "graphql/language/ast";'}}, 'typescript', 'typescript-operations', 'typescript-react-apollo'],
+      config: {
+        withComponent: false,
+        withHOC: false,
+        withHooks: true
+      },
+    },
     "src/graphql/graphql.schema.json": {
       plugins: ["introspection"]
     },

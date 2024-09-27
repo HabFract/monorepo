@@ -1,13 +1,13 @@
 import React from 'react';
 import './common.css';
-import { DeleteOutlined, EditOutlined, OrderedListOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { OrderedListOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { SphereVis } from '../vis';
-import { Scale, Sphere } from '../../../ui/src/graphql/generated';
+import { Scale, Sphere } from '../generated-types';
 import { Button, Dropdown } from 'flowbite-react';
-import { currentSphereHashesAtom } from '../../../ui/src/state/sphere';
-import { store } from '../../../ui/src/state/jotaiKeyValueStore';
-import TreeVisIcon from '../../../ui/src/components/icons/TreeVisIcon';
-import Exclaim from '../../../ui/src/components/icons/Exclaim';
+import { currentSphereHashesAtom } from '@ui/src/state';
+import { store } from '@ui/src/state';
+import TreeVisIcon from '@ui/src/components/icons/TreeVisIcon';
+import Exclaim from '@ui/src/components/icons/Exclaim';
 import { HelperText } from '../copy';
 
 export type SphereCardProps = {
