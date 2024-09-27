@@ -1,20 +1,20 @@
 .form-title {
   @apply leading-loose text-lg tracking-wide my-0 h-6 mb-1 md:text-xl md:mb-2 md:h-8;
   text-align: left;
-  font-family: 'Open Sans';
-  font-weight: 600
+  font-family: "Open Sans";
+  font-weight: 600;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: 0.5rem;
   align-items: center;
 }
 
 .scene {
   position: absolute;
-  bottom: .5rem;
+  bottom: 0.5rem;
   right: 0;
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
@@ -28,12 +28,12 @@ form {
   flex-direction: column;
   display: flex;
   flex-wrap: wrap;
-  gap: .5rem;
+  gap: 0.5rem;
 }
 .form-field {
   flex-direction: column;
   display: flex;
-  gap: .5rem;
+  gap: 0.5rem;
   align-items: center;
   width: 100%;
 }
@@ -51,7 +51,8 @@ form {
   @apply flex text-sm;
 }
 
-.field textarea, .field > label + div {
+.field textarea,
+.field > label + div {
   flex: 1;
 }
 
@@ -72,10 +73,11 @@ span.reqd {
   border: 2px solid #64748b !important;
   min-width: 8rem !important;
 }
-.ant-picker .ant-picker-input > input[disabled], .ant-picker .ant-picker-input > input[disabled]::placeholder {
+.ant-picker .ant-picker-input > input[disabled],
+.ant-picker .ant-picker-input > input[disabled]::placeholder {
   padding: 0 !important;
-  background: rgba(107,125,127, 0.25) !important;
-  color:#475569 !important;
+  background: rgba(107, 125, 127, 0.25) !important;
+  color: #475569 !important;
   cursor: not-allowed;
 }
 
@@ -90,19 +92,19 @@ span.reqd {
   outline-offset: 2px !important;
   outline: 2px solid #1e293b !important;
 }
-.ant-picker-input .ant-picker-clear{
+.ant-picker-input .ant-picker-clear {
   background: transparent !important;
   opacity: 1 !important;
   color: rgba(189, 16, 224, 0.9) !important;
 }
-.ant-picker-input >input {
-  color: #FEFEFE !important;
+.ant-picker-input > input {
+  color: #fefefe !important;
 }
-.ant-picker-input >input::placeholder {
+.ant-picker-input > input::placeholder {
   padding: 1rem !important;
   font-size: 1rem !important;
   font-weight: 400 !important;
-  color: #FEFEFE !important;
+  color: #fefefe !important;
 }
 
 .ant-picker-suffix {
@@ -111,9 +113,9 @@ span.reqd {
 /* Image uploader */
 
 .ant-upload.ant-upload-select {
-  border: 2px dashed rgba(255,225,225, 1) !important;
+  border: 2px dashed rgba(255, 225, 225, 1) !important;
   @apply bg-bg border-primary;
-  color: #FEFEFE;
+  color: #fefefe;
   border-radius: 100%;
   overflow: auto;
 }
@@ -138,10 +140,10 @@ span.reqd {
     @apply py-4;
   }
   .field {
-      flex-wrap: nowrap;
-      @apply flex-row;
+    flex-wrap: nowrap;
+    @apply flex-row;
   }
-  .form-field {   
+  .form-field {
     width: 85%;
   }
   .field label {

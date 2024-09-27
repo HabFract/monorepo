@@ -1,16 +1,18 @@
-import React from 'react';
-import { StoryFn, Meta, StoryObj } from '@storybook/react';
-import OrbitCard, { OrbitCardProps } from './OrbitCard';
-import { Frequency, Orbit, Scale } from '../generated-types';
+import React from "react";
+import { StoryFn, Meta, StoryObj } from "@storybook/react";
+import OrbitCard, { OrbitCardProps } from "./OrbitCard";
+import { Frequency, Orbit, Scale } from "../generated-types";
 
 const meta: Meta<OrbitCardProps> = {
-  title: 'Components/Cards/OrbitCard',
+  title: "Components/Cards/OrbitCard",
   component: OrbitCard,
 };
 
 export default meta;
 
-const Template: StoryFn<{ orbit: Orbit }> = (args) => <OrbitCard displayOnly={false} {...args} />;
+const Template: StoryFn<{ orbit: Orbit }> = (args) => (
+  <OrbitCard displayOnly={false} {...args} />
+);
 
 type Story = StoryObj<OrbitCardProps>;
 
@@ -18,10 +20,10 @@ export const Subatomic: Story = Template.bind({});
 
 Subatomic.args = {
   orbit: {
-    id: 'R28gZm9yIGEgd2Fsay==',
-    name: 'Go for a walk',
+    id: "R28gZm9yIGEgd2Fsay==",
+    name: "Go for a walk",
     metadata: {
-      description: 'A daily walk to improve cardiovascular health.',
+      description: "A daily walk to improve cardiovascular health.",
       timeframe: {
         startTime: 1617235200,
         endTime: 1617321600,
@@ -29,17 +31,17 @@ Subatomic.args = {
     },
     frequency: Frequency.Day,
     scale: Scale.Sub,
-    eH: '',
-    sphereHash: ''
+    eH: "",
+    sphereHash: "",
   },
 };
 export const Atomic: Story = Template.bind({});
 Atomic.args = {
   orbit: {
-    id: 'R28gZm9yIGEgd2Fsay==',
-    name: 'Go for a walk',
+    id: "R28gZm9yIGEgd2Fsay==",
+    name: "Go for a walk",
     metadata: {
-      description: 'A daily walk to improve cardiovascular health.',
+      description: "A daily walk to improve cardiovascular health.",
       timeframe: {
         startTime: 1617235200,
         endTime: 1617321600,
@@ -47,17 +49,17 @@ Atomic.args = {
     },
     frequency: Frequency.Day,
     scale: Scale.Atom,
-    eH: '',
-    sphereHash: ''
+    eH: "",
+    sphereHash: "",
   },
 };
 export const Astronomic: Story = Template.bind({});
 Astronomic.args = {
   orbit: {
-    id: 'R28gZm9yIGEgd2Fsay==',
-    name: 'Go for a walk',
+    id: "R28gZm9yIGEgd2Fsay==",
+    name: "Go for a walk",
     metadata: {
-      description: 'A daily walk to improve cardiovascular health.',
+      description: "A daily walk to improve cardiovascular health.",
       timeframe: {
         startTime: 1617235200,
         endTime: 1617321600,
@@ -65,7 +67,7 @@ Astronomic.args = {
     },
     frequency: Frequency.Day,
     scale: Scale.Astro,
-    eH: '',
-    sphereHash: ''
+    eH: "",
+    sphereHash: "",
   },
 };

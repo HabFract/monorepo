@@ -1,6 +1,6 @@
-import { useAtomValue } from 'jotai';
-import { listSortFilterAtom } from '../state/ui';
-import { Orbit } from '../graphql/generated';
+import { useAtomValue } from "jotai";
+import { listSortFilterAtom } from "../state/ui";
+import { Orbit } from "../graphql/generated";
 
 export const useSortedOrbits = (orbits: Orbit[] | undefined): Orbit[] => {
   const listSortFilter = useAtomValue(listSortFilterAtom);
@@ -11,7 +11,7 @@ export const useSortedOrbits = (orbits: Orbit[] | undefined): Orbit[] => {
     let propertyB;
 
     // If the sortCriteria is 'scale', use the scaleValues for comparison
-    if (listSortFilter.sortCriteria === 'name') {
+    if (listSortFilter.sortCriteria === "name") {
       propertyA = a ? a[listSortFilter.sortCriteria as keyof Orbit] : 0;
       propertyB = b ? b[listSortFilter.sortCriteria as keyof Orbit] : 0;
     } else {
@@ -21,7 +21,7 @@ export const useSortedOrbits = (orbits: Orbit[] | undefined): Orbit[] => {
       propertyB = scaleValues[propertyB] || 0; // Assign a default value if propertyB is undefined
     }
 
-    if (listSortFilter.sortOrder === 'lowestToGreatest') {
+    if (listSortFilter.sortOrder === "lowestToGreatest") {
       return propertyA < propertyB ? -1 : propertyA > propertyB ? 1 : 0;
     } else {
       return propertyA > propertyB ? -1 : propertyA < propertyB ? 1 : 0;

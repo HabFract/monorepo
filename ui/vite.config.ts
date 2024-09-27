@@ -1,8 +1,8 @@
-import dts from 'vite-plugin-dts';
-import { defineConfig, loadEnv } from 'vite';
-import react from '@vitejs/plugin-react'
+import dts from "vite-plugin-dts";
+import { defineConfig, loadEnv } from "vite";
+import react from "@vitejs/plugin-react";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
-import path from 'path';
+import path from "path";
 
 const host = process.env.TAURI_DEV_HOST;
 const port = process.env.VITE_UI_PORT;
@@ -14,11 +14,11 @@ export default ({ mode }) => {
   return defineConfig({
     server: {
       host: host || false,
-      port: +(port as string) ||1420,
+      port: +(port as string) || 1420,
       strictPort: true,
       hmr: host
         ? {
-            protocol: 'ws',
+            protocol: "ws",
             host,
             port: 1430,
           }
@@ -26,37 +26,37 @@ export default ({ mode }) => {
     },
     build: {
       lib: {
-        entry: './src/state/index.ts',
-        name: 'HabitFractState',
-        formats: ['es'],
+        entry: "./src/state/index.ts",
+        name: "HabitFractState",
+        formats: ["es"],
         fileName: (format) => `state.${format}.js`,
       },
-      target: 'esnext',
+      target: "esnext",
       rollupOptions: {
         input: {
-          main: './src/main.tsx',
-          state: './src/state/index.ts',
+          main: "./src/main.tsx",
+          state: "./src/state/index.ts",
         },
         output: {
           inlineDynamicImports: false,
-          dir: 'dist',
-          format: 'es',
-          entryFileNames: '[name].[format].js',
-          chunkFileNames: '[name].[format].js',
-          assetFileNames: '[name].[ext]',
+          dir: "dist",
+          format: "es",
+          entryFileNames: "[name].[format].js",
+          chunkFileNames: "[name].[format].js",
+          assetFileNames: "[name].[ext]",
         },
         onwarn(warning, warn) {
-          if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
-            return
+          if (warning.code === "MODULE_LEVEL_DIRECTIVE") {
+            return;
           }
-          warn(warning)
-        }
+          warn(warning);
+        },
       },
     },
     resolve: {
       alias: {
-        '@state': path.resolve(__dirname, 'src/state')
-      }
+        "@state": path.resolve(__dirname, "src/state"),
+      },
     },
     plugins: [
       // dts({
@@ -71,14 +71,13 @@ export default ({ mode }) => {
       //   },
       // }),
       react(),
-      nodePolyfills()
+      nodePolyfills(),
     ],
     define: {
-      "process.env": {
-      },
+      "process.env": {},
       esbuild: {
-        tsconfig: 'tsconfig.build.json', // Ensure Vite uses the correct tsconfig
+        tsconfig: "tsconfig.build.json", // Ensure Vite uses the correct tsconfig
       },
     },
-  })
-}
+  });
+};

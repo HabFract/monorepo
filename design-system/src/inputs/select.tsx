@@ -7,12 +7,35 @@ import WithLabel from "./label";
 import ErrorLabel from "./errorlabel";
 import { cloneElement } from "react";
 
-const Select: React.FC<SelectProps> = ({ id, value, name, theme, onChange, onBlur, labelValue, withInfo, onClickInfo, required, disabled, size, icon, iconSide, options } : SelectProps) => {
+const Select: React.FC<SelectProps> = ({
+  id,
+  value,
+  name,
+  theme,
+  onChange,
+  onBlur,
+  labelValue,
+  withInfo,
+  onClickInfo,
+  required,
+  disabled,
+  size,
+  icon,
+  iconSide,
+  options,
+}: SelectProps) => {
   return (
-    <WithLabel id={id} labelValue={labelValue} required={required} withInfo={withInfo} onClickInfo={onClickInfo}>
-      <FBSelect id={id} 
-        onChange={(e) => !!onChange ? onChange(e) : null}
-        onBlur={(e) => !!onBlur ? onBlur(e) : null}
+    <WithLabel
+      id={id}
+      labelValue={labelValue}
+      required={required}
+      withInfo={withInfo}
+      onClickInfo={onClickInfo}
+    >
+      <FBSelect
+        id={id}
+        onChange={(e) => (!!onChange ? onChange(e) : null)}
+        onBlur={(e) => (!!onBlur ? onBlur(e) : null)}
         className={icon ? "input-with-icon text-input-text" : "text-input-text"}
         icon={iconSide == "left" ? getIconSvg(icon) : undefined}
         sizing={size}
@@ -23,22 +46,42 @@ const Select: React.FC<SelectProps> = ({ id, value, name, theme, onChange, onBlu
         disabled={disabled}
         required={required}
       >
-        {typeof options[0] == 'string'
-          ? options.map((optionText, idx) => <option key={idx}>{optionText}</option>)
-          : options.map((option, i) => cloneElement(option, { key: i }))
-        }
+        {typeof options[0] == "string"
+          ? options.map((optionText, idx) => (
+              <option key={idx}>{optionText}</option>
+            ))
+          : options.map((option, i) => cloneElement(option, { key: i }))}
       </FBSelect>
     </WithLabel>
-  )
-}
+  );
+};
 
-export const SelectInputField: React.FC<{ field: any, form: any, props: SelectProps}> = ({
+export const SelectInputField: React.FC<{
+  field: any;
+  form: any;
+  props: SelectProps;
+}> = ({
   field,
   form: { touched, errors, setFieldValue, setFieldTouched },
   ...props
-} : any) => {
-  const { id, name, labelValue, value, options, iconSide, size, icon, placeholder, required, withInfo, onClickInfo, disabled, onBlur } = props;
-  
+}: any) => {
+  const {
+    id,
+    name,
+    labelValue,
+    value,
+    options,
+    iconSide,
+    size,
+    icon,
+    placeholder,
+    required,
+    withInfo,
+    onClickInfo,
+    disabled,
+    onBlur,
+  } = props;
+
   return (
     <>
       <Select
@@ -57,13 +100,25 @@ export const SelectInputField: React.FC<{ field: any, form: any, props: SelectPr
         iconSide={iconSide || "left"}
         icon={icon}
         onBlur={onBlur}
-        onChange={(e) => { setFieldValue(field.name, e.target.value); setFieldTouched(field.name) }}
-        theme={(touched[field.name] && errors[field.name]?.match("required")) ? "warning" : (touched[field.name] && errors[field.name]) ? "danger" : "default"}
-      >
-      </Select>
-      <ErrorLabel fieldName={field.name} errors={errors} touched={touched}></ErrorLabel>
+        onChange={(e) => {
+          setFieldValue(field.name, e.target.value);
+          setFieldTouched(field.name);
+        }}
+        theme={
+          touched[field.name] && errors[field.name]?.match("required")
+            ? "warning"
+            : touched[field.name] && errors[field.name]
+              ? "danger"
+              : "default"
+        }
+      ></Select>
+      <ErrorLabel
+        fieldName={field.name}
+        errors={errors}
+        touched={touched}
+      ></ErrorLabel>
     </>
-  )
-}
+  );
+};
 
-export default Select
+export default Select;

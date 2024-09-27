@@ -17,16 +17,11 @@
     "composite": true,
     "declarationDir": "./types",
     "paths": {
-      "@state/*": ["./src/state/*"],
-    },
+      "@state/*": ["./src/state/*"]
+    }
   },
-  "include": [
-    "./src", 
-    "../ui/src/graphql/generated/**/*"
-  ],
-  "references": [
-    { "path": "../design-system" }
-  ],
+  "include": ["./src", "../ui/src/graphql/generated/**/*"],
+  "references": [{ "path": "../design-system" }],
   "exclude": [
     "node_modules",
     "**/node_modules/**/*",

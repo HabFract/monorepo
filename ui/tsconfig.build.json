@@ -19,5 +19,13 @@
     "removeComments": true
   },
   "include": ["src/**/*"],
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx", "node_modules", "../node_modules", "src/graphql/generated/**/*", "dist"]
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.stories.tsx",
+    "node_modules",
+    "../node_modules",
+    "src/graphql/generated/**/*",
+    "dist"
+  ]
 }

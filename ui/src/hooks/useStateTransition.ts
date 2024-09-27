@@ -1,11 +1,13 @@
-import { useContext, useState } from 'react';
-import { StateMachineContext } from '../contexts/state-machine';
+import { useContext, useState } from "react";
+import { StateMachineContext } from "../contexts/state-machine";
 
-export function useStateTransition() { 
+export function useStateTransition() {
   const stateMachine = useContext(StateMachineContext) as any;
 
   if (!stateMachine) {
-    throw new Error('useStateTransition must be used within a StateMachineProvider');
+    throw new Error(
+      "useStateTransition must be used within a StateMachineProvider",
+    );
   }
 
   const [state, setState] = useState(stateMachine.state.currentState);

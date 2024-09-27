@@ -1,18 +1,23 @@
-import { listSortFilterAtom } from '../../state/ui';
-import { Sphere, useDeleteSphereMutation, useGetSpheresQuery } from '../../graphql/generated';
+import { listSortFilterAtom } from "../../state/ui";
+import {
+  Sphere,
+  useDeleteSphereMutation,
+  useGetSpheresQuery,
+} from "../../graphql/generated";
 
-import './common.css';
+import "./common.css";
 
-import PageHeader from '../header/PageHeader';
-import { SphereCard } from 'habit-fract-design-system';
-import { extractEdges } from '../../graphql/utils';
-import { useStateTransition } from '../../hooks/useStateTransition';
+import PageHeader from "../header/PageHeader";
+import { SphereCard } from "habit-fract-design-system";
+import { extractEdges } from "../../graphql/utils";
+import { useStateTransition } from "../../hooks/useStateTransition";
 
 function ListSpheres() {
-  const [runDelete, { loading: loadingDelete, error: errorDelete, data: dataDelete }] = useDeleteSphereMutation({
-    refetchQueries: [
-      'getSpheres',
-    ],
+  const [
+    runDelete,
+    { loading: loadingDelete, error: errorDelete, data: dataDelete },
+  ] = useDeleteSphereMutation({
+    refetchQueries: ["getSpheres"],
   });
 
   const { loading, error, data } = useGetSpheresQuery();
@@ -24,14 +29,24 @@ function ListSpheres() {
 
   const spheres = extractEdges(data!.spheres) as Sphere[];
 
-  if(!spheres.length) return <></>;
+  if (!spheres.length) return <></>;
 
   return (
-    <div className='layout spheres'>
+    <div className="layout spheres">
       <PageHeader title="Sphere Breakdown" />
       <div></div>
       <div className="spheres-list">
-        {spheres.map((sphere : Sphere) => <SphereCard key={sphere.id} sphere={sphere} transition={transition} isHeader={false} orbitScales={[]} runDelete={() => runDelete({variables: {id: sphere.id}})}/>)}</div>
+        {spheres.map((sphere: Sphere) => (
+          <SphereCard
+            key={sphere.id}
+            sphere={sphere}
+            transition={transition}
+            isHeader={false}
+            orbitScales={[]}
+            runDelete={() => runDelete({ variables: { id: sphere.id } })}
+          />
+        ))}
+      </div>
     </div>
   );
 }

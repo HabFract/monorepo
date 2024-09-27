@@ -10,12 +10,12 @@ import {
   autoConnect,
   openConnection,
   sniffHolochainAppCells,
-} from './connection.js'
-import generateResolvers from './resolvers'
+} from "./connection.js";
+import generateResolvers from "./resolvers";
 //@ts-ignore
-import { typeDefs } from './generated/typeDefs.js'
-import { APIOptions, ResolverOptions, DNAIdMappings, CellId } from './types.js'
-import { makeExecutableSchema } from '@graphql-tools/schema'
+import { typeDefs } from "./generated/typeDefs.js";
+import { APIOptions, ResolverOptions, DNAIdMappings, CellId } from "./types.js";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 
 export {
   // direct access to resolver callbacks generator for apps that need to bind to other GraphQL schemas
@@ -26,13 +26,13 @@ export {
   sniffHolochainAppCells,
   // direct access to Holochain zome method bindings for authoring own custom resolvers bound to non-REA DNAs
   mapZomeFn,
-}
+};
 export type {
   // types that wrapper libraries may need to manage conductor DNA connection logic
   DNAIdMappings,
   CellId,
   APIOptions,
-}
+};
 
 /**
  * A schema generator ready to be plugged in to a GraphQL client
@@ -42,7 +42,7 @@ export type {
  * @return GraphQLSchema
  */
 export default async (options: APIOptions) => {
-  const coreResolvers = await generateResolvers(options as ResolverOptions)
+  const coreResolvers = await generateResolvers(options as ResolverOptions);
   const resolvers = {
     ...coreResolvers,
     Query: {
@@ -51,10 +51,10 @@ export default async (options: APIOptions) => {
     Mutation: {
       ...(coreResolvers.Mutation || {}),
     },
-  }
+  };
 
   return makeExecutableSchema({
     typeDefs,
     resolvers,
-  })
-}
+  });
+};

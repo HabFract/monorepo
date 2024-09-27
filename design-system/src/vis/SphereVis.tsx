@@ -1,6 +1,6 @@
-import ApexCharts from 'apexcharts';
-import './common.css'
-import React, { useRef, useEffect } from 'react';
+import ApexCharts from "apexcharts";
+import "./common.css";
+import React, { useRef, useEffect } from "react";
 
 interface SpherePieProps {
   spherePercentages: {
@@ -15,11 +15,16 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
 
   useEffect(() => {
     const getChartOptions = () => {
-      const series = Object.fromEntries(Object.entries(spherePercentages).map(([type, number]) => [type, isNaN(number) ? 0 : number]));
+      const series = Object.fromEntries(
+        Object.entries(spherePercentages).map(([type, number]) => [
+          type,
+          isNaN(number) ? 0 : number,
+        ]),
+      );
       return {
         series: [series.Astro, series.Sub, series.Atom],
-        colors: ["#92a8d4", "#5380e5","#997ae8"],
-        
+        colors: ["#92a8d4", "#5380e5", "#997ae8"],
+
         chart: {
           width: "auto",
           height: "80%",
@@ -41,48 +46,58 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
             tooltip: {
               theme: "dark",
               x: {
-                show: true
+                show: true,
               },
               y: {
                 title: {
-                  formatter: function() {
+                  formatter: function () {
                     return "";
-                  }
-                }
-              }
-            }
+                  },
+                },
+              },
+            },
           },
         },
-        labels: ["Astronomic", "Sub-astronomic", "Atomic", ],
+        labels: ["Astronomic", "Sub-astronomic", "Atomic"],
         dataLabels: {
           enabled: true,
           style: {
             fontFamily: "Open Sans, sans-serif",
-            colors: ['#E6E8E6']
+            colors: ["#E6E8E6"],
           },
         },
         legend: {
           show: true,
-          position: 'right',
+          position: "right",
           floating: true,
-        }
-      }
-    }
-    if(typeof pieChart?.current === "undefined" || (pieChart.current as HTMLElement)!.children?.length > 0) return;
+        },
+      };
+    };
+    if (
+      typeof pieChart?.current === "undefined" ||
+      (pieChart.current as HTMLElement)!.children?.length > 0
+    )
+      return;
     const chart = new ApexCharts(pieChart.current, getChartOptions());
     try {
       chart.render();
     } catch (error) {
       // console.warn(error);
     }
-    return () => chart.destroy()
-  }, [])
-  
-  return Object.values(spherePercentages).length > 0 && (
-    <div className="sphere-pie relative">
-      <div ref={pieChart} className="pie" id="pie-chart"></div>
-      <label><div className="sphere-pie-label absolute w-full top-1/2">Breakdown</div></label>
-    </div>
+    return () => chart.destroy();
+  }, []);
+
+  return (
+    Object.values(spherePercentages).length > 0 && (
+      <div className="sphere-pie relative">
+        <div ref={pieChart} className="pie" id="pie-chart"></div>
+        <label>
+          <div className="sphere-pie-label absolute w-full top-1/2">
+            Breakdown
+          </div>
+        </label>
+      </div>
+    )
   );
 };
 

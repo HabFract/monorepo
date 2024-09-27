@@ -1,7 +1,7 @@
 .onboarding-progress {
   flex-direction: row !important;
   overflow: hidden;
-  padding: .25rem 0;
+  padding: 0.25rem 0;
   min-height: 2.5rem;
   top: 0;
   right: 0;
@@ -37,8 +37,8 @@
 }
 
 .ant-steps-item-icon {
-  background-color: #00B197 !important;
-  border-color: #00B197 !important;
+  background-color: #00b197 !important;
+  border-color: #00b197 !important;
   margin-inline-end: 4px !important;
 }
 .ant-steps-item-content {
@@ -47,30 +47,30 @@
 }
 
 .ant-steps-item-title::after {
-  background-color: #00B197 !important;
+  background-color: #00b197 !important;
 }
 
 .ant-steps-item.ant-steps-item-wait .ant-steps-item-icon,
-.ant-steps-item.ant-steps-item-wait .ant-steps-icon{
+.ant-steps-item.ant-steps-item-wait .ant-steps-icon {
   background-color: transparent !important;
-  border-color: #A3BEB7 !important;
-  color: #A3BEB7 !important;
+  border-color: #a3beb7 !important;
+  color: #a3beb7 !important;
 }
-.ant-steps-item-subtitle{
+.ant-steps-item-subtitle {
   @apply font-sans font-std leading-std;
 }
 
-.ant-steps-item.ant-steps-item-wait .ant-steps-item-subtitle{
-  color: #A3BEB7 !important;
+.ant-steps-item.ant-steps-item-wait .ant-steps-item-subtitle {
+  color: #a3beb7 !important;
 }
 
 .ant-steps-item.ant-steps-item-finish .ant-steps-item-icon {
-  background-color: #A3BEB7;
+  background-color: #a3beb7;
 }
 
 @media screen and (min-width: 440px) {
   .onboarding-progress::after {
     position: absolute;
-    background: linear-gradient(-90deg,transparent 80%,#242424 100%);
+    background: linear-gradient(-90deg, transparent 80%, #242424 100%);
   }
 }

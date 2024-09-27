@@ -6,17 +6,38 @@ export const OrbitFetcher = ({ orbitToEditId }) => {
   const { setValues } = useFormikContext();
   if (!orbitToEditId) return;
 
-  const { data: getData, error: getError, loading: getLoading } = useGetOrbitQuery({
+  const {
+    data: getData,
+    error: getError,
+    loading: getLoading,
+  } = useGetOrbitQuery({
     variables: {
-      id: orbitToEditId as string
+      id: orbitToEditId as string,
     },
   });
   useEffect(() => {
     if (typeof getData == "undefined") return;
-    const { name, frequency, scale, metadata: { description, timeframe: { startTime, endTime } } } = getData!.orbit as any;
+    const {
+      name,
+      frequency,
+      scale,
+      metadata: {
+        description,
+        timeframe: { startTime, endTime },
+      },
+    } = getData!.orbit as any;
     setValues({
-      id: orbitToEditId, name, description, startTime, endTime: endTime || undefined, frequency, scale, archival: !!endTime, parentHash: getData.orbit?.parentHash, eH: getData.orbit.eH
-    })
-  }, [getData])
+      id: orbitToEditId,
+      name,
+      description,
+      startTime,
+      endTime: endTime || undefined,
+      frequency,
+      scale,
+      archival: !!endTime,
+      parentHash: getData.orbit?.parentHash,
+      eH: getData.orbit.eH,
+    });
+  }, [getData]);
   return null;
 };

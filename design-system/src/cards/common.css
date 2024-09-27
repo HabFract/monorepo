@@ -18,7 +18,7 @@
 .orbit-title {
   max-width: 66%;
 }
-.orbit-title h2{
+.orbit-title h2 {
   text-overflow: ellipsis;
   overflow: clip;
 }
@@ -38,15 +38,14 @@
 }
 
 .card-copy {
-  @apply
-    text-white
+  @apply text-white
     leading-normal
     text-sm
     max-w-xl
     text-center
     p-2;
 
-    line-height: 1.25rem;
+  line-height: 1.25rem;
 }
 
 .card-header {
@@ -71,7 +70,7 @@
   padding: 0.25rem;
   gap: 0.5rem;
   justify-content: flex-start !important;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   @apply w-full bg-gradient-to-b;
@@ -86,8 +85,8 @@
 
 .card-copy {
   @apply font-sans bg-gray-400;
-  border-radius: .75rem;
-  margin-bottom: .5rem;
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .orbit-timeframe {
@@ -127,8 +126,7 @@
     @apply py-4 text-xl;
   }
   .card-copy {
-    @apply
-      text-lg
+    @apply text-lg;
   }
   .card-body-bg {
     @apply p-4 gap-4;

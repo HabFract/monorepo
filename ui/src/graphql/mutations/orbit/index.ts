@@ -25,15 +25,15 @@ export type createArgs = { orbit: OrbitCreateParams };
 export type updateArgs = { orbit: OrbitUpdateParams };
 export type createHandler = (
   root: any,
-  args: createArgs
+  args: createArgs,
 ) => Promise<OrbitDetails>;
 export type updateHandler = (
   root: any,
-  args: updateArgs
+  args: updateArgs,
 ) => Promise<CreateResponsePayload>;
 export type deleteHandler = (
   root: any,
-  args: {orbitHash: ActionHashB64}
+  args: { orbitHash: ActionHashB64 },
 ) => Promise<ActionHashB64>;
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
@@ -42,7 +42,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "create_my_orbit"
+    "create_my_orbit",
   );
   const runUpdate = mapZomeFn<
     {
@@ -55,17 +55,14 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "update_orbit"
+    "update_orbit",
   );
-  const runDelete = mapZomeFn<
-    ActionHashB64,
-    ActionHash
-  >(
+  const runDelete = mapZomeFn<ActionHashB64, ActionHash>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "delete_orbit"
+    "delete_orbit",
   );
 
   const createOrbit: createHandler = async (
@@ -82,9 +79,10 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
         frequency,
         scale,
       },
-    }
+    },
   ) => {
-    if(!sphereHash) throw new Error("Cannot create an orbit not linked to a sphere!")
+    if (!sphereHash)
+      throw new Error("Cannot create an orbit not linked to a sphere!");
     const rawRecord = await runCreate({
       name,
       sphereHash,
@@ -129,7 +127,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
         frequency,
         scale,
       },
-    }
+    },
   ) => {
     const rawRecord = await runUpdate({
       originalOrbitHash: id as ActionHashB64,
@@ -152,10 +150,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     };
   };
 
-  const deleteOrbit: deleteHandler = async (
-    _,
-    args
-  ) => {
+  const deleteOrbit: deleteHandler = async (_, args) => {
     const id = args.orbitHash;
     const rawRecord = await runDelete(id);
     return encodeHashToBase64(rawRecord);

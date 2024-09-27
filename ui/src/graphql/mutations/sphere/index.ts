@@ -23,24 +23,27 @@ export type createArgs = { sphere: SphereCreateParams };
 export type updateArgs = { sphere: SphereUpdateParams };
 export type createHandler = (
   root: any,
-  args: createArgs
+  args: createArgs,
 ) => Promise<CreateResponsePayload>;
 export type updateHandler = (
   root: any,
-  args: updateArgs
+  args: updateArgs,
 ) => Promise<CreateResponsePayload>;
 export type deleteHandler = (
   root: any,
-  args: { sphereHash: ActionHashB64 }
+  args: { sphereHash: ActionHashB64 },
 ) => Promise<ActionHashB64>;
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
-  const runCreate = mapZomeFn<Omit<Sphere & {eH: EntryHashB64}, "id" | "eH">, HolochainRecord>(
+  const runCreate = mapZomeFn<
+    Omit<Sphere & { eH: EntryHashB64 }, "id" | "eH">,
+    HolochainRecord
+  >(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "create_my_sphere"
+    "create_my_sphere",
   );
   const runUpdate = mapZomeFn<
     {
@@ -53,22 +56,19 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "update_sphere"
+    "update_sphere",
   );
-  const runDelete = mapZomeFn<
-    ActionHashB64,
-    ActionHash
-  >(
+  const runDelete = mapZomeFn<ActionHashB64, ActionHash>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "delete_sphere"
+    "delete_sphere",
   );
 
   const createSphere: createHandler = async (
     _,
-    { sphere: { name, ...metadata } }
+    { sphere: { name, ...metadata } },
   ) => {
     const rawRecord = await runCreate({
       name,
@@ -89,15 +89,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
 
   const updateSphere: updateHandler = async (
     _,
-    {
-      sphere: {
-        id,
-        name,
-        image,
-        hashtag,
-        description,
-      },
-    }
+    { sphere: { id, name, image, hashtag, description } },
   ) => {
     const rawRecord = await runUpdate({
       originalSphereHash: id as ActionHashB64,
@@ -118,10 +110,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     };
   };
 
-  const deleteSphere: deleteHandler = async (
-    _,
-    args
-  ) => {
+  const deleteSphere: deleteHandler = async (_, args) => {
     const id = args.sphereHash;
     const rawRecord = await runDelete(id);
     return encodeHashToBase64(rawRecord);
@@ -130,6 +119,6 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   return {
     createSphere,
     updateSphere,
-    deleteSphere
+    deleteSphere,
   };
 };

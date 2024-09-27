@@ -1,27 +1,38 @@
-import React, { ComponentType, ReactNode, useEffect, useState } from 'react'
+import React, { ComponentType, ReactNode, useEffect, useState } from "react";
 
 import "../vis/vis.css";
 
-import { Margins, VisProps, VisCoverage, IVisualization } from '../vis/types';
+import { Margins, VisProps, VisCoverage, IVisualization } from "../vis/types";
 import { select } from "d3-selection";
-import { useNodeTraversal } from '../../hooks/useNodeTraversal';
-import { currentSphereHierarchyBounds, newTraversalLevelIndexId } from '../../state/hierarchy';
+import { useNodeTraversal } from "../../hooks/useNodeTraversal";
+import {
+  currentSphereHierarchyBounds,
+  newTraversalLevelIndexId,
+} from "../../state/hierarchy";
 
-import { currentOrbitDetailsAtom, currentOrbitIdAtom, setOrbitWithEntryHashAtom } from '../../state/orbit';
-import { WithVisCanvasProps } from '../vis/types';
-import { ActionHashB64, EntryHashB64 } from '@holochain/client';
-import { store } from '../../state/jotaiKeyValueStore';
-import { OrbitNodeDetails } from '../../state/types';
-import VisModal from '../VisModal';
-import TraversalButton from '../navigation/TraversalButton';
-import { VisControls } from 'habit-fract-design-system';
-import { currentDayAtom } from '../../state/date';
-import { isSmallScreen } from '../vis/helpers';
-import { useRedirect } from '../../hooks/useRedirect';
-import { currentSphereHashesAtom } from '../../state/sphere';
-import { HierarchyNode } from 'd3-hierarchy';
-import { byStartTime } from '../vis/OrbitTree';
-import { SphereHierarchyBounds, HierarchyBounds, Coords } from '../../state/types/hierarchy';
+import {
+  currentOrbitDetailsAtom,
+  currentOrbitIdAtom,
+  setOrbitWithEntryHashAtom,
+} from "../../state/orbit";
+import { WithVisCanvasProps } from "../vis/types";
+import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { store } from "../../state/jotaiKeyValueStore";
+import { OrbitNodeDetails } from "../../state/types";
+import VisModal from "../VisModal";
+import TraversalButton from "../navigation/TraversalButton";
+import { VisControls } from "habit-fract-design-system";
+import { currentDayAtom } from "../../state/date";
+import { isSmallScreen } from "../vis/helpers";
+import { useRedirect } from "../../hooks/useRedirect";
+import { currentSphereHashesAtom } from "../../state/sphere";
+import { HierarchyNode } from "d3-hierarchy";
+import { byStartTime } from "../vis/OrbitTree";
+import {
+  SphereHierarchyBounds,
+  HierarchyBounds,
+  Coords,
+} from "../../state/types/hierarchy";
 
 const defaultMargins: Margins = {
   top: 0,
@@ -39,14 +50,16 @@ const getCanvasDimensions = function () {
 };
 
 const appendSvg = (mountingDivId: string, divId: string) => {
-  return select(`#${divId}`).empty() &&
+  return (
+    select(`#${divId}`).empty() &&
     select(`#${mountingDivId}`)
       .append("svg")
       .attr("id", `${divId}`)
       .attr("width", "100%")
       .attr("data-testid", "svg")
       .attr("height", "100%")
-      .attr("style", "pointer-events: all");
+      .attr("style", "pointer-events: all")
+  );
 };
 
 interface TraversalButtonVisibilityConditions {
@@ -56,50 +69,70 @@ interface TraversalButtonVisibilityConditions {
   onlyChildParent: boolean;
 }
 
-function getTraversalConditions(queryType: VisCoverage, newRootData: any): TraversalButtonVisibilityConditions {
+function getTraversalConditions(
+  queryType: VisCoverage,
+  newRootData: any,
+): TraversalButtonVisibilityConditions {
   const withTraversal: boolean = queryType !== VisCoverage.CompleteOrbit;
-  const hasChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length > 0;
-  const hasOneChild: boolean = newRootData?.data?.children && newRootData?.data?.children.length == 1;
+  const hasChild: boolean =
+    newRootData?.data?.children && newRootData?.data?.children.length > 0;
+  const hasOneChild: boolean =
+    newRootData?.data?.children && newRootData?.data?.children.length == 1;
   const onlyChildParent: boolean = true;
 
   return { withTraversal, hasChild, hasOneChild, onlyChildParent };
 }
 
-export function withVisCanvas<T extends IVisualization>(Component: ComponentType<VisProps<T>>): ReactNode {
-  const ComponentWithVis: React.FC<WithVisCanvasProps> = (_visParams: WithVisCanvasProps) => {
+export function withVisCanvas<T extends IVisualization>(
+  Component: ComponentType<VisProps<T>>,
+): ReactNode {
+  const ComponentWithVis: React.FC<WithVisCanvasProps> = (
+    _visParams: WithVisCanvasProps,
+  ) => {
     useRedirect();
 
-    const mountingDivId = 'vis-root'; // Declared at the router level
-    const svgId = 'vis'; // May need to be declared dynamically when we want multiple vis on a page
+    const mountingDivId = "vis-root"; // Declared at the router level
+    const svgId = "vis"; // May need to be declared dynamically when we want multiple vis on a page
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
     const selectedSphere = store.get(currentSphereHashesAtom);
-    const cachedCurrentOrbit: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
+    const cachedCurrentOrbit: OrbitNodeDetails | null = store.get(
+      currentOrbitDetailsAtom,
+    );
 
     useEffect(() => {
-      if (document.querySelector(`#${mountingDivId} #${svgId}`)) return
+      if (document.querySelector(`#${mountingDivId} #${svgId}`)) return;
       const appended = !!appendSvg(mountingDivId, svgId);
-      setAppendedSvg(appended)
+      setAppendedSvg(appended);
     }, [selectedSphere?.actionHash]);
 
-    const { canvasHeight, canvasWidth } = getCanvasDimensions()
+    const { canvasHeight, canvasWidth } = getCanvasDimensions();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [currentParentOrbitEh, setCurrentParentOrbitEh] = useState<EntryHashB64>();
-    const [currentChildOrbitEh, setCurrentChildOrbitEh] = useState<EntryHashB64>();
+    const [currentParentOrbitEh, setCurrentParentOrbitEh] =
+      useState<EntryHashB64>();
+    const [currentChildOrbitEh, setCurrentChildOrbitEh] =
+      useState<EntryHashB64>();
 
-    const sphereHierarchyBounds: SphereHierarchyBounds = store.get(currentSphereHierarchyBounds);
-    const { incrementBreadth,
+    const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
+      currentSphereHierarchyBounds,
+    );
+    const {
+      incrementBreadth,
       decrementBreadth,
       incrementDepth,
       decrementDepth,
       maxBreadth,
       setBreadthIndex,
-      maxDepth
-    } = useNodeTraversal(sphereHierarchyBounds[selectedSphere!.entryHash as keyof SphereHierarchyBounds] as HierarchyBounds);
+      maxDepth,
+    } = useNodeTraversal(
+      sphereHierarchyBounds[
+        selectedSphere!.entryHash as keyof SphereHierarchyBounds
+      ] as HierarchyBounds,
+    );
 
     // Store and update date in local component state to ensure re-render with VisControls, Calendar
     const [currentDate, setCurrentDate] = useState(store.get(currentDayAtom));
     store.sub(currentDayAtom, () => {
-      setCurrentDate(store.get(currentDayAtom))
+      setCurrentDate(store.get(currentDayAtom));
     });
     return (
       <Component
@@ -108,9 +141,15 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
         margin={defaultMargins}
         selectedSphere={selectedSphere}
         render={(currentVis: T, queryType: VisCoverage, x, y, newRootData) => {
-          const currentOrbitIsRoot = !!(cachedCurrentOrbit && cachedCurrentOrbit.eH === currentVis.rootData.data.content);
+          const currentOrbitIsRoot = !!(
+            cachedCurrentOrbit &&
+            cachedCurrentOrbit.eH === currentVis.rootData.data.content
+          );
           // Determine need for traversal controls
-          const traversalConditions = getTraversalConditions(queryType, currentOrbitIsRoot ? currentVis.rootData : newRootData);
+          const traversalConditions = getTraversalConditions(
+            queryType,
+            currentOrbitIsRoot ? currentVis.rootData : newRootData,
+          );
 
           if (appendedSvg) {
             // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
@@ -129,7 +168,9 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
               }> */}
               <VisControls
                 currentDate={currentDate}
-                setNewDate={(val) => { setCurrentDate(val) }}
+                setNewDate={(val) => {
+                  setCurrentDate(val);
+                }}
                 orbitDetails={cachedCurrentOrbit as OrbitNodeDetails}
                 setOrbitDetailsWin={(dateIndex: string, newValue: boolean) => {
                   store.set(setOrbitWithEntryHashAtom, {
@@ -140,14 +181,26 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
                       //   ...cachedCurrentOrbit!.wins,
                       //   [dateIndex]: newValue
                       // }
-                    }
-                  })
+                    },
+                  });
                 }}
-                buttons={renderTraversalButtons(traversalConditions, { x, y }, currentVis, currentOrbitIsRoot)}
+                buttons={renderTraversalButtons(
+                  traversalConditions,
+                  { x, y },
+                  currentVis,
+                  currentOrbitIsRoot,
+                )}
               />
-              {VisModal<T>(isModalOpen, setIsModalOpen, selectedSphere, currentParentOrbitEh, currentChildOrbitEh, currentVis)}
+              {VisModal<T>(
+                isModalOpen,
+                setIsModalOpen,
+                selectedSphere,
+                currentParentOrbitEh,
+                currentChildOrbitEh,
+                currentVis,
+              )}
             </>
-          )
+          );
         }}
       ></Component>
     );
@@ -156,79 +209,143 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
       conditions: TraversalButtonVisibilityConditions,
       coords: Coords,
       currentVis: T,
-      currentOrbitIsRoot: boolean
+      currentOrbitIsRoot: boolean,
     ) {
-      const { withTraversal, hasChild, hasOneChild, onlyChildParent } = conditions;
+      const { withTraversal, hasChild, hasOneChild, onlyChildParent } =
+        conditions;
       const { x, y } = coords;
-      const data = (currentVis.rootData as HierarchyNode<any>).sort(byStartTime);
-      const children = (isSmallScreen() ? data?.children?.reverse() : data?.children) as Array<HierarchyNode<any>> | undefined;
+      const data = (currentVis.rootData as HierarchyNode<any>).sort(
+        byStartTime,
+      );
+      const children = (
+        isSmallScreen() ? data?.children?.reverse() : data?.children
+      ) as Array<HierarchyNode<any>> | undefined;
       const rootId = data.data.content;
       const currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
       const currentDetails = store.get(currentOrbitDetailsAtom);
 
-      const canMove = !isSmallScreen() || (currentVis.coverageType == VisCoverage.CompleteSphere);
+      const canMove =
+        !isSmallScreen() ||
+        currentVis.coverageType == VisCoverage.CompleteSphere;
       const canMoveUp = canMove && rootId !== currentId;
-      const canMoveRight = canMove && canMoveUp && children && children[children.length - 1].data.content !== currentId;
-      const canMoveLeft = canMove && canMoveUp && children && children[0].data.content !== currentId;
-      const canMoveDown = canMove && currentOrbitIsRoot && children && children.length !== 2;
-      const canMoveDownLeft = canMove && currentOrbitIsRoot && children && !hasOneChild;
-      const canMoveDownRight = canMove && currentOrbitIsRoot && children && !hasOneChild;
+      const canMoveRight =
+        canMove &&
+        canMoveUp &&
+        children &&
+        children[children.length - 1].data.content !== currentId;
+      const canMoveLeft =
+        canMove &&
+        canMoveUp &&
+        children &&
+        children[0].data.content !== currentId;
+      const canMoveDown =
+        canMove && currentOrbitIsRoot && children && children.length !== 2;
+      const canMoveDownLeft =
+        canMove && currentOrbitIsRoot && children && !hasOneChild;
+      const canMoveDownRight =
+        canMove && currentOrbitIsRoot && children && !hasOneChild;
 
-      const canTraverseDownMiddle = !!(children && children.slice(1, -1)?.find(child => child.children && child.children.length > 0)?.data.content == currentId);
-      const canTraverseDown = children && hasOneChild && children[0].children && children[0].children.length == 1;
+      const canTraverseDownMiddle = !!(
+        children &&
+        children
+          .slice(1, -1)
+          ?.find((child) => child.children && child.children.length > 0)?.data
+          .content == currentId
+      );
+      const canTraverseDown =
+        children &&
+        hasOneChild &&
+        children[0].children &&
+        children[0].children.length == 1;
       const canTraverseLeft = x !== 0 && currentOrbitIsRoot;
-      const canTraverseRight = currentOrbitIsRoot && maxBreadth && x < maxBreadth;
-      const canTraverseDownLeft = !canMoveLeft && !currentOrbitIsRoot && children && !hasOneChild && children[0].children;
-      const canTraverseDownRight = !canMoveRight && !currentOrbitIsRoot && maxDepth && (y < maxDepth) && children && !hasOneChild && !!children?.find(child => ((child?.data?.content == currentId) && !!child.children));
+      const canTraverseRight =
+        currentOrbitIsRoot && maxBreadth && x < maxBreadth;
+      const canTraverseDownLeft =
+        !canMoveLeft &&
+        !currentOrbitIsRoot &&
+        children &&
+        !hasOneChild &&
+        children[0].children;
+      const canTraverseDownRight =
+        !canMoveRight &&
+        !currentOrbitIsRoot &&
+        maxDepth &&
+        y < maxDepth &&
+        children &&
+        !hasOneChild &&
+        !!children?.find(
+          (child) => child?.data?.content == currentId && !!child.children,
+        );
 
       const moveLeft = () => {
-        const currentIndex = children?.findIndex(child => child.data.content == currentId) as number;
+        const currentIndex = children?.findIndex(
+          (child) => child.data.content == currentId,
+        ) as number;
         const newId = (children![currentIndex - 1] as any).data.content;
-        store.set(currentOrbitIdAtom, newId)
-      }
+        store.set(currentOrbitIdAtom, newId);
+      };
       const moveRight = () => {
-        const currentIndex = children?.findIndex(child => child.data.content == currentId) as number;
+        const currentIndex = children?.findIndex(
+          (child) => child.data.content == currentId,
+        ) as number;
         const newId = (children![currentIndex + 1] as any).data.content;
-        store.set(currentOrbitIdAtom, newId)
-      }
+        store.set(currentOrbitIdAtom, newId);
+      };
       const moveDown = () => {
-        const childrenMiddle = children!.length > 0 ? Math.ceil(children!.length / 2) - 1 : 0;
+        const childrenMiddle =
+          children!.length > 0 ? Math.ceil(children!.length / 2) - 1 : 0;
         const newId = (children![childrenMiddle] as any).data.content;
-        store.set(currentOrbitIdAtom, newId)
-      }
+        store.set(currentOrbitIdAtom, newId);
+      };
       const moveUp = () => {
-        const orbit = store.get(currentOrbitDetailsAtom); 
+        const orbit = store.get(currentOrbitDetailsAtom);
         const newId = orbit?.parentEh !== rootId ? orbit?.parentEh : rootId;
-        store.set(currentOrbitIdAtom, newId)
-      }
+        store.set(currentOrbitIdAtom, newId);
+      };
       const moveDownLeft = () => {
-        const newId = (children![0] as any).data.content
-        store.set(currentOrbitIdAtom, newId)
-      }
+        const newId = (children![0] as any).data.content;
+        store.set(currentOrbitIdAtom, newId);
+      };
       const moveDownRight = () => {
-        const newId = (children![children!.length - 1] as any).data.content
-        store.set(currentOrbitIdAtom, newId)
-      }
+        const newId = (children![children!.length - 1] as any).data.content;
+        store.set(currentOrbitIdAtom, newId);
+      };
       const traverseDownRight = () => {
         const newX = children!.length - 1;
         incrementDepth();
-        const newChild = children && (children?.find(child => ((child?.data?.content == currentId) && !!child.children)) as HierarchyNode<any>)?.children?.[0] as HierarchyNode<any>;
+        const newChild =
+          children &&
+          ((
+            children?.find(
+              (child) => child?.data?.content == currentId && !!child.children,
+            ) as HierarchyNode<any>
+          )?.children?.[0] as HierarchyNode<any>);
         const newId = newChild && newChild.parent?.data?.content;
-        store.set(newTraversalLevelIndexId, {id: newId})
+        store.set(newTraversalLevelIndexId, { id: newId });
         setBreadthIndex(newX);
-      }
+      };
       const traverseDown = () => {
-        incrementDepth()
-        const newChild = children && (children?.find(child => ((child?.data?.content == currentId) && !!child.children)) as HierarchyNode<any>)?.children?.[0] as HierarchyNode<any>;
+        incrementDepth();
+        const newChild =
+          children &&
+          ((
+            children?.find(
+              (child) => child?.data?.content == currentId && !!child.children,
+            ) as HierarchyNode<any>
+          )?.children?.[0] as HierarchyNode<any>);
         const newId = newChild && newChild.parent?.data?.content;
-        store.set(newTraversalLevelIndexId, {id: newId})
+        store.set(newTraversalLevelIndexId, { id: newId });
 
-        setBreadthIndex(children?.findIndex(child => child?.data?.content == newId) || 0);
-      }
+        setBreadthIndex(
+          children?.findIndex((child) => child?.data?.content == newId) || 0,
+        );
+      };
       const traverseUp = () => {
-        decrementDepth()
-        store.set(newTraversalLevelIndexId, {id: currentDetails?.parentEh as ActionHashB64 })
-      }
+        decrementDepth();
+        store.set(newTraversalLevelIndexId, {
+          id: currentDetails?.parentEh as ActionHashB64,
+        });
+      };
       return [
         <TraversalButton
           condition={withTraversal && (y !== 0 || canMoveUp)}
@@ -237,7 +354,12 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
           dataTestId="traversal-button-up"
         />,
         <TraversalButton
-          condition={!!(withTraversal && (canTraverseDown || canTraverseDownMiddle || canMoveDown))}
+          condition={
+            !!(
+              withTraversal &&
+              (canTraverseDown || canTraverseDownMiddle || canMoveDown)
+            )
+          }
           iconType="down"
           onClick={canMoveDown ? moveDown : traverseDown}
           dataTestId="traversal-button-down"
@@ -249,7 +371,9 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
           dataTestId="traversal-button-left"
         />,
         <TraversalButton
-          condition={!!(withTraversal && (canTraverseDownLeft || canMoveDownLeft))}
+          condition={
+            !!(withTraversal && (canTraverseDownLeft || canMoveDownLeft))
+          }
           iconType="down-left"
           onClick={canMoveDownLeft ? moveDownLeft : traverseDown}
           dataTestId="traversal-button-down-left"
@@ -261,15 +385,16 @@ export function withVisCanvas<T extends IVisualization>(Component: ComponentType
           dataTestId="traversal-button-right"
         />,
         <TraversalButton
-          condition={!!(withTraversal && (canTraverseDownRight || canMoveDownRight))}
+          condition={
+            !!(withTraversal && (canTraverseDownRight || canMoveDownRight))
+          }
           iconType="down-right"
-          onClick={canMoveDownRight ? moveDownRight : traverseDownRight }
+          onClick={canMoveDownRight ? moveDownRight : traverseDownRight}
           dataTestId="traversal-button-down-right"
-        />
+        />,
       ];
-    };
-  }
+    }
+  };
   //@ts-ignore
-  return <ComponentWithVis />
+  return <ComponentWithVis />;
 }
-

@@ -4,21 +4,21 @@ import { select } from "d3-selection";
 import { ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
 import { ReactNode } from "react";
 import { withVisCanvas } from "../HOC/withVisCanvas";
-import {
-  BASE_SCALE,
-} from "./constants";
+import { BASE_SCALE } from "./constants";
 
 // Helper function to return a ReactNode that is a combination of the Vis component, wrapped by the withCanvas higher order component, contained by a mounting div
-export const renderVis = (visComponent: React.ComponentType<VisProps>): ReactNode => <>
-  <div id="vis-root" className="h-full">
-  </div>
-  {(withVisCanvas(visComponent))}
-</>
+export const renderVis = (
+  visComponent: React.ComponentType<VisProps>,
+): ReactNode => (
+  <>
+    <div id="vis-root" className="h-full"></div>
+    {withVisCanvas(visComponent)}
+  </>
+);
 
 export const isTouchDevice = () => {
   return (
-    "ontouchstart" in window ||
-    navigator.maxTouchPoints > 0 //||
+    "ontouchstart" in window || navigator.maxTouchPoints > 0 //||
     // navigator.msMaxTouchPoints > 0
   );
 };
@@ -54,7 +54,6 @@ export const getTransform = (node, xScale) => {
   return { translate: [tx, ty], scale: xScale };
 };
 
-
 const concatenateHierarchyNodeValues = (hierarchy) =>
   hierarchy?.descendants && hierarchy.descendants().map((n) => n.value).join``;
 
@@ -74,15 +73,13 @@ export const hierarchyStateHasChanged = (currentHierarchy, visObject) => {
   return (
     JSON.stringify(visObject.rootData.data) !== compareString ||
     concatenateHierarchyNodeValues(visObject.rootData) !==
-    currentHierNodeValueString
+      currentHierNodeValueString
   );
 };
 
-export const updateVisRootData = (
-  visObject,
-  currentHierarchy,
-) => {
-  const visHasRenders = typeof visObject == 'object' && !visObject.firstRender();
+export const updateVisRootData = (visObject, currentHierarchy) => {
+  const visHasRenders =
+    typeof visObject == "object" && !visObject.firstRender();
   // Check if the hierarchy in the store is a new one (a new tree needs rendering)
   // either because of a different node set/relationships
   // or because node values changed
@@ -113,11 +110,15 @@ export const getInitialYTranslate = (
   const [_x, _y, _w, h] = defaultView.split` `;
   switch (type) {
     default:
-      return (h / levelsHigh / 3.5);
+      return h / levelsHigh / 3.5;
   }
 };
 
-export const newXTranslate = (type: VisType, viewConfig: ViewConfig, zoomConfig: ZoomConfig) => {
+export const newXTranslate = (
+  type: VisType,
+  viewConfig: ViewConfig,
+  zoomConfig: ZoomConfig,
+) => {
   const scale = zoomConfig.globalZoomScale || viewConfig.scale;
   switch (type) {
     // case "cluster":
@@ -129,7 +130,11 @@ export const newXTranslate = (type: VisType, viewConfig: ViewConfig, zoomConfig:
   }
 };
 
-export const newYTranslate = (type: VisType, viewConfig: ViewConfig, zoomConfig: ZoomConfig): number => {
+export const newYTranslate = (
+  type: VisType,
+  viewConfig: ViewConfig,
+  zoomConfig: ZoomConfig,
+): number => {
   const scale = viewConfig.scale;
   switch (type) {
     // case "cluster":
@@ -138,7 +143,8 @@ export const newYTranslate = (type: VisType, viewConfig: ViewConfig, zoomConfig:
     //   return 0; //-radialTranslation(zoomConfig).y * scale;
     case VisType.Tree:
       return -zoomConfig.previousRenderZoom?.node?.y * scale;
-    default: return 1;
+    default:
+      return 1;
   }
 };
 
@@ -157,7 +163,7 @@ export const sumChildrenValues = (node, hidden = false) => {
 };
 
 export const nodeWithoutHabitDate = (data, store) =>
-  habitDateNotPersisted(data) //&& !selectInUnpersisted(data)(store.getState());
+  habitDateNotPersisted(data); //&& !selectInUnpersisted(data)(store.getState());
 
 const allOOB = (nodes) =>
   nodes.every((d) => parseTreeValues(d.data.content)!.status === "OOB");
@@ -197,7 +203,7 @@ export const greatAunts = (node, root) =>
 
 export const nodesForCollapse = function (
   node,
-  { cousinCollapse = true, auntCollapse = true }
+  { cousinCollapse = true, auntCollapse = true },
 ) {
   let minExpandedDepth = node.depth + 2;
   // For collapsing the nodes 'two levels lower' than selected
@@ -213,7 +219,7 @@ export const nodesForCollapse = function (
   let aunts = [];
   if (node.depth > 1 && auntCollapse && this.rootData.children) {
     aunts = greatAunts(node, this.rootData).filter(
-      (n) => !node.ancestors().includes(n)
+      (n) => !node.ancestors().includes(n),
     );
   }
   return descendantsToCollapse.concat(nodeCousins).concat(aunts);

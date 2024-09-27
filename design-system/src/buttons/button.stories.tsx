@@ -1,11 +1,10 @@
-import { Meta, StoryObj } from '@storybook/react';
-import Button, { ButtonProps } from './Button';
+import { Meta, StoryObj } from "@storybook/react";
+import Button, { ButtonProps } from "./Button";
 
 const meta: Meta<ButtonProps> = {
   title: "Components/Onboarding/Button",
   component: Button,
-  argTypes: {
-  },
+  argTypes: {},
 };
 
 export default meta;
@@ -13,8 +12,12 @@ export default meta;
 type Story = StoryObj<ButtonProps>;
 
 export const Primary: Story = {
-  args : {
-    type: "onboarding"
+  args: {
+    type: "onboarding",
   },
-  render: (args) => <Button type={args.type} onClick={() => { }}>Save & Continue</Button>
+  render: (args) => (
+    <Button type={args.type} onClick={() => {}}>
+      Save & Continue
+    </Button>
+  ),
 };

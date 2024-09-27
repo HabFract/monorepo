@@ -9,7 +9,7 @@ import { SphereOrbitNodes, SphereHashes } from "../../state/types/sphere";
 export enum VisType {
   Tree = "Tree",
   Cluster = "Cluster",
-  Radial = "Radial"
+  Radial = "Radial",
 }
 
 /**
@@ -18,17 +18,16 @@ export enum VisType {
 export enum VisCoverage {
   Partial = "partial", // Uses co-ordinates for navigation
   CompleteOrbit = "complete-orbit", // Uses zoom for navigation, starts at a given Orbit
-  CompleteSphere = "complete-sphere" // Uses zoom for navigation, starts at the Sphere's root Orbits
+  CompleteSphere = "complete-sphere", // Uses zoom for navigation, starts at the Sphere's root Orbits
 }
 
 /**
  * Props for the higher order component that wraps all vis types with a canvas and navigation controls,
  * depending on the coverage type.
  */
-export type WithVisCanvasProps = 
+export type WithVisCanvasProps =
   | { orbitEh: EntryHashB64 } // Entry hash of the root node used for partial VisCoverage.
   | { currentSphereEhB64: EntryHashB64; currentSphereAhB64: ActionHashB64 }; // For complete VisCoverage
-
 
 /**
  * Interface for the base visualization class.
@@ -41,7 +40,7 @@ export interface IVisualization {
   /** ID of the SVG element */
   _svgId: string;
   /** Root data for the hierarchy */
-  rootData: HierarchyNode<{content: ActionHashB64}>;
+  rootData: HierarchyNode<{ content: ActionHashB64 }>;
   /** View configuration */
   _viewConfig: ViewConfig;
   /** Zoom configuration */
@@ -56,17 +55,21 @@ export interface IVisualization {
   /** Flag showing current status of is modal */
   isModalOpen: boolean;
   /** Allows setting/re-setting of the parent entry hash in the modal form */
-  modalParentOrbitEh: React.Dispatch<React.SetStateAction<EntryHashB64 | undefined>>;
+  modalParentOrbitEh: React.Dispatch<
+    React.SetStateAction<EntryHashB64 | undefined>
+  >;
   /** Allows setting/re-setting of the child entry hash in the modal form */
-  modalChildOrbitEh: React.Dispatch<React.SetStateAction<EntryHashB64 | undefined>>;
+  modalChildOrbitEh: React.Dispatch<
+    React.SetStateAction<EntryHashB64 | undefined>
+  >;
 
-  /** Details of the current Sphere's nodes that are cached **/ 
+  /** Details of the current Sphere's nodes that are cached **/
   nodeDetails: SphereOrbitNodes;
 
   /** A flag that can be used to bypass the main render function before manually triggering partial renders **/
   skipMainRender: boolean;
 
-  // The following public methods may be called after addition/deletion of nodes to manually trigger a partial re-render 
+  // The following public methods may be called after addition/deletion of nodes to manually trigger a partial re-render
   setNodeAndLinkGroups: () => void;
   setNodeAndLinkEnterSelections: () => void;
   setNodeAndLabelGroups: () => void;
@@ -101,7 +104,7 @@ export type VisProps<T extends IVisualization> = {
     queryType: VisCoverage,
     x: number,
     y: number,
-    newRootData: HierarchyNode<unknown>
+    newRootData: HierarchyNode<unknown>,
   ) => React.ReactNode;
 };
 
@@ -110,11 +113,28 @@ export type VisProps<T extends IVisualization> = {
  */
 export interface EventHandlers {
   handlePrependNode: ({ childOrbitEh }: { childOrbitEh: EntryHashB64 }) => void;
-  handleAppendNode: ({ parentOrbitEh }: { parentOrbitEh: EntryHashB64 }) => void;
-  handleDeleteNode?: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
-  handleNodeZoom: (event: D3ZoomEvent<SVGSVGElement, unknown>, node: HierarchyNode<unknown>, forParent?: boolean) => void;
-  handleNodeFocus?: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
-  handleNodeClick?: (event: React.MouseEvent, node: HierarchyNode<unknown>) => void;
+  handleAppendNode: ({
+    parentOrbitEh,
+  }: {
+    parentOrbitEh: EntryHashB64;
+  }) => void;
+  handleDeleteNode?: (
+    event: React.MouseEvent,
+    node: HierarchyNode<unknown>,
+  ) => void;
+  handleNodeZoom: (
+    event: D3ZoomEvent<SVGSVGElement, unknown>,
+    node: HierarchyNode<unknown>,
+    forParent?: boolean,
+  ) => void;
+  handleNodeFocus?: (
+    event: React.MouseEvent,
+    node: HierarchyNode<unknown>,
+  ) => void;
+  handleNodeClick?: (
+    event: React.MouseEvent,
+    node: HierarchyNode<unknown>,
+  ) => void;
 }
 
 /**

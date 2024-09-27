@@ -8,15 +8,15 @@
 
 .input-icon {
   @apply h-5 w-5;
-  padding: 0 2px; 
+  padding: 0 2px;
   /* 12 in total (10 for input) */
 }
 
-.input-with-icon-right input{
+.input-with-icon-right input {
   padding-right: 40px;
 }
 
-.input-with-icon input{
+.input-with-icon input {
   padding-left: 40px;
 }
 
@@ -64,7 +64,11 @@
 }
 
 .page-container.home {
-  background: radial-gradient(circle, rgba(69,97,95,1) 0%, rgba(36,36,36,1) 100%);
+  background: radial-gradient(
+    circle,
+    rgba(69, 97, 95, 1) 0%,
+    rgba(36, 36, 36, 1) 100%
+  );
   position: relative;
 }
 
@@ -82,10 +86,11 @@
   z-index: 2;
 }
 
-div#root::before, div#root::after {
+div#root::before,
+div#root::after {
   position: absolute;
   content: "";
-  
+
   height: 50%;
   background-size: cover;
   opacity: 0.45;
@@ -120,7 +125,6 @@ nav + main.page-container .sphere-card .row-c-around .sphere-actions button {
   height: 3rem;
 }
 
-
 nav + main.page-container .sphere-card .row-c-around #pie-chart {
   padding-left: 25%;
 }
@@ -131,7 +135,6 @@ nav + main.page-container .sphere-card.list-header {
 
 nav + main.page-container .orbits-list {
   padding-left: 72px;
-      
 }
 
 .full-spinner {
@@ -144,7 +147,7 @@ nav + main.page-container .orbits-list {
   @apply text-line fill-primary;
 }
 
-.app-version-disclaimer button{
+.app-version-disclaimer button {
   height: 1.5rem;
   max-width: 2rem !important;
   text-overflow: ellipsis;
@@ -157,19 +160,19 @@ nav + main.page-container .orbits-list {
 }
 
 /* Modal */
-*[data-testid=modal-overlay]>div>div {
+*[data-testid="modal-overlay"] > div > div {
   @apply bg-input-bg;
 }
 
-*[data-testid=modal-overlay]>div>div button[aria-label="Close"],
-*[data-testid=modal-overlay]>div>div section button,
-*[data-testid=modal-overlay] form button {
+*[data-testid="modal-overlay"] > div > div button[aria-label="Close"],
+*[data-testid="modal-overlay"] > div > div section button,
+*[data-testid="modal-overlay"] form button {
   padding: 1rem;
   border-radius: 1rem;
   display: flex;
   @apply bg-gray-300 text-white;
 }
-*[data-testid=modal-overlay] form button {
+*[data-testid="modal-overlay"] form button {
   @apply bg-primary mb-2 py-1;
 }
 
@@ -179,11 +182,12 @@ nav + main.page-container .orbits-list {
 
 .version-number {
   position: relative;
-  bottom: -.75rem;
+  bottom: -0.75rem;
   @apply flex items-center justify-center h-2;
 }
 
-.spheres-girl-img, .make-or-break-img {
+.spheres-girl-img,
+.make-or-break-img {
   @apply w-full mt-2;
 }
 .make-or-break-img {
@@ -207,7 +211,8 @@ nav + main.page-container .orbits-list {
   margin-left: 4rem;
 }
 
-.page-container.vis, .page-container.vis > div:last-child {
+.page-container.vis,
+.page-container.vis > div:last-child {
   overflow: hidden;
 }
 
@@ -216,11 +221,12 @@ nav + main.page-container .orbits-list {
     grid-template-columns: 10% 80% 10%;
     place-content: center;
   }
-  .app-version-disclaimer button{
+  .app-version-disclaimer button {
     max-width: initial !important;
   }
 
-  div#root::before, div#root::after {
+  div#root::before,
+  div#root::after {
     top: 45vh;
     bottom: initial;
     width: 50vw;
@@ -283,14 +289,16 @@ nav + main.page-container .orbits-list {
   .page-container.home::before {
     background-position-y: -12vh;
   }
-  .page-container.home, .page-container.onboarding-page {
+  .page-container.home,
+  .page-container.onboarding-page {
     grid-column: 3/-3;
   }
   .page-container.onboarding-page .orbit-vis {
     min-width: 6rem;
   }
 
-  .page-container.create-form, .page-container.list {
+  .page-container.create-form,
+  .page-container.list {
     overflow: auto;
     padding: 1rem;
   }
@@ -310,7 +318,7 @@ nav + main.page-container .orbits-list {
   .onboarding-layout > div {
     position: relative;
   }
-  
+
   .onboarding-layout > div > div:nth-child(1) .btn {
     height: 3rem;
     z-index: 1;
@@ -322,7 +330,7 @@ nav + main.page-container .orbits-list {
   }
   .onboarding-layout > div > div:nth-child(2) {
     @apply absolute;
-    margin-top: .5rem;
+    margin-top: 0.5rem;
     z-index: -1;
     left: 24rem;
   }
@@ -349,6 +357,6 @@ nav + main.page-container .orbits-list {
   .onboarding-layout > div > div:nth-child(2) {
     @apply absolute;
     right: 11rem;
-    margin-top: .5rem;  
+    margin-top: 0.5rem;
   }
 }

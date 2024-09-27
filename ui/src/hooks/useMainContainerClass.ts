@@ -1,25 +1,25 @@
-import { useState, useEffect } from 'react';
-import { AppMachine } from '../main';
+import { useState, useEffect } from "react";
+import { AppMachine } from "../main";
 
 function getMainContainerClassString(state: string): string {
   switch (state) {
-    case 'Home':
+    case "Home":
       return "home page-container";
-    case 'Vis':
+    case "Vis":
       return "vis page-container";
-    case 'CreateSphere':
+    case "CreateSphere":
       return "create-form page-container form-container";
-    case 'CreateOrbit':
+    case "CreateOrbit":
       return "create-form page-container form-container";
-    case 'ListOrbits':
+    case "ListOrbits":
       return "list page-container";
-    case 'ListSpheres':
+    case "ListSpheres":
       return "list page-container";
-    case 'Onboarding1':
+    case "Onboarding1":
       return "onboarding page-container";
-    case 'Onboarding2':
+    case "Onboarding2":
       return "onboarding page-container";
-    case 'Onboarding3':
+    case "Onboarding3":
       return "onboarding page-container";
     default:
       return "page-container";
@@ -27,10 +27,13 @@ function getMainContainerClassString(state: string): string {
 }
 
 export function useMainContainerClass() {
-  const [mainContainerClass, setMainContainerClass] = useState<string>("page-container");
+  const [mainContainerClass, setMainContainerClass] =
+    useState<string>("page-container");
 
   useEffect(() => {
-    setMainContainerClass(getMainContainerClassString(AppMachine.state.currentState));
+    setMainContainerClass(
+      getMainContainerClassString(AppMachine.state.currentState),
+    );
   }, [AppMachine.state.currentState]);
 
   return mainContainerClass;

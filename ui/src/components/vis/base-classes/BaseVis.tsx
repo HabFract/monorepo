@@ -4,8 +4,23 @@ import { HierarchyLink, HierarchyNode, tree } from "d3-hierarchy";
 import { easeCubic, easeLinear } from "d3-ease";
 import _ from "lodash";
 
-import { BASE_SCALE, FOCUS_MODE_SCALE, LG_LEVELS_HIGH, LG_LEVELS_WIDE, XS_LEVELS_HIGH, XS_LEVELS_WIDE } from "../constants";
-import { EventHandlers, IVisualization, Margins, ViewConfig, VisCoverage, VisType, ZoomConfig } from "../types";
+import {
+  BASE_SCALE,
+  FOCUS_MODE_SCALE,
+  LG_LEVELS_HIGH,
+  LG_LEVELS_WIDE,
+  XS_LEVELS_HIGH,
+  XS_LEVELS_WIDE,
+} from "../constants";
+import {
+  EventHandlers,
+  IVisualization,
+  Margins,
+  ViewConfig,
+  VisCoverage,
+  VisType,
+  ZoomConfig,
+} from "../types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit, Scale } from "../../../graphql/generated";
 import { client } from "../../../graphql/client";
@@ -38,8 +53,12 @@ export abstract class BaseVisualization implements IVisualization {
   sphereEh: EntryHashB64;
   sphereAh: ActionHashB64;
   // State handlers passed from parent React component:
-  modalParentOrbitEh!:  React.Dispatch<React.SetStateAction<EntryHashB64 | undefined>>;
-  modalChildOrbitEh!:  React.Dispatch<React.SetStateAction<EntryHashB64 | undefined>>;
+  modalParentOrbitEh!: React.Dispatch<
+    React.SetStateAction<EntryHashB64 | undefined>
+  >;
+  modalChildOrbitEh!: React.Dispatch<
+    React.SetStateAction<EntryHashB64 | undefined>
+  >;
   globalStateTransition: Function;
 
   eventHandlers: EventHandlers;
@@ -48,10 +67,30 @@ export abstract class BaseVisualization implements IVisualization {
   _gLink?: typeof this._canvas;
   _gNode?: typeof this._canvas;
   _gCircle?: Selection<SVGGElement, HierarchyNode<any>, SVGGElement, unknown>;
-  _gTooltip?: Selection<SVGForeignObjectElement, HierarchyNode<any>, SVGGElement, unknown>;
-  _gButton?: Selection<SVGForeignObjectElement, HierarchyNode<any>, SVGGElement, unknown>;
-  _enteringLinks?: Selection<SVGPathElement, HierarchyLink<any>, SVGGElement, unknown>;  
-  _enteringNodes?: Selection<SVGGElement, HierarchyNode<any>, SVGGElement, unknown>;  
+  _gTooltip?: Selection<
+    SVGForeignObjectElement,
+    HierarchyNode<any>,
+    SVGGElement,
+    unknown
+  >;
+  _gButton?: Selection<
+    SVGForeignObjectElement,
+    HierarchyNode<any>,
+    SVGGElement,
+    unknown
+  >;
+  _enteringLinks?: Selection<
+    SVGPathElement,
+    HierarchyLink<any>,
+    SVGGElement,
+    unknown
+  >;
+  _enteringNodes?: Selection<
+    SVGGElement,
+    HierarchyNode<any>,
+    SVGGElement,
+    unknown
+  >;
 
   // Methods for procedures at different parts of the vis render:
   abstract setNodeAndLinkEnterSelections(): void;
@@ -61,7 +100,11 @@ export abstract class BaseVisualization implements IVisualization {
   abstract bindEventHandlers(selection: any): void;
   abstract getLinkPathGenerator(): void;
 
-  abstract initializeViewConfig(canvasHeight: number, canvasWidth: number, margin: Margins): ViewConfig;
+  abstract initializeViewConfig(
+    canvasHeight: number,
+    canvasWidth: number,
+    margin: Margins,
+  ): ViewConfig;
   abstract initializeZoomConfig(): ZoomConfig;
   abstract initializeEventHandlers(): EventHandlers;
   abstract initializeZoomer(): ZoomBehavior<Element, unknown>;
@@ -72,7 +115,6 @@ export abstract class BaseVisualization implements IVisualization {
   activeNode: any = null;
   isNewActiveNode: boolean = false;
   _hasRendered: boolean = false;
-
 
   /**
    * Constructor for the BaseVisualization class.
@@ -98,7 +140,7 @@ export abstract class BaseVisualization implements IVisualization {
     globalStateTransition: (newState: string, params: object) => void,
     sphereEh: EntryHashB64,
     sphereAh: ActionHashB64,
-    nodeDetails: SphereOrbitNodes
+    nodeDetails: SphereOrbitNodes,
   ) {
     this.type = type;
     this.coverageType = coverageType;
@@ -110,11 +152,17 @@ export abstract class BaseVisualization implements IVisualization {
     this.nodeDetails = nodeDetails;
     this._nextRootData = null;
 
-    this._viewConfig = this.initializeViewConfig(canvasHeight, canvasWidth, margin);
+    this._viewConfig = this.initializeViewConfig(
+      canvasHeight,
+      canvasWidth,
+      margin,
+    );
     this._zoomConfig = this.initializeZoomConfig();
     this.eventHandlers = this.initializeEventHandlers();
 
-    if(this.coverageType !== VisCoverage.Partial) { this.initializeZoomer(); }
+    if (this.coverageType !== VisCoverage.Partial) {
+      this.initializeZoomer();
+    }
   }
 
   // Allow data to be re-cached after certain vis interactions:
@@ -125,15 +173,23 @@ export abstract class BaseVisualization implements IVisualization {
     const variables = { sphereEntryHashB64: this.sphereEh };
     let data;
     try {
-      const gql: ApolloClient<NormalizedCacheObject> = await client as ApolloClient<NormalizedCacheObject>;
-      data = await gql.query({ query: GetOrbitsDocument, variables, fetchPolicy: 'network-only' })
+      const gql: ApolloClient<NormalizedCacheObject> =
+        (await client) as ApolloClient<NormalizedCacheObject>;
+      data = await gql.query({
+        query: GetOrbitsDocument,
+        variables,
+        fetchPolicy: "network-only",
+      });
       if (data?.data?.orbits) {
-        const orbits = (extractEdges(data.data.orbits) as Orbit[]);
-        const indexedOrbitData: Array<[ActionHashB64, OrbitNodeDetails]> = Object.entries(orbits.map(mapToCacheObject))
-          .map(([_idx, value]) => [value.id, value]);
+        const orbits = extractEdges(data.data.orbits) as Orbit[];
+        const indexedOrbitData: Array<[ActionHashB64, OrbitNodeDetails]> =
+          Object.entries(orbits.map(mapToCacheObject)).map(([_idx, value]) => [
+            value.id,
+            value,
+          ]);
         this.cacheOrbits(indexedOrbitData);
       }
-      console.log('refetched orbits :>> ', data);
+      console.log("refetched orbits :>> ", data);
     } catch (error) {
       console.error(error);
     }
@@ -144,12 +200,12 @@ export abstract class BaseVisualization implements IVisualization {
    */
   async cacheOrbits(orbitEntries: Array<[ActionHashB64, OrbitNodeDetails]>) {
     try {
-      store.set(nodeCache.setMany, orbitEntries)
+      store.set(nodeCache.setMany, orbitEntries);
       //@ts-ignore
       this.nodeDetails = Object.entries(orbitEntries);
-      console.log('Sphere orbits fetched and cached!')
+      console.log("Sphere orbits fetched and cached!");
     } catch (error) {
-      console.error('error :>> ', error);
+      console.error("error :>> ", error);
     }
   }
 
@@ -219,10 +275,12 @@ export abstract class BaseVisualization implements IVisualization {
    */
   setdXdY(): void {
     this._viewConfig.dx =
-      this._viewConfig.canvasWidth / (this._viewConfig.levelsHigh as number * 2) - // Adjust for tree horizontal spacing on different screens
-      +(this._viewConfig.isSmallScreen()) * 250;
+      this._viewConfig.canvasWidth /
+        ((this._viewConfig.levelsHigh as number) * 2) - // Adjust for tree horizontal spacing on different screens
+      +this._viewConfig.isSmallScreen() * 250;
     this._viewConfig.dy =
-      this._viewConfig.canvasHeight / (this._viewConfig.levelsWide as number * 6);
+      this._viewConfig.canvasHeight /
+      ((this._viewConfig.levelsWide as number) * 6);
     //adjust for taller aspect ratio
     this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 2.5 : 1.5;
     this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 2.5 : 3;
@@ -234,22 +292,23 @@ export abstract class BaseVisualization implements IVisualization {
   setNodeAndLinkGroups(): void {
     !this.firstRender() && this.clearNodesAndLinks();
 
-    this._gLink = this._canvas!
-      .append("g")
-      .classed("links", true);
-      // .attr("transform", transformation);
-    this._gNode = this._canvas!
-      .append("g")
-      .classed("nodes", true);
-      // .attr("transform", transformation);
+    this._gLink = this._canvas!.append("g").classed("links", true);
+    // .attr("transform", transformation);
+    this._gNode = this._canvas!.append("g").classed("nodes", true);
+    // .attr("transform", transformation);
   }
 
   /**
    * Render the visualization.
    */
   public render(): void {
-    if (this.skipMainRender) { this.skipMainRender = false; return }
-    if (this.noCanvas()) { this.setupCanvas() }
+    if (this.skipMainRender) {
+      this.skipMainRender = false;
+      return;
+    }
+    if (this.noCanvas()) {
+      this.setupCanvas();
+    }
 
     if (this.firstRender()) {
       this.setLevelsHighAndWide();
@@ -257,7 +316,7 @@ export abstract class BaseVisualization implements IVisualization {
       this.calibrateViewBox();
       this.setdXdY();
     }
-    
+
     if (this.firstRender() || this.hasNextData()) {
       this.clearCanvas();
 
@@ -301,7 +360,12 @@ export abstract class BaseVisualization implements IVisualization {
    * Get a base/mounting element for the svg
    * @returns {Selection<SVGForeignObjectElement, HierarchyNode<any>, HTMLElement, any>} A d3 selection of the base HTML element
    */
-  visBase(): Selection<SVGForeignObjectElement, HierarchyNode<any>, HTMLElement, any> {
+  visBase(): Selection<
+    SVGForeignObjectElement,
+    HierarchyNode<any>,
+    HTMLElement,
+    any
+  > {
     return select(`#${this._svgId}`);
   }
   /**
@@ -317,16 +381,20 @@ export abstract class BaseVisualization implements IVisualization {
 
   /** Clear just nodes and links from the canvas **/
   clearNodesAndLinks(): void {
-    this._canvas!.selectAll('g.nodes').remove();
-    this._canvas!.selectAll('g.links').remove();
+    this._canvas!.selectAll("g.nodes").remove();
+    this._canvas!.selectAll("g.links").remove();
   }
 
   /** Clear labels and re-append  **/
-  clearAndRedrawLabels(): Selection<SVGForeignObjectElement, HierarchyNode<any>, SVGGElement, unknown> {
+  clearAndRedrawLabels(): Selection<
+    SVGForeignObjectElement,
+    HierarchyNode<any>,
+    SVGGElement,
+    unknown
+  > {
     !this.firstRender() && this._canvas!.selectAll(".tooltip").remove();
 
-    return this._enteringNodes!
-      .append("g")
+    return this._enteringNodes!.append("g")
       .classed("tooltip", true)
       .append("foreignObject")
       .attr("transform", (d) => {
@@ -335,27 +403,27 @@ export abstract class BaseVisualization implements IVisualization {
         const getScale = () => {
           switch (scale) {
             case Scale.Astro:
-              return 0.4
+              return 0.4;
             case Scale.Sub:
-              return 0.3
+              return 0.3;
             case Scale.Atom:
-              return 0.25
+              return 0.25;
           }
-        }
-        return `scale(${this._viewConfig.isSmallScreen() ? getScale() : .75})`
+        };
+        return `scale(${this._viewConfig.isSmallScreen() ? getScale() : 0.75})`;
       })
       .attr("x", "-375")
       .attr("y", (d) => {
         const cachedNode = this.nodeDetails[d.data.content];
         const { scale } = cachedNode;
-        return scale == Scale.Atom ? "-150" : Scale.Sub ? "-60" : "-50"
+        return scale == Scale.Atom ? "-150" : Scale.Sub ? "-60" : "-50";
       })
       .attr("width", "650")
       .style("overflow", "visible")
       .attr("height", "650")
       .html(this.appendLabelHtml);
   }
-  
+
   /**
    * Reset the zoom on the vis base
    */
@@ -373,9 +441,9 @@ export abstract class BaseVisualization implements IVisualization {
   }
 
   appendLabelHtml = (d): string => {
-    if (!d?.data?.content || !this.nodeDetails[d.data.content]) return ""
-    const isCurrentOrbit = store.get(currentOrbitIdAtom)?.id === d.data.content
-    if (!isCurrentOrbit) return ""
+    if (!d?.data?.content || !this.nodeDetails[d.data.content]) return "";
+    const isCurrentOrbit = store.get(currentOrbitIdAtom)?.id === d.data.content;
+    if (!isCurrentOrbit) return "";
 
     const cachedNode = this.nodeDetails[d.data.content];
     const { name, description, scale } = cachedNode;
@@ -386,6 +454,6 @@ export abstract class BaseVisualization implements IVisualization {
       <span class="title">Description:</span>
       <p>${description || "<br />"}</p>
       </div>
-    </div>`
-  }
+    </div>`;
+  };
 }

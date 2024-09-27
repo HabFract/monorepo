@@ -1,32 +1,32 @@
 // #region Global Imports
-import React, { useEffect } from 'react'
-import { Field, Form, Formik, FormikProps } from 'formik'
-import * as Yup from 'yup'
-import { Alert, Spin, Input, Switch } from 'antd'
+import React, { useEffect } from "react";
+import { Field, Form, Formik, FormikProps } from "formik";
+import * as Yup from "yup";
+import { Alert, Spin, Input, Switch } from "antd";
 // #endregion Global Imports
 
 // #region Local Imports
-import './common.css';
+import "./common.css";
 
 // import { P, TextInput, Button, SwitchInput } from '@/atoms/.'
 // import { ImageUploadInput } from '@/atoms/Input/ImageUpload'
 
-import { useMyProfile } from '../../hooks/useMyProfile';
+import { useMyProfile } from "../../hooks/useMyProfile";
 
 // #endregion Local Imports
 
 // #region Interface Imports
-import { ImageUpload } from './input';
+import { ImageUpload } from "./input";
 // #endregion Interface Imports
 
 export interface IProfileForm {
-  editMode: boolean
+  editMode: boolean;
 }
 
 const ProfileForm: React.FunctionComponent<IProfileForm> = ({
   editMode,
 }: IProfileForm) => {
-  const [profile, _] = useMyProfile()
+  const [profile, _] = useMyProfile();
   // const [addUserMutation, { data, loading, error }] = useAddUserMutation()
 
   const initialValues =
@@ -38,13 +38,14 @@ const ProfileForm: React.FunctionComponent<IProfileForm> = ({
           isPublic: profile.fields.isPublic,
         }
       : {
-          nickname: '',
-          location: '',
-          avatar: '',
+          nickname: "",
+          location: "",
+          avatar: "",
           isPublic: false,
-        }
+        };
 
-  return ( <></>
+  return (
+    <></>
     // <div className='form-container'>
     //   {error ? (
     //     <Spin spinning={loading}>
@@ -129,7 +130,7 @@ const ProfileForm: React.FunctionComponent<IProfileForm> = ({
     //               <div className="px-4 mb-6">
     //                 <p>Going public will enable sharing and trading of habit structures, but is not required to use the app.</p>
     //               </div>
-    //             {/* 
+    //             {/*
     //                 <div className="w-full h-6 bg-gray-200 rounded-full lg:hidden dark:bg-gray-700">
     //                   <div
     //                     className="h-6 bg-blue-600 rounded-full dark:bg-blue-500"
@@ -168,7 +169,7 @@ const ProfileForm: React.FunctionComponent<IProfileForm> = ({
     //     </Formik>
     //   )}
     // </div>
-  )
-}
+  );
+};
 
 export default ProfileForm;

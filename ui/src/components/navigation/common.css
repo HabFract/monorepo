@@ -5,10 +5,12 @@
 .traversal-button {
   @apply absolute text-4xl;
 }
-.traversal-button.up, .traversal-button.down {
+.traversal-button.up,
+.traversal-button.down {
   left: calc(50% - 20px);
 }
-.traversal-button.right, .traversal-button.left {
+.traversal-button.right,
+.traversal-button.left {
   top: calc(50% - 20px);
 }
 .traversal-button.up {
@@ -18,12 +20,12 @@
   bottom: var(--traversal-distance);
 }
 .traversal-button.d-right {
-  right: calc(var(--traversal-distance)/1.75);
-  bottom: calc(var(--traversal-distance)/1.75);
+  right: calc(var(--traversal-distance) / 1.75);
+  bottom: calc(var(--traversal-distance) / 1.75);
 }
 .traversal-button.d-left {
-  left: calc(var(--traversal-distance)/1.75);
-  bottom: calc(var(--traversal-distance)/1.75);
+  left: calc(var(--traversal-distance) / 1.75);
+  bottom: calc(var(--traversal-distance) / 1.75);
 }
 .traversal-button.left {
   left: var(--traversal-distance);

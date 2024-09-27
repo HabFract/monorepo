@@ -14,10 +14,10 @@ export interface HierarchyBounds {
 }
 
 export interface SphereHierarchyBounds {
-  [sphereId: EntryHashB64] : HierarchyBounds
+  [sphereId: EntryHashB64]: HierarchyBounds;
 }
 
-export type Coords = { x: number, y: number };
+export type Coords = { x: number; y: number };
 
 /**
  * Hierarchy's current traversal indices

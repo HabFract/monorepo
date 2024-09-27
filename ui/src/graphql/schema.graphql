@@ -4,8 +4,8 @@ type Query {
   spheres: SphereConnection!
   orbit(id: ID!): Orbit!
   orbits(sphereEntryHashB64: String): OrbitConnection!
-  getOrbitHierarchy(params: OrbitHierarchyQueryParams!) : String! 
-  getLowestSphereHierarchyLevel(sphereEntryHashB64: String!) : Int! 
+  getOrbitHierarchy(params: OrbitHierarchyQueryParams!): String!
+  getLowestSphereHierarchyLevel(sphereEntryHashB64: String!): Int!
   me: AgentProfile!
 }
 

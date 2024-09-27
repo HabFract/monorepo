@@ -7,7 +7,6 @@ export const LG_LEVELS_HIGH = 2;
 export const XS_LEVELS_WIDE = 1.1;
 export const LG_LEVELS_WIDE = 1;
 
-
 export const LG_TREE_PATH_OFFSET_Y = 400;
 export const XS_TREE_PATH_OFFSET_Y = 120;
 

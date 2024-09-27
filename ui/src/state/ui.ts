@@ -1,13 +1,13 @@
-import { atom } from 'jotai';
+import { atom } from "jotai";
 
 export enum SortCriteria {
-  Name = 'name',
-  Scale = 'scale',
+  Name = "name",
+  Scale = "scale",
 }
 
 export enum SortOrder {
-  GreatestToLowest = 'greatestToLowest',
-  LowestToGreatest = 'lowestToGreatest',
+  GreatestToLowest = "greatestToLowest",
+  LowestToGreatest = "lowestToGreatest",
 }
 
 export interface SortFilterState {

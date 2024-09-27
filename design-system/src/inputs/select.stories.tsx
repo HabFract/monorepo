@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from "@storybook/react";
 import Select, { SelectInputField } from "./select";
 
 export interface SelectProps {
@@ -16,10 +16,10 @@ export interface SelectProps {
   disabled: boolean;
   icon: string;
   iconSide: "left" | "right";
-  onChange?: Function,
-  onClickInfo?: () => any,
-  onBlur?: Function,
-  theme?: string,
+  onChange?: Function;
+  onClickInfo?: () => any;
+  onBlur?: Function;
+  theme?: string;
 }
 
 const meta: Meta<SelectProps> = {
@@ -55,7 +55,7 @@ export const WithIcon: Story = {
     size: "base",
     options: ["Apples", "Oranges", "Bananas"],
     disabled: false,
-    withInfo: false
+    withInfo: false,
   },
 };
 
@@ -67,7 +67,7 @@ export const Disabled: Story = {
     size: "base",
     options: ["Apples", "Oranges", "Bananas"],
     disabled: true,
-    withInfo: false
+    withInfo: false,
   },
 };
 
@@ -79,7 +79,7 @@ export const WithIconWithInfo: Story = {
     size: "base",
     options: ["Apples", "Oranges", "Bananas"],
     disabled: false,
-    withInfo: true
+    withInfo: true,
   },
 };
 
@@ -92,7 +92,7 @@ export const WithIconWithInfoRequired: Story = {
     options: ["Apples", "Oranges", "Bananas"],
     disabled: false,
     required: true,
-    withInfo: true
+    withInfo: true,
   },
 };
 
@@ -107,16 +107,23 @@ export const WithIconWithWarnError: Story = {
     disabled: false,
     errored: true,
     required: true,
-    withInfo: false
+    withInfo: false,
   },
-  
-  render: (args: any) => <SelectInputField field={null} form={{
-    errors: {
-      "fruit": "This is a required field."
-    }, touched: {
-      "fruit": true
-    },
-  }} {...args}></SelectInputField>
+
+  render: (args: any) => (
+    <SelectInputField
+      field={null}
+      form={{
+        errors: {
+          fruit: "This is a required field.",
+        },
+        touched: {
+          fruit: true,
+        },
+      }}
+      {...args}
+    ></SelectInputField>
+  ),
 };
 
 export const WithIconWithDangerError: Story = {
@@ -129,14 +136,21 @@ export const WithIconWithDangerError: Story = {
     options: ["Apples", "Oranges", "Bananas"],
     disabled: false,
     errored: true,
-    withInfo: false
+    withInfo: false,
   },
-  
-  render: (args: any) => <SelectInputField field={null} form={{
-    errors: {
-      "fruit": "This is not a fruit, try again!"
-    }, touched: {
-      "fruit": true
-    },
-  }} {...args}></SelectInputField>
+
+  render: (args: any) => (
+    <SelectInputField
+      field={null}
+      form={{
+        errors: {
+          fruit: "This is not a fruit, try again!",
+        },
+        touched: {
+          fruit: true,
+        },
+      }}
+      {...args}
+    ></SelectInputField>
+  ),
 };

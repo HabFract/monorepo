@@ -8,7 +8,8 @@
   max-width: 32rem;
 }
 
-span.helper-content, .toast-text {
+span.helper-content,
+.toast-text {
   line-height: 24px;
   font-size: 1em;
   font-weight: light;
@@ -25,26 +26,27 @@ span.helper-content, .toast-text {
 
 #tooltip-right {
   @apply transition-opacity duration-300 fixed z-10 inline-block px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700;
-  left: .5rem;
-  top: .5rem;
-  right: .5rem;
+  left: 0.5rem;
+  top: 0.5rem;
+  right: 0.5rem;
 }
 
-#tooltip-right:before{
-  content:'';
-  display:block;
-  width:0;
-  height:0;
-  position:absolute;
+#tooltip-right:before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
 
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
-  border-right:8px solid rgb(17 24 39 / 1);
-  right:-8px;
-  top:12px;
+  border-right: 8px solid rgb(17 24 39 / 1);
+  right: -8px;
+  top: 12px;
   rotate: 180deg;
 }
-#tooltip-right.invisible:before, .side-nav:not(.expanded) #tooltip-right:before{
+#tooltip-right.invisible:before,
+.side-nav:not(.expanded) #tooltip-right:before {
   display: none;
 }
 
@@ -56,6 +58,6 @@ h3 {
   @apply mb-2 font-medium;
 }
 h4 {
-  font-size: .75rem;
+  font-size: 0.75rem;
   @apply mb-2;
 }

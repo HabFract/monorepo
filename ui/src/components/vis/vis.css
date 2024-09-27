@@ -9,7 +9,7 @@ g.nodes {
 }
 
 .node-subgroup.checked {
-  color: rgba(11,254,184, 1);
+  color: rgba(11, 254, 184, 1);
 }
 
 .controls-div {
@@ -25,15 +25,19 @@ svg path.link {
 
 .tooltip-inner .content {
   padding: 0.75rem 1.5rem;
-  color: rgba(219,228,226, 1);
-  background: linear-gradient(0deg, rgba(69, 97, 95, 1) -20%, rgba(69, 97, 95, 0.5) 100%);
+  color: rgba(219, 228, 226, 1);
+  background: linear-gradient(
+    0deg,
+    rgba(69, 97, 95, 1) -20%,
+    rgba(69, 97, 95, 0.5) 100%
+  );
   border-radius: 1.75rem;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   opacity: 1;
   margin-top: 12px;
   margin-right: 4px;
-} 
+}
 
 .tooltip-inner .content span.title {
   text-transform: uppercase;
@@ -44,12 +48,10 @@ svg path.link {
   @apply font-normal tracking-normal mb-2;
 }
 
-.buttons, .tooltip-inner {
+.buttons,
+.tooltip-inner {
   cursor: initial;
 }
-
-
-
 
 .tooltip-actions {
   display: block;
@@ -59,18 +61,18 @@ svg path.link {
 .tooltip-actions .buttons {
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: 0.5rem;
 }
 
 .tooltip-inner {
   background: url(/assets/line-corner-vector.svg);
   background-position: right;
-  background-position-y: .5rem;
+  background-position-y: 0.5rem;
   background-size: contain;
   background-repeat: no-repeat;
   height: 100%;
   width: 100%;
-  padding-top: calc(50% + .5rem);
+  padding-top: calc(50% + 0.5rem);
   padding-left: 3%;
   padding-right: 3px;
   font-size: 2rem;

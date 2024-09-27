@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from "@storybook/react";
 import TextInput, { TextInputField } from "./text";
-import { FocusEventHandler } from 'react';
+import { FocusEventHandler } from "react";
 
 export interface TextInputProps {
   id: string;
@@ -15,11 +15,11 @@ export interface TextInputProps {
   iconSide: "left" | "right";
   disabled: boolean;
   icon: string;
-  onChange?: Function
-  onBlur?: FocusEventHandler
-  onClickInfo?: () => any
-  value?: string
-  theme?: string
+  onChange?: Function;
+  onBlur?: FocusEventHandler;
+  onClickInfo?: () => any;
+  value?: string;
+  theme?: string;
 }
 
 const meta: Meta<TextInputProps> = {
@@ -41,7 +41,7 @@ export const Default: Story = {
     placeholder: "Type here",
     labelValue: "Name:",
     size: "base",
-    disabled: false
+    disabled: false,
   },
 };
 
@@ -52,8 +52,8 @@ export const IconLeft: Story = {
     labelValue: "Name:",
     size: "base",
     iconSide: "left",
-    icon: 'tag',
-    disabled: false
+    icon: "tag",
+    disabled: false,
   },
 };
 
@@ -64,8 +64,8 @@ export const Disabled: Story = {
     labelValue: "Name:",
     size: "base",
     iconSide: "left",
-    icon: 'tag',
-    disabled: true
+    icon: "tag",
+    disabled: true,
   },
 };
 
@@ -76,9 +76,9 @@ export const ListItem: Story = {
     labelValue: "1:",
     size: "base",
     iconSide: "right",
-    icon: 'save',
+    icon: "save",
     isListItem: true,
-    disabled: false
+    disabled: false,
   },
 };
 
@@ -89,9 +89,9 @@ export const WithIconWithInfo: Story = {
     labelValue: "Name:",
     size: "base",
     iconSide: "left",
-    icon: 'tag',
+    icon: "tag",
     disabled: false,
-    withInfo: true
+    withInfo: true,
   },
 };
 
@@ -102,10 +102,10 @@ export const WithIconWithInfoRequired: Story = {
     labelValue: "Name:",
     size: "base",
     iconSide: "left",
-    icon: 'tag',
+    icon: "tag",
     disabled: false,
     required: true,
-    withInfo: true
+    withInfo: true,
   },
 };
 
@@ -117,20 +117,27 @@ export const WithIconWithWarnError: Story = {
     labelValue: "Name:",
     size: "base",
     iconSide: "left",
-    icon: 'tag',
+    icon: "tag",
     disabled: false,
     errored: true,
     required: true,
-    withInfo: false
+    withInfo: false,
   },
-  
-  render: (args: any) => <TextInputField field={null} form={{
-    errors: {
-      "example": "This is a required field."
-    }, touched: {
-      "example": true
-    },
-  }} {...args}></TextInputField>
+
+  render: (args: any) => (
+    <TextInputField
+      field={null}
+      form={{
+        errors: {
+          example: "This is a required field.",
+        },
+        touched: {
+          example: true,
+        },
+      }}
+      {...args}
+    ></TextInputField>
+  ),
 };
 
 export const WithIconWithDangerError: Story = {
@@ -141,18 +148,25 @@ export const WithIconWithDangerError: Story = {
     labelValue: "Name:",
     size: "base",
     iconSide: "left",
-    icon: 'tag',
+    icon: "tag",
     disabled: false,
     errored: true,
     required: false,
-    withInfo: false
+    withInfo: false,
   },
-  
-  render: (args: any) => <TextInputField field={null} form={{
-    errors: {
-      "example": "This is not valid!"
-    }, touched: {
-      "example": true
-    },
-  }} {...args}></TextInputField>
+
+  render: (args: any) => (
+    <TextInputField
+      field={null}
+      form={{
+        errors: {
+          example: "This is not valid!",
+        },
+        touched: {
+          example: true,
+        },
+      }}
+      {...args}
+    ></TextInputField>
+  ),
 };

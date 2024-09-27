@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { Button } from 'habit-fract-design-system';
+import React, { FC } from "react";
+import { Button } from "habit-fract-design-system";
 
 interface HomeContinueProps {
   onClick: () => void;

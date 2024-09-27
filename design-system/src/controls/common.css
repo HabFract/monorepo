@@ -1,4 +1,3 @@
-
 .vis-controls {
   @apply gap-2 bg-gradient-to-t from-menu-bg to-transparent justify-around p-2 items-end fixed right-0;
   width: 100%;
@@ -41,7 +40,7 @@
 }
 
 .lower-button {
-  margin-bottom: -.75rem;
+  margin-bottom: -0.75rem;
   background-image: url(../../assets/lower-scale-icon.svg);
   @apply absolute;
   top: -2.5rem;
@@ -56,7 +55,7 @@
 }
 
 .is-completed.main {
-    @apply w-16 h-16;
+  @apply w-16 h-16;
 }
 
 .is-completed.secondary {
@@ -72,46 +71,54 @@
 }
 
 .date-nav-button.disabled {
-  @apply text-gray-200
+  @apply text-gray-200;
 }
 
 @keyframes wiggle {
-  0% { transform: rotate(0deg); }
-  25% { transform: rotate(5deg); }
-  75% { transform: rotate(-10deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 .is-completed.checked:hover {
-  animation: wiggle .9s cubic-bezier(.36,.07,.19,.97) infinite;
+  animation: wiggle 0.9s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
 }
 .is-completed.unchecked:hover,
-.add-node-button:hover  {
+.add-node-button:hover {
   @apply border-4 border-primary;
   border-radius: 100%;
 }
 
 .date-nav-button:hover {
-  transform: scaleY(calc(2.5* 1.25)) scaleX(calc(1.5* 1.25));
-  transition: .2s transform ease-in;
+  transform: scaleY(calc(2.5 * 1.25)) scaleX(calc(1.5 * 1.25));
+  transition: 0.2s transform ease-in;
 }
-  
+
 .current-date-label {
   bottom: -2.5rem;
   @apply text-center relative;
 }
 
 .tickbox-label {
-  line-height: .75rem;
-  font-size: .75rem;
+  line-height: 0.75rem;
+  font-size: 0.75rem;
   font-weight: 300;
   width: 100%;
   bottom: -1.25rem;
-  @apply font-sans absolute left-0 text-center; 
+  @apply font-sans absolute left-0 text-center;
 }
 
 .tickbox-label em {
-  @apply font-medium; 
+  @apply font-medium;
   text-decoration: none;
 }
 

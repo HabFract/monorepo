@@ -1,411 +1,535 @@
 import type { DocumentNode } from "graphql/language/ast";
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
+import { gql } from "@apollo/client";
+import * as Apollo from "@apollo/client";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
+export type MakeEmpty<
+  T extends { [key: string]: unknown },
+  K extends keyof T,
+> = { [_ in K]?: never };
+export type Incremental<T> =
+  | T
+  | {
+      [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
+    };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
 };
 
 export type Query = {
-  __typename?: 'Query';
+  __typename?: "Query";
   sphere: Sphere;
   spheres: SphereConnection;
   orbit: Orbit;
   orbits: OrbitConnection;
-  getOrbitHierarchy: Scalars['String']['output'];
-  getLowestSphereHierarchyLevel: Scalars['Int']['output'];
+  getOrbitHierarchy: Scalars["String"]["output"];
+  getLowestSphereHierarchyLevel: Scalars["Int"]["output"];
   me: AgentProfile;
 };
 
-
 export type QuerySphereArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 };
-
 
 export type QueryOrbitArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 };
-
 
 export type QueryOrbitsArgs = {
-  sphereEntryHashB64?: InputMaybe<Scalars['String']['input']>;
+  sphereEntryHashB64?: InputMaybe<Scalars["String"]["input"]>;
 };
-
 
 export type QueryGetOrbitHierarchyArgs = {
   params: OrbitHierarchyQueryParams;
 };
 
-
 export type QueryGetLowestSphereHierarchyLevelArgs = {
-  sphereEntryHashB64: Scalars['String']['input'];
+  sphereEntryHashB64: Scalars["String"]["input"];
 };
 
 export type Mutation = {
-  __typename?: 'Mutation';
+  __typename?: "Mutation";
   createSphere: CreateSphereResponsePayload;
   updateSphere: CreateSphereResponsePayload;
-  deleteSphere: Scalars['ID']['output'];
+  deleteSphere: Scalars["ID"]["output"];
   createOrbit: CreateOrbitResponsePayload;
   updateOrbit: CreateOrbitResponsePayload;
-  deleteOrbit: Scalars['ID']['output'];
+  deleteOrbit: Scalars["ID"]["output"];
   createProfile: AgentProfile;
   updateProfile: AgentProfile;
 };
-
 
 export type MutationCreateSphereArgs = {
   sphere?: InputMaybe<SphereCreateParams>;
 };
 
-
 export type MutationUpdateSphereArgs = {
   sphere?: InputMaybe<SphereUpdateParams>;
 };
 
-
 export type MutationDeleteSphereArgs = {
-  sphereHash: Scalars['ID']['input'];
+  sphereHash: Scalars["ID"]["input"];
 };
-
 
 export type MutationCreateOrbitArgs = {
   orbit?: InputMaybe<OrbitCreateParams>;
 };
 
-
 export type MutationUpdateOrbitArgs = {
   orbit?: InputMaybe<OrbitUpdateParams>;
 };
 
-
 export type MutationDeleteOrbitArgs = {
-  orbitHash: Scalars['ID']['input'];
+  orbitHash: Scalars["ID"]["input"];
 };
-
 
 export type MutationCreateProfileArgs = {
   profile?: InputMaybe<UserProfileCreateUpdateParams>;
 };
-
 
 export type MutationUpdateProfileArgs = {
   profile?: InputMaybe<UserProfileCreateUpdateParams>;
 };
 
 export type PageInfo = {
-  __typename?: 'PageInfo';
-  hasNextPage: Scalars['Boolean']['output'];
-  hasPreviousPage: Scalars['Boolean']['output'];
-  startCursor: Scalars['String']['output'];
-  endCursor: Scalars['String']['output'];
+  __typename?: "PageInfo";
+  hasNextPage: Scalars["Boolean"]["output"];
+  hasPreviousPage: Scalars["Boolean"]["output"];
+  startCursor: Scalars["String"]["output"];
+  endCursor: Scalars["String"]["output"];
 };
 
 export type Node = {
-  id: Scalars['ID']['output'];
-  eH: Scalars['String']['output'];
+  id: Scalars["ID"]["output"];
+  eH: Scalars["String"]["output"];
 };
 
 export type CreateSphereResponsePayload = {
-  __typename?: 'CreateSphereResponsePayload';
-  id: Scalars['ID']['output'];
-  actionHash: Scalars['String']['output'];
-  entryHash: Scalars['String']['output'];
-  eH: Scalars['String']['output'];
-  name: Scalars['String']['output'];
+  __typename?: "CreateSphereResponsePayload";
+  id: Scalars["ID"]["output"];
+  actionHash: Scalars["String"]["output"];
+  entryHash: Scalars["String"]["output"];
+  eH: Scalars["String"]["output"];
+  name: Scalars["String"]["output"];
   metadata?: Maybe<SphereMetaData>;
 };
 
 export type CreateOrbitResponsePayload = {
-  __typename?: 'CreateOrbitResponsePayload';
-  id: Scalars['ID']['output'];
-  actionHash: Scalars['String']['output'];
-  entryHash: Scalars['String']['output'];
-  eH: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  sphereHash: Scalars['String']['output'];
-  parentHash?: Maybe<Scalars['String']['output']>;
-  childHash?: Maybe<Scalars['String']['output']>;
+  __typename?: "CreateOrbitResponsePayload";
+  id: Scalars["ID"]["output"];
+  actionHash: Scalars["String"]["output"];
+  entryHash: Scalars["String"]["output"];
+  eH: Scalars["String"]["output"];
+  name: Scalars["String"]["output"];
+  sphereHash: Scalars["String"]["output"];
+  parentHash?: Maybe<Scalars["String"]["output"]>;
+  childHash?: Maybe<Scalars["String"]["output"]>;
   frequency: Frequency;
   scale: Scale;
   metadata?: Maybe<OrbitMetaData>;
 };
 
 export type CreateResponsePayload = {
-  __typename?: 'CreateResponsePayload';
-  actionHash: Scalars['String']['output'];
-  entryHash: Scalars['String']['output'];
+  __typename?: "CreateResponsePayload";
+  actionHash: Scalars["String"]["output"];
+  entryHash: Scalars["String"]["output"];
 };
 
 export type AgentProfile = {
-  __typename?: 'AgentProfile';
-  agentPubKey: Scalars['String']['output'];
+  __typename?: "AgentProfile";
+  agentPubKey: Scalars["String"]["output"];
   profile: Profile;
 };
 
 export type Profile = {
-  __typename?: 'Profile';
-  nickname: Scalars['String']['output'];
+  __typename?: "Profile";
+  nickname: Scalars["String"]["output"];
   fields?: Maybe<ProfileFields>;
 };
 
 export type ProfileFields = {
-  __typename?: 'ProfileFields';
-  location?: Maybe<Scalars['String']['output']>;
-  isPublic?: Maybe<Scalars['String']['output']>;
-  avatar?: Maybe<Scalars['String']['output']>;
+  __typename?: "ProfileFields";
+  location?: Maybe<Scalars["String"]["output"]>;
+  isPublic?: Maybe<Scalars["String"]["output"]>;
+  avatar?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type UserProfileCreateUpdateParams = {
-  nickname: Scalars['String']['input'];
-  location?: InputMaybe<Scalars['String']['input']>;
-  isPublic?: InputMaybe<Scalars['String']['input']>;
-  avatar?: InputMaybe<Scalars['String']['input']>;
+  nickname: Scalars["String"]["input"];
+  location?: InputMaybe<Scalars["String"]["input"]>;
+  isPublic?: InputMaybe<Scalars["String"]["input"]>;
+  avatar?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type SphereConnection = {
-  __typename?: 'SphereConnection';
+  __typename?: "SphereConnection";
   edges: Array<SphereEdge>;
   pageInfo: PageInfo;
 };
 
 export type SphereEdge = {
-  __typename?: 'SphereEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "SphereEdge";
+  cursor: Scalars["String"]["output"];
   node: Sphere;
 };
 
 export type Sphere = Node & {
-  __typename?: 'Sphere';
-  id: Scalars['ID']['output'];
-  eH: Scalars['String']['output'];
-  name: Scalars['String']['output'];
+  __typename?: "Sphere";
+  id: Scalars["ID"]["output"];
+  eH: Scalars["String"]["output"];
+  name: Scalars["String"]["output"];
   metadata?: Maybe<SphereMetaData>;
 };
 
 export type SphereMetaData = {
-  __typename?: 'SphereMetaData';
-  description: Scalars['String']['output'];
-  hashtag?: Maybe<Scalars['String']['output']>;
-  image?: Maybe<Scalars['String']['output']>;
+  __typename?: "SphereMetaData";
+  description: Scalars["String"]["output"];
+  hashtag?: Maybe<Scalars["String"]["output"]>;
+  image?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type SphereCreateParams = {
-  name: Scalars['String']['input'];
-  description?: InputMaybe<Scalars['String']['input']>;
-  hashtag?: InputMaybe<Scalars['String']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars["String"]["input"];
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  hashtag?: InputMaybe<Scalars["String"]["input"]>;
+  image?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type SphereUpdateParams = {
-  id: Scalars['ID']['input'];
-  name: Scalars['String']['input'];
-  description?: InputMaybe<Scalars['String']['input']>;
-  hashtag?: InputMaybe<Scalars['String']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars["ID"]["input"];
+  name: Scalars["String"]["input"];
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  hashtag?: InputMaybe<Scalars["String"]["input"]>;
+  image?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type OrbitConnection = {
-  __typename?: 'OrbitConnection';
+  __typename?: "OrbitConnection";
   edges: Array<OrbitEdge>;
   pageInfo: PageInfo;
 };
 
 export type OrbitEdge = {
-  __typename?: 'OrbitEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "OrbitEdge";
+  cursor: Scalars["String"]["output"];
   node: Orbit;
 };
 
 export type Orbit = Node & {
-  __typename?: 'Orbit';
-  id: Scalars['ID']['output'];
-  eH: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  sphereHash: Scalars['String']['output'];
-  parentHash?: Maybe<Scalars['String']['output']>;
-  childHash?: Maybe<Scalars['String']['output']>;
+  __typename?: "Orbit";
+  id: Scalars["ID"]["output"];
+  eH: Scalars["String"]["output"];
+  name: Scalars["String"]["output"];
+  sphereHash: Scalars["String"]["output"];
+  parentHash?: Maybe<Scalars["String"]["output"]>;
+  childHash?: Maybe<Scalars["String"]["output"]>;
   frequency: Frequency;
   scale: Scale;
   metadata?: Maybe<OrbitMetaData>;
 };
 
 export type TimeFrame = {
-  __typename?: 'TimeFrame';
-  startTime: Scalars['Float']['output'];
-  endTime?: Maybe<Scalars['Float']['output']>;
+  __typename?: "TimeFrame";
+  startTime: Scalars["Float"]["output"];
+  endTime?: Maybe<Scalars["Float"]["output"]>;
 };
 
 export enum Frequency {
-  Day = 'Day',
-  Week = 'Week',
-  Month = 'Month',
-  Quarter = 'Quarter'
+  Day = "Day",
+  Week = "Week",
+  Month = "Month",
+  Quarter = "Quarter",
 }
 
 export enum Scale {
-  Astro = 'Astro',
-  Sub = 'Sub',
-  Atom = 'Atom'
+  Astro = "Astro",
+  Sub = "Sub",
+  Atom = "Atom",
 }
 
 export type OrbitMetaData = {
-  __typename?: 'OrbitMetaData';
-  description?: Maybe<Scalars['String']['output']>;
+  __typename?: "OrbitMetaData";
+  description?: Maybe<Scalars["String"]["output"]>;
   timeframe: TimeFrame;
 };
 
 export type OrbitCreateParams = {
-  name: Scalars['String']['input'];
-  startTime: Scalars['Float']['input'];
-  endTime?: InputMaybe<Scalars['Float']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars["String"]["input"];
+  startTime: Scalars["Float"]["input"];
+  endTime?: InputMaybe<Scalars["Float"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
   frequency: Frequency;
   scale: Scale;
-  sphereHash: Scalars['String']['input'];
-  parentHash?: InputMaybe<Scalars['String']['input']>;
-  childHash?: InputMaybe<Scalars['String']['input']>;
+  sphereHash: Scalars["String"]["input"];
+  parentHash?: InputMaybe<Scalars["String"]["input"]>;
+  childHash?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type OrbitUpdateParams = {
-  id: Scalars['ID']['input'];
-  name: Scalars['String']['input'];
-  startTime: Scalars['Float']['input'];
-  endTime?: InputMaybe<Scalars['Float']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars["ID"]["input"];
+  name: Scalars["String"]["input"];
+  startTime: Scalars["Float"]["input"];
+  endTime?: InputMaybe<Scalars["Float"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
   frequency: Frequency;
   scale: Scale;
-  sphereHash: Scalars['String']['input'];
-  parentHash?: InputMaybe<Scalars['String']['input']>;
+  sphereHash: Scalars["String"]["input"];
+  parentHash?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type OrbitHierarchyQueryParams = {
-  orbitEntryHashB64?: InputMaybe<Scalars['String']['input']>;
+  orbitEntryHashB64?: InputMaybe<Scalars["String"]["input"]>;
   levelQuery?: InputMaybe<QueryParamsLevel>;
 };
 
 export type QueryParamsLevel = {
-  sphereHashB64?: InputMaybe<Scalars['String']['input']>;
-  orbitLevel: Scalars['Float']['input'];
+  sphereHashB64?: InputMaybe<Scalars["String"]["input"]>;
+  orbitLevel: Scalars["Float"]["input"];
 };
 
 export type CreateOrbitMutationVariables = Exact<{
   variables: OrbitCreateParams;
 }>;
 
-
-export type CreateOrbitMutation = { __typename?: 'Mutation', createOrbit: { __typename?: 'CreateOrbitResponsePayload', id: string, eH: string, name: string, parentHash?: string | null, sphereHash: string, scale: Scale, frequency: Frequency, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
+export type CreateOrbitMutation = {
+  __typename?: "Mutation";
+  createOrbit: {
+    __typename?: "CreateOrbitResponsePayload";
+    id: string;
+    eH: string;
+    name: string;
+    parentHash?: string | null;
+    sphereHash: string;
+    scale: Scale;
+    frequency: Frequency;
+    metadata?: {
+      __typename?: "OrbitMetaData";
+      description?: string | null;
+      timeframe: {
+        __typename?: "TimeFrame";
+        startTime: number;
+        endTime?: number | null;
+      };
+    } | null;
+  };
+};
 
 export type DeleteOrbitMutationVariables = Exact<{
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 }>;
 
-
-export type DeleteOrbitMutation = { __typename?: 'Mutation', deleteOrbit: string };
+export type DeleteOrbitMutation = {
+  __typename?: "Mutation";
+  deleteOrbit: string;
+};
 
 export type UpdateOrbitMutationVariables = Exact<{
   orbitFields: OrbitUpdateParams;
 }>;
 
-
-export type UpdateOrbitMutation = { __typename?: 'Mutation', updateOrbit: { __typename?: 'CreateOrbitResponsePayload', actionHash: string, entryHash: string } };
+export type UpdateOrbitMutation = {
+  __typename?: "Mutation";
+  updateOrbit: {
+    __typename?: "CreateOrbitResponsePayload";
+    actionHash: string;
+    entryHash: string;
+  };
+};
 
 export type CreateSphereMutationVariables = Exact<{
   variables: SphereCreateParams;
 }>;
 
-
-export type CreateSphereMutation = { __typename?: 'Mutation', createSphere: { __typename?: 'CreateSphereResponsePayload', actionHash: string, entryHash: string } };
+export type CreateSphereMutation = {
+  __typename?: "Mutation";
+  createSphere: {
+    __typename?: "CreateSphereResponsePayload";
+    actionHash: string;
+    entryHash: string;
+  };
+};
 
 export type DeleteSphereMutationVariables = Exact<{
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 }>;
 
-
-export type DeleteSphereMutation = { __typename?: 'Mutation', deleteSphere: string };
+export type DeleteSphereMutation = {
+  __typename?: "Mutation";
+  deleteSphere: string;
+};
 
 export type UpdateSphereMutationVariables = Exact<{
   sphere: SphereUpdateParams;
 }>;
 
-
-export type UpdateSphereMutation = { __typename?: 'Mutation', updateSphere: { __typename?: 'CreateSphereResponsePayload', actionHash: string, entryHash: string } };
+export type UpdateSphereMutation = {
+  __typename?: "Mutation";
+  updateSphere: {
+    __typename?: "CreateSphereResponsePayload";
+    actionHash: string;
+    entryHash: string;
+  };
+};
 
 export type GetOrbitQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 }>;
 
-
-export type GetOrbitQuery = { __typename?: 'Query', orbit: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, frequency: Frequency, scale: Scale, parentHash?: string | null, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
+export type GetOrbitQuery = {
+  __typename?: "Query";
+  orbit: {
+    __typename?: "Orbit";
+    id: string;
+    eH: string;
+    name: string;
+    sphereHash: string;
+    frequency: Frequency;
+    scale: Scale;
+    parentHash?: string | null;
+    metadata?: {
+      __typename?: "OrbitMetaData";
+      description?: string | null;
+      timeframe: {
+        __typename?: "TimeFrame";
+        startTime: number;
+        endTime?: number | null;
+      };
+    } | null;
+  };
+};
 
 export type GetOrbitHierarchyQueryVariables = Exact<{
   params: OrbitHierarchyQueryParams;
 }>;
 
-
-export type GetOrbitHierarchyQuery = { __typename?: 'Query', getOrbitHierarchy: string };
+export type GetOrbitHierarchyQuery = {
+  __typename?: "Query";
+  getOrbitHierarchy: string;
+};
 
 export type GetOrbitsQueryVariables = Exact<{
-  sphereEntryHashB64?: InputMaybe<Scalars['String']['input']>;
+  sphereEntryHashB64?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
-
-export type GetOrbitsQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, parentHash?: string | null, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } }> } };
+export type GetOrbitsQuery = {
+  __typename?: "Query";
+  orbits: {
+    __typename?: "OrbitConnection";
+    edges: Array<{
+      __typename?: "OrbitEdge";
+      node: {
+        __typename?: "Orbit";
+        id: string;
+        eH: string;
+        name: string;
+        sphereHash: string;
+        parentHash?: string | null;
+        frequency: Frequency;
+        scale: Scale;
+        metadata?: {
+          __typename?: "OrbitMetaData";
+          description?: string | null;
+          timeframe: {
+            __typename?: "TimeFrame";
+            startTime: number;
+            endTime?: number | null;
+          };
+        } | null;
+      };
+    }>;
+  };
+};
 
 export type GetLowestSphereHierarchyLevelQueryVariables = Exact<{
-  sphereEntryHashB64: Scalars['String']['input'];
+  sphereEntryHashB64: Scalars["String"]["input"];
 }>;
 
-
-export type GetLowestSphereHierarchyLevelQuery = { __typename?: 'Query', getLowestSphereHierarchyLevel: number };
+export type GetLowestSphereHierarchyLevelQuery = {
+  __typename?: "Query";
+  getLowestSphereHierarchyLevel: number;
+};
 
 export type GetSphereQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
+  id: Scalars["ID"]["input"];
 }>;
 
+export type GetSphereQuery = {
+  __typename?: "Query";
+  sphere: {
+    __typename?: "Sphere";
+    id: string;
+    eH: string;
+    name: string;
+    metadata?: {
+      __typename?: "SphereMetaData";
+      description: string;
+      image?: string | null;
+    } | null;
+  };
+};
 
-export type GetSphereQuery = { __typename?: 'Query', sphere: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, image?: string | null } | null } };
+export type GetSpheresQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetSpheresQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetSpheresQuery = { __typename?: 'Query', spheres: { __typename?: 'SphereConnection', edges: Array<{ __typename?: 'SphereEdge', node: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, image?: string | null } | null } }> } };
-
+export type GetSpheresQuery = {
+  __typename?: "Query";
+  spheres: {
+    __typename?: "SphereConnection";
+    edges: Array<{
+      __typename?: "SphereEdge";
+      node: {
+        __typename?: "Sphere";
+        id: string;
+        eH: string;
+        name: string;
+        metadata?: {
+          __typename?: "SphereMetaData";
+          description: string;
+          image?: string | null;
+        } | null;
+      };
+    }>;
+  };
+};
 
 export const CreateOrbitDocument = gql`
-    mutation createOrbit($variables: OrbitCreateParams!) {
-  createOrbit(orbit: $variables) {
-    id
-    eH
-    name
-    parentHash
-    sphereHash
-    scale
-    frequency
-    metadata {
-      description
-      timeframe {
-        startTime
-        endTime
+  mutation createOrbit($variables: OrbitCreateParams!) {
+    createOrbit(orbit: $variables) {
+      id
+      eH
+      name
+      parentHash
+      sphereHash
+      scale
+      frequency
+      metadata {
+        description
+        timeframe {
+          startTime
+          endTime
+        }
       }
     }
   }
-}
-    `;
-export type CreateOrbitMutationFn = Apollo.MutationFunction<CreateOrbitMutation, CreateOrbitMutationVariables>;
+`;
+export type CreateOrbitMutationFn = Apollo.MutationFunction<
+  CreateOrbitMutation,
+  CreateOrbitMutationVariables
+>;
 
 /**
  * __useCreateOrbitMutation__
@@ -424,19 +548,36 @@ export type CreateOrbitMutationFn = Apollo.MutationFunction<CreateOrbitMutation,
  *   },
  * });
  */
-export function useCreateOrbitMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrbitMutation, CreateOrbitMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateOrbitMutation, CreateOrbitMutationVariables>(CreateOrbitDocument, options);
-      }
-export type CreateOrbitMutationHookResult = ReturnType<typeof useCreateOrbitMutation>;
-export type CreateOrbitMutationResult = Apollo.MutationResult<CreateOrbitMutation>;
-export type CreateOrbitMutationOptions = Apollo.BaseMutationOptions<CreateOrbitMutation, CreateOrbitMutationVariables>;
-export const DeleteOrbitDocument = gql`
-    mutation deleteOrbit($id: ID!) {
-  deleteOrbit(orbitHash: $id)
+export function useCreateOrbitMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateOrbitMutation,
+    CreateOrbitMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateOrbitMutation, CreateOrbitMutationVariables>(
+    CreateOrbitDocument,
+    options,
+  );
 }
-    `;
-export type DeleteOrbitMutationFn = Apollo.MutationFunction<DeleteOrbitMutation, DeleteOrbitMutationVariables>;
+export type CreateOrbitMutationHookResult = ReturnType<
+  typeof useCreateOrbitMutation
+>;
+export type CreateOrbitMutationResult =
+  Apollo.MutationResult<CreateOrbitMutation>;
+export type CreateOrbitMutationOptions = Apollo.BaseMutationOptions<
+  CreateOrbitMutation,
+  CreateOrbitMutationVariables
+>;
+export const DeleteOrbitDocument = gql`
+  mutation deleteOrbit($id: ID!) {
+    deleteOrbit(orbitHash: $id)
+  }
+`;
+export type DeleteOrbitMutationFn = Apollo.MutationFunction<
+  DeleteOrbitMutation,
+  DeleteOrbitMutationVariables
+>;
 
 /**
  * __useDeleteOrbitMutation__
@@ -455,22 +596,39 @@ export type DeleteOrbitMutationFn = Apollo.MutationFunction<DeleteOrbitMutation,
  *   },
  * });
  */
-export function useDeleteOrbitMutation(baseOptions?: Apollo.MutationHookOptions<DeleteOrbitMutation, DeleteOrbitMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteOrbitMutation, DeleteOrbitMutationVariables>(DeleteOrbitDocument, options);
-      }
-export type DeleteOrbitMutationHookResult = ReturnType<typeof useDeleteOrbitMutation>;
-export type DeleteOrbitMutationResult = Apollo.MutationResult<DeleteOrbitMutation>;
-export type DeleteOrbitMutationOptions = Apollo.BaseMutationOptions<DeleteOrbitMutation, DeleteOrbitMutationVariables>;
-export const UpdateOrbitDocument = gql`
-    mutation updateOrbit($orbitFields: OrbitUpdateParams!) {
-  updateOrbit(orbit: $orbitFields) {
-    actionHash
-    entryHash
-  }
+export function useDeleteOrbitMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteOrbitMutation,
+    DeleteOrbitMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteOrbitMutation, DeleteOrbitMutationVariables>(
+    DeleteOrbitDocument,
+    options,
+  );
 }
-    `;
-export type UpdateOrbitMutationFn = Apollo.MutationFunction<UpdateOrbitMutation, UpdateOrbitMutationVariables>;
+export type DeleteOrbitMutationHookResult = ReturnType<
+  typeof useDeleteOrbitMutation
+>;
+export type DeleteOrbitMutationResult =
+  Apollo.MutationResult<DeleteOrbitMutation>;
+export type DeleteOrbitMutationOptions = Apollo.BaseMutationOptions<
+  DeleteOrbitMutation,
+  DeleteOrbitMutationVariables
+>;
+export const UpdateOrbitDocument = gql`
+  mutation updateOrbit($orbitFields: OrbitUpdateParams!) {
+    updateOrbit(orbit: $orbitFields) {
+      actionHash
+      entryHash
+    }
+  }
+`;
+export type UpdateOrbitMutationFn = Apollo.MutationFunction<
+  UpdateOrbitMutation,
+  UpdateOrbitMutationVariables
+>;
 
 /**
  * __useUpdateOrbitMutation__
@@ -489,22 +647,39 @@ export type UpdateOrbitMutationFn = Apollo.MutationFunction<UpdateOrbitMutation,
  *   },
  * });
  */
-export function useUpdateOrbitMutation(baseOptions?: Apollo.MutationHookOptions<UpdateOrbitMutation, UpdateOrbitMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateOrbitMutation, UpdateOrbitMutationVariables>(UpdateOrbitDocument, options);
-      }
-export type UpdateOrbitMutationHookResult = ReturnType<typeof useUpdateOrbitMutation>;
-export type UpdateOrbitMutationResult = Apollo.MutationResult<UpdateOrbitMutation>;
-export type UpdateOrbitMutationOptions = Apollo.BaseMutationOptions<UpdateOrbitMutation, UpdateOrbitMutationVariables>;
-export const CreateSphereDocument = gql`
-    mutation createSphere($variables: SphereCreateParams!) {
-  createSphere(sphere: $variables) {
-    actionHash
-    entryHash
-  }
+export function useUpdateOrbitMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateOrbitMutation,
+    UpdateOrbitMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateOrbitMutation, UpdateOrbitMutationVariables>(
+    UpdateOrbitDocument,
+    options,
+  );
 }
-    `;
-export type CreateSphereMutationFn = Apollo.MutationFunction<CreateSphereMutation, CreateSphereMutationVariables>;
+export type UpdateOrbitMutationHookResult = ReturnType<
+  typeof useUpdateOrbitMutation
+>;
+export type UpdateOrbitMutationResult =
+  Apollo.MutationResult<UpdateOrbitMutation>;
+export type UpdateOrbitMutationOptions = Apollo.BaseMutationOptions<
+  UpdateOrbitMutation,
+  UpdateOrbitMutationVariables
+>;
+export const CreateSphereDocument = gql`
+  mutation createSphere($variables: SphereCreateParams!) {
+    createSphere(sphere: $variables) {
+      actionHash
+      entryHash
+    }
+  }
+`;
+export type CreateSphereMutationFn = Apollo.MutationFunction<
+  CreateSphereMutation,
+  CreateSphereMutationVariables
+>;
 
 /**
  * __useCreateSphereMutation__
@@ -523,19 +698,36 @@ export type CreateSphereMutationFn = Apollo.MutationFunction<CreateSphereMutatio
  *   },
  * });
  */
-export function useCreateSphereMutation(baseOptions?: Apollo.MutationHookOptions<CreateSphereMutation, CreateSphereMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateSphereMutation, CreateSphereMutationVariables>(CreateSphereDocument, options);
-      }
-export type CreateSphereMutationHookResult = ReturnType<typeof useCreateSphereMutation>;
-export type CreateSphereMutationResult = Apollo.MutationResult<CreateSphereMutation>;
-export type CreateSphereMutationOptions = Apollo.BaseMutationOptions<CreateSphereMutation, CreateSphereMutationVariables>;
-export const DeleteSphereDocument = gql`
-    mutation deleteSphere($id: ID!) {
-  deleteSphere(sphereHash: $id)
+export function useCreateSphereMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateSphereMutation,
+    CreateSphereMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateSphereMutation,
+    CreateSphereMutationVariables
+  >(CreateSphereDocument, options);
 }
-    `;
-export type DeleteSphereMutationFn = Apollo.MutationFunction<DeleteSphereMutation, DeleteSphereMutationVariables>;
+export type CreateSphereMutationHookResult = ReturnType<
+  typeof useCreateSphereMutation
+>;
+export type CreateSphereMutationResult =
+  Apollo.MutationResult<CreateSphereMutation>;
+export type CreateSphereMutationOptions = Apollo.BaseMutationOptions<
+  CreateSphereMutation,
+  CreateSphereMutationVariables
+>;
+export const DeleteSphereDocument = gql`
+  mutation deleteSphere($id: ID!) {
+    deleteSphere(sphereHash: $id)
+  }
+`;
+export type DeleteSphereMutationFn = Apollo.MutationFunction<
+  DeleteSphereMutation,
+  DeleteSphereMutationVariables
+>;
 
 /**
  * __useDeleteSphereMutation__
@@ -554,22 +746,39 @@ export type DeleteSphereMutationFn = Apollo.MutationFunction<DeleteSphereMutatio
  *   },
  * });
  */
-export function useDeleteSphereMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSphereMutation, DeleteSphereMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteSphereMutation, DeleteSphereMutationVariables>(DeleteSphereDocument, options);
-      }
-export type DeleteSphereMutationHookResult = ReturnType<typeof useDeleteSphereMutation>;
-export type DeleteSphereMutationResult = Apollo.MutationResult<DeleteSphereMutation>;
-export type DeleteSphereMutationOptions = Apollo.BaseMutationOptions<DeleteSphereMutation, DeleteSphereMutationVariables>;
-export const UpdateSphereDocument = gql`
-    mutation updateSphere($sphere: SphereUpdateParams!) {
-  updateSphere(sphere: $sphere) {
-    actionHash
-    entryHash
-  }
+export function useDeleteSphereMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteSphereMutation,
+    DeleteSphereMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteSphereMutation,
+    DeleteSphereMutationVariables
+  >(DeleteSphereDocument, options);
 }
-    `;
-export type UpdateSphereMutationFn = Apollo.MutationFunction<UpdateSphereMutation, UpdateSphereMutationVariables>;
+export type DeleteSphereMutationHookResult = ReturnType<
+  typeof useDeleteSphereMutation
+>;
+export type DeleteSphereMutationResult =
+  Apollo.MutationResult<DeleteSphereMutation>;
+export type DeleteSphereMutationOptions = Apollo.BaseMutationOptions<
+  DeleteSphereMutation,
+  DeleteSphereMutationVariables
+>;
+export const UpdateSphereDocument = gql`
+  mutation updateSphere($sphere: SphereUpdateParams!) {
+    updateSphere(sphere: $sphere) {
+      actionHash
+      entryHash
+    }
+  }
+`;
+export type UpdateSphereMutationFn = Apollo.MutationFunction<
+  UpdateSphereMutation,
+  UpdateSphereMutationVariables
+>;
 
 /**
  * __useUpdateSphereMutation__
@@ -588,33 +797,47 @@ export type UpdateSphereMutationFn = Apollo.MutationFunction<UpdateSphereMutatio
  *   },
  * });
  */
-export function useUpdateSphereMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSphereMutation, UpdateSphereMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateSphereMutation, UpdateSphereMutationVariables>(UpdateSphereDocument, options);
-      }
-export type UpdateSphereMutationHookResult = ReturnType<typeof useUpdateSphereMutation>;
-export type UpdateSphereMutationResult = Apollo.MutationResult<UpdateSphereMutation>;
-export type UpdateSphereMutationOptions = Apollo.BaseMutationOptions<UpdateSphereMutation, UpdateSphereMutationVariables>;
+export function useUpdateSphereMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateSphereMutation,
+    UpdateSphereMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateSphereMutation,
+    UpdateSphereMutationVariables
+  >(UpdateSphereDocument, options);
+}
+export type UpdateSphereMutationHookResult = ReturnType<
+  typeof useUpdateSphereMutation
+>;
+export type UpdateSphereMutationResult =
+  Apollo.MutationResult<UpdateSphereMutation>;
+export type UpdateSphereMutationOptions = Apollo.BaseMutationOptions<
+  UpdateSphereMutation,
+  UpdateSphereMutationVariables
+>;
 export const GetOrbitDocument = gql`
-    query getOrbit($id: ID!) {
-  orbit(id: $id) {
-    id
-    eH
-    name
-    sphereHash
-    frequency
-    scale
-    parentHash
-    metadata {
-      description
-      timeframe {
-        startTime
-        endTime
+  query getOrbit($id: ID!) {
+    orbit(id: $id) {
+      id
+      eH
+      name
+      sphereHash
+      frequency
+      scale
+      parentHash
+      metadata {
+        description
+        timeframe {
+          startTime
+          endTime
+        }
       }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetOrbitQuery__
@@ -632,27 +855,58 @@ export const GetOrbitDocument = gql`
  *   },
  * });
  */
-export function useGetOrbitQuery(baseOptions: Apollo.QueryHookOptions<GetOrbitQuery, GetOrbitQueryVariables> & ({ variables: GetOrbitQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetOrbitQuery, GetOrbitQueryVariables>(GetOrbitDocument, options);
-      }
-export function useGetOrbitLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrbitQuery, GetOrbitQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetOrbitQuery, GetOrbitQueryVariables>(GetOrbitDocument, options);
-        }
-export function useGetOrbitSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetOrbitQuery, GetOrbitQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetOrbitQuery, GetOrbitQueryVariables>(GetOrbitDocument, options);
-        }
-export type GetOrbitQueryHookResult = ReturnType<typeof useGetOrbitQuery>;
-export type GetOrbitLazyQueryHookResult = ReturnType<typeof useGetOrbitLazyQuery>;
-export type GetOrbitSuspenseQueryHookResult = ReturnType<typeof useGetOrbitSuspenseQuery>;
-export type GetOrbitQueryResult = Apollo.QueryResult<GetOrbitQuery, GetOrbitQueryVariables>;
-export const GetOrbitHierarchyDocument = gql`
-    query getOrbitHierarchy($params: OrbitHierarchyQueryParams!) {
-  getOrbitHierarchy(params: $params)
+export function useGetOrbitQuery(
+  baseOptions: Apollo.QueryHookOptions<GetOrbitQuery, GetOrbitQueryVariables> &
+    ({ variables: GetOrbitQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetOrbitQuery, GetOrbitQueryVariables>(
+    GetOrbitDocument,
+    options,
+  );
 }
-    `;
+export function useGetOrbitLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetOrbitQuery,
+    GetOrbitQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetOrbitQuery, GetOrbitQueryVariables>(
+    GetOrbitDocument,
+    options,
+  );
+}
+export function useGetOrbitSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetOrbitQuery, GetOrbitQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetOrbitQuery, GetOrbitQueryVariables>(
+    GetOrbitDocument,
+    options,
+  );
+}
+export type GetOrbitQueryHookResult = ReturnType<typeof useGetOrbitQuery>;
+export type GetOrbitLazyQueryHookResult = ReturnType<
+  typeof useGetOrbitLazyQuery
+>;
+export type GetOrbitSuspenseQueryHookResult = ReturnType<
+  typeof useGetOrbitSuspenseQuery
+>;
+export type GetOrbitQueryResult = Apollo.QueryResult<
+  GetOrbitQuery,
+  GetOrbitQueryVariables
+>;
+export const GetOrbitHierarchyDocument = gql`
+  query getOrbitHierarchy($params: OrbitHierarchyQueryParams!) {
+    getOrbitHierarchy(params: $params)
+  }
+`;
 
 /**
  * __useGetOrbitHierarchyQuery__
@@ -670,46 +924,88 @@ export const GetOrbitHierarchyDocument = gql`
  *   },
  * });
  */
-export function useGetOrbitHierarchyQuery(baseOptions: Apollo.QueryHookOptions<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables> & ({ variables: GetOrbitHierarchyQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>(GetOrbitHierarchyDocument, options);
-      }
-export function useGetOrbitHierarchyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>(GetOrbitHierarchyDocument, options);
-        }
-export function useGetOrbitHierarchySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>(GetOrbitHierarchyDocument, options);
-        }
-export type GetOrbitHierarchyQueryHookResult = ReturnType<typeof useGetOrbitHierarchyQuery>;
-export type GetOrbitHierarchyLazyQueryHookResult = ReturnType<typeof useGetOrbitHierarchyLazyQuery>;
-export type GetOrbitHierarchySuspenseQueryHookResult = ReturnType<typeof useGetOrbitHierarchySuspenseQuery>;
-export type GetOrbitHierarchyQueryResult = Apollo.QueryResult<GetOrbitHierarchyQuery, GetOrbitHierarchyQueryVariables>;
+export function useGetOrbitHierarchyQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetOrbitHierarchyQuery,
+    GetOrbitHierarchyQueryVariables
+  > &
+    (
+      | { variables: GetOrbitHierarchyQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetOrbitHierarchyQuery,
+    GetOrbitHierarchyQueryVariables
+  >(GetOrbitHierarchyDocument, options);
+}
+export function useGetOrbitHierarchyLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetOrbitHierarchyQuery,
+    GetOrbitHierarchyQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetOrbitHierarchyQuery,
+    GetOrbitHierarchyQueryVariables
+  >(GetOrbitHierarchyDocument, options);
+}
+export function useGetOrbitHierarchySuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        GetOrbitHierarchyQuery,
+        GetOrbitHierarchyQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    GetOrbitHierarchyQuery,
+    GetOrbitHierarchyQueryVariables
+  >(GetOrbitHierarchyDocument, options);
+}
+export type GetOrbitHierarchyQueryHookResult = ReturnType<
+  typeof useGetOrbitHierarchyQuery
+>;
+export type GetOrbitHierarchyLazyQueryHookResult = ReturnType<
+  typeof useGetOrbitHierarchyLazyQuery
+>;
+export type GetOrbitHierarchySuspenseQueryHookResult = ReturnType<
+  typeof useGetOrbitHierarchySuspenseQuery
+>;
+export type GetOrbitHierarchyQueryResult = Apollo.QueryResult<
+  GetOrbitHierarchyQuery,
+  GetOrbitHierarchyQueryVariables
+>;
 export const GetOrbitsDocument = gql`
-    query getOrbits($sphereEntryHashB64: String) {
-  orbits(sphereEntryHashB64: $sphereEntryHashB64) {
-    edges {
-      node {
-        id
-        eH
-        name
-        sphereHash
-        parentHash
-        frequency
-        scale
-        metadata {
-          description
-          timeframe {
-            startTime
-            endTime
+  query getOrbits($sphereEntryHashB64: String) {
+    orbits(sphereEntryHashB64: $sphereEntryHashB64) {
+      edges {
+        node {
+          id
+          eH
+          name
+          sphereHash
+          parentHash
+          frequency
+          scale
+          metadata {
+            description
+            timeframe {
+              startTime
+              endTime
+            }
           }
         }
       }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetOrbitsQuery__
@@ -727,27 +1023,60 @@ export const GetOrbitsDocument = gql`
  *   },
  * });
  */
-export function useGetOrbitsQuery(baseOptions?: Apollo.QueryHookOptions<GetOrbitsQuery, GetOrbitsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetOrbitsQuery, GetOrbitsQueryVariables>(GetOrbitsDocument, options);
-      }
-export function useGetOrbitsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrbitsQuery, GetOrbitsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetOrbitsQuery, GetOrbitsQueryVariables>(GetOrbitsDocument, options);
-        }
-export function useGetOrbitsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetOrbitsQuery, GetOrbitsQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetOrbitsQuery, GetOrbitsQueryVariables>(GetOrbitsDocument, options);
-        }
-export type GetOrbitsQueryHookResult = ReturnType<typeof useGetOrbitsQuery>;
-export type GetOrbitsLazyQueryHookResult = ReturnType<typeof useGetOrbitsLazyQuery>;
-export type GetOrbitsSuspenseQueryHookResult = ReturnType<typeof useGetOrbitsSuspenseQuery>;
-export type GetOrbitsQueryResult = Apollo.QueryResult<GetOrbitsQuery, GetOrbitsQueryVariables>;
-export const GetLowestSphereHierarchyLevelDocument = gql`
-    query getLowestSphereHierarchyLevel($sphereEntryHashB64: String!) {
-  getLowestSphereHierarchyLevel(sphereEntryHashB64: $sphereEntryHashB64)
+export function useGetOrbitsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetOrbitsQuery,
+    GetOrbitsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetOrbitsQuery, GetOrbitsQueryVariables>(
+    GetOrbitsDocument,
+    options,
+  );
 }
-    `;
+export function useGetOrbitsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetOrbitsQuery,
+    GetOrbitsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetOrbitsQuery, GetOrbitsQueryVariables>(
+    GetOrbitsDocument,
+    options,
+  );
+}
+export function useGetOrbitsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetOrbitsQuery, GetOrbitsQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetOrbitsQuery, GetOrbitsQueryVariables>(
+    GetOrbitsDocument,
+    options,
+  );
+}
+export type GetOrbitsQueryHookResult = ReturnType<typeof useGetOrbitsQuery>;
+export type GetOrbitsLazyQueryHookResult = ReturnType<
+  typeof useGetOrbitsLazyQuery
+>;
+export type GetOrbitsSuspenseQueryHookResult = ReturnType<
+  typeof useGetOrbitsSuspenseQuery
+>;
+export type GetOrbitsQueryResult = Apollo.QueryResult<
+  GetOrbitsQuery,
+  GetOrbitsQueryVariables
+>;
+export const GetLowestSphereHierarchyLevelDocument = gql`
+  query getLowestSphereHierarchyLevel($sphereEntryHashB64: String!) {
+    getLowestSphereHierarchyLevel(sphereEntryHashB64: $sphereEntryHashB64)
+  }
+`;
 
 /**
  * __useGetLowestSphereHierarchyLevelQuery__
@@ -765,35 +1094,80 @@ export const GetLowestSphereHierarchyLevelDocument = gql`
  *   },
  * });
  */
-export function useGetLowestSphereHierarchyLevelQuery(baseOptions: Apollo.QueryHookOptions<GetLowestSphereHierarchyLevelQuery, GetLowestSphereHierarchyLevelQueryVariables> & ({ variables: GetLowestSphereHierarchyLevelQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetLowestSphereHierarchyLevelQuery, GetLowestSphereHierarchyLevelQueryVariables>(GetLowestSphereHierarchyLevelDocument, options);
-      }
-export function useGetLowestSphereHierarchyLevelLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLowestSphereHierarchyLevelQuery, GetLowestSphereHierarchyLevelQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetLowestSphereHierarchyLevelQuery, GetLowestSphereHierarchyLevelQueryVariables>(GetLowestSphereHierarchyLevelDocument, options);
+export function useGetLowestSphereHierarchyLevelQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetLowestSphereHierarchyLevelQuery,
+    GetLowestSphereHierarchyLevelQueryVariables
+  > &
+    (
+      | {
+          variables: GetLowestSphereHierarchyLevelQueryVariables;
+          skip?: boolean;
         }
-export function useGetLowestSphereHierarchyLevelSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetLowestSphereHierarchyLevelQuery, GetLowestSphereHierarchyLevelQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetLowestSphereHierarchyLevelQuery, GetLowestSphereHierarchyLevelQueryVariables>(GetLowestSphereHierarchyLevelDocument, options);
-        }
-export type GetLowestSphereHierarchyLevelQueryHookResult = ReturnType<typeof useGetLowestSphereHierarchyLevelQuery>;
-export type GetLowestSphereHierarchyLevelLazyQueryHookResult = ReturnType<typeof useGetLowestSphereHierarchyLevelLazyQuery>;
-export type GetLowestSphereHierarchyLevelSuspenseQueryHookResult = ReturnType<typeof useGetLowestSphereHierarchyLevelSuspenseQuery>;
-export type GetLowestSphereHierarchyLevelQueryResult = Apollo.QueryResult<GetLowestSphereHierarchyLevelQuery, GetLowestSphereHierarchyLevelQueryVariables>;
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetLowestSphereHierarchyLevelQuery,
+    GetLowestSphereHierarchyLevelQueryVariables
+  >(GetLowestSphereHierarchyLevelDocument, options);
+}
+export function useGetLowestSphereHierarchyLevelLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetLowestSphereHierarchyLevelQuery,
+    GetLowestSphereHierarchyLevelQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetLowestSphereHierarchyLevelQuery,
+    GetLowestSphereHierarchyLevelQueryVariables
+  >(GetLowestSphereHierarchyLevelDocument, options);
+}
+export function useGetLowestSphereHierarchyLevelSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        GetLowestSphereHierarchyLevelQuery,
+        GetLowestSphereHierarchyLevelQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    GetLowestSphereHierarchyLevelQuery,
+    GetLowestSphereHierarchyLevelQueryVariables
+  >(GetLowestSphereHierarchyLevelDocument, options);
+}
+export type GetLowestSphereHierarchyLevelQueryHookResult = ReturnType<
+  typeof useGetLowestSphereHierarchyLevelQuery
+>;
+export type GetLowestSphereHierarchyLevelLazyQueryHookResult = ReturnType<
+  typeof useGetLowestSphereHierarchyLevelLazyQuery
+>;
+export type GetLowestSphereHierarchyLevelSuspenseQueryHookResult = ReturnType<
+  typeof useGetLowestSphereHierarchyLevelSuspenseQuery
+>;
+export type GetLowestSphereHierarchyLevelQueryResult = Apollo.QueryResult<
+  GetLowestSphereHierarchyLevelQuery,
+  GetLowestSphereHierarchyLevelQueryVariables
+>;
 export const GetSphereDocument = gql`
-    query getSphere($id: ID!) {
-  sphere(id: $id) {
-    id
-    eH
-    name
-    metadata {
-      description
-      image
+  query getSphere($id: ID!) {
+    sphere(id: $id) {
+      id
+      eH
+      name
+      metadata {
+        description
+        image
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetSphereQuery__
@@ -811,39 +1185,76 @@ export const GetSphereDocument = gql`
  *   },
  * });
  */
-export function useGetSphereQuery(baseOptions: Apollo.QueryHookOptions<GetSphereQuery, GetSphereQueryVariables> & ({ variables: GetSphereQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetSphereQuery, GetSphereQueryVariables>(GetSphereDocument, options);
-      }
-export function useGetSphereLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSphereQuery, GetSphereQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetSphereQuery, GetSphereQueryVariables>(GetSphereDocument, options);
-        }
-export function useGetSphereSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSphereQuery, GetSphereQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetSphereQuery, GetSphereQueryVariables>(GetSphereDocument, options);
-        }
+export function useGetSphereQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetSphereQuery,
+    GetSphereQueryVariables
+  > &
+    (
+      | { variables: GetSphereQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetSphereQuery, GetSphereQueryVariables>(
+    GetSphereDocument,
+    options,
+  );
+}
+export function useGetSphereLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetSphereQuery,
+    GetSphereQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetSphereQuery, GetSphereQueryVariables>(
+    GetSphereDocument,
+    options,
+  );
+}
+export function useGetSphereSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetSphereQuery, GetSphereQueryVariables>,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetSphereQuery, GetSphereQueryVariables>(
+    GetSphereDocument,
+    options,
+  );
+}
 export type GetSphereQueryHookResult = ReturnType<typeof useGetSphereQuery>;
-export type GetSphereLazyQueryHookResult = ReturnType<typeof useGetSphereLazyQuery>;
-export type GetSphereSuspenseQueryHookResult = ReturnType<typeof useGetSphereSuspenseQuery>;
-export type GetSphereQueryResult = Apollo.QueryResult<GetSphereQuery, GetSphereQueryVariables>;
+export type GetSphereLazyQueryHookResult = ReturnType<
+  typeof useGetSphereLazyQuery
+>;
+export type GetSphereSuspenseQueryHookResult = ReturnType<
+  typeof useGetSphereSuspenseQuery
+>;
+export type GetSphereQueryResult = Apollo.QueryResult<
+  GetSphereQuery,
+  GetSphereQueryVariables
+>;
 export const GetSpheresDocument = gql`
-    query getSpheres {
-  spheres {
-    edges {
-      node {
-        id
-        eH
-        name
-        metadata {
-          description
-          image
+  query getSpheres {
+    spheres {
+      edges {
+        node {
+          id
+          eH
+          name
+          metadata {
+            description
+            image
+          }
         }
       }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetSpheresQuery__
@@ -860,19 +1271,55 @@ export const GetSpheresDocument = gql`
  *   },
  * });
  */
-export function useGetSpheresQuery(baseOptions?: Apollo.QueryHookOptions<GetSpheresQuery, GetSpheresQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetSpheresQuery, GetSpheresQueryVariables>(GetSpheresDocument, options);
-      }
-export function useGetSpheresLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSpheresQuery, GetSpheresQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetSpheresQuery, GetSpheresQueryVariables>(GetSpheresDocument, options);
-        }
-export function useGetSpheresSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSpheresQuery, GetSpheresQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetSpheresQuery, GetSpheresQueryVariables>(GetSpheresDocument, options);
-        }
+export function useGetSpheresQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetSpheresQuery,
+    GetSpheresQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetSpheresQuery, GetSpheresQueryVariables>(
+    GetSpheresDocument,
+    options,
+  );
+}
+export function useGetSpheresLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetSpheresQuery,
+    GetSpheresQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetSpheresQuery, GetSpheresQueryVariables>(
+    GetSpheresDocument,
+    options,
+  );
+}
+export function useGetSpheresSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        GetSpheresQuery,
+        GetSpheresQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetSpheresQuery, GetSpheresQueryVariables>(
+    GetSpheresDocument,
+    options,
+  );
+}
 export type GetSpheresQueryHookResult = ReturnType<typeof useGetSpheresQuery>;
-export type GetSpheresLazyQueryHookResult = ReturnType<typeof useGetSpheresLazyQuery>;
-export type GetSpheresSuspenseQueryHookResult = ReturnType<typeof useGetSpheresSuspenseQuery>;
-export type GetSpheresQueryResult = Apollo.QueryResult<GetSpheresQuery, GetSpheresQueryVariables>;
+export type GetSpheresLazyQueryHookResult = ReturnType<
+  typeof useGetSpheresLazyQuery
+>;
+export type GetSpheresSuspenseQueryHookResult = ReturnType<
+  typeof useGetSpheresSuspenseQuery
+>;
+export type GetSpheresQueryResult = Apollo.QueryResult<
+  GetSpheresQuery,
+  GetSpheresQueryVariables
+>;

@@ -11,7 +11,7 @@ export const currentSphereHashesAtom = atom(
     const state = get(appStateAtom);
     const currentSphereHash = state.spheres.currentSphereHash;
     const currentSphere = state.spheres.byHash[currentSphereHash];
-    
+
     return currentSphere
       ? {
           entryHash: currentSphere.details.entryHash,
@@ -21,8 +21,8 @@ export const currentSphereHashesAtom = atom(
   },
   (_get, set, newSphereHashes: SphereHashes) => {
     set(appStateAtom, (prevState) => {
-      const newCurrentSphereHash = newSphereHashes.actionHash || '';
-      console.log('newCurrentSphereHash :>> ', newCurrentSphereHash);
+      const newCurrentSphereHash = newSphereHashes.actionHash || "";
+      console.log("newCurrentSphereHash :>> ", newCurrentSphereHash);
       return {
         ...prevState,
         spheres: {
@@ -31,7 +31,7 @@ export const currentSphereHashesAtom = atom(
         },
       };
     });
-  }  
+  },
 );
 
 /**

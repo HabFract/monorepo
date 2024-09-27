@@ -1,32 +1,37 @@
+import { useStateTransition } from "./hooks/useStateTransition";
+import withLayout from "./components/HOC/withLayout";
 
-import { useStateTransition } from './hooks/useStateTransition';
-import withLayout from './components/HOC/withLayout';
+import Nav from "./components/navigation/Nav";
+import { Flowbite, Modal, Spinner } from "flowbite-react";
+import { cloneElement, useRef, useState } from "react";
 
-import Nav from './components/navigation/Nav';
-import { Flowbite, Modal, Spinner } from 'flowbite-react';
-import { cloneElement, useRef, useState } from 'react';
+import Settings from "./components/Settings";
 
-import Settings from './components/Settings';
+import { darkTheme } from "habit-fract-design-system";
+import { store } from "./state/jotaiKeyValueStore";
+import {
+  Sphere,
+  SphereConnection,
+  useGetSpheresQuery,
+} from "./graphql/generated";
+import { ALPHA_RELEASE_DISCLAIMER } from "./constants";
 
-import { darkTheme } from 'habit-fract-design-system';
-import { store } from './state/jotaiKeyValueStore';
-import { Sphere, SphereConnection, useGetSpheresQuery } from './graphql/generated';
-import { ALPHA_RELEASE_DISCLAIMER } from './constants';
-
-import { isSmallScreen } from './components/vis/helpers';
-import { extractEdges } from './graphql/utils';
-import OnboardingHeader, { getNextOnboardingState } from './components/header/OnboardingHeader';
-import VersionWithDisclaimerButton from './components/home/VersionWithDisclaimerButton';
-import { useOnboardingScroll } from './hooks/useOnboardingScroll';
-import { useMainContainerClass } from './hooks/useMainContainerClass';
-import { useCurrentVersion } from './hooks/useCurrentVersion';
-import OnboardingContinue from './components/forms/buttons/OnboardingContinueButton';
-import HomeContinue from './components/home/HomeContinueButton';
-import Toast from './components/Toast';
-import { useToast } from './contexts/toast';
-import { currentSphereHashesAtom } from './state/sphere';
-import { SphereDetails } from './state/types/sphere';
-import { EntryHashB64 } from '@holochain/client';
+import { isSmallScreen } from "./components/vis/helpers";
+import { extractEdges } from "./graphql/utils";
+import OnboardingHeader, {
+  getNextOnboardingState,
+} from "./components/header/OnboardingHeader";
+import VersionWithDisclaimerButton from "./components/home/VersionWithDisclaimerButton";
+import { useOnboardingScroll } from "./hooks/useOnboardingScroll";
+import { useMainContainerClass } from "./hooks/useMainContainerClass";
+import { useCurrentVersion } from "./hooks/useCurrentVersion";
+import OnboardingContinue from "./components/forms/buttons/OnboardingContinueButton";
+import HomeContinue from "./components/home/HomeContinueButton";
+import Toast from "./components/Toast";
+import { useToast } from "./contexts/toast";
+import { currentSphereHashesAtom } from "./state/sphere";
+import { SphereDetails } from "./state/types/sphere";
+import { EntryHashB64 } from "@holochain/client";
 
 function App({ children: pageComponent }) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
@@ -44,51 +49,124 @@ function App({ children: pageComponent }) {
   const mainPageRef = useRef<HTMLDivElement>(null);
   useOnboardingScroll(state, progressBarRef, mainPageRef);
 
-  const { loading: loadingSpheres, error, data: spheres } = useGetSpheresQuery();
-  const userHasSpheres = spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
+  const {
+    loading: loadingSpheres,
+    error,
+    data: spheres,
+  } = useGetSpheresQuery();
+  const userHasSpheres =
+    spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
 
   const sphere = store.get(currentSphereHashesAtom);
-  const currentSphere = userHasSpheres && extractEdges(spheres.spheres).find(possibleSphere => possibleSphere.id == sphere.actionHash);
-  const currentSphereDetails = currentSphere ? {
-    entryHash: currentSphere.eH,
-    name: currentSphere.name,
-    description: currentSphere.metadata?.description,
-    hashtag: '',
-    image: currentSphere?.metadata?.image as string || undefined,
-  } : { entryHash: '' as EntryHashB64 } as SphereDetails
-
-  return <Flowbite theme={{ theme: darkTheme }}>
-    <Toast />
-    <main ref={mainPageRef} className={mainContainerClass}>
-      {/* Version and alpha status disclaimer */}
-      {state == 'Home' && !userHasSpheres && <VersionWithDisclaimerButton currentVersion={currentVersion} open={() => setIsModalOpen(true)} isFrontPage={true} />}
-      {/* Return users can see a side Nav on certain pages */}
-      {userHasSpheres && !((isSmallScreen() && ['CreateSphere', 'ListSpheres', 'CreateOrbit', 'ListOrbits'].includes(state)) || state.match('Onboarding'))
-        && <Nav transition={transition} sideNavExpanded={sideNavExpanded} setSettingsOpen={() => { setIsModalOpen(true); setIsSettingsOpen(true) }} setSideNavExpanded={setSideNavExpanded}></Nav>
+  const currentSphere =
+    userHasSpheres &&
+    extractEdges(spheres.spheres).find(
+      (possibleSphere) => possibleSphere.id == sphere.actionHash,
+    );
+  const currentSphereDetails = currentSphere
+    ? {
+        entryHash: currentSphere.eH,
+        name: currentSphere.name,
+        description: currentSphere.metadata?.description,
+        hashtag: "",
+        image: (currentSphere?.metadata?.image as string) || undefined,
       }
+    : ({ entryHash: "" as EntryHashB64 } as SphereDetails);
 
-      {loadingSpheres
-        ? <Spinner aria-label="Loading!" size="xl" className='full-spinner' />
-        : pageComponent && withLayout(cloneElement(pageComponent, {
-          // Only Renders when state == "Home"
-          startBtn: state.match('Home') ? <HomeContinue onClick={() => transition("Onboarding1")} /> : <></>,
-          // Only Renders when state includes "Onboarding"
-          //@ts-ignore
-          headerDiv: state.match('Onboarding') && <OnboardingHeader state={state} transition={transition} ref={progressBarRef} />,
-          submitBtn: state.match('Onboarding') && <OnboardingContinue onClick={() => transition(getNextOnboardingState(state))} />
-        }
-        ), state, transition, params)({ currentSphereDetails, newUser: !!userHasSpheres })
-      }
-    </main>
-    <Modal dismissible show={isModalOpen} onClose={() => { setIsSettingsOpen(false); setIsModalOpen(false) }}>
-      <Modal.Header>
-        {isSettingsOpen ? "Settings" : "Disclaimer:"}
-      </Modal.Header>
-      <Modal.Body>
-        {isSettingsOpen ? <Settings version={currentVersion || ""} spheres={spheres?.spheres as SphereConnection} setIsModalOpen={setIsModalOpen} setIsSettingsOpen={setIsSettingsOpen} /> : <p className='disclaimer'>{ALPHA_RELEASE_DISCLAIMER}</p>}
-      </Modal.Body>
-    </Modal>
-  </Flowbite>
+  return (
+    <Flowbite theme={{ theme: darkTheme }}>
+      <Toast />
+      <main ref={mainPageRef} className={mainContainerClass}>
+        {/* Version and alpha status disclaimer */}
+        {state == "Home" && !userHasSpheres && (
+          <VersionWithDisclaimerButton
+            currentVersion={currentVersion}
+            open={() => setIsModalOpen(true)}
+            isFrontPage={true}
+          />
+        )}
+        {/* Return users can see a side Nav on certain pages */}
+        {userHasSpheres &&
+          !(
+            (isSmallScreen() &&
+              [
+                "CreateSphere",
+                "ListSpheres",
+                "CreateOrbit",
+                "ListOrbits",
+              ].includes(state)) ||
+            state.match("Onboarding")
+          ) && (
+            <Nav
+              transition={transition}
+              sideNavExpanded={sideNavExpanded}
+              setSettingsOpen={() => {
+                setIsModalOpen(true);
+                setIsSettingsOpen(true);
+              }}
+              setSideNavExpanded={setSideNavExpanded}
+            ></Nav>
+          )}
+
+        {loadingSpheres ? (
+          <Spinner aria-label="Loading!" size="xl" className="full-spinner" />
+        ) : (
+          pageComponent &&
+          withLayout(
+            cloneElement(pageComponent, {
+              // Only Renders when state == "Home"
+              startBtn: state.match("Home") ? (
+                <HomeContinue onClick={() => transition("Onboarding1")} />
+              ) : (
+                <></>
+              ),
+              // Only Renders when state includes "Onboarding"
+              //@ts-ignore
+              headerDiv: state.match("Onboarding") && (
+                <OnboardingHeader
+                  state={state}
+                  transition={transition}
+                  ref={progressBarRef}
+                />
+              ),
+              submitBtn: state.match("Onboarding") && (
+                <OnboardingContinue
+                  onClick={() => transition(getNextOnboardingState(state))}
+                />
+              ),
+            }),
+            state,
+            transition,
+            params,
+          )({ currentSphereDetails, newUser: !!userHasSpheres })
+        )}
+      </main>
+      <Modal
+        dismissible
+        show={isModalOpen}
+        onClose={() => {
+          setIsSettingsOpen(false);
+          setIsModalOpen(false);
+        }}
+      >
+        <Modal.Header>
+          {isSettingsOpen ? "Settings" : "Disclaimer:"}
+        </Modal.Header>
+        <Modal.Body>
+          {isSettingsOpen ? (
+            <Settings
+              version={currentVersion || ""}
+              spheres={spheres?.spheres as SphereConnection}
+              setIsModalOpen={setIsModalOpen}
+              setIsSettingsOpen={setIsSettingsOpen}
+            />
+          ) : (
+            <p className="disclaimer">{ALPHA_RELEASE_DISCLAIMER}</p>
+          )}
+        </Modal.Body>
+      </Modal>
+    </Flowbite>
+  );
 }
 
-export default App
+export default App;

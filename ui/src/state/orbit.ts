@@ -6,7 +6,7 @@ import { Frequency, OrbitDetails, OrbitNodeDetails } from "./types/orbit";
 import { Orbit, Frequency as Freq } from "../graphql/generated";
 import { WinData } from "./types/win";
 
-export const decodeFrequency = (frequency: Freq) : Frequency.Rationals => {
+export const decodeFrequency = (frequency: Freq): Frequency.Rationals => {
   switch (frequency) {
     case Freq.Day:
       return Frequency.DAILY_OR_MORE.DAILY;
@@ -59,9 +59,9 @@ export const currentSphereOrbitNodesAtom = atom<SphereOrbitNodes | null>(
         sphereNodes[nodeHash] = orbitNode;
       }
     });
-  
+
     return Object.keys(sphereNodes).length > 0 ? sphereNodes : null;
-  }
+  },
 );
 
 /**
@@ -96,7 +96,7 @@ export const currentOrbitIdAtom = atom(
         currentOrbitHash: newOrbitId,
       },
     }));
-  }
+  },
 );
 
 /**
@@ -128,11 +128,11 @@ export const setOrbitWithEntryHashAtom = atom(
     {
       orbitEh,
       update,
-    }: { orbitEh: EntryHashB64; update: Partial<OrbitNodeDetails> }
+    }: { orbitEh: EntryHashB64; update: Partial<OrbitNodeDetails> },
   ) => {
     set(appStateAtom, (prevState) => {
       const orbitActionHash = Object.keys(prevState.orbitNodes.byHash).find(
-        (key) => prevState.orbitNodes.byHash[key].eH === orbitEh
+        (key) => prevState.orbitNodes.byHash[key].eH === orbitEh,
       );
 
       if (!orbitActionHash) return prevState; // Orbit not found, no update
@@ -151,7 +151,7 @@ export const setOrbitWithEntryHashAtom = atom(
         },
       };
     });
-  }
+  },
 );
 /**
  * Gets the frequency of a given Orbit from the AppState
@@ -202,7 +202,7 @@ export const setWinForOrbit = atom(
       date: string;
       winIndex?: number;
       hasWin: boolean;
-    }
+    },
   ) => {
     const state = get(appStateAtom);
     const orbit = state.orbitNodes.byHash[orbitHash];
@@ -240,7 +240,7 @@ export const setWinForOrbit = atom(
         [orbitHash]: newWinData,
       },
     });
-  }
+  },
 );
 
 /**

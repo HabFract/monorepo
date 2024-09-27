@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'TTSupermolot';
-  src: url('assets/fonts/TTSupermolot400.otf') format('opentype');
+  font-family: "TTSupermolot";
+  src: url("assets/fonts/TTSupermolot400.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
 }
@@ -58,30 +58,32 @@ body {
   width: 100%;
   text-align: center;
   margin: 0;
-  font-family: 'Nunito', Arial, sans-serif;
+  font-family: "Nunito", Arial, sans-serif;
 }
 
-p.form-description, *[data-testid=modal-overlay]>div>div h3 {
+p.form-description,
+*[data-testid="modal-overlay"] > div > div h3 {
   line-height: 24px;
   font-size: 1rem;
   font-weight: 300;
   @apply font-sans;
 }
 
-*[data-testid=modal-overlay]>div>div h3 {
+*[data-testid="modal-overlay"] > div > div h3 {
   font-family: Nunito, Arial, sans-serif;
   color: white;
-  margin: 1rem 0 .5rem 0;
+  margin: 1rem 0 0.5rem 0;
   @apply text-2xl;
 }
 
-*[data-testid=modal-overlay] p {
+*[data-testid="modal-overlay"] p {
   font-family: Nunito, Arial, sans-serif;
   color: white;
   @apply m-4 mb-2 text-xl;
 }
 
-p.form-description em, .helper-text em {
+p.form-description em,
+.helper-text em {
   font-weight: medium;
   @apply text-text-prim;
 }
@@ -98,7 +100,9 @@ p.form-description em, .helper-text em {
 }
 
 @media screen and (min-width: 440px) {
-  .onboarding-subtitle, p.form-description, .onboarding-progress {
+  .onboarding-subtitle,
+  p.form-description,
+  .onboarding-progress {
     max-width: 80vw;
   }
   .onboarding-title {
@@ -108,13 +112,14 @@ p.form-description em, .helper-text em {
     display: block;
     line-height: 2.5rem;
     font-size: 1.5rem;
-    margin: 1rem 0 .5rem 0;
+    margin: 1rem 0 0.5rem 0;
   }
   p.form-description {
     line-height: 2rem;
     font-size: 1.2rem;
   }
-  p.form-description, *[data-testid=modal-overlay]>div>div h3 {
+  p.form-description,
+  *[data-testid="modal-overlay"] > div > div h3 {
     text-align: center;
   }
 }

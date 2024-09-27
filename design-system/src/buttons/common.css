@@ -1,39 +1,43 @@
-
-
-.btn-primary, .btn-primary.nohover:hover {
+.btn-primary,
+.btn-primary.nohover:hover {
   @apply bg-primary text-white border-primary-500 border-2;
 }
 .btn-primary:not(.nohover):hover {
   @apply text-white bg-primary-500 border-primary-500 !important;
 }
-.btn-secondary, .btn-secondary.nohover:hover {
+.btn-secondary,
+.btn-secondary.nohover:hover {
   @apply border-primary-500 border-2;
-  background-color: #A2EAC4;
-  color: #4E5454;
+  background-color: #a2eac4;
+  color: #4e5454;
 }
 .btn-secondary:not(.nohover):hover {
   @apply text-white border-primary !important;
-  background-color: rgba(162, 234, 196, 0.5)
+  background-color: rgba(162, 234, 196, 0.5);
 }
-.btn-warn, .btn-warn.nohover:hover {
+.btn-warn,
+.btn-warn.nohover:hover {
   @apply bg-warn-500 border-warn border-2;
 }
 .btn-warn:not(.nohover):hover {
   @apply text-gray-500 bg-warn border-warn !important;
 }
-.btn-danger, .btn-danger.nohover:hover {
+.btn-danger,
+.btn-danger.nohover:hover {
   @apply bg-danger-500 border-danger border-2;
 }
 .btn-danger:not(.nohover):hover {
   @apply text-gray-500 bg-danger border-danger !important;
 }
-.btn-neutral, .btn-neutral.nohover:hover {
+.btn-neutral,
+.btn-neutral.nohover:hover {
   @apply bg-gray-100 text-gray-400 border-gray-200 border-2;
 }
 .btn-neutral:not(.nohover):hover {
   @apply bg-gray-200 text-white border-gray-200 !important;
 }
-.btn:disabled, .btn-disabled.nohover:hover {
+.btn:disabled,
+.btn-disabled.nohover:hover {
   color: #505554 !important;
   background: #909896 !important;
   border-width: 1px;
@@ -53,9 +57,9 @@
   outline: 1px dashed #2d3436;
 }
 
-
 /* Override dropdown button/menu */
-button[data-testid="flowbite-dropdown-target"]:hover:enabled, button[data-testid="flowbite-dropdown-target"] span:hover:enabled {
+button[data-testid="flowbite-dropdown-target"]:hover:enabled,
+button[data-testid="flowbite-dropdown-target"] span:hover:enabled {
   @apply bg-primary;
 }
 button[data-testid="flowbite-dropdown-target"]:active {
@@ -75,7 +79,10 @@ div[data-testid="flowbite-dropdown"] button {
 .orbit-actions-crud div[data-testid="flowbite-dropdown"] li:first-child button {
   @apply bg-warn-500 border-warn border-0 rounded-none;
 }
-.orbit-actions-crud div[data-testid="flowbite-dropdown"] li:first-child button:hover {
+.orbit-actions-crud
+  div[data-testid="flowbite-dropdown"]
+  li:first-child
+  button:hover {
   @apply text-gray-500 bg-warn border-warn !important;
 }
 .orbit-actions-crud div[data-testid="flowbite-dropdown"] li:last-child button {
@@ -101,7 +108,8 @@ div[data-testid="flowbite-dropdown"] button {
 }
 
 /* Hide icon test on smaller viewports */
-.btn.responsive span[role="img"], .btn.responsive svg[role="img"] {
+.btn.responsive span[role="img"],
+.btn.responsive svg[role="img"] {
   @apply m-0-sm justify-center;
 }
 .btn.responsive span[role="img"] + span {
@@ -110,8 +118,7 @@ div[data-testid="flowbite-dropdown"] button {
 
 /* Icon only button */
 .btn.btn-icon {
-  @apply 
-    h-8 w-8 bg-bg border-0;
+  @apply h-8 w-8 bg-bg border-0;
 }
 
 .btn.btn-icon:hover {
@@ -119,8 +126,7 @@ div[data-testid="flowbite-dropdown"] button {
 }
 
 .btn.btn-icon {
-  @apply 
-    h-8 w-8 bg-bg text-white;
+  @apply h-8 w-8 bg-bg text-white;
 }
 
 .btn .icon {
@@ -146,17 +152,25 @@ div[data-testid="flowbite-dropdown"] button {
 
 .btn-onboarding {
   @apply w-full mt-4 border-0 text-bg font-sans font-medium leading-std hover:text-secondary !important;
-  background: rgb(162,234,196);
-  background: linear-gradient(90deg, rgba(162,234,196,1) 50%, rgba(0,177,151,1) 100%);
+  background: rgb(162, 234, 196);
+  background: linear-gradient(
+    90deg,
+    rgba(162, 234, 196, 1) 50%,
+    rgba(0, 177, 151, 1) 100%
+  );
 }
 .btn-onboarding:hover {
   @apply text-gray-500 !important;
-  background: rgba(162,234,196, 0.8);
-  background: linear-gradient(90deg, rgba(162,234,196,0.8) 50%, rgba(0,177,151,0.8) 100%);
+  background: rgba(162, 234, 196, 0.8);
+  background: linear-gradient(
+    90deg,
+    rgba(162, 234, 196, 0.8) 50%,
+    rgba(0, 177, 151, 0.8) 100%
+  );
 }
 
 /* Breadcrumbs */
-.ant-breadcrumb  {
+.ant-breadcrumb {
   @apply ml-1 mb-1;
   height: 3rem;
   max-width: 100vw;
@@ -181,7 +195,8 @@ div[data-testid="flowbite-dropdown"] button {
 .ant-breadcrumb-link .anticon-home {
   font-size: 2rem;
 }
-.ant-breadcrumb-link .anticon-home:hover, .ant-breadcrumb li:not(li:last-child) .ant-breadcrumb-link:hover {
+.ant-breadcrumb-link .anticon-home:hover,
+.ant-breadcrumb li:not(li:last-child) .ant-breadcrumb-link:hover {
   cursor: pointer;
   font-size: 1.6rem;
   transition: 0.25s font-size ease-in-out;
@@ -189,13 +204,15 @@ div[data-testid="flowbite-dropdown"] button {
 .ant-breadcrumb-link .anticon-home:hover {
   font-size: 2.25rem;
 }
-.ant-breadcrumb .ant-breadcrumb-link, .ant-breadcrumb-separator  {
+.ant-breadcrumb .ant-breadcrumb-link,
+.ant-breadcrumb-separator {
   line-height: 2.5rem;
   font-size: 1.5rem;
   font-weight: 300;
   font-family: TTSupermolot, Nunito, sans-serif;
 }
-.ant-breadcrumb .ant-breadcrumb-separator, .ant-breadcrumb .ant-breadcrumb-link  {
+.ant-breadcrumb .ant-breadcrumb-separator,
+.ant-breadcrumb .ant-breadcrumb-link {
   @apply text-title !important;
 }
 .vis.page-container nav.ant-breadcrumb {
@@ -203,7 +220,7 @@ div[data-testid="flowbite-dropdown"] button {
 }
 
 @media screen and (min-width: 768px) {
-  .ant-breadcrumb  {
+  .ant-breadcrumb {
     @apply ml-2 mb-2 mt-2;
   }
 }

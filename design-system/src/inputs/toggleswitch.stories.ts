@@ -1,11 +1,10 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from "@storybook/react";
 import ToggleSwitch, { ToggleSwitchProps } from "./toggle-switch";
 
 const meta: Meta<ToggleSwitchProps> = {
   title: "Components/Input/ToggleSwitch",
   component: ToggleSwitch,
-  argTypes: {
-  },
+  argTypes: {},
 };
 
 export default meta;

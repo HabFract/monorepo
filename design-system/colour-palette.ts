@@ -28,7 +28,7 @@ export const OPAL = "rgba(169,189,182, 1)";
 export const CHINESE_WHITE = "rgba(219,228,226, 1)";
 
 // Text
-export const WHITE = "rgb(255, 255, 255)"
+export const WHITE = "rgb(255, 255, 255)";
 
 // Category
 export const BLUE_GRAY = "#688acc";
@@ -45,7 +45,6 @@ export const DAVYS_GRAY = "#505554";
 export const ONYX = "#37383a";
 export const RICH_BLACK = "#00120f";
 
-
 /**
  * Changes the opacity of an RGBA color string.
  * @param color The original RGBA color string.
@@ -55,7 +54,7 @@ export const RICH_BLACK = "#00120f";
 export function changeOpacity(color: string, newOpacity: number): string {
   // Validate the new opacity is within the range
   if (newOpacity < 0 || newOpacity > 1) {
-    throw new Error('Opacity must be between 0 and 1.');
+    throw new Error("Opacity must be between 0 and 1.");
   }
 
   // Extract the RGB values and current opacity using a regular expression
@@ -63,7 +62,7 @@ export function changeOpacity(color: string, newOpacity: number): string {
   const match = color.match(rgbaRegex);
 
   if (!match) {
-    throw new Error('Invalid RGBA color format.');
+    throw new Error("Invalid RGBA color format.");
   }
 
   // Replace the current opacity with the new opacity

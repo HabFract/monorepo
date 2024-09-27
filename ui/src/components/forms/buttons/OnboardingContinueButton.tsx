@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { Button } from 'habit-fract-design-system';
+import React, { FC } from "react";
+import { Button } from "habit-fract-design-system";
 
 interface OnboardingContinueProps {
   onClick: () => void;
@@ -7,11 +7,7 @@ interface OnboardingContinueProps {
 
 const OnboardingContinue: FC<OnboardingContinueProps> = ({ onClick }) => {
   return (
-    <Button
-      loading={false}
-      type={"onboarding"}
-      onClick={onClick}
-    >
+    <Button loading={false} type={"onboarding"} onClick={onClick}>
       Save & Continue
     </Button>
   );

@@ -2,15 +2,10 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist/",
+    "outDir": "./dist/"
   },
-  "include": [
-    "./src/**/*",
-    "./src/stories",
-  ],
-  "references": [
-    { "path": "../ui" },
-  ],
+  "include": ["./src/**/*", "./src/stories"],
+  "references": [{ "path": "../ui" }],
   "exclude": [
     "**/.pnpm",
     "**/dist",

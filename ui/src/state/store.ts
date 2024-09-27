@@ -1,17 +1,20 @@
-import { atomWithStorage } from 'jotai/utils';
-import { RootOrbitEntryHash } from './types/orbit';
-import { SphereDetails, SphereOrbitNodes } from './types/sphere';
-import WinState from './types/win';
-import { ActionHashB64 } from '@holochain/client';
-import { Hierarchy } from './types/hierarchy';
+import { atomWithStorage } from "jotai/utils";
+import { RootOrbitEntryHash } from "./types/orbit";
+import { SphereDetails, SphereOrbitNodes } from "./types/sphere";
+import WinState from "./types/win";
+import { ActionHashB64 } from "@holochain/client";
+import { Hierarchy } from "./types/hierarchy";
 
 export interface AppState {
   spheres: {
     currentSphereHash: ActionHashB64;
-    byHash: Record<ActionHashB64, {
-      details: SphereDetails;
-      hierarchyRootOrbitEntryHashes: RootOrbitEntryHash[];
-    }>;
+    byHash: Record<
+      ActionHashB64,
+      {
+        details: SphereDetails;
+        hierarchyRootOrbitEntryHashes: RootOrbitEntryHash[];
+      }
+    >;
   };
   hierarchies: {
     byRootOrbitEntryHash: Record<RootOrbitEntryHash, Hierarchy>;
@@ -33,9 +36,9 @@ export interface AppState {
 /**
  * Persisted atom for the entire app state, can be used to hydrate app state when no Holochain is possible
  */
-export const appStateAtom = atomWithStorage<AppState>('appState', {
+export const appStateAtom = atomWithStorage<AppState>("appState", {
   spheres: {
-    currentSphereHash: '',
+    currentSphereHash: "",
     byHash: {},
   },
   hierarchies: {
@@ -48,9 +51,9 @@ export const appStateAtom = atomWithStorage<AppState>('appState', {
   wins: {},
   ui: {
     listSortFilter: {
-      sortCriteria: 'name',
-      sortOrder: 'lowestToGreatest',
+      sortCriteria: "name",
+      sortOrder: "lowestToGreatest",
     },
-    currentDay: new Date().toISOString()
+    currentDay: new Date().toISOString(),
   },
 });

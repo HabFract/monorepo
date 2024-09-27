@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from "@storybook/react";
 import RadioGroup, { RadioGroupField } from "./radiogroup";
 
 export interface RadioGroupProps {
@@ -17,7 +17,10 @@ const meta: Meta<RadioGroupProps> = {
   title: "Components/Input/RadioGroup",
   component: RadioGroup,
   argTypes: {
-    direction: { options: ["horizontal", "vertical"], control: { type: "radio" } },
+    direction: {
+      options: ["horizontal", "vertical"],
+      control: { type: "radio" },
+    },
   },
 };
 
@@ -80,16 +83,23 @@ export const WithIconWithWarnError: Story = {
     options: ["Apples", "Oranges", "Bananas"],
     errored: true,
     required: true,
-    withInfo: false
+    withInfo: false,
   },
-  
-  render: (args: any) => <RadioGroupField field={null} form={{
-    errors: {
-      "test": "This is a required field."
-    }, touched: {
-      "test": true
-    },
-  }} {...args}></RadioGroupField>
+
+  render: (args: any) => (
+    <RadioGroupField
+      field={null}
+      form={{
+        errors: {
+          test: "This is a required field.",
+        },
+        touched: {
+          test: true,
+        },
+      }}
+      {...args}
+    ></RadioGroupField>
+  ),
 };
 
 export const WithIconWithDangerError: Story = {
@@ -100,14 +110,21 @@ export const WithIconWithDangerError: Story = {
     options: ["Apples", "Oranges", "Bananas"],
     errored: true,
     required: false,
-    withInfo: false
+    withInfo: false,
   },
-  
-  render: (args: any) => <RadioGroupField field={null} form={{
-    errors: {
-      "test": "This is not valid!"
-    }, touched: {
-      "test": true
-    },
-  }} {...args}></RadioGroupField>
+
+  render: (args: any) => (
+    <RadioGroupField
+      field={null}
+      form={{
+        errors: {
+          test: "This is not valid!",
+        },
+        touched: {
+          test: true,
+        },
+      }}
+      {...args}
+    ></RadioGroupField>
+  ),
 };

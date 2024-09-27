@@ -34,12 +34,12 @@ div[role="progressbar"] > div.astro > div {
   padding-top: 1.5rem;
 }
 
-.sphere-pie-label {  
-  position: relative; 
+.sphere-pie-label {
+  position: relative;
   left: calc(50% - 2rem);
 }
 .apexcharts-pie-area {
-  transform: rotate(90deg) translate(-10%,-40%) !important;
+  transform: rotate(90deg) translate(-10%, -40%) !important;
 }
 .sphere-pie .apexcharts-legend {
   position: relative !important;
@@ -51,7 +51,7 @@ div[role="progressbar"] > div.astro > div {
   padding-top: 1rem !important;
 }
 .sphere-pie .apexcharts-legend > div {
-  gap: .5rem;
+  gap: 0.5rem;
   line-height: initial;
 }
 .sphere-pie .apexcharts-legend > div .apexcharts-legend-marker {
@@ -81,7 +81,7 @@ div[role="progressbar"] > div.astro > div {
     @apply -ml-2;
   }
 
-  .sphere-pie-label {    
+  .sphere-pie-label {
     padding-left: 50%;
   }
 
@@ -96,7 +96,6 @@ div[role="progressbar"] > div.astro > div {
   [data-testid="modal-overlay"] > div {
     height: 90vh;
     @apply p-4;
-    
   }
   [data-testid="modal-overlay"] > div > div {
     height: 100%;
@@ -105,5 +104,4 @@ div[role="progressbar"] > div.astro > div {
   [data-testid="modal-overlay"] > div > div > div:last-child {
     height: 100%;
   }
-
 }

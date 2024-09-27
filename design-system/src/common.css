@@ -2,14 +2,14 @@
   @apply flex flex-col items-center justify-center gap-2;
 }
 
-.row-c-around, .row-c {
+.row-c-around,
+.row-c {
   @apply flex items-center gap-2;
 }
 
 .row-c-around {
   @apply justify-around;
 }
-
 
 @media screen and (max-width: 420px) {
   .big-gap-sm {
