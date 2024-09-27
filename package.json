@@ -10,7 +10,6 @@
   ],
   "author": "Nick Stebbings",
   "license": "Apache-2.0",
-  "main": "index.js",
   "scripts": {
     "start": "AGENTS=1 pnpm network",
     "dev": "dotenv -- concurrently \"npm run start:backend-services\" \"npm run start:backend-dev\" \"VITE_NODE_ENV=dev npm run start:frontend\" \"cd ui && npm run generate:watch\" \"npm run open-browser\"",
@@ -33,7 +32,7 @@
     "network:android": "pnpm build:happ && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"pnpm local-services\" \"VITE_NODE_ENV=tauri pnpm run start:frontend\" \"pnpm tauri dev\" \"pnpm tauri android dev\"",
     "launch": "concurrently-repeat \"pnpm run tauri dev --verbose --no-watch\" $AGENTS",
     "tauri": "tauri",
-    "lint": "npx eslint src test",
+    "lint": "npx eslint ui design-system",
     "lint:fix": "npm run lint -- --fix",
     "prettier": "npx prettier ui design-system --check",
     "prettier:fix": "npm run prettier -- --write"
@@ -104,6 +103,7 @@
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.37.0",
     "fake-indexeddb": "^5.0.2",
     "globals": "^15.9.0",
