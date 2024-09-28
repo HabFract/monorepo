@@ -110,6 +110,7 @@ export abstract class BaseVisualization implements IVisualization {
   modalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   isModalOpen: boolean = false;
   skipMainRender: boolean = false;
+  startInFocusMode: boolean = false;
   activeNode: any = null;
   isNewActiveNode: boolean = false;
   _hasRendered: boolean = false;
@@ -306,9 +307,11 @@ export abstract class BaseVisualization implements IVisualization {
     if (this.firstRender() || this.hasNextData()) {
       this.clearCanvas();
 
+      let hasUpdated;
       if (this.hasNextData()) {
         this.rootData = this._nextRootData!;
         this._nextRootData = null;
+        hasUpdated = true;
       }
 
       this.setupLayout();
@@ -322,7 +325,22 @@ export abstract class BaseVisualization implements IVisualization {
       if (!(this.coverageType == VisCoverage.Partial ||  this.noCanvas())) {
         this.initializeZoomer();
       }
-
+      if (this.startInFocusMode && hasUpdated) {
+          store.set(currentOrbitIdAtom, this.rootData.data.content)
+          const syntheticEvent = {
+            sourceEvent: {
+              clientX: this.rootData.x,
+              clientY: this.rootData.y
+            },
+            transform: {
+              x: 0,
+              y: 0,
+              k: 1
+            }
+          };
+          this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, this.rootData);
+          this.startInFocusMode = false;
+      }
       this._hasRendered = true;
     }
   }

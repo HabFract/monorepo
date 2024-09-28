@@ -185,10 +185,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
           : currentOrbitTree.initializeZoomer();
       }
       // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
-      console.log(
-        "parsedData.result.level_trees.length :>> ",
-        parsedData.result,
-      );
       setBreadthBounds(params?.currentSphereEhB64, [
         0,
         visCoverage == VisCoverage.CompleteOrbit
@@ -258,26 +254,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
         currentOrbitIdAtom,
         currentOrbitTree._nextRootData.data.content,
       );
-      const { canvasHeight,
-        canvasWidth,
-        margin } = currentOrbitTree._viewConfig;
-    // Reset zoom state
-    currentOrbitTree._viewConfig = currentOrbitTree.initializeViewConfig(      canvasHeight,
-      canvasWidth,
-      margin, FOCUS_MODE_SCALE);
-    currentOrbitTree.calibrateViewPortAttrs();
-    currentOrbitTree.setLevelsHighAndWide();
-    // Reset zoom state
-    currentOrbitTree._zoomConfig = currentOrbitTree.initializeZoomConfig();
-    // currentOrbitTree._viewConfig.scale = BASE_SCALE; // Assuming BASE_SCALE is defined
-console.log('currentOrbitTree._viewConfig :>> ', currentOrbitTree._viewConfig);
-console.log('currentOrbitTree._zoomConfig :>> ', currentOrbitTree._zoomConfig);
-    // Reset canvas transform
-    currentOrbitTree.applyInitialTransform();
-    currentOrbitTree._zoomConfig.focusMode = true;
-    // Reinitialize zoomer
-    currentOrbitTree.initializeZoomer();
-
+      currentOrbitTree.startInFocusMode = true;
 
       currentOrbitTree.render();
     }

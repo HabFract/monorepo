@@ -333,10 +333,10 @@ export function withVisCanvas<T extends IVisualization>(
           
           moveDown(grandChildren);
           currentVis?.manualZoomToNode(newId)
-          .transition()
-          .duration(1000)
-          .on("end", () => {
-            incrementDepth();
+            .transition()
+            .duration(1000)
+            .on("end", () => {
+              incrementDepth();
             const newChild =
           children &&
           ((

@@ -109,7 +109,6 @@ export class TreeVisualization extends BaseVisualization {
           defaultView: this._viewConfig.defaultView,
           levelsHigh: this._viewConfig.levelsHigh,
         });
-        debugger;
         return customScale || typeof this._zoomConfig.previousRenderZoom?.node?.y !==
           "undefined"
           ? (((this._viewConfig.margin.top as number) +
@@ -140,7 +139,7 @@ export class TreeVisualization extends BaseVisualization {
         this.modalParentOrbitEh(parentOrbitEh);
       },
 
-      handleNodeZoom: (event: any, node: any) => {
+      handleNodeZoom: (event: any, node: any,) => {
         if (!node) return;
         const scale = FOCUS_MODE_SCALE;
         const x = -node.x * scale + this._viewConfig.canvasWidth / 2;
@@ -149,10 +148,9 @@ export class TreeVisualization extends BaseVisualization {
         this._zoomConfig.globalZoomScale = scale;
         this._zoomConfig.focusMode = true;
         this._zoomConfig.previousRenderZoom = { event, node, scale };
-
         return this._canvas!
           .transition()
-          .duration(750)
+          .duration(this.startInFocusMode ? 0 : 900)
           .attr("transform", `translate(${x},${y}) scale(${scale})`)
           .on("end", () => {
             this._zoomConfig.focusMode = true;
@@ -442,6 +440,7 @@ export class TreeVisualization extends BaseVisualization {
       this.eventHandlers.handleNodeClick!.call(this, e, d);
       this.eventHandlers.handleNodeZoom.call(this, e, d);
     });
+
     store.sub(currentOrbitIdAtom, () => {
       this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
       const id = store.get(currentOrbitIdAtom).id;
