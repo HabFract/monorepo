@@ -136,6 +136,7 @@ export class TreeVisualization extends BaseVisualization {
         this.modalIsOpen = true;
         this.modalParentOrbitEh(parentOrbitEh);
       },
+
       handleNodeZoom: (event: any, node: any) => {
         if (!node) return;
         const scale = FOCUS_MODE_SCALE;
@@ -151,9 +152,11 @@ export class TreeVisualization extends BaseVisualization {
           .duration(750)
           .attr("transform", `translate(${x},${y}) scale(${scale})`)
           .on("end", () => {
-            this._zoomConfig.focusMode = false
+            this._zoomConfig.focusMode = true;
           });
-          
+      },
+      handleZoomOut: () => {
+        this.zoomOut();
       },
       handleNodeClick() {
         this._enteringNodes.select("foreignObject").html(this.appendLabelHtml);
@@ -164,14 +167,6 @@ export class TreeVisualization extends BaseVisualization {
         });
       },
     };
-  }
-
-  initializeZoomer(): ZoomBehavior<Element, unknown> {
-    const zoomer: ZoomBehavior<Element, unknown> = zoom()
-      .scaleExtent([0.1, 1.5])
-      .on("zoom", this.eventHandlers.handleNodeZoom.bind(this) as any);
-    this.visBase().call(zoomer as any);
-    return (this.zoomer = zoomer);
   }
 
   setupLayout(): void {
@@ -186,28 +181,26 @@ export class TreeVisualization extends BaseVisualization {
     this.layout(this.rootData);
   }
 
+  handleZoom(event: any): void {
+    if (this._zoomConfig.focusMode) {
 
+      const currentScale = event.transform.k;
+      if (currentScale < (this._zoomConfig.globalZoomScale as number)) {
+        this.zoomOut();
+      }
+      this._zoomConfig.focusMode = false;
+    } else {
+      super.handleZoom(event);
+    }
+    
+  }
 
-  handleZoom = (event: any) => {
-    const { transform } = event;
-    this._canvas!.attr("transform", transform);
-  };
-
-  handleNodeZoom = (event: any, node: any) => {
-    if (!node) return;
-    const scale = FOCUS_MODE_SCALE;
-    const x = -node.x * scale + this._viewConfig.canvasWidth / 2;
-    const y = -node.y * scale + this._viewConfig.canvasHeight / 2;
-
-    this._zoomConfig.globalZoomScale = scale;
-    this._zoomConfig.focusMode = true;
-    this._zoomConfig.previousRenderZoom = { event, node, scale };
-
-    this._canvas!
-      .transition()
-      .duration(750)
-      .attr("transform", `translate(${x},${y}) scale(${scale})`);
-  };
+  zoomOut(): void {
+    if (!this._zoomConfig.focusMode) return;
+    
+    super.zoomOut();
+    // Add any TreeVisualization specific zoom out behavior here
+  }
 
   appendLinkPath(): void {
     const rootNodeId = this.rootData.data.content;

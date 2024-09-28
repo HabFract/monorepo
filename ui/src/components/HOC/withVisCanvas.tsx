@@ -55,9 +55,9 @@ const appendSvg = (mountingDivId: string, divId: string) => {
     select(`#${mountingDivId}`)
       .append("svg")
       .attr("id", `${divId}`)
-      .attr("width", "100%")
+      .attr("width", "100vw")
       .attr("data-testid", "svg")
-      .attr("height", "100%")
+      .attr("height", "100vh")
       .attr("style", "pointer-events: all")
   );
 };

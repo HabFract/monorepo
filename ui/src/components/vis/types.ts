@@ -79,7 +79,7 @@ export interface IVisualization {
   /** Apply initial transformation and zoom which may be needed when a node is already selected */
   applyInitialTransform: () => void;
   initializeZoomConfig: () => ZoomConfig;
-  initializeZoomer: () => ZoomBehavior<Element, unknown>;
+  initializeZoomer: () => ZoomBehavior<Element, unknown> | null;
   handleZoom: (event: MouseEvent) => void;
 
   /** Method to fully render the visualization */
@@ -129,6 +129,11 @@ export interface EventHandlers {
     node: HierarchyNode<unknown>,
   ) => void;
   handleNodeZoom: (
+    event: D3ZoomEvent<SVGSVGElement, unknown>,
+    node: HierarchyNode<unknown>,
+    forParent?: boolean,
+  ) => void;
+  handleZoomOut: (
     event: D3ZoomEvent<SVGSVGElement, unknown>,
     node: HierarchyNode<unknown>,
     forParent?: boolean,

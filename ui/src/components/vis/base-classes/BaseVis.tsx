@@ -157,10 +157,6 @@ export abstract class BaseVisualization implements IVisualization {
     );
     this._zoomConfig = this.initializeZoomConfig();
     this.eventHandlers = this.initializeEventHandlers();
-
-    if (this.coverageType !== VisCoverage.Partial) {
-      this.initializeZoomer();
-    }
   }
 
   // Allow data to be re-cached after certain vis interactions:
@@ -257,8 +253,7 @@ export abstract class BaseVisualization implements IVisualization {
   calibrateViewBox(): void {
     this.visBase()
       .attr("viewBox", this._viewConfig.defaultView)
-      .attr("preserveAspectRatio", "xMidYMid meet")
-      .on("dblclick.zoom", null);
+      .attr("preserveAspectRatio", "xMidYMid meet");
   }
 
   /**
@@ -324,6 +319,9 @@ export abstract class BaseVisualization implements IVisualization {
       this.appendLinkPath();
 
       this.applyInitialTransform();
+      if (!(this.coverageType == VisCoverage.Partial ||  this.noCanvas())) {
+        this.initializeZoomer();
+      }
 
       this._hasRendered = true;
     }
@@ -420,25 +418,18 @@ export abstract class BaseVisualization implements IVisualization {
    */
   resetZoomer(): void {
     const zoomer: ZoomBehavior<Element, unknown> = zoom();
-    this.visBase().call(zoomer as any);
+    this._canvas && this._canvas.call(zoomer as any);
+    this.initializeZoomConfig()
   }
 
-  applyInitialTransform(): void {
-    this._canvas!.attr(
+  applyInitialTransform(toSelection?: Selection<SVGGElement, unknown, HTMLElement, any> ): void {
+    (toSelection || this._canvas)!.attr(
       "transform",
       `scale(${this._viewConfig.scale}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})`
     );
   }
 
   initializeZoomConfig(): ZoomConfig {
-    console.log('set :>> ',{
-      focusMode: false,
-      previousRenderZoom: {},
-      globalZoomScale: this._viewConfig.scale,
-      zoomedInView: function () {
-        return Object.keys(this.previousRenderZoom).length !== 0;
-      },
-    });
     return {
       focusMode: false,
       previousRenderZoom: {},
@@ -451,17 +442,42 @@ export abstract class BaseVisualization implements IVisualization {
 
   initializeZoomer(): ZoomBehavior<Element, unknown> {
     const zoomer: ZoomBehavior<Element, unknown> = zoom()
-      .scaleExtent([0.1, 2])
-      .on("zoom", this.handleZoom.bind(this));
-    this.visBase().call(zoomer);
-    return zoomer;
+      .scaleExtent([1, 1.5])
+      .on("zoom", this.handleZoom.bind(this) as any);
+    this._canvas && this._canvas!.call(zoomer);
+    return (this.zoomer = zoomer);
   }
 
-  handleZoom = (event: any) => {
-    const { transform } = event;
-    this._canvas!.attr("transform", transform);
-  };
+  handleZoom(event: any): void {
+      let t = { ...event.transform };
+      let scale;
+      let x, y;
+      if (this._zoomConfig.focusMode) {
+        this._zoomConfig.focusMode = false;
+        return;
+      } else {
+        scale = t.k;
+        x = t.x + this._viewConfig.defaultCanvasTranslateX() * scale;
+        y = t.y + this._viewConfig.defaultCanvasTranslateY() * scale;
+      }
+      this._canvas && this._canvas
+        .transition()
+        .ease(easeLinear)
+        .duration(200)
+        .attr("transform", `translate(${x},${y}), scale(${scale})`);
+  }
 
+  zoomOut(): void {
+    if (!this._zoomConfig.focusMode) return;
+
+    this._zoomConfig.focusMode = false;
+    this._zoomConfig.globalZoomScale = this._viewConfig.scale;
+
+    this.initializeZoomer();
+    this.applyInitialTransform(this._canvas!.transition().duration(750));
+    this._zoomConfig.focusMode = false;
+    this._zoomConfig.previousRenderZoom = {};
+  }
   /**
    * Clears all child elements from the canvas.
    * This is typically called before re-rendering the visualization with new data.
