@@ -56,11 +56,6 @@ type CreateOrbitResponsePayload {
   metadata: OrbitMetaData
 }
 
-type CreateResponsePayload {
-  actionHash: String!
-  entryHash: String!
-}
-
 # ---- Profiles ----- #
 # Profiles GQL Types
 

@@ -67,13 +67,6 @@ export const aCreateOrbitResponsePayload = (overrides?: Partial<CreateOrbitRespo
     };
 };
 
-export const aCreateResponsePayload = (overrides?: Partial<CreateResponsePayload>): CreateResponsePayload => {
-    return {
-        actionHash: overrides && overrides.hasOwnProperty('actionHash') ? overrides.actionHash! : 'voluptatem',
-        entryHash: overrides && overrides.hasOwnProperty('entryHash') ? overrides.entryHash! : 'et',
-    };
-};
-
 export const anAgentProfile = (overrides?: Partial<AgentProfile>): AgentProfile => {
     return {
         agentPubKey: overrides && overrides.hasOwnProperty('agentPubKey') ? overrides.agentPubKey! : 'error',

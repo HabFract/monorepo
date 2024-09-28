@@ -144,12 +144,6 @@ export type CreateOrbitResponsePayload = {
   metadata?: Maybe<OrbitMetaData>;
 };
 
-export type CreateResponsePayload = {
-  __typename?: 'CreateResponsePayload';
-  actionHash: Scalars['String']['output'];
-  entryHash: Scalars['String']['output'];
-};
-
 export type AgentProfile = {
   __typename?: 'AgentProfile';
   agentPubKey: Scalars['String']['output'];
