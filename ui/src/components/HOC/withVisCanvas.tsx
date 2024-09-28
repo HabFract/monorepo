@@ -222,7 +222,9 @@ export function withVisCanvas<T extends IVisualization>(
       ) as Array<HierarchyNode<any>> | undefined;
       const rootId = data.data.content;
       const currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
-      if (!currentId) store.set(currentOrbitIdAtom, rootId);
+      if (!currentId || (y > 0 && !currentVis._zoomConfig.focusMode && currentId && currentId !== rootId)) {
+        store.set(currentOrbitIdAtom, rootId);
+      } 
       const currentDetails = store.get(currentOrbitDetailsAtom);
 
       const canMove =
@@ -338,13 +340,13 @@ export function withVisCanvas<T extends IVisualization>(
             .on("end", () => {
               incrementDepth();
             const newChild =
-          children &&
-          ((
-            children?.find(
-              (child) => child?.data?.content == currentId && !!child.children,
-            ) as HierarchyNode<any>
-          )?.children?.[0] as HierarchyNode<any>);
-        const newId = newChild && newChild.parent?.data?.content;
+              children &&
+              ((
+                children?.find(
+                  (child) => child?.data?.content == currentId && !!child.children,
+                ) as HierarchyNode<any>
+              )?.children?.[0] as HierarchyNode<any>);
+            const newId = newChild && newChild.parent?.data?.content;
             store.set(newTraversalLevelIndexId, { id: newId });
             setBreadthIndex(0);
           });

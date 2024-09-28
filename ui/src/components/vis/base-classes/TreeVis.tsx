@@ -162,9 +162,9 @@ export class TreeVisualization extends BaseVisualization {
       handleNodeClick() {
         this._enteringNodes.select("foreignObject").html(this.appendLabelHtml);
         this._gCircle.classed("checked", (d): boolean => {
-          if (!d?.data?.content || !this.nodeDetails[d.data.content])
+          // if (!d?.data?.content || !this.nodeDetails[d.data.content])
             return false;
-          return store.get(currentOrbitIdAtom) == d.data.content;
+          // return store.get(currentOrbitIdAtom) == d.data.content;
         });
       },
     };
@@ -468,9 +468,9 @@ export class TreeVisualization extends BaseVisualization {
     });
   }
 
-  public manualZoomToNode(nodeId: EntryHashB64) {
+  public manualZoomToNode(nodeId: EntryHashB64, skipSetCurrentOrbit: boolean = false) {
     this._skipAutoZoom = true;
-    store.set(currentOrbitIdAtom, nodeId);
+    !skipSetCurrentOrbit && store.set(currentOrbitIdAtom, nodeId);
     const node = this.rootData.find(node => node.data.content == nodeId);
     if (node) {
       const syntheticEvent = {
@@ -494,9 +494,9 @@ export class TreeVisualization extends BaseVisualization {
       .classed("node-subgroup", true)
       .attr("stroke-width", "0")
       .classed("checked", (d): boolean => {
-        if (!d?.data?.content || !this.nodeDetails[d.data.content])
+        // if (!d?.data?.content || !this.nodeDetails[d.data.content])
           return false;
-        return store.get(currentOrbitIdAtom).id == d.data.content;
+        // return store.get(currentOrbitIdAtom).id == d.data.content;
       });
     this._gTooltip = this.clearAndRedrawLabels();
   }

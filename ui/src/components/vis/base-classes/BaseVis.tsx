@@ -321,12 +321,12 @@ export abstract class BaseVisualization implements IVisualization {
       this.appendNodeVectors();
       this.appendLinkPath();
 
-      this.applyInitialTransform();
+      !hasUpdated && this.applyInitialTransform();
       if (!(this.coverageType == VisCoverage.Partial ||  this.noCanvas())) {
         this.initializeZoomer();
       }
       if (this.startInFocusMode && hasUpdated) {
-          store.set(currentOrbitIdAtom, this.rootData.data.content)
+          // store.set(currentOrbitIdAtom, this.rootData.data.content)
           const syntheticEvent = {
             sourceEvent: {
               clientX: this.rootData.x,
@@ -340,6 +340,8 @@ export abstract class BaseVisualization implements IVisualization {
           };
           this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, this.rootData);
           this.startInFocusMode = false;
+                // Set the index of the current array of possible visualisations, based on new value passed through from the traversal controls
+      store.set(currentOrbitIdAtom, this.rootData.data.content);
       }
       this._hasRendered = true;
     }
@@ -356,10 +358,10 @@ export abstract class BaseVisualization implements IVisualization {
 
   /**
    * Checks if there is new data to be rendered.
-   * @returns {boolean} True if there is new data (_nextRootData is not null), false otherwise.
+   * @returns {boolean} True if there is new data (_nextRootData is not null and the data has a different root), false otherwise.
    */
   hasNextData(): boolean {
-    return this._nextRootData !== null;
+    return this._nextRootData !== null && this._nextRootData.data.content !== this.rootData.data.content;
   }
 
   // Utility methods to do with base/canvas elements and clearing sub-elements:
@@ -441,7 +443,6 @@ export abstract class BaseVisualization implements IVisualization {
   }
 
   applyInitialTransform(toSelection?: Selection<SVGGElement, unknown, HTMLElement, any> ): void {
-    console.log('`scale(${this._viewConfig.scale}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})` :>> ', `scale(${this._viewConfig.scale}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})`   );
     (toSelection || this._canvas)!.attr(
       "transform",
       `scale(${this._viewConfig.scale}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})`
