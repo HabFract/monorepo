@@ -98,7 +98,7 @@ export function withVisCanvas<T extends IVisualization>(
     const cachedCurrentOrbit: OrbitNodeDetails | null = store.get(
       currentOrbitDetailsAtom,
     );
-
+console.log('cachedCurrentOrbit,  :>> ', cachedCurrentOrbit, );
     useEffect(() => {
       if (document.querySelector(`#${mountingDivId} #${svgId}`)) return;
       const appended = !!appendSvg(mountingDivId, svgId);
@@ -142,8 +142,8 @@ export function withVisCanvas<T extends IVisualization>(
         selectedSphere={selectedSphere}
         render={(currentVis: T, queryType: VisCoverage, x, y, newRootData) => {
           const currentOrbitIsRoot = !!(
-            cachedCurrentOrbit &&
-            cachedCurrentOrbit.eH === currentVis.rootData.data.content
+            store.get(currentOrbitIdAtom) &&
+            store.get(currentOrbitIdAtom).id === currentVis.rootData.data.content
           );
           // Determine need for traversal controls
           const traversalConditions = getTraversalConditions(
@@ -222,6 +222,7 @@ export function withVisCanvas<T extends IVisualization>(
       ) as Array<HierarchyNode<any>> | undefined;
       const rootId = data.data.content;
       const currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
+      if (!currentId) store.set(currentOrbitIdAtom, rootId);
       const currentDetails = store.get(currentOrbitDetailsAtom);
 
       const canMove =
@@ -299,7 +300,7 @@ export function withVisCanvas<T extends IVisualization>(
       };
       const moveUp = () => {
         const orbit = store.get(currentOrbitDetailsAtom);
-        const newId = orbit?.parentEh !== rootId ? orbit?.parentEh : rootId;
+        const newId = (!!orbit && orbit?.parentEh !== rootId) ? orbit?.parentEh : rootId;
         store.set(currentOrbitIdAtom, newId);
       };
       const moveDownLeft = () => {

@@ -94,12 +94,12 @@ export class TreeVisualization extends BaseVisualization {
         return typeof this._zoomConfig.previousRenderZoom?.node?.x !==
           "undefined"
           ? initialX +
-              this._viewConfig.margin.left +
-              (newXTranslate(
-                this.type,
-                this._viewConfig,
-                this._zoomConfig,
-              ) as number)
+          this._viewConfig.margin.left +
+          (newXTranslate(
+            this.type,
+            this._viewConfig,
+            this._zoomConfig,
+          ) as number)
           : initialX;
       },
       defaultCanvasTranslateY: () => {
@@ -110,12 +110,12 @@ export class TreeVisualization extends BaseVisualization {
         return typeof this._zoomConfig.previousRenderZoom?.node?.y !==
           "undefined"
           ? (((this._viewConfig.margin.top as number) +
-              initialY +
-              newYTranslate(
-                this.type,
-                this._viewConfig,
-                this._zoomConfig,
-              )) as number)
+            initialY +
+            newYTranslate(
+              this.type,
+              this._viewConfig,
+              this._zoomConfig,
+            )) as number)
           : initialY;
       },
       isSmallScreen: function () {
@@ -192,12 +192,12 @@ export class TreeVisualization extends BaseVisualization {
     } else {
       super.handleZoom(event);
     }
-    
+
   }
 
   zoomOut(): void {
     if (!this._zoomConfig.focusMode) return;
-    
+
     super.zoomOut();
     // Add any TreeVisualization specific zoom out behavior here
   }
@@ -227,14 +227,13 @@ export class TreeVisualization extends BaseVisualization {
     const { height, width } = pathElement.getBoundingClientRect();
     select(pathElement).attr(
       "transform",
-      `translate(${
-        getPathXTranslation(
-          cacheItem.path,
-          width,
-          (this._viewConfig.isSmallScreen()
-            ? XS_TREE_PATH_OFFSET_X
-            : LG_TREE_PATH_OFFSET_X) / this._viewConfig.scale,
-        ) * this._viewConfig.scale
+      `translate(${getPathXTranslation(
+        cacheItem.path,
+        width,
+        (this._viewConfig.isSmallScreen()
+          ? XS_TREE_PATH_OFFSET_X
+          : LG_TREE_PATH_OFFSET_X) / this._viewConfig.scale,
+      ) * this._viewConfig.scale
       },${-(
         (height +
           (this._viewConfig.isSmallScreen()
@@ -438,10 +437,34 @@ export class TreeVisualization extends BaseVisualization {
     selection.on("click", (e, d) => {
       store.set(currentOrbitIdAtom, d.data.content);
       this.eventHandlers.handleNodeClick!.call(this, e, d);
-      this.eventHandlers.handleNodeZoom.call(this, e, d) 
+      this.eventHandlers.handleNodeZoom.call(this, e, d);
     });
     store.sub(currentOrbitIdAtom, () => {
       this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
+      const id = store.get(currentOrbitIdAtom).id;
+      const node = this.rootData.find(node => node.data.content == id);
+
+      if (node) {
+        // Find the corresponding DOM element
+        const nodeElement = selection.filter(d => d.data.content === id).node();
+console.log('nodeElement :>> ', nodeElement);
+        if (nodeElement) {
+          // Create a synthetic event object with necessary properties
+          const syntheticEvent = {
+            sourceEvent: {
+              clientX: node.x,
+              clientY: node.y
+            },
+            transform: {
+              x: 0,
+              y: 0,
+              k: 1
+            }
+          };
+          // Call handleNodeZoom with the synthetic event and the node data
+          this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, node);
+        }
+      }
     });
   }
 
