@@ -69,29 +69,31 @@ import {
   newYTranslate,
 } from "../helpers";
 import { currentOrbitIdAtom } from "../../../state/orbit";
+import { EntryHashB64 } from "@holochain/client";
 
 export class TreeVisualization extends BaseVisualization {
   layout!: TreeLayout<unknown>;
+  _skipAutoZoom: boolean = false;
 
   initializeViewConfig(
     canvasHeight: number,
     canvasWidth: number,
     margin: Margins,
+    customScale?: number
   ): ViewConfig {
     return {
-      scale: BASE_SCALE,
-      clickScale: FOCUS_MODE_SCALE,
+      scale: customScale || BASE_SCALE,
       margin: { ...margin, top: isSmallScreen() ? -200 : 0 },
       canvasHeight,
       canvasWidth,
-      defaultView: "Tree",
+      defaultView: "",
 
       defaultCanvasTranslateX: () => {
         const initialX = getInitialXTranslate.call(this, {
           defaultView: this._viewConfig.defaultView,
           levelsWide: this._viewConfig.levelsWide,
         });
-        return typeof this._zoomConfig.previousRenderZoom?.node?.x !==
+        return customScale || typeof this._zoomConfig.previousRenderZoom?.node?.x !==
           "undefined"
           ? initialX +
           this._viewConfig.margin.left +
@@ -107,7 +109,8 @@ export class TreeVisualization extends BaseVisualization {
           defaultView: this._viewConfig.defaultView,
           levelsHigh: this._viewConfig.levelsHigh,
         });
-        return typeof this._zoomConfig.previousRenderZoom?.node?.y !==
+        debugger;
+        return customScale || typeof this._zoomConfig.previousRenderZoom?.node?.y !==
           "undefined"
           ? (((this._viewConfig.margin.top as number) +
             initialY +
@@ -147,7 +150,7 @@ export class TreeVisualization extends BaseVisualization {
         this._zoomConfig.focusMode = true;
         this._zoomConfig.previousRenderZoom = { event, node, scale };
 
-        this._canvas!
+        return this._canvas!
           .transition()
           .duration(750)
           .attr("transform", `translate(${x},${y}) scale(${scale})`)
@@ -443,13 +446,9 @@ export class TreeVisualization extends BaseVisualization {
       this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
       const id = store.get(currentOrbitIdAtom).id;
       const node = this.rootData.find(node => node.data.content == id);
-
-      if (node) {
-        // Find the corresponding DOM element
+      if (node && !this._skipAutoZoom) {
         const nodeElement = selection.filter(d => d.data.content === id).node();
-console.log('nodeElement :>> ', nodeElement);
         if (nodeElement) {
-          // Create a synthetic event object with necessary properties
           const syntheticEvent = {
             sourceEvent: {
               clientX: node.x,
@@ -461,11 +460,34 @@ console.log('nodeElement :>> ', nodeElement);
               k: 1
             }
           };
-          // Call handleNodeZoom with the synthetic event and the node data
           this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, node);
         }
       }
+      
+      // Reset the flag after each subscription callback
+      this._skipAutoZoom = false;
     });
+  }
+
+  public manualZoomToNode(nodeId: EntryHashB64) {
+    this._skipAutoZoom = true;
+    store.set(currentOrbitIdAtom, nodeId);
+    const node = this.rootData.find(node => node.data.content == nodeId);
+    if (node) {
+      const syntheticEvent = {
+        sourceEvent: {
+          clientX: node.x,
+          clientY: node.y
+        },
+        transform: {
+          x: 0,
+          y: 0,
+          k: 1
+        }
+      };
+      return this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, node);
+    }
+    return select(null); // Return an empty selection if node not found
   }
 
   setNodeAndLabelGroups(): void {

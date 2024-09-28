@@ -155,7 +155,6 @@ export interface ViewConfig {
   dx?: number;
   dy?: number;
   scale: number;
-  clickScale: number;
   margin: Margins;
   viewportX?: number;
   viewportY?: number;

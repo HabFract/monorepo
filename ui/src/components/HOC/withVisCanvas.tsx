@@ -98,7 +98,7 @@ export function withVisCanvas<T extends IVisualization>(
     const cachedCurrentOrbit: OrbitNodeDetails | null = store.get(
       currentOrbitDetailsAtom,
     );
-console.log('cachedCurrentOrbit,  :>> ', cachedCurrentOrbit, );
+
     useEffect(() => {
       if (document.querySelector(`#${mountingDivId} #${svgId}`)) return;
       const appended = !!appendSvg(mountingDivId, svgId);
@@ -292,7 +292,7 @@ console.log('cachedCurrentOrbit,  :>> ', cachedCurrentOrbit, );
         const newId = (children![currentIndex + 1] as any).data.content;
         store.set(currentOrbitIdAtom, newId);
       };
-      const moveDown = () => {
+      const moveDown = (children) => {
         const childrenMiddle =
           children!.length > 0 ? Math.ceil(children!.length / 2) - 1 : 0;
         const newId = (children![childrenMiddle] as any).data.content;
@@ -326,8 +326,18 @@ console.log('cachedCurrentOrbit,  :>> ', cachedCurrentOrbit, );
         setBreadthIndex(newX);
       };
       const traverseDown = () => {
-        incrementDepth();
-        const newChild =
+        // Zoom down to the node before triggering a different vis data source:
+        const grandChildren = children?.find(child => child.data.content == currentId)?.children;
+        if (grandChildren && grandChildren.length > 0) {
+          const newId = grandChildren[0].data.content;
+          
+          moveDown(grandChildren);
+          currentVis?.manualZoomToNode(newId)
+          .transition()
+          .duration(1000)
+          .on("end", () => {
+            incrementDepth();
+            const newChild =
           children &&
           ((
             children?.find(
@@ -335,11 +345,26 @@ console.log('cachedCurrentOrbit,  :>> ', cachedCurrentOrbit, );
             ) as HierarchyNode<any>
           )?.children?.[0] as HierarchyNode<any>);
         const newId = newChild && newChild.parent?.data?.content;
-        store.set(newTraversalLevelIndexId, { id: newId });
+            store.set(newTraversalLevelIndexId, { id: newId });
+            setBreadthIndex(0);
+          });
+        }
+          // incrementDepth();
+          // const newChild =
+          //   children &&
+          //   ((
+          //     children?.find(
+          //       (child) => child?.data?.content == currentId && !!child.children,
+          //     ) as HierarchyNode<any>
+          //   )?.children?.[0] as HierarchyNode<any>);
+          // const newId = newChild && newChild.parent?.data?.content;
+          // store.set(newTraversalLevelIndexId, { id: newId });
+  
+          // setBreadthIndex(
+          //   children?.findIndex((child) => child?.data?.content == newId) || 0,
+          // );
+        
 
-        setBreadthIndex(
-          children?.findIndex((child) => child?.data?.content == newId) || 0,
-        );
       };
       const traverseUp = () => {
         decrementDepth();
@@ -362,7 +387,7 @@ console.log('cachedCurrentOrbit,  :>> ', cachedCurrentOrbit, );
             )
           }
           iconType="down"
-          onClick={canMoveDown ? moveDown : traverseDown}
+          onClick={canMoveDown ? () => moveDown(children) : traverseDown}
           dataTestId="traversal-button-down"
         />,
         <TraversalButton

@@ -27,6 +27,7 @@ import { isSmallScreen } from "./helpers";
 import { useNodeTraversal } from "../../hooks/useNodeTraversal";
 import { SphereOrbitNodes } from "../../state/types/sphere";
 import { SphereHierarchyBounds } from "../../state/types/hierarchy";
+import { BASE_SCALE, FOCUS_MODE_SCALE } from "./constants";
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   selectedSphere: sphere,
@@ -252,10 +253,32 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       currentOrbitTree._nextRootData = hierarchy(
         getJsonDerivation(json as string),
       ).sort(byStartTime);
+    
       store.set(
         currentOrbitIdAtom,
         currentOrbitTree._nextRootData.data.content,
       );
+      const { canvasHeight,
+        canvasWidth,
+        margin } = currentOrbitTree._viewConfig;
+    // Reset zoom state
+    currentOrbitTree._viewConfig = currentOrbitTree.initializeViewConfig(      canvasHeight,
+      canvasWidth,
+      margin, FOCUS_MODE_SCALE);
+    currentOrbitTree.calibrateViewPortAttrs();
+    currentOrbitTree.setLevelsHighAndWide();
+    // Reset zoom state
+    currentOrbitTree._zoomConfig = currentOrbitTree.initializeZoomConfig();
+    // currentOrbitTree._viewConfig.scale = BASE_SCALE; // Assuming BASE_SCALE is defined
+console.log('currentOrbitTree._viewConfig :>> ', currentOrbitTree._viewConfig);
+console.log('currentOrbitTree._zoomConfig :>> ', currentOrbitTree._zoomConfig);
+    // Reset canvas transform
+    currentOrbitTree.applyInitialTransform();
+    currentOrbitTree._zoomConfig.focusMode = true;
+    // Reinitialize zoomer
+    currentOrbitTree.initializeZoomer();
+
+
       currentOrbitTree.render();
     }
   }, [json, x, y, data]);

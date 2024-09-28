@@ -423,17 +423,18 @@ export abstract class BaseVisualization implements IVisualization {
   }
 
   applyInitialTransform(toSelection?: Selection<SVGGElement, unknown, HTMLElement, any> ): void {
+    console.log('`scale(${this._viewConfig.scale}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})` :>> ', `scale(${this._viewConfig.scale}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})`   );
     (toSelection || this._canvas)!.attr(
       "transform",
       `scale(${this._viewConfig.scale}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})`
     );
   }
 
-  initializeZoomConfig(): ZoomConfig {
+  initializeZoomConfig(focused: boolean = false): ZoomConfig {
     return {
-      focusMode: false,
+      focusMode: focused,
       previousRenderZoom: {},
-      globalZoomScale: this._viewConfig.scale,
+      globalZoomScale: focused ? FOCUS_MODE_SCALE : this._viewConfig.scale,
       zoomedInView: function () {
         return Object.keys(this.previousRenderZoom).length !== 0;
       },
