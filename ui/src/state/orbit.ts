@@ -112,6 +112,22 @@ export const getOrbitAtom = (orbitId: ActionHashB64) =>
   });
 
 /**
+ * Selector atom to get the startTime from the appState based on entry hash ( used primarily for sorting a hierarchy)
+ * @param orbitEh - The EntryHashB64 of the orbit to retrieve.
+ * @returns {number | null} the timestamp of that orbit if it exists, null otherwise
+ */
+export const getOrbitStartTimeFromEh = atom(
+  (get) => (orbitEh: EntryHashB64) => {
+    const state = get(appStateAtom);
+    const orbitActionHash = Object.keys(state.orbitNodes.byHash).find(
+      (key) => state.orbitNodes.byHash[key].eH === orbitEh,
+    );
+    if(!orbitActionHash) return null;
+    return state.orbitNodes.byHash[orbitActionHash]?.startTime;
+  }
+);
+
+/**
  * Write-only atom for updating orbit details using its entry hash.
  *
  * @param {EntryHashB64} params.orbitEh - The entry hash of the orbit to update.

@@ -13,6 +13,8 @@ export interface HierarchyBounds {
   maxDepth: number;
 }
 
+export type NodeContent = { content: EntryHashB64 };
+
 export interface SphereHierarchyBounds {
   [sphereId: EntryHashB64]: HierarchyBounds;
 }

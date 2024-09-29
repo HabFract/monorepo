@@ -18,7 +18,7 @@ import {
   setBreadths,
   setDepths,
 } from "../../state/hierarchy";
-import { currentOrbitIdAtom } from "../../state/orbit";
+import { currentOrbitIdAtom, getOrbitStartTimeFromEh } from "../../state/orbit";
 import { newTraversalLevelIndexId } from "../../state/hierarchy";
 
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
@@ -28,7 +28,7 @@ import { currentSphereOrbitNodesAtom } from "../../state/orbit";
 import { isSmallScreen } from "./helpers";
 import { useNodeTraversal } from "../../hooks/useNodeTraversal";
 import { SphereOrbitNodes } from "../../state/types/sphere";
-import { SphereHierarchyBounds } from "../../state/types/hierarchy";
+import { NodeContent, SphereHierarchyBounds } from "../../state/types/hierarchy";
 import { client } from "../../graphql/client";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
@@ -88,8 +88,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const getJsonDerivation = (json: string) => {
     let result;
     try {
-      console.log('JSON.parse(json) :>> ', JSON.parse(json));
-      console.log('x :>> ', x, y);
+      // console.log('JSON.parse(json) :>> ', JSON.parse(json));
+      // console.log('x :>> ', x, y);
       result = visCoverage == VisCoverage.CompleteOrbit
       ? JSON.parse(json)
       : JSON.parse(json)[x];
@@ -319,30 +319,31 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 };
 
 export default React.memo(OrbitTree);
-
 export function byStartTime(
-  a: HierarchyNode<unknown> | { content: string },
-  b: HierarchyNode<unknown> | { content: string },
+  a: HierarchyNode<NodeContent> | NodeContent,
+  b: HierarchyNode<NodeContent> | NodeContent,
 ) {
-  //@ts-ignore
-  const idA: ActionHashB64 = a?.data?.content || a?.content;
-  //@ts-ignore
-  const idB: ActionHashB64 = b?.data?.content || b?.content;
-  const nodeDetailsCache = store.get(currentSphereOrbitNodesAtom);
-  if (
-    (nodeDetailsCache?.[idB]?.startTime || (0 as number)) -
-      (nodeDetailsCache?.[idA as keyof SphereOrbitNodes]?.startTime ||
-        (0 as number)) ==
-    0
-  ) {
+  const getStartTime = store.get(getOrbitStartTimeFromEh);
+
+  const getStartTimeFromNode = (node: HierarchyNode<NodeContent> | NodeContent) => {
+    if ('data' in node && node.data.content) {
+      return getStartTime(node.data.content);
+    } else if ('content' in node) {
+      return getStartTime(node.content);
+    }
+    return 0;
+  };
+
+  const startTimeA = getStartTimeFromNode(a) ?? 0;
+  const startTimeB = getStartTimeFromNode(b) ?? 0;
+
+  if (startTimeA === startTimeB) {
+    console.log('node :>> ', a, b);
     console.error("Sorting error!");
     return 0;
   }
+
   return isSmallScreen()
-    ? (nodeDetailsCache?.[idB]?.startTime || (0 as number)) -
-        (nodeDetailsCache?.[idA as keyof SphereOrbitNodes]?.startTime ||
-          (0 as number))
-    : (nodeDetailsCache?.[idA]?.startTime || (0 as number)) -
-        (nodeDetailsCache?.[idB as keyof SphereOrbitNodes]?.startTime ||
-          (0 as number));
+    ? startTimeB - startTimeA
+    : startTimeA - startTimeB;
 }

@@ -190,7 +190,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
             });
           } else {
             const orbitAh = editMode
-              ? payload.updateOrbit.actionHash
+              ? payload.updateOrbit.id
               : payload.createOrbit.id;
             const props = inOnboarding
               ? { refiningOrbitAh: orbitAh }

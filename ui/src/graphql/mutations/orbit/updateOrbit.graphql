@@ -1,6 +1,18 @@
 mutation updateOrbit($orbitFields: OrbitUpdateParams!) {
   updateOrbit(orbit: $orbitFields) {
-    actionHash
-    entryHash
+    id
+    eH
+    name
+    parentHash
+    sphereHash
+    scale
+    frequency
+    metadata {
+      description
+      timeframe {
+        startTime
+        endTime
+      }
+    }
   }
 }

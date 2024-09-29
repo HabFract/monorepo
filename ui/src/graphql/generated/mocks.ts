@@ -54,8 +54,6 @@ export const aCreateSphereResponsePayload = (overrides?: Partial<CreateSphereRes
 export const aCreateOrbitResponsePayload = (overrides?: Partial<CreateOrbitResponsePayload>): CreateOrbitResponsePayload => {
     return {
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '5fad755e-8006-4c20-aba3-dd74eea04921',
-        actionHash: overrides && overrides.hasOwnProperty('actionHash') ? overrides.actionHash! : 'porro',
-        entryHash: overrides && overrides.hasOwnProperty('entryHash') ? overrides.entryHash! : 'tempore',
         eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'magni',
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'id',
         sphereHash: overrides && overrides.hasOwnProperty('sphereHash') ? overrides.sphereHash! : 'quod',

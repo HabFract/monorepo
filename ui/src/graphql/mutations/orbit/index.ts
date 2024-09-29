@@ -5,8 +5,7 @@ import {
   HAPP_ZOME_NAME_PERSONAL_HABITS,
 } from "../../../constants";
 import {
-  CreateResponsePayload,
-  Frequency,
+  CreateOrbitResponsePayload,
   Orbit,
   OrbitCreateParams,
   OrbitUpdateParams,
@@ -18,19 +17,17 @@ import {
   encodeHashToBase64,
 } from "@holochain/client";
 import { EntryRecord } from "@holochain-open-dev/utils";
-import { OrbitDetails } from "../../../state/types/orbit";
-import { decodeFrequency } from "../../../state/orbit";
 
 export type createArgs = { orbit: OrbitCreateParams };
 export type updateArgs = { orbit: OrbitUpdateParams };
 export type createHandler = (
   root: any,
   args: createArgs,
-) => Promise<OrbitDetails>;
+) => Promise<CreateOrbitResponsePayload>;
 export type updateHandler = (
   root: any,
   args: updateArgs,
-) => Promise<CreateResponsePayload>;
+) => Promise<CreateOrbitResponsePayload>;
 export type deleteHandler = (
   root: any,
   args: { orbitHash: ActionHashB64 },
@@ -98,19 +95,21 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     const entryRecord = new EntryRecord<Orbit>(rawRecord as any);
     return {
       id: entryRecord.actionHash as any,
-      actionHash: entryRecord.actionHash as any, // To be phased out
-      entryHash: encodeHashToBase64(entryRecord.entryHash), // To be phased out
       eH: encodeHashToBase64(entryRecord.entryHash),
       name: entryRecord.entry.name,
-      frequency: entryRecord.entry.frequency as Frequency,
+      frequency: entryRecord.entry.frequency,
       sphereHash: entryRecord.entry.sphereHash,
-      parentEh: entryRecord.entry.parentHash,
+      parentHash: entryRecord.entry.parentHash,
       childHash: entryRecord.entry.childHash,
-      startTime: entryRecord.entry.metadata?.timeframe?.startTime,
-      endTime: entryRecord.entry.metadata?.timeframe?.endTime,
+      metadata: {
+        timeframe: {
+          startTime: entryRecord.entry.metadata!.timeframe.startTime,
+          endTime: entryRecord.entry.metadata?.timeframe?.endTime,
+          description: entryRecord.entry.metadata?.description,
+        }
+      },
       scale: entryRecord.entry.scale,
-      description: entryRecord.entry.metadata?.description,
-    } as any; // This is covering up ts errors TODO: correct type
+    };
   };
 
   const updateOrbit: updateHandler = async (
@@ -145,8 +144,21 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     });
     const entryRecord = new EntryRecord<Orbit>(rawRecord as any);
     return {
-      actionHash: entryRecord.actionHash as any,
-      entryHash: encodeHashToBase64(entryRecord.entryHash),
+      id: entryRecord.actionHash as any,
+      eH: encodeHashToBase64(entryRecord.entryHash),
+      name: entryRecord.entry.name,
+      frequency: entryRecord.entry.frequency,
+      sphereHash: entryRecord.entry.sphereHash,
+      parentHash: entryRecord.entry.parentHash,
+      childHash: entryRecord.entry.childHash,
+      metadata: {
+        timeframe: {
+          startTime: entryRecord.entry.metadata!.timeframe.startTime,
+          endTime: entryRecord.entry.metadata?.timeframe?.endTime,
+          description: entryRecord.entry.metadata?.description,
+        }
+      },
+      scale: entryRecord.entry.scale,
     };
   };
 

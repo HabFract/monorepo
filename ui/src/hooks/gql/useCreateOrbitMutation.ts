@@ -1,5 +1,8 @@
 import { currentSphereHashesAtom } from "./../../state/sphere";
-import { useCreateOrbitMutation as useCreateOrbitMutationGenerated } from "../../graphql/generated";
+import {
+  CreateOrbitResponsePayload,
+  useCreateOrbitMutation as useCreateOrbitMutationGenerated,
+} from "../../graphql/generated";
 import { appStateAtom } from "../../state/store";
 import { useSetAtom } from "jotai";
 import { OrbitNodeDetails } from "../../state/types/orbit";
@@ -11,6 +14,8 @@ import { nodeCache, store } from "../../state/jotaiKeyValueStore";
 import { currentSphereHasCachedNodesAtom } from "../../state/sphere";
 import { SphereHashes, SphereOrbitNodes } from "../../state/types/sphere";
 import { ActionHashB64 } from "@holochain/client";
+import { client } from "../../graphql/client";
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
 export const useCreateOrbitMutation = (opts) => {
   const setAppState = useSetAtom(appStateAtom);
@@ -20,19 +25,20 @@ export const useCreateOrbitMutation = (opts) => {
     update(_cache, { data }) {
       if (!data?.createOrbit) return;
 
-      const newOrbit = data.createOrbit as any;
+      const newOrbit: CreateOrbitResponsePayload = data.createOrbit;
       const newOrbitDetails: OrbitNodeDetails = {
         id: newOrbit.id,
         eH: newOrbit.eH,
         name: newOrbit.name,
         scale: newOrbit.scale,
         frequency: decodeFrequency(newOrbit.frequency),
-        startTime: newOrbit.startTime,
+        startTime: newOrbit.metadata!.timeframe.startTime,
         sphereHash: newOrbit.sphereHash,
-        endTime: newOrbit.endTime,
-        description: newOrbit.description,
-        parentEh: newOrbit.parentHash,
+        endTime: newOrbit.metadata!.timeframe.endTime as number | undefined,
+        description: newOrbit.metadata!.description as string | undefined,
+        parentEh: newOrbit?.parentHash as string | undefined,
       };
+
       // To be phased out, all appstate will be stored in localstorage anyway
       if (store.get(currentSphereHasCachedNodesAtom)) {
         let sphere = store.get(currentSphereHashesAtom) as SphereHashes;
@@ -44,7 +50,7 @@ export const useCreateOrbitMutation = (opts) => {
         store.set(
           nodeCache.set,
           sphere.actionHash as ActionHashB64,
-          newSphereOrbitNodes,
+          newSphereOrbitNodes
         );
       }
 
@@ -67,7 +73,7 @@ export const useCreateOrbitMutation = (opts) => {
         ) {
           const sphereHash = newOrbit.sphereHash;
           const sphereId = Object.entries(updatedState.spheres.byHash).find(
-            ([id, sphere]) => sphere.details.entryHash == sphereHash,
+            ([id, sphere]) => sphere.details.entryHash == sphereHash
           )?.[0];
           if (
             !sphereId ||
@@ -99,6 +105,27 @@ export const useCreateOrbitMutation = (opts) => {
 
         return updatedState;
       });
+
+      // Invalidate the cache for the getOrbitHierarchy query
+      (client as Promise<ApolloClient<NormalizedCacheObject>>).then(
+        (client) => {
+          const normalizedId = client.cache.identify({
+            __typename: "Query",
+            id: "ROOT_QUERY",
+            fieldName: "getOrbitHierarchy",
+            args: {
+              params: {
+                levelQuery: {
+                  sphereHashB64: newOrbit.sphereHash,
+                  orbitLevel: 0,
+                },
+              },
+            },
+          });
+          client.cache.evict({ id: normalizedId });
+          client.cache.gc();
+        }
+      );
 
       opts?.update && opts.update();
     },

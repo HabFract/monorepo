@@ -39,7 +39,6 @@ const withLayout = (
       case !!state.match("Onboarding"):
         return <Onboarding>{withPageTransition(component)}</Onboarding>;
       case ["Home", "PreloadAndCache"].includes(state):
-        console.log("state :>> ", state, params);
         if (state == "Home" && props?.newUser)
           return <Home firstVisit={false}></Home>;
         return withPageTransition(component);

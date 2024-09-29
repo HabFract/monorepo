@@ -81,6 +81,7 @@ export interface IVisualization {
   initializeZoomConfig: () => ZoomConfig;
   initializeZoomer: () => ZoomBehavior<Element, unknown> | null;
   handleZoom: (event: MouseEvent) => void;
+  manualZoomToNode(nodeId: EntryHashB64, skipSetCurrentOrbit?: boolean);
 
   /** Method to fully render the visualization */
   render: () => void;
@@ -110,7 +111,7 @@ export type VisProps<T extends IVisualization> = {
     queryType: VisCoverage,
     x: number,
     y: number,
-    newRootData: HierarchyNode<unknown>,
+    newRootData: HierarchyNode<unknown>
   ) => React.ReactNode;
 };
 
@@ -126,25 +127,25 @@ export interface EventHandlers {
   }) => void;
   handleDeleteNode?: (
     event: React.MouseEvent,
-    node: HierarchyNode<unknown>,
+    node: HierarchyNode<unknown>
   ) => void;
   handleNodeZoom: (
     event: D3ZoomEvent<SVGSVGElement, unknown>,
     node: HierarchyNode<unknown>,
-    forParent?: boolean,
+    forParent?: boolean
   ) => void;
   handleZoomOut: (
     event: D3ZoomEvent<SVGSVGElement, unknown>,
     node: HierarchyNode<unknown>,
-    forParent?: boolean,
+    forParent?: boolean
   ) => void;
   handleNodeFocus?: (
     event: React.MouseEvent,
-    node: HierarchyNode<unknown>,
+    node: HierarchyNode<unknown>
   ) => void;
   handleNodeClick?: (
     event: React.MouseEvent,
-    node: HierarchyNode<unknown>,
+    node: HierarchyNode<unknown>
   ) => void;
 }
 

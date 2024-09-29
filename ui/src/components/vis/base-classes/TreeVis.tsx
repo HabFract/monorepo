@@ -1,13 +1,10 @@
 import { tree, TreeLayout } from "d3-hierarchy";
 import { DefaultLinkObject, Link, linkVertical } from "d3-shape";
-import { zoom, ZoomBehavior } from "d3-zoom";
-import { easeLinear } from "d3-ease";
 import {
   EventHandlers,
   Margins,
   ViewConfig,
   VisType,
-  ZoomConfig,
 } from "../types";
 import {
   BASE_SCALE,
@@ -149,6 +146,7 @@ export class TreeVisualization extends BaseVisualization {
         this._zoomConfig.focusMode = true;
         this._zoomConfig.previousRenderZoom = { event, node, scale };
         return this._canvas!
+          //@ts-expect-error
           .transition()
           .duration(this.startInFocusMode ? 0 : 900)
           .attr("transform", `translate(${x},${y}) scale(${scale})`)
@@ -163,7 +161,7 @@ export class TreeVisualization extends BaseVisualization {
         this._enteringNodes.select("foreignObject").html(this.appendLabelHtml);
         this._gCircle.classed("checked", (d): boolean => {
           // if (!d?.data?.content || !this.nodeDetails[d.data.content])
-            return false;
+          return false;
           // return store.get(currentOrbitIdAtom) == d.data.content;
         });
       },
@@ -462,7 +460,7 @@ export class TreeVisualization extends BaseVisualization {
           this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, node);
         }
       }
-      
+
       // Reset the flag after each subscription callback
       this._skipAutoZoom = false;
     });
@@ -495,7 +493,7 @@ export class TreeVisualization extends BaseVisualization {
       .attr("stroke-width", "0")
       .classed("checked", (d): boolean => {
         // if (!d?.data?.content || !this.nodeDetails[d.data.content])
-          return false;
+        return false;
         // return store.get(currentOrbitIdAtom).id == d.data.content;
       });
     this._gTooltip = this.clearAndRedrawLabels();

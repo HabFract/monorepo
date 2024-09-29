@@ -44,8 +44,6 @@ type CreateSphereResponsePayload {
 
 type CreateOrbitResponsePayload {
   id: ID!
-  actionHash: String!
-  entryHash: String!
   eH: String!
   name: String!
   sphereHash: String!

@@ -99,6 +99,7 @@ export abstract class BaseVisualization implements IVisualization {
   abstract appendLinkPath(): void;
   abstract bindEventHandlers(selection: any): void;
   abstract getLinkPathGenerator(): void;
+  abstract manualZoomToNode(nodeId: EntryHashB64, skipSetCurrentOrbit?: boolean);
 
   abstract initializeViewConfig(
     canvasHeight: number,
@@ -106,7 +107,7 @@ export abstract class BaseVisualization implements IVisualization {
     margin: Margins,
   ): ViewConfig;
   abstract initializeEventHandlers(): EventHandlers;
-  
+
   modalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   isModalOpen: boolean = false;
   skipMainRender: boolean = false;
@@ -263,7 +264,7 @@ export abstract class BaseVisualization implements IVisualization {
   setdXdY(): void {
     this._viewConfig.dx =
       this._viewConfig.canvasWidth /
-        ((this._viewConfig.levelsHigh as number) * 2) - // Adjust for tree horizontal spacing on different screens
+      ((this._viewConfig.levelsHigh as number) * 2) - // Adjust for tree horizontal spacing on different screens
       +this._viewConfig.isSmallScreen() * 250;
     this._viewConfig.dy =
       this._viewConfig.canvasHeight /
@@ -322,26 +323,26 @@ export abstract class BaseVisualization implements IVisualization {
       this.appendLinkPath();
 
       !hasUpdated && this.applyInitialTransform();
-      if (!(this.coverageType == VisCoverage.Partial ||  this.noCanvas())) {
+      if (!(this.coverageType == VisCoverage.Partial || this.noCanvas())) {
         this.initializeZoomer();
       }
       if (this.startInFocusMode && hasUpdated) {
-          // store.set(currentOrbitIdAtom, this.rootData.data.content)
-          const syntheticEvent = {
-            sourceEvent: {
-              clientX: this.rootData.x,
-              clientY: this.rootData.y
-            },
-            transform: {
-              x: 0,
-              y: 0,
-              k: 1
-            }
-          };
-          this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, this.rootData);
-          this.startInFocusMode = false;
-                // Set the index of the current array of possible visualisations, based on new value passed through from the traversal controls
-      store.set(currentOrbitIdAtom, this.rootData.data.content);
+        // store.set(currentOrbitIdAtom, this.rootData.data.content)
+        const syntheticEvent = {
+          sourceEvent: {
+            clientX: this.rootData.x,
+            clientY: this.rootData.y
+          },
+          transform: {
+            x: 0,
+            y: 0,
+            k: 1
+          }
+        };
+        this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, this.rootData);
+        this.startInFocusMode = false;
+        // Set the index of the current array of possible visualisations, based on new value passed through from the traversal controls
+        store.set(currentOrbitIdAtom, this.rootData.data.content);
       }
       this._hasRendered = true;
     }
@@ -442,7 +443,7 @@ export abstract class BaseVisualization implements IVisualization {
     this.initializeZoomConfig()
   }
 
-  applyInitialTransform(toSelection?: Selection<SVGGElement, unknown, HTMLElement, any> ): void {
+  applyInitialTransform(toSelection?: Selection<SVGGElement, unknown, HTMLElement, any>): void {
     (toSelection || this._canvas)!.attr(
       "transform",
       `scale(${this._viewConfig.scale}), translate(${this._viewConfig.defaultCanvasTranslateX()}, ${this._viewConfig.defaultCanvasTranslateY()})`
@@ -464,27 +465,29 @@ export abstract class BaseVisualization implements IVisualization {
     const zoomer: ZoomBehavior<Element, unknown> = zoom()
       .scaleExtent([1, 1.5])
       .on("zoom", this.handleZoom.bind(this) as any);
+    //@ts-ignore
     this._canvas && this._canvas!.call(zoomer);
     return (this.zoomer = zoomer);
   }
 
   handleZoom(event: any): void {
-      let t = { ...event.transform };
-      let scale;
-      let x, y;
-      if (this._zoomConfig.focusMode) {
-        this._zoomConfig.focusMode = false;
-        return;
-      } else {
-        scale = t.k;
-        x = t.x + this._viewConfig.defaultCanvasTranslateX() * scale;
-        y = t.y + this._viewConfig.defaultCanvasTranslateY() * scale;
-      }
-      this._canvas && this._canvas
-        .transition()
-        .ease(easeLinear)
-        .duration(200)
-        .attr("transform", `translate(${x},${y}), scale(${scale})`);
+    let t = { ...event.transform };
+    let scale;
+    let x, y;
+    if (this._zoomConfig.focusMode) {
+      this._zoomConfig.focusMode = false;
+      return;
+    } else {
+      scale = t.k;
+      x = t.x + this._viewConfig.defaultCanvasTranslateX() * scale;
+      y = t.y + this._viewConfig.defaultCanvasTranslateY() * scale;
+    }
+    this._canvas && this._canvas
+      //@ts-expect-error
+      .transition()
+      .ease(easeLinear)
+      .duration(200)
+      .attr("transform", `translate(${x},${y}), scale(${scale})`);
   }
 
   zoomOut(): void {
@@ -494,6 +497,7 @@ export abstract class BaseVisualization implements IVisualization {
     this._zoomConfig.globalZoomScale = this._viewConfig.scale;
 
     this.initializeZoomer();
+    //@ts-expect-error
     this.applyInitialTransform(this._canvas!.transition().duration(750));
     this._zoomConfig.focusMode = false;
     this._zoomConfig.previousRenderZoom = {};
