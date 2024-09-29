@@ -125,7 +125,7 @@ export function withVisCanvas<T extends IVisualization>(
       maxDepth,
     } = useNodeTraversal(
       sphereHierarchyBounds[
-        selectedSphere!.entryHash as keyof SphereHierarchyBounds
+      selectedSphere!.entryHash as keyof SphereHierarchyBounds
       ] as HierarchyBounds,
     );
 
@@ -224,7 +224,7 @@ export function withVisCanvas<T extends IVisualization>(
       const currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
       if (!currentId || (y > 0 && !currentVis._zoomConfig.focusMode && currentId && currentId !== rootId)) {
         store.set(currentOrbitIdAtom, rootId);
-      } 
+      }
       const currentDetails = store.get(currentOrbitDetailsAtom);
 
       const canMove =
@@ -332,41 +332,25 @@ export function withVisCanvas<T extends IVisualization>(
         const grandChildren = children?.find(child => child.data.content == currentId)?.children;
         if (grandChildren && grandChildren.length > 0) {
           const newId = grandChildren[0].data.content;
-          
+
           moveDown(grandChildren);
           currentVis?.manualZoomToNode(newId)
-            .transition()
-            .duration(1000)
             .on("end", () => {
               incrementDepth();
-            const newChild =
-              children &&
-              ((
-                children?.find(
-                  (child) => child?.data?.content == currentId && !!child.children,
-                ) as HierarchyNode<any>
-              )?.children?.[0] as HierarchyNode<any>);
-            const newId = newChild && newChild.parent?.data?.content;
-            store.set(newTraversalLevelIndexId, { id: newId });
-            setBreadthIndex(0);
-          });
+              const newChild =
+                children &&
+                ((
+                  children?.find(
+                    (child) => child?.data?.content == currentId && !!child.children,
+                  ) as HierarchyNode<any>
+                )?.children?.[0] as HierarchyNode<any>);
+              const newId = newChild && newChild.parent?.data?.content;
+              store.set(newTraversalLevelIndexId, { id: newId });
+              setBreadthIndex(
+                children?.findIndex((child) => child?.data?.content == newId) || 0,
+              );
+            });
         }
-          // incrementDepth();
-          // const newChild =
-          //   children &&
-          //   ((
-          //     children?.find(
-          //       (child) => child?.data?.content == currentId && !!child.children,
-          //     ) as HierarchyNode<any>
-          //   )?.children?.[0] as HierarchyNode<any>);
-          // const newId = newChild && newChild.parent?.data?.content;
-          // store.set(newTraversalLevelIndexId, { id: newId });
-  
-          // setBreadthIndex(
-          //   children?.findIndex((child) => child?.data?.content == newId) || 0,
-          // );
-        
-
       };
       const traverseUp = () => {
         decrementDepth();

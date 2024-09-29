@@ -61,7 +61,7 @@ export const currentSphereOrbitNodesAtom = atom<SphereOrbitNodes | null>(
     });
 
     return Object.keys(sphereNodes).length > 0 ? sphereNodes : null;
-  },
+  }
 );
 
 /**
@@ -89,6 +89,7 @@ export const currentOrbitIdAtom = atom(
       : null;
   },
   (get, set, newOrbitId: ActionHashB64) => {
+    console.log("set :>> ", newOrbitId);
     set(appStateAtom, (prevState) => ({
       ...prevState,
       orbitNodes: {
@@ -96,7 +97,7 @@ export const currentOrbitIdAtom = atom(
         currentOrbitHash: newOrbitId,
       },
     }));
-  },
+  }
 );
 
 /**
@@ -112,6 +113,19 @@ export const getOrbitAtom = (orbitId: ActionHashB64) =>
   });
 
 /**
+ * Selector atom to get the id of the orbit based on entry hash
+ * @param orbitEh - The EntryHashB64 of the orbit to retrieve.
+ * @returns {ActionHashB64 | null} the id of that orbit if it exists, null otherwise
+ */
+export const getOrbitIdFromEh = atom((get) => (orbitEh: EntryHashB64) => {
+  const state = get(appStateAtom);
+  const orbitActionHash = Object.keys(state.orbitNodes.byHash).find(
+    (key) => state.orbitNodes.byHash[key].eH === orbitEh
+  );
+  return orbitActionHash || null;
+});
+
+/**
  * Selector atom to get the startTime from the appState based on entry hash ( used primarily for sorting a hierarchy)
  * @param orbitEh - The EntryHashB64 of the orbit to retrieve.
  * @returns {number | null} the timestamp of that orbit if it exists, null otherwise
@@ -120,9 +134,9 @@ export const getOrbitStartTimeFromEh = atom(
   (get) => (orbitEh: EntryHashB64) => {
     const state = get(appStateAtom);
     const orbitActionHash = Object.keys(state.orbitNodes.byHash).find(
-      (key) => state.orbitNodes.byHash[key].eH === orbitEh,
+      (key) => state.orbitNodes.byHash[key].eH === orbitEh
     );
-    if(!orbitActionHash) return null;
+    if (!orbitActionHash) return null;
     return state.orbitNodes.byHash[orbitActionHash]?.startTime;
   }
 );
@@ -144,11 +158,11 @@ export const setOrbitWithEntryHashAtom = atom(
     {
       orbitEh,
       update,
-    }: { orbitEh: EntryHashB64; update: Partial<OrbitNodeDetails> },
+    }: { orbitEh: EntryHashB64; update: Partial<OrbitNodeDetails> }
   ) => {
     set(appStateAtom, (prevState) => {
       const orbitActionHash = Object.keys(prevState.orbitNodes.byHash).find(
-        (key) => prevState.orbitNodes.byHash[key].eH === orbitEh,
+        (key) => prevState.orbitNodes.byHash[key].eH === orbitEh
       );
 
       if (!orbitActionHash) return prevState; // Orbit not found, no update
@@ -167,7 +181,7 @@ export const setOrbitWithEntryHashAtom = atom(
         },
       };
     });
-  },
+  }
 );
 /**
  * Gets the frequency of a given Orbit from the AppState
@@ -218,7 +232,7 @@ export const setWinForOrbit = atom(
       date: string;
       winIndex?: number;
       hasWin: boolean;
-    },
+    }
   ) => {
     const state = get(appStateAtom);
     const orbit = state.orbitNodes.byHash[orbitHash];
@@ -256,7 +270,7 @@ export const setWinForOrbit = atom(
         [orbitHash]: newWinData,
       },
     });
-  },
+  }
 );
 
 /**

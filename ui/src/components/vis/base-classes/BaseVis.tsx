@@ -26,6 +26,7 @@ import { GetOrbitsDocument, Orbit, Scale } from "../../../graphql/generated";
 import { client } from "../../../graphql/client";
 import { store, nodeCache } from "../../../state/jotaiKeyValueStore";
 import { mapToCacheObject } from "../../../state/orbit";
+import { newTraversalLevelIndexId } from "../../../state/hierarchy";
 import { OrbitNodeDetails } from "../../../state/types";
 import { extractEdges } from "../../../graphql/utils";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
@@ -327,7 +328,6 @@ export abstract class BaseVisualization implements IVisualization {
         this.initializeZoomer();
       }
       if (this.startInFocusMode && hasUpdated) {
-        // store.set(currentOrbitIdAtom, this.rootData.data.content)
         const syntheticEvent = {
           sourceEvent: {
             clientX: this.rootData.x,
@@ -342,6 +342,13 @@ export abstract class BaseVisualization implements IVisualization {
         this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, this.rootData);
         this.startInFocusMode = false;
         // Set the index of the current array of possible visualisations, based on new value passed through from the traversal controls
+        // const newId = store.get(newTraversalLevelIndexId)?.id;
+        // if (newId) {
+        //   store.set(currentOrbitIdAtom, newId);
+        //   store.set(newTraversalLevelIndexId, { id: null });
+        //   console.log('newId :>> ', newId);
+
+        // }
         store.set(currentOrbitIdAtom, this.rootData.data.content);
       }
       this._hasRendered = true;

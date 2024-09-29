@@ -51,11 +51,11 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     !nodes || typeof nodes !== "object" || Object.keys(nodes).length === 0;
   const sphereNodeDetails = !needToUpdateCache
     ? Object.fromEntries(
-        Object.entries(nodes).map(([_, nodeDetails]) => [
-          nodeDetails.eH,
-          nodeDetails,
-        ]),
-      )
+      Object.entries(nodes).map(([_, nodeDetails]) => [
+        nodeDetails.eH,
+        nodeDetails,
+      ]),
+    )
     : {};
   // Get and set node traversal bounds state
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
@@ -78,11 +78,11 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     visCoverage == VisCoverage.CompleteOrbit
       ? { orbitEntryHashB64: params.orbitEh }
       : {
-          levelQuery: {
-            sphereHashB64: params?.currentSphereEhB64,
-            orbitLevel: customDepth || 0,
-          },
-        };
+        levelQuery: {
+          sphereHashB64: params?.currentSphereEhB64,
+          orbitLevel: customDepth || 0,
+        },
+      };
 
   // Helper to determine which part of the returned query data should be used in the Vis object
   const getJsonDerivation = (json: string) => {
@@ -91,8 +91,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       // console.log('JSON.parse(json) :>> ', JSON.parse(json));
       // console.log('x :>> ', x, y);
       result = visCoverage == VisCoverage.CompleteOrbit
-      ? JSON.parse(json)
-      : JSON.parse(json)[x];
+        ? JSON.parse(json)
+        : JSON.parse(json)[x];
     } catch (error) {
       console.error("Error deriving parsed JSON from data: ", error);
     }
@@ -125,7 +125,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     params: getQueryParams(dataLevel?.getLowestSphereHierarchyLevel || 0),
     hasCached,
     currentSphereId: sphere.actionHash as string,
-    bypass: true,
+    bypass: false,
   });
 
   const instantiateVisObject = () => {
@@ -178,39 +178,39 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       const query = depthBounds
         ? { ...getQueryParams(), orbitLevel: 0 } //(depthBounds![params?.currentSphereEhB64] as any).minDepth }
         : getQueryParams(y);
-        const gql: ApolloClient<NormalizedCacheObject> =
-          (await client) as ApolloClient<NormalizedCacheObject>;
-        const cachedData = (gql).readQuery({
-          query: GetOrbitHierarchyDocument,
-          variables: { params: { ...query } },
-        });
-    
-        if (cachedData) {
-          let parsedData = JSON.parse(cachedData.getOrbitHierarchy);
-          while (typeof parsedData === "string") {
-            parsedData = JSON.parse(parsedData);
-          }
-          const sorted = isSmallScreen()
-            ? parsedData.result.level_trees
-            : parsedData.result.level_trees;
-          const isNewLevelXIndex = store.get(newTraversalLevelIndexId);
-          let newLevelXIndex =
-            isNewLevelXIndex &&
-            sorted
-              .map((d) => d.content)
-              .findIndex((id) => id == store.get(newTraversalLevelIndexId).id);
-              console.log('newLevelXIndex :>> ', newLevelXIndex, x);
+      const gql: ApolloClient<NormalizedCacheObject> =
+        (await client) as ApolloClient<NormalizedCacheObject>;
+      const cachedData = (gql).readQuery({
+        query: GetOrbitHierarchyDocument,
+        variables: { params: { ...query } },
+      });
 
-          setJson(JSON.stringify(sorted));
-          if (newLevelXIndex !== -1) {
-            store.set(currentSphereHierarchyIndices, { x: newLevelXIndex, y });
-          }
-          if (isNewLevelXIndex) {
-            store.set(newTraversalLevelIndexId, { id: null });
-          }
-        } else {
-          getHierarchy({ variables: { params: { ...query } } });
+      if (cachedData) {
+        let parsedData = JSON.parse(cachedData.getOrbitHierarchy);
+        while (typeof parsedData === "string") {
+          parsedData = JSON.parse(parsedData);
         }
+        const sorted = isSmallScreen()
+          ? parsedData.result.level_trees
+          : parsedData.result.level_trees;
+        const isNewLevelXIndex = store.get(newTraversalLevelIndexId);
+        let newLevelXIndex =
+          isNewLevelXIndex &&
+          sorted
+            .map((d) => d.content)
+            .findIndex((id) => id == store.get(newTraversalLevelIndexId).id);
+        console.log('newLevelXIndex :>> ', newLevelXIndex, x);
+
+        setJson(JSON.stringify(sorted));
+        if (newLevelXIndex !== -1) {
+          store.set(currentSphereHierarchyIndices, { x: newLevelXIndex, y });
+        }
+        if (isNewLevelXIndex) {
+          // store.set(newTraversalLevelIndexId, { id: null });
+        }
+      } else {
+        getHierarchy({ variables: { params: { ...query } } });
+      }
     };
     fetchHierarchyData()
   }, [y]);
@@ -307,7 +307,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       {!error &&
         json &&
         currentOrbitTree &&
-        render( 
+        render(
           currentOrbitTree,
           visCoverage,
           x,

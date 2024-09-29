@@ -469,6 +469,7 @@ export class TreeVisualization extends BaseVisualization {
   public manualZoomToNode(nodeId: EntryHashB64, skipSetCurrentOrbit: boolean = false) {
     this._skipAutoZoom = true;
     !skipSetCurrentOrbit && store.set(currentOrbitIdAtom, nodeId);
+    console.log('triggered manual zoom :>> ', nodeId);
     const node = this.rootData.find(node => node.data.content == nodeId);
     if (node) {
       const syntheticEvent = {
