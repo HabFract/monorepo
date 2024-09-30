@@ -1,4 +1,4 @@
-import { tree, TreeLayout } from "d3-hierarchy";
+import { HierarchyNode, tree, TreeLayout } from "d3-hierarchy";
 import { DefaultLinkObject, Link, linkVertical } from "d3-shape";
 import {
   EventHandlers,
@@ -17,7 +17,7 @@ import {
 import { BaseVisualization } from "./BaseVis";
 import { select } from "d3-selection";
 import { store, nodeCache } from "../../../state/jotaiKeyValueStore";
-import { OrbitNodeDetails } from "../../../state/types";
+import { NodeContent, OrbitNodeDetails } from "../../../state/types";
 import {
   ONE_CHILD,
   ONE_CHILD_XS,
@@ -59,14 +59,16 @@ import {
   SIX_CHILDREN_RIGHT_3_XS,
 } from "../links/paths";
 import {
+  chooseZoomScaleForOrbit,
   getInitialXTranslate,
   getInitialYTranslate,
   isSmallScreen,
   newXTranslate,
   newYTranslate,
 } from "../helpers";
-import { currentOrbitIdAtom } from "../../../state/orbit";
+import { currentOrbitIdAtom, getOrbitAtom, getOrbitIdFromEh } from "../../../state/orbit";
 import { EntryHashB64 } from "@holochain/client";
+import { Scale } from "../../../graphql/generated";
 
 export class TreeVisualization extends BaseVisualization {
   layout!: TreeLayout<unknown>;
@@ -136,9 +138,12 @@ export class TreeVisualization extends BaseVisualization {
         this.modalParentOrbitEh(parentOrbitEh);
       },
 
-      handleNodeZoom: (event: any, node: any,) => {
+      handleNodeZoom: (event: any, node: HierarchyNode<NodeContent>) => {
         if (!node) return;
-        const scale = FOCUS_MODE_SCALE;
+        const id = store.get(getOrbitIdFromEh(node.data.content));
+        const orbit = store.get(getOrbitAtom(id));
+
+        const scale = chooseZoomScaleForOrbit(orbit);
         const x = -node.x * scale + this._viewConfig.canvasWidth / 2;
         const y = -node.y * scale + this._viewConfig.canvasHeight / 2;
 

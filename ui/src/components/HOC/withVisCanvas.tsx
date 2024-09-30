@@ -328,6 +328,7 @@ export function withVisCanvas<T extends IVisualization>(
       };
       const traverseDown = () => {
         // Zoom down to the node before triggering a different vis data source:
+        console.log('Traversing down...')
         const grandChildren = children?.find(child => child.data.content == currentId)?.children;
         if (grandChildren && grandChildren.length > 0) {
           const newId = grandChildren[0].data.content;
@@ -351,6 +352,7 @@ export function withVisCanvas<T extends IVisualization>(
       };
       const traverseUp = () => {
         decrementDepth();
+        console.log('traversing up... :>> ');
         store.set(newTraversalLevelIndexId, {
           id: currentDetails?.parentEh as ActionHashB64,
         });

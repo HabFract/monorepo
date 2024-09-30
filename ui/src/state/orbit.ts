@@ -88,8 +88,7 @@ export const currentOrbitIdAtom = atom(
       ? { id: state.orbitNodes.currentOrbitHash }
       : null;
   },
-  (get, set, newOrbitId: ActionHashB64) => {
-    console.log("set :>> ", newOrbitId);
+  (_get, set, newOrbitId: ActionHashB64) => {
     set(appStateAtom, (prevState) => ({
       ...prevState,
       orbitNodes: {
@@ -117,13 +116,14 @@ export const getOrbitAtom = (orbitId: ActionHashB64) =>
  * @param orbitEh - The EntryHashB64 of the orbit to retrieve.
  * @returns {ActionHashB64 | null} the id of that orbit if it exists, null otherwise
  */
-export const getOrbitIdFromEh = atom((get) => (orbitEh: EntryHashB64) => {
-  const state = get(appStateAtom);
-  const orbitActionHash = Object.keys(state.orbitNodes.byHash).find(
-    (key) => state.orbitNodes.byHash[key].eH === orbitEh
-  );
-  return orbitActionHash || null;
-});
+export const getOrbitIdFromEh = (orbitEh: EntryHashB64) =>
+  atom((get) => {
+    const state = get(appStateAtom);
+    const orbitActionHash = Object.keys(state.orbitNodes.byHash).find(
+      (key) => state.orbitNodes.byHash[key].eH === orbitEh
+    );
+    return orbitActionHash || null;
+  });
 
 /**
  * Selector atom to get the startTime from the appState based on entry hash ( used primarily for sorting a hierarchy)

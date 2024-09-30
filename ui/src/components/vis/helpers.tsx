@@ -1,12 +1,13 @@
-// @ts-nocheck
-
 import { select } from "d3-selection";
 import { ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
 import { ReactNode } from "react";
 import { withVisCanvas } from "../HOC/withVisCanvas";
-import { BASE_SCALE } from "./constants";
+import { BASE_SCALE, FOCUS_MODE_SCALE } from "./constants";
 import { store } from "../../state/jotaiKeyValueStore";
 import { getOrbitStartTimeFromEh } from "../../state/orbit";
+import { newTraversalLevelIndexId, NodeContent, OrbitNodeDetails } from "../../state";
+import { HierarchyNode } from "d3-hierarchy";
+import { Scale } from "../..//graphql/generated";
 
 // Helper function to return a ReactNode that is a combination of the Vis component, wrapped by the withCanvas higher order component, contained by a mounting div
 export const renderVis = (
@@ -52,6 +53,20 @@ export function byStartTime(
     : startTimeA - startTimeB;
 }
 
+// Helper to distinguish focus zoom level per orbit scale
+export function chooseZoomScaleForOrbit(orbit: OrbitNodeDetails) {
+  switch (orbit.scale) {
+    case Scale.Astro:
+      return 2
+    case Scale.Sub:
+      return 3
+    case Scale.Atom:
+      return 3.4
+    default:
+      return FOCUS_MODE_SCALE;
+  }
+}
+
 // Helper to ensure the tree returned from the source chain is ready for d3 hierarchy
 export const parseAndSortTrees = (data: string) => {
   let parsedData = JSON.parse(data);
@@ -66,13 +81,17 @@ export const parseAndSortTrees = (data: string) => {
 };
 
 // Find the index in the level_trees array of the node that we will be traversing to in the new render.
-export const determineNewLevelIndex = (sorted: any[], newTraversalLevelIndexId: any) => {
+export const determineNewLevelIndex = (sortedTrees: any[]): number | null => {
   const isNewLevelXIndex = store.get(newTraversalLevelIndexId);
+  console.log('isNewLevelXIndex :>> ', isNewLevelXIndex);
+  if (!isNewLevelXIndex?.id) return null;
+
   let newLevelXIndex =
     isNewLevelXIndex &&
-    sorted
+    sortedTrees
       .map((d) => d.content)
-      .findIndex((id) => id == store.get(newTraversalLevelIndexId).id);
+      .findIndex((id) => id == isNewLevelXIndex.id);
+  if (newLevelXIndex == -1) console.error("Could't pass forward new node index after traversal")
   // Reset the value
   if (isNewLevelXIndex) {
     store.set(newTraversalLevelIndexId, { id: null });
@@ -214,30 +233,21 @@ export const newYTranslate = (
 
 // Node Status helpers
 
-export const oppositeStatus = (current) =>
-  [undefined, "false", "incomplete", ""].includes(current) ? "true" : "false";
+// export const sumChildrenValues = (node, hidden = false) => {
+//   let children = node?._children || node?.children || node?.data?.children;
+//   children = children.filter(notOOB);
+//   return children.reduce((sum, n) => sum + n.value, 0);
+// };
 
-export const notOOB = (node) =>
-  parseTreeValues(node.data.content)!.status !== "OOB";
+// const allOOB = (nodes) =>
+//   nodes.every((d) => parseTreeValues(d.data.content)!.status === "OOB");
 
-export const sumChildrenValues = (node, hidden = false) => {
-  let children = node?._children || node?.children || node?.data?.children;
-  children = children.filter(notOOB);
-  return children.reduce((sum, n) => sum + n.value, 0);
-};
-
-export const nodeWithoutHabitDate = (data, store) =>
-  habitDateNotPersisted(data); //&& !selectInUnpersisted(data)(store.getState());
-
-const allOOB = (nodes) =>
-  nodes.every((d) => parseTreeValues(d.data.content)!.status === "OOB");
-
-export const isALeaf = (node) => {
-  return (
-    (node?.height === 0 || (node?.children && allOOB(node.children))) &&
-    !node?._children
-  );
-};
+// export const isALeaf = (node) => {
+//   return (
+//     (node?.height === 0 || (node?.children && allOOB(node.children))) &&
+//     !node?._children
+//   );
+// };
 
 // Node/tree manipulation helpers
 

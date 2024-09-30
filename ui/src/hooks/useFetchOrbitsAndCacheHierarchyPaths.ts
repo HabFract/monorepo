@@ -56,7 +56,7 @@ import { SphereOrbitNodes } from "../state/types/sphere";
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
   params: OrbitHierarchyQueryParams;
-  hasCached?: boolean; // pass true to bypass the hook
+  hasCachedNodes?: boolean;
   currentSphereId: ActionHashB64;
   bypass: boolean;
 }
@@ -69,7 +69,7 @@ interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
 
 export const useFetchOrbitsAndCacheHierarchyPaths = ({
   params,
-  hasCached = false,
+  hasCachedNodes = false,
   currentSphereId,
   bypass,
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
@@ -85,7 +85,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
   ) as SphereOrbitNodes;
 
   const { data, loading, error } = useGetOrbitHierarchyQuery({
-    skip: hasCached,
+    skip: hasCachedNodes,
     variables: { params },
   });
 
