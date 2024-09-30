@@ -1,4 +1,4 @@
-import React, { ComponentType, useEffect, useState } from "react";
+import React, { ComponentType, useEffect, useState, useCallback, useMemo } from "react";
 import { VisProps, VisCoverage, VisType } from "./types";
 import { hierarchy } from "d3-hierarchy";
 import {
@@ -7,7 +7,6 @@ import {
   useGetLowestSphereHierarchyLevelQuery,
   useGetOrbitHierarchyLazyQuery,
 } from "../../graphql/generated";
-
 import { useAtom, useAtomValue } from "jotai";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import usePrefetchNextLevel from "../../hooks/gql/useFetchNextLevel";
@@ -17,10 +16,9 @@ import {
   currentSphereHierarchyIndices,
   setBreadths,
   setDepths,
+  newTraversalLevelIndexId,
 } from "../../state/hierarchy";
-import { currentOrbitIdAtom, getOrbitStartTimeFromEh } from "../../state/orbit";
-import { newTraversalLevelIndexId } from "../../state/hierarchy";
-
+import { currentOrbitIdAtom } from "../../state/orbit";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { useFetchOrbitsAndCacheHierarchyPaths } from "../../hooks/useFetchOrbitsAndCacheHierarchyPaths";
 import { TreeVisualization } from "./base-classes/TreeVis";
@@ -32,6 +30,31 @@ import { SphereHierarchyBounds } from "../../state/types/hierarchy";
 import { client } from "../../graphql/client";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
+const useOrbitTreeData = (sphere) => {
+  const nodeDetailsCache = useAtomValue(nodeCache.entries);
+  const nodes = useAtomValue(currentSphereOrbitNodesAtom);
+  const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
+  const [, setBreadthBounds] = useAtom(setBreadths);
+  const [depthBounds, setDepthBounds] = useAtom(setDepths);
+  const { x, y } = useAtomValue(currentSphereHierarchyIndices);
+  const { breadthIndex, setBreadthIndex } = useNodeTraversal(
+    hierarchyBounds[sphere.entryHash as keyof SphereHierarchyBounds],
+  );
+
+  return {
+    nodeDetailsCache: Object.fromEntries(nodeDetailsCache) as SphereOrbitNodes,
+    nodes,
+    hierarchyBounds,
+    setBreadthBounds,
+    depthBounds,
+    setDepthBounds,
+    x,
+    y,
+    breadthIndex,
+    setBreadthIndex,
+  };
+};
+
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   selectedSphere: sphere,
   canvasHeight,
@@ -39,42 +62,44 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   margin,
   render,
 }) => {
-  // Top level state machine and routing
   const [_state, transition, params] = useStateTransition();
+  const {
+    nodeDetailsCache,
+    nodes,
+    hierarchyBounds,
+    setBreadthBounds,
+    depthBounds,
+    setDepthBounds,
+    x,
+    y,
+    breadthIndex,
+    setBreadthIndex,
+  } = useOrbitTreeData(sphere);
 
-  // Get sphere and sphere orbit nodes details
-  const nodeDetailsCache = Object.fromEntries(
-    useAtomValue(nodeCache.entries),
-  ) as SphereOrbitNodes;
-  const nodes = useAtomValue(currentSphereOrbitNodesAtom);
-  const needToUpdateCache =
-    !nodes || typeof nodes !== "object" || Object.keys(nodes).length === 0;
-  const sphereNodeDetails = !needToUpdateCache
-    ? Object.fromEntries(
-      Object.entries(nodes).map(([_, nodeDetails]) => [
-        nodeDetails.eH,
-        nodeDetails,
-      ]),
-    )
-    : {};
-  // Get and set node traversal bounds state
-  const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
-  const [, setBreadthBounds] = useAtom(setBreadths);
-  const [depthBounds, setDepthBounds] = useAtom(setDepths);
-  const { x, y } = useAtomValue(currentSphereHierarchyIndices);
-  const { breadthIndex, setBreadthIndex, depthIndex, setDepthIndex } = useNodeTraversal(
-    hierarchyBounds[sphere.entryHash as keyof SphereHierarchyBounds],
-  );
+  const needToUpdateCache = useMemo(() =>
+    !nodes || typeof nodes !== "object" || Object.keys(nodes).length === 0,
+    [nodes]);
 
-  // Does this vis cover the whole tree, or just a window over the whole tree?
-  const visCoverage = params?.orbitEh
-    ? VisCoverage.CompleteOrbit
-    : y == 0
-      ? VisCoverage.CompleteSphere
-      : VisCoverage.Partial;
+  const sphereNodeDetails = useMemo(() =>
+    !needToUpdateCache
+      ? Object.fromEntries(
+        Object.entries(nodes).map(([_, nodeDetails]) => [
+          nodeDetails.eH,
+          nodeDetails,
+        ]),
+      )
+      : {},
+    [needToUpdateCache, nodes]);
 
-  // Helper to form the query parameter object
-  const getQueryParams = (customDepth?: number): OrbitHierarchyQueryParams =>
+  const visCoverage = useMemo(() =>
+    params?.orbitEh
+      ? VisCoverage.CompleteOrbit
+      : y == 0
+        ? VisCoverage.CompleteSphere
+        : VisCoverage.Partial,
+    [params?.orbitEh, y]);
+
+  const getQueryParams = useCallback((customDepth?: number): OrbitHierarchyQueryParams =>
     visCoverage == VisCoverage.CompleteOrbit
       ? { orbitEntryHashB64: params.orbitEh }
       : {
@@ -82,55 +107,38 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
           sphereHashB64: params?.currentSphereEhB64,
           orbitLevel: customDepth || 0,
         },
-      };
+      },
+    [visCoverage, params]);
 
-  // Helper to determine which part of the returned query data should be used in the Vis object
-  const getJsonDerivation = (json: string) => {
-    let result;
+  const getJsonDerivation = useCallback((json: string) => {
     try {
       const parsed = JSON.parse(json);
       if (parsed?.length && (x > parsed.length - 1)) console.error("Tried to traverse out of hierarchy bounds")
-      // console.log('JSON.parse(json) :>> ', JSON.parse(json));
-      // console.log('x :>> ', x, y);
-      result = visCoverage == VisCoverage.CompleteOrbit
-        ? parsed
-        : parsed[x];
+      return visCoverage == VisCoverage.CompleteOrbit ? parsed : parsed[x];
     } catch (error) {
       console.error("Error deriving parsed JSON from data: ", error);
     }
-    return result;
-  };
-  // GQL Query hook, parsed JSON state, and Vis object state
-  const [getHierarchy, { data, loading, error }] =
-    useGetOrbitHierarchyLazyQuery({
-      fetchPolicy: "cache-and-network",
-    });
-  const [json, setJson] = useState<string | null>(null);
-  const [currentOrbitTree, setCurrentOrbitTree] =
-    useState<TreeVisualization | null>(null);
+  }, [visCoverage, x]);
 
-  const {
-    data: dataLevel,
-    loading: loadLevel,
-    error: errorLevel,
-  } = useGetLowestSphereHierarchyLevelQuery({
+  const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery({
+    fetchPolicy: "cache-and-network",
+  });
+  const [json, setJson] = useState<string | null>(null);
+  const [currentOrbitTree, setCurrentOrbitTree] = useState<TreeVisualization | null>(null);
+
+  const { data: dataLevel } = useGetLowestSphereHierarchyLevelQuery({
     variables: { sphereEntryHashB64: sphere.entryHash as string },
   });
 
-  // Traverse (but don't render) the root of the sphere's hierarchy so that we can cache the correct path to append at the top of the vis
   const [hasCached, setHasCached] = useState<boolean>(false);
-  const {
-    loading: loadCache,
-    error: errorCache,
-    cache,
-  } = useFetchOrbitsAndCacheHierarchyPaths({
+  const { cache } = useFetchOrbitsAndCacheHierarchyPaths({
     params: getQueryParams(dataLevel?.getLowestSphereHierarchyLevel || 0),
     hasCached,
     currentSphereId: sphere.actionHash as string,
     bypass: false,
   });
 
-  const instantiateVisObject = () => {
+  const instantiateVisObject = useCallback(() => {
     if (
       !error &&
       json &&
@@ -160,11 +168,10 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       );
       setCurrentOrbitTree(orbitVis);
     }
-  };
+  }, [error, json, currentOrbitTree, nodeDetailsCache, params, visCoverage, canvasHeight, canvasWidth, margin, transition, sphereNodeDetails, setDepthBounds, getJsonDerivation]);
 
   useEffect(() => {
     if (!hasCached && cache !== null) {
-      // Check that the hook has finished fetching data and returned a cache function
       try {
         cache();
         setHasCached(true);
@@ -172,13 +179,13 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
         console.error(error);
       }
     }
-  }, [cache, data]);
+  }, [cache, hasCached]);
 
   useEffect(() => {
     const fetchHierarchyData = async () => {
       if (error) return;
       const query = depthBounds
-        ? { ...getQueryParams(), orbitLevel: 0 } //(depthBounds![params?.currentSphereEhB64] as any).minDepth }
+        ? { ...getQueryParams(), orbitLevel: 0 }
         : getQueryParams(y);
 
       const gql: ApolloClient<NormalizedCacheObject> =
@@ -192,7 +199,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       if (cachedData) {
         const sorted = parseAndSortTrees(cachedData.getOrbitHierarchy);
         const newLevelXIndex = determineNewLevelIndex(sorted, newTraversalLevelIndexId);
-        console.log('newLevelXIndex1 :>> ', newLevelXIndex);
         setJson(JSON.stringify(sorted));
         if (newLevelXIndex !== -1) {
           store.set(currentSphereHierarchyIndices, { x: newLevelXIndex, y });
@@ -203,19 +209,17 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       }
     };
     fetchHierarchyData()
-  }, [y]);
+  }, [y, error, getQueryParams, getHierarchy, depthBounds, setBreadthIndex, breadthIndex]);
 
   useEffect(() => {
     if (!error && typeof data?.getOrbitHierarchy === "string") {
       let sorted = parseAndSortTrees(data.getOrbitHierarchy);
       const newLevelXIndex = determineNewLevelIndex(sorted, newTraversalLevelIndexId);
-      console.log('newLevelXIndex2 :>> ', newLevelXIndex);
       if (!!currentOrbitTree) {
         visCoverage == VisCoverage.Partial
           ? currentOrbitTree.resetZoomer()
           : currentOrbitTree.initializeZoomer();
       }
-      // Set the limits of node traversal for breadth. If coverage is complete set to an arbitrary number
       setBreadthBounds(params?.currentSphereEhB64, [
         0,
         visCoverage == VisCoverage.CompleteOrbit
@@ -223,7 +227,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
           : sorted.length - 1,
       ]);
 
-      // Trigger path caching if we have appended a node
       const newHierarchyDescendants = hierarchy(sorted[0])
         ?.sort(byStartTime)
         ?.descendants()?.length;
@@ -238,38 +241,31 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       }
       setBreadthIndex(newLevelXIndex !== -1 ? newLevelXIndex : breadthIndex);
 
-      // Pre-fetch the next level in the background
       const nextLevelQuery = getQueryParams(y + 1);
       usePrefetchNextLevel(nextLevelQuery, !data);
     }
-  }, [data]);
+  }, [data, error, currentOrbitTree, visCoverage, params, setBreadthBounds, setBreadthIndex, breadthIndex, y, getQueryParams]);
 
-  useEffect(instantiateVisObject, [json]);
+  useEffect(instantiateVisObject, [json, instantiateVisObject]);
 
   useEffect(() => {
     if (
       !error &&
       typeof data?.getOrbitHierarchy === "string" &&
-      currentOrbitTree
+      currentOrbitTree &&
+      json
     ) {
-      // If there is a change to the parsed JSON or we traverse the parsed json's `level_trees` array (breadth traversal), then
-      // -- set the _nextRootData property of the vis,
-      // -- trigger a re-render
-      if (json) {
-        currentOrbitTree._nextRootData = hierarchy(
-          getJsonDerivation(json as string),
-        ).sort(byStartTime);
-        store.set(
-          currentOrbitIdAtom,
-          currentOrbitTree._nextRootData.data.content,
-        );
-        currentOrbitTree.startInFocusMode = true;
-        currentOrbitTree.render();
-      } else {
-        console.log('json not available :>> ', json);
-      }
+      currentOrbitTree._nextRootData = hierarchy(
+        getJsonDerivation(json),
+      ).sort(byStartTime);
+      store.set(
+        currentOrbitIdAtom,
+        currentOrbitTree._nextRootData.data.content,
+      );
+      currentOrbitTree.startInFocusMode = true;
+      currentOrbitTree.render();
     }
-  }, [json, x, y, data]);
+  }, [json, x, y, data, error, currentOrbitTree, getJsonDerivation]);
 
   return (
     <>
