@@ -23,11 +23,10 @@ import VisModal from "../VisModal";
 import TraversalButton from "../navigation/TraversalButton";
 import { VisControls } from "habit-fract-design-system";
 import { currentDayAtom } from "../../state/date";
-import { isSmallScreen } from "../vis/helpers";
+import { byStartTime, isSmallScreen } from "../vis/helpers";
 import { useRedirect } from "../../hooks/useRedirect";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import { HierarchyNode } from "d3-hierarchy";
-import { byStartTime } from "../vis/OrbitTree";
 import {
   SphereHierarchyBounds,
   HierarchyBounds,
@@ -325,7 +324,7 @@ export function withVisCanvas<T extends IVisualization>(
           )?.children?.[0] as HierarchyNode<any>);
         const newId = newChild && newChild.parent?.data?.content;
         store.set(newTraversalLevelIndexId, { id: newId });
-        setBreadthIndex(newX);
+        setBreadthIndex(0);
       };
       const traverseDown = () => {
         // Zoom down to the node before triggering a different vis data source:
@@ -346,9 +345,7 @@ export function withVisCanvas<T extends IVisualization>(
                 )?.children?.[0] as HierarchyNode<any>);
               const newId = newChild && newChild.parent?.data?.content;
               store.set(newTraversalLevelIndexId, { id: newId });
-              setBreadthIndex(
-                children?.findIndex((child) => child?.data?.content == newId) || 0,
-              );
+              setBreadthIndex(0);
             });
         }
       };

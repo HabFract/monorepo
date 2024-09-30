@@ -5,6 +5,8 @@ import { ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
 import { ReactNode } from "react";
 import { withVisCanvas } from "../HOC/withVisCanvas";
 import { BASE_SCALE } from "./constants";
+import { store } from "../../state/jotaiKeyValueStore";
+import { getOrbitStartTimeFromEh } from "../../state/orbit";
 
 // Helper function to return a ReactNode that is a combination of the Vis component, wrapped by the withCanvas higher order component, contained by a mounting div
 export const renderVis = (
@@ -15,6 +17,68 @@ export const renderVis = (
     {withVisCanvas(visComponent)}
   </>
 );
+
+/**
+ * Sorting function for ensuring both an array of hierarchies and the hierarchies themselves can be sorted by startTime and we get a deterministic layout
+ * @param a First node
+ * @param b Second node
+ * @returns number indicating whether the items should be swapped in the sortBy
+ */
+export function byStartTime(
+  a: HierarchyNode<NodeContent> | NodeContent, // d3 node - has gone through the hierarchy function already || an element of an array of trees from the source chain
+  b: HierarchyNode<NodeContent> | NodeContent,
+) {
+  const getStartTime = store.get(getOrbitStartTimeFromEh);
+
+  const getStartTimeFromNode = (node: HierarchyNode<NodeContent> | NodeContent) => {
+    if ('data' in node && node.data.content) {
+      return getStartTime(node.data.content);
+    } else if ('content' in node) {
+      return getStartTime(node.content);
+    }
+    return 0;
+  };
+
+  const startTimeA = getStartTimeFromNode(a) ?? 0;
+  const startTimeB = getStartTimeFromNode(b) ?? 0;
+
+  if (startTimeA === startTimeB) {
+    console.error("Sorting error!");
+    return 0;
+  }
+
+  return isSmallScreen()
+    ? startTimeB - startTimeA
+    : startTimeA - startTimeB;
+}
+
+// Helper to ensure the tree returned from the source chain is ready for d3 hierarchy
+export const parseAndSortTrees = (data: string) => {
+  let parsedData = JSON.parse(data);
+  while (typeof parsedData === "string") {
+    parsedData = JSON.parse(parsedData);
+  }
+  const trees = parsedData?.result?.level_trees;
+  if (!trees) console.error("Could not get an array of trees from parsed data")
+  return isSmallScreen()
+    ? trees.sort(byStartTime).reverse()
+    : trees.sort(byStartTime);
+};
+
+// Find the index in the level_trees array of the node that we will be traversing to in the new render.
+export const determineNewLevelIndex = (sorted: any[], newTraversalLevelIndexId: any) => {
+  const isNewLevelXIndex = store.get(newTraversalLevelIndexId);
+  let newLevelXIndex =
+    isNewLevelXIndex &&
+    sorted
+      .map((d) => d.content)
+      .findIndex((id) => id == store.get(newTraversalLevelIndexId).id);
+  // Reset the value
+  if (isNewLevelXIndex) {
+    store.set(newTraversalLevelIndexId, { id: null });
+  }
+  return newLevelXIndex;
+};
 
 export const isTouchDevice = () => {
   return (
@@ -73,7 +137,7 @@ export const hierarchyStateHasChanged = (currentHierarchy, visObject) => {
   return (
     JSON.stringify(visObject.rootData.data) !== compareString ||
     concatenateHierarchyNodeValues(visObject.rootData) !==
-      currentHierNodeValueString
+    currentHierNodeValueString
   );
 };
 

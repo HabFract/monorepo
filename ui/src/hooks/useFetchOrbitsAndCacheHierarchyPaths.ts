@@ -51,8 +51,7 @@ import {
   TWO_CHILDREN_LEFT,
   TWO_CHILDREN_RIGHT,
 } from "../components/vis/links/paths";
-import { isSmallScreen } from "../components/vis/helpers";
-import { byStartTime } from "../components/vis/OrbitTree";
+import { byStartTime, isSmallScreen } from "../components/vis/helpers";
 import { SphereOrbitNodes } from "../state/types/sphere";
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
@@ -82,7 +81,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
       cache: null,
     };
   const sphereNodes = store.get(
-    currentSphereOrbitNodesAtom,
+    currentSphereOrbitNodesAtom
   ) as SphereOrbitNodes;
 
   const { data, loading, error } = useGetOrbitHierarchyQuery({
@@ -102,7 +101,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
       }
 
       setHierarchyObject(
-        hierarchy(parsedData.result.level_trees[0]).sort(byStartTime),
+        hierarchy(parsedData.result.level_trees[0]).sort(byStartTime)
       );
     }
   }, [data]);
