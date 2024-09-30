@@ -83,7 +83,6 @@ export const parseAndSortTrees = (data: string) => {
 // Find the index in the level_trees array of the node that we will be traversing to in the new render.
 export const determineNewLevelIndex = (sortedTrees: any[]): number | null => {
   const isNewLevelXIndex = store.get(newTraversalLevelIndexId);
-  console.log('isNewLevelXIndex :>> ', isNewLevelXIndex);
   if (!isNewLevelXIndex?.id) return null;
 
   let newLevelXIndex =
@@ -91,11 +90,9 @@ export const determineNewLevelIndex = (sortedTrees: any[]): number | null => {
     sortedTrees
       .map((d) => d.content)
       .findIndex((id) => id == isNewLevelXIndex.id);
+  console.log('isNewLevelXIndex :>> ', newLevelXIndex);
   if (newLevelXIndex == -1) console.error("Could't pass forward new node index after traversal")
-  // Reset the value
-  if (isNewLevelXIndex) {
-    store.set(newTraversalLevelIndexId, { id: null });
-  }
+
   return newLevelXIndex;
 };
 

@@ -48,6 +48,7 @@ export const deriveJsonData = (json: string, visCoverage, x) => {
   try {
     const parsed = JSON.parse(json);
     if (parsed?.length && (x > parsed.length - 1)) console.error("Tried to traverse out of hierarchy bounds")
+
     return visCoverage == VisCoverage.CompleteOrbit ? parsed : parsed[x];
   } catch (error) {
     console.error("Error deriving parsed JSON from data: ", error);
@@ -95,18 +96,14 @@ export const createTreeVisualization = ({
 };
 
 /**
- * Processes the orbit hierarchy data and updates relevant state
+ * Parses the orbit hierarchy data and updates relevant state
  * @param hierarchyData - The raw hierarchy data to process
- * @param setJson - Function to set the JSON state
  */
-export const processOrbitHierarchyData = (
+export const parseOrbitHierarchyData = (
   hierarchyData: string,
-  setJson: (json: string) => void
 ) => {
-  console.log('Parsing... :>> ');
   const sortedTrees = parseAndSortTrees(hierarchyData);
-
-  setJson(JSON.stringify(sortedTrees));
+  console.log('Parsing result... :>> ', sortedTrees);
 
   return sortedTrees;
 };
@@ -121,24 +118,27 @@ export const fetchHierarchyDataForLevel = async ({
   getQueryParams,
   y,
   getHierarchy,
-  setJson
 }) => {
   if (error) return;
   const query = depthBounds
     ? { ...getQueryParams(), orbitLevel: 0 }
     : getQueryParams(y);
 
-  const gql: ApolloClient<NormalizedCacheObject> =
-    (await client) as ApolloClient<NormalizedCacheObject>;
-
-  const cachedData = gql.readQuery({
-    query: GetOrbitHierarchyDocument,
-    variables: { params: { ...query } },
-  });
-
+  let cachedData;
+  try {
+    const gql: ApolloClient<NormalizedCacheObject> =
+      (await client) as ApolloClient<NormalizedCacheObject>;
+    cachedData = gql.readQuery({
+      query: GetOrbitHierarchyDocument,
+      variables: { params: { ...query } },
+    });
+    console.log('cachedData :>> ', cachedData);
+  } catch (error) {
+    console.error("Couldn't get client or data from Apollo cache")
+  }
   if (cachedData) {
     console.log("Fetching current hierarchy level from Apollo cache...")
-    setJson(JSON.stringify(parseAndSortTrees(cachedData.getOrbitHierarchy)));
+    return cachedData
   } else {
     console.log("Fetching current hierarchy level from source chain...")
     getHierarchy({ variables: { params: { ...query } } });

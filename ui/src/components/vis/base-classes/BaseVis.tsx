@@ -339,17 +339,10 @@ export abstract class BaseVisualization implements IVisualization {
             k: 1
           }
         };
-        this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, this.rootData);
+        const newSelectedNodeId = store.get(currentOrbitIdAtom)?.id;
+        const newSelectedNode = newSelectedNodeId && this.rootData.find(node => node.data.content == newSelectedNodeId);
+        this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, newSelectedNode || this.rootData);
         this.startInFocusMode = false;
-        // Set the index of the current array of possible visualisations, based on new value passed through from the traversal controls
-        // const newId = store.get(newTraversalLevelIndexId)?.id;
-        // if (newId) {
-        //   store.set(currentOrbitIdAtom, newId);
-        //   store.set(newTraversalLevelIndexId, { id: null });
-        //   console.log('newId :>> ', newId);
-
-        // }
-        store.set(currentOrbitIdAtom, this.rootData.data.content);
       }
       this._hasRendered = true;
     }
