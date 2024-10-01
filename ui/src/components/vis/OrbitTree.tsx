@@ -122,7 +122,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     });
     setUsedCachedHierarchy(!!result);
     const newJson = !result
-      ? JSON.parse(json!).sort(byStartTime)
+      ? JSON.parse(json!)?.sort(byStartTime)
       : JSON.stringify(parseAndSortTrees(result.getOrbitHierarchy));
 
     setJson(newJson);
