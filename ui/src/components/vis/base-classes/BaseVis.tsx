@@ -100,7 +100,6 @@ export abstract class BaseVisualization implements IVisualization {
   abstract appendLinkPath(): void;
   abstract bindEventHandlers(selection: any): void;
   abstract getLinkPathGenerator(): void;
-  abstract manualZoomToNode(nodeId: EntryHashB64, skipSetCurrentOrbit?: boolean);
 
   abstract initializeViewConfig(
     canvasHeight: number,
@@ -340,20 +339,22 @@ export abstract class BaseVisualization implements IVisualization {
           }
         };
         const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
-        const finalNodeToFocus = newRenderNodeDetails?.id && this.rootData.find(node => node.data.content == newRenderNodeDetails?.id);
+        const finalNodeToFocus = newRenderNodeDetails?.id;
         console.log('Actual new focus node :>> ', finalNodeToFocus);
-        let initialZoom = this.eventHandlers.handleNodeZoom.call(
+        this._lastOrbitId = undefined;
+
+        const finalNodeId = newRenderNodeDetails?.intermediateId || finalNodeToFocus || this.rootData.data.content;
+        let initialZoom = this.eventHandlers.memoizedhandleNodeZoom.call(
           this,
-          syntheticEvent as any,
-          (newRenderNodeDetails?.intermediateId
-            ? this.rootData.find(node => node.data.content == newRenderNodeDetails.intermediateId)
-            : (finalNodeToFocus || this.rootData))
+          finalNodeId,
+          this.rootData.find(node => node.data.content == finalNodeId)
         );
+        console.log('this.rootData.find(node => node.data.content == finalNodeId) :>> ', this.rootData.find(node => node.data.content == finalNodeId));
 
         if (newRenderNodeDetails?.intermediateId) {
           (initialZoom as any)
             .on("end", () => {
-              this.manualZoomToNode(finalNodeToFocus.data.content, true);
+              this.eventHandlers.memoizedhandleNodeZoom.call(this, finalNodeToFocus);
               console.log('Using intermediate node :>> ', newRenderNodeDetails.intermediateId);
             });
         }

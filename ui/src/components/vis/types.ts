@@ -1,7 +1,9 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { HierarchyNode } from "d3-hierarchy";
+import { Selection } from "d3-selection";
 import { D3ZoomEvent, ZoomBehavior } from "d3-zoom";
 import { SphereOrbitNodes, SphereHashes } from "../../state/types/sphere";
+import { NodeContent } from "ui/src/state";
 
 /**
  * Enum for visualization types.
@@ -81,7 +83,6 @@ export interface IVisualization {
   initializeZoomConfig: () => ZoomConfig;
   initializeZoomer: () => ZoomBehavior<Element, unknown> | null;
   handleZoom: (event: MouseEvent) => void;
-  manualZoomToNode(nodeId: EntryHashB64, skipSetCurrentOrbit?: boolean);
 
   /** Method to fully render the visualization */
   render: () => void;
@@ -133,7 +134,11 @@ export interface EventHandlers {
     event: D3ZoomEvent<SVGSVGElement, unknown>,
     node: HierarchyNode<unknown>,
     forParent?: boolean
-  ) => void;
+  ) => Selection<SVGGElement, HierarchyNode<any>, SVGGElement, unknown> | null;
+  memoizedhandleNodeZoom: (
+    id: EntryHashB64,
+    foundNode?: HierarchyNode<NodeContent>
+  ) => Selection<SVGGElement, HierarchyNode<any>, SVGGElement, unknown> | null;
   handleZoomOut: (
     event: D3ZoomEvent<SVGSVGElement, unknown>,
     node: HierarchyNode<unknown>,

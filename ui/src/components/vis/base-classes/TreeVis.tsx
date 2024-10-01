@@ -68,11 +68,10 @@ import {
 } from "../helpers";
 import { currentOrbitIdAtom, getOrbitAtom, getOrbitIdFromEh } from "../../../state/orbit";
 import { EntryHashB64 } from "@holochain/client";
-import { Scale } from "../../../graphql/generated";
 
 export class TreeVisualization extends BaseVisualization {
   layout!: TreeLayout<unknown>;
-  _skipAutoZoom: boolean = false;
+  private _lastOrbitId: EntryHashB64 | null = null;
 
   initializeViewConfig(
     canvasHeight: number,
@@ -139,7 +138,7 @@ export class TreeVisualization extends BaseVisualization {
       },
 
       handleNodeZoom: (event: any, node: HierarchyNode<NodeContent>) => {
-        if (!node) return;
+        if (!node) return null;
         const id = store.get(getOrbitIdFromEh(node.data.content));
         const orbit = store.get(getOrbitAtom(id));
 
@@ -157,8 +156,42 @@ export class TreeVisualization extends BaseVisualization {
           .attr("transform", `translate(${x},${y}) scale(${scale})`)
           .on("end", () => {
             this._zoomConfig.focusMode = true;
-          });
+          }) as any;
       },
+
+      memoizedhandleNodeZoom(id: EntryHashB64, foundNode?: HierarchyNode<NodeContent>) {
+
+        if (id === this._lastOrbitId) {
+          console.log('Returned early from zoom :>> ');
+          return select(null)
+        }; // Memoization check
+        this._lastOrbitId = id;
+
+        const newId = foundNode?.data.content || id || store.get(currentOrbitIdAtom)?.id;
+        if (!newId) return select(null);
+
+        const node = foundNode || this.rootData.find(node => node.data.content == newId);
+
+        if (node) {
+          const e = {
+            sourceEvent: {
+              clientX: node.x,
+              clientY: node.y
+            },
+            transform: {
+              x: 0,
+              y: 0,
+              k: 1
+            }
+          };
+          console.log('Zoomed to focus node based on store sub to currentOrbitId :>> ');
+          return this.eventHandlers.handleNodeZoom.call(this, e as any, node);
+        } else {
+          console.error("Tried to zoom to node that isn't in the hierarchy")
+          return null
+        }
+      },
+
       handleZoomOut: () => {
         this.zoomOut();
       },
@@ -444,55 +477,7 @@ export class TreeVisualization extends BaseVisualization {
       this.eventHandlers.handleNodeZoom.call(this, e, d);
     });
 
-    store.sub(currentOrbitIdAtom, () => { // TODO: memoise
-      const id = store.get(currentOrbitIdAtom)?.id;
-      if (!id) return;
-      console.log('Zoomed to focus node based on store sub to currentOrbitId :>> ');
-      this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
-      const node = this.rootData.find(node => node.data.content == id);
-      if (node && !this._skipAutoZoom) {
-        const nodeElement = selection.filter(d => d.data.content === id).node();
-        if (nodeElement) {
-          const syntheticEvent = {
-            sourceEvent: {
-              clientX: node.x,
-              clientY: node.y
-            },
-            transform: {
-              x: 0,
-              y: 0,
-              k: 1
-            }
-          };
-          this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, node);
-        }
-      }
-
-      // Reset the flag after each subscription callback
-      this._skipAutoZoom = false;
-    });
-  }
-
-  public manualZoomToNode(nodeId: EntryHashB64, skipSetCurrentOrbit: boolean = false) {
-    this._skipAutoZoom = true;
-    !skipSetCurrentOrbit && store.set(currentOrbitIdAtom, nodeId);
-    console.log('triggered manual zoom :>> ', nodeId);
-    const node = this.rootData.find(node => node.data.content == nodeId);
-    if (node) {
-      const syntheticEvent = {
-        sourceEvent: {
-          clientX: node.x,
-          clientY: node.y
-        },
-        transform: {
-          x: 0,
-          y: 0,
-          k: 1
-        }
-      };
-      return this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, node);
-    }
-    return select(null); // Return an empty selection if node not found
+    store.sub(currentOrbitIdAtom, () => { this.eventHandlers.memoizedhandleNodeZoom.call(this, store.get(currentOrbitIdAtom).id) })
   }
 
   setNodeAndLabelGroups(): void {

@@ -208,23 +208,28 @@ export function withVisCanvas<T extends IVisualization>(
       conditions: TraversalButtonVisibilityConditions,
       coords: Coords,
       currentVis: T,
-      currentOrbitIsRoot: boolean,
     ) {
-      const { withTraversal, hasChild, hasOneChild, onlyChildParent } =
+      const { withTraversal, hasChild, onlyChildParent } =
         conditions;
       const { x, y } = coords;
-      const data = (currentVis.rootData as HierarchyNode<any>).sort(
+      const rootId = currentVis.rootData.data.content;
+      const currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
+
+
+      const newData = currentVis.rootData.find(node => node.data.content == currentId);
+      const data = (newData || currentVis.rootData as HierarchyNode<any>).sort(
         byStartTime,
       );
+      const currentOrbitIsRoot: boolean = (currentId == currentVis.rootData.data.content);
+
       const children = (
-        isSmallScreen() ? data?.children?.reverse() : data?.children
+        isSmallScreen() ? currentVis.rootData?.children?.reverse() : currentVis.rootData?.children
       ) as Array<HierarchyNode<any>> | undefined;
-      const rootId = data.data.content;
-      const currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
+      const hasOneChild = children && children.length == 1;
       if (!currentId || (y > 0 && !currentVis._zoomConfig.focusMode && currentId && currentId !== rootId)) {
         store.set(currentOrbitIdAtom, rootId);
         console.log("Set default focus node to the root...")
-      }
+      } ``
       const currentDetails = store.get(currentOrbitDetailsAtom);
 
       const canMove =
@@ -243,6 +248,7 @@ export function withVisCanvas<T extends IVisualization>(
         children[0].data.content !== currentId;
       const canMoveDown =
         canMove && currentOrbitIsRoot && children && children.length !== 2;
+
       const canMoveDownLeft =
         canMove && currentOrbitIsRoot && children && !hasOneChild;
       const canMoveDownRight =
@@ -260,6 +266,7 @@ export function withVisCanvas<T extends IVisualization>(
         hasOneChild &&
         children[0].children &&
         children[0].children.length == 1;
+
       const canTraverseLeft = x !== 0 && currentOrbitIsRoot;
       const canTraverseRight =
         currentOrbitIsRoot && maxBreadth && x < maxBreadth;
@@ -284,6 +291,7 @@ export function withVisCanvas<T extends IVisualization>(
         const currentIndex = children?.findIndex(
           (child) => child.data.content == currentId,
         ) as number;
+        if (currentIndex == -1) return console.error("Couldn't calculate new index to move to")
         const newId = (children![currentIndex - 1] as any).data.content;
         store.set(currentOrbitIdAtom, newId);
       };
@@ -291,6 +299,7 @@ export function withVisCanvas<T extends IVisualization>(
         const currentIndex = children?.findIndex(
           (child) => child.data.content == currentId,
         ) as number;
+        if (currentIndex == -1) return console.error("Couldn't calculate new index to move to")
         const newId = (children![currentIndex + 1] as any).data.content;
         store.set(currentOrbitIdAtom, newId);
       };
@@ -299,6 +308,8 @@ export function withVisCanvas<T extends IVisualization>(
           children!.length > 0 ? Math.ceil(children!.length / 2) - 1 : 0;
         const newId = (children![childrenMiddle] as any).data.content;
         store.set(currentOrbitIdAtom, newId);
+
+        console.log("Moving down... to", newId)
       };
       const moveUp = () => {
         const orbit = store.get(currentOrbitDetailsAtom);
@@ -313,20 +324,20 @@ export function withVisCanvas<T extends IVisualization>(
         const newId = (children![children!.length - 1] as any).data.content;
         store.set(currentOrbitIdAtom, newId);
       };
-      const traverseDownRight = () => {
-        const newX = children!.length - 1;
-        incrementDepth();
-        const newChild =
-          children &&
-          ((
-            children?.find(
-              (child) => child?.data?.content == currentId && !!child.children,
-            ) as HierarchyNode<any>
-          )?.children?.[0] as HierarchyNode<any>);
-        const newId = newChild && newChild.parent?.data?.content;
-        store.set(newTraversalLevelIndexId, { id: newId });
-        setBreadthIndex(0);
-      };
+      // const traverseDownRight = () => {
+      //   const newX = children!.length - 1;
+      //   incrementDepth();
+      //   const newChild =
+      //     children &&
+      //     ((
+      //       children?.find(
+      //         (child) => child?.data?.content == currentId && !!child.children,
+      //       ) as HierarchyNode<any>
+      //     )?.children?.[0] as HierarchyNode<any>);
+      //   const newId = newChild && newChild.parent?.data?.content;
+      //   store.set(newTraversalLevelIndexId, { id: newId });
+      //   setBreadthIndex(0);
+      // };
       const traverseDown = () => {
         // Zoom down to the node before triggering a different vis data source:
         console.log('Traversing down...')
@@ -334,9 +345,8 @@ export function withVisCanvas<T extends IVisualization>(
         if (grandChildren && grandChildren.length > 0) {
           const newId = grandChildren[0].data.content;
 
-          moveDown(grandChildren);
-          currentVis?.manualZoomToNode(newId)
-            .on("end", () => {
+          currentVis?.eventHandlers.memoizedhandleNodeZoom.call(currentVis, newId, undefined)
+            ?.on("end", () => {
               incrementDepth();
               const newChild =
                 children &&
@@ -346,8 +356,10 @@ export function withVisCanvas<T extends IVisualization>(
                   ) as HierarchyNode<any>
                 )?.children?.[0] as HierarchyNode<any>);
               const newId = newChild && newChild.parent?.data?.content;
+              // this.;
               store.set(newTraversalLevelIndexId, { id: newId });
               setBreadthIndex(0);
+              // store.set(currentOrbitIdAtom, newId);
             });
         }
       };
@@ -402,7 +414,7 @@ export function withVisCanvas<T extends IVisualization>(
             !!(withTraversal && (canTraverseDownRight || canMoveDownRight))
           }
           iconType="down-right"
-          onClick={canMoveDownRight ? moveDownRight : traverseDownRight}
+          onClick={moveDownRight}
           dataTestId="traversal-button-down-right"
         />,
       ];
