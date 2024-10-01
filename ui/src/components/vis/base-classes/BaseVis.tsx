@@ -339,9 +339,24 @@ export abstract class BaseVisualization implements IVisualization {
             k: 1
           }
         };
-        const newSelectedNodeId = store.get(currentOrbitIdAtom)?.id;
-        const newSelectedNode = newSelectedNodeId && this.rootData.find(node => node.data.content == newSelectedNodeId);
-        this.eventHandlers.handleNodeZoom.call(this, syntheticEvent as any, newSelectedNode || this.rootData);
+        const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
+        const finalNodeToFocus = newRenderNodeDetails?.id && this.rootData.find(node => node.data.content == newRenderNodeDetails?.id);
+        console.log('Actual new focus node :>> ', finalNodeToFocus);
+        let initialZoom = this.eventHandlers.handleNodeZoom.call(
+          this,
+          syntheticEvent as any,
+          (newRenderNodeDetails?.intermediateId
+            ? this.rootData.find(node => node.data.content == newRenderNodeDetails.intermediateId)
+            : (finalNodeToFocus || this.rootData))
+        );
+
+        if (newRenderNodeDetails?.intermediateId) {
+          (initialZoom as any)
+            .on("end", () => {
+              this.manualZoomToNode(finalNodeToFocus.data.content, true);
+              console.log('Using intermediate node :>> ', newRenderNodeDetails.intermediateId);
+            });
+        }
         this.startInFocusMode = false;
       }
       this._hasRendered = true;

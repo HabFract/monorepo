@@ -202,16 +202,18 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
         getJsonDerivation(json),
       ).sort(byStartTime);
 
-      const newlySelectedNodeId = currentOrbitTree._nextRootData.data.children?.[0]?.content;
-      //TODO: update above to go to middle child.
+      const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
+      const newDefaultNodeTarget = currentOrbitTree._nextRootData.data.children?.[0]?.content;
+      const newlySelectedNodeId = newRenderNodeDetails?.direction == 'up'
+        ? currentOrbitTree._nextRootData.find(node => node.data.content == newRenderNodeDetails?.id)?.data?.content
+        : newDefaultNodeTarget;
       console.log('New focused node... :>> ', newlySelectedNodeId);
-
       store.set(
         currentOrbitIdAtom,
         newlySelectedNodeId,
       );
 
-      store.set(newTraversalLevelIndexId, { id: null });
+      store.set(newTraversalLevelIndexId, { id: newlySelectedNodeId, intermediateId: newRenderNodeDetails?.direction == 'up' ? newDefaultNodeTarget : null });
 
       currentOrbitTree.startInFocusMode = true;
       currentOrbitTree.render();

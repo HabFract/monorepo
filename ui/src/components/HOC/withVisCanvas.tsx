@@ -223,6 +223,7 @@ export function withVisCanvas<T extends IVisualization>(
       const currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
       if (!currentId || (y > 0 && !currentVis._zoomConfig.focusMode && currentId && currentId !== rootId)) {
         store.set(currentOrbitIdAtom, rootId);
+        console.log("Set default focus node to the root...")
       }
       const currentDetails = store.get(currentOrbitDetailsAtom);
 
@@ -354,7 +355,8 @@ export function withVisCanvas<T extends IVisualization>(
         decrementDepth();
         console.log('traversing up... :>> ');
         store.set(newTraversalLevelIndexId, {
-          id: currentDetails?.parentEh as ActionHashB64,
+          id: currentDetails?.parentEh,
+          direction: 'up'
         });
       };
       return [

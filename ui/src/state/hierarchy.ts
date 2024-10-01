@@ -4,7 +4,7 @@ import {
   HierarchyTraversalIndices,
   SphereHierarchyBounds,
 } from "./types/hierarchy";
-import { ActionHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { appStateAtom } from "./store";
 import { OrbitNodeDetails, RootOrbitEntryHash } from "./types/orbit";
 import { Hierarchy } from "./types/hierarchy";
@@ -50,7 +50,7 @@ export const getHierarchyAtom = (rootOrbitEntryHash: RootOrbitEntryHash) => {
  * @returns An atom that resolves to an array of orbit details
  */
 export const getHierarchyOrbitsAtom = (
-  rootOrbitEntryHash: RootOrbitEntryHash,
+  rootOrbitEntryHash: RootOrbitEntryHash
 ) => {
   const selectOrbits = atom<OrbitNodeDetails[]>((get) => {
     const state = get(appStateAtom);
@@ -108,7 +108,7 @@ export const setDepths = atom(
       ...prev,
       [id]: { ...prev[id], minDepth: min, maxDepth: max },
     });
-  },
+  }
 );
 
 /**
@@ -123,12 +123,16 @@ export const setBreadths = atom(
       ...prev,
       [id]: { ...prev[id], minBreadth: min, maxBreadth: max },
     });
-  },
+  }
 );
 
 /**
  * Primitive atom for passing vis traversal context to the next render.
  */
-export const newTraversalLevelIndexId = atom<{ id: ActionHashB64 | null }>({
+export const newTraversalLevelIndexId = atom<{
+  id: EntryHashB64 | null;
+  intermediateId?: EntryHashB64 | null;
+  direction?: "up" | "down";
+}>({
   id: null,
 });

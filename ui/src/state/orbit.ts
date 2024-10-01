@@ -72,14 +72,16 @@ export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
   const state = get(appStateAtom);
   const currentOrbitHash = state.orbitNodes.currentOrbitHash;
   if (!currentOrbitHash) return null;
+  const id = get(getOrbitIdFromEh(currentOrbitHash));
+  if (!id) return null;
 
-  return state.orbitNodes.byHash[currentOrbitHash] || null;
+  return state.orbitNodes.byHash[id] || null;
 });
 
 /**
- * Read-write atom for the current orbit ID
+ * Read-write atom for the current orbit EntryHash
  * Reads from and writes to the global app state
- * @returns {{id: ActionHashB64} | null} Details of the current Orbit's Node
+ * @returns {{id: EntryHashB64} | null} Details of the current Orbit's Node
  */
 export const currentOrbitIdAtom = atom(
   (get) => {
@@ -88,7 +90,7 @@ export const currentOrbitIdAtom = atom(
       ? { id: state.orbitNodes.currentOrbitHash }
       : null;
   },
-  (_get, set, newOrbitId: ActionHashB64) => {
+  (_get, set, newOrbitId: EntryHashB64) => {
     set(appStateAtom, (prevState) => ({
       ...prevState,
       orbitNodes: {

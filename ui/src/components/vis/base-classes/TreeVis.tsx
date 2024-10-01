@@ -444,7 +444,8 @@ export class TreeVisualization extends BaseVisualization {
       this.eventHandlers.handleNodeZoom.call(this, e, d);
     });
 
-    store.sub(currentOrbitIdAtom, () => {
+    store.sub(currentOrbitIdAtom, () => { // TODO: memoise
+      console.log('Zoomed to focus node based on store sub to currentOrbitId :>> ');
       this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
       const id = store.get(currentOrbitIdAtom).id;
       const node = this.rootData.find(node => node.data.content == id);
