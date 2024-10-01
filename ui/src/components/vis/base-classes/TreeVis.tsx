@@ -211,7 +211,7 @@ export class TreeVisualization extends BaseVisualization {
     // @ts-ignore
     const cacheItem: OrbitNodeDetails = store.get(nodeCache.items)?.[
       this.sphereAh
-    ]?.[rootNodeId];
+    ]?.[store.get(getOrbitIdFromEh(rootNodeId))];
     if (!cacheItem || !cacheItem?.path) return;
 
     const newPath = select(".canvas")
@@ -242,10 +242,10 @@ export class TreeVisualization extends BaseVisualization {
         (height +
           (this._viewConfig.isSmallScreen()
             ? XS_TREE_PATH_OFFSET_Y
-            : LG_TREE_PATH_OFFSET_Y)) *
-        this._viewConfig.scale
+            : LG_TREE_PATH_OFFSET_Y))
       )})`,
     );
+    console.log('Finished appending link paths...')
 
     // Helper function to get exact x translation based on path
     function getPathXTranslation(
@@ -445,9 +445,10 @@ export class TreeVisualization extends BaseVisualization {
     });
 
     store.sub(currentOrbitIdAtom, () => { // TODO: memoise
+      const id = store.get(currentOrbitIdAtom)?.id;
+      if (!id) return;
       console.log('Zoomed to focus node based on store sub to currentOrbitId :>> ');
       this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
-      const id = store.get(currentOrbitIdAtom).id;
       const node = this.rootData.find(node => node.data.content == id);
       if (node && !this._skipAutoZoom) {
         const nodeElement = selection.filter(d => d.data.content === id).node();

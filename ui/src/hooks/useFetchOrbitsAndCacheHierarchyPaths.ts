@@ -41,7 +41,7 @@ import {
   useGetOrbitHierarchyQuery,
 } from "../graphql/generated";
 import { nodeCache, store } from "../state/jotaiKeyValueStore";
-import { currentSphereOrbitNodesAtom } from "../state/orbit";
+import { currentSphereOrbitNodesAtom, getOrbitIdFromEh } from "../state/orbit";
 import { hierarchy, HierarchyNode } from "d3-hierarchy";
 import { ActionHashB64 } from "@holochain/client";
 import {
@@ -74,12 +74,14 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
   bypass,
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
   if (bypass) return { loading: false, error: undefined, cache: null };
-  if (!currentSphereId)
+  if (!currentSphereId) {
+    console.error("Cannot run hook without a sphere Id");
     return {
       loading: false,
       error: new Error("Cannot run hook without a sphere Id"),
       cache: null,
     };
+  }
   const sphereNodes = store.get(
     currentSphereOrbitNodesAtom
   ) as SphereOrbitNodes;
@@ -118,11 +120,20 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
 
       (d3Hierarchy as any)
         .sort(byStartTime)
-        .each((node) => cachePath(node?.data?.content, getPath(node)));
+        .each((node) =>
+          cachePath(
+            store.get(getOrbitIdFromEh(node?.data?.content)),
+            getPath(node)
+          )
+        );
       //@ts-ignore
       existingCache[currentSphereId] = workingSphereNodes;
       store.set(nodeCache.setMany, Object.entries(existingCache));
       cached = true;
+      console.log(
+        "Object.entries(existingCache) :>> ",
+        Object.entries(existingCache)
+      );
     } catch (error) {
       console.error("Error caching hierarch paths:" + error);
     }

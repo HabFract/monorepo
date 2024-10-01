@@ -226,6 +226,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   useEffect(() => {
     if (!hasCachedNodes && cache !== null) {
       try {
+        console.log('Cached hierarchy link paths for visual continuity...');
         cache();
         setHasCachedNodes(true);
       } catch (error) {
