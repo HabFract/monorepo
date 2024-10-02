@@ -188,6 +188,7 @@ export function withVisCanvas<T extends IVisualization>(
       const canMoveRight = canMove && rootId !== currentId && children && children[children.length - 1].data.content !== currentId;
       const currentOrbitIsRoot = currentId === rootId;
       const hasOneChild = children && children.length == 1;
+
       return {
         canMove,
         canMoveUp: canMove && rootId !== currentId,
@@ -242,6 +243,14 @@ export function withVisCanvas<T extends IVisualization>(
           if (currentIndex == -1) return console.error("Couldn't calculate new index to move to")
           const newId = (children![currentIndex + 1] as any).data.content;
           store.set(currentOrbitIdAtom, newId);
+        },
+        traverseRight: () => {
+          console.log('Traversing right...')
+          incrementBreadth();
+        },
+        traverseLeft: () => {
+          console.log('Traversing left...')
+          decrementBreadth();
         },
         traverseDown: () => {
           console.log('Traversing down...')
@@ -300,14 +309,15 @@ export function withVisCanvas<T extends IVisualization>(
     ) {
       const { x, y } = coords;
       const rootId = currentVis.rootData.data.content;
-      const currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
-
-      const children = ((currentVis.rootData?.children) as Array<HierarchyNode<any>>).sort(byStartTime);
+      const currentDetails = store.get(currentOrbitDetailsAtom);
+      let currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
       if (!currentId) {
         store.set(currentOrbitIdAtom, rootId);
+        currentId = rootId;
         console.log("Set default focus node to the root...");
       }
-      const currentDetails = store.get(currentOrbitDetailsAtom);
+
+      const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
 
       // Calculate conditions for either moving (within current window of sphere hierarchy data) or traversing (across windows)
       const {
@@ -335,7 +345,6 @@ export function withVisCanvas<T extends IVisualization>(
       const canGoDown = !!(canMoveDown || canTraverseDownMiddle || canTraverseDownLeft);// canMove && currentOrbitIsRoot && children && children.length > 0;
       const canGoLeft = !!(canMoveLeft || canTraverseLeft) // canMove && canGoUp && children && children[0].data.content !== currentId;
       const canGoRight = !!(canMoveRight || canTraverseRight)// canMove && canGoUp && children && children[children.length - 1].data.content !== currentId;
-
       // Generate actions based on the flags computed above
       const actions = generateNavigationActions(
         currentVis as any,
@@ -365,13 +374,13 @@ export function withVisCanvas<T extends IVisualization>(
         <TraversalButton
           condition={canGoLeft}
           iconType="left"
-          onClick={canMoveLeft ? actions.moveLeft : decrementBreadth}
+          onClick={canMoveLeft ? actions.moveLeft : actions.traverseLeft}
           dataTestId="vis-go-left"
         />,
         <TraversalButton
           condition={canGoRight}
           iconType="right"
-          onClick={canMoveRight ? actions.moveRight : incrementBreadth}
+          onClick={canMoveRight ? actions.moveRight : actions.traverseRight}
           dataTestId="vis-go-right"
         />,
       ];

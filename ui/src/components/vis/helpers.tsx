@@ -44,7 +44,7 @@ export function byStartTime(
   const startTimeB = getStartTimeFromNode(b) ?? 0;
 
   if (startTimeA === startTimeB) {
-    console.error("Sorting error!");
+    console.warn("Sorting was equal between nodes. This is likely an error!");
     return 0;
   }
   return startTimeA - startTimeB;

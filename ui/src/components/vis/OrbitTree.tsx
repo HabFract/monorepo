@@ -188,6 +188,11 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     fetchAndProcess()
   }, [data, y]);
 
+  // Allow the following useEffect to be unguarded after a change in the breadthIndex, triggering a render of the tree at that index
+  useEffect(() => {
+    setCanTriggerNextTreeVisRender(true)
+  }, [x]);
+
   // Sets up and triggers the next render when a new set of hierarchy data needs to be visualised
   useEffect(() => {
     if (
@@ -205,7 +210,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
       const newDefaultNodeTarget = currentOrbitTree._nextRootData.data.children.sort(byStartTime)?.[0]?.content;
       // TODO: correct index above so that intermediate node is the correct one (not just 0)
-      console.log('newRenderNodeDetails :>> ', newRenderNodeDetails);
+      // console.log('newRenderNodeDetails :>> ', newRenderNodeDetails);
       const newlySelectedNodeId = newRenderNodeDetails?.direction == 'up'
         ? currentOrbitTree._nextRootData.find(node => node.data.content == newRenderNodeDetails?.id)?.data?.content
         : newDefaultNodeTarget;

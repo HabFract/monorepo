@@ -195,7 +195,7 @@ export interface ZoomConfig {
   focusMode: boolean;
   previousRenderZoom: {
     event?: D3ZoomEvent<SVGSVGElement, unknown>;
-    node?: HierarchyNode<unknown>;
+    node?: HierarchyNode<NodeContent>;
     scale?: number;
   };
   zoomedInView: () => boolean;

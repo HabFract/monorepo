@@ -322,10 +322,13 @@ export abstract class BaseVisualization implements IVisualization {
       this.setNodeAndLabelGroups();
       this.appendNodeVectors();
       this.appendLinkPath();
+      this.firstRender() && store.set(currentOrbitIdAtom, this.rootData.data.content);
+
       !hasUpdated && this.applyInitialTransform();
       if (!(this.coverageType == VisCoverage.Partial || this.noCanvas())) {
         this.initializeZoomer();
       }
+
       if (this.startInFocusMode && hasUpdated) {
         const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
         const finalNodeToFocus = newRenderNodeDetails?.id;
@@ -344,6 +347,8 @@ export abstract class BaseVisualization implements IVisualization {
               console.log('Using intermediate node :>> ', newRenderNodeDetails.intermediateId);
             });
         }
+
+        store.set(newTraversalLevelIndexId, { id: null, intermediateId: null });
         this.startInFocusMode = false;
       }
       this._hasRendered = true;

@@ -1,4 +1,4 @@
-import { HierarchyNode, tree, TreeLayout } from "d3-hierarchy";
+import { hierarchy, HierarchyNode, tree, TreeLayout } from "d3-hierarchy";
 import { DefaultLinkObject, Link, linkVertical } from "d3-shape";
 import {
   EventHandlers,
@@ -59,6 +59,7 @@ import {
   SIX_CHILDREN_RIGHT_3_XS,
 } from "../links/paths";
 import {
+  byStartTime,
   chooseZoomScaleForOrbit,
   getInitialXTranslate,
   getInitialYTranslate,
@@ -140,7 +141,7 @@ export class TreeVisualization extends BaseVisualization {
       },
 
       handleNodeZoom: (event: any, node: HierarchyNode<NodeContent>) => {
-        if (!node) return null;
+        if (typeof node == undefined || Number.isNaN(node.x) || Number.isNaN(node.y)) return null;
         const id = store.get(getOrbitIdFromEh(node.data.content));
         const orbit = store.get(getOrbitAtom(id));
 
@@ -168,17 +169,17 @@ export class TreeVisualization extends BaseVisualization {
 
       memoizedhandleNodeZoom(id: EntryHashB64, foundNode?: HierarchyNode<NodeContent>) {
         if (id === this._lastOrbitId) {
-          console.log('Returned early from zoom... ');
+          // console.log('Returned early from zoom... ');
           return select(null)
         }; // Memoization check
         this._lastOrbitId = id;
 
         const newId = foundNode?.data.content || id || store.get(currentOrbitIdAtom)?.id;
         if (!newId) return select(null);
-
-        const node = foundNode || this.rootData.find(node => node.data.content == newId) || this._nextRootData.find(node => node.data.content == newId);
+        // TODO: figure out why nextRootData is needed, maybe calculate new layout information for this purpose
+        const node = foundNode || this.rootData.find(node => node.data.content == newId) || (hierarchy(this._nextRootData).sort(byStartTime).find(node => node.data.content == newId));
         // console.log('Actually zoomed to node: :>> ', node);
-        if (node) {
+        if (node && (typeof node?.x !== undefined) && (typeof node?.y !== undefined)) {
           const e = {
             sourceEvent: {
               clientX: node.x,
@@ -193,7 +194,6 @@ export class TreeVisualization extends BaseVisualization {
           // console.log('Zoomed to focus node based on store sub to currentOrbitId... ');
           return this.eventHandlers.handleNodeZoom.call(this, e as any, node);
         } else {
-          debugger;
           console.error("Tried to zoom to node that isn't in the hierarchy")
           return null
         }
