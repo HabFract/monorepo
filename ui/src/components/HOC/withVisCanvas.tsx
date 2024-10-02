@@ -37,7 +37,7 @@ const defaultMargins: Margins = {
   top: 0,
   right: 0,
   bottom: 0,
-  left: 30,
+  left: -600,
 };
 
 const getCanvasDimensions = function () {
@@ -313,7 +313,9 @@ export function withVisCanvas<T extends IVisualization>(
       };
       const moveUp = () => {
         const orbit = store.get(currentOrbitDetailsAtom);
+
         const newId = (!!orbit && orbit?.parentEh !== rootId) ? orbit?.parentEh : rootId;
+        console.log("Moving up... to", newId)
         store.set(currentOrbitIdAtom, newId);
       };
       const moveDownLeft = () => {

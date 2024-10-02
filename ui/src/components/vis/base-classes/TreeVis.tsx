@@ -81,7 +81,7 @@ export class TreeVisualization extends BaseVisualization {
   ): ViewConfig {
     return {
       scale: customScale || BASE_SCALE,
-      margin: { ...margin, top: isSmallScreen() ? -200 : 0 },
+      margin: { ...margin, top: isSmallScreen() ? -200 : -400 },
       canvasHeight,
       canvasWidth,
       defaultView: "",
@@ -100,7 +100,8 @@ export class TreeVisualization extends BaseVisualization {
             this._viewConfig,
             this._zoomConfig,
           ) as number)
-          : initialX;
+          : initialX +
+          this._viewConfig.margin.left;
       },
       defaultCanvasTranslateY: () => {
         const initialY = getInitialYTranslate.call(this, this.type, {
@@ -116,7 +117,7 @@ export class TreeVisualization extends BaseVisualization {
               this._viewConfig,
               this._zoomConfig,
             )) as number)
-          : initialY;
+          : initialY + this._viewConfig.margin.top;
       },
       isSmallScreen: function () {
         return this.canvasWidth < 440;
@@ -149,6 +150,14 @@ export class TreeVisualization extends BaseVisualization {
         this._zoomConfig.globalZoomScale = scale;
         this._zoomConfig.focusMode = true;
         this._zoomConfig.previousRenderZoom = { event, node, scale };
+        if (node.data.content == this.rootData.data.content) {
+          this.initializeZoomer()
+
+          console.log("INIT zoomer")
+        } else {
+          console.log("RESET zoomer")
+          this.resetZoomer();
+        }
         return this._canvas!
           //@ts-expect-error
           .transition()
@@ -160,9 +169,8 @@ export class TreeVisualization extends BaseVisualization {
       },
 
       memoizedhandleNodeZoom(id: EntryHashB64, foundNode?: HierarchyNode<NodeContent>) {
-
         if (id === this._lastOrbitId) {
-          console.log('Returned early from zoom :>> ');
+          console.log('Returned early from zoom... ');
           return select(null)
         }; // Memoization check
         this._lastOrbitId = id;
@@ -171,7 +179,7 @@ export class TreeVisualization extends BaseVisualization {
         if (!newId) return select(null);
 
         const node = foundNode || this.rootData.find(node => node.data.content == newId);
-
+        console.log('Actually zoomed to node: :>> ', node);
         if (node) {
           const e = {
             sourceEvent: {
@@ -184,7 +192,7 @@ export class TreeVisualization extends BaseVisualization {
               k: 1
             }
           };
-          console.log('Zoomed to focus node based on store sub to currentOrbitId :>> ');
+          console.log('Zoomed to focus node based on store sub to currentOrbitId... ');
           return this.eventHandlers.handleNodeZoom.call(this, e as any, node);
         } else {
           console.error("Tried to zoom to node that isn't in the hierarchy")
@@ -233,10 +241,8 @@ export class TreeVisualization extends BaseVisualization {
   }
 
   zoomOut(): void {
-    if (!this._zoomConfig.focusMode) return;
-
     super.zoomOut();
-    // Add any TreeVisualization specific zoom out behavior here
+    if (!this._zoomConfig.focusMode) return;
   }
 
   appendLinkPath(): void {
@@ -477,7 +483,7 @@ export class TreeVisualization extends BaseVisualization {
       this.eventHandlers.handleNodeZoom.call(this, e, d);
     });
 
-    store.sub(currentOrbitIdAtom, () => { this.eventHandlers.memoizedhandleNodeZoom.call(this, store.get(currentOrbitIdAtom).id) })
+    store.sub(currentOrbitIdAtom, () => { this.eventHandlers.memoizedhandleNodeZoom.call(this, store.get(currentOrbitIdAtom)?.id) })
   }
 
   setNodeAndLabelGroups(): void {

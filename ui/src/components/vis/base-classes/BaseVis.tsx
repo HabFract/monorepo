@@ -455,7 +455,7 @@ export abstract class BaseVisualization implements IVisualization {
    */
   resetZoomer(): void {
     const zoomer: ZoomBehavior<Element, unknown> = zoom();
-    this._canvas && this._canvas.call(zoomer as any);
+    select("#vis") && select("#vis")!.call(zoomer as any);
     this.initializeZoomConfig()
   }
 
@@ -481,8 +481,7 @@ export abstract class BaseVisualization implements IVisualization {
     const zoomer: ZoomBehavior<Element, unknown> = zoom()
       .scaleExtent([1, 1.5])
       .on("zoom", this.handleZoom.bind(this) as any);
-    //@ts-ignore
-    this._canvas && this._canvas!.call(zoomer);
+    select("#vis") && select("#vis")!.call(zoomer);
     return (this.zoomer = zoomer);
   }
 
@@ -495,8 +494,8 @@ export abstract class BaseVisualization implements IVisualization {
       return;
     } else {
       scale = t.k;
-      x = t.x + this._viewConfig.defaultCanvasTranslateX() * scale;
-      y = t.y + this._viewConfig.defaultCanvasTranslateY() * scale;
+      x = t.x * scale;
+      y = t.y * scale;
     }
     this._canvas && this._canvas
       //@ts-expect-error

@@ -4,7 +4,6 @@ g.nodes {
 }
 
 .node-subgroup {
-  transform: scale(1.5) translate(-62px, -52px);
   color: #ccc;
 }
 
@@ -26,11 +25,9 @@ svg path.link {
 .tooltip-inner .content {
   padding: 0.75rem 1.5rem;
   color: rgba(219, 228, 226, 1);
-  background: linear-gradient(
-    0deg,
-    rgba(69, 97, 95, 1) -20%,
-    rgba(69, 97, 95, 0.5) 100%
-  );
+  background: linear-gradient(0deg,
+      rgba(69, 97, 95, 1) -20%,
+      rgba(69, 97, 95, 0.5) 100%);
   border-radius: 1.75rem;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
@@ -84,6 +81,7 @@ svg path.link {
     transform: scale(2) translate(-62px, -52px);
   }
 }
+
 @media screen and (min-width: 1280px) {
   .node-subgroup {
     transform: scale(3.5) translate(-62px, -52px);
