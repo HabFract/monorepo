@@ -331,11 +331,11 @@ export abstract class BaseVisualization implements IVisualization {
         const finalNodeToFocus = newRenderNodeDetails?.id;
         // console.log('Actual new focus node :>> ', finalNodeToFocus);
         this._lastOrbitId = null;
-        const finalNodeId = newRenderNodeDetails?.intermediateId || finalNodeToFocus || this.rootData.data.content;
+        const initialNodeZoomId = newRenderNodeDetails?.intermediateId || finalNodeToFocus || this.rootData.data.content;
         let initialZoom = this.eventHandlers.memoizedhandleNodeZoom.call(
           this,
-          finalNodeId,
-          this.rootData.find(node => node.data.content == finalNodeId)
+          initialNodeZoomId,
+          this.rootData.find(node => node.data.content == initialNodeZoomId)
         );
         if (newRenderNodeDetails?.intermediateId) {
           (initialZoom as any)

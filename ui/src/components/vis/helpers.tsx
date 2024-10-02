@@ -47,10 +47,7 @@ export function byStartTime(
     console.error("Sorting error!");
     return 0;
   }
-
-  return isSmallScreen()
-    ? startTimeB - startTimeA
-    : startTimeA - startTimeB;
+  return startTimeA - startTimeB;
 }
 
 // Helper to distinguish focus zoom level per orbit scale

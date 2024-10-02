@@ -1,7 +1,7 @@
 /**
  * Connection wrapper for Holochain DNA method calls
  *
- * :TODO: :WARNING:
+ * :WARNING:
  *
  * This layer is currently unsuitable for mixing with DNAs that use dna-local identifier formats, and
  * will cause encoding errors if 2-element lists of identifiers are passed.
@@ -79,7 +79,7 @@ export async function autoConnect(conductorUri?: string) {
     appWs = await openConnection(token.token);
     dnaConfig = await sniffHolochainAppCells(appWs);
     await adminWs.authorizeSigningCredentials(
-      dnaConfig[HAPP_DNA_NAME]!.cell_id!,
+      dnaConfig[HAPP_DNA_NAME]!.cell_id!
     );
   }
   CONNECTION_CACHE[HAPP_ID] = { client: appWs, dnaConfig, conductorUri };
@@ -91,7 +91,7 @@ export const openConnection = (token?: AppAuthenticationToken) => {
   return AppWebsocket.connect(
     NODE_ENV == "dev"
       ? { token, url: DEFAULT_CONNECTION_URI }
-      : (undefined as any),
+      : (undefined as any)
   ).then((client) => {
     console.log(`Holochain connection to ${HAPP_ID} OK:`, client);
     return client;
@@ -112,14 +112,14 @@ export const getConnection = async () => {
  */
 export async function sniffHolochainAppCells(
   conn: AppWebsocket,
-  appID?: string,
+  appID?: string
 ) {
   const appInfo = await conn.appInfo();
   if (!appInfo) {
     throw new Error(
       `appInfo call failed for Holochain app '${
         appID || HOLOCHAIN_APP_ID
-      }' - ensure the name is correct and that the app installation has succeeded`,
+      }' - ensure the name is correct and that the app installation has succeeded`
     );
   }
   const dnas: object = appInfo["cell_info"];
@@ -296,7 +296,7 @@ const encodeFields = (args: any): any => {
 
 // explicit type-loss at the boundary
 export type BoundZomeFn<InputType, OutputType> = (
-  args: InputType,
+  args: InputType
 ) => OutputType;
 
 /**
@@ -308,7 +308,7 @@ const zomeFunction =
     cell_id: CellId,
     zome_name: string,
     fn_name: string,
-    skipEncodeDecode?: boolean,
+    skipEncodeDecode?: boolean
   ): BoundZomeFn<InputType, Promise<OutputType>> =>
   async (args): Promise<OutputType> => {
     const conn = await getConnection();
@@ -321,7 +321,7 @@ const zomeFunction =
         provenance: cell_id[1],
         payload: skipEncodeDecode ? args : encodeFields(args),
       },
-      60000,
+      60000
     );
     // .then((response) => {
     //   console.log("Zome response:", response)
@@ -348,13 +348,13 @@ export const mapZomeFn = <InputType, OutputType>(
   instance: string,
   zome: string,
   fn: string,
-  skipEncodeDecode?: boolean,
+  skipEncodeDecode?: boolean
 ) => {
   return zomeFunction<InputType, OutputType>(
     socketURI,
     mappings && mappings[instance]["cell_id"],
     zome,
     fn,
-    skipEncodeDecode,
+    skipEncodeDecode
   );
 };
