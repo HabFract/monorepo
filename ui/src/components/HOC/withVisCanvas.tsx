@@ -31,6 +31,7 @@ import {
   SphereHierarchyBounds,
   HierarchyBounds,
   Coords,
+  NodeContent,
 } from "../../state/types/hierarchy";
 
 const defaultMargins: Margins = {
@@ -60,27 +61,6 @@ const appendSvg = (mountingDivId: string, divId: string) => {
       .attr("style", "pointer-events: all")
   );
 };
-
-interface TraversalButtonVisibilityConditions {
-  withTraversal: boolean; // Top level flag
-  hasChild: boolean;
-  hasOneChild: boolean;
-  onlyChildParent: boolean;
-}
-
-function getTraversalConditions(
-  queryType: VisCoverage,
-  newRootData: any,
-): TraversalButtonVisibilityConditions {
-  const withTraversal: boolean = queryType !== VisCoverage.CompleteOrbit;
-  const hasChild: boolean =
-    newRootData?.data?.children && newRootData?.data?.children.length > 0;
-  const hasOneChild: boolean =
-    newRootData?.data?.children && newRootData?.data?.children.length == 1;
-  const onlyChildParent: boolean = true;
-
-  return { withTraversal, hasChild, hasOneChild, onlyChildParent };
-}
 
 export function withVisCanvas<T extends IVisualization>(
   Component: ComponentType<VisProps<T>>,
@@ -140,15 +120,6 @@ export function withVisCanvas<T extends IVisualization>(
         margin={defaultMargins}
         selectedSphere={selectedSphere}
         render={(currentVis: T, queryType: VisCoverage, x, y, newRootData) => {
-          const currentOrbitIsRoot = !!(
-            store.get(currentOrbitIdAtom) &&
-            store.get(currentOrbitIdAtom).id === currentVis.rootData.data.content
-          );
-          // Determine need for traversal controls
-          const traversalConditions = getTraversalConditions(
-            queryType,
-            currentOrbitIsRoot ? currentVis.rootData : newRootData,
-          );
 
           if (appendedSvg) {
             // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
@@ -184,10 +155,8 @@ export function withVisCanvas<T extends IVisualization>(
                   });
                 }}
                 buttons={renderTraversalButtons(
-                  traversalConditions,
                   { x, y },
                   currentVis,
-                  currentOrbitIsRoot,
                 )}
               />
               {VisModal<T>(
@@ -204,220 +173,210 @@ export function withVisCanvas<T extends IVisualization>(
       ></Component>
     );
 
+    function generateNavigationFlags(
+      currentVis: T,
+      currentId: ActionHashB64,
+      rootId: string,
+      children: Array<HierarchyNode<NodeContent>>,
+      x: number,
+      y: number,
+      maxBreadth: number,
+      maxDepth: number
+    ) {
+      const canMove = !isSmallScreen() || currentVis.coverageType == VisCoverage.CompleteSphere;
+      const canMoveLeft = canMove && rootId !== currentId && children && children[0].data.content !== currentId;
+      const canMoveRight = canMove && rootId !== currentId && children && children[children.length - 1].data.content !== currentId;
+      const currentOrbitIsRoot = currentId === rootId;
+      const hasOneChild = children && children.length == 1;
+      return {
+        canMove,
+        canMoveUp: canMove && rootId !== currentId,
+        canTraverseUp: y !== 0,
+        canMoveRight,
+        canMoveLeft,
+        canMoveDown: canMove && currentOrbitIsRoot && children && children.length !== 2,
+        canMoveDownLeft: canMove && currentOrbitIsRoot && children && !hasOneChild,
+        canMoveDownRight: canMove && currentOrbitIsRoot && children && !hasOneChild,
+        canTraverseDownMiddle: !!(
+          children &&
+          children
+            .slice(1, -1)
+            ?.find((child) => child.children && child.children.length > 0)?.data
+            .content == currentId
+        ),
+        canTraverseDown: children && hasOneChild && children[0].children && children[0].children.length == 1,
+        canTraverseLeft: x !== 0 && currentOrbitIsRoot,
+        canTraverseRight: currentOrbitIsRoot && maxBreadth && x < maxBreadth,
+        canTraverseDownLeft: !canMoveLeft && !currentOrbitIsRoot && children && !hasOneChild && children[0].children,
+        canTraverseDownRight: !canMoveRight && !currentOrbitIsRoot && maxDepth && y < maxDepth && children && !hasOneChild &&
+          !!children?.find(
+            (child) => child?.data?.content == currentId && !!child.children,
+          ),
+      };
+    }
+
+    function generateNavigationActions(
+      currentVis: T,
+      currentId: ActionHashB64,
+      rootId: string,
+      children: Array<HierarchyNode<any>>,
+      currentDetails: any,
+      store: any,
+      incrementDepth: () => void,
+      decrementDepth: () => void,
+      setBreadthIndex: (index: number) => void
+    ) {
+      return {
+        moveLeft: () => {
+          const currentIndex = children?.findIndex(
+            (child) => child.data.content == currentId,
+          ) as number;
+          if (currentIndex == -1) return console.error("Couldn't calculate new index to move to")
+          const newId = (children![currentIndex - 1] as any).data.content;
+          store.set(currentOrbitIdAtom, newId);
+        },
+        moveRight: () => {
+          const currentIndex = children?.findIndex(
+            (child) => child.data.content == currentId,
+          ) as number;
+          if (currentIndex == -1) return console.error("Couldn't calculate new index to move to")
+          const newId = (children![currentIndex + 1] as any).data.content;
+          store.set(currentOrbitIdAtom, newId);
+        },
+        traverseDown: () => {
+          console.log('Traversing down...')
+          const grandChildren = children?.find(child => child.data.content == currentId)?.children;
+          if (grandChildren && grandChildren.length > 0) {
+            const newId = grandChildren[0].data.content;
+
+            currentVis?.eventHandlers.memoizedhandleNodeZoom.call(currentVis, newId, undefined)
+              ?.on("end", () => {
+                incrementDepth();
+                const newChild =
+                  children &&
+                  ((
+                    children?.find(
+                      (child) => child?.data?.content == currentId && !!child.children,
+                    ) as HierarchyNode<any>
+                  )?.children?.[0] as HierarchyNode<any>);
+                const newId = newChild && newChild.parent?.data?.content;
+                store.set(newTraversalLevelIndexId, { id: newId, direction: 'down' });
+                setBreadthIndex(0);
+              });
+          }
+        },
+
+        traverseUp: () => {
+          decrementDepth();
+          console.log('Traversing up... :>> ');
+          store.set(newTraversalLevelIndexId, {
+            id: currentDetails?.parentEh,
+            direction: 'up'
+          });
+        },
+
+        moveDown: () => {
+          // const childrenMiddle =
+          //   children!.length > 0 ? Math.ceil(children!.length / 2) - 1 : 0;
+          const newId = (children![0] as any).data.content; // Always move to the start of the next level, not the middle
+          store.set(currentOrbitIdAtom, newId);
+
+          console.log("Moving down... to", newId)
+        },
+
+        moveUp: () => {
+          const orbit = store.get(currentOrbitDetailsAtom);
+          const newId = (!!orbit && orbit?.parentEh !== rootId) ? orbit?.parentEh : rootId;
+          store.set(currentOrbitIdAtom, newId);
+
+          console.log("Moving up... to", newId)
+        }
+      };
+    }
+
     function renderTraversalButtons<T extends IVisualization>(
-      conditions: TraversalButtonVisibilityConditions,
       coords: Coords,
       currentVis: T,
     ) {
-      const { withTraversal, hasChild, onlyChildParent } =
-        conditions;
       const { x, y } = coords;
       const rootId = currentVis.rootData.data.content;
       const currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
 
-
-      const newData = currentVis.rootData.find(node => node.data.content == currentId);
-      const data = (newData || currentVis.rootData as HierarchyNode<any>).sort(
-        byStartTime,
-      );
-      const currentOrbitIsRoot: boolean = (currentId == currentVis.rootData.data.content);
-
       const children = ((currentVis.rootData?.children) as Array<HierarchyNode<any>>).sort(byStartTime);
-      const hasOneChild = children && children.length == 1;
       if (!currentId) {
         store.set(currentOrbitIdAtom, rootId);
-        console.log("Set default focus node to the root...")
-      };
+        console.log("Set default focus node to the root...");
+      }
       const currentDetails = store.get(currentOrbitDetailsAtom);
 
-      const canMove =
-        !isSmallScreen() ||
-        currentVis.coverageType == VisCoverage.CompleteSphere;
-      const canMoveUp = canMove && rootId !== currentId;
-      const canMoveRight =
-        canMove &&
-        canMoveUp &&
-        children &&
-        children[children.length - 1].data.content !== currentId;
-      const canMoveLeft =
-        canMove &&
-        canMoveUp &&
-        children &&
-        children[0].data.content !== currentId;
-      const canMoveDown =
-        canMove && currentOrbitIsRoot && children && children.length !== 2;
-
-      const canMoveDownLeft =
-        canMove && currentOrbitIsRoot && children && !hasOneChild;
-      const canMoveDownRight =
-        canMove && currentOrbitIsRoot && children && !hasOneChild;
-
-      const canTraverseDownMiddle = !!(
-        children &&
-        children
-          .slice(1, -1)
-          ?.find((child) => child.children && child.children.length > 0)?.data
-          .content == currentId
+      // Calculate conditions for either moving (within current window of sphere hierarchy data) or traversing (across windows)
+      const {
+        canMoveUp,
+        canTraverseUp,
+        canMoveDown,
+        canTraverseDownMiddle,
+        canTraverseDownLeft,
+        canTraverseLeft,
+        canMoveLeft,
+        canMoveRight,
+        canTraverseRight,
+      } = generateNavigationFlags(
+        currentVis as any,
+        currentId,
+        rootId,
+        children,
+        x,
+        y,
+        maxBreadth,
+        maxDepth
       );
-      const canTraverseDown =
-        children &&
-        hasOneChild &&
-        children[0].children &&
-        children[0].children.length == 1;
+      // Consolidate move/traverse conditions such that there is only one action presented to the user for each direction
+      const canGoUp = !!(canMoveUp || canTraverseUp);
+      const canGoDown = !!(canMoveDown || canTraverseDownMiddle || canTraverseDownLeft);// canMove && currentOrbitIsRoot && children && children.length > 0;
+      const canGoLeft = !!(canMoveLeft || canTraverseLeft) // canMove && canGoUp && children && children[0].data.content !== currentId;
+      const canGoRight = !!(canMoveRight || canTraverseRight)// canMove && canGoUp && children && children[children.length - 1].data.content !== currentId;
 
-      const canTraverseLeft = x !== 0 && currentOrbitIsRoot;
-      const canTraverseRight =
-        currentOrbitIsRoot && maxBreadth && x < maxBreadth;
-      const canTraverseDownLeft =
-        !canMoveLeft &&
-        !currentOrbitIsRoot &&
-        children &&
-        !hasOneChild &&
-        children[0].children;
-      const canTraverseDownRight =
-        !canMoveRight &&
-        !currentOrbitIsRoot &&
-        maxDepth &&
-        y < maxDepth &&
-        children &&
-        !hasOneChild &&
-        !!children?.find(
-          (child) => child?.data?.content == currentId && !!child.children,
-        );
+      // Generate actions based on the flags computed above
+      const actions = generateNavigationActions(
+        currentVis as any,
+        currentId,
+        rootId,
+        children,
+        currentDetails,
+        store,
+        incrementDepth,
+        decrementDepth,
+        setBreadthIndex
+      );
 
-      const moveLeft = () => {
-        const currentIndex = children?.findIndex(
-          (child) => child.data.content == currentId,
-        ) as number;
-        if (currentIndex == -1) return console.error("Couldn't calculate new index to move to")
-        const newId = (children![currentIndex - 1] as any).data.content;
-        store.set(currentOrbitIdAtom, newId);
-      };
-      const moveRight = () => {
-        const currentIndex = children?.findIndex(
-          (child) => child.data.content == currentId,
-        ) as number;
-        if (currentIndex == -1) return console.error("Couldn't calculate new index to move to")
-        const newId = (children![currentIndex + 1] as any).data.content;
-        store.set(currentOrbitIdAtom, newId);
-      };
-      const moveDown = (children) => {
-        const childrenMiddle =
-          children!.length > 0 ? Math.ceil(children!.length / 2) - 1 : 0;
-        const newId = (children![childrenMiddle] as any).data.content;
-        store.set(currentOrbitIdAtom, newId);
-
-        console.log("Moving down... to", newId)
-      };
-      const moveUp = () => {
-        const orbit = store.get(currentOrbitDetailsAtom);
-
-        const newId = (!!orbit && orbit?.parentEh !== rootId) ? orbit?.parentEh : rootId;
-        console.log("Moving up... to", newId)
-        store.set(currentOrbitIdAtom, newId);
-      };
-      const moveDownLeft = () => {
-        const newId = (children![0] as any).data.content;
-        store.set(currentOrbitIdAtom, newId);
-      };
-      const moveDownRight = () => {
-        const newId = (children![children!.length - 1] as any).data.content;
-        store.set(currentOrbitIdAtom, newId);
-      };
-      // const traverseDownRight = () => {
-      //   const newX = children!.length - 1;
-      //   incrementDepth();
-      //   const newChild =
-      //     children &&
-      //     ((
-      //       children?.find(
-      //         (child) => child?.data?.content == currentId && !!child.children,
-      //       ) as HierarchyNode<any>
-      //     )?.children?.[0] as HierarchyNode<any>);
-      //   const newId = newChild && newChild.parent?.data?.content;
-      //   store.set(newTraversalLevelIndexId, { id: newId });
-      //   setBreadthIndex(0);
-      // };
-      const traverseDown = () => {
-        // Zoom down to the node before triggering a different vis data source:
-        console.log('Traversing down...')
-        const grandChildren = children?.find(child => child.data.content == currentId)?.children;
-        if (grandChildren && grandChildren.length > 0) {
-          const newId = grandChildren[0].data.content;
-
-          currentVis?.eventHandlers.memoizedhandleNodeZoom.call(currentVis, newId, undefined)
-            ?.on("end", () => {
-              incrementDepth();
-              const newChild =
-                children &&
-                ((
-                  children?.find(
-                    (child) => child?.data?.content == currentId && !!child.children,
-                  ) as HierarchyNode<any>
-                )?.children?.[0] as HierarchyNode<any>);
-              const newId = newChild && newChild.parent?.data?.content;
-              store.set(newTraversalLevelIndexId, { id: newId });
-              setBreadthIndex(0);
-            });
-        }
-      };
-      const traverseUp = () => {
-        decrementDepth();
-        console.log('traversing up... :>> ');
-        store.set(newTraversalLevelIndexId, {
-          id: currentDetails?.parentEh,
-          direction: 'up'
-        });
-      };
       return [
         <TraversalButton
-          condition={withTraversal && (y !== 0 || canMoveUp)}
+          condition={canGoUp}
           iconType="up"
-          onClick={canMoveUp ? moveUp : traverseUp}
-          dataTestId="traversal-button-up"
+          onClick={canMoveUp ? actions.moveUp : actions.traverseUp}
+          dataTestId="vis-go-up"
         />,
         <TraversalButton
-          condition={
-            !!(
-              withTraversal &&
-              (canTraverseDown || canTraverseDownMiddle || canMoveDown)
-            )
-          }
+          condition={canGoDown}
           iconType="down"
-          onClick={canMoveDown ? () => moveDown(children) : traverseDown}
-          dataTestId="traversal-button-down"
+          onClick={canMoveDown ? actions.moveDown : actions.traverseDown}
+          dataTestId="vis-go-down"
         />,
         <TraversalButton
-          condition={!!(withTraversal && (canTraverseLeft || canMoveLeft))}
+          condition={canGoLeft}
           iconType="left"
-          onClick={canMoveLeft ? moveLeft : decrementBreadth}
-          dataTestId="traversal-button-left"
+          onClick={canMoveLeft ? actions.moveLeft : decrementBreadth}
+          dataTestId="vis-go-left"
         />,
         <TraversalButton
-          condition={
-            !!(withTraversal && (canTraverseDownLeft || canMoveDownLeft))
-          }
-          iconType="down-left"
-          onClick={canMoveDownLeft ? moveDownLeft : traverseDown}
-          dataTestId="traversal-button-down-left"
-        />,
-        <TraversalButton
-          condition={!!(withTraversal && (canTraverseRight || canMoveRight))}
+          condition={canGoRight}
           iconType="right"
-          onClick={canMoveRight ? moveRight : incrementBreadth}
-          dataTestId="traversal-button-right"
-        />,
-        <TraversalButton
-          condition={
-            !!(withTraversal && (canTraverseDownRight || canMoveDownRight))
-          }
-          iconType="down-right"
-          onClick={moveDownRight}
-          dataTestId="traversal-button-down-right"
+          onClick={canMoveRight ? actions.moveRight : incrementBreadth}
+          dataTestId="vis-go-right"
         />,
       ];
-    }
-  };
+    };
+  }
   //@ts-ignore
   return <ComponentWithVis />;
 }
