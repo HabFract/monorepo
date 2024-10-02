@@ -37,7 +37,7 @@ const defaultMargins: Margins = {
   top: 0,
   right: 0,
   bottom: 0,
-  left: -600,
+  left: 0,
 };
 
 const getCanvasDimensions = function () {
@@ -222,14 +222,12 @@ export function withVisCanvas<T extends IVisualization>(
       );
       const currentOrbitIsRoot: boolean = (currentId == currentVis.rootData.data.content);
 
-      const children = (
-        isSmallScreen() ? currentVis.rootData?.children?.reverse() : currentVis.rootData?.children
-      ) as Array<HierarchyNode<any>> | undefined;
+      const children = ((currentVis.rootData?.children) as Array<HierarchyNode<any>>).sort(byStartTime);
       const hasOneChild = children && children.length == 1;
-      if (!currentId || (y > 0 && !currentVis._zoomConfig.focusMode && currentId && currentId !== rootId)) {
+      if (!currentId) {
         store.set(currentOrbitIdAtom, rootId);
         console.log("Set default focus node to the root...")
-      } ``
+      };
       const currentDetails = store.get(currentOrbitDetailsAtom);
 
       const canMove =
@@ -358,10 +356,8 @@ export function withVisCanvas<T extends IVisualization>(
                   ) as HierarchyNode<any>
                 )?.children?.[0] as HierarchyNode<any>);
               const newId = newChild && newChild.parent?.data?.content;
-              // this.;
               store.set(newTraversalLevelIndexId, { id: newId });
               setBreadthIndex(0);
-              // store.set(currentOrbitIdAtom, newId);
             });
         }
       };

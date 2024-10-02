@@ -49,6 +49,7 @@ export abstract class BaseVisualization implements IVisualization {
   _canvas: Selection<SVGGElement, unknown, HTMLElement, any> | undefined;
   _viewConfig: ViewConfig;
   _zoomConfig: ZoomConfig;
+  _lastOrbitId!: EntryHashB64 | null;
 
   // Current Vis sphere context:
   sphereEh: EntryHashB64;
@@ -265,13 +266,13 @@ export abstract class BaseVisualization implements IVisualization {
     this._viewConfig.dx =
       this._viewConfig.canvasWidth /
       ((this._viewConfig.levelsHigh as number) * 2) - // Adjust for tree horizontal spacing on different screens
-      +this._viewConfig.isSmallScreen() * 250;
+      +this._viewConfig.isSmallScreen() * 150;
     this._viewConfig.dy =
       this._viewConfig.canvasHeight /
       ((this._viewConfig.levelsWide as number) * 6);
     //adjust for taller aspect ratio
-    this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 2.5 : 1.5;
-    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 2.5 : 3;
+    this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 8.5 : 1.5;
+    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 1.7 : 3;
   }
 
   /**
@@ -321,36 +322,21 @@ export abstract class BaseVisualization implements IVisualization {
       this.setNodeAndLabelGroups();
       this.appendNodeVectors();
       this.appendLinkPath();
-
       !hasUpdated && this.applyInitialTransform();
       if (!(this.coverageType == VisCoverage.Partial || this.noCanvas())) {
         this.initializeZoomer();
       }
       if (this.startInFocusMode && hasUpdated) {
-        const syntheticEvent = {
-          sourceEvent: {
-            clientX: this.rootData.x,
-            clientY: this.rootData.y
-          },
-          transform: {
-            x: 0,
-            y: 0,
-            k: 1
-          }
-        };
         const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
         const finalNodeToFocus = newRenderNodeDetails?.id;
-        console.log('Actual new focus node :>> ', finalNodeToFocus);
-        this._lastOrbitId = undefined;
-
+        // console.log('Actual new focus node :>> ', finalNodeToFocus);
+        this._lastOrbitId = null;
         const finalNodeId = newRenderNodeDetails?.intermediateId || finalNodeToFocus || this.rootData.data.content;
         let initialZoom = this.eventHandlers.memoizedhandleNodeZoom.call(
           this,
           finalNodeId,
           this.rootData.find(node => node.data.content == finalNodeId)
         );
-        console.log('this.rootData.find(node => node.data.content == finalNodeId) :>> ', this.rootData.find(node => node.data.content == finalNodeId));
-
         if (newRenderNodeDetails?.intermediateId) {
           (initialZoom as any)
             .on("end", () => {

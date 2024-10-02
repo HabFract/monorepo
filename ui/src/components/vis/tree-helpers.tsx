@@ -74,7 +74,6 @@ export const createTreeVisualization = ({
 }) => {
   const currentTreeJson = getJsonDerivation(json);
   const hierarchyData = hierarchy(currentTreeJson).sort(byStartTime);
-
   setDepthBounds(params?.currentSphereEhB64, [
     0,
     visCoverage == VisCoverage.CompleteOrbit ? 100 : hierarchyData.height,

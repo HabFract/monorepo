@@ -61,7 +61,7 @@ export function chooseZoomScaleForOrbit(orbit: OrbitNodeDetails) {
     case Scale.Sub:
       return 3
     case Scale.Atom:
-      return 3.4
+      return 4
     default:
       return FOCUS_MODE_SCALE;
   }
@@ -75,9 +75,7 @@ export const parseAndSortTrees = (data: string) => {
   }
   const trees = parsedData?.result?.level_trees;
   if (!trees) console.error("Could not get an array of trees from parsed data")
-  return isSmallScreen()
-    ? trees.sort(byStartTime).reverse()
-    : trees.sort(byStartTime);
+  return trees.sort(byStartTime);
 };
 
 // Find the index in the level_trees array of the node that we will be traversing to in the new render.

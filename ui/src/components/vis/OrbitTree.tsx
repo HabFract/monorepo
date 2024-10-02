@@ -203,7 +203,9 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       ).sort(byStartTime);
 
       const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
-      const newDefaultNodeTarget = currentOrbitTree._nextRootData.data.children?.[0]?.content;
+      const newDefaultNodeTarget = currentOrbitTree._nextRootData.data.children.sort(byStartTime)?.[0]?.content;
+      // TODO: correct index above so that intermediate node is the correct one (not just 0)
+      console.log('newRenderNodeDetails :>> ', newRenderNodeDetails);
       const newlySelectedNodeId = newRenderNodeDetails?.direction == 'up'
         ? currentOrbitTree._nextRootData.find(node => node.data.content == newRenderNodeDetails?.id)?.data?.content
         : newDefaultNodeTarget;

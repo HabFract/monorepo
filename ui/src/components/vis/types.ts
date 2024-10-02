@@ -51,6 +51,8 @@ export interface IVisualization {
   eventHandlers: EventHandlers;
   /** Flag indicating if the visualization has been rendered */
   _hasRendered: boolean;
+  /** Flag helping to track if Orbit was just zoomed to */
+  _lastOrbitId: EntryHashB64 | null;
 
   /** Set state handler for triggering modal open in the parent React component */
   modalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
