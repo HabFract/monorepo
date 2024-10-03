@@ -44,7 +44,8 @@ const DateInput = ({
           onChange={async (_date: any, dateString: string) =>
             setFieldValue(
               field.name,
-              DateTime.local(...dateString.split("/").map((n) => +n)).ts,
+              //@ts-ignore
+              DateTime.local(...dateString.split("/").map((n) => +n) as any).ts,
             )
           }
         />

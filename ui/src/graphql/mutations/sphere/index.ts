@@ -5,7 +5,6 @@ import {
   HAPP_ZOME_NAME_PERSONAL_HABITS,
 } from "../../../constants";
 import {
-  CreateResponsePayload,
   Sphere,
   SphereCreateParams,
   SphereUpdateParams,
@@ -24,11 +23,11 @@ export type updateArgs = { sphere: SphereUpdateParams };
 export type createHandler = (
   root: any,
   args: createArgs,
-) => Promise<CreateResponsePayload>;
+) => Promise<object>; // TODO: swap this type out for correct response type
 export type updateHandler = (
   root: any,
   args: updateArgs,
-) => Promise<CreateResponsePayload>;
+) => Promise<object>;
 export type deleteHandler = (
   root: any,
   args: { sphereHash: ActionHashB64 },

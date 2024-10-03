@@ -121,11 +121,11 @@ function App({ children: pageComponent }) {
                 <></>
               ),
               // Only Renders when state includes "Onboarding"
-              //@ts-ignore
               headerDiv: state.match("Onboarding") && (
                 <OnboardingHeader
-                  state={state}
-                  transition={transition}
+                state={state}
+                transition={transition}
+                //@ts-ignore
                   ref={progressBarRef}
                 />
               ),

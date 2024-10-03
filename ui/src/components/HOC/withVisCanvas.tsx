@@ -188,7 +188,7 @@ export function withVisCanvas<T extends IVisualization>(
       const canMoveRight = canMove && rootId !== currentId && children && children[children.length - 1].data.content !== currentId;
       const currentOrbitIsRoot = currentId === rootId;
       const hasOneChild = children && children.length == 1;
-
+console.log('currentOrbitIsRoot && maxBreadth && x < maxBreadth :>> ', currentOrbitIsRoot, maxBreadth, x);
       return {
         canMove,
         canMoveUp: canMove && rootId !== currentId,

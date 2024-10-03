@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use tauri_plugin_holochain::{HolochainExt, HolochainPluginConfig, WANNetworkConfig};
     
-use tauri::{AppHandle, Listener};
+use tauri::AppHandle;
 
 const APP_ID: &'static str = "habit_fract";
 const SIGNAL_URL: &'static str = "wss://signal.holo.host";

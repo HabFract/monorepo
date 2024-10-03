@@ -332,6 +332,7 @@ export abstract class BaseVisualization implements IVisualization {
       if (this.startInFocusMode && hasUpdated) {
         const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
         const finalNodeToFocus = newRenderNodeDetails?.id;
+        console.log('newRenderDetails :>> ', newRenderNodeDetails);
         // console.log('Actual new focus node :>> ', finalNodeToFocus);
         this._lastOrbitId = null;
         const initialNodeZoomId = newRenderNodeDetails?.intermediateId || finalNodeToFocus || this.rootData.data.content;
@@ -472,7 +473,7 @@ export abstract class BaseVisualization implements IVisualization {
     const zoomer: ZoomBehavior<Element, unknown> = zoom()
       .scaleExtent([1, 1.5])
       .on("zoom", this.handleZoom.bind(this) as any);
-    select("#vis") && select("#vis")!.call(zoomer);
+    select("#vis") && select("#vis")!.call(zoomer as any);
     return (this.zoomer = zoomer);
   }
 

@@ -219,8 +219,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
         currentOrbitIdAtom,
         newlySelectedNodeId,
       );
-
-      store.set(newTraversalLevelIndexId, { id: newlySelectedNodeId, intermediateId: newRenderNodeDetails?.direction == 'up' ? newDefaultNodeTarget : null });
+      const noNewFocusNode = typeof newlySelectedNodeId === 'undefined'; // These signifies a lateral traversal where the new selected node is by default the root, selected from withVisCanvas
+      store.set(newTraversalLevelIndexId, { id: newlySelectedNodeId, intermediateId: newRenderNodeDetails?.direction == 'up' ? newDefaultNodeTarget : (noNewFocusNode ? currentOrbitTree._nextRootData.data.content : null) });
 
       currentOrbitTree.startInFocusMode = true;
       currentOrbitTree.render();

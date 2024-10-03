@@ -3,7 +3,7 @@ import { HierarchyNode } from "d3-hierarchy";
 import { Selection } from "d3-selection";
 import { D3ZoomEvent, ZoomBehavior } from "d3-zoom";
 import { SphereOrbitNodes, SphereHashes } from "../../state/types/sphere";
-import { NodeContent } from "ui/src/state";
+import { NodeContent } from "../../state";
 
 /**
  * Enum for visualization types.

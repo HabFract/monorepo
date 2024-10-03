@@ -1,5 +1,4 @@
-import { select } from "d3-selection";
-import { ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
+import { IVisualization, ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
 import { ReactNode } from "react";
 import { withVisCanvas } from "../HOC/withVisCanvas";
 import { BASE_SCALE, FOCUS_MODE_SCALE } from "./constants";
@@ -11,7 +10,7 @@ import { Scale } from "../..//graphql/generated";
 
 // Helper function to return a ReactNode that is a combination of the Vis component, wrapped by the withCanvas higher order component, contained by a mounting div
 export const renderVis = (
-  visComponent: React.ComponentType<VisProps>,
+  visComponent: React.ComponentType<VisProps<IVisualization>>,
 ): ReactNode => (
   <>
     <div id="vis-root" className="h-full"></div>
@@ -201,7 +200,7 @@ export const newXTranslate = (
     // case "radial":
     //   return 0; // -radialTranslation(zoomConfig).x * scale;
     case VisType.Tree:
-      return -zoomConfig.previousRenderZoom?.node?.x * scale;
+      return -(zoomConfig.previousRenderZoom?.node?.x!) * scale;
   }
 };
 
@@ -217,7 +216,7 @@ export const newYTranslate = (
     // case "radial":
     //   return 0; //-radialTranslation(zoomConfig).y * scale;
     case VisType.Tree:
-      return -zoomConfig.previousRenderZoom?.node?.y * scale;
+      return -(zoomConfig.previousRenderZoom?.node?.y!) * scale;
     default:
       return 1;
   }
