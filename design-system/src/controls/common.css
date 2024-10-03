@@ -14,9 +14,41 @@
   right: 1rem;
 }
 
-.win-count-container {
-  
+.win-count-container, .streak-count-container {
+  @apply h-24 w-1/2 m-2 p-2 bg-secondary rounded-xl grid gap-3 gap-y-1;
+  grid-template-rows: 1.5rem auto;
+  grid-template-columns: 1fr 1fr 1fr;
+  min-width: 8rem;
 }
+.win-count-container .title, .streak-count-container .title {
+  grid-column: 1/-1;
+  @apply text-center text-white;
+}
+
+.win-count-container .ant-progress-circle {
+  @apply p-0;
+
+}
+.win-count-container .win-control {
+  @apply text-xl text-primary hover:text-link;
+  cursor: pointer;
+  width: fit-content;
+  align-self: center;
+  height: fit-content;
+}
+
+.win-count-container .win-control-indicator {
+  @apply text-white text-xs leading-loose tracking-widest m-0;
+}
+
+.win-count-container .win-control:disabled {
+  @apply text-gray-200;
+}
+
+.win-count-container .win-control.minus {
+  justify-self: end;
+}
+
 .streak-count-container {
   
 }
