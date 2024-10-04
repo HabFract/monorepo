@@ -14,7 +14,7 @@ const meta: Meta<WinCountProps> = {
 
 export default meta;
 
-type Story = StoryObj<WinCountProps & { content: string }>;
+type Story = StoryObj<WinCountProps>;
 
 export const Default: Story = {
   args: {

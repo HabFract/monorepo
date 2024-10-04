@@ -10,3 +10,5 @@ export const XS_TREE_PATH_OFFSET_Y = 120;
 
 export const LG_TREE_PATH_OFFSET_X = 185;
 export const XS_TREE_PATH_OFFSET_X = 30;
+
+export const SAVE_WINS_FREQUENCY = 4000;

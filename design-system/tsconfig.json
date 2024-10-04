@@ -1,10 +1,10 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "./src",
+    "rootDir": "./",
     "outDir": "./dist/"
   },
-  "include": ["./src/**/*", "./src/stories"],
+  "include": ["./src/**/*", "./src/stories", "./colour-palette.ts"],
   "references": [{ "path": "../ui" }],
   "exclude": [
     "**/.pnpm",
