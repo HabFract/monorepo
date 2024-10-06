@@ -23,6 +23,13 @@ export const Default: Story = {
   },
 };
 
+export const Loading: Story = {
+  args: {
+    orbitFrequency: Frequency.DAILY_OR_MORE.DAILY,
+    currentWins: undefined,
+  },
+};
+
 export const Complete: Story = {
   args: {
     orbitFrequency: Frequency.DAILY_OR_MORE.DAILY,

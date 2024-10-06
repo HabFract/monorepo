@@ -1,19 +1,17 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 
 import "./common.css";
 import { DateTime } from "luxon";
-import TickBox from "./TickBox";
-import { VerticalLeftOutlined, VerticalRightOutlined } from "@ant-design/icons";
+import CalendarDay from "./CalendarDay";
+import SwipeUpTab from "./SwipeUpTab";
 
 export interface CalendarProps {
-  mainCheckbox: ReactNode;
   orbitWins: object;
   currentDate: DateTime;
   setNewDate: Function;
 }
 
 const Calendar: React.FC<CalendarProps> = ({
-  mainCheckbox,
   orbitWins,
   currentDate,
   setNewDate,
@@ -30,74 +28,66 @@ const Calendar: React.FC<CalendarProps> = ({
     }
   };
 
-  const renderSecondaryTickBox = (day: DateTime) => {
-    const dayKey = day.toISODate();
-    const isCompleted = orbitWins?.[dayKey as string] || false;
+  const renderCalendarDay = (date: DateTime) => {
+    const dateString = date.toISODate()!;
+    const isCompleted = orbitWins?.[dateString as string] || false;
+    const isTodaySelected = date.toFormat('MM-dd-yyyy') === currentDate.toFormat('MM-dd-yyyy');
+    
     return (
-      <div key={dayKey} className="flex flex-1 relative">
-        <TickBox
+      <span key={dateString} className={isTodaySelected ? "calendar-day-container current" : "calendar-day-container"}>
+        <CalendarDay
+          dateString={dateString}
           completed={isCompleted}
-          toggleIsCompleted={() => {}}
-          size="secondary"
-          id={`tickbox-${dayKey}`}
         />
-        <label className="tickbox-label" htmlFor={`tickbox-${dayKey}`}>
-          {day.weekdayShort}
-          <br />
-          <br />
-          <br />
-          <em>{day.day}</em>
-        </label>
-      </div>
+      </span>
     );
   };
+
   const daysAfterCurrent = Math.min(
     3,
     Math.floor(nowDate.diff(currentDate, "days").days),
   );
   const spacerDays = 3 - daysAfterCurrent;
   return (
-    <div className="flex flex-col text-white">
-      <div className="flex justify-between">
-        <button className="date-nav-button" onClick={handlePreviousDay}>
-          <VerticalRightOutlined />
-        </button>
-        <div className="current-date-label">
-          {currentDate.weekdayShort}
-          <br />
-          <em>{currentDate.day}</em>
+    <>
+        <div className="current-calendar-context-container">
+          <button className="date-nav-button" onClick={handlePreviousDay}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={4} stroke="currentColor" className="size-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+          <span className="current-date-string">{currentDate.toLocaleString(DateTime.DATE_FULL)}</span>
+          <button
+            className={isLastDay ? "date-nav-button disabled" : "date-nav-button"}
+            onClick={handleNextDay}
+            disabled={currentDate.toISODate() === nowDate.toISODate()}
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={4} stroke="currentColor" className="size-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
         </div>
-        <button
-          className={isLastDay ? "date-nav-button disabled" : "date-nav-button"}
-          onClick={handleNextDay}
-          disabled={currentDate.toISODate() === nowDate.toISODate()}
-        >
-          <VerticalLeftOutlined />
-        </button>
-      </div>
-      <div className="flex">
-        {
-          /* Render tickboxes for the previous 3 days */
-          <div className="flex justify-end flex-1 gap-1">
-            {[-3, -2, -1].map((offset) =>
-              renderSecondaryTickBox(currentDate.minus({ days: -offset })),
+        <div className="calendar-days-container">
+          {
+            /* Render calendar days for the previous 3 days */
+            <>
+              {[-3, -2, -1].map((offset) =>
+                renderCalendarDay(currentDate.minus({ days: -offset })),
+              )}
+            </>
+          }
+          {renderCalendarDay(currentDate)}
+          {/* Render calendar days for upto the next 3 days, or spacers for the gaps */}
+            {daysAfterCurrent >= 0 &&
+              [...Array(daysAfterCurrent).keys()].map((offset) =>
+                renderCalendarDay(currentDate.plus({ days: offset + 1 })),
             )}
-          </div>
-        }
-        <div className="flex flex-2 w-8">{mainCheckbox}</div>
-        {/* Render tickboxes for upto the next 3 days, or spacers for the gaps */}
-        <div className="flex justify-start gap-1 flex-1">
-          {daysAfterCurrent >= 0 &&
-            [...Array(daysAfterCurrent).keys()].map((offset) =>
-              renderSecondaryTickBox(currentDate.plus({ days: offset + 1 })),
-            )}
-          {spacerDays > 0 &&
-            [...Array(spacerDays).keys()].map((_, i) => (
-              <div className="spacer flex flex-1" key={i} />
-            ))}
+            {spacerDays > 0 &&
+              [...Array(spacerDays).keys()].map((_, i) => (
+                <div className="spacer flex flex-1" key={i} />
+              ))}
         </div>
-      </div>
-    </div>
+    </>
   );
 };
 

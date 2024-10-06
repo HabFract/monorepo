@@ -52,7 +52,7 @@ const tailwindConfig = {
           500: "rgba(69, 97, 95, 0.5)",
         },
         bg: "#242424", // RAISIN_BLACK
-        "menu-bg": "#354342", // DARKENED DEEP SPACE
+        "menu-bg": "#3a4040",
 
         warn: {
           DEFAULT: "rgba(251,200,43, 1)",
@@ -62,6 +62,11 @@ const tailwindConfig = {
           DEFAULT: "rgba(231,50,50, 1)",
           500: "rgba(231,50,50, .5)",
         }, // DEEP CARMINE
+
+        win: {
+          complete: "#0bfeb8",
+          incomplete: "#ee5656",
+        },
 
         title: "rgba(219,228,226, 1)", // CHINESE_WHITE
 

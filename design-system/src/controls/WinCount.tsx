@@ -24,7 +24,7 @@ const WinCount: React.FC<WinCountProps> = ({
   currentWins,
   orbitFrequency
 }): ReactNode => {
-  if (!currentWins || typeof currentWins !== 'number') {
+  if (typeof currentWins == 'undefined' || typeof currentWins !== 'number') {
     console.warn("Win tracking component fed bad props")
     return <Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
   };

@@ -3,27 +3,27 @@ import { Scale } from "./generated-types";
 
 export function getIconForPlanetValue(
   scale: Scale,
-): FC<ComponentProps<"svg">> | undefined {
+): FC<ComponentProps<"svg">> {
   switch (scale) {
     case Scale.Astro:
       return () => (
         <img
-          style={{ height: "24px", width: "24px" }}
-          src="../assets/icons/astro-incomplete-react.png"
+          style={{ height: "24px", width: "auto", marginTop: '-1px', objectFit: "cover" }}
+          src="../assets/astro-incomplete.svg"
         />
       );
     case Scale.Atom:
       return () => (
         <img
-          style={{ height: "24px", width: "24px" }}
-          src="../assets/icons/atom-incomplete-react.png"
+          style={{ height: "28px", width: "auto", transform: 'scale(0.8)', marginTop: '-6px', objectFit: "cover" }}
+          src="/assets/atom-incomplete.svg"
         />
-      );
-    case Scale.Sub:
-      return () => (
+    );
+  case Scale.Sub:
+    return () => (
         <img
-          style={{ height: "24px", width: "24px" }}
-          src="../assets/icons/sub-astro-incomplete-react.png"
+          style={{ height: "22px", width: "auto", marginTop: '-4px', objectFit: "cover" }}
+          src="../assets/sub-astro-incomplete.svg"
         />
       );
   }

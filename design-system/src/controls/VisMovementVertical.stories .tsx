@@ -6,9 +6,8 @@ const meta: Meta<VisMovementVerticalProps> = {
   title: "Components/Controls/VisMovementVertical",
   component: VisMovementVertical,
   argTypes: {},
-  render: (args: any) => (
-    <VisMovementVertical 
-    ></VisMovementVertical>
+  render: (args: VisMovementVerticalProps) => (
+    <VisMovementVertical {...args} ></VisMovementVertical>
   ),
 };
 

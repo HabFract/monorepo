@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 import TickBox from "./TickBox";
 import "./common.css";
 import { OrbitNodeDetails } from "@ui/src/state/types";
-import Calendar from "./Calendar";
+import Calendar from "./SwipeUpTab";
 import { DateTime } from "luxon";
 
 export interface VisControlsProps {
