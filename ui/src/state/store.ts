@@ -34,7 +34,7 @@ export interface AppState {
 }
 
 /**
- * Persisted atom for the entire app state, can be used to hydrate app state when no Holochain is possible
+ * Persisted atom for the entire app state, can later be used to hydrate app state when no Holochain network availability is possible
  */
 export const appStateAtom = atomWithStorage<AppState>("appState", {
   spheres: {

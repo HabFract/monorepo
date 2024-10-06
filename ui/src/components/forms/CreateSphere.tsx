@@ -95,24 +95,24 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
         try {
           let response = editMode
             ? await updateSphere({
-                variables: {
-                  sphere: {
-                    id: sphereToEditId as string,
-                    name: values.name,
-                    description: values.description,
-                    image: values.image,
-                  },
+              variables: {
+                sphere: {
+                  id: sphereToEditId as string,
+                  name: values.name,
+                  description: values.description,
+                  image: values.image,
                 },
-              })
+              },
+            })
             : await addSphere({
+              variables: {
                 variables: {
-                  variables: {
-                    name: values.name,
-                    description: values.description,
-                    image: values.image,
-                  },
+                  name: values.name,
+                  description: values.description,
+                  image: values.image,
                 },
-              });
+              },
+            });
           setSubmitting(false);
           if (!response.data) return;
           const payload = response.data as any;
@@ -133,7 +133,21 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
         }
       }}
     >
-      {({ values, errors, touched }) => {
+      {({ values, errors, touched, isSubmitting }) => {
+        const SubmitButton = submitBtn ? (
+          React.cloneElement(submitBtn as React.ReactElement, {
+            loading: (loading || isSubmitting),
+            errors,
+            touched,
+          })
+        ) : (
+          <DefaultSubmitBtn
+            loading={loading || isSubmitting}
+            editMode={editMode}
+            errors={errors}
+            touched={touched}
+          />
+        );
         return (
           <div className="px-1">
             {headerDiv}
@@ -182,19 +196,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                 </div>
               </div>
 
-              {(submitBtn &&
-                React.cloneElement(submitBtn as React.ReactElement, {
-                  loading,
-                  errors,
-                  touched,
-                })) || (
-                <DefaultSubmitBtn
-                  loading={loading}
-                  editMode={editMode}
-                  errors={errors}
-                  touched={touched}
-                ></DefaultSubmitBtn>
-              )}
+              {SubmitButton}
             </Form>
           </div>
         );

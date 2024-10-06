@@ -65,12 +65,12 @@ function App({ children: pageComponent }) {
     );
   const currentSphereDetails = currentSphere
     ? {
-        entryHash: currentSphere.eH,
-        name: currentSphere.name,
-        description: currentSphere.metadata?.description,
-        hashtag: "",
-        image: (currentSphere?.metadata?.image as string) || undefined,
-      }
+      entryHash: currentSphere.eH,
+      name: currentSphere.name,
+      description: currentSphere.metadata?.description,
+      hashtag: "",
+      image: (currentSphere?.metadata?.image as string) || undefined,
+    }
     : ({ entryHash: "" as EntryHashB64 } as SphereDetails);
 
   return (
@@ -123,9 +123,9 @@ function App({ children: pageComponent }) {
               // Only Renders when state includes "Onboarding"
               headerDiv: state.match("Onboarding") && (
                 <OnboardingHeader
-                state={state}
-                transition={transition}
-                //@ts-ignore
+                  state={state}
+                  transition={transition}
+                  //@ts-ignore
                   ref={progressBarRef}
                 />
               ),

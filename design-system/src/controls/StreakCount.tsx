@@ -9,7 +9,7 @@ export interface StreakCountProps {
   currentStreak: number;
   orbitFrequency: Frequency.Rationals;
 }
-  
+
 
 const StreakCount: React.FC<StreakCountProps> = ({
   currentStreak,
@@ -32,7 +32,7 @@ const StreakCount: React.FC<StreakCountProps> = ({
   }
   const frequencyParts = getFrequencyText(orbitFrequency).split('-');
 
-console.log('getFr', getFrequencyText(orbitFrequency).split('-').slice(0,2));
+  console.log('getFrequency', getFrequencyText(orbitFrequency).split('-').slice(0, 2));
   return (
     <div className="streak-count-container">
       <div className="title flex gap-1 items-center justify-center">
@@ -42,16 +42,16 @@ console.log('getFr', getFrequencyText(orbitFrequency).split('-').slice(0,2));
         </svg>
       </div>
       <Progress
-          type="circle"
-          percent={100}
-          steps={{ count: currentStreak, gap: 4 }}
-          strokeWidth={10}
-          format={() => <span className="streak-control-indicator">{currentStreak}</span>}
-          showInfo={true}
-          strokeColor={SEA_GREEN}
-          size={"small"}
-        />
-      </div>
+        type="circle"
+        percent={100}
+        steps={{ count: currentStreak, gap: 4 }}
+        strokeWidth={10}
+        format={() => <span className="streak-control-indicator">{currentStreak}</span>}
+        showInfo={true}
+        strokeColor={SEA_GREEN}
+        size={"small"}
+      />
+    </div>
   );
 };
 

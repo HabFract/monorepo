@@ -17,9 +17,9 @@ let maxBreadth: number;
 
 // The following are rough versions of what is happening in internal state of jotai atoms.
 const incrementBreadth = vi.fn(() => { x += 1 }) as Function;
-const incrementDepth = vi.fn(() => { y -= 1 ; }) as Function;
-const decrementBreadth = vi.fn(() => { x -= 1  }) as Function;
-const decrementDepth = vi.fn(() => { y-=1  }) as Function;
+const incrementDepth = vi.fn(() => { y -= 1; }) as Function;
+const decrementBreadth = vi.fn(() => { x -= 1 }) as Function;
+const decrementDepth = vi.fn(() => { y -= 1 }) as Function;
 
 
 vi.mock("../../ui/src/hooks/useNodeTraversal", () => ({
@@ -51,15 +51,15 @@ describe.skip('Hierarchy Traversal -  renders traversal buttons for parent with 
     // Arrange
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 0, y: 0 })}</MockedProvider>);
 
     setHierarchyBreadth(0);
-    
+
     // Assert
     await waitFor(() => {
       expect(getByTestId('traversal-button-down')).toBeTruthy();
     });
-    
+
     expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
@@ -71,15 +71,15 @@ describe.skip('Hierarchy Traversal -  renders traversal buttons for parent with 
     // Arrange
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_ONE_CHILD_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 0, y: 1 })}</MockedProvider>);
 
     setHierarchyBreadth(0);
-    
+
     // Assert
     await waitFor(() => {
       expect(getByTestId('traversal-button-up')).toBeTruthy();
     });
-    
+
     expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
@@ -98,7 +98,7 @@ describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers e
     // Arrange
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 0, y: 0 })}</MockedProvider>);
 
     setHierarchyBreadth(0);
 
@@ -111,31 +111,31 @@ describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers e
     expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
     expect(queryByTestId('traversal-button-up')).not.toBeTruthy();
   });
-  
+
   it('when you click that button, it triggers internal currentSphereHierarchyIndices state to increment y', async () => {
     // Arrange
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 0, y: 0 })}</MockedProvider>);
 
-      // Act
-      await waitFor(() => {
-        expect(getByTestId('traversal-button-down-left')).toBeTruthy();
-      });
-      const traversalButton = getByTestId('traversal-button-down-left');
-      fireEvent.click(traversalButton);
+    // Act
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-down-left')).toBeTruthy();
+    });
+    const traversalButton = getByTestId('traversal-button-down-left');
+    fireEvent.click(traversalButton);
 
-      // Assert
-      await waitFor(() => {
-        expect(incrementDepth).toHaveBeenCalled();
-      });
+    // Assert
+    await waitFor(() => {
+      expect(incrementDepth).toHaveBeenCalled();
+    });
   });
 
   it('when you click the up button, it triggers internal currentSphereHierarchyIndices state to decrement y', async () => {
     // Arrange
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 0, y: 1 })}</MockedProvider>);
 
     // Mock state for 'level breadth' that is used to determine which buttons appear
     setHierarchyBreadth(1)
@@ -157,7 +157,7 @@ describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers e
     // Arrange
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 0, y: 1 })}</MockedProvider>);
 
     // Mock state for 'level breadth' that is used to determine which buttons appear
     setHierarchyBreadth(1)
@@ -179,7 +179,7 @@ describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers e
     // Arrange
     const { getByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 1, y: 1})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 1, y: 1 })}</MockedProvider>);
 
     // Mock state for 'level breadth' that is used to determine which buttons appear
     setHierarchyBreadth(1)
@@ -201,41 +201,41 @@ describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers e
     // Arrange
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 0, y: 1 })}</MockedProvider>);
 
-      // Mock state for 'level breadth' that is used to determine which buttons appear
-      setHierarchyBreadth(1)
+    // Mock state for 'level breadth' that is used to determine which buttons appear
+    setHierarchyBreadth(1)
 
-      // Test state for y = 1
-      // Assert
-      await waitFor(() => {
-        expect(getByTestId('traversal-button-up')).toBeTruthy();
-        expect(getByTestId('traversal-button-right')).toBeTruthy();
-      });
-      expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
+    // Test state for y = 1
+    // Assert
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-up')).toBeTruthy();
+      expect(getByTestId('traversal-button-right')).toBeTruthy();
+    });
+    expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
   });
 
   it('given x=1, y = 1, renders traversal buttons for going up a level/left', async () => {
     // Arrange
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_TWO_CHILDREN_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 1, y: 1})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 1, y: 1 })}</MockedProvider>);
 
-      setHierarchyBreadth(1)
+    setHierarchyBreadth(1)
 
-      // Test state for x=1, y = 1
-      // Assert
-      await waitFor(() => {
-        expect(getByTestId('traversal-button-up')).toBeTruthy();
-        expect(getByTestId('traversal-button-left')).toBeTruthy();
-      });
-      expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
+    // Test state for x=1, y = 1
+    // Assert
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-up')).toBeTruthy();
+      expect(getByTestId('traversal-button-left')).toBeTruthy();
+    });
+    expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
   });
 });
 
@@ -244,13 +244,13 @@ describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers e
   beforeEach(() => {
     Tree = renderVis(OrbitTree);
   });
-  
+
 
   it('initially renders traversal button for going down a level', async () => {
     // Arrange
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 0})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 0, y: 0 })}</MockedProvider>);
 
     setHierarchyBreadth(0);
 
@@ -268,84 +268,84 @@ describe.skip('Hierarchy Traversal - it renders traversal buttons and triggers e
     // Arrange
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 1})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 0, y: 1 })}</MockedProvider>);
 
-      // Mock state for 'level breadth' that is used to determine which buttons appear
-      setHierarchyBreadth(1)
+    // Mock state for 'level breadth' that is used to determine which buttons appear
+    setHierarchyBreadth(1)
 
-      // Test state for y = 1
-      // Assert
-      await waitFor(() => {
-        expect(getByTestId('traversal-button-up')).toBeTruthy();
-        expect(getByTestId('traversal-button-right')).toBeTruthy();
-        expect(getByTestId('traversal-button-down-left')).toBeTruthy();
-      });
-      expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
+    // Test state for y = 1
+    // Assert
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-up')).toBeTruthy();
+      expect(getByTestId('traversal-button-right')).toBeTruthy();
+      expect(getByTestId('traversal-button-down-left')).toBeTruthy();
+    });
+    expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
   });
 
   it('given x = 0,  y = 2, renders traversal buttons for going up a level/right', async () => {
     // Arrange
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 0, y: 2})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 0, y: 2 })}</MockedProvider>);
 
-      // Mock state for 'level breadth' that is used to determine which buttons appear
-      setHierarchyBreadth(1)
+    // Mock state for 'level breadth' that is used to determine which buttons appear
+    setHierarchyBreadth(1)
 
-      // Test state for y = 2
-      // Assert
-      await waitFor(() => {
-        expect(getByTestId('traversal-button-up')).toBeTruthy();
-        expect(getByTestId('traversal-button-right')).toBeTruthy();
-      });
+    // Test state for y = 2
+    // Assert
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-up')).toBeTruthy();
+      expect(getByTestId('traversal-button-right')).toBeTruthy();
+    });
 
-      expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
   });
 
   it('given x = 1,  y = 2, renders traversal buttons for going up a level/left', async () => {
     // Arrange
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 1, y: 2})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 1, y: 2 })}</MockedProvider>);
 
-      // Mock state for 'level breadth' that is used to determine which buttons appear
-      setHierarchyBreadth(1)
+    // Mock state for 'level breadth' that is used to determine which buttons appear
+    setHierarchyBreadth(1)
 
-      // Test state for x=1, y = 2
-      // Assert
-      await waitFor(() => {
-        expect(getByTestId('traversal-button-up')).toBeTruthy();
-        expect(getByTestId('traversal-button-left')).toBeTruthy();
-      });
+    // Test state for x=1, y = 2
+    // Assert
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-up')).toBeTruthy();
+      expect(getByTestId('traversal-button-left')).toBeTruthy();
+    });
 
-      expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
   });
 
   it('given x = 1, y = 1, renders traversal buttons for going up a level/left', async () => {
     // Arrange
     const { getByTestId, queryByTestId } = render(
       <MockedProvider mocks={HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS} addTypename={false}>
-        {WithCurrentOrbitCoordsMockedAtom(Tree, {x: 1, y: 1})}</MockedProvider> );
+        {WithCurrentOrbitCoordsMockedAtom(Tree, { x: 1, y: 1 })}</MockedProvider>);
 
-      setHierarchyBreadth(1)
+    setHierarchyBreadth(1)
 
-      // Test state for x=1, y = 1
-      // Assert
-      await waitFor(() => {
-        expect(getByTestId('traversal-button-up')).toBeTruthy();
-        expect(getByTestId('traversal-button-left')).toBeTruthy();
-      });
-      expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
-      expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
+    // Test state for x=1, y = 1
+    // Assert
+    await waitFor(() => {
+      expect(getByTestId('traversal-button-up')).toBeTruthy();
+      expect(getByTestId('traversal-button-left')).toBeTruthy();
+    });
+    expect(queryByTestId('traversal-button-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-right')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down-left')).not.toBeTruthy();
+    expect(queryByTestId('traversal-button-down')).not.toBeTruthy();
   });
 });

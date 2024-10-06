@@ -142,7 +142,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
     !(editMode && state.match("Onboarding")) &&
     currentOrbitValues.parentHash !== null &&
     store.get(parentNodeAtom);
-
   return (
     <Formik
       initialValues={currentOrbitValues}
@@ -156,29 +155,29 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
 
           let response = editMode
             ? await updateOrbit({
-                variables: {
-                  orbitFields: {
-                    id: orbitToEditId as string,
-                    ...values,
-                    sphereHash: sphereEh,
-                    parentHash: parentOrbitEh
-                      ? parentOrbitEh
-                      : values.parentHash || undefined,
-                  } as OrbitUpdateParams,
-                },
-              })
+              variables: {
+                orbitFields: {
+                  id: orbitToEditId as string,
+                  ...values,
+                  sphereHash: sphereEh,
+                  parentHash: parentOrbitEh
+                    ? parentOrbitEh
+                    : values.parentHash || undefined,
+                } as OrbitUpdateParams,
+              },
+            })
             : await addOrbit({
+              variables: {
                 variables: {
-                  variables: {
-                    ...values,
-                    sphereHash: sphereEh,
-                    parentHash: parentOrbitEh
-                      ? parentOrbitEh
-                      : values.parentHash || undefined,
-                    childHash: values.childHash || undefined,
-                  } as OrbitCreateParams,
-                },
-              });
+                  ...values,
+                  sphereHash: sphereEh,
+                  parentHash: parentOrbitEh
+                    ? parentOrbitEh
+                    : values.parentHash || undefined,
+                  childHash: values.childHash || undefined,
+                } as OrbitCreateParams,
+              },
+            });
           setSubmitting(false);
           if (!response.data) return;
 
@@ -288,10 +287,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                       ...(childOrbitEh
                         ? []
                         : orbitEdges.map((orbit, i) => (
-                            <option key={i} value={orbit.eH}>
-                              {orbit.name}
-                            </option>
-                          ))),
+                          <option key={i} value={orbit.eH}>
+                            {orbit.name}
+                          </option>
+                        ))),
                     ]}
                     required={true}
                     disabled={!!editMode}
@@ -405,19 +404,20 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                 </div>
               </div>
             </Flex>} */}
+
               {(submitBtn &&
                 React.cloneElement(submitBtn as React.ReactElement, {
                   loading,
                   errors,
                   touched,
                 })) || (
-                <DefaultSubmitBtn
-                  loading={loading}
-                  editMode={editMode}
-                  errors={errors}
-                  touched={touched}
-                ></DefaultSubmitBtn>
-              )}
+                  <DefaultSubmitBtn
+                    loading={loading}
+                    editMode={editMode}
+                    errors={errors}
+                    touched={touched}
+                  ></DefaultSubmitBtn>
+                )}
             </Form>
           </div>
         );
