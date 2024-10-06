@@ -126,7 +126,18 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
           }
         }}
       >
-        {({ values, errors, submitForm }) => {
+        {({ values, touched, errors, submitForm, isSubmitting }) => {
+          const SubmitButton = <Button type={"onboarding"}
+            loading={submitRefineBtnIsLoading}
+            errors={errors}
+            touched={touched}
+            onClick={() => submitForm()}
+          >
+            {refinementType == Refinement.Update
+              ? "Update Name"
+              : "Create Orbits"}
+          </Button>
+
           const refineTitle =
             refinementType == Refinement.Update
               ? "Refine Atomic Orbit Name"
@@ -278,17 +289,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                     </>
                   )}
                 </div>
-                <span>
-                  <Button
-                    type={"onboarding"}
-                    loading={submitRefineBtnIsLoading}
-                    onClick={() => submitForm()}
-                  >
-                    {refinementType == Refinement.Update
-                      ? "Update Name"
-                      : "Create Orbits"}
-                  </Button>
-                </span>{" "}
+                {SubmitButton}
               </Form>
             </>
           );
