@@ -10,10 +10,9 @@ import { useOrbitTreeData } from "../../hooks/useOrbitTreeData";
 import usePrefetchNextLevel from "../../hooks/gql/useFetchNextLevel";
 import { store } from "../../state/jotaiKeyValueStore";
 import { currentOrbitIdAtom } from "../../state/orbit";
-import { useFetchOrbitsAndCacheHierarchyPaths } from "../../hooks/useFetchOrbitsAndCacheHierarchyPaths";
+import { useDeriveAndCacheHierarchyPaths } from "../../hooks/useDeriveAndCacheHierarchyPaths";
 import { TreeVisualization } from "./base-classes/TreeVis";
 import { byStartTime, determineNewLevelIndex, parseAndSortTrees } from "./helpers";
-import { SphereOrbitNodes } from "../../state/types/sphere";
 import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, checkHierarchyCached, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state";
 
@@ -48,6 +47,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // Hook to manage hierarchy traversal state
   const {
+    nodeDetailsCache: sphereNodeDetails,
+    hasNodes,
     nodes,
     setBreadthBounds,
     depthBounds,
@@ -56,21 +57,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     y,
     breadthIndex,
     setBreadthIndex,
-  } = useOrbitTreeData(sphere); const needToUpdateNodeCache = useMemo(() =>
-    !nodes || typeof nodes !== "object" || Object.keys(nodes).length === 0,
-    [nodes]);
+  } = useOrbitTreeData(sphere);
 
-  // Cached OrbitNodeDetails for the Sphere
-  const sphereNodeDetails = useMemo(() =>
-    !needToUpdateNodeCache
-      ? Object.fromEntries(
-        Object.entries(nodes as SphereOrbitNodes).map(([_, nodeDetails]) => [
-          nodeDetails.eH,
-          nodeDetails,
-        ]),
-      )
-      : {},
-    [needToUpdateNodeCache, nodes]);
 
   // -- Memoised parameters/flags  --
 
@@ -162,12 +150,11 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
 
   // Caches link paths for each node on the current hierarchy which will be appended to the partial Visualisation types for visual continuity when traversing deeper than the root
-  // TODO: remove the combined cacheing duties this currently has with OrbitNodeDetails
-  const { cache } = useFetchOrbitsAndCacheHierarchyPaths({
+  const { cache } = useDeriveAndCacheHierarchyPaths({
     params: getQueryParams(dataLevel?.getLowestSphereHierarchyLevel || 0),
-    hasCachedNodes,
     currentSphereId: sphere.actionHash as string,
-    bypass: false,
+    bypassFetch: usedCachedHierarchy,
+    bypassEntirely: !hasCachedNodes,
   });
 
 
@@ -245,7 +232,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   // ## -- RENDER  -- ##
   return (
     <>
-      {loading || (needToUpdateNodeCache && <span data-testid={"vis-spinner"} />)}
+      {loading || (hasNodes && <span data-testid={"vis-spinner"} />)}
       {!error &&
         json &&
         currentOrbitTree &&

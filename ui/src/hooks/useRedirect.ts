@@ -13,7 +13,7 @@ import { extractEdges } from "../graphql/utils";
 import { currentSphereOrbitNodesAtom } from "../state/orbit";
 
 export const useRedirect = (bypass?: boolean) => {
-  const [_state, transition, params] = useStateTransition();
+  const [state, transition, params] = useStateTransition();
   const sphere = useAtomValue(currentSphereHashesAtom);
   const isSameSphere =
     (params?.landingSphereId &&
@@ -45,20 +45,18 @@ export const useRedirect = (bypass?: boolean) => {
   useEffect(() => {
     if (!orbits || bypass || sphereHasCachedOrbits) return;
     const orbitEdges = extractEdges((orbits as any)?.orbits) as Orbit[];
-    console.log(
-      "orbitEdges.length > 0 && !sphereHasCachedOrbits :>> ",
-      orbitEdges.length > 0 && !sphereHasCachedOrbits,
-    );
+
     orbitEdges.length > 0 &&
       !sphereHasCachedOrbits &&
       transition("PreloadAndCache", {
         landingSphereEh: sphere.entryHash,
         landingSphereId: sphere.actionHash,
+        landingPage: state
       });
   }, [sphereHasCachedOrbits, orbits]);
 
   useEffect(() => {
-    if (bypass) return;
+    if (bypass || orbits || error || getAllLoading) return;
     showToast(
       "You need to create an Orbit before you can Visualise!",
       5000,

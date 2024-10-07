@@ -10,7 +10,7 @@ import { OrbitNodeDetails } from "../state/types";
 import { mapToCacheObject } from "../state/orbit";
 import { nodeCache, store } from "../state/jotaiKeyValueStore";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { SphereOrbitNodes } from "../state/types/sphere";
+import { SphereOrbitNodeDetails } from "../state/types/sphere";
 
 interface UseFetchAndCacheSphereOrbitsProps {
   sphereAh?: ActionHashB64;
@@ -53,10 +53,10 @@ export const useFetchAndCacheSphereOrbits = ({
   useEffect(() => {
     if (data) {
       let orbits: Orbit[] = extractEdges(data.orbits);
-      let indexedOrbitData: Array<[string, OrbitNodeDetails]> = Object.entries(
+      let indexedOrbitData: Array<[EntryHashB64, OrbitNodeDetails]> = Object.entries(
         orbits.map(mapToCacheObject),
-      ).map(([_idx, value]) => [value.id, value]);
-      let indexedSphereData: SphereOrbitNodes = {};
+      ).map(([_idx, value]) => [value.eH, value]);
+      let indexedSphereData: SphereOrbitNodeDetails = {};
 
       const entries = indexedOrbitData.reduce(
         (cacheObject, [_id, entry], idx) => {

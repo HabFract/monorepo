@@ -2,7 +2,7 @@ import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { HierarchyNode } from "d3-hierarchy";
 import { Selection } from "d3-selection";
 import { D3ZoomEvent, ZoomBehavior } from "d3-zoom";
-import { SphereOrbitNodes, SphereHashes } from "../../state/types/sphere";
+import { SphereOrbitNodeDetails, SphereHashes } from "../../state/types/sphere";
 import { NodeContent } from "../../state";
 
 /**
@@ -68,7 +68,7 @@ export interface IVisualization {
   >;
 
   /** Details of the current Sphere's nodes that are cached **/
-  nodeDetails: SphereOrbitNodes;
+  nodeDetails: SphereOrbitNodeDetails;
 
   /** A flag that can be used to bypass the main render function before manually triggering partial renders **/
   skipMainRender: boolean;

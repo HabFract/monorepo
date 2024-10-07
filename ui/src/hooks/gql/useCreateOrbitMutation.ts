@@ -12,7 +12,7 @@ import {
 } from "../../state/orbit";
 import { nodeCache, store } from "../../state/jotaiKeyValueStore";
 import { currentSphereHasCachedNodesAtom } from "../../state/sphere";
-import { SphereHashes, SphereOrbitNodes } from "../../state/types/sphere";
+import { SphereHashes, SphereOrbitNodeDetails } from "../../state/types/sphere";
 import { ActionHashB64 } from "@holochain/client";
 import { client } from "../../graphql/client";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
@@ -39,18 +39,18 @@ export const useCreateOrbitMutation = (opts) => {
         parentEh: newOrbit?.parentHash as string | undefined,
       };
 
-      // To be phased out, all appstate will be stored in localstorage anyway
+      // If we have AppState (which doesn't include all OrbitNodeDetails) then let's cache the OrbitNodeDetails, indexing by EntrHashB64 for easy access in the vis
       if (store.get(currentSphereHasCachedNodesAtom)) {
         let sphere = store.get(currentSphereHashesAtom) as SphereHashes;
         let existingNodes = store.get(currentSphereOrbitNodesAtom);
-        let newSphereOrbitNodes: SphereOrbitNodes = {
+        let newSphereOrbitNodeDetails: SphereOrbitNodeDetails = {
           ...existingNodes,
           [newOrbit.eH]: newOrbitDetails,
         };
         store.set(
           nodeCache.set,
           sphere.actionHash as ActionHashB64,
-          newSphereOrbitNodes
+          newSphereOrbitNodeDetails
         );
       }
 

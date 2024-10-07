@@ -14,14 +14,21 @@ import { currentSphereHashesAtom } from "../state/sphere";
 import { Spinner } from "flowbite-react";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 
-type PreloadOrbitDataProps = {
+type PreloadAllDataProps = {
   landingSphereEh?: EntryHashB64;
   landingSphereId?: ActionHashB64;
+  landingPage?: string;
 };
 
-const PreloadOrbitData: React.FC<PreloadOrbitDataProps> = ({
+/**
+ * A component that does a batch fetch and cache of SphereOrbitNodeDetails for all Spheres
+ * @param {PreloadAllDataProps} - provides context on where to route after the data has been loaded 
+ * 
+ */
+const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   landingSphereEh,
   landingSphereId,
+  landingPage
 }) => {
   const [_, transition] = useStateTransition(); // Top level state machine and routing
 
@@ -59,7 +66,6 @@ const PreloadOrbitData: React.FC<PreloadOrbitDataProps> = ({
                   id,
                   Object.fromEntries(indexedOrbitData),
                 );
-                console.log("ALL Sphere orbits fetched and cached!");
               }
             } catch (error) {
               console.error(error);
@@ -73,7 +79,7 @@ const PreloadOrbitData: React.FC<PreloadOrbitDataProps> = ({
               ),
             ),
           async () =>
-            transition("Vis", {
+            transition(landingPage || "Vis", {
               currentSphereEhB64: eH,
               currentSphereAhB64: id,
             }),
@@ -105,4 +111,4 @@ const PreloadOrbitData: React.FC<PreloadOrbitDataProps> = ({
   return <Spinner aria-label="Loading!" size="xl" className="full-spinner" />;
 };
 
-export default PreloadOrbitData;
+export default PreloadAllData;

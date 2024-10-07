@@ -31,7 +31,7 @@ import { OrbitNodeDetails } from "../../../state/types";
 import { extractEdges } from "../../../graphql/utils";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { currentOrbitIdAtom } from "../../../state/orbit";
-import { SphereOrbitNodes } from "../../../state/types/sphere";
+import { SphereOrbitNodeDetails } from "../../../state/types/sphere";
 
 /**
  * Base class for creating D3 hierarchical visualizations.
@@ -42,7 +42,7 @@ export abstract class BaseVisualization implements IVisualization {
   type: VisType;
   coverageType: VisCoverage;
   rootData: HierarchyNode<any>;
-  nodeDetails: SphereOrbitNodes;
+  nodeDetails: SphereOrbitNodeDetails;
   _nextRootData: HierarchyNode<any> | null;
 
   _svgId: string;
@@ -141,7 +141,7 @@ export abstract class BaseVisualization implements IVisualization {
     globalStateTransition: (newState: string, params: object) => void,
     sphereEh: EntryHashB64,
     sphereAh: ActionHashB64,
-    nodeDetails: SphereOrbitNodes,
+    nodeDetails: SphereOrbitNodeDetails,
   ) {
     this.type = type;
     this.coverageType = coverageType;
@@ -179,9 +179,9 @@ export abstract class BaseVisualization implements IVisualization {
       });
       if (data?.data?.orbits) {
         const orbits = extractEdges(data.data.orbits) as Orbit[];
-        const indexedOrbitData: Array<[ActionHashB64, OrbitNodeDetails]> =
+        const indexedOrbitData: Array<[EntryHashB64, OrbitNodeDetails]> =
           Object.entries(orbits.map(mapToCacheObject)).map(([_idx, value]) => [
-            value.id,
+            value.eH,
             value,
           ]);
         this.cacheOrbits(indexedOrbitData);
@@ -195,10 +195,11 @@ export abstract class BaseVisualization implements IVisualization {
   /**
    * Caches Orbit data for a given Sphere.
    */
-  async cacheOrbits(orbitEntries: Array<[ActionHashB64, OrbitNodeDetails]>) {
+  async cacheOrbits(orbitEntries: Array<[EntryHashB64, OrbitNodeDetails]>) {
     try {
       store.set(nodeCache.setMany, orbitEntries);
       //@ts-ignore
+      // TODO check this form before using
       this.nodeDetails = Object.entries(orbitEntries);
       console.log("Sphere orbits fetched and cached!");
     } catch (error) {

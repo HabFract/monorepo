@@ -16,7 +16,7 @@ import {
 } from "../constants";
 import { BaseVisualization } from "./BaseVis";
 import { select } from "d3-selection";
-import { store, nodeCache } from "../../../state/jotaiKeyValueStore";
+import { store } from "../../../state/jotaiKeyValueStore";
 import { NodeContent, OrbitNodeDetails } from "../../../state/types";
 import {
   ONE_CHILD,
@@ -247,11 +247,9 @@ export class TreeVisualization extends BaseVisualization {
   appendLinkPath(): void {
     const rootNodeId = this.rootData.data.content;
     // @ts-ignore
-    const cacheItem: OrbitNodeDetails = store.get(nodeCache.items)?.[
-      this.sphereAh
-    ]?.[store.get(getOrbitIdFromEh(rootNodeId))];
+    const cacheItem: OrbitNodeDetails = this.nodeDetails[rootNodeId];
     if (!cacheItem || !cacheItem?.path) return;
-
+console.log('Got cache item for path:' , cacheItem)
     const newPath = select(".canvas")
       .selectAll("g.links")
       .append("path")

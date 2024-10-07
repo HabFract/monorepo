@@ -67,9 +67,8 @@ vi.mock("../ui/src/state/jotaiKeyValueStore", (importOriginal) => ({
   ...importOriginal,
   store: storeMock,
   nodeCache: {
-    entries: atom(Object.entries(mockAppState.orbitNodes.byHash))
+    entries: atom(Object.entries(mockAppState.orbitNodes.byHash))// TODO update to transform to the correct type
   },
-  nodeCacheItemsAtom: atom(Object.values(mockAppState.orbitNodes.byHash))
 }));
 
 // Mock redirect hook

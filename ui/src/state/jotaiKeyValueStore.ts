@@ -1,23 +1,29 @@
-import { atom, createStore } from "jotai";
+import { createStore } from "jotai";
 import { MiniDb } from "jotai-minidb";
-import { Scale } from "../graphql/generated";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 
+/**
+ * IndexDB store used to quickly index and retrieve data related to a node in the hierarchy. 
+ * Stored as a dictionary of SphereOrbitNodeDetails.
+ *  I.e.
+ *  Keyed by Sphere ActionHashB64, then by Orbit EntryHashB64, allowing easy retrieval by vis object callbacks
+ * 
+ *  E.g.```
+ *  {
+ *     [sphere1ActionHash]: {
+ *          [orbit1EntryHash]: {
+ *               ...
+ *          }
+ *     },
+ *     [sphere2ActionHash]: {
+ *          [orbit1EntryHash]: {
+ *               ...
+ *          }
+ *     },
+ *  }```
+ */
 export const nodeCache = new MiniDb();
 
+/**
+ * Store object which can be used outside React components to get, set, or sub state
+ */
 export const store: any = createStore();
-
-export const nodeCacheItemsAtom = atom((get) => get(nodeCache.items));
-
-export interface OrbitNodeDetailsOld {
-  id: ActionHashB64;
-  eH?: EntryHashB64;
-  parentEh?: EntryHashB64;
-  description?: string;
-  name: string;
-  scale: Scale;
-  startTime?: number;
-  endTime?: number;
-  path?: string;
-  wins?: { [dayIndex: string]: boolean };
-}

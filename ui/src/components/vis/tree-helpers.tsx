@@ -3,7 +3,7 @@ import { EntryHashB64, ActionHashB64 } from "@holochain/client";
 import { hierarchy } from "d3-hierarchy";
 import { OrbitHierarchyQueryParams, GetOrbitHierarchyDocument } from "../../graphql/generated";
 import { client } from "../../graphql/client";
-import { SphereOrbitNodes, newTraversalLevelIndexId, store, currentSphereHierarchyIndices } from "../../state";
+import { SphereOrbitNodeDetails, newTraversalLevelIndexId, store, currentSphereHierarchyIndices } from "../../state";
 import { TreeVisualization } from "./base-classes/TreeVis";
 import { byStartTime, parseAndSortTrees, determineNewLevelIndex } from "./helpers";
 import { VisCoverage, VisType } from "./types";
@@ -90,7 +90,7 @@ export const createTreeVisualization = ({
     transition,
     params?.currentSphereEhB64 as EntryHashB64,
     params?.currentSphereAhB64 as ActionHashB64,
-    sphereNodeDetails as SphereOrbitNodes,
+    sphereNodeDetails as SphereOrbitNodeDetails,
   );
 };
 

@@ -8,6 +8,8 @@ import {
   currentSphereHierarchyIndices,
   SphereHierarchyBounds,
   SphereOrbitNodes,
+  currentSphereHasCachedNodesAtom,
+  SphereOrbitNodeDetails,
 } from "../state";
 import { useNodeTraversal } from "./useNodeTraversal";
 
@@ -16,19 +18,23 @@ import { useNodeTraversal } from "./useNodeTraversal";
  * @param sphere - The selected sphere
  * @returns An object containing various state values and setters
  */
-export const useOrbitTreeData = (sphere) => {
-  const nodeDetailsCache = useAtomValue(nodeCache.entries);
+export const useOrbitTreeData = (sphereHashes) => {
   const nodes = useAtomValue(currentSphereOrbitNodesAtom);
+  const hasNodes = useAtomValue(currentSphereHasCachedNodesAtom);
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
   const { x, y } = useAtomValue(currentSphereHierarchyIndices);
   const { breadthIndex, setBreadthIndex } = useNodeTraversal(
-    hierarchyBounds[sphere.entryHash as keyof SphereHierarchyBounds]
+    hierarchyBounds[sphereHashes.entryHash as keyof SphereHierarchyBounds]
   );
 
+  // IndexDB Cached OrbitNodeDetails for the Sphere
+  const nodeDetailsCache = useAtomValue(nodeCache.item(sphereHashes.actionHash)) as SphereOrbitNodeDetails;
+
   return {
-    nodeDetailsCache: Object.fromEntries(nodeDetailsCache) as SphereOrbitNodes,
+    nodeDetailsCache,
+    hasNodes,
     nodes,
     hierarchyBounds,
     setBreadthBounds,

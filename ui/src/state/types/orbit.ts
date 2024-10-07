@@ -52,11 +52,20 @@ export namespace Frequency {
 }
 
 /**
- * A flat representation of the union of an Orbit's data and metadata
+ * Basic data for indexing and Orbit from either the IndexDB or the store
  */
-export interface OrbitDetails {
+export interface OrbitHashes {
   id: ActionHashB64;
   eH: EntryHashB64;
+  sphereHash: ActionHashB64;
+  childEh?: EntryHashB64;
+  parentEh?: EntryHashB64;
+}
+
+/**
+ * A flat representation of the union of an Orbit's data and metadata
+ */
+export interface OrbitDetails extends OrbitHashes {
   name: string;
   scale: Scale;
   frequency: Frequency.Rationals;
@@ -64,8 +73,6 @@ export interface OrbitDetails {
   startTime?: number;
   endTime?: number;
   description?: string;
-  parentEh?: EntryHashB64;
-  childEh?: EntryHashB64;
 }
 
 /**

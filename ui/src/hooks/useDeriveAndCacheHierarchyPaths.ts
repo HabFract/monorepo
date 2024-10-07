@@ -52,13 +52,13 @@ import {
   TWO_CHILDREN_RIGHT,
 } from "../components/vis/links/paths";
 import { byStartTime, isSmallScreen } from "../components/vis/helpers";
-import { SphereOrbitNodes } from "../state/types/sphere";
+import { SphereOrbitNodeDetails, SphereOrbitNodes } from "../state/types/sphere";
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
   params: OrbitHierarchyQueryParams;
-  hasCachedNodes?: boolean;
   currentSphereId: ActionHashB64;
-  bypass: boolean;
+  bypassFetch: boolean;
+  bypassEntirely: boolean;
 }
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
@@ -67,13 +67,13 @@ interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
   cache: Function | null;
 }
 
-export const useFetchOrbitsAndCacheHierarchyPaths = ({
+export const useDeriveAndCacheHierarchyPaths = ({
   params,
-  hasCachedNodes = false,
   currentSphereId,
-  bypass,
+  bypassFetch,
+  bypassEntirely,
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
-  if (bypass) return { loading: false, error: undefined, cache: null };
+  if (bypassEntirely) return { loading: false, error: undefined, cache: null };
   if (!currentSphereId) {
     console.error("Cannot run hook without a sphere Id");
     return {
@@ -87,8 +87,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
   ) as SphereOrbitNodes;
 
   const { data, loading, error } = useGetOrbitHierarchyQuery({
-    skip: hasCachedNodes,
-    variables: { params },
+    variables: { params }, skip: bypassFetch,
   });
 
   const [hierarchyObject, setHierarchyObject] =
@@ -114,7 +113,7 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
     try {
       if (!currentSphereId || currentSphereId == "")
         throw new Error("Cannot cache paths without a currentSphere id");
-      const existingCache = store.get(nodeCache.items) as SphereOrbitNodes;
+      const existingCache = store.get(nodeCache.items) as SphereOrbitNodeDetails;
       if (!existingCache[currentSphereId])
         throw new Error("No existing cache for this currentSphere id");
 
@@ -130,10 +129,10 @@ export const useFetchOrbitsAndCacheHierarchyPaths = ({
       existingCache[currentSphereId] = workingSphereNodes;
       store.set(nodeCache.setMany, Object.entries(existingCache));
       cached = true;
-      console.log(
-        "Object.entries(existingCache) :>> ",
-        Object.entries(existingCache)
-      );
+      // console.log(
+      //   "Object.entries(existingCache) :>> ",
+      //   Object.entries(existingCache)
+      // );
     } catch (error) {
       console.error("Error caching hierarch paths:" + error);
     }

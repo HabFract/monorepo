@@ -13,7 +13,7 @@ import {
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
 import { Sphere, useGetSpheresQuery } from "../../graphql/generated";
-import { Button, DarkThemeToggle, Spinner, Toast } from "flowbite-react";
+import { Button, DarkThemeToggle, Spinner } from "flowbite-react";
 import useSideMenuToggle from "../../hooks/useSideMenuToggle";
 import { useToast } from "../../contexts/toast";
 import { store } from "../../state/jotaiKeyValueStore";
