@@ -18,10 +18,10 @@ import {
 import { WithVisCanvasProps } from "../vis/types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { store } from "../../state/jotaiKeyValueStore";
-import { OrbitNodeDetails } from "../../state/types";
+import { Frequency, OrbitNodeDetails } from "../../state/types";
 import VisModal from "../VisModal";
 import TraversalButton from "../navigation/TraversalButton";
-import { VisControls } from "habit-fract-design-system";
+import { OverlayLayout, VisControls } from "habit-fract-design-system";
 import { currentDayAtom } from "../../state/date";
 import { byStartTime, isSmallScreen } from "../vis/helpers";
 import { useRedirect } from "../../hooks/useRedirect";
@@ -33,6 +33,8 @@ import {
   Coords,
   NodeContent,
 } from "../../state/types/hierarchy";
+import { DateTime } from "luxon";
+import { Scale } from "../../graphql/generated";
 
 const defaultMargins: Margins = {
   top: 0,
@@ -130,35 +132,58 @@ export function withVisCanvas<T extends IVisualization>(
             // Trigger the Vis object render function only once the SVG is appended to the DOM
             currentVis?.render();
           }
+          const mockArgs = {
+            currentDate,
+            setNewDate: setCurrentDate,
+            "orbits": [
+              {
+                "orbitName": "1k run",
+                "orbitScale": Scale.Atom,
+                handleOrbitSelect: () => {},
+              },
+              {
+                "orbitName": "2k run",
+                "orbitScale": Scale.Atom,
+                handleOrbitSelect: () => {},
+              },
+              {
+                "orbitName": "5k run",
+                "orbitScale": Scale.Sub,
+                handleOrbitSelect: () => {},
+              },
+              {
+                "orbitName": "10k run",
+                "orbitScale": Scale.Sub,
+                handleOrbitSelect: () => {},
+              },
+              {
+                "orbitName": "20k run",
+                "orbitScale": Scale.Astro,
+                handleOrbitSelect: () => {},
+              },
+              {
+                "orbitName": "50k run",
+                "orbitScale": Scale.Astro,
+                handleOrbitSelect: () => {},
+              }
+            ],
+            handleSaveWins: () => {},
+            "orbitFrequency": Frequency.DAILY_OR_MORE.DAILY,
+            "currentWins": 0,
+            "currentStreak": 0,
+            "orbitWins": {
+              "2023-W18": true,
+              "2023-W19": false
+            }
+          }
           return (
             <>
-              {/* {<currentVis.coverageType !== VisCoverage.Partial && <svg className="fixed text-white top-1 right-1 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path fillRule="evenodd" d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z" clipRule="evenodd" />
-              </svg>
-              }> */}
-              <VisControls
-                currentDate={currentDate}
-                setNewDate={(val) => {
-                  setCurrentDate(val);
-                }}
-                orbitDetails={cachedCurrentOrbit as OrbitNodeDetails}
-                setOrbitDetailsWin={(dateIndex: string, newValue: boolean) => {
-                  store.set(setOrbitWithEntryHashAtom, {
-                    orbitEh: cachedCurrentOrbit!.eH as string,
-                    update: {
-                      ...cachedCurrentOrbit,
-                      // wins: {
-                      //   ...cachedCurrentOrbit!.wins,
-                      //   [dateIndex]: newValue
-                      // }
-                    },
-                  });
-                }}
-                buttons={renderTraversalButtons(
-                  { x, y },
-                  currentVis,
-                )}
-              />
+                {/* {<currentVis.coverageType !== VisCoverage.Partial && <svg className="fixed text-white top-1 right-1 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z" clipRule="evenodd" />
+                </svg>
+                }> */}
+              <OverlayLayout {...mockArgs}></OverlayLayout>
+
               {VisModal<T>(
                 isModalOpen,
                 setIsModalOpen,

@@ -16,7 +16,7 @@
 
 .overlay-controls-container {
   bottom: calc(100% + .5rem);
-  @apply relative inset-x-1 flex flex-col gap-2;
+  @apply absolute inset-x-1 flex flex-col gap-2;
 }
 
 .calendar-day {
@@ -46,11 +46,12 @@
 }
 
 .orbit-pill-container {
-  @apply rounded-full border-line min-w-16 h-8 bg-secondary flex gap-2 text-xs text-white font-light flex gap-1 items-center justify-start px-2;
+  @apply rounded-full border-line min-w-20 h-8 bg-secondary flex gap-2 text-xs text-white font-light flex gap-1 items-center justify-start px-2;
   flex-wrap: nowrap;
   max-width: 6rem;
   border-width: 1px;
 }
+
 .orbit-pill-container.selected {
   @apply border-2;
 }
@@ -98,31 +99,33 @@
 
 div.handle {
   display: flex;
-  padding: 4px;
+  padding: 8px;
   align-items: center;
-  height: 8px;
+  height: 12px;
   position: absolute;
-  top: 2px;
-  left: 33%;
+  top: 0;
+  margin-left: 31.5%;
+  margin-right: auto;
   width: 33%;
 }
 div.handle span {
     margin: 0 auto;
     background-color: #fff;
     border-radius: 100px;
-    height: 4px;
+    height: 6px;
     width: 100%;
 }
 
 .win-count-container, .streak-count-container {
-  @apply h-24 w-1/2 m-0 p-2 bg-secondary rounded-2xl   grid gap-3 gap-y-1;
+  @apply h-24 w-1/2 m-0 p-2 bg-secondary rounded-2xl grid gap-3;
+  row-gap: 4px;
   grid-template-rows: 1.5rem auto;
   grid-template-columns: 1fr 1fr 1fr;
   min-width: 8rem;
 }
 .win-count-container .title, .streak-count-container .title {
   grid-column: 1/-1;
-  @apply text-center text-white;
+  @apply text-center text-white items-center justify-center flex gap-1;
 }
 .win-count-container .title,
 .streak-count-container  {
@@ -136,7 +139,7 @@ div.handle span {
 
 }
 .current-calendar-context-container {
-  @apply flex justify-between mt-2;
+  @apply flex justify-between my-2;
 }
 .current-date-string {
   @apply font-light text-sm;
@@ -168,8 +171,9 @@ div.handle span {
 }
 
 .vis-move-lateral-container {
-  @apply flex gap-2 bg-secondary rounded-full p-1 overflow-hidden;
-  overflow-x: auto;
+  @apply flex gap-2 bg-secondary rounded-full p-1;
+  overflow: hidden;
+  touch-action: pan-y;
 }
 
 .vis-move-vertical-container {
@@ -212,12 +216,15 @@ div.handle span {
 .date-nav-button {
   @apply text-lg text-gray-100 ml-2;
 }
+.date-nav-button .date-nav-icon {
+  @apply h-4 w-4;
+}
 .date-nav-button:last-child {
   @apply ml-0 mr-2;
 }
 
-.date-nav-button.disabled {
-  @apply text-gray-400;
+.date-nav-button.disabled, .date-nav-button.disabled:hover {
+  @apply text-gray-300;
 }
 
 .add-node-button:hover {
@@ -250,7 +257,10 @@ div.handle span {
 
 @media screen and (min-width: 500px) {
   div.handle {
-    padding: 12px;
+    padding: 16px;
+  }
+  .date-nav-button .date-nav-icon {
+    @apply h-6 w-6;
   }
 
   .current-date-string {
