@@ -36,17 +36,17 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   }, []);
 
   return (
-    <section className={"overlay-layout-container"}>
+    <section className="overlay-layout-container">
       <SwipeUpTab verticalOffset={calendarHeightWithPadding}>
         {({ bindDrag }) => (
           <>
             <div className="overlay-controls-container">
               <span
-              
-              onPointerDownCapture={handlePointerDown}
-              onPointerMove={handlePointerMove}
-              onPointerUp={handlePointerUp}
-              onPointerCancel={handlePointerUp}>
+                onPointerDownCapture={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+              >
                 <VisMovementLateral orbits={orbits}></VisMovementLateral>
               </span>
               {/* <VisMovementLateral></VisMovementLateral> */}
@@ -55,7 +55,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
                 <StreakCount currentStreak={currentStreak} orbitFrequency={orbitFrequency}></StreakCount>
               </div>
             </div>
-            <motion.nav ref={calendarRef} className="text-white bg-menu-bg">
+            <motion.nav ref={calendarRef} className="calendar-nav">
               <motion.div className="handle"  {...bindDrag} style={{ touchAction: 'none', cursor: 'grab' }} >
                 <span></span>
               </motion.div>

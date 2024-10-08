@@ -5,6 +5,7 @@ import { SphereOrbitNodes } from "./types/sphere";
 import { Frequency, OrbitDetails, OrbitNodeDetails } from "./types/orbit";
 import { Orbit, Frequency as Freq } from "../graphql/generated";
 import { WinData } from "./types/win";
+import { nodeCache } from "./jotaiKeyValueStore";
 
 export const decodeFrequency = (frequency: Freq): Frequency.Rationals => {
   switch (frequency) {
@@ -127,6 +128,26 @@ export const getOrbitIdFromEh = (orbitEh: EntryHashB64) =>
     return orbitActionHash || null;
   });
 
+// TODO: test
+/**
+ * Selector atom to get the IndexDB cache item of the orbit based on entry hash
+ * @param eH - The EntryHash of the orbit to retrieve.
+ * @returns {OrbitNodeDetails | null | undefined} the id of that orbit if it exists, null if we couldn't get the pre-requisite details, undefined otherwise
+ */
+export const getCurrentSphereOrbitNodeDetailsFromEh = (eH: EntryHashB64) =>
+  atom((get) => {
+    const state = get(appStateAtom);
+    const currentSphereHash = state.spheres.currentSphereHash;
+    const currentSphere = state.spheres.byHash[currentSphereHash];
+    if (!currentSphere) return null;
+
+    const sphereOrbitNodes = get(nodeCache.item(currentSphereHash));
+    if (!sphereOrbitNodes) return null;
+    const orbitCacheItem = sphereOrbitNodes[eH];
+
+    return orbitCacheItem;
+  });
+
 /**
  * Selector atom to get the startTime from the appState based on entry hash ( used primarily for sorting a hierarchy)
  * @param orbitEh - The EntryHashB64 of the orbit to retrieve.
@@ -139,6 +160,7 @@ export const getOrbitStartTimeFromEh = atom(
       (key) => state.orbitNodes.byHash[key].eH === orbitEh
     );
     if (!orbitActionHash) return null;
+    // const cacheItem =  get(getCurrentSphereOrbitNodeDetailsFromEh(nodeEh))
     return state.orbitNodes.byHash[orbitActionHash]?.startTime;
   }
 );

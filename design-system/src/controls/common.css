@@ -19,14 +19,20 @@
   @apply absolute inset-x-1 flex flex-col gap-2;
 }
 
+.calendar-nav {
+  @apply text-white bg-menu-bg;
+}
+
 .calendar-day {
   @apply flex flex-col gap-1 w-full px-1;
 }
+
 .calendar-day-title {
   @apply flex justify-center text-xs;
   font-weight: 200;
 }
-.calendar-day > div:last-child {
+
+.calendar-day>div:last-child {
   width: 100%;
   height: auto;
   aspect-ratio: 1;
@@ -55,14 +61,15 @@
 .orbit-pill-container.selected {
   @apply border-2;
 }
+
 .orbit-pill-container .orbit-name {
   text-overflow: ellipsis;
   line-height: 1rem;
   @apply flex;
   max-height: 1rem;
   overflow: hidden;
-  white-space:nowrap;
-  display: inline-block; 
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .calendar-days-container {
@@ -73,7 +80,7 @@
   @apply flex flex-1 justify-center items-center;
 }
 
-.calendar-day-container.current .calendar-day > div:last-child {
+.calendar-day-container.current .calendar-day>div:last-child {
   outline: 2px solid #c0c7ce;
   outline-offset: 2px;
 }
@@ -82,7 +89,7 @@
   @apply relative flex flex-col rounded-2xl p-2 gap-1 text-white bg-menu-bg;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  
+
   position: fixed;
   bottom: 0px;
   left: 0px;
@@ -108,39 +115,47 @@ div.handle {
   margin-right: auto;
   width: 33%;
 }
+
 div.handle span {
-    margin: 0 auto;
-    background-color: #fff;
-    border-radius: 100px;
-    height: 6px;
-    width: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 100px;
+  height: 6px;
+  width: 100%;
 }
 
-.win-count-container, .streak-count-container {
+.win-count-container,
+.streak-count-container {
   @apply h-24 w-1/2 m-0 p-2 bg-secondary rounded-2xl grid gap-3;
   row-gap: 4px;
   grid-template-rows: 1.5rem auto;
   grid-template-columns: 1fr 1fr 1fr;
   min-width: 8rem;
 }
-.win-count-container .title, .streak-count-container .title {
+
+.win-count-container .title,
+.streak-count-container .title {
   grid-column: 1/-1;
   @apply text-center text-white items-center justify-center flex gap-1;
 }
+
 .win-count-container .title,
-.streak-count-container  {
+.streak-count-container {
   @apply text-xs;
 }
 
-.win-count-container .ant-progress-circle, .streak-count-container .ant-progress-circle {
+.win-count-container .ant-progress-circle,
+.streak-count-container .ant-progress-circle {
   @apply p-0;
   grid-column: 2/3;
   justify-self: center;
 
 }
+
 .current-calendar-context-container {
   @apply flex justify-between my-2;
 }
+
 .current-date-string {
   @apply font-light text-sm;
 }
@@ -176,9 +191,7 @@ div.handle span {
   touch-action: pan-y;
 }
 
-.vis-move-vertical-container {
-  
-}
+.vis-move-vertical-container {}
 
 .add-node-button {
   border-radius: 100%;
@@ -216,14 +229,17 @@ div.handle span {
 .date-nav-button {
   @apply text-lg text-gray-100 ml-2;
 }
+
 .date-nav-button .date-nav-icon {
   @apply h-4 w-4;
 }
+
 .date-nav-button:last-child {
   @apply ml-0 mr-2;
 }
 
-.date-nav-button.disabled, .date-nav-button.disabled:hover {
+.date-nav-button.disabled,
+.date-nav-button.disabled:hover {
   @apply text-gray-300;
 }
 
@@ -259,6 +275,7 @@ div.handle span {
   div.handle {
     padding: 16px;
   }
+
   .date-nav-button .date-nav-icon {
     @apply h-6 w-6;
   }
@@ -266,17 +283,17 @@ div.handle span {
   .current-date-string {
     @apply text-lg;
   }
-  
+
   div.handle span {
     height: 8px;
   }
 
   /* This breakpoint is specifically for the calendar on small mobile/larger mobile widths */
-  .calendar-day > div:last-child {
+  .calendar-day>div:last-child {
     @apply text-base;
   }
 
-  .calendar-day-container.current .calendar-day > div:last-child {
+  .calendar-day-container.current .calendar-day>div:last-child {
     outline: 4px solid #c0c7ce;
     outline-offset: 4px;
   }
@@ -284,7 +301,7 @@ div.handle span {
   .swipe-up-tab-container {
     @apply p-4 gap-4;
   }
-  
+
   .current-calendar-context-container {
     @apply mt-2;
   }
@@ -292,5 +309,27 @@ div.handle span {
   .calendar-day-title {
     @apply text-sm;
     font-weight: 400;
+  }
+
+}
+
+@media screen and (min-width: 768px) {
+  .overlay-controls-container {
+    width: 18rem;
+    right: 0;
+    left: initial;
+    position: fixed;
+    top: 44%;
+  }
+
+  .calendar-nav {
+    width: 33vw;
+    margin: 0 auto;
+  }
+
+  div.handle {
+    margin-left: 32vw;
+    margin-right: auto;
+    width: 33vw;
   }
 }

@@ -20,21 +20,21 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "get_my_orbit",
+    "get_my_orbit"
   );
   const readAll = mapZomeFn<{ sphereHash: EntryHashB64 }, Orbit[]>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "get_all_my_sphere_orbits",
+    "get_all_my_sphere_orbits"
   );
   const getHierarchyForOrbit = mapZomeFn<ActionHashB64, String>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "get_orbit_hierarchy_json",
+    "get_orbit_hierarchy_json"
   );
 
   return {
@@ -57,14 +57,14 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
         return Promise.resolve({ edges: [], pageInfo: undefined } as any);
 
       const entryRecords = rawRecords!.map(
-        (record: any) => new EntryRecord<Orbit>(record),
+        (record: any) => new EntryRecord<Orbit>(record)
       );
       const orbitConnection = createEdges(
         entryRecords.map((entryRecord: EntryRecord<Orbit>) => ({
           ...entryRecord.entry,
           id: entryRecord.actionHash,
           eH: encodeHashToBase64(entryRecord.entryHash),
-        })),
+        }))
       ) as Partial<OrbitConnection> & any; // Need to resolve type errors when no pagination implemented
       return Promise.resolve(orbitConnection);
     },

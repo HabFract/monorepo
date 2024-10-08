@@ -70,6 +70,7 @@ import {
 import { currentOrbitIdAtom, getOrbitAtom, getOrbitIdFromEh } from "../../../state/orbit";
 import { EntryHashB64 } from "@holochain/client";
 import { getHierarchyAtom } from "../../../state/hierarchy";
+import { AppMachine } from "../../../main";
 
 export class TreeVisualization extends BaseVisualization {
   layout!: TreeLayout<unknown>;
@@ -249,7 +250,7 @@ export class TreeVisualization extends BaseVisualization {
     // @ts-ignore
     const cacheItem: OrbitNodeDetails = this.nodeDetails[rootNodeId];
     if (!cacheItem || !cacheItem?.path) return;
-console.log('Got cache item for path:' , cacheItem)
+    console.log('Got cache item for path:', cacheItem)
     const newPath = select(".canvas")
       .selectAll("g.links")
       .append("path")
@@ -481,6 +482,7 @@ console.log('Got cache item for path:' , cacheItem)
     });
 
     store.sub(currentOrbitIdAtom, () => {
+      if (AppMachine.state.currentState !== "Vis") return;
       this.eventHandlers.memoizedhandleNodeZoom.call(this, store.get(currentOrbitIdAtom)?.id);
       (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
     })

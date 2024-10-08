@@ -7,19 +7,21 @@ import OrbitTree from "./components/vis/OrbitTree";
 import { renderVis } from "./components/vis/helpers";
 
 import { StateTransitions } from "./state/types/stateMachine";
+import FirstHomeLayout from "./components/layouts/FirstHome";
 
 export type AppState = // Currently just for routing in the state machine
 
-    | "Home"
-    | "PreloadAndCache"
-    | "Onboarding1"
-    | "Onboarding2"
-    | "Onboarding3"
-    | "Vis"
-    | "CreateSphere"
-    | "ListSpheres"
-    | "CreateOrbit"
-    | "ListOrbits";
+  | "Home"
+  | "Welcome"
+  | "PreloadAndCache"
+  | "Onboarding1"
+  | "Onboarding2"
+  | "Onboarding3"
+  | "Vis"
+  | "CreateSphere"
+  | "ListSpheres"
+  | "CreateOrbit"
+  | "ListOrbits";
 
 export type Routes = {
   [key in AppState]: React.ReactNode;
@@ -40,6 +42,7 @@ export const initialState: AppStateStore = {
 
 export const routes: Routes = {
   Home: <Home />,
+  Welcome: <FirstHomeLayout />,
   PreloadAndCache: <PreloadOrbitData />,
   Vis: (() => renderVis(OrbitTree))(),
   Onboarding1: <CreateSphere editMode={false} />,
@@ -70,7 +73,8 @@ const lists = ["ListSpheres", "ListOrbits"];
 
 export const AppTransitions: StateTransitions<AppState> = {
   PreloadAndCache: ["Vis", "CreateSphere", "CreateOrbit"],
-  Home: ["Home", ...lists, ...forms, "Vis", "Onboarding1", "PreloadAndCache"],
+  Welcome: ["Onboarding1", "PreloadAndCache"],
+  Home: ["Welcome", ...lists, ...forms, "Vis", "Onboarding1", "PreloadAndCache"],
   Onboarding1: ["Home", "Onboarding2"],
   Onboarding2: ["Onboarding1", "Onboarding2", "Onboarding3"],
   Onboarding3: ["Onboarding2", "Onboarding3", "PreloadAndCache"],

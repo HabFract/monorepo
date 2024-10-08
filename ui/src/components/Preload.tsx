@@ -78,11 +78,12 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                 store.get(nodeCache.items),
               ),
             ),
-          async () =>
+          async () => {
             transition(landingPage || "Vis", {
               currentSphereEhB64: eH,
               currentSphereAhB64: id,
-            }),
+            })
+          },
         ]);
       } catch (error) {
         console.error(error);

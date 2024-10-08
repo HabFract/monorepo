@@ -1,17 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { store } from "../state/jotaiKeyValueStore";
 import { useStateTransition } from "./useStateTransition";
 import { useAtomValue } from "jotai";
 import {
-  currentSphereAtom,
   currentSphereHasCachedNodesAtom,
   currentSphereHashesAtom,
 } from "../state/sphere";
 import { useToast } from "../contexts/toast";
-import { Orbit, useGetOrbitsQuery } from "../graphql/generated";
+import { Orbit, useGetOrbitsLazyQuery } from "../graphql/generated";
 import { extractEdges } from "../graphql/utils";
-import { currentSphereOrbitNodesAtom } from "../state/orbit";
 
+/**
+ * Hook to redirect if we don't have sufficient data to render the page.
+ * @param bypass if we want to bypass the hook entirely
+ *
+ */
 export const useRedirect = (bypass?: boolean) => {
   const [state, transition, params] = useStateTransition();
   const sphere = useAtomValue(currentSphereHashesAtom);
@@ -26,6 +29,13 @@ export const useRedirect = (bypass?: boolean) => {
 
   const sphereHasCachedOrbits = useAtomValue(currentSphereHasCachedNodesAtom);
   const { showToast } = useToast();
+  const [hasFetched, setHasFetched] = useState<boolean>(false);
+  const [getOrbits, { data: orbits, loading: getAllLoading, error }] =
+    useGetOrbitsLazyQuery({
+      fetchPolicy: "network-only",
+      variables: { sphereEntryHashB64: sphere.entryHash },
+    });
+
   // First check for a current Sphere context
   if (!sphere?.actionHash && params?.currentSphereAhB64) {
     store.set(currentSphereHashesAtom, {
@@ -33,17 +43,17 @@ export const useRedirect = (bypass?: boolean) => {
       entryHash: params.currentSphereEhB64,
     });
   }
-  const {
-    data: orbits,
-    loading: getAllLoading,
-    error,
-  } = useGetOrbitsQuery({
-    fetchPolicy: "network-only",
-    variables: { sphereEntryHashB64: sphere.entryHash },
-  });
-  // Use orbits query to check if we have orbits (but might still need to cache, so redirect)
+  // Then use orbits query if we have a Sphere
   useEffect(() => {
-    if (!orbits || bypass || sphereHasCachedOrbits) return;
+    if (!sphere?.actionHash) return;
+    getOrbits();
+    setHasFetched(true);
+  }, [sphere?.actionHash]);
+
+  // Use orbits query to check if we have orbits we could cache, If so, redirect
+  useEffect(() => {
+    if (bypass || !orbits || sphereHasCachedOrbits) return;
+
     const orbitEdges = extractEdges((orbits as any)?.orbits) as Orbit[];
 
     orbitEdges.length > 0 &&
@@ -51,23 +61,26 @@ export const useRedirect = (bypass?: boolean) => {
       transition("PreloadAndCache", {
         landingSphereEh: sphere.entryHash,
         landingSphereId: sphere.actionHash,
-        landingPage: state
+        landingPage: state,
       });
-  }, [sphereHasCachedOrbits, orbits]);
+  }, [bypass, sphereHasCachedOrbits, getOrbits]);
 
   useEffect(() => {
-    if (bypass || orbits || error || getAllLoading) return;
-    showToast(
-      "You need to create an Orbit before you can Visualise!",
-      5000,
-      sphereHasCachedOrbits,
-    );
-    if (!sphereHasCachedOrbits) {
-      transition("CreateOrbit", {
-        editMode: false,
-        forwardTo: "Vis",
-        sphereEh: sphere.entryHash,
-      });
-    }
+    if (bypass || !hasFetched || error || getAllLoading) return;
+
+    const firstVisit = !orbits;
+    transition(firstVisit ? "FirstHome" : "Home");
+    // showToast(
+    //   "You need to create an Orbit before you can Visualise!",
+    //   5000,
+    //   sphereHasCachedOrbits
+    // );
+    // if (!sphereHasCachedOrbits) {
+    //   transition("CreateOrbit", {
+    //     editMode: false,
+    //     forwardTo: "Vis",
+    //     sphereEh: sphere.entryHash,
+    //   });
+    // }
   }, [isSameSphere]);
 };

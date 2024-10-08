@@ -109,6 +109,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       getHierarchy,
     });
     setUsedCachedHierarchy(!!result);
+
     const newJson = !result
       ? JSON.parse(json!)?.sort(byStartTime)
       : JSON.stringify(parseAndSortTrees(result.getOrbitHierarchy));
@@ -170,14 +171,14 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     const fetchAndProcess = async () => {
       let newJson = await fetchCurrentLevel()
       await processHierarchyLevelAndFetchNext(newJson)
-      setCanTriggerNextTreeVisRender(true)
+      setTimeout(() => setCanTriggerNextTreeVisRender(true), 0)
     };
     fetchAndProcess()
   }, [data, y]);
 
   // Allow the following useEffect to be unguarded after a change in the breadthIndex, triggering a render of the tree at that index
   useEffect(() => {
-    setCanTriggerNextTreeVisRender(true)
+    setTimeout(() => setCanTriggerNextTreeVisRender(true), 0)
   }, [x]);
 
   // Sets up and triggers the next render when a new set of hierarchy data needs to be visualised
@@ -212,7 +213,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       currentOrbitTree.startInFocusMode = true;
       currentOrbitTree.render();
 
-      setCanTriggerNextTreeVisRender(false)
+      setTimeout(() => setCanTriggerNextTreeVisRender(false), 0)
     }
   }, [json, canTriggerNextTreeVisRender]);
 
