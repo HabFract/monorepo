@@ -1,4 +1,4 @@
-import { hierarchy, HierarchyNode, tree, TreeLayout } from "d3-hierarchy";
+import { hierarchy, HierarchyNode, HierarchyPointNode, tree, TreeLayout } from "d3-hierarchy";
 import { DefaultLinkObject, Link, linkVertical } from "d3-shape";
 import {
   EventHandlers,
@@ -177,8 +177,10 @@ export class TreeVisualization extends BaseVisualization {
 
         const newId = foundNode?.data.content || id || store.get(currentOrbitIdAtom)?.id;
         if (!newId) return select(null);
-        // TODO: figure out why nextRootData is needed, maybe calculate new layout information for this purpose
-        const node = foundNode || this.rootData.find(node => node.data.content == newId) || (hierarchy(this._nextRootData).sort(byStartTime).find(node => node.data.content == newId));
+        let node = foundNode
+          || this.rootData.find(node => node.data.content == newId)
+          || this.getNextLayout();
+
         // console.log('Actually zoomed to node: :>> ', node);
         if (node && (typeof node?.x !== undefined) && (typeof node?.y !== undefined)) {
           const e = {
@@ -224,6 +226,19 @@ export class TreeVisualization extends BaseVisualization {
       this._viewConfig.dy as number,
     ]);
     this.layout(this.rootData);
+  }
+
+  getNextLayout(): HierarchyPointNode<unknown> | null {
+    if (!this._nextRootData) return null
+    const layout = tree().size([
+      this._viewConfig.canvasWidth / 2,
+      this._viewConfig.canvasHeight / 2,
+    ]);
+    layout.nodeSize([
+      this._viewConfig.dx as number,
+      this._viewConfig.dy as number,
+    ]);
+    return layout(this._nextRootData as HierarchyNode<unknown>);
   }
 
   handleZoom(event: any): void {
