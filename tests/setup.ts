@@ -1,11 +1,9 @@
 import "fake-indexeddb/auto";
-import { mockAppState } from './integration/mocks/mockAppState';
+import { mockAppState } from "./integration/mocks/mockAppState";
 import { vi } from "vitest";
 import { atom, WritableAtom } from "jotai";
 import { SPHERE_ID } from "./integration/mocks/spheres";
-import { currentSphereAtom, currentSphereHasCachedNodesAtom, currentSphereHashesAtom } from "../ui/src/state/sphere";
-import { currentSphereHierarchyBounds, currentSphereHierarchyIndices } from "../ui/src/state/hierarchy";
-import { currentSphereOrbitNodesAtom } from "../ui/src/state/orbit";
+import { setupJotaiKeyValueStoreMock } from "./setupNodeCache";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -26,8 +24,15 @@ const initialStateMachineState = {
   currentSphereAhB64: SPHERE_ID,
 };
 
-let mockUseStateTransitionResponse = ["Home", vi.fn(() => {}), initialStateMachineState];
-export function setMockUseStateTransitionResponse(route: string, params: typeof initialStateMachineState) {
+let mockUseStateTransitionResponse = [
+  "Home",
+  vi.fn(() => {}),
+  initialStateMachineState,
+];
+export function setMockUseStateTransitionResponse(
+  route: string,
+  params: typeof initialStateMachineState
+) {
   mockUseStateTransitionResponse = [route, vi.fn(() => {}), params];
 }
 
@@ -35,54 +40,21 @@ vi.mock("../ui/src/hooks/useStateTransition", () => ({
   useStateTransition: () => mockUseStateTransitionResponse,
 }));
 
-const currentSphereHash = mockAppState.spheres.currentSphereHash;
-const currentSphere = mockAppState.spheres.byHash[currentSphereHash];
-const currentHierarchyRootHash = currentSphere.hierarchyRootOrbitEntryHashes[0];
-const currentHierarchy = mockAppState.hierarchies.byRootOrbitEntryHash[currentHierarchyRootHash];
-
-/* 
-/ Mocking jotai store functions
-*/
-export const storeMock = {
-  get: vi.fn((atom) => {
-    // Direct mapping of atoms to their mocked values
-    const atomMappings = {
-      [currentSphereHashesAtom.toString()]: {
-        entryHash: currentSphere.details.entryHash,
-        actionHash: currentSphereHash,
-      },
-      [currentSphereAtom.toString()]: currentSphere,
-      [currentSphereHasCachedNodesAtom.toString()]: true, 
-      [currentSphereHierarchyBounds.toString()]: currentHierarchy.bounds,
-      [currentSphereHierarchyIndices.toString()]: currentHierarchy.indices,
-      [currentSphereOrbitNodesAtom.toString()]: mockAppState.orbitNodes.byHash, // currently just mocking one sphere so no need to filter
-    };
-    return atomMappings[atom.toString()] || undefined;
-  }),
-  set: vi.fn(),
-  sub: vi.fn(),
-};
-
-vi.mock("../ui/src/state/jotaiKeyValueStore", (importOriginal) => ({
-  ...importOriginal,
-  store: storeMock,
-  nodeCache: {
-    entries: atom(Object.entries(mockAppState.orbitNodes.byHash))// TODO update to transform to the correct type
-  },
-}));
+// Mock nodeCache
+setupJotaiKeyValueStoreMock();
 
 // Mock redirect hook
 vi.mock("../ui/src/hooks/useRedirect", async () => {
-  return { useRedirect : () => null}
-})
+  return { useRedirect: () => null };
+});
 
 // Mock app level constants
 vi.mock("../ui/src/constants", async (importOriginal) => {
-  const actual = await importOriginal() as any;
+  const actual = (await importOriginal()) as any;
   return {
     ...actual,
-    NODE_ENV: 'test',
-    HAPP_ID: 'test',
+    NODE_ENV: "test",
+    HAPP_ID: "test",
     APP_WS_PORT: 1234,
     ADMIN_WS_PORT: 4321,
     HAPP_DNA_NAME: "habits",
@@ -110,7 +82,9 @@ vi.mock("@holochain/client", () => ({
     appInfo: vi.fn(),
     connect: vi.fn(() =>
       Promise.resolve({
-        appInfo: vi.fn(() => ({ cell_info: { habits: [{ provisioned: true }] } })),
+        appInfo: vi.fn(() => ({
+          cell_info: { habits: [{ provisioned: true }] },
+        })),
       })
     ),
   },

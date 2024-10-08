@@ -10,7 +10,7 @@ import { ORBITS_MOCKS } from './mocks/orbits';
 import { MockedProvider } from '@apollo/client/testing';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { renderWithJotai } from '../utils-frontend';
-import { setMockUseStateTransitionResponse, storeMock } from '../setup';
+import { setMockUseStateTransitionResponse } from '../setup';
 import { currentSphereOrbitNodesAtom } from '../../ui/src/state/orbit';
 import mockAppState from './mocks/mockAppState';
 import { beforeEach } from 'node:test';

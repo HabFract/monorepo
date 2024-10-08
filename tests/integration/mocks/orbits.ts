@@ -1,7 +1,13 @@
-import { GetLowestSphereHierarchyLevelDocument } from '../../../ui/src/graphql/generated/index';
+import { GetLowestSphereHierarchyLevelDocument } from "../../../ui/src/graphql/generated/index";
 
-import { anOrbitConnection } from '../../../ui/src/graphql/generated/mocks-types-fixed'
-import { GetOrbitsDocument, Frequency, Scale, DeleteOrbitDocument, GetSphereDocument } from '../../../ui/src/graphql/generated/index'
+import { anOrbitConnection } from "../../../ui/src/graphql/generated/mocks";
+import {
+  GetOrbitsDocument,
+  Frequency,
+  Scale,
+  DeleteOrbitDocument,
+  GetSphereDocument,
+} from "../../../ui/src/graphql/generated/index";
 
 export const ORBITS_MOCKS = [
   {
@@ -28,7 +34,7 @@ export const ORBITS_MOCKS = [
                 frequency: Frequency.Day,
                 parentHash: null,
                 sphereHash: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
-                eH:"R28gZm9yIGEgd2Fsay==",
+                eH: "R28gZm9yIGEgd2Fsay==",
               },
               cursor: "",
             },
@@ -37,7 +43,8 @@ export const ORBITS_MOCKS = [
                 id: "R28gZm9yIGEgd2Fsay==1",
                 name: "Go for a step",
                 metadata: {
-                  description: "A daily stepwalk to improve cardiovascular health.",
+                  description:
+                    "A daily stepwalk to improve cardiovascular health.",
                   timeframe: {
                     startTime: 161723520, // Mocked Unix timestamp for example
                     endTime: 161732160, // Mocked Unix timestamp for example
@@ -47,7 +54,7 @@ export const ORBITS_MOCKS = [
                 frequency: Frequency.Day,
                 parentHash: null,
                 sphereHash: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
-                eH:"R28gZm9yIGEgd2Fsay==",
+                eH: "R28gZm9yIGEgd2Fsay==",
               },
               cursor: "",
             },
@@ -67,7 +74,7 @@ export const ORBITS_MOCKS = [
                 scale: Scale.Atom,
                 parentHash: null,
                 sphereHash: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
-                eH: 'TGlmdCB3ZWlnaHRz'
+                eH: "TGlmdCB3ZWlnaHRz",
               },
               cursor: "",
             },
@@ -76,7 +83,8 @@ export const ORBITS_MOCKS = [
                 id: "TWFrZSBhIGhlYWx0aHkgbWVhbA==", // Base64 for "Make a healthy meal"
                 name: "Make a healthy meal",
                 metadata: {
-                  description: "Preparing nutritious meals to fuel the body for optimal health.",
+                  description:
+                    "Preparing nutritious meals to fuel the body for optimal health.",
                   timeframe: {
                     startTime: 1617235200, // Mocked Unix timestamp for example
                     endTime: 1617321600, // Mocked Unix timestamp for example
@@ -95,7 +103,8 @@ export const ORBITS_MOCKS = [
                 id: "UHJhY3RpY2UgeW9nYQ==", // Base64 for "Practice yoga"
                 name: "Practice yoga",
                 metadata: {
-                  description: "Engage in yoga to enhance flexibility, strength, and mental clarity.",
+                  description:
+                    "Engage in yoga to enhance flexibility, strength, and mental clarity.",
                   timeframe: {
                     startTime: 1617235200, // Mocked Unix timestamp for example
                     endTime: 1617321600, // Mocked Unix timestamp for example
@@ -105,7 +114,7 @@ export const ORBITS_MOCKS = [
                 scale: Scale.Atom,
                 parentHash: null,
                 sphereHash: "SGVhbHRoMQ==", // Corresponding to "Health and Fitness" sphere id
-                eH: "UHJhY3RpY2UgeW9nYQ=="
+                eH: "UHJhY3RpY2UgeW9nYQ==",
               },
               cursor: "",
             },
@@ -118,34 +127,33 @@ export const ORBITS_MOCKS = [
     request: {
       query: DeleteOrbitDocument,
       variables: {
-        id: "R28gZm9yIGEgd2Fsay=="
+        id: "R28gZm9yIGEgd2Fsay==",
       },
     },
     result: {
-      data: {
-      },
+      data: {},
     },
   },
   {
     request: {
       query: GetSphereDocument,
       variables: {
-        id: "SGVhbHRoMQ==e"
+        id: "SGVhbHRoMQ==e",
       },
     },
     result: {
       data: {
         sphere: {
           id: "SGVhbHRoMQ==e",
-          eH: "SGVhbHRoMQ==e",          
+          eH: "SGVhbHRoMQ==e",
           name: "ABC",
           hashtag: "ABC",
           metadata: {
             description: "ABC",
             image: "ABC",
-          }
-        }
+          },
+        },
       },
     },
-  }
+  },
 ];

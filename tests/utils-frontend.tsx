@@ -2,22 +2,25 @@ import React from "react";
 import { Provider } from "jotai/react";
 import { useHydrateAtoms } from "jotai/utils";
 import { atom, createStore } from "jotai";
-import { AppState } from "../ui/src/state/store";
+import { AppState, appStateAtom } from "../ui/src/state/store";
 import { OrbitNodeDetails } from "../ui/src/state/types/orbit";
 import mockAppState from "./integration/mocks/mockAppState";
-import { ToastProvider } from "../ui/src/contexts/toast";
 import { render, RenderResult } from "@testing-library/react";
+import { SphereOrbitNodes } from "../ui/src/state/types/sphere";
+import { mockedCacheEntries } from "./integration/mocks/mockNodeCache";
 
 export const renderWithJotai = (
-  ui: React.ReactElement,
-  { initialState = {}, initialCache = {} } = {}
+  element: React.ReactElement,
+  { initialState = mockAppState, initialCache = Object.fromEntries(mockedCacheEntries) } = {}
 ): RenderResult => {
   const testStore = createTestStore(initialState);
-  const testCache = createTestCache(initialCache);
+  const testCache = createTestIndexDBAtom(initialCache);
 
   return render(
     <Provider store={testStore}>
-      {React.cloneElement(ui)}
+      <TestProvider initialValues={[[appStateAtom, testStore.get(appStateAtom)]]}>
+        {React.cloneElement(element)}
+      </TestProvider>
     </Provider>
   );
 };
@@ -29,20 +32,20 @@ const HydrateAtoms = ({ initialValues, children }) => {
 
 export const TestProvider = ({ initialValues, children }) => (
   <Provider>
-    {/* <ToastProvider> */}
-      <HydrateAtoms initialValues={initialValues}>{children}</HydrateAtoms>
-    {/* </ToastProvider> */}
+    <HydrateAtoms initialValues={initialValues}>{children}</HydrateAtoms>
   </Provider>
 )
 
 export const createTestStore = (initialState: Partial<AppState> = {}) => {
   const testState = { ...mockAppState, ...initialState };
-  return createStore();
+  const store = createStore();
+  store.set(appStateAtom, testState);
+  return store;
 };
 
-export const createTestCache = (initialCache: Record<string, OrbitNodeDetails> = {}) => {
+export const createTestIndexDBAtom = (initialCache: SphereOrbitNodes = {}) => {
   return {
-    entries: atom(initialCache),
+    entries: atom(Object.entries(initialCache)),
     keys: atom(Object.keys(initialCache)),
     items: atom(Object.values(initialCache)),
   };
