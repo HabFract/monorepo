@@ -4,7 +4,7 @@ import VisMovementLateral, { VisMovementLateralProps } from "./VisMovementLatera
 import WinCount, { WinCountProps } from "./WinCount";
 import StreakCount, { StreakCountProps } from "./StreakCount";
 import { VisMovementVerticalProps } from "./VisMovementVertical";
-import SwipeUpTab, { handlePointerDown, handlePointerMove, handlePointerUp, stopPropagation } from "./SwipeUpTab";
+import SwipeUpTab, { stopPropagation } from "./SwipeUpTab";
 import Calendar from "./Calendar";
 import mockAppState from "../mockState";
 import { DateTime } from "luxon";
@@ -26,7 +26,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
 }): ReactNode => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const [calendarHeight, setCalendarHeight] = useState(0);
-  const padding = document.body.getBoundingClientRect().width < 340 ? -30 : (document.body.getBoundingClientRect().width < 520 ? -68 : -100);
+  const padding = document.body.getBoundingClientRect().width < 340 ? -30 : (document.body.getBoundingClientRect().width < 520 ? -88 : -100);
   const calendarHeightWithPadding = useMemo(() => calendarRef?.current?.firstElementChild?.offsetHeight + padding, [calendarHeight]);
 
   useEffect(() => {
@@ -38,17 +38,12 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   return (
     <section className="overlay-layout-container">
       <SwipeUpTab verticalOffset={calendarHeightWithPadding}>
-        {({ bindDrag }) => (
+        {({ bindDrag, y }) => (
           <>
             <div className="overlay-controls-container">
-              <span
-                onPointerDownCapture={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
-                onPointerCancel={handlePointerUp}
-              >
+              <motion.span>
                 <VisMovementLateral orbits={orbits}></VisMovementLateral>
-              </span>
+              </motion.span>
               {/* <VisMovementLateral></VisMovementLateral> */}
               <div className="overlay-win-streak-container" onPointerDownCapture={stopPropagation}>
                 <WinCount handleSaveWins={handleSaveWins} currentWins={currentWins} orbitFrequency={orbitFrequency}></WinCount>
@@ -56,7 +51,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
               </div>
             </div>
             <motion.nav ref={calendarRef} className="calendar-nav">
-              <motion.div className="handle"  {...bindDrag} style={{ touchAction: 'none', cursor: 'grab' }} >
+              <motion.div className="handle" {...bindDrag} style={{ touchAction: 'none', cursor: 'grab' }} >
                 <span></span>
               </motion.div>
               <span onPointerDownCapture={stopPropagation}>

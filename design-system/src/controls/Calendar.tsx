@@ -3,7 +3,6 @@ import React, { ReactNode, useState } from "react";
 import "./common.css";
 import { DateTime } from "luxon";
 import CalendarDay from "./CalendarDay";
-import SwipeUpTab from "./SwipeUpTab";
 
 export interface CalendarProps {
   orbitWins: object;

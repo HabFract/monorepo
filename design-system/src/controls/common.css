@@ -59,7 +59,7 @@
 }
 
 .orbit-pill-container {
-  @apply rounded-full border-line min-w-20 h-8 bg-secondary flex gap-2 text-xs text-white font-light flex gap-1 items-center justify-start px-2;
+  @apply rounded-full border-line min-w-20 h-8 bg-secondary flex gap-4 text-xs text-white font-light flex gap-1 items-center justify-start px-2;
   flex-wrap: nowrap;
   max-width: 6rem;
   border-width: 1px;
@@ -93,7 +93,7 @@
 }
 
 .swipe-up-tab-container {
-  @apply relative z-50 flex flex-col rounded-2xl p-2 gap-1 text-white bg-menu-bg;
+  @apply z-50 flex flex-col rounded-2xl p-2 gap-1 text-white bg-menu-bg;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 
@@ -195,11 +195,30 @@ div.handle span {
 
 .vis-move-lateral-container {
   @apply flex gap-2 bg-secondary rounded-full p-1;
-  overflow: hidden;
-  touch-action: pan-y;
+  overflow-y: hidden;
 }
 
-.vis-move-vertical-container {}
+.intersecting-pill-row {
+  @apply flex gap-4;
+  padding: 0 calc(50% - 2.5rem);
+}
+
+.vis-move-lateral-intersector {
+  position: absolute;
+  top: 0px;
+  left: calc(50% - 2px);
+  height: 100%;
+  width: 1px;
+  background-color: transparent;
+}
+
+.vis-move-lateral-container::-webkit-scrollbar {
+    display: none;
+}
+.vis-move-vertical-container {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 
 .add-node-button {
   border-radius: 100%;

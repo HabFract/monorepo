@@ -157,7 +157,7 @@ export class TreeVisualization extends BaseVisualization {
         this._zoomConfig.previousRenderZoom = { event, node, scale };
         if (isRootNode) {
           this.initializeZoomer()
-          this.applyInitialTransform()
+          // this.applyInitialTransform()
         } else {
           this.resetZoomer()
         }

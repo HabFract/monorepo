@@ -3,103 +3,77 @@ import React, { useEffect, useRef, useState } from "react";
 import "./common.css";
 import { Scale } from "..//generated-types";
 import OrbitPill from "./OrbitPill";
-import { motion, PanInfo, useAnimation, useMotionValue } from "framer-motion";
 
 export interface VisMovementLateralProps {
   orbits: Array<{ orbitName: string, orbitScale: Scale, handleOrbitSelect: () => void }>;
 }
 
-
 const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbits }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const [contentWidth, setContentWidth] = useState(0);
-  const [counter, setCounter] = useState(0);
-
-  const controls = useAnimation();
-  const x = useMotionValue(0);
-  const resistance = 0.2;
-  const threshold = 100; // pixels
+  const observerRef = useRef<HTMLDivElement>(null);
+  const [selectedOrbit, setSelectedOrbit] = useState<string | null>(null);
 
   useEffect(() => {
-    if (containerRef.current) {
-      const cWidth = containerRef.current.offsetWidth;
-      const sWidth = containerRef.current.scrollWidth;
-      setContainerWidth(cWidth);
-      setContentWidth(sWidth);
-      console.log("Container width:", cWidth, "Content width:", sWidth);
+    const container = containerRef.current;
+    const observer = observerRef.current;
+    if (!container || !observer) return;
+
+
+    const options = {
+      root: container,
+      rootMargin: "0px",
+      threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+    };
+
+    const intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.intersectionRatio > 0.8) {  // Adjust this threshold as needed
+          setSelectedOrbit(entry.target.id);
+        }
+      });
+    }, options);
+
+    const pillElements = container.querySelectorAll(".intersecting-pill");
+    pillElements.forEach((pill) => intersectionObserver.observe(pill));
+
+    return () => intersectionObserver.disconnect();
+  }, [orbits]);
+
+  useEffect(() => {
+    if (containerRef.current && orbits.length > 0) {
+      const firstPill = containerRef.current.querySelector(".intersecting-pill");
+      if (firstPill) {
+        const containerWidth = containerRef.current.offsetWidth;
+        const pillWidth = firstPill.clientWidth;
+        const scrollPosition = (pillWidth - containerWidth) / 2;
+        containerRef.current.scrollLeft = scrollPosition;
+      }
     }
   }, [orbits]);
 
-  const handlePan = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    console.log("Pan event:", info.offset.x);
-    const newX = info.offset.x;
-    const maxX = 0;
-    const minX = -(contentWidth - containerWidth);
-
-    let setX;
-    if (newX > maxX) {
-      setX = maxX + (newX - maxX) * resistance;
-    } else if (newX < minX) {
-      setX = minX + (newX - minX) * resistance;
-    } else {
-      setX = newX;
-    }
-    console.log("Setting x to:", setX);
-    x.set(setX);
-  };
-
-  const handlePanStart = (event: any) => {
-    controls.stop();
-  };
-  
-  const handlePanEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    console.log("Pan end event:", info.velocity.x);
-    const currentX = x.get();
-    const velocity = info.velocity.x;
-
-    console.log("Current x:", currentX, "Velocity:", velocity);
-
-    if (currentX > threshold || (velocity > 500 && currentX > 0)) {
-      setCounter((prev) => {
-        const newCount = prev + 1;
-        console.log("Crossed right threshold. Counter:", newCount);
-        return newCount;
-      });
-      x.set(0);
-    } else if (currentX < -threshold || (velocity < -500 && currentX < 0)) {
-      setCounter((prev) => {
-        const newCount = prev - 1;
-        console.log("Crossed left threshold. Counter:", newCount);
-        return newCount;
-      });
-      x.set(-(contentWidth - containerWidth));
-    } else {
-      const targetX = currentX > -(contentWidth - containerWidth) / 2 ? 0 : -(contentWidth - containerWidth);
-      console.log("Settling to:", targetX);
-      x.set(targetX);
-    }
-  };
-
-  console.log("Rendering with counter:", counter);
+  console.log('selectedOrbit :>> ', selectedOrbit);
 
   return (
-    <div ref={containerRef} className="vis-move-lateral-container" style={{ overflow: "hidden" }}>
-      <motion.div
-        drag="x"
-        dragConstraints={{ left: -(contentWidth - containerWidth), right: 0 }}
-        dragElastic={0.2}
-        style={{ x, display: "flex", cursor: "grab" }}
-        onPan={handlePan}
-        onPanStart={handlePanStart}
-        animate={controls}
-        onPanEnd={handlePanEnd}
-      >
+    <div ref={containerRef} className="vis-move-lateral-container">
+      <div className="intersecting-pill-row">
         {orbits.map((orbit, idx) => (
-          <OrbitPill key={idx} name={orbit.orbitName} scale={orbit.orbitScale} />
+          <span id={orbit.orbitName} className="intersecting-pill">
+            <OrbitPill
+              key={`${idx + orbit.orbitName}`}
+              name={orbit.orbitName}
+              scale={orbit.orbitScale}
+              selected={selectedOrbit === orbit.orbitName}
+            />
+          </span>
         ))}
-      </motion.div>
+      </div>
+      <div
+        ref={observerRef}
+        className="vis-move-lateral-intersector"
+      />
     </div>
   );
 };
+
+
 export default VisMovementLateral;

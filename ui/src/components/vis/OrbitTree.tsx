@@ -233,7 +233,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   // ## -- RENDER  -- ##
   return (
     <>
-      {loading || (hasNodes && <span data-testid={"vis-spinner"} />)}
+      {(loading || !hasNodes) && <span data-testid={"vis-spinner"} />}
       {!error &&
         json &&
         currentOrbitTree &&
