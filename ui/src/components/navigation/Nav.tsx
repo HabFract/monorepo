@@ -27,6 +27,7 @@ import { useAtomValue } from "jotai";
 import {
   currentSphereHasCachedNodesAtom,
   currentSphereHashesAtom,
+  sphereHasCachedNodesAtom,
 } from "../../state/sphere";
 import { currentSphereHierarchyIndices } from "../../state/hierarchy";
 
@@ -105,7 +106,7 @@ const Nav: React.FC<INav> = ({
         if (spheresArray.length >= 4) {
           showToast(
             tooltipMsg +
-              "before you can add another Sphere. These are the 4 burners of your habit life!",
+            "before you can add another Sphere. These are the 4 burners of your habit life!",
           );
           setSideNavExpanded(true);
           return;
@@ -137,15 +138,24 @@ const Nav: React.FC<INav> = ({
           if (e.key == store.get(currentSphereHashesAtom).actionHash) {
             setSideNavExpanded(true);
           } else {
-            setSideNavExpanded(false);
-            store.set(currentSphereHashesAtom, {
-              entryHash: sphere(e.key)?.eH,
-              actionHash: e.key,
-            });
-            transition("Vis", {
-              currentSphereEhB64: sphere(e.key)?.eH,
-              currentSphereAhB64: e.key,
-            });
+            const checkCachedOrbits = store.get(sphereHasCachedNodesAtom(e.key));
+            if (checkCachedOrbits) {
+              setSideNavExpanded(false);
+              store.set(currentSphereHashesAtom, {
+                entryHash: sphere(e.key)?.eH,
+                actionHash: e.key,
+              });
+            }
+            const transitionParams = !checkCachedOrbits
+              ? {
+                landingSphereEh: sphere(e.key)?.eH,
+                landingSphereId: sphere(e.key)?.id,
+              }
+              : {
+                currentSphereEhB64: sphere(e.key)?.eH,
+                currentSphereAhB64: e.key,
+              };
+            transition(!checkCachedOrbits ? "PreloadAndCache" : "Vis", transitionParams);
           }
         } else if ([Page.ListSpheres].includes(currentPage as Page)) {
           if (!(e.key == store.get(currentSphereHashesAtom).actionHash)) {
@@ -176,10 +186,10 @@ const Nav: React.FC<INav> = ({
               : pageString == "CreateOrbit"
                 ? { sphereEh: sphere(e.key).eH }
                 : {
-                    currentSphereEhB64: store.get(currentSphereHashesAtom)
-                      .entryHash,
-                    currentSphereAhB64: e.key,
-                  },
+                  currentSphereEhB64: store.get(currentSphereHashesAtom)
+                    .entryHash,
+                  currentSphereAhB64: e.key,
+                },
           );
         }
         break;

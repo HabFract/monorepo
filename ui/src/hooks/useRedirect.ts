@@ -69,6 +69,7 @@ export const useRedirect = (bypass?: boolean) => {
     if (bypass || !hasFetched || error || getAllLoading) return;
 
     const firstVisit = !orbits;
+    console.log("firstVisit :>> ", firstVisit);
     transition(firstVisit ? "FirstHome" : "Home");
     // showToast(
     //   "You need to create an Orbit before you can Visualise!",
