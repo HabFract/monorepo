@@ -5,31 +5,39 @@
 .traversal-button {
   @apply absolute text-4xl;
 }
+
 .traversal-button.up,
 .traversal-button.down {
   left: calc(50% - 20px);
 }
+
 .traversal-button.right,
 .traversal-button.left {
   top: calc(50% - 20px);
 }
+
 .traversal-button.up {
   top: var(--traversal-distance);
 }
+
 .traversal-button.down {
-  bottom: var(--traversal-distance);
+  bottom: calc(-1 * var(--traversal-distance));
 }
+
 .traversal-button.d-right {
   right: calc(var(--traversal-distance) / 1.75);
   bottom: calc(var(--traversal-distance) / 1.75);
 }
+
 .traversal-button.d-left {
   left: calc(var(--traversal-distance) / 1.75);
   bottom: calc(var(--traversal-distance) / 1.75);
 }
+
 .traversal-button.left {
   left: var(--traversal-distance);
 }
+
 .traversal-button.right {
   right: var(--traversal-distance);
 }

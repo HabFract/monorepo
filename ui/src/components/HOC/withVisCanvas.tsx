@@ -33,7 +33,6 @@ import {
   Coords,
   NodeContent,
 } from "../../state/types/hierarchy";
-import { DateTime } from "luxon";
 import { Scale } from "../../graphql/generated";
 
 const defaultMargins: Margins = {
@@ -139,35 +138,35 @@ export function withVisCanvas<T extends IVisualization>(
               {
                 "orbitName": "1k run",
                 "orbitScale": Scale.Atom,
-                handleOrbitSelect: () => {},
+                handleOrbitSelect: () => { },
               },
               {
                 "orbitName": "2k run",
                 "orbitScale": Scale.Atom,
-                handleOrbitSelect: () => {},
+                handleOrbitSelect: () => { },
               },
               {
                 "orbitName": "5k run",
                 "orbitScale": Scale.Sub,
-                handleOrbitSelect: () => {},
+                handleOrbitSelect: () => { },
               },
               {
                 "orbitName": "10k run",
                 "orbitScale": Scale.Sub,
-                handleOrbitSelect: () => {},
+                handleOrbitSelect: () => { },
               },
               {
                 "orbitName": "20k run",
                 "orbitScale": Scale.Astro,
-                handleOrbitSelect: () => {},
+                handleOrbitSelect: () => { },
               },
               {
                 "orbitName": "50k run",
                 "orbitScale": Scale.Astro,
-                handleOrbitSelect: () => {},
+                handleOrbitSelect: () => { },
               }
             ],
-            handleSaveWins: () => {},
+            handleSaveWins: () => { },
             "orbitFrequency": Frequency.DAILY_OR_MORE.DAILY,
             "currentWins": 0,
             "currentStreak": 0,
@@ -178,11 +177,19 @@ export function withVisCanvas<T extends IVisualization>(
           }
           return (
             <>
-                {/* {<currentVis.coverageType !== VisCoverage.Partial && <svg className="fixed text-white top-1 right-1 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              {/* {<currentVis.coverageType !== VisCoverage.Partial && <svg className="fixed text-white top-1 right-1 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                   <path fillRule="evenodd" d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z" clipRule="evenodd" />
                 </svg>
                 }> */}
-              <OverlayLayout {...mockArgs}></OverlayLayout>
+              {isSmallScreen()
+                ? <OverlayLayout {...mockArgs}></OverlayLayout>
+                : <VisControls // To be phased out once desktop design work is done.
+                  buttons={renderTraversalButtons(
+                    { x, y },
+                    currentVis,
+                  )}
+                />
+              }
 
               {VisModal<T>(
                 isModalOpen,
@@ -213,7 +220,6 @@ export function withVisCanvas<T extends IVisualization>(
       const canMoveRight = canMove && rootId !== currentId && children && children[children.length - 1].data.content !== currentId;
       const currentOrbitIsRoot = currentId === rootId;
       const hasOneChild = children && children.length == 1;
-console.log('currentOrbitIsRoot && maxBreadth && x < maxBreadth :>> ', currentOrbitIsRoot, maxBreadth, x);
       return {
         canMove,
         canMoveUp: canMove && rootId !== currentId,
