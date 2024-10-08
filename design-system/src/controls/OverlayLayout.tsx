@@ -50,7 +50,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
                 <VisMovementLateral orbits={orbits}></VisMovementLateral>
               </span>
               {/* <VisMovementLateral></VisMovementLateral> */}
-              <div className="overlay-win-streak-container flex gap-2 justify-between" onPointerDownCapture={stopPropagation}>
+              <div className="overlay-win-streak-container" onPointerDownCapture={stopPropagation}>
                 <WinCount handleSaveWins={handleSaveWins} currentWins={currentWins} orbitFrequency={orbitFrequency}></WinCount>
                 <StreakCount currentStreak={currentStreak} orbitFrequency={orbitFrequency}></StreakCount>
               </div>

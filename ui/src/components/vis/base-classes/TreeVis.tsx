@@ -145,18 +145,22 @@ export class TreeVisualization extends BaseVisualization {
         if (typeof node == undefined || Number.isNaN(node.x) || Number.isNaN(node.y)) return null;
         const id = store.get(getOrbitIdFromEh(node.data.content));
         const orbit = store.get(getOrbitAtom(id));
+        const isRootNode = store.get(getHierarchyAtom(node.data.content)) !== null
+        const zoomOffsetY = -(this._viewConfig.isSmallScreen() ? isRootNode ? 300 : 100 : 0)
 
         const scale = (this._viewConfig.isSmallScreen() ? 0.5 : 1) * chooseZoomScaleForOrbit(orbit);
         const x = -(node as any).x * scale + this._viewConfig.canvasWidth / 2;
-        const y = -(node as any).y * scale + this._viewConfig.canvasHeight / 2 - (this._viewConfig.isSmallScreen() ? 300 : 0);
+        const y = -(node as any).y * scale + this._viewConfig.canvasHeight / 2 + zoomOffsetY;
 
         this._zoomConfig.globalZoomScale = scale;
         this._zoomConfig.focusMode = true;
         this._zoomConfig.previousRenderZoom = { event, node, scale };
-        const isRootNode = store.get(getHierarchyAtom(node.data.content)) !== null
-        isRootNode
-          ? this.initializeZoomer()
-          : this.resetZoomer();
+        if (isRootNode) {
+          this.initializeZoomer()
+          this.applyInitialTransform()
+        } else {
+          this.resetZoomer()
+        }
 
         return this._canvas!
           //@ts-expect-error

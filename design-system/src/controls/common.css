@@ -15,8 +15,15 @@
 }
 
 .overlay-controls-container {
-  bottom: calc(100% + .5rem);
+  bottom: 100%;
+  pointer-events: auto;
+  background: transparent;
   @apply absolute inset-x-1 flex flex-col gap-2;
+}
+
+.overlay-win-streak-container {
+  @apply flex gap-2 justify-between;
+  padding-bottom: .5rem !important;
 }
 
 .calendar-nav {
@@ -86,7 +93,7 @@
 }
 
 .swipe-up-tab-container {
-  @apply relative flex flex-col rounded-2xl p-2 gap-1 text-white bg-menu-bg;
+  @apply relative z-50 flex flex-col rounded-2xl p-2 gap-1 text-white bg-menu-bg;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 
@@ -114,6 +121,7 @@ div.handle {
   margin-left: 31.5%;
   margin-right: auto;
   width: 33%;
+  padding-bottom: 2rem;
 }
 
 div.handle span {
@@ -126,7 +134,7 @@ div.handle span {
 
 .win-count-container,
 .streak-count-container {
-  @apply h-24 w-1/2 m-0 p-2 bg-secondary rounded-2xl grid gap-3;
+  @apply min-h-24 w-1/2 m-0 p-2 bg-secondary rounded-2xl grid gap-3;
   row-gap: 4px;
   grid-template-rows: 1.5rem auto;
   grid-template-columns: 1fr 1fr 1fr;
