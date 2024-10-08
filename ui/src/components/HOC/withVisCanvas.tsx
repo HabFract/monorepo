@@ -226,7 +226,7 @@ export function withVisCanvas<T extends IVisualization>(
         canTraverseUp: y !== 0,
         canMoveRight,
         canMoveLeft,
-        canMoveDown: canMove && currentOrbitIsRoot && children && children.length !== 2,
+        canMoveDown: canMove && currentOrbitIsRoot && children,
         canMoveDownLeft: canMove && currentOrbitIsRoot && children && !hasOneChild,
         canMoveDownRight: canMove && currentOrbitIsRoot && children && !hasOneChild,
         canTraverseDownMiddle: !!(
