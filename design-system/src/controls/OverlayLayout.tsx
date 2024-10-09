@@ -3,17 +3,29 @@ import "./common.css";
 import VisMovementLateral, { VisMovementLateralProps } from "./VisMovementLateral";
 import WinCount, { WinCountProps } from "./WinCount";
 import StreakCount, { StreakCountProps } from "./StreakCount";
-import { VisMovementVerticalProps } from "./VisMovementVertical";
+import VisMovementVertical, { VisMovementVerticalProps } from "./VisMovementVertical";
 import SwipeUpTab, { stopPropagation } from "./SwipeUpTab";
 import Calendar from "./Calendar";
 import mockAppState from "../mockState";
 import { DateTime } from "luxon";
 import { motion } from "framer-motion";
+import { Scale } from "../generated-types";
 
 export type OverlayLayoutProps = VisMovementLateralProps & VisMovementVerticalProps & WinCountProps & StreakCountProps & {
   setNewDate: Function,
   currentDate: DateTime
 };
+
+const sampleOrbits = [
+  { orbitName: "Mercury", orbitScale: Scale.Astro },
+  { orbitName: "Venus", orbitScale: Scale.Astro },
+  { orbitName: "Earth", orbitScale: Scale.Astro },
+  { orbitName: "Mars", orbitScale: Scale.Astro },
+  { orbitName: "Jupiter", orbitScale: Scale.Astro },
+  { orbitName: "Saturn", orbitScale: Scale.Astro },
+  { orbitName: "Uranus", orbitScale: Scale.Astro },
+  { orbitName: "Neptune", orbitScale: Scale.Astro },
+]
 
 const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   currentStreak,
@@ -38,11 +50,12 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   return (
     <section className="overlay-layout-container">
       <SwipeUpTab verticalOffset={calendarHeightWithPadding}>
-        {({ bindDrag, y }) => (
+        {({ bindDrag }) => (
           <>
             <div className="overlay-controls-container">
               <motion.span>
                 <VisMovementLateral orbits={orbits}></VisMovementLateral>
+                <VisMovementVertical orbitDescendants={sampleOrbits}></VisMovementVertical>
               </motion.span>
               {/* <VisMovementLateral></VisMovementLateral> */}
               <div className="overlay-win-streak-container" onPointerDownCapture={stopPropagation}>

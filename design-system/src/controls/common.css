@@ -193,32 +193,72 @@ div.handle span {
   justify-self: end;
 }
 
+.vis-move-lateral-container, .vis-move-vertical-container {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  @apply flex gap-2 bg-menu-bg rounded-2xl p-1;
+}
+
 .vis-move-lateral-container {
-  @apply flex gap-2 bg-secondary rounded-full p-1;
   overflow-y: hidden;
+  position: relative;
+  @apply top-64;
+}
+
+.vis-move-vertical-container {
+  overflow-x: hidden;
+  @apply left-0 relative h-64 justify-center text-center;
+  left: 0px;
+  bottom: 3rem;
+  width: 2.5rem;
+}
+.intersecting-planet {
+  font-size: 24px;
+  margin: 20px 0;
+  transition: transform 0.3s ease-in;
+}
+
+.intersecting-planet.selected {
+  transform: scale(1.4);
+}
+
+.center-marker {
+  position: relative;
+  left: 0;
+  top: -11rem; /* Height of column plus padding */
+  z-index: 50;
+  width: 3rem;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+.intersecting-planet-column {
+  @apply flex flex-col gap-8 relative;
+  flex-wrap: nowrap;
+  padding: 0;
+  padding-top: calc(5rem + 16px); 
 }
 
 .intersecting-pill-row {
-  @apply flex gap-4;
+  @apply flex gap-6;
   padding: 0 calc(50% - 2.5rem);
 }
 
 .vis-move-lateral-intersector {
   position: absolute;
   top: 0px;
-  left: calc(50% - 4rem);
+  left: calc(-50%);
   height: 100%;
   width: 1px;
-  background-color: transparent;
+  background-color: red;
 }
 
-.vis-move-lateral-container::-webkit-scrollbar {
+.vis-move-lateral-container::-webkit-scrollbar,
+.vis-move-vertical-container::-webkit-scrollbar {
     display: none;
 }
-.vis-move-vertical-container {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
+
 
 .add-node-button {
   border-radius: 100%;

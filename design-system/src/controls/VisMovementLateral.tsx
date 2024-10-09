@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import "./common.css";
 import { Scale } from "..//generated-types";
@@ -10,98 +10,125 @@ export interface VisMovementLateralProps {
 
 const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbits }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const observerRef = useRef<HTMLDivElement>(null);
   const [selectedOrbit, setSelectedOrbit] = useState<string | null>(null);
-  const lastScrollPosition = useRef(0);
+  const isAnimating = useRef(false);
+  const lastExecutionTime = useRef(0);
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // Throttle function
+  const throttle = (func: Function, limit: number) => {
+    return (...args: any[]) => {
+      const now = Date.now();
+      if (now - lastExecutionTime.current >= limit) {
+        func(...args);
+        lastExecutionTime.current = now;
+      }
+    };
+  };
+
+  const snapToCenter = useCallback((orbitId: string) => {
+    const container = containerRef.current;
+    const pill = container?.querySelector(`#${orbitId}`);
+
+    if (!container || !pill) return;
+
+    const containerWidth = container.offsetWidth;
+    const pillWidth = (pill as HTMLElement).offsetWidth;
+    const pillLeft = (pill as HTMLElement).offsetLeft;
+    const targetScrollLeft = pillLeft - (containerWidth - pillWidth) / 2;
+
+    isAnimating.current = true;
+    container.scrollTo({
+      left: targetScrollLeft,
+      behavior: 'smooth'
+    });
+
+    setTimeout(() => {
+      isAnimating.current = false;
+    }, 50);
+  }, []);
+
+  const getMostCenteredPill = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return null;
+
+    const containerRect = container.getBoundingClientRect();
+    const containerCenter = containerRect.left + containerRect.width / 2;
+
+    let closestPill: Element | null = null;
+    let minDistance = Infinity;
+
+    container.querySelectorAll('.intersecting-pill').forEach((pill) => {
+      const pillRect = pill.getBoundingClientRect();
+      const pillCenter = pillRect.left + pillRect.width / 2;
+      const distance = Math.abs(pillCenter - containerCenter);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestPill = pill;
+      }
+    });
+
+    return (closestPill as any)?.id || null;
+  }, []);
+
+  const handleScroll = useCallback(throttle(() => {
+    if (isAnimating.current) return;
+
+    if (scrollTimeout.current) {
+      clearTimeout(scrollTimeout.current);
+    }
+
+    scrollTimeout.current = setTimeout(() => {
+      const mostCenteredPillId = getMostCenteredPill();
+      if (mostCenteredPillId && mostCenteredPillId !== selectedOrbit) {
+        setSelectedOrbit(mostCenteredPillId);
+        snapToCenter(mostCenteredPillId);
+      }
+    }, 200);
+  }, 1000), [selectedOrbit, snapToCenter, getMostCenteredPill]); 
 
   useEffect(() => {
     const container = containerRef.current;
-    const observer = observerRef.current;
-    if (!container || !observer) return;
+    if (!container) return;
 
-    console.log("Setting up Intersection Observer");
-
-    const options = {
-      root: container,
-      rootMargin: "0px -49% 0px -49%", // Observe only the center 2%
-      threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-    };
-
-    const intersectionObserver = new IntersectionObserver((entries) => {
-      const scrollPosition = container.scrollLeft;
-      const scrollingRight = scrollPosition > lastScrollPosition.current;
-      lastScrollPosition.current = scrollPosition;
-
-      let maxRatio = 0;
-      let maxRatioOrbit: string | null = null;
-
-      entries.forEach((entry) => {
-        console.log(`Intersection: ${entry.target.id}, isIntersecting: ${entry.isIntersecting}, ratio: ${entry.intersectionRatio}`);
-        if (entry.intersectionRatio > maxRatio) {
-          maxRatio = entry.intersectionRatio;
-          maxRatioOrbit = entry.target.id;
-        }
-      });
-
-      if (maxRatioOrbit && maxRatio > 0.5) {
-        console.log(`Setting selected orbit to: ${maxRatioOrbit}`);
-        setSelectedOrbit(maxRatioOrbit);
-      }
-    }, options);
-
-    const pillElements = container.querySelectorAll(".intersecting-pill");
-    console.log(`Found ${pillElements.length} pill elements`);
-    pillElements.forEach((pill) => {
-      console.log(`Observing pill: ${pill.id}`);
-      intersectionObserver.observe(pill);
-    });
-
-    const handleScroll = () => {
-      console.log("Scroll event detected");
-    };
-
-    container.addEventListener("scroll", handleScroll);
+    container.addEventListener('scroll', handleScroll);
 
     return () => {
-      console.log("Cleaning up");
-      intersectionObserver.disconnect();
-      container.removeEventListener("scroll", handleScroll);
+      container.removeEventListener('scroll', handleScroll);
     };
-  }, [orbits]);
+  }, [handleScroll]);
 
   useEffect(() => {
     if (containerRef.current && orbits.length > 0) {
       const firstPill = containerRef.current.querySelector(".intersecting-pill");
       if (firstPill) {
-        setSelectedOrbit(orbits[0].orbitName);
+        const firstOrbitId = `pill-${orbits[0].orbitName.split(' ').join('-')}`;
+        setSelectedOrbit(firstOrbitId);
+        snapToCenter(firstOrbitId);
       }
     }
-  }, [orbits]);
-
-
-  console.log('selectedOrbit :>> ', selectedOrbit);
+  }, [orbits, snapToCenter]);
 
   return (
     <div ref={containerRef} className="vis-move-lateral-container">
       <div className="intersecting-pill-row">
         {orbits.map((orbit, idx) => (
-          <span id={orbit.orbitName} className="intersecting-pill">
+          <span 
+            key={`${idx + orbit.orbitName}`} 
+            id={`pill-${orbit.orbitName.split(' ').join('-')}`} 
+            className="intersecting-pill"
+          >
             <OrbitPill
-              key={`${idx + orbit.orbitName}`}
               name={orbit.orbitName}
               scale={orbit.orbitScale}
-              selected={selectedOrbit === orbit.orbitName}
+              selected={selectedOrbit === `pill-${orbit.orbitName.split(' ').join('-')}`}
             />
           </span>
         ))}
-      <div
-        ref={observerRef}
-        className="vis-move-lateral-intersector"
-      />
       </div>
     </div>
   );
 };
-
 
 export default VisMovementLateral;
