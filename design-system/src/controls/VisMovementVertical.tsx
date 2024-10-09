@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Scale } from "../generated-types";
 import "./common.css";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 
 export interface VisMovementVerticalProps {
   orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }>;
@@ -8,10 +9,32 @@ export interface VisMovementVerticalProps {
 
 const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescendants: orbits }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const columnRef = useRef<HTMLDivElement>(null);
   const [selectedOrbit, setSelectedOrbit] = useState<string | null>(null);
   const isAnimating = useRef(false);
   const lastExecutionTime = useRef(0);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // const { scrollY } = useScroll({
+  //   container: columnRef
+  // });
+  // const negativeScrollY = useTransform(
+  //   scrollY,
+  //   [0, orbits.length * 40], // Assuming each planet takes about 40px of height
+  //   [0, -(orbits.length * 40)]
+  // );
+
+  // const springPhysics = {
+  //   damping: 100,
+  //   mass: 0.05,
+  //   stiffness: 100,
+  //   bounce: 20,
+  //   duration: 0.1,
+  //   velocity: 50,
+  // };
+
+  // const springNegativeScrollY = useSpring(negativeScrollY, springPhysics);
+
 
   const throttle = (func: Function, limit: number) => {
     return (...args: any[]) => {
@@ -35,6 +58,7 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
     const targetScrollTop = planetTop - (containerHeight - planetHeight) / 2;
 
     isAnimating.current = true;
+
     container.scrollTo({
       top: targetScrollTop,
       behavior: 'smooth'
@@ -44,28 +68,28 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
       isAnimating.current = false;
     }, 50);
   }, []);
-  
+
   const getMostCenteredPlanet = useCallback(() => {
     const container = containerRef.current;
     if (!container) return null;
-  
+
     const containerRect = container.getBoundingClientRect();
     const markerY = containerRect.top + containerRect.height / 2;
-  
+
     let closestPlanet: Element | null = null;
     let minDistance = Infinity;
-  
+
     container.querySelectorAll('.intersecting-planet').forEach((planet) => {
       const planetRect = planet.getBoundingClientRect();
       const planetCenter = planetRect.top + planetRect.height / 2;
       const distance = Math.abs(planetCenter - markerY);
-  
+
       if (distance < minDistance) {
         minDistance = distance;
         closestPlanet = planet;
       }
     });
-  
+
     return (closestPlanet as any)?.id || null;
   }, []);
 
@@ -79,12 +103,12 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
     scrollTimeout.current = setTimeout(() => {
       const mostCenteredPlanetId = getMostCenteredPlanet();
       if (mostCenteredPlanetId && mostCenteredPlanetId !== selectedOrbit) {
-        console.log("Setting y axis planet to: ", mostCenteredPlanetId)
+        console.log("Setting y axis planet to: ", mostCenteredPlanetId);
         setSelectedOrbit(mostCenteredPlanetId);
         snapToCenter(mostCenteredPlanetId);
       }
-    }, 200);
-  }, 1000), [selectedOrbit, snapToCenter, getMostCenteredPlanet]);
+    }, 100);
+  }, 200), [selectedOrbit, snapToCenter, getMostCenteredPlanet]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -116,22 +140,24 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
 
   return (
     <div ref={containerRef} className="vis-move-vertical-container">
-      <div className="intersecting-planet-column">
+
+      <motion.div
+        ref={columnRef}
+        className="intersecting-planet-column">
         {orbits.map((orbit, idx) => (
-          <span 
-            key={`${idx + orbit.orbitName}`} 
-            id={`planet-${orbit.orbitName.split(' ').join('-')}`} 
+          <span
+            key={`${idx + orbit.orbitName}`}
+            id={`planet-${orbit.orbitName.split(' ').join('-')}`}
             className={
               selectedOrbit === `planet-${orbit.orbitName.split(' ').join('-')}`
                 ? "intersecting-planet selected"
                 : "intersecting-planet"
-              }
+            }
           >
             {getIconForScale(orbit.orbitScale)}
           </span>
         ))}
-        <div className="center-marker"></div>
-      </div>
+      </motion.div>
     </div>
   );
 };

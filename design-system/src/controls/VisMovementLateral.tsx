@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./common.css";
 import { Scale } from "..//generated-types";
 import OrbitPill from "./OrbitPill";
+import { useScroll, useSpring, useTransform } from "framer-motion";
 
 export interface VisMovementLateralProps {
   orbits: Array<{ orbitName: string, orbitScale: Scale, handleOrbitSelect: () => void }>;

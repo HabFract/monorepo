@@ -56,6 +56,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
               <motion.span>
                 <VisMovementLateral orbits={orbits}></VisMovementLateral>
                 <VisMovementVertical orbitDescendants={sampleOrbits}></VisMovementVertical>
+                <div className="center-marker"></div>
               </motion.span>
               {/* <VisMovementLateral></VisMovementLateral> */}
               <div className="overlay-win-streak-container" onPointerDownCapture={stopPropagation}>
@@ -74,6 +75,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
           </>
         )}
       </SwipeUpTab>
+
     </section>
   );
 };
