@@ -32,7 +32,6 @@ const StreakCount: React.FC<StreakCountProps> = ({
   }
   const frequencyParts = getFrequencyText(orbitFrequency).split('-');
 
-  console.log('getFrequency', getFrequencyText(orbitFrequency).split('-').slice(0, 2));
   return (
     <div className="streak-count-container">
       <div className="title">

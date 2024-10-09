@@ -3,7 +3,10 @@ import { appStateAtom } from "./store";
 import { SphereDetails, SphereHashes } from "./types/sphere";
 import { nodeCache } from "./jotaiKeyValueStore";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { getCurrentSphereOrbitNodeDetailsFromEh } from "./orbit";
+import {
+  getCurrentSphereOrbitNodeDetailsFromEh,
+  getOrbitNodeDetailsFromEhAtom,
+} from "./orbit";
 
 /**
  * Read-write atom for the current sphere's hashes
@@ -40,11 +43,28 @@ export const currentSphereHashesAtom = atom(
  * Derived atom for the current sphere details
  * @returns {SphereDetails | null} The current sphere object or null if no sphere is selected
  */
-export const currentSphereAtom = atom<SphereDetails | null>((get) => {
+export const currentSphereDetailsAtom = atom<SphereDetails | null>((get) => {
   const state = get(appStateAtom);
   const currentSphereHash = state.spheres.currentSphereHash;
   return state.spheres.byHash[currentSphereHash]?.details || null;
 });
+
+//TODO: rewrite tests for following
+/**
+ * Derived atom to get a Sphere's id from it's eH
+ * @returns {ActionHashB64 | null} The sphere's id or null if no sphere is present in app state
+ */
+export const getSphereIdFromEhAtom = (sphereEh: EntryHashB64) =>
+  atom<ActionHashB64 | null>((get) => {
+    const state = get(appStateAtom);
+    const sphere = Object.entries(state.spheres.byHash).find(
+      ([_id, sphereDetails]) => sphereDetails.details.entryHash == sphereEh
+    );
+
+    if (!sphere) return null;
+
+    return sphere[0] || null;
+  });
 
 //TODO: rewrite tests for following
 /**
@@ -73,19 +93,18 @@ export const sphereHasCachedNodesAtom = (sphereId: ActionHashB64) =>
     if (!selectedSphere) return false;
     const rootOrbitHashes = selectedSphere.hierarchyRootOrbitEntryHashes;
     if (!rootOrbitHashes || rootOrbitHashes.length == 0) return null;
-
     const sphereNodeDetailsCache = get(nodeCache.item(sphereId));
     if (!sphereNodeDetailsCache) return false;
-
     // This now strictly checks that we have both an entry in the store (hashes, used for indexing) and an indexDB cache entry for each node.
-    // It makes no assurances about staleness of the data
+    // It makes no assurances about staleness of the data or otherwise
+
     return rootOrbitHashes.every((hash) => {
       const hierarchy = state.hierarchies.byRootOrbitEntryHash[hash];
       return (
         hierarchy &&
         hierarchy.nodeHashes.every((nodeEh: EntryHashB64) => {
-          const cacheItem = get(getCurrentSphereOrbitNodeDetailsFromEh(nodeEh));
-          return !!cacheItem; //&& state.orbitNodes.byHash[cacheItem.id] &&
+          const cacheItem = get(getOrbitNodeDetailsFromEhAtom(nodeEh));
+          return !!cacheItem;
         })
       );
     });

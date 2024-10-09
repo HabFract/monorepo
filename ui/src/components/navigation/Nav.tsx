@@ -140,22 +140,24 @@ const Nav: React.FC<INav> = ({
           } else {
             const checkCachedOrbits = store.get(sphereHasCachedNodesAtom(e.key));
             if (checkCachedOrbits) {
-              setSideNavExpanded(false);
               store.set(currentSphereHashesAtom, {
                 entryHash: sphere(e.key)?.eH,
                 actionHash: e.key,
               });
+              setSideNavExpanded(false);
             }
-            const transitionParams = !checkCachedOrbits
-              ? {
-                landingSphereEh: sphere(e.key)?.eH,
-                landingSphereId: sphere(e.key)?.id,
-              }
-              : {
-                currentSphereEhB64: sphere(e.key)?.eH,
-                currentSphereAhB64: e.key,
-              };
-            transition(!checkCachedOrbits ? "PreloadAndCache" : "Vis", transitionParams);
+            if (!checkCachedOrbits) {
+              showToast(
+                "Select a Sphere with Orbits to enable Visualisation for that Sphere",
+                100000,
+              );
+              return;
+            }
+            const transitionParams = {
+              currentSphereEhB64: sphere(e.key)?.eH,
+              currentSphereAhB64: e.key,
+            };
+            transition("Vis", transitionParams);
           }
         } else if ([Page.ListSpheres].includes(currentPage as Page)) {
           if (!(e.key == store.get(currentSphereHashesAtom).actionHash)) {

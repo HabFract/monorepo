@@ -3,9 +3,9 @@ import { EntryHashB64, ActionHashB64 } from "@holochain/client";
 import { hierarchy } from "d3-hierarchy";
 import { OrbitHierarchyQueryParams, GetOrbitHierarchyDocument } from "../../graphql/generated";
 import { client } from "../../graphql/client";
-import { SphereOrbitNodeDetails, newTraversalLevelIndexId, store, currentSphereHierarchyIndices } from "../../state";
+import { SphereOrbitNodeDetails, store, currentSphereHierarchyIndices } from "../../state";
 import { TreeVisualization } from "./base-classes/TreeVis";
-import { byStartTime, parseAndSortTrees, determineNewLevelIndex } from "./helpers";
+import { byStartTime, parseAndSortTrees } from "./helpers";
 import { VisCoverage, VisType } from "./types";
 
 /**
@@ -27,15 +27,21 @@ export const determineVisCoverage = (params, y) =>
  * @param params - The current parameters
  * @returns The query parameters for fetching orbit hierarchy
  */
-export const generateQueryParams = (visCoverage, params) => (customDepth?: number): OrbitHierarchyQueryParams =>
-  visCoverage == VisCoverage.CompleteOrbit
+export const generateQueryParams = (visCoverage, params) => (customDepth?: number): OrbitHierarchyQueryParams | null => {
+  if (!(params?.orbitEh || params?.currentSphereEhB64)) {
+    console.error("Invalid routing params for this page to generate a visualization")
+    return null
+  };
+
+  return visCoverage == VisCoverage.CompleteOrbit
     ? { orbitEntryHashB64: params.orbitEh }
     : {
       levelQuery: {
         sphereHashB64: params?.currentSphereEhB64,
         orbitLevel: customDepth || 0,
       },
-    };
+    }
+};
 
 /**
  * Parses and derives JSON data based on the current visual coverage

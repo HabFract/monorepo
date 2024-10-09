@@ -21,7 +21,7 @@ export interface AppState {
   };
   orbitNodes: {
     currentOrbitHash: ActionHashB64 | null;
-    byHash: SphereOrbitNodes;
+    byHash: SphereOrbitNodes; // The sphere part here is not relevant but we use the shared type for now
   };
   wins: WinState;
   ui: {

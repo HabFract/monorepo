@@ -7,9 +7,9 @@ import mockAppState from './mocks/mockAppState';
 import { TestProvider } from '../utils-frontend';
 import { appStateAtom } from '../../ui/src/state/store';
 import { Frequency } from '../../ui/src/state/types/orbit';
-import { currentSphereAtom, currentSphereHasCachedNodesAtom, currentSphereHashesAtom, sphereHasCachedNodesAtom } from '../../ui/src/state/sphere';
+import { currentSphereDetailsAtom, currentSphereHasCachedNodesAtom, currentSphereHashesAtom, sphereHasCachedNodesAtom } from '../../ui/src/state/sphere';
 import {
-  currentOrbitDetailsAtom, currentOrbitIdAtom, currentSphereOrbitNodesAtom, getOrbitAtom, setOrbitWithEntryHashAtom, getOrbitFrequency,
+  currentOrbitDetailsAtom, currentOrbitIdAtom, currentSphereOrbitNodesAtom, getOrbitNodeDetailsFromIdAtom, setOrbitWithEntryHashAtom, getOrbitFrequency,
   orbitWinDataAtom, calculateStreakAtom,
   setWinForOrbit
 } from '../../ui/src/state/orbit';
@@ -20,7 +20,7 @@ describe('Sphere selectors', () => {
   describe('currentSphere', () => {
     it('should return the current sphere when it exists', () => {
       const TestComponent = () => {
-        const [currentSphere] = useAtom(currentSphereAtom);
+        const [currentSphere] = useAtom(currentSphereDetailsAtom);
         return <div>{JSON.stringify(currentSphere)}</div>;
       };
 
@@ -43,7 +43,7 @@ describe('Sphere selectors', () => {
       };
 
       const TestComponent = () => {
-        const [currentSphere] = useAtom(currentSphereAtom);
+        const [currentSphere] = useAtom(currentSphereDetailsAtom);
         return <div data-testid="container">{JSON.stringify(currentSphere)}</div>;
       };
 
@@ -348,9 +348,9 @@ describe('Orbit selectors', () => {
     });
   });
 
-  describe('getOrbitAtom', () => {
+  describe('getOrbitNodeDetailsFromIdAtom', () => {
     const TestComponent = ({ orbitId }: { orbitId: string }) => {
-      const orbitAtom = useMemo(() => getOrbitAtom(orbitId), [orbitId]);
+      const orbitAtom = useMemo(() => getOrbitNodeDetailsFromIdAtom(orbitId), [orbitId]);
       const [orbitDetails] = useAtom(orbitAtom);
       return <div data-testid="orbitDetails">{JSON.stringify(orbitDetails)}</div>;
     };
@@ -389,7 +389,7 @@ describe('Orbit selectors', () => {
 
       const TestComponentWithOrbitChange = () => {
         const [appState, setAppState] = useAtom(appStateAtom);
-        const orbitAtom = useMemo(() => getOrbitAtom(testOrbitId), [testOrbitId]);
+        const orbitAtom = useMemo(() => getOrbitNodeDetailsFromIdAtom(testOrbitId), [testOrbitId]);
         const [orbitDetails] = useAtom(orbitAtom);
 
         const changeOrbitName = () => {
@@ -448,7 +448,7 @@ describe('Orbit selectors', () => {
 
     const TestComponent = () => {
       const [, setOrbitAtom] = useAtom(setOrbitWithEntryHashAtom);
-      const orbitAtom = useMemo(() => getOrbitAtom(testOrbitActionHash), [testOrbitActionHash]);
+      const orbitAtom = useMemo(() => getOrbitNodeDetailsFromIdAtom(testOrbitActionHash), [testOrbitActionHash]);
       const [orbitDetails] = useAtom(orbitAtom);
 
       const updateOrbit = () => {
@@ -489,7 +489,7 @@ describe('Orbit selectors', () => {
     it('should not update orbit details when the orbit is not found', async () => {
       const TestComponentWithNonExistentOrbit = () => {
         const [, setOrbitAtom] = useAtom(setOrbitWithEntryHashAtom);
-        const orbitAtom = useMemo(() => getOrbitAtom(testOrbitActionHash), [testOrbitActionHash]);
+        const orbitAtom = useMemo(() => getOrbitNodeDetailsFromIdAtom(testOrbitActionHash), [testOrbitActionHash]);
         const [orbitDetails] = useAtom(orbitAtom);
 
         const updateOrbit = () => {

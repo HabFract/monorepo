@@ -8,6 +8,9 @@ import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { appStateAtom } from "./store";
 import { OrbitNodeDetails, RootOrbitEntryHash } from "./types/orbit";
 import { Hierarchy } from "./types/hierarchy";
+import { nodeCache } from "./jotaiKeyValueStore";
+import { SphereOrbitNodeDetails } from "./types";
+import { getSphereIdFromEhAtom } from "./sphere";
 
 /**
  * Calculates the overall completion status for a specific orbit
@@ -43,7 +46,7 @@ export const getHierarchyAtom = (rootOrbitEntryHash: RootOrbitEntryHash) => {
   });
   return selectHierarchy;
 };
-
+//TODO: update tests
 /**
  * Gets all orbits for a given hierarchy
  * @param rootOrbitEntryHash The EntryHash of the root orbit
@@ -52,13 +55,21 @@ export const getHierarchyAtom = (rootOrbitEntryHash: RootOrbitEntryHash) => {
 export const getHierarchyOrbitsAtom = (
   rootOrbitEntryHash: RootOrbitEntryHash
 ) => {
-  const selectOrbits = atom<OrbitNodeDetails[]>((get) => {
+  const selectOrbits = atom<OrbitNodeDetails[] | null>((get) => {
     const state = get(appStateAtom);
     const hierarchy =
       state.hierarchies.byRootOrbitEntryHash[rootOrbitEntryHash];
-    if (!hierarchy) return [];
+    const sphereEh = state.orbitNodes.byHash[rootOrbitEntryHash].sphereHash;
+    const sphereId = get(getSphereIdFromEhAtom(sphereEh));
 
-    return hierarchy.nodeHashes.map((hash) => state.orbitNodes.byHash[hash]);
+    if (!hierarchy || typeof sphereId !== "string") return null;
+
+    const sphereNodeDetailsCache = get(nodeCache.item(sphereId)) as
+      | SphereOrbitNodeDetails
+      | undefined;
+    if (!sphereNodeDetailsCache || typeof sphereNodeDetailsCache !== "object")
+      return null;
+    return Object.values(sphereNodeDetailsCache);
   });
   return selectOrbits;
 };

@@ -1,4 +1,8 @@
 import {
+  AllSphereOrbitNodeDetails,
+  SphereOrbitNodeDetails,
+} from "./../state/types/sphere";
+import {
   TWO_CHILDREN_LEFT_XS,
   THREE_CHILDREN_LEFT_XS,
   TWO_CHILDREN_RIGHT_XS,
@@ -52,7 +56,8 @@ import {
   TWO_CHILDREN_RIGHT,
 } from "../components/vis/links/paths";
 import { byStartTime, isSmallScreen } from "../components/vis/helpers";
-import { SphereOrbitNodeDetails, SphereOrbitNodes } from "../state/types/sphere";
+import { SphereOrbitNodes } from "../state/types/sphere";
+import { OrbitNodeDetails } from "../state";
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
   params: OrbitHierarchyQueryParams;
@@ -85,9 +90,10 @@ export const useDeriveAndCacheHierarchyPaths = ({
   const sphereNodes = store.get(
     currentSphereOrbitNodesAtom
   ) as SphereOrbitNodes;
-
+  console.log("currentSphereId :>> ", currentSphereId);
   const { data, loading, error } = useGetOrbitHierarchyQuery({
-    variables: { params }, skip: bypassFetch,
+    variables: { params },
+    skip: bypassFetch,
   });
 
   const [hierarchyObject, setHierarchyObject] =
@@ -109,11 +115,15 @@ export const useDeriveAndCacheHierarchyPaths = ({
 
   function cacheOrbitPaths(d3Hierarchy: object): boolean {
     let cached = false;
-    let workingSphereNodes: SphereOrbitNodes = { ...sphereNodes };
+    let workingSphereNodes = {
+      ...sphereNodes,
+    } as SphereOrbitNodeDetails;
     try {
       if (!currentSphereId || currentSphereId == "")
         throw new Error("Cannot cache paths without a currentSphere id");
-      const existingCache = store.get(nodeCache.items) as SphereOrbitNodeDetails;
+      const existingCache = store.get(
+        nodeCache.items
+      ) as AllSphereOrbitNodeDetails;
       if (!existingCache[currentSphereId])
         throw new Error("No existing cache for this currentSphere id");
 
@@ -125,14 +135,9 @@ export const useDeriveAndCacheHierarchyPaths = ({
             getPath(node)
           )
         );
-      //@ts-ignore
       existingCache[currentSphereId] = workingSphereNodes;
       store.set(nodeCache.setMany, Object.entries(existingCache));
       cached = true;
-      // console.log(
-      //   "Object.entries(existingCache) :>> ",
-      //   Object.entries(existingCache)
-      // );
     } catch (error) {
       console.error("Error caching hierarch paths:" + error);
     }
@@ -140,7 +145,7 @@ export const useDeriveAndCacheHierarchyPaths = ({
 
     function cachePath(id: string, path: string | null) {
       if (typeof id != "string" || path == null) return;
-      const cacheNodeItem = { ...sphereNodes[id] };
+      const cacheNodeItem = { ...sphereNodes[id] } as OrbitNodeDetails;
       cacheNodeItem.path = path;
       workingSphereNodes[id] = cacheNodeItem;
     }

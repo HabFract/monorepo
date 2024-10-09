@@ -17,7 +17,7 @@ import { extractEdges } from "../../graphql/utils";
 import { useCreateOrbitMutation } from "../../hooks/gql/useCreateOrbitMutation";
 import { ActionHashB64 } from "@holochain/client";
 import { useStateTransition } from "../../hooks/useStateTransition";
-import { currentOrbitIdAtom, getOrbitAtom } from "../../state/orbit";
+import { currentOrbitIdAtom, getOrbitNodeDetailsFromEhAtom, getOrbitNodeDetailsFromIdAtom } from "../../state/orbit";
 
 import { AppState } from "../../routes";
 import { store } from "../../state/jotaiKeyValueStore";
@@ -72,7 +72,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
   inModal = false,
   orbitToEditId,
   sphereEh,
-  forwardTo,
   parentOrbitEh,
   childOrbitEh,
   onCreateSuccess,
@@ -81,7 +80,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
 }: CreateOrbitProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   const selectedSphere = store.get(currentSphereHashesAtom);
-  const { x, y } = store.get(currentSphereHierarchyIndices);
+  const { _x, y } = store.get(currentSphereHierarchyIndices);
   const inOnboarding = state.match("Onboarding");
   // Used to dictate onward routing
   const originPage: AppState = inOnboarding
@@ -135,9 +134,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
   const orbitEdges = extractEdges((orbits as any)?.orbits) as Orbit[];
 
   const parentNodeAtom = useMemo(
-    () => getOrbitAtom(currentOrbitValues.parentHash || ""),
+    () => { if (!currentOrbitValues.parentHash) return; return store.get(getOrbitNodeDetailsFromEhAtom(currentOrbitValues.parentHash)) },
     [currentOrbitValues.parentHash],
   );
+
   const parentNodeDetails =
     !(editMode && state.match("Onboarding")) &&
     currentOrbitValues.parentHash !== null &&

@@ -15,6 +15,7 @@ import { TreeVisualization } from "./base-classes/TreeVis";
 import { byStartTime, determineNewLevelIndex, parseAndSortTrees } from "./helpers";
 import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, checkHierarchyCached, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state";
+import { AppMachine } from "../../main";
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   selectedSphere: sphere,
@@ -25,8 +26,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 }) => {
   // ## -- Router level state -- ##
   const [_state, transition, params] = useStateTransition();
-
-
+  console.log('sphere :>> ', sphere);
+  // console.log('_state, AppMachine.state.current :>> ', _state, AppMachine.state.current);
   // ## -- Component level state -- ##
   const [json, setJson] = useState<string | null>(null);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<TreeVisualization | null>(null);
@@ -39,6 +40,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     fetchPolicy: "cache-and-network",
   });
   const { data: dataLevel } = useGetLowestSphereHierarchyLevelQuery({
+    skip: !sphere?.entryHash,
     variables: { sphereEntryHashB64: sphere.entryHash as string },
   });
 
@@ -155,7 +157,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     params: getQueryParams(dataLevel?.getLowestSphereHierarchyLevel || 0),
     currentSphereId: sphere.actionHash as string,
     bypassFetch: usedCachedHierarchy,
-    bypassEntirely: !hasCachedNodes,
+    bypassEntirely: !sphere.entryHash || !hasCachedNodes,
   });
 
 

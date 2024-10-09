@@ -57,7 +57,7 @@ export namespace Frequency {
 export interface OrbitHashes {
   id: ActionHashB64;
   eH: EntryHashB64;
-  sphereHash: ActionHashB64;
+  sphereHash: EntryHashB64;
   childEh?: EntryHashB64;
   parentEh?: EntryHashB64;
 }
@@ -69,7 +69,7 @@ export interface OrbitDetails extends OrbitHashes {
   name: string;
   scale: Scale;
   frequency: Frequency.Rationals;
-  sphereHash: ActionHashB64;
+  sphereHash: EntryHashB64;
   startTime?: number;
   endTime?: number;
   description?: string;

@@ -4,7 +4,7 @@ import { mockedCacheEntries } from "./integration/mocks/mockNodeCache";
 import mockAppState from "./integration/mocks/mockAppState";
 
 import {
-  currentSphereAtom,
+  currentSphereDetailsAtom,
   currentSphereHasCachedNodesAtom,
   currentSphereHashesAtom,
 } from "../ui/src/state/sphere";
@@ -31,7 +31,7 @@ const storeMock = {
         entryHash: currentSphere.details.entryHash,
         actionHash: currentSphereHash,
       },
-      [currentSphereAtom.toString()]: currentSphere,
+      [currentSphereDetailsAtom.toString()]: currentSphere,
       [currentSphereHasCachedNodesAtom.toString()]: true,
       [currentSphereHierarchyBounds.toString()]: currentHierarchy.bounds,
       [currentSphereHierarchyIndices.toString()]: currentHierarchy.indices,

@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { withVisCanvas } from "../HOC/withVisCanvas";
 import { BASE_SCALE, FOCUS_MODE_SCALE } from "./constants";
 import { store } from "../../state/jotaiKeyValueStore";
-import { getOrbitStartTimeFromEh } from "../../state/orbit";
+import { getCurrentOrbitStartTimeFromEh } from "../../state/orbit";
 import { newTraversalLevelIndexId, NodeContent, OrbitNodeDetails } from "../../state";
 import { HierarchyNode } from "d3-hierarchy";
 import { Scale } from "../..//graphql/generated";
@@ -28,7 +28,7 @@ export function byStartTime(
   a: HierarchyNode<NodeContent> | NodeContent, // d3 node - has gone through the hierarchy function already || an element of an array of trees from the source chain
   b: HierarchyNode<NodeContent> | NodeContent,
 ) {
-  const getStartTime = store.get(getOrbitStartTimeFromEh);
+  const getStartTime = store.get(getCurrentOrbitStartTimeFromEh);
 
   const getStartTimeFromNode = (node: HierarchyNode<NodeContent> | NodeContent) => {
     if ('data' in node && node.data.content) {

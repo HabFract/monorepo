@@ -67,7 +67,7 @@ import {
   newXTranslate,
   newYTranslate,
 } from "../helpers";
-import { currentOrbitIdAtom, getOrbitAtom, getOrbitIdFromEh } from "../../../state/orbit";
+import { currentOrbitIdAtom, getOrbitNodeDetailsFromIdAtom, getOrbitIdFromEh } from "../../../state/orbit";
 import { EntryHashB64 } from "@holochain/client";
 import { getHierarchyAtom } from "../../../state/hierarchy";
 import { AppMachine } from "../../../main";
@@ -144,7 +144,7 @@ export class TreeVisualization extends BaseVisualization {
       handleNodeZoom: (event: any, node: HierarchyNode<NodeContent>) => {
         if (typeof node == undefined || Number.isNaN(node.x) || Number.isNaN(node.y)) return null;
         const id = store.get(getOrbitIdFromEh(node.data.content));
-        const orbit = store.get(getOrbitAtom(id));
+        const orbit = store.get(getOrbitNodeDetailsFromIdAtom(id));
         const isRootNode = store.get(getHierarchyAtom(node.data.content)) !== null
         const zoomOffsetY = -(this._viewConfig.isSmallScreen() ? isRootNode ? 300 : 100 : 0)
 
@@ -159,7 +159,7 @@ export class TreeVisualization extends BaseVisualization {
           this.initializeZoomer()
           // this.applyInitialTransform()
         } else {
-          this.resetZoomer()
+          // this.resetZoomer()
         }
 
         return this._canvas!

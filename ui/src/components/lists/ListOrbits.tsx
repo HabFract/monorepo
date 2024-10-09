@@ -11,6 +11,8 @@ import { useFetchAndCacheSphereOrbits } from "../../hooks/useFetchAndCacheSphere
 import { useSortedOrbits } from "../../hooks/useSortedOrbits";
 import { ActionHashB64 } from "@holochain/client";
 import { Spinner } from "flowbite-react";
+import { useToast } from "../../contexts/toast";
+import { currentSphereHashesAtom, sphereHasCachedNodesAtom, store } from "../../state";
 
 interface ListOrbitsProps {
   sphereAh?: ActionHashB64; // Optional prop to filter orbits by sphere
@@ -21,6 +23,7 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({
 }: ListOrbitsProps) => {
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
 
+  const { showToast, hideToast } = useToast();
   // TODO: make a modal on this list page, which is triggered before the following hook. This might be a repeated functionality on different pages so much be better to make a HOC.
   const [
     runDelete,
@@ -47,6 +50,8 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({
           isHeader={true}
           transition={transition}
           orbitScales={data.orbits.map((orbit: Orbit) => orbit?.scale)}
+          showToast={showToast}
+          hasCachedNodes={store.get(sphereHasCachedNodesAtom(data?.sphere.id))}
         />
       )}
       <ListSortFilter label={""} />

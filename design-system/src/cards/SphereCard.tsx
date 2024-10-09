@@ -4,8 +4,6 @@ import { OrderedListOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { SphereVis } from "../vis";
 import { Scale, Sphere } from "../generated-types";
 import { Button, Dropdown } from "flowbite-react";
-import { currentSphereHashesAtom } from "@ui/src/state";
-import { store } from "@ui/src/state";
 import TreeVisIcon from "@ui/src/components/icons/TreeVisIcon";
 import Exclaim from "@ui/src/components/icons/Exclaim";
 import { HelperText } from "../copy";
@@ -16,6 +14,9 @@ export type SphereCardProps = {
   orbitScales: Scale[];
   transition?: (newState: string, params?: object) => void;
   runDelete?: () => void;
+  setSphereIsCurrent?: () => void;
+  showToast?: (message: string, duration: number) => void;
+  hasCachedNodes?: boolean
 };
 
 function calculateSpherePercentages(counts: object): any {
@@ -58,13 +59,23 @@ const SphereCard: React.FC<SphereCardProps> = ({
   orbitScales,
   transition,
   runDelete,
+  showToast,
+  setSphereIsCurrent,
+  hasCachedNodes
 }: SphereCardProps) => {
   const { name, metadata, id } = sphere;
 
   function routeToVis() {
-    transition?.("PreloadAndCache", {
-      landingSphereEh: sphere.eH,
-      landingSphereId: id,
+    if (!hasCachedNodes) {
+      showToast!(
+        "Select a Sphere with Orbits to enable Visualisation for that Sphere",
+        100000,
+      );
+      return;
+    }
+    transition?.("Vis", {
+      currentSphereEhB64: sphere.eH,
+      currentSphereAhB64: id,
     });
   }
   return (
@@ -85,19 +96,14 @@ const SphereCard: React.FC<SphereCardProps> = ({
           )}
         </div>
         <div className="card-actions">
-          <div className="sphere-actions-vis col-c w-full">
+          <div className="sphere-actions-vis col-c w-full"
+            onClick={setSphereIsCurrent}
+          >
             {!isHeader && (
               <Dropdown
                 label="Actions"
                 dismissOnClick={false}
                 className="bg-secondary p-2"
-                onClick={() => {
-                  store.set(currentSphereHashesAtom, {
-                    entryHash: sphere.eH,
-                    actionHash: id,
-                  });
-                  transition?.("ListOrbits", { sphereAh: id });
-                }}
               >
                 <Dropdown.Item
                   onClick={() => {

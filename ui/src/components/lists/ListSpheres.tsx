@@ -11,6 +11,8 @@ import PageHeader from "../header/PageHeader";
 import { SphereCard } from "habit-fract-design-system";
 import { extractEdges } from "../../graphql/utils";
 import { useStateTransition } from "../../hooks/useStateTransition";
+import { useToast } from "../../contexts/toast";
+import { currentSphereHashesAtom, sphereHasCachedNodesAtom, store } from "../../state";
 
 function ListSpheres() {
   const [
@@ -22,6 +24,7 @@ function ListSpheres() {
 
   const { loading, error, data } = useGetSpheresQuery();
 
+  const { showToast, hideToast } = useToast();
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
 
   if (loading) return <p>Loading...</p>;
@@ -44,6 +47,15 @@ function ListSpheres() {
             isHeader={false}
             orbitScales={[]}
             runDelete={() => runDelete({ variables: { id: sphere.id } })}
+            showToast={showToast}
+            setSphereIsCurrent={() => {
+              store.set(currentSphereHashesAtom, {
+                entryHash: sphere.eH,
+                actionHash: sphere.id,
+              });
+              console.log("Set new current Sphere: ", sphere.id)
+            }}
+            hasCachedNodes={store.get(sphereHasCachedNodesAtom(sphere.id))}
           />
         ))}
       </div>

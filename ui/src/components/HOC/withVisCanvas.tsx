@@ -13,7 +13,6 @@ import {
 import {
   currentOrbitDetailsAtom,
   currentOrbitIdAtom,
-  setOrbitWithEntryHashAtom,
 } from "../../state/orbit";
 import { WithVisCanvasProps } from "../vis/types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
