@@ -5,6 +5,8 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "outDir": "dist",
+    "rootDir": "../",
+    "baseUrl": "../",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "jsx": "react-jsx",
@@ -16,9 +18,16 @@
     "esm": true
   },
   "types": ["vitest/globals"],
-  "include": ["**/*.ts", "**/*.tsx", "../ui/src/**/*.ts", "../ui/src/**/*.tsx"],
+  "references": [{ "path": "../ui" }, { "path": "../design-system" }],
+  "include": ["./**/*.ts", "./**/*.tsx"],
   "exclude": [
-    "../ui/src/graphql/**/*.ts",
-    "../ui/src/graphql/generated/mocks-type-fixed"
+    "**/.pnpm",
+    "**/dist",
+    "**/node_modules",
+    "../ui/src/graphql/generated/typeDefs.js",
+    "../ui/src/graphql/generated/mocks.*",
+    "../ui/dist/**/*",
+    "../design-system/dist/**/*",
+    "./dist/**/*"
   ]
 }

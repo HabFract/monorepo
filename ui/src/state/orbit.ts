@@ -123,7 +123,6 @@ export const getOrbitNodeDetailsFromEhAtom = (orbitEh: EntryHashB64) =>
         SphereOrbitNodeDetails,
       ]) => sphereNodeDetails
     ) as SphereOrbitNodeDetails[];
-
     const foundOrbitEntry = allSphereNodeDetails?.find(
       (entry) => entry[orbitEh]
     );

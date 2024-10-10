@@ -1,3 +1,4 @@
+import { SPHERE_ID } from "./mockAppState";
 import {
   GetSpheresDocument,
   CreateSphereDocument,
@@ -9,9 +10,7 @@ import {
   aSphereEdge,
 } from "../../../ui/src/graphql/generated/mocks";
 
-export const SPHERE_ID = "SGVhbHRoMQ==e";
-
-export const SPHERES_MOCKS = [
+export const SPHERES_MOCKS: any = [
   {
     request: {
       query: GetSpheresDocument,
@@ -23,7 +22,7 @@ export const SPHERES_MOCKS = [
           edges: [
             aSphereEdge({
               node: aSphere({
-                id: "SGVhbHRoMQ==",
+                id: SPHERE_ID,
                 name: "Health and Fitness",
                 metadata: {
                   image: "abc",
@@ -109,12 +108,6 @@ export const SPHERES_MOCKS = [
     },
   },
   {
-    request: {
-      query: DeleteSphereDocument,
-      variables: {
-        id: "SGVhbHRoMQ==e",
-      },
-    },
     result: {
       data: {},
     },
