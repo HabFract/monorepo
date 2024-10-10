@@ -14,7 +14,7 @@ type Mutation {
   updateSphere(sphere: SphereUpdateParams): CreateSphereResponsePayload!
   deleteSphere(sphereHash: ID!): ID!
   createOrbit(orbit: OrbitCreateParams): CreateOrbitResponsePayload!
-  updateOrbit(orbit: OrbitUpdateParams): CreateOrbitResponsePayload!
+  updateOrbit(orbit: OrbitUpdateParams): UpdateOrbitResponsePayload!
   deleteOrbit(orbitHash: ID!): ID!
   createProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
   updateProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
@@ -43,6 +43,18 @@ type CreateSphereResponsePayload {
 }
 
 type CreateOrbitResponsePayload {
+  id: ID!
+  eH: String!
+  name: String!
+  sphereHash: String!
+  parentHash: String
+  childHash: String
+  frequency: Frequency!
+  scale: Scale!
+  metadata: OrbitMetaData
+}
+
+type UpdateOrbitResponsePayload {
   id: ID!
   eH: String!
   name: String!
