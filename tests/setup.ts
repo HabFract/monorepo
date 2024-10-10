@@ -1,9 +1,9 @@
 import "fake-indexeddb/auto";
-import { mockAppState } from "./integration/mocks/mockAppState";
+import { mockAppState, SPHERE_ID } from "./integration/mocks/mockAppState";
 import { vi } from "vitest";
 import { atom, WritableAtom } from "jotai";
-import { SPHERE_ID } from "./integration/mocks/spheres";
-import { setupJotaiKeyValueStoreMock } from "./setupNodeCache";
+import { mockStore } from "./setupMockStore";
+import { appStateAtom } from "@ui/src/state";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -29,7 +29,7 @@ let mockUseStateTransitionResponse = [
   vi.fn(() => {}),
   initialStateMachineState,
 ];
-export function setMockUseStateTransitionResponse(
+export function setMockUseStateTransitionRessetupMockStoreponse(
   route: string,
   params: typeof initialStateMachineState
 ) {
@@ -40,13 +40,21 @@ vi.mock("../ui/src/hooks/useStateTransition", () => ({
   useStateTransition: () => mockUseStateTransitionResponse,
 }));
 
-// Mock nodeCache
-setupJotaiKeyValueStoreMock();
-
-// Mock redirect hook
 vi.mock("../ui/src/hooks/useRedirect", async () => {
   return { useRedirect: () => null };
 });
+
+vi.mock("../ui/src/state/store", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    ...mockStore,
+  };
+});
+
+export function resetMocks() {
+  vi.resetAllMocks();
+}
 
 // Mock app level constants
 vi.mock("../ui/src/constants", async (importOriginal) => {

@@ -1,13 +1,12 @@
 import React from "react";
 import { Provider } from "jotai/react";
 import { useHydrateAtoms } from "jotai/utils";
-import { atom, createStore } from "jotai";
-import { AppState, appStateAtom } from "../ui/src/state/store";
-import { OrbitNodeDetails } from "../ui/src/state/types/orbit";
+import { createStore } from "jotai";
+import { appStateAtom, nodeCache } from "../ui/src/state/store";
 import mockAppState from "./integration/mocks/mockAppState";
 import { render, RenderResult } from "@testing-library/react";
-import { SphereOrbitNodes } from "../ui/src/state/types/sphere";
-import { mockedCacheEntries } from "./integration/mocks/mockNodeCache";
+import { AppState } from "../ui/src/state/types/store";
+import { createTestIndexDBAtom, mockedCacheEntries } from "./setupMockStore";
 
 export const renderWithJotai = (
   element: React.ReactElement,
@@ -18,7 +17,10 @@ export const renderWithJotai = (
 
   return render(
     <Provider store={testStore}>
-      <TestProvider initialValues={[[appStateAtom, testStore.get(appStateAtom)]]}>
+      <TestProvider initialValues={[
+        [appStateAtom, testStore.get(appStateAtom)],
+        [nodeCache.entries, testCache.entries],
+      ]}>
         {React.cloneElement(element)}
       </TestProvider>
     </Provider>
@@ -26,8 +28,12 @@ export const renderWithJotai = (
 };
 
 const HydrateAtoms = ({ initialValues, children }) => {
-  useHydrateAtoms(initialValues)
-  return children
+  const writableAtoms = initialValues.filter(([atom]) =>
+    atom && typeof atom === 'object' && 'write' in atom
+  );
+
+  useHydrateAtoms(writableAtoms);
+  return children;
 }
 
 export const TestProvider = ({ initialValues, children }) => (
@@ -41,12 +47,4 @@ export const createTestStore = (initialState: Partial<AppState> = {}) => {
   const store = createStore();
   store.set(appStateAtom, testState);
   return store;
-};
-
-export const createTestIndexDBAtom = (initialCache: SphereOrbitNodes = {}) => {
-  return {
-    entries: atom(Object.entries(initialCache)),
-    keys: atom(Object.keys(initialCache)),
-    items: atom(Object.values(initialCache)),
-  };
 };
