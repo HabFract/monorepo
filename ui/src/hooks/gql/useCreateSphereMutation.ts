@@ -11,10 +11,6 @@ export const useCreateSphereMutation = () => {
       if (data?.createSphere) {
         const newSphere = data.createSphere;
 
-        // Update Apollo cache if needed
-        // cache.modify({ ... });
-
-        // Update app state
         setAppState((prevState) => ({
           ...prevState,
           spheres: {

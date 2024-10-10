@@ -17,7 +17,7 @@ export const useUpdateOrbitMutation = (opts) => {
 
   return useUpdateOrbitMutationGenerated({
     ...opts,
-    update(_cache, { data }) {
+    update(_cache, { data }, { variables }) {
       if (!data?.updateOrbit) return;
       const updatedOrbit: UpdateOrbitResponsePayload = data.updateOrbit;
       const updatedOrbitHashes: OrbitHashes = {
@@ -36,10 +36,17 @@ export const useUpdateOrbitMutation = (opts) => {
         description: updatedOrbit.metadata!.description as string | undefined,
       };
 
-      updateNodeCache(updatedOrbitDetails);
+      // Extract the old ID from the mutation variables
+      const oldOrbitId = variables?.orbitFields?.id;
+      updateNodeCache(updatedOrbitDetails, oldOrbitId);
 
       setAppState((prevState) =>
-        updateAppStateWithOrbit(prevState, updatedOrbitDetails, false)
+        updateAppStateWithOrbit(
+          prevState,
+          updatedOrbitHashes,
+          false,
+          oldOrbitId
+        )
       );
 
       // A change to an orbit will mean a new entry hash is created, changing the tree, so we need to invalidate.
