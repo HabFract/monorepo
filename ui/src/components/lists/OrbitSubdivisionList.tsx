@@ -22,7 +22,7 @@ import { getDisplayName } from "../forms/CreateOrbit";
 import { useCreateOrbitMutation } from "../../hooks/gql/useCreateOrbitMutation";
 import { Label } from "flowbite-react";
 import { serializeAsyncActions } from "../../graphql/utils";
-import { store } from "../../state/jotaiKeyValueStore";
+import { store } from "../../state/store";
 import { Refinement } from "../forms/RefineOrbit";
 import { OrbitFetcher } from "../forms/utils";
 import { isSmallScreen } from "../vis/helpers";

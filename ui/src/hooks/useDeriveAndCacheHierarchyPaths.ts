@@ -44,7 +44,7 @@ import {
   OrbitHierarchyQueryParams,
   useGetOrbitHierarchyQuery,
 } from "../graphql/generated";
-import { nodeCache, store } from "../state/jotaiKeyValueStore";
+import { nodeCache, store } from "../state/store";
 import { currentSphereOrbitNodesAtom, getOrbitIdFromEh } from "../state/orbit";
 import { hierarchy, HierarchyNode } from "d3-hierarchy";
 import { ActionHashB64 } from "@holochain/client";

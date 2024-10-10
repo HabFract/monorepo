@@ -12,7 +12,7 @@ import { useStateTransition } from "../../hooks/useStateTransition";
 import { ActionHashB64 } from "@holochain/client";
 import DefaultSubmitBtn from "./buttons/DefaultSubmitButton";
 import { TextAreaField, TextInputField } from "habit-fract-design-system";
-import { store } from "../../state/jotaiKeyValueStore";
+import { store } from "../../state/store";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import { useCreateSphereMutation } from "../../hooks/gql/useCreateSphereMutation";
 

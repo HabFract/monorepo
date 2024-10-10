@@ -68,7 +68,7 @@ const nodeCacheMock = {
 };
 
 export const setupJotaiKeyValueStoreMock = () => {
-  vi.mock("../../ui/src/state/jotaiKeyValueStore", () => ({
+  vi.mock("../../ui/src/state/store", () => ({
     store: storeMock,
     nodeCache: nodeCacheMock,
   }));

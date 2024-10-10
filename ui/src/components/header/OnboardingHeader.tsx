@@ -1,7 +1,7 @@
 import { Button, ProgressBar } from "habit-fract-design-system";
 import { currentOrbitIdAtom } from "../../state/orbit";
 
-import { store } from "../../state/jotaiKeyValueStore";
+import { store } from "../../state/store";
 import BackCaret from "../icons/BackCaret";
 import { ForwardedRef, forwardRef, RefObject } from "react";
 import { isSmallScreen } from "../vis/helpers";
@@ -46,19 +46,19 @@ const OnboardingHeader: React.ForwardRefExoticComponent<
             stepNames={
               isSmallScreen()
                 ? [
-                    "Welcome",
-                    "Create Sphere",
-                    "Create Orbit",
-                    "Refine Orbit",
-                    "Visualize",
-                  ]
+                  "Welcome",
+                  "Create Sphere",
+                  "Create Orbit",
+                  "Refine Orbit",
+                  "Visualize",
+                ]
                 : [
-                    "Create Profile (N/A)",
-                    "Create Sphere",
-                    "Create Orbit",
-                    "Refine Orbit",
-                    "Visualize",
-                  ]
+                  "Create Profile (N/A)",
+                  "Create Sphere",
+                  "Create Orbit",
+                  "Refine Orbit",
+                  "Visualize",
+                ]
             }
             currentStep={+(state.match(/Onboarding(\d+)/)?.[1] || 0)}
           />

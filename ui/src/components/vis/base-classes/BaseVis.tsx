@@ -24,7 +24,7 @@ import {
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit, Scale } from "../../../graphql/generated";
 import { client } from "../../../graphql/client";
-import { store, nodeCache } from "../../../state/jotaiKeyValueStore";
+import { store, nodeCache } from "../../../state/store";
 import { mapToCacheObject } from "../../../state/orbit";
 import { newTraversalLevelIndexId } from "../../../state/hierarchy";
 import { OrbitNodeDetails } from "../../../state/types";

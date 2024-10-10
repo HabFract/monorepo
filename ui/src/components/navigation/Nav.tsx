@@ -16,7 +16,7 @@ import { Sphere, useGetSpheresQuery } from "../../graphql/generated";
 import { Button, DarkThemeToggle, Spinner } from "flowbite-react";
 import useSideMenuToggle from "../../hooks/useSideMenuToggle";
 import { useToast } from "../../contexts/toast";
-import { store } from "../../state/jotaiKeyValueStore";
+import { store } from "../../state/store";
 import { currentSphereOrbitNodesAtom } from "../../state/orbit";
 import { extractEdges } from "../../graphql/utils";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";

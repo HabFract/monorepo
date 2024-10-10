@@ -10,7 +10,7 @@ import {
 } from "./types/orbit";
 import { Orbit, Frequency as Freq } from "../graphql/generated";
 import { WinData } from "./types/win";
-import { nodeCache } from "./jotaiKeyValueStore";
+import { nodeCache } from "./store";
 
 /** ----------------------------------------------------- */
 

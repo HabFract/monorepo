@@ -16,7 +16,7 @@ import {
 } from "../../state/orbit";
 import { WithVisCanvasProps } from "../vis/types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { store } from "../../state/jotaiKeyValueStore";
+import { store } from "../../state/store";
 import { Frequency, OrbitNodeDetails } from "../../state/types";
 import VisModal from "../VisModal";
 import TraversalButton from "../navigation/TraversalButton";

@@ -7,7 +7,7 @@ import {
   useGetSpheresQuery,
 } from "../graphql/generated";
 import { extractEdges, serializeAsyncActions } from "../graphql/utils";
-import { nodeCache, store } from "../state/jotaiKeyValueStore";
+import { nodeCache, store } from "../state/store";
 import { mapToCacheObject } from "../state/orbit";
 import { client } from "../graphql/client";
 import { currentSphereHashesAtom } from "../state/sphere";

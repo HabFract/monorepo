@@ -5,7 +5,7 @@ import {
   setCurrentBreadth,
   currentSphereHierarchyIndices,
 } from "../state/hierarchy";
-import { store } from "../state/jotaiKeyValueStore";
+import { store } from "../state/store";
 import { useAtom } from "jotai";
 import { HierarchyBounds } from "../state/types/hierarchy";
 

@@ -8,7 +8,7 @@ import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { appStateAtom } from "./store";
 import { OrbitNodeDetails, RootOrbitEntryHash } from "./types/orbit";
 import { Hierarchy } from "./types/hierarchy";
-import { nodeCache } from "./jotaiKeyValueStore";
+import { nodeCache } from "./store";
 import { SphereOrbitNodeDetails } from "./types";
 import { getSphereIdFromEhAtom } from "./sphere";
 

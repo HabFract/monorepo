@@ -20,7 +20,7 @@ import { useStateTransition } from "../../hooks/useStateTransition";
 import { currentOrbitIdAtom, getOrbitNodeDetailsFromEhAtom, getOrbitNodeDetailsFromIdAtom } from "../../state/orbit";
 
 import { AppState } from "../../routes";
-import { store } from "../../state/jotaiKeyValueStore";
+import { store } from "../../state/store";
 import DefaultSubmitBtn from "./buttons/DefaultSubmitButton";
 import {
   TextAreaField,

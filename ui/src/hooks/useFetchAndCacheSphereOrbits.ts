@@ -8,7 +8,7 @@ import {
 import { extractEdges } from "../graphql/utils";
 import { OrbitNodeDetails } from "../state/types";
 import { mapToCacheObject } from "../state/orbit";
-import { nodeCache, store } from "../state/jotaiKeyValueStore";
+import { nodeCache, store } from "../state/store";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { SphereOrbitNodeDetails } from "../state/types/sphere";
 
@@ -53,9 +53,11 @@ export const useFetchAndCacheSphereOrbits = ({
   useEffect(() => {
     if (data) {
       let orbits: Orbit[] = extractEdges(data.orbits);
-      let indexedOrbitData: Array<[EntryHashB64, OrbitNodeDetails]> = Object.entries(
-        orbits.map(mapToCacheObject),
-      ).map(([_idx, value]) => [value.eH, value]);
+      let indexedOrbitData: Array<[EntryHashB64, OrbitNodeDetails]> =
+        Object.entries(orbits.map(mapToCacheObject)).map(([_idx, value]) => [
+          value.eH,
+          value,
+        ]);
       let indexedSphereData: SphereOrbitNodeDetails = {};
 
       const entries = indexedOrbitData.reduce(
@@ -70,7 +72,7 @@ export const useFetchAndCacheSphereOrbits = ({
             entry;
           return cacheObject;
         },
-        indexedSphereData,
+        indexedSphereData
       );
 
       store.set(nodeCache.setMany, Object.entries(entries));

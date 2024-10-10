@@ -16,7 +16,7 @@ import {
 } from "../constants";
 import { BaseVisualization } from "./BaseVis";
 import { select } from "d3-selection";
-import { store } from "../../../state/jotaiKeyValueStore";
+import { store } from "../../../state/store";
 import { NodeContent, OrbitNodeDetails } from "../../../state/types";
 import {
   ONE_CHILD,

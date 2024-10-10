@@ -8,7 +8,7 @@ import {
 import { useStateTransition } from "../../hooks/useStateTransition";
 import { useOrbitTreeData } from "../../hooks/useOrbitTreeData";
 import usePrefetchNextLevel from "../../hooks/gql/useFetchNextLevel";
-import { store } from "../../state/jotaiKeyValueStore";
+import { store } from "../../state/store";
 import { currentOrbitIdAtom } from "../../state/orbit";
 import { useDeriveAndCacheHierarchyPaths } from "../../hooks/useDeriveAndCacheHierarchyPaths";
 import { TreeVisualization } from "./base-classes/TreeVis";

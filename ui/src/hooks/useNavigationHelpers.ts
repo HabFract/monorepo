@@ -8,7 +8,7 @@ import {
 } from "../state/hierarchy";
 import { currentOrbitIdAtom, currentOrbitDetailsAtom } from "../state/orbit";
 import { currentSphereHashesAtom } from "../state/sphere";
-import { store } from "../state/jotaiKeyValueStore";
+import { store } from "../state/store";
 import { Coords, SphereHashes, SphereHierarchyBounds } from "../state";
 import { IVisualization, VisCoverage } from "../components/vis/types";
 import { byStartTime, isSmallScreen } from "../components/vis/helpers";

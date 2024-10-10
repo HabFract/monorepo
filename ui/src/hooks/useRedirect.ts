@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { store } from "../state/jotaiKeyValueStore";
+import { store } from "../state/store";
 import { useStateTransition } from "./useStateTransition";
 import { useAtomValue } from "jotai";
 import {

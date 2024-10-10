@@ -3,7 +3,7 @@ import { Modal } from "flowbite-react";
 
 import { currentSphereOrbitNodesAtom } from "../state/orbit";
 import { SphereOrbitNodeDetails, SphereHashes } from "../state/types/sphere";
-import { store } from "../state/jotaiKeyValueStore";
+import { store } from "../state/store";
 import { CreateOrbit } from "./forms";
 import { IVisualization } from "./vis/types";
 

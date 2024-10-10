@@ -8,7 +8,7 @@ import { cloneElement, useRef, useState } from "react";
 import Settings from "./components/Settings";
 
 import { darkTheme } from "habit-fract-design-system";
-import { store } from "./state/jotaiKeyValueStore";
+import { store } from "./state/store";
 import {
   Sphere,
   SphereConnection,

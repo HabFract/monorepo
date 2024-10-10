@@ -12,7 +12,7 @@ import {
   routes,
 } from "./routes";
 import { Provider } from "jotai";
-import { store } from "./state/jotaiKeyValueStore";
+import { store } from "./state/store";
 
 /*
 Application State Management (Courtesy of Ada Burrows for hREA playspace)

@@ -2,7 +2,7 @@ import { IVisualization, ViewConfig, VisProps, VisType, ZoomConfig } from "./typ
 import { ReactNode } from "react";
 import { withVisCanvas } from "../HOC/withVisCanvas";
 import { BASE_SCALE, FOCUS_MODE_SCALE } from "./constants";
-import { store } from "../../state/jotaiKeyValueStore";
+import { store } from "../../state/store";
 import { getCurrentOrbitStartTimeFromEh } from "../../state/orbit";
 import { newTraversalLevelIndexId, NodeContent, OrbitNodeDetails } from "../../state";
 import { HierarchyNode } from "d3-hierarchy";

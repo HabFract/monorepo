@@ -8,7 +8,7 @@ import {
 import { Modal, Radio } from "flowbite-react";
 import "./common.css";
 import { SortCriteria, SortOrder, listSortFilterAtom } from "../../state/ui";
-import { store } from "../../state/jotaiKeyValueStore";
+import { store } from "../../state/store";
 
 const ListSortFilter = ({ label }: { label: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

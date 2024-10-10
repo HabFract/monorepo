@@ -3,14 +3,13 @@ import {
   CreateOrbitResponsePayload,
   useCreateOrbitMutation as useCreateOrbitMutationGenerated,
 } from "../../graphql/generated";
-import { appStateAtom } from "../../state/store";
 import { useSetAtom } from "jotai";
-import { OrbitNodeDetails } from "../../state/types/orbit";
+import { OrbitHashes, OrbitNodeDetails } from "../../state/types/orbit";
 import {
   currentSphereOrbitNodesAtom,
   decodeFrequency,
 } from "../../state/orbit";
-import { nodeCache, store } from "../../state/jotaiKeyValueStore";
+import { nodeCache, store, appStateAtom } from "../../state/store";
 import { currentSphereHasCachedNodesAtom } from "../../state/sphere";
 import { SphereHashes, SphereOrbitNodeDetails } from "../../state/types/sphere";
 import { ActionHashB64 } from "@holochain/client";
@@ -26,17 +25,20 @@ export const useCreateOrbitMutation = (opts) => {
       if (!data?.createOrbit) return;
 
       const newOrbit: CreateOrbitResponsePayload = data.createOrbit;
-      const newOrbitDetails: OrbitNodeDetails = {
+      const newOrbitHashes: OrbitHashes = {
         id: newOrbit.id,
         eH: newOrbit.eH,
+        sphereHash: newOrbit.sphereHash,
+        parentEh: newOrbit?.parentHash as string | undefined,
+      };
+      const newOrbitDetails: OrbitNodeDetails = {
+        ...newOrbitHashes,
         name: newOrbit.name,
         scale: newOrbit.scale,
         frequency: decodeFrequency(newOrbit.frequency),
         startTime: newOrbit.metadata!.timeframe.startTime,
-        sphereHash: newOrbit.sphereHash,
         endTime: newOrbit.metadata!.timeframe.endTime as number | undefined,
         description: newOrbit.metadata!.description as string | undefined,
-        parentEh: newOrbit?.parentHash as string | undefined,
       };
 
       // If we have AppState (which doesn't include all OrbitNodeDetails) then let's cache the OrbitNodeDetails, indexing by EntrHashB64 for easy access in the vis
@@ -62,7 +64,7 @@ export const useCreateOrbitMutation = (opts) => {
           currentOrbitHash: newOrbit.id,
           byHash: {
             ...prevState.orbitNodes.byHash,
-            [newOrbit.id]: newOrbitDetails,
+            [newOrbit.id]: newOrbitHashes,
           },
         };
 

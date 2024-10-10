@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import { appStateAtom } from "./store";
 import { SphereDetails, SphereHashes } from "./types/sphere";
-import { nodeCache } from "./jotaiKeyValueStore";
+import { nodeCache } from "./store";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import {
   getCurrentSphereOrbitNodeDetailsFromEh,

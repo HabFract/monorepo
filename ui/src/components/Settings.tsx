@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import "./style.css";
 import "../typo.css";
 import { useSetAtom } from "jotai";
-import { nodeCache } from "../state/jotaiKeyValueStore";
+import { nodeCache } from "../state/store";
 import { useStateTransition } from "../hooks/useStateTransition";
 import {
   Sphere,
