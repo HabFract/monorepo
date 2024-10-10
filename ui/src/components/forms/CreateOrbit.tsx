@@ -5,19 +5,17 @@ import { DateTime } from "luxon";
 import {
   Frequency,
   GetOrbitHierarchyDocument,
-  GetOrbitsDocument,
   Orbit,
   OrbitCreateParams,
   OrbitUpdateParams,
   Scale,
   useGetOrbitsQuery,
-  useUpdateOrbitMutation,
 } from "../../graphql/generated";
 import { extractEdges } from "../../graphql/utils";
 import { useCreateOrbitMutation } from "../../hooks/gql/useCreateOrbitMutation";
 import { ActionHashB64 } from "@holochain/client";
 import { useStateTransition } from "../../hooks/useStateTransition";
-import { currentOrbitIdAtom, getOrbitNodeDetailsFromEhAtom, getOrbitNodeDetailsFromIdAtom } from "../../state/orbit";
+import { currentOrbitIdAtom, getOrbitNodeDetailsFromEhAtom } from "../../state/orbit";
 
 import { AppState } from "../../routes";
 import { store } from "../../state/store";
@@ -31,6 +29,7 @@ import {
 import { OrbitFetcher } from "./utils";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import { currentSphereHierarchyIndices } from "../../state/hierarchy";
+import { useUpdateOrbitMutation } from "../../hooks/gql/useUpdateOrbitMutation";
 
 // Define the validation schema using Yup
 export const OrbitValidationSchema = Yup.object().shape({

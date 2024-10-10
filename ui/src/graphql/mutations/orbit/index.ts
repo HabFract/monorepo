@@ -9,6 +9,7 @@ import {
   Orbit,
   OrbitCreateParams,
   OrbitUpdateParams,
+  UpdateOrbitResponsePayload,
 } from "../../generated";
 import {
   ActionHash,
@@ -22,15 +23,15 @@ export type createArgs = { orbit: OrbitCreateParams };
 export type updateArgs = { orbit: OrbitUpdateParams };
 export type createHandler = (
   root: any,
-  args: createArgs,
+  args: createArgs
 ) => Promise<CreateOrbitResponsePayload>;
 export type updateHandler = (
   root: any,
-  args: updateArgs,
-) => Promise<CreateOrbitResponsePayload>;
+  args: updateArgs
+) => Promise<UpdateOrbitResponsePayload>;
 export type deleteHandler = (
   root: any,
-  args: { orbitHash: ActionHashB64 },
+  args: { orbitHash: ActionHashB64 }
 ) => Promise<ActionHashB64>;
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
@@ -39,7 +40,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "create_my_orbit",
+    "create_my_orbit"
   );
   const runUpdate = mapZomeFn<
     {
@@ -52,14 +53,14 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "update_orbit",
+    "update_orbit"
   );
   const runDelete = mapZomeFn<ActionHashB64, ActionHash>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "delete_orbit",
+    "delete_orbit"
   );
 
   const createOrbit: createHandler = async (
@@ -76,7 +77,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
         frequency,
         scale,
       },
-    },
+    }
   ) => {
     if (!sphereHash)
       throw new Error("Cannot create an orbit not linked to a sphere!");
@@ -106,7 +107,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
           startTime: entryRecord.entry.metadata!.timeframe.startTime,
           endTime: entryRecord.entry.metadata?.timeframe?.endTime,
           description: entryRecord.entry.metadata?.description,
-        }
+        },
       },
       scale: entryRecord.entry.scale,
     };
@@ -126,7 +127,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
         frequency,
         scale,
       },
-    },
+    }
   ) => {
     const rawRecord = await runUpdate({
       originalOrbitHash: id as ActionHashB64,
@@ -156,7 +157,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
           startTime: entryRecord.entry.metadata!.timeframe.startTime,
           endTime: entryRecord.entry.metadata?.timeframe?.endTime,
           description: entryRecord.entry.metadata?.description,
-        }
+        },
       },
       scale: entryRecord.entry.scale,
     };

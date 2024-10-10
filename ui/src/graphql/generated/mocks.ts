@@ -17,7 +17,7 @@ export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
         updateSphere: overrides && overrides.hasOwnProperty('updateSphere') ? overrides.updateSphere! : aCreateSphereResponsePayload(),
         deleteSphere: overrides && overrides.hasOwnProperty('deleteSphere') ? overrides.deleteSphere! : 'd656573f-6b5f-48b1-b767-997e497a6673',
         createOrbit: overrides && overrides.hasOwnProperty('createOrbit') ? overrides.createOrbit! : aCreateOrbitResponsePayload(),
-        updateOrbit: overrides && overrides.hasOwnProperty('updateOrbit') ? overrides.updateOrbit! : aCreateOrbitResponsePayload(),
+        updateOrbit: overrides && overrides.hasOwnProperty('updateOrbit') ? overrides.updateOrbit! : anUpdateOrbitResponsePayload(),
         deleteOrbit: overrides && overrides.hasOwnProperty('deleteOrbit') ? overrides.deleteOrbit! : '8c4ff9e4-b0db-409d-ba41-9a0a173bfe93',
         createProfile: overrides && overrides.hasOwnProperty('createProfile') ? overrides.createProfile! : anAgentProfile(),
         updateProfile: overrides && overrides.hasOwnProperty('updateProfile') ? overrides.updateProfile! : anAgentProfile(),
@@ -59,6 +59,20 @@ export const aCreateOrbitResponsePayload = (overrides?: Partial<CreateOrbitRespo
         sphereHash: overrides && overrides.hasOwnProperty('sphereHash') ? overrides.sphereHash! : 'quod',
         parentHash: overrides && overrides.hasOwnProperty('parentHash') ? overrides.parentHash! : 'rerum',
         childHash: overrides && overrides.hasOwnProperty('childHash') ? overrides.childHash! : 'dicta',
+        frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,
+        scale: overrides && overrides.hasOwnProperty('scale') ? overrides.scale! : Scale.Astro,
+        metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : anOrbitMetaData(),
+    };
+};
+
+export const anUpdateOrbitResponsePayload = (overrides?: Partial<UpdateOrbitResponsePayload>): UpdateOrbitResponsePayload => {
+    return {
+        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : 'c8259dc0-c7b7-4a63-a852-be01e9345c02',
+        eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'dolorem',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'vitae',
+        sphereHash: overrides && overrides.hasOwnProperty('sphereHash') ? overrides.sphereHash! : 'consequatur',
+        parentHash: overrides && overrides.hasOwnProperty('parentHash') ? overrides.parentHash! : 'quos',
+        childHash: overrides && overrides.hasOwnProperty('childHash') ? overrides.childHash! : 'aut',
         frequency: overrides && overrides.hasOwnProperty('frequency') ? overrides.frequency! : Frequency.Day,
         scale: overrides && overrides.hasOwnProperty('scale') ? overrides.scale! : Scale.Astro,
         metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : anOrbitMetaData(),
