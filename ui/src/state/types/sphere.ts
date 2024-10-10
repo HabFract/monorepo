@@ -1,5 +1,4 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { Hierarchy } from "./hierarchy";
 import { OrbitHashes, OrbitNodeDetails, RootOrbitEntryHash } from "./orbit";
 
 export interface SphereDetails {
@@ -34,7 +33,7 @@ export type AllSphereOrbitNodeDetails = {
 
 export type SphereEntry = {
   details: SphereDetails;
-  hierarchies: Record<RootOrbitEntryHash, Hierarchy>;
+  hierarchyRootOrbitEntryHashes: RootOrbitEntryHash[];
 };
 
 export interface SphereHashes {
