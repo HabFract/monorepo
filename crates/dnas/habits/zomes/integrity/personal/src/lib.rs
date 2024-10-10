@@ -1,7 +1,9 @@
 pub mod sphere;
 pub mod orbit;
+pub mod win_record;
 pub use sphere::*;
 pub use orbit::*;
+pub use win_record::*;
 
 use hdi::prelude::*;
 
@@ -18,6 +20,10 @@ pub enum EntryTypes {
         name = "my_orbit", // Must be unique across entry types
         visibility = "private" )] // Entry not published to the DHT, only stored in the source chain
     Orbit(Orbit),
+    #[entry_type( 
+        name = "my_win_record", // Must be unique across entry types
+        visibility = "private" )] // Entry not published to the DHT, only stored in the source chain
+    WinRecord(WinRecord),
 }
 
 #[derive(Serialize, Deserialize)]
@@ -32,6 +38,7 @@ pub enum LinkTypes {
     OrbitsPrefixPath,
     OrbitHierarchyLevel,
     OrbitParentToChild,
+    OrbitToWinRecord,
 }
 
 #[hdk_extern]

@@ -33,7 +33,7 @@ impl Orbit {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Node {
     pub id: EntryHashB64,
-    pub children: Vec<Rc<RefCell<Node>>>, // Now holds Rc<RefCell<Node>> values
+    pub children: Vec<Rc<RefCell<Node>>>,
 }
 
 impl Node {
