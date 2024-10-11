@@ -129,7 +129,6 @@ pub fn _get_all_my_historic_spheres(_:()) -> ExternResult<Vec<Record>> {
     Ok(all_my_spheres)
 }
 
-
 #[hdk_extern]
 pub fn get_all_my_spheres(_ : ()) -> ExternResult<Vec<Record>> {
     let path = all_spheres_anchor()?;
@@ -174,14 +173,6 @@ fn _agent_to_sphere_links() -> ExternResult<Option<Vec<Link>>> {
         return Ok(None);
     }
     Ok(Some(links))
-}
-
-fn _prefix_path(name: String) -> ExternResult<TypedPath> {
-    // convert to lowercase for path for ease of search
-    let lower_name = name.to_lowercase();
-    let (prefix, _) = lower_name.as_str().split_at(3);
-
-    Path::from(format!("all_spheres.{}", prefix)).typed(LinkTypes::SpheresAnchor)
 }
 
 fn get_latest(action_hash: ActionHash) -> ExternResult<Option<Record>> {

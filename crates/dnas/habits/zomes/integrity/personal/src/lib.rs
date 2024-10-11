@@ -40,6 +40,7 @@ pub enum LinkTypes {
     OrbitParentToChild,
     OrbitToWinRecord,
     WinRecordUpdates,
+    WinRecordYearMonthPrefixPath,
 }
 
 #[hdk_extern]
