@@ -10,16 +10,14 @@ import { createTestIndexDBAtom, mockedCacheEntries } from "./setupMockStore";
 
 export const renderWithJotai = (
   element: React.ReactElement,
-  { initialState = mockAppState, initialCache = Object.fromEntries(mockedCacheEntries) } = {}
+  { initialState = mockAppState } = {}
 ): RenderResult => {
   const testStore = createTestStore(initialState);
-  const testCache = createTestIndexDBAtom(initialCache);
 
   return render(
     <Provider store={testStore}>
       <TestProvider initialValues={[
         [appStateAtom, testStore.get(appStateAtom)],
-        [nodeCache.entries, testCache.entries],
       ]}>
         {React.cloneElement(element)}
       </TestProvider>
@@ -28,11 +26,7 @@ export const renderWithJotai = (
 };
 
 const HydrateAtoms = ({ initialValues, children }) => {
-  const writableAtoms = initialValues.filter(([atom]) =>
-    atom && typeof atom === 'object' && 'write' in atom
-  );
-
-  useHydrateAtoms(writableAtoms);
+  useHydrateAtoms(initialValues);
   return children;
 }
 

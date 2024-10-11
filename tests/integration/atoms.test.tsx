@@ -16,6 +16,7 @@ import {
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { calculateCompletionStatusAtom } from '../../ui/src/state/hierarchy';
 import { resetMocks } from '../setup';
+import { createTestIndexDBAtom, mockedCacheEntries, setLatestTestCache } from '../setupMockStore';
 
 beforeEach(() => {
   resetMocks()
@@ -25,6 +26,87 @@ afterEach(() => {
 });
 
 describe('Sphere selectors', () => {
+  describe('AppState - currentSphereHashesAtom', () => {
+    it('should return the current sphere hashes when a sphere is selected', () => {
+      const TestComponent = () => {
+        const [sphereHashes] = useAtom(currentSphereHashesAtom);
+        return <div>{JSON.stringify(sphereHashes)}</div>;
+      };
+
+      render(
+        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+          <TestComponent />
+        </TestProvider>
+      );
+
+      const expectedHashes = JSON.stringify({
+        entryHash: mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash].details.entryHash,
+        actionHash: mockAppState.spheres.currentSphereHash,
+      });
+      expect(screen.getByText(expectedHashes)).toBeTruthy();
+    });
+
+    it('should return an empty object when no sphere is selected', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        spheres: {
+          ...mockAppState.spheres,
+          currentSphereHash: null,
+        },
+      };
+
+      const TestComponent = () => {
+        const [sphereHashes] = useAtom(currentSphereHashesAtom);
+        return <div data-testid="container">{JSON.stringify(sphereHashes)}</div>;
+      };
+
+      render(
+        <TestProvider initialValues={[[appStateAtom, modifiedMockState]]}>
+          <TestComponent />
+        </TestProvider>
+      );
+
+      expect(screen.getByTestId("container").textContent).toBe("{}");
+    });
+
+    it.skip('should update sphere hashes when set', async () => {
+      const TestComponent = () => {
+        const [sphereHashes, setSphereHashes] = useAtom(currentSphereHashesAtom);
+
+        return (
+          <div>
+            <div data-testid="hashes">{JSON.stringify(sphereHashes)}</div>
+            <button onClick={() => {
+              setSphereHashes({
+                entryHash: 'newEntryHash',
+                actionHash: 'newActionHash'
+              });
+            }}>Update Hashes</button>
+          </div>
+        );
+      };
+
+      render(
+        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+          <TestComponent />
+        </TestProvider>
+      );
+
+      const initialHashes = JSON.parse(screen.getByTestId('hashes').textContent || '{}');
+      expect(initialHashes.entryHash).toBe(mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash].details.entryHash);
+      expect(initialHashes.actionHash).toBe(mockAppState.spheres.currentSphereHash);
+
+      await act(async () => {
+        await userEvent.click(screen.getByText('Update Hashes'));
+      });
+
+      const updatedHashes = JSON.parse(screen.getByTestId('hashes').textContent || '{}');
+      expect(updatedHashes.entryHash).toBe('newEntryHash');
+      expect(updatedHashes.actionHash).toBe('newActionHash');
+
+    });
+  });
+
   describe('AppState - currentSphereDetailsAtom', () => {
     it('should return the current sphere when it exists', () => {
       const TestComponent = () => {
@@ -70,25 +152,28 @@ describe('Sphere selectors', () => {
       expect(screen.getByText('true')).toBeTruthy();
     });
 
-    // it('should return false when the sphere has no cached nodes', () => {
-    //   vi.mocked(nodeCache.item).mockReturnValue({
-    //     init: vi.fn().mockReturnValue({}),
-    //   });
+    it('should return null when the sphere hash is not in the cache', () => {
+      const TestComponent = () => {
+        const hasCachedNodesAtom = useMemo(() => sphereHasCachedNodesAtom('false-hash'), []);
+        const [hasCachedNodes] = useAtom(hasCachedNodesAtom);
+        return <div>{`${hasCachedNodes}`}</div>;
+      };
 
-    //   const TestComponent = () => {
-    //     const [hasCachedNodes] = useAtom(sphereHasCachedNodesAtom(mockAppState.spheres.currentSphereHash));
-    //     return <div>{hasCachedNodes.toString()}</div>;
-    //   };
+      renderWithJotai(<TestComponent />)
 
-    //   render(
-    //     <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-    //       <TestComponent />
-    //     </TestProvider>
-    //   );
+      expect(screen.getByText('null')).toBeTruthy();
+    });
 
-    //   expect(screen.getByText('false')).toBeTruthy();
-    // });
+    it.skip('should return false when the sphere hash is valid but has no cached nodes', () => {
+      const TestComponent = () => {
+        const hasCachedNodesAtom = useMemo(() => sphereHasCachedNodesAtom(mockAppState.spheres.currentSphereHash), [mockAppState.spheres.currentSphereHash]);
+        const [hasCachedNodes] = useAtom(hasCachedNodesAtom);
+        return <div>{hasCachedNodes!.toString()}</div>;
+      };
+      renderWithJotai(<TestComponent />)
 
+      expect(screen.getByText('false')).toBeTruthy();
+    });
     // it('should return null when there are no hierarchies for the sphere', () => {
     //   const modifiedMockState = {
     //     ...mockAppState,
@@ -125,98 +210,8 @@ describe('Sphere selectors', () => {
   });
 });
 
-describe.only('AppState - currentSphereHashesAtom', () => {
-  it('should return the current sphere hashes when a sphere is selected', () => {
-    const TestComponent = () => {
-      const [sphereHashes] = useAtom(currentSphereHashesAtom);
-      return <div>{JSON.stringify(sphereHashes)}</div>;
-    };
-
-    render(
-      <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-        <TestComponent />
-      </TestProvider>
-    );
-
-    const expectedHashes = JSON.stringify({
-      entryHash: mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash].details.entryHash,
-      actionHash: mockAppState.spheres.currentSphereHash,
-    });
-    expect(screen.getByText(expectedHashes)).toBeTruthy();
-  });
-
-  it('should return an empty object when no sphere is selected', () => {
-    const modifiedMockState = {
-      ...mockAppState,
-      spheres: {
-        ...mockAppState.spheres,
-        currentSphereHash: null,
-      },
-    };
-
-    const TestComponent = () => {
-      const [sphereHashes] = useAtom(currentSphereHashesAtom);
-      return <div data-testid="container">{JSON.stringify(sphereHashes)}</div>;
-    };
-
-    render(
-      <TestProvider initialValues={[[appStateAtom, modifiedMockState]]}>
-        <TestComponent />
-      </TestProvider>
-    );
-
-    expect(screen.getByTestId("container").textContent).toBe("{}");
-  });
-
-  it.skip('should update sphere hashes when set', async () => {
-    const TestComponent = () => {
-      const [sphereHashes, setSphereHashes] = useAtom(currentSphereHashesAtom);
-
-      return (
-        <div>
-          <div data-testid="hashes">{JSON.stringify(sphereHashes)}</div>
-          <button onClick={() => {
-            setSphereHashes({
-              entryHash: 'newEntryHash',
-              actionHash: 'newActionHash'
-            });
-          }}>Update Hashes</button>
-        </div>
-      );
-    };
-
-    render(
-      <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-        <TestComponent />
-      </TestProvider>
-    );
-
-    const initialHashes = JSON.parse(screen.getByTestId('hashes').textContent || '{}');
-    expect(initialHashes.entryHash).toBe(mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash].details.entryHash);
-    expect(initialHashes.actionHash).toBe(mockAppState.spheres.currentSphereHash);
-
-    await act(async () => {
-      await userEvent.click(screen.getByText('Update Hashes'));
-    });
-
-    const updatedHashes = JSON.parse(screen.getByTestId('hashes').textContent || '{}');
-    expect(updatedHashes.entryHash).toBe('newEntryHash');
-    expect(updatedHashes.actionHash).toBe('newActionHash');
-
-  });
-});
-
-describe('IndexDB - Orbit selectors', () => {
-  beforeEach(() => {
-    // Mock store atoms
-    // setupStore();
-  });
-
-  afterEach(() => {
-    cleanup();
-  });
-
-  describe('currentOrbitDetailsAtom', () => {
+describe('Orbit selectors', () => {
+  describe('IndexDB - currentOrbitDetailsAtom', () => {
     const TestComponent = () => {
       const [orbitDetails] = useAtom(currentOrbitDetailsAtom);
       return <div data-testid="orbitDetails">{JSON.stringify(orbitDetails)}</div>;
@@ -235,8 +230,9 @@ describe('IndexDB - Orbit selectors', () => {
       expect(screen.getByTestId('orbitDetails').textContent).toBe('null');
     });
 
-    it.skip('should return the details of the selected orbit', async () => {
+    it.only('should return the details of the selected orbit', async () => {
       renderWithJotai(<TestComponent />);
+
       const orbitDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || 'null');
       expect(orbitDetails).not.toBe(null);
       expect(orbitDetails.id).toBe(mockAppState.orbitNodes.currentOrbitHash);
@@ -308,7 +304,7 @@ describe('IndexDB - Orbit selectors', () => {
     });
   });
 
-  describe('currentSphereOrbitNodesAtom', () => {
+  describe('AppState - currentSphereOrbitNodesAtom', () => {
     it('should return orbit nodes for the current sphere', () => {
       const TestComponent = () => {
         const [sphereNodes] = useAtom(currentSphereOrbitNodesAtom);
@@ -349,7 +345,7 @@ describe('IndexDB - Orbit selectors', () => {
     });
   });
 
-  describe('getOrbitNodeDetailsFromIdAtom', () => {
+  describe('IndexDB - getOrbitNodeDetailsFromIdAtom', () => {
     const TestComponent = ({ orbitId }: { orbitId: string }) => {
       const orbitAtom = useMemo(() => getOrbitNodeDetailsFromIdAtom(orbitId), [orbitId]);
       const [orbitDetails] = useAtom(orbitAtom);
@@ -437,297 +433,297 @@ describe('IndexDB - Orbit selectors', () => {
     });
   });
 
-  describe('setOrbitWithEntryHashAtom', () => {
-    let testOrbitActionHash: ActionHashB64;
-    let testOrbitEntryHash: EntryHashB64;
+  // describe('setOrbitWithEntryHashAtom', () => {
+  //   let testOrbitActionHash: ActionHashB64;
+  //   let testOrbitEntryHash: EntryHashB64;
 
-    beforeEach(() => {
-      const orbitEntry = Object.entries(mockAppState.orbitNodes.byHash)[0];
-      testOrbitActionHash = orbitEntry[0];
-      testOrbitEntryHash = orbitEntry[1].eH;
-    });
+  //   beforeEach(() => {
+  //     const orbitEntry = Object.entries(mockAppState.orbitNodes.byHash)[0];
+  //     testOrbitActionHash = orbitEntry[0];
+  //     testOrbitEntryHash = orbitEntry[1].eH;
+  //   });
 
-    const TestComponent = () => {
-      const [, setOrbitAtom] = useAtom(setOrbitWithEntryHashAtom);
-      const orbitAtom = useMemo(() => getOrbitNodeDetailsFromIdAtom(testOrbitActionHash), [testOrbitActionHash]);
-      const [orbitDetails] = useAtom(orbitAtom);
+  //   const TestComponent = () => {
+  //     const [, setOrbitAtom] = useAtom(setOrbitWithEntryHashAtom);
+  //     const orbitAtom = useMemo(() => getOrbitNodeDetailsFromIdAtom(testOrbitActionHash), [testOrbitActionHash]);
+  //     const [orbitDetails] = useAtom(orbitAtom);
 
-      const updateOrbit = () => {
-        setOrbitAtom({
-          orbitEh: testOrbitEntryHash,
-          update: { name: 'Updated Orbit Name' }
-        });
-      };
+  //     const updateOrbit = () => {
+  //       setOrbitAtom({
+  //         orbitEh: testOrbitEntryHash,
+  //         update: { name: 'Updated Orbit Name' }
+  //       });
+  //     };
 
-      return (
-        <div>
-          <div data-testid="orbitDetails">{JSON.stringify(orbitDetails)}</div>
-          <button onClick={updateOrbit}>Update Orbit</button>
-        </div>
-      );
-    };
+  //     return (
+  //       <div>
+  //         <div data-testid="orbitDetails">{JSON.stringify(orbitDetails)}</div>
+  //         <button onClick={updateOrbit}>Update Orbit</button>
+  //       </div>
+  //     );
+  //   };
 
-    it('should update orbit details when the orbit exists', async () => {
-      await act(async () => {
-        render(
-          <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-            <TestComponent />
-          </TestProvider>
-        );
-      });
+  //   it('should update orbit details when the orbit exists', async () => {
+  //     await act(async () => {
+  //       render(
+  //         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //           <TestComponent />
+  //         </TestProvider>
+  //       );
+  //     });
 
-      const initialDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
-      expect(initialDetails.name).not.toBe('Updated Orbit Name');
+  //     const initialDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
+  //     expect(initialDetails.name).not.toBe('Updated Orbit Name');
 
-      await act(async () => {
-        fireEvent.click(screen.getByText('Update Orbit'));
-      });
+  //     await act(async () => {
+  //       fireEvent.click(screen.getByText('Update Orbit'));
+  //     });
 
-      const updatedDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
-      expect(updatedDetails.name).toBe('Updated Orbit Name');
-    });
+  //     const updatedDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
+  //     expect(updatedDetails.name).toBe('Updated Orbit Name');
+  //   });
 
-    it('should not update orbit details when the orbit is not found', async () => {
-      const TestComponentWithNonExistentOrbit = () => {
-        const [, setOrbitAtom] = useAtom(setOrbitWithEntryHashAtom);
-        const orbitAtom = useMemo(() => getOrbitNodeDetailsFromIdAtom(testOrbitActionHash), [testOrbitActionHash]);
-        const [orbitDetails] = useAtom(orbitAtom);
+  //   it('should not update orbit details when the orbit is not found', async () => {
+  //     const TestComponentWithNonExistentOrbit = () => {
+  //       const [, setOrbitAtom] = useAtom(setOrbitWithEntryHashAtom);
+  //       const orbitAtom = useMemo(() => getOrbitNodeDetailsFromIdAtom(testOrbitActionHash), [testOrbitActionHash]);
+  //       const [orbitDetails] = useAtom(orbitAtom);
 
-        const updateOrbit = () => {
-          setOrbitAtom({
-            orbitEh: 'nonExistentOrbitEh',
-            update: { name: 'Updated Orbit Name' }
-          });
-        };
+  //       const updateOrbit = () => {
+  //         setOrbitAtom({
+  //           orbitEh: 'nonExistentOrbitEh',
+  //           update: { name: 'Updated Orbit Name' }
+  //         });
+  //       };
 
-        return (
-          <div>
-            <div data-testid="orbitDetails">{JSON.stringify(orbitDetails)}</div>
-            <button onClick={updateOrbit}>Update Orbit</button>
-          </div>
-        );
-      };
+  //       return (
+  //         <div>
+  //           <div data-testid="orbitDetails">{JSON.stringify(orbitDetails)}</div>
+  //           <button onClick={updateOrbit}>Update Orbit</button>
+  //         </div>
+  //       );
+  //     };
 
-      await act(async () => {
-        render(
-          <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-            <TestComponentWithNonExistentOrbit />
-          </TestProvider>
-        );
-      });
+  //     await act(async () => {
+  //       render(
+  //         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //           <TestComponentWithNonExistentOrbit />
+  //         </TestProvider>
+  //       );
+  //     });
 
-      const initialDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
+  //     const initialDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
 
-      await act(async () => {
-        fireEvent.click(screen.getByText('Update Orbit'));
-      });
+  //     await act(async () => {
+  //       fireEvent.click(screen.getByText('Update Orbit'));
+  //     });
 
-      const updatedDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
-      expect(updatedDetails).toEqual(initialDetails);
-    });
-  });
+  //     const updatedDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
+  //     expect(updatedDetails).toEqual(initialDetails);
+  //   });
+  // });
 
-  describe('getOrbitFrequency', () => {
-    const TestComponent = ({ orbitId }: { orbitId: string }) => {
-      const [frequency] = useAtom(useMemo(() => getOrbitFrequency(orbitId), [orbitId]));
-      return <div data-testid="container">{frequency}</div>;
-    };
+  // describe('getOrbitFrequency', () => {
+  //   const TestComponent = ({ orbitId }: { orbitId: string }) => {
+  //     const [frequency] = useAtom(useMemo(() => getOrbitFrequency(orbitId), [orbitId]));
+  //     return <div data-testid="container">{frequency}</div>;
+  //   };
 
-    it('should return the correct frequency for daily orbit', () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId="uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />
-        </TestProvider>
-      );
+  //   it('should return the correct frequency for daily orbit', () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId="uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />
+  //       </TestProvider>
+  //     );
 
-      expect(screen.getByTestId('container').textContent).toBe(Frequency.DAILY_OR_MORE.DAILY.toString());
-    });
+  //     expect(screen.getByTestId('container').textContent).toBe(Frequency.DAILY_OR_MORE.DAILY.toString());
+  //   });
 
-    it('should return the correct frequency for weekly orbit', () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId="uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc" />
-        </TestProvider>
-      );
-      expect(screen.getByTestId('container').textContent).toBe(Frequency.LESS_THAN_DAILY.WEEKLY.toString());
-    });
+  //   it('should return the correct frequency for weekly orbit', () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId="uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc" />
+  //       </TestProvider>
+  //     );
+  //     expect(screen.getByTestId('container').textContent).toBe(Frequency.LESS_THAN_DAILY.WEEKLY.toString());
+  //   });
 
-    it('should return the correct frequency for monthly orbit', () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId="uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc" />
-        </TestProvider>
-      );
-      expect(screen.getByTestId('container').textContent).toBe(Frequency.LESS_THAN_DAILY.MONTHLY.toString());
-    });
+  //   it('should return the correct frequency for monthly orbit', () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId="uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc" />
+  //       </TestProvider>
+  //     );
+  //     expect(screen.getByTestId('container').textContent).toBe(Frequency.LESS_THAN_DAILY.MONTHLY.toString());
+  //   });
 
-    it('should return null for non-existent orbit', () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId="non-existent-orbit" />
-        </TestProvider>
-      );
-      expect(screen.getByTestId('container').textContent).toBe('');
-    });
-  });
+  //   it('should return null for non-existent orbit', () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId="non-existent-orbit" />
+  //       </TestProvider>
+  //     );
+  //     expect(screen.getByTestId('container').textContent).toBe('');
+  //   });
+  // });
 
-  describe('orbitWinDataAtom', () => {
-    const TestComponent = ({ orbitId }: { orbitId: string }) => {
-      const [winData] = useAtom(useMemo(() => orbitWinDataAtom(orbitId), [orbitId]));
-      return <div data-testid='container'>{JSON.stringify(winData)}</div>;
-    };
-    it('should return win data for a specific orbit', () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc' />
-        </TestProvider>
-      );
+  // describe('orbitWinDataAtom', () => {
+  //   const TestComponent = ({ orbitId }: { orbitId: string }) => {
+  //     const [winData] = useAtom(useMemo(() => orbitWinDataAtom(orbitId), [orbitId]));
+  //     return <div data-testid='container'>{JSON.stringify(winData)}</div>;
+  //   };
+  //   it('should return win data for a specific orbit', () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId='uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc' />
+  //       </TestProvider>
+  //     );
 
-      expect(screen.getByText(JSON.stringify(mockAppState.wins.uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc))).toBeTruthy();
-    });
+  //     expect(screen.getByText(JSON.stringify(mockAppState.wins.uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc))).toBeTruthy();
+  //   });
 
-    it('should return empty object for non-existent orbit win data', () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='non-existent-orbit' />
-        </TestProvider>
-      );
+  //   it('should return empty object for non-existent orbit win data', () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId='non-existent-orbit' />
+  //       </TestProvider>
+  //     );
 
-      expect(screen.getByTestId('container').textContent).toBe('{}');
-    });
-  });
+  //     expect(screen.getByTestId('container').textContent).toBe('{}');
+  //   });
+  // });
 
-  describe('setWinForOrbit', () => {
-    const TestComponent = ({ orbitId, date, winIndex, hasWin }: { orbitId: string, date: string, winIndex?: number, hasWin: boolean }) => {
-      const [winData] = useAtom(useMemo(() => orbitWinDataAtom(orbitId), [orbitId]));
-      const [, setWin] = useAtom(setWinForOrbit);
-      return (
-        <div>
-          <div data-testid="container">{JSON.stringify(winData)}</div>
-          <button onClick={() => setWin({ orbitHash: orbitId, date, winIndex, hasWin })}>Set Win</button>
-        </div>
-      );
-    };
+  // describe('setWinForOrbit', () => {
+  //   const TestComponent = ({ orbitId, date, winIndex, hasWin }: { orbitId: string, date: string, winIndex?: number, hasWin: boolean }) => {
+  //     const [winData] = useAtom(useMemo(() => orbitWinDataAtom(orbitId), [orbitId]));
+  //     const [, setWin] = useAtom(setWinForOrbit);
+  //     return (
+  //       <div>
+  //         <div data-testid="container">{JSON.stringify(winData)}</div>
+  //         <button onClick={() => setWin({ orbitHash: orbitId, date, winIndex, hasWin })}>Set Win</button>
+  //       </div>
+  //     );
+  //   };
 
-    it('should set a win for an orbit with frequency == 1', async () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' date='2023-05-04' hasWin={true} />
-        </TestProvider>
-      );
+  //   it('should set a win for an orbit with frequency == 1', async () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId='uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' date='2023-05-04' hasWin={true} />
+  //       </TestProvider>
+  //     );
 
-      await act(async () => {
-        await userEvent.click(screen.getByText('Set Win'));
-      });
+  //     await act(async () => {
+  //       await userEvent.click(screen.getByText('Set Win'));
+  //     });
 
-      const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
-      expect(updatedWinData['2023-05-04']).toBe(true);
-    });
+  //     const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
+  //     expect(updatedWinData['2023-05-04']).toBe(true);
+  //   });
 
-    it('should set a win for an orbit with frequency < 1', async () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc' date='2023-07' hasWin={true} />
-        </TestProvider>
-      );
+  //   it('should set a win for an orbit with frequency < 1', async () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId='uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc' date='2023-07' hasWin={true} />
+  //       </TestProvider>
+  //     );
 
-      await act(async () => {
-        await userEvent.click(screen.getByText('Set Win'));
-      })
+  //     await act(async () => {
+  //       await userEvent.click(screen.getByText('Set Win'));
+  //     })
 
-      const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
-      expect(updatedWinData['2023-07']).toBe(true);
-    });
+  //     const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
+  //     expect(updatedWinData['2023-07']).toBe(true);
+  //   });
 
-    it('should set a win for an orbit with frequency > 1', async () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc' date='2023-05-04' winIndex={1} hasWin={true} />
-        </TestProvider>
-      );
+  //   it('should set a win for an orbit with frequency > 1', async () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId='uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc' date='2023-05-04' winIndex={1} hasWin={true} />
+  //       </TestProvider>
+  //     );
 
-      await act(async () => {
-        await userEvent.click(screen.getByText('Set Win'));
-      })
+  //     await act(async () => {
+  //       await userEvent.click(screen.getByText('Set Win'));
+  //     })
 
-      const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
-      expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(true);
-      expect(updatedWinData['2023-05-04'][1]).toBe(true);
-    });
+  //     const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
+  //     expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(true);
+  //     expect(updatedWinData['2023-05-04'][1]).toBe(true);
+  //   });
 
-    it('should not set a win for a non-existent orbit', async () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='non-existent-orbit' date='2023-05-04' hasWin={true} />
-        </TestProvider>
-      );
+  //   it('should not set a win for a non-existent orbit', async () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId='non-existent-orbit' date='2023-05-04' hasWin={true} />
+  //       </TestProvider>
+  //     );
 
-      await act(async () => {
-        await userEvent.click(screen.getByText('Set Win'));
-      })
+  //     await act(async () => {
+  //       await userEvent.click(screen.getByText('Set Win'));
+  //     })
 
-      expect(screen.getByTestId('container').textContent).toBe('{}');
-    });
-  });
+  //     expect(screen.getByTestId('container').textContent).toBe('{}');
+  //   });
+  // });
 
-  describe.skip('calculateCompletionStatusAtom', () => {
-    const TestComponent = ({ orbitId }: { orbitId: string }) => {
-      const [completionStatus] = useAtom(useMemo(() => calculateCompletionStatusAtom(orbitId), [orbitId]));
-      return <div data-testid="container">{completionStatus}</div>;
-    };
+  // describe('calculateCompletionStatusAtom', () => {
+  //   const TestComponent = ({ orbitId }: { orbitId: string }) => {
+  //     const [completionStatus] = useAtom(useMemo(() => calculateCompletionStatusAtom(orbitId), [orbitId]));
+  //     return <div data-testid="container">{completionStatus}</div>;
+  //   };
 
-    it('should calculate completion status', () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' />
-        </TestProvider>
-      );
+  //   it('should calculate completion status', () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId='uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' />
+  //       </TestProvider>
+  //     );
 
-      // This is a placeholder test. Update it when you implement the actual completion status calculation logic.
-      expect(screen.getByText('0')).toBeTruthy();
-    });
+  //     // This is a placeholder test. Update it when you implement the actual completion status calculation logic.
+  //     expect(screen.getByText('0')).toBeTruthy();
+  //   });
 
-    it('should return null completion status for non-existent orbit', () => {
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent orbitId='non-existent-orbit' />
-        </TestProvider>
-      );
+  //   it('should return null completion status for non-existent orbit', () => {
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent orbitId='non-existent-orbit' />
+  //       </TestProvider>
+  //     );
 
-      expect(screen.getByTestId('container').textContent).toBe('');
-    });
-  });
+  //     expect(screen.getByTestId('container').textContent).toBe('');
+  //   });
+  // });
 
-  describe.skip('calculateStreakAtom', () => {
-    it('should calculate streak information', () => {
-      const TestComponent = () => {
-        const [streak] = useAtom(calculateStreakAtom('uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj'));
-        return <div>{streak}</div>;
-      };
+  // describe('calculateStreakAtom', () => {
+  //   it('should calculate streak information', () => {
+  //     const TestComponent = () => {
+  //       const [streak] = useAtom(calculateStreakAtom('uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj'));
+  //       return <div>{streak}</div>;
+  //     };
 
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent />
-        </TestProvider>
-      );
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent />
+  //       </TestProvider>
+  //     );
 
-      // This is a placeholder test. Update it when you implement the actual streak calculation logic.
-      expect(screen.getByText('0')).toBeTruthy();
-    });
+  //     // This is a placeholder test. Update it when you implement the actual streak calculation logic.
+  //     expect(screen.getByText('0')).toBeTruthy();
+  //   });
 
-    it('should return null streak for non-existent orbit', () => {
-      const TestComponent = () => {
-        const [streak] = useAtom(calculateStreakAtom('non-existent-orbit'));
-        return <div data-testid="streak">{streak === null ? 'null' : streak}</div>;
-      };
+  //   it('should return null streak for non-existent orbit', () => {
+  //     const TestComponent = () => {
+  //       const [streak] = useAtom(calculateStreakAtom('non-existent-orbit'));
+  //       return <div data-testid="streak">{streak === null ? 'null' : streak}</div>;
+  //     };
 
-      render(
-        <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-          <TestComponent />
-        </TestProvider>
-      );
+  //     render(
+  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
+  //         <TestComponent />
+  //       </TestProvider>
+  //     );
 
-      expect(screen.getByTestId('streak').textContent).toBe('null');
-    });
-  });
+  //     expect(screen.getByTestId('streak').textContent).toBe('null');
+  //   });
+  // });
 });
