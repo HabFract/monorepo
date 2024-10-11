@@ -6,6 +6,8 @@ type Query {
   orbits(sphereEntryHashB64: String): OrbitConnection!
   getOrbitHierarchy(params: OrbitHierarchyQueryParams!): String!
   getLowestSphereHierarchyLevel(sphereEntryHashB64: String!): Int!
+  winRecord(id: ID!): WinRecord
+  winRecords: [WinRecord!]!
   me: AgentProfile!
 }
 
@@ -18,6 +20,8 @@ type Mutation {
   deleteOrbit(orbitHash: ID!): ID!
   createProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
   updateProfile(profile: UserProfileCreateUpdateParams): AgentProfile!
+  createWinRecord(winRecord: WinRecordCreateParams!): WinRecord!
+  updateWinRecord(winRecord: WinRecordUpdateParams!): WinRecord!
 }
 
 type PageInfo {
@@ -217,4 +221,49 @@ input OrbitHierarchyQueryParams {
 input QueryParamsLevel {
   sphereHashB64: String
   orbitLevel: Float!
+}
+
+# ---- Win Record ----- #
+# Win Record Types
+type WinRecord {
+  id: ID!
+  eH: String!
+  orbitId: ID!
+  winData: [WinDateEntry!]!
+}
+
+type WinDateEntry {
+  date: String!
+  value: WinDateValue!
+}
+
+union WinDateValue = SingleWin | MultipleWins
+
+type SingleWin {
+  single: Boolean!
+}
+
+type MultipleWins {
+  multiple: [Boolean!]!
+}
+
+# Win Record Input Types
+input WinRecordCreateParams {
+  orbitId: ID!
+  winData: [WinDateEntryInput!]!
+}
+
+input WinRecordUpdateParams {
+  winRecordId: ID!
+  updatedWinRecord: WinRecordCreateParams
+}
+
+input WinDateEntryInput {
+  date: String!
+  value: WinDateValueInput!
+}
+
+input WinDateValueInput {
+  single: Boolean
+  multiple: [Boolean!]
 }

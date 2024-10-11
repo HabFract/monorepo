@@ -1,0 +1,18 @@
+mutation updateWinRecord($winRecord: WinRecordUpdateParams!) {
+  updateWinRecord(winRecord: $winRecord) {
+    id
+    eH
+    orbitId
+    winData {
+      date
+      value {
+        ... on SingleWin {
+          single
+        }
+        ... on MultipleWins {
+          multiple
+        }
+      }
+    }
+  }
+}

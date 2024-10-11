@@ -1,0 +1,18 @@
+query getWinRecord($id: ID!) {
+  winRecord(id: $id) {
+    id
+    eH
+    orbitId
+    winData {
+      date
+      value {
+        ... on SingleWin {
+          single
+        }
+        ... on MultipleWins {
+          multiple
+        }
+      }
+    }
+  }
+}
