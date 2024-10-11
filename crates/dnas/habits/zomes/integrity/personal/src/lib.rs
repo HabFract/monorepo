@@ -39,6 +39,7 @@ pub enum LinkTypes {
     OrbitHierarchyLevel,
     OrbitParentToChild,
     OrbitToWinRecord,
+    WinRecordUpdates,
 }
 
 #[hdk_extern]

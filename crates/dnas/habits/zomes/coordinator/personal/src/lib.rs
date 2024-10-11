@@ -1,5 +1,6 @@
 pub mod sphere;
 pub mod orbit;
+pub mod win_record;
 pub mod utils;
 
 use hdk::prelude::*;
