@@ -7,6 +7,8 @@ export const aQuery = (overrides?: Partial<Query>): Query => {
         orbits: overrides && overrides.hasOwnProperty('orbits') ? overrides.orbits! : anOrbitConnection(),
         getOrbitHierarchy: overrides && overrides.hasOwnProperty('getOrbitHierarchy') ? overrides.getOrbitHierarchy! : 'sint',
         getLowestSphereHierarchyLevel: overrides && overrides.hasOwnProperty('getLowestSphereHierarchyLevel') ? overrides.getLowestSphereHierarchyLevel! : 7407,
+        winRecord: overrides && overrides.hasOwnProperty('winRecord') ? overrides.winRecord! : aWinRecord(),
+        winRecords: overrides && overrides.hasOwnProperty('winRecords') ? overrides.winRecords! : [aWinRecord()],
         me: overrides && overrides.hasOwnProperty('me') ? overrides.me! : anAgentProfile(),
     };
 };
@@ -21,6 +23,8 @@ export const aMutation = (overrides?: Partial<Mutation>): Mutation => {
         deleteOrbit: overrides && overrides.hasOwnProperty('deleteOrbit') ? overrides.deleteOrbit! : '8c4ff9e4-b0db-409d-ba41-9a0a173bfe93',
         createProfile: overrides && overrides.hasOwnProperty('createProfile') ? overrides.createProfile! : anAgentProfile(),
         updateProfile: overrides && overrides.hasOwnProperty('updateProfile') ? overrides.updateProfile! : anAgentProfile(),
+        createWinRecord: overrides && overrides.hasOwnProperty('createWinRecord') ? overrides.createWinRecord! : aWinRecord(),
+        updateWinRecord: overrides && overrides.hasOwnProperty('updateWinRecord') ? overrides.updateWinRecord! : aWinRecord(),
     };
 };
 
@@ -241,5 +245,61 @@ export const aQueryParamsLevel = (overrides?: Partial<QueryParamsLevel>): QueryP
     return {
         sphereHashB64: overrides && overrides.hasOwnProperty('sphereHashB64') ? overrides.sphereHashB64! : 'cum',
         orbitLevel: overrides && overrides.hasOwnProperty('orbitLevel') ? overrides.orbitLevel! : 9.99,
+    };
+};
+
+export const aWinRecord = (overrides?: Partial<WinRecord>): WinRecord => {
+    return {
+        id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '6bfc102e-ed02-4806-99c1-60076c112a01',
+        eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'sit',
+        orbitId: overrides && overrides.hasOwnProperty('orbitId') ? overrides.orbitId! : '6574de32-9e95-474b-8c9d-838a3135605c',
+        winData: overrides && overrides.hasOwnProperty('winData') ? overrides.winData! : [aWinDateEntry()],
+    };
+};
+
+export const aWinDateEntry = (overrides?: Partial<WinDateEntry>): WinDateEntry => {
+    return {
+        date: overrides && overrides.hasOwnProperty('date') ? overrides.date! : 'temporibus',
+        value: overrides && overrides.hasOwnProperty('value') ? overrides.value! : aSingleWin(),
+    };
+};
+
+export const aSingleWin = (overrides?: Partial<SingleWin>): SingleWin => {
+    return {
+        single: overrides && overrides.hasOwnProperty('single') ? overrides.single! : false,
+    };
+};
+
+export const aMultipleWins = (overrides?: Partial<MultipleWins>): MultipleWins => {
+    return {
+        multiple: overrides && overrides.hasOwnProperty('multiple') ? overrides.multiple! : [false],
+    };
+};
+
+export const aWinRecordCreateParams = (overrides?: Partial<WinRecordCreateParams>): WinRecordCreateParams => {
+    return {
+        orbitId: overrides && overrides.hasOwnProperty('orbitId') ? overrides.orbitId! : '43fa94d2-4347-4c99-af78-506cadea9832',
+        winData: overrides && overrides.hasOwnProperty('winData') ? overrides.winData! : [aWinDateEntryInput()],
+    };
+};
+
+export const aWinRecordUpdateParams = (overrides?: Partial<WinRecordUpdateParams>): WinRecordUpdateParams => {
+    return {
+        winRecordId: overrides && overrides.hasOwnProperty('winRecordId') ? overrides.winRecordId! : '4bf18e6e-d5d6-4ca0-a269-1ce3f8ee2f8c',
+        updatedWinRecord: overrides && overrides.hasOwnProperty('updatedWinRecord') ? overrides.updatedWinRecord! : aWinRecordCreateParams(),
+    };
+};
+
+export const aWinDateEntryInput = (overrides?: Partial<WinDateEntryInput>): WinDateEntryInput => {
+    return {
+        date: overrides && overrides.hasOwnProperty('date') ? overrides.date! : 'perspiciatis',
+        value: overrides && overrides.hasOwnProperty('value') ? overrides.value! : aWinDateValueInput(),
+    };
+};
+
+export const aWinDateValueInput = (overrides?: Partial<WinDateValueInput>): WinDateValueInput => {
+    return {
+        single: overrides && overrides.hasOwnProperty('single') ? overrides.single! : false,
+        multiple: overrides && overrides.hasOwnProperty('multiple') ? overrides.multiple! : [true],
     };
 };
