@@ -83,18 +83,19 @@ export const currentSphereHasCachedNodesAtom = atom<boolean | null>((get) => {
 /**
  * Derived atom to check if a particular Sphere has cached nodes in the IndexDB
  * @returns {boolean | null}
- *  - True if the current sphere has cached nodes, false otherwise
- *  - null if there are no hierarchies associated with this sphere Id
+ *  - True if the current sphere has cached nodes
+ *  - null if there are no hierarchies/not enough data associated with this sphere Id
  */
 export const sphereHasCachedNodesAtom = (sphereId: ActionHashB64) =>
   atom<boolean | null>((get) => {
     const state = get(appStateAtom);
     const selectedSphere = state.spheres.byHash[sphereId];
-    if (!selectedSphere) return false;
+    if (!selectedSphere) return null;
     const rootOrbitHashes = selectedSphere.hierarchyRootOrbitEntryHashes;
     if (!rootOrbitHashes || rootOrbitHashes.length == 0) return null;
     const sphereNodeDetailsCache = get(nodeCache.item(sphereId));
-    if (!sphereNodeDetailsCache) return false;
+    // console.log("sphereNodeDetailsCache :>> ", sphereNodeDetailsCache);
+    if (!sphereNodeDetailsCache) return null;
     // This now strictly checks that we have both an entry in the store (hashes, used for indexing) and an indexDB cache entry for each node.
     // It makes no assurances about staleness of the data or otherwise
 

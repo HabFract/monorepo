@@ -75,32 +75,43 @@ export const mockedCacheEntries = [
   ],
 ];
 
-export const createTestIndexDBAtom = (
-  initialCache: SphereOrbitNodes = Object.fromEntries(mockedCacheEntries)
-) => {
+let customCacheMock;
+
+export const setLatestTestCache = (newCache: object) => {
+  customCacheMock = newCache;
+};
+
+export const createTestIndexDBAtom = (initialCache?) => {
+  const cache = (() => {
+    return Object.fromEntries(initialCache || customCacheMock || []);
+  })();
+
   return {
     items: {
       toString: vi.fn(),
       init: [],
-      read: () => initialCache,
+      read: () => cache,
       write: () => {},
     },
     entries: {
       toString: () => {},
       init: [],
-      read: () => Object.entries(initialCache),
+      read: () => Object.entries(cache),
       write: () => {},
     },
     keys: {
       toString: () => {},
       init: [],
-      read: () => Object.keys(initialCache),
+      read: () => Object.keys(cache),
       write: () => {},
     },
     item: (sphereId: ActionHashB64) => ({
       toString: vi.fn(() => {}),
       init: [],
-      read: () => initialCache[sphereId],
+      read: () => {
+        console.log(cache);
+        return cache[sphereId];
+      },
       write: () => {},
     }),
   };
@@ -132,6 +143,6 @@ const storeMock = {
   sub: vi.fn(),
 };
 
-const mockNodeCache = createTestIndexDBAtom();
+const mockNodeCache = createTestIndexDBAtom(mockedCacheEntries);
 
 export const mockStore = { store: storeMock, nodeCache: mockNodeCache };
