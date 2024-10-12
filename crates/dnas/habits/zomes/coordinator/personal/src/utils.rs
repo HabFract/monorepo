@@ -89,7 +89,33 @@ pub fn win_record_year_month_anchor(year_dot_month: &String) -> ExternResult<Typ
       .typed(LinkTypes::WinRecordYearMonthPrefixPath)
 }
 
-pub fn delete_month_bucket_win_record_link(year_dot_month: &String, target_hash: ActionHash) -> ExternResult<bool> {
+pub fn delete_orbit_to_win_record_link(orbit_hash: EntryHash, target_hash: EntryHash) -> ExternResult<bool> {
+    let maybe_replaceable_links: Option<Vec<Link>> = orbit_to_win_record_links(orbit_hash)?;
+    let replaceable_links: Vec<Vec<Link>> = maybe_replaceable_links
+        .into_iter()
+        .filter(|all_links| {
+            all_links.iter()
+                    .find(|l| l.target == target_hash.clone().into())
+                    .take()
+                    .is_some()
+        })
+        .collect();
+    match replaceable_links.len() {
+        1 => {
+            if let Some(target_link) = replaceable_links[0]
+                .iter()
+                .find(|&l| l.target == target_hash.clone().into())
+                .take()
+            {
+                delete_link(target_link.create_link_hash.clone())?;
+            }
+            Ok(true)
+        }
+        _ => Ok(false),
+    }
+}
+
+pub fn delete_month_bucket_win_record_link(year_dot_month: &String, target_hash: EntryHash) -> ExternResult<bool> {
     let maybe_replaceable_links: Option<Vec<Link>> = get_path_links_from_year_dot_month(year_dot_month)?;
     let replaceable_links: Vec<Vec<Link>> = maybe_replaceable_links
         .into_iter()

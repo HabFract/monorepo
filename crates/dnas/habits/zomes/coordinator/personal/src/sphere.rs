@@ -168,7 +168,6 @@ fn _agent_to_sphere_links() -> ExternResult<Option<Vec<Link>>> {
         GetLinksInputBuilder::try_new(agent_address.clone(), LinkTypes::AgentToSphere)?
             .build()
         )?;
-    // debug!("---- LINKS ---- {:#?}", links);
     if links.len() == 0 {
         return Ok(None);
     }

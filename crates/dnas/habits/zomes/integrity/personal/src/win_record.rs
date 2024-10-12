@@ -6,7 +6,7 @@ use hdi::prelude::*;
 #[derive(Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct WinRecord {
-    pub orbit_id: EntryHashB64,
+    pub orbit_eh: EntryHashB64,
     pub win_data: WinData,
 }
 
