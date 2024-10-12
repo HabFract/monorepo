@@ -1,8 +1,12 @@
-use crate::utils::{extract_year_dot_month, get_latest, get_links_from_base, group_win_data_by_year_dot_month};
+use crate::utils::{
+    delete_month_bucket_win_record_link, entry_from_record, extract_year_dot_month, get_latest,
+    get_path_links_from_year_dot_month, group_win_data_by_year_dot_month,
+    win_record_year_month_anchor,
+};
 use hdk::prelude::*;
 use personal_integrity::*;
 
-/// Take a set of WinData (which we assume is not confined to a particular month), bucket it into months and create linked WinRecords for each month
+/// Take a set of WinData (which we assume is not confined to a particular month), bucket it into months and create or update linked WinRecords for each month
 #[hdk_extern]
 pub fn create_or_update_win_records(win_record: WinRecord) -> ExternResult<Vec<Record>> {
     let bucketed_win_data = group_win_data_by_year_dot_month(&win_record.win_data);
@@ -11,11 +15,11 @@ pub fn create_or_update_win_records(win_record: WinRecord) -> ExternResult<Vec<R
         let orbit_id_clone = win_record.orbit_id.clone();
         // TODO:
         // - first check if one exists already for that orbit id and if so update it instead
-            let win_record = create_or_update_win_record(WinRecord{
-                orbit_id: orbit_id_clone,
-                win_data: win_data_month_bucket
-            })?;
-            created_records.push(win_record);
+        let win_record = create_or_update_win_record(WinRecord {
+            orbit_id: orbit_id_clone,
+            win_data: win_data_month_bucket,
+        })?;
+        created_records.push(win_record);
     }
     Ok(created_records)
 }
@@ -28,10 +32,15 @@ pub fn create_or_update_win_record(win_record: WinRecord) -> ExternResult<Record
         WasmErrorInner::Guest(String::from("Could not find the newly created WinRecord"))
     ))?;
     let date_indices = win_record.win_data.keys();
-    let date_index = date_indices.clone().next().expect("This is an empty WinRecord");
-    let prefix = extract_year_dot_month(date_index.as_str()).ok_or(wasm_error!(
-        WasmErrorInner::Guest(String::from("Could not parse provided WinData date index into YYYY.MM"))
-    )).expect("This is not a valid WinData index");
+    let date_index = date_indices
+        .clone()
+        .next()
+        .expect("This is an empty WinRecord");
+    let prefix = extract_year_dot_month(date_index.as_str())
+        .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+            "Could not parse provided WinData date index into YYYY.MM"
+        ))))
+        .expect("This is not a valid WinData index");
     let path = win_record_year_month_anchor(&prefix)?;
     path.ensure()?;
 
@@ -42,8 +51,6 @@ pub fn create_or_update_win_record(win_record: WinRecord) -> ExternResult<Record
         LinkTypes::WinRecordYearMonthPrefixPath,
         (),
     )?;
-
-    debug!("---- CREATED LINK ---- {:#?}", _link);
 
     Ok(record)
 }
@@ -63,21 +70,36 @@ pub struct UpdateWinRecordInput {
 
 #[hdk_extern]
 pub fn update_win_record(input: UpdateWinRecordInput) -> ExternResult<Option<Record>> {
+    // Update entry
     let updated_win_record_hash =
         update_entry(input.win_record_id.clone(), &input.updated_win_record)?;
 
-    // let _link_deleted = delete_win_record_hash_link(
-    //     input.updated_win_record.win_record_hash.clone().into(),
-    //     input.original_win_record_hash.clone(),
-    // )?; TODO: need to delete and replace all old win_record orbit links?
+    // Clean up links related to old action
+    let old_record =
+        get(input.win_record_id.clone(), GetOptions::default())?.ok_or(wasm_error!(
+            WasmErrorInner::Guest(String::from("Could not find the original WinRecord"))
+        ))?;
+    let old_win_record = entry_from_record::<WinRecord>(old_record.clone())?;
+    let _old_entry_hash = hash_entry(&old_win_record)?;
+    let date_indices = input.updated_win_record.win_data.keys();
+    let date_index = date_indices
+        .clone()
+        .next()
+        .expect("This is an empty WinRecord");
+    let prefix = extract_year_dot_month(date_index.as_str()).ok_or(wasm_error!(
+        WasmErrorInner::Guest(String::from("Could not parse prefix from WinRecord key"))
+    ))?;
+    let _link_deleted = delete_month_bucket_win_record_link(&prefix, input.win_record_id)?;
 
-    // // Create win_record link to updated header
-    // create_link(
-    //     input.updated_win_record.win_record_hash.clone(), // Assume the WinRecord cannot be change and validation will be added to ensure this
-    //     updated_win_record_hash.clone(),
-    //     LinkTypes::WinRecordToOrbit,
-    //     (),
-    // )?;
+    let path = win_record_year_month_anchor(&prefix)?;
+    path.ensure()?;
+    // Create new link from YYYYMM path to related update action
+    create_link(
+        path.path_entry_hash()?,
+        updated_win_record_hash.clone(),
+        LinkTypes::WinRecordYearMonthPrefixPath,
+        (),
+    )?;
 
     get_latest(updated_win_record_hash.clone())
 }
@@ -95,13 +117,7 @@ pub struct OrbitWinRecordQueryParams {
 pub fn get_an_orbits_win_record_for_month(
     params: OrbitWinRecordQueryParams,
 ) -> ExternResult<Vec<Record>> {
-    let path = win_record_year_month_anchor(&params.year_dot_month)?;
-    path.ensure()?;
-    let maybe_links = win_record_year_month_anchor_links(
-        path.path_entry_hash()
-            .expect("This will be an entry hash")
-            .into(),
-    )?;
+    let maybe_links = get_path_links_from_year_dot_month(&params.year_dot_month)?;
 
     if let Some(links) = maybe_links {
         let mut query_hashes: HashSet<EntryHash> = HashSet::new();
@@ -131,13 +147,7 @@ pub fn get_an_orbits_win_record_for_month(
 
 #[hdk_extern]
 pub fn get_all_orbit_win_records_for_month(year_dot_month: String) -> ExternResult<Vec<Record>> {
-    let path = win_record_year_month_anchor(&year_dot_month)?;
-    path.ensure()?;
-    let maybe_links = win_record_year_month_anchor_links(
-        path.path_entry_hash()
-            .expect("This will be an entry hash")
-            .into(),
-    )?;
+    let maybe_links = get_path_links_from_year_dot_month(&year_dot_month)?;
 
     if let Some(links) = maybe_links {
         let mut query_hashes: HashSet<EntryHash> = HashSet::new();
@@ -162,19 +172,4 @@ pub fn get_all_orbit_win_records_for_month(year_dot_month: String) -> ExternResu
         return Ok(my_win_records);
     }
     Ok(vec![])
-}
-
-/** Private helpers
-
- */
-
-
-/// Link/path helpers
-fn win_record_year_month_anchor(year_dot_month: &String) -> ExternResult<TypedPath> {
-    Path::from(format!("win_record.{}", year_dot_month))
-        .typed(LinkTypes::WinRecordYearMonthPrefixPath)
-}
-
-fn win_record_year_month_anchor_links(path_hash: EntryHash) -> ExternResult<Option<Vec<Link>>> {
-    get_links_from_base(path_hash, LinkTypes::WinRecordYearMonthPrefixPath, None)
 }

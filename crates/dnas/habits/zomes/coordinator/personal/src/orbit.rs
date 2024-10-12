@@ -674,7 +674,7 @@ fn copy_level_link(sphere_hash: EntryHash, old_hash: EntryHash, new_hash: EntryH
     )?;
 
     if let Some(links) = sphere_level_links {
-        let mut target_level_link = links
+        let target_level_link = links
             .into_iter()
             .filter(|link| link.clone().target == old_hash.clone().into())
             .take(1)
