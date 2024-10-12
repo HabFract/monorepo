@@ -13,7 +13,7 @@ import { currentOrbitIdAtom } from "../../state/orbit";
 import { useDeriveAndCacheHierarchyPaths } from "../../hooks/useDeriveAndCacheHierarchyPaths";
 import { TreeVisualization } from "./base-classes/TreeVis";
 import { byStartTime, determineNewLevelIndex, parseAndSortTrees } from "./helpers";
-import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, checkHierarchyCached, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
+import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, checkNewDescendantsAdded, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state";
 import { AppMachine } from "../../main";
 
@@ -26,13 +26,12 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 }) => {
   // ## -- Router level state -- ##
   const [_state, transition, params] = useStateTransition();
-  console.log('sphere :>> ', sphere);
-  // console.log('_state, AppMachine.state.current :>> ', _state, AppMachine.state.current);
+
   // ## -- Component level state -- ##
   const [json, setJson] = useState<string | null>(null);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<TreeVisualization | null>(null);
-  const [hasCachedNodes, setHasCachedNodes] = useState<boolean>(false); // Caching of OrbitNodeDetails
   const [usedCachedHierarchy, setUsedCachedHierarchy] = useState<boolean>(false); // Caching of hierarchy in Apollo client
+  const [hasCachedPaths, setHasCachedPaths] = useState<boolean>(false); // Caching of hierarchy paths for appendage in the vis
   const [canTriggerNextTreeVisRender, setCanTriggerNextTreeVisRender] = useState<boolean>(false);
 
   // ## -- Data fetching hooks -- ##
@@ -51,7 +50,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const {
     nodeDetailsCache: sphereNodeDetails,
     hasNodes,
-    nodes,
     setBreadthBounds,
     depthBounds,
     setDepthBounds,
@@ -61,6 +59,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     setBreadthIndex,
   } = useOrbitTreeData(sphere);
 
+  const [hasCachedNodes, _] = useState<boolean>(!!hasNodes); // Caching of OrbitNodeDetails
 
   // -- Memoised parameters/flags  --
 
@@ -139,8 +138,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     setBreadthIndex(isNewLevelXIndexValid ? newLevelXIndex : breadthIndex);
 
     handleZoomerInitialization(currentOrbitTree, visCoverage);
-
-    setHasCachedNodes(checkHierarchyCached(sortedTrees, currentOrbitTree));
   };
 
 
@@ -148,18 +145,15 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const processHierarchyLevelAndFetchNext = async (newJson) => {
     await processNewHierarchyLevel(newJson);
     const nextLevelQuery = getQueryParams(y + 1);
-    usePrefetchNextLevel(nextLevelQuery, true);
+    usePrefetchNextLevel(nextLevelQuery!, true);
   };
-
 
   // Caches link paths for each node on the current hierarchy which will be appended to the partial Visualisation types for visual continuity when traversing deeper than the root
   const { cache } = useDeriveAndCacheHierarchyPaths({
-    params: getQueryParams(dataLevel?.getLowestSphereHierarchyLevel || 0),
+    currentTree: currentOrbitTree!,
     currentSphereId: sphere.actionHash as string,
-    bypassFetch: usedCachedHierarchy,
     bypassEntirely: !sphere.entryHash || !hasCachedNodes,
   });
-
 
   // ## -- Execution of effect callbacks  -- ##
 
@@ -221,16 +215,17 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // Trigger caching of link paths needed for visual continuity
   useEffect(() => {
-    if (!hasCachedNodes && cache !== null) {
+    const isBaseLevel = dataLevel && getQueryParams()?.levelQuery?.orbitLevel !== dataLevel.getLowestSphereHierarchyLevel;
+    console.log('isBaseLevel :>> ', isBaseLevel);
+    if (hasCachedPaths || cache == null|| !isBaseLevel || currentOrbitTree == null) return;
       try {
-        console.log('Cached hierarchy link paths for visual continuity...');
+        console.log('Cached hierarchy link paths for visual continuity from base level: ', dataLevel);
         cache();
-        setHasCachedNodes(true);
+        setHasCachedPaths(true);
       } catch (error) {
         console.error(error);
       }
-    }
-  }, [cache, hasCachedNodes]);
+  }, [currentOrbitTree]);
 
   // ## -- RENDER  -- ##
   return (

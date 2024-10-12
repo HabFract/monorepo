@@ -39,14 +39,8 @@ import {
   SIX_CHILDREN_RIGHT_2,
   SIX_CHILDREN_RIGHT_3,
 } from "../components/vis/links/paths";
-import { useEffect, useState } from "react";
-import {
-  OrbitHierarchyQueryParams,
-  useGetOrbitHierarchyQuery,
-} from "../graphql/generated";
 import { nodeCache, store } from "../state/store";
 import { currentSphereOrbitNodesAtom, getOrbitIdFromEh } from "../state/orbit";
-import { hierarchy, HierarchyNode } from "d3-hierarchy";
 import { ActionHashB64 } from "@holochain/client";
 import {
   ONE_CHILD,
@@ -58,60 +52,34 @@ import {
 import { byStartTime, isSmallScreen } from "../components/vis/helpers";
 import { SphereOrbitNodes } from "../state/types/sphere";
 import { OrbitNodeDetails } from "../state";
+import { TreeVisualization } from "../components/vis/base-classes/TreeVis";
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsProps {
-  params: OrbitHierarchyQueryParams;
+  currentTree: TreeVisualization;
   currentSphereId: ActionHashB64;
-  bypassFetch: boolean;
   bypassEntirely: boolean;
 }
 
 interface UseFetchAndCacheRootHierarchyOrbitPathsReturn {
-  loading: boolean;
-  error?: Error;
   cache: Function | null;
 }
 
 export const useDeriveAndCacheHierarchyPaths = ({
-  params,
+  currentTree,
   currentSphereId,
-  bypassFetch,
   bypassEntirely,
 }: UseFetchAndCacheRootHierarchyOrbitPathsProps): UseFetchAndCacheRootHierarchyOrbitPathsReturn => {
-  if (bypassEntirely) return { loading: false, error: undefined, cache: null };
+  if (bypassEntirely || !currentTree) return { cache: null };
   if (!currentSphereId) {
     console.error("Cannot run hook without a sphere Id");
     return {
-      loading: false,
-      error: new Error("Cannot run hook without a sphere Id"),
       cache: null,
     };
   }
   const sphereNodes = store.get(
     currentSphereOrbitNodesAtom
   ) as SphereOrbitNodes;
-  console.log("currentSphereId :>> ", currentSphereId);
-  const { data, loading, error } = useGetOrbitHierarchyQuery({
-    variables: { params },
-    skip: bypassFetch,
-  });
 
-  const [hierarchyObject, setHierarchyObject] =
-    useState<HierarchyNode<unknown>>();
-
-  useEffect(() => {
-    if (data) {
-      let parsedData = JSON.parse(data.getOrbitHierarchy);
-      // Continue parsing if the result is still a string, this undoes more than one level of JSONification
-      while (typeof parsedData === "string") {
-        parsedData = JSON.parse(parsedData);
-      }
-
-      setHierarchyObject(
-        hierarchy(parsedData.result.level_trees[0]).sort(byStartTime)
-      );
-    }
-  }, [data]);
 
   function cacheOrbitPaths(d3Hierarchy: object): boolean {
     let cached = false;
@@ -146,6 +114,7 @@ export const useDeriveAndCacheHierarchyPaths = ({
     function cachePath(id: string, path: string | null) {
       if (typeof id != "string" || path == null) return;
       const cacheNodeItem = { ...sphereNodes[id] } as OrbitNodeDetails;
+      console.log('cacheNodeItem :>> ', cacheNodeItem);
       cacheNodeItem.path = path;
       workingSphereNodes[id] = cacheNodeItem;
     }
@@ -179,15 +148,13 @@ export const useDeriveAndCacheHierarchyPaths = ({
     }
   }
 
-  const cache = !!hierarchyObject
+  const cache = !!currentTree.rootData
     ? function () {
-        cacheOrbitPaths(hierarchyObject);
+        cacheOrbitPaths(currentTree.rootData);
       }
     : null;
 
   return {
-    loading,
-    error,
     cache,
   };
 };

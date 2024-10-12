@@ -19,7 +19,6 @@ import { useNodeTraversal } from "./useNodeTraversal";
  * @returns An object containing various state values and setters
  */
 export const useOrbitTreeData = (sphereHashes) => {
-  const nodes = useAtomValue(currentSphereOrbitNodesAtom);
   const hasNodes = useAtomValue(currentSphereHasCachedNodesAtom);
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [, setBreadthBounds] = useAtom(setBreadths);
@@ -35,7 +34,6 @@ export const useOrbitTreeData = (sphereHashes) => {
   return {
     nodeDetailsCache,
     hasNodes,
-    nodes,
     hierarchyBounds,
     setBreadthBounds,
     depthBounds,

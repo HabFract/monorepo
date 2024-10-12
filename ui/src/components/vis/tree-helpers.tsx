@@ -137,7 +137,6 @@ export const fetchHierarchyDataForLevel = async ({
       query: GetOrbitHierarchyDocument,
       variables: { params: { ...query } },
     });
-    console.log('cachedData :>> ', cachedData);
   } catch (error) {
     console.error("Couldn't get client or data from Apollo cache")
   }
@@ -178,12 +177,13 @@ export const calculateAndSetBreadthBounds = (setBreadthBounds, params, visCovera
 };
 
 /**
- * Checks if the hierarchy has been cached
+ * Checks if the hierarchy has new nodes that have been added which may not be present in the hierarchy data yet
  * @param sorted - Sorted hierarchy data
  * @param currentOrbitTree - Current orbit tree visualization
- * @returns Boolean indicating if the hierarchy is cached
+ * @returns Boolean indicating if there are new nodes
  */
-export const checkHierarchyCached = (sorted, currentOrbitTree) => {
+export const checkNewDescendantsAdded = (sorted, currentOrbitTree): boolean => {
+  if(!currentOrbitTree.rootData) return false;
   const newHierarchyDescendants = hierarchy(sorted[0])?.sort(byStartTime)?.descendants()?.length;
   const oldHierarchyDescendants = currentOrbitTree?.rootData.descendants().length;
   return newHierarchyDescendants === oldHierarchyDescendants;
