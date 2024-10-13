@@ -1,13 +1,15 @@
 import React, { act, useMemo } from 'react';
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach, beforeAll } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useAtom } from 'jotai';
-import mockAppState from './mocks/mockAppState';
+import mockAppState, { mockAppStateSphereNoOrbits, SPHERE_ID } from './mocks/mockAppState';
 import { renderWithJotai, TestProvider } from '../utils-frontend';
-import { appStateAtom } from '../../ui/src/state/store';
+import { appStateAtom, nodeCache } from '../../ui/src/state/store';
 import { Frequency } from '../../ui/src/state/types/orbit';
 import { currentSphereDetailsAtom, currentSphereHasCachedNodesAtom, currentSphereHashesAtom, sphereHasCachedNodesAtom } from '../../ui/src/state/sphere';
+
+
 import {
   currentOrbitDetailsAtom, currentOrbitIdAtom, currentSphereOrbitNodesAtom, getOrbitNodeDetailsFromIdAtom, setOrbitWithEntryHashAtom, getOrbitFrequency,
   orbitWinDataAtom, calculateStreakAtom,
@@ -16,16 +18,19 @@ import {
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { calculateCompletionStatusAtom } from '../../ui/src/state/hierarchy';
 import { resetMocks } from '../setup';
-import { createTestIndexDBAtom, mockedCacheEntries, setLatestTestCache } from '../setupMockStore';
-
-beforeEach(() => {
-  resetMocks()
-})
-afterEach(() => {
-  cleanup();
-});
+import { addCustomMock, clearCustomMocks, createTestIndexDBAtom, mockedCacheEntries } from '../setupMockStore';
 
 describe('Sphere selectors', () => {
+  beforeAll(() => {
+    resetMocks()
+    clearCustomMocks();
+    addCustomMock('all', mockedCacheEntries);
+    // addCustomMock('partial', [[SPHERE_ID, {}]]);
+  })
+  afterEach(() => {
+    cleanup();
+  });
+
   describe('AppState - currentSphereHashesAtom', () => {
     it('should return the current sphere hashes when a sphere is selected', () => {
       const TestComponent = () => {
@@ -164,13 +169,16 @@ describe('Sphere selectors', () => {
       expect(screen.getByText('null')).toBeTruthy();
     });
 
-    it.skip('should return false when the sphere hash is valid but has no cached nodes', () => {
+    it('should return false when the sphere hash is valid but has no cached nodes', async () => {
+      clearCustomMocks();
+      addCustomMock('partial', [[SPHERE_ID, {}]]);
+
       const TestComponent = () => {
         const hasCachedNodesAtom = useMemo(() => sphereHasCachedNodesAtom(mockAppState.spheres.currentSphereHash), [mockAppState.spheres.currentSphereHash]);
         const [hasCachedNodes] = useAtom(hasCachedNodesAtom);
         return <div>{hasCachedNodes!.toString()}</div>;
       };
-      renderWithJotai(<TestComponent />)
+      await renderWithJotai(<TestComponent />, { initialState: mockAppStateSphereNoOrbits })
 
       expect(screen.getByText('false')).toBeTruthy();
     });
@@ -211,6 +219,14 @@ describe('Sphere selectors', () => {
 });
 
 describe('Orbit selectors', () => {
+  beforeEach(() => {
+    resetMocks()
+    clearCustomMocks();
+    // addCustomMock('all', mockedCacheEntries);
+  })
+  afterEach(() => {
+    cleanup();
+  });
   describe('IndexDB - currentOrbitDetailsAtom', () => {
     const TestComponent = () => {
       const [orbitDetails] = useAtom(currentOrbitDetailsAtom);
@@ -230,7 +246,7 @@ describe('Orbit selectors', () => {
       expect(screen.getByTestId('orbitDetails').textContent).toBe('null');
     });
 
-    it.only('should return the details of the selected orbit', async () => {
+    it('should return the details of the selected orbit', async () => {
       renderWithJotai(<TestComponent />);
 
       const orbitDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || 'null');

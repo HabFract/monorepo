@@ -127,4 +127,45 @@ export const mockAppState: AppState = {
   },
 };
 
+export const mockAppStateSphereNoOrbits: AppState = {
+  spheres: {
+    currentSphereHash: SPHERE_ID,
+    byHash: {
+      [SPHERE_ID]: {
+        details: {
+          entryHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
+          name: "Health and Fitness",
+          description: "Focus on physical health, exercise, and nutrition.",
+          hashtag: "fitness",
+          image: placeholderImageBase64,
+        },
+        hierarchyRootOrbitEntryHashes: [], // No root orbit entry hashes
+      },
+    },
+  },
+  hierarchies: {
+    byRootOrbitEntryHash: {
+      // This could be empty or contain a placeholder for a sphere with no nodes
+      // If keeping a placeholder, ensure it reflects a state with no children/nodes
+    },
+  },
+  orbitNodes: {
+    currentOrbitHash: "", // Or `null`, depending on how your application expects to handle this
+    byHash: {
+      // Empty, reflecting no nodes
+    },
+  },
+  wins: {
+    // Adjust according to the logic for handling wins in the absence of nodes
+    // Likely empty if wins are only associated with leaf nodes
+  },
+  ui: {
+    listSortFilter: {
+      sortCriteria: "name",
+      sortOrder: "lowestToGreatest",
+    },
+    currentDay: "2024-09-03",
+  },
+};
+
 export default mockAppState;

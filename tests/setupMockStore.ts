@@ -1,7 +1,6 @@
 import { vi } from "vitest";
 import mockAppState from "./integration/mocks/mockAppState";
 
-import { SphereOrbitNodes } from "../ui/src/state";
 import { ActionHashB64 } from "@holochain/client";
 import { Frequency } from "../ui/src/state/types";
 import { SPHERE_ID } from "./integration/mocks/mockAppState";
@@ -74,17 +73,10 @@ export const mockedCacheEntries = [
     },
   ],
 ];
-
-let customCacheMock;
-
-export const setLatestTestCache = (newCache: object) => {
-  customCacheMock = newCache;
-};
+const customMocks = new Map<ActionHashB64, any>();
 
 export const createTestIndexDBAtom = (initialCache?) => {
-  const cache = (() => {
-    return Object.fromEntries(initialCache || customCacheMock || []);
-  })();
+  const cache = Object.fromEntries(initialCache || []);
 
   return {
     items: {
@@ -105,16 +97,43 @@ export const createTestIndexDBAtom = (initialCache?) => {
       read: () => Object.keys(cache),
       write: () => {},
     },
-    item: (sphereId: ActionHashB64) => ({
-      toString: vi.fn(() => {}),
-      init: [],
-      read: () => {
-        console.log(cache);
-        return cache[sphereId];
-      },
-      write: () => {},
-    }),
+    item: (sphereId: ActionHashB64) => {
+      const customMock = customMocks.get("partial");
+      if (customMock) {
+        return {
+          toString: vi.fn(() => {}),
+          init: [],
+          read: () => {
+            return customMock?.[sphereId];
+          },
+          write: () => {},
+        };
+      }
+      return {
+        toString: vi.fn(() => {}),
+        init: [],
+        read: () => {
+          return cache[sphereId];
+        },
+        write: () => {},
+      };
+    },
   };
+  mockedCacheEntries;
+};
+
+// Function to add custom mocks
+export const addCustomMock = (
+  descriptor: string,
+  mock: Partial<typeof mockedCacheEntries>
+) => {
+  customMocks.set(descriptor, Object.fromEntries(mock as any));
+  // console.log("new custommock :>> ", descriptor, customMocks.get(descriptor));
+};
+
+// Function to clear all custom mocks (useful in beforeEach or afterEach hooks)
+export const clearCustomMocks = () => {
+  customMocks.clear();
 };
 
 const currentSphereHash = mockAppState.spheres.currentSphereHash;
