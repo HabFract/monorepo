@@ -1,28 +1,26 @@
 import React, { act, useMemo } from 'react';
 import { ActionHashB64, EntryHashB64 } from '@holochain/client';
 import { describe, it, expect, beforeEach, vi, afterEach, beforeAll } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useAtom } from 'jotai';
 
 import mockAppState, { mockAppStateSphereNoOrbits, SPHERE_ID } from './mocks/mockAppState';
-import { renderWithJotai, TestProvider } from '../utils-frontend';
+import { renderWithJotai } from '../utils-frontend';
 import { currentSphereDetailsAtom, currentSphereHasCachedNodesAtom, currentSphereHashesAtom, getSphereIdFromEhAtom, sphereHasCachedNodesAtom } from '../../ui/src/state/sphere';
 import { resetMocks } from '../setup';
-import { addCustomMock, clearCustomMocks, createTestIndexDBAtom, mockedCacheEntries } from '../setupMockStore';
+import { addCustomMock, clearCustomMocks, mockedCacheEntries } from '../setupMockStore';
 
 import {
   currentOrbitDetailsAtom, currentOrbitIdAtom, currentSphereOrbitNodesAtom, getOrbitNodeDetailsFromIdAtom, setOrbitWithEntryHashAtom, getOrbitFrequency,
-  orbitWinDataAtom, calculateStreakAtom,
-  setWinForOrbit,
   getOrbitNodeDetailsFromEhAtom,
-  currentSphereOrbitNodeDetailsAtom
+  currentSphereOrbitNodeDetailsAtom,
+  getCurrentSphereOrbitNodeDetailsFromEhAtom,
+  getCurrentOrbitStartTimeFromEh,
+  getOrbitIdFromEh,
+  getOrbitEhFromId,
+  orbitWinDataAtom
 } from '../../ui/src/state/orbit';
-import { appStateAtom, nodeCache } from '../../ui/src/state/store';
-import { Frequency } from '../../ui/src/state/types/orbit';
-import { calculateCompletionStatusAtom } from '../../ui/src/state/hierarchy';
-import { initialState } from '@ui/src/routes';
-import { SphereOrbitNodeDetails } from '../../ui/src/state/types';
 
 describe('Sphere selectors', () => {
   beforeAll(() => {
@@ -136,6 +134,87 @@ describe('Sphere selectors', () => {
     });
   });
 
+  describe('AppState - getSphereIdFromEhAtom', () => {
+    const mockAppStateWithSpheres = {
+      ...mockAppState,
+      spheres: {
+        byHash: {
+          'sphere1': { details: { entryHash: 'sphereEH1' } },
+          'sphere2': { details: { entryHash: 'sphereEH2' } },
+          'sphere3': { details: { entryHash: 'sphereEH3' } },
+        },
+        currentSphereHash: 'sphere1',
+      },
+    };
+
+    const TestComponent = ({ sphereEh }: { sphereEh: string }) => {
+      const sphereIdAtom = useMemo(() => getSphereIdFromEhAtom(sphereEh), [sphereEh]);
+      const [sphereId] = useAtom(sphereIdAtom);
+      return <div data-testid="sphereId">{sphereId || 'null'}</div>;
+    };
+
+    it('should return the correct sphere id when the sphere exists', () => {
+      renderWithJotai(<TestComponent sphereEh="sphereEH2" />, { initialState: mockAppStateWithSpheres as any });
+
+      expect(screen.getByTestId('sphereId').textContent).toBe('sphere2');
+    });
+
+    it('should return null when the sphere does not exist', () => {
+      renderWithJotai(<TestComponent sphereEh="nonExistentSphereEH" />, { initialState: mockAppStateWithSpheres as any });
+
+      expect(screen.getByTestId('sphereId').textContent).toBe('null');
+    });
+
+    it('should return null when the spheres object is empty', () => {
+      const emptySpheresState = {
+        ...mockAppStateWithSpheres,
+        spheres: {
+          byHash: {},
+          currentSphereHash: '',
+        },
+      };
+
+      renderWithJotai(<TestComponent sphereEh="sphereEH1" />, { initialState: emptySpheresState });
+
+      expect(screen.getByTestId('sphereId').textContent).toBe('null');
+    });
+
+    it('should return the correct sphere id when multiple spheres exist', () => {
+      renderWithJotai(<TestComponent sphereEh="sphereEH3" />, { initialState: mockAppStateWithSpheres as any });
+
+      expect(screen.getByTestId('sphereId').textContent).toBe('sphere3');
+    });
+  });
+
+  describe('AppState - sphereHasCachedNodesAtom', () => {
+    it('should return null when there are no hierarchies for the sphere', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        spheres: {
+          ...mockAppState.spheres,
+          byHash: {
+            ...mockAppState.spheres.byHash,
+            [mockAppState.spheres.currentSphereHash]: {
+              ...mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash],
+              hierarchyRootOrbitEntryHashes: [],
+            },
+          },
+        },
+      };
+
+      const TestComponent = () => {
+        const sphereId = mockAppState.spheres.currentSphereHash;
+        const sphereHasCachedNodesAtomMemo = useMemo(() => sphereHasCachedNodesAtom(sphereId), [sphereId])
+        const [hasCachedNodes] = useAtom(sphereHasCachedNodesAtomMemo);
+        return <div>{hasCachedNodes === null ? 'null' : hasCachedNodes.toString()}</div>;
+      };
+
+      renderWithJotai(<TestComponent />, { initialState: modifiedMockState as any });
+
+      expect(screen.getByText('null')).toBeTruthy();
+    });
+  });
+
   describe('IndexDB - currentSphereHasCachedNodesAtom', () => {
     it('should return false when no sphere is selected', () => {
       const modifiedMockState = {
@@ -233,87 +312,6 @@ describe('Sphere selectors', () => {
       expect(screen.getByText('null')).toBeTruthy();
     });
   });
-
-  describe('AppState - getSphereIdFromEhAtom', () => {
-    const mockAppStateWithSpheres = {
-      ...mockAppState,
-      spheres: {
-        byHash: {
-          'sphere1': { details: { entryHash: 'sphereEH1' } },
-          'sphere2': { details: { entryHash: 'sphereEH2' } },
-          'sphere3': { details: { entryHash: 'sphereEH3' } },
-        },
-        currentSphereHash: 'sphere1',
-      },
-    };
-
-    const TestComponent = ({ sphereEh }: { sphereEh: string }) => {
-      const sphereIdAtom = useMemo(() => getSphereIdFromEhAtom(sphereEh), [sphereEh]);
-      const [sphereId] = useAtom(sphereIdAtom);
-      return <div data-testid="sphereId">{sphereId || 'null'}</div>;
-    };
-
-    it('should return the correct sphere id when the sphere exists', () => {
-      renderWithJotai(<TestComponent sphereEh="sphereEH2" />, { initialState: mockAppStateWithSpheres as any });
-
-      expect(screen.getByTestId('sphereId').textContent).toBe('sphere2');
-    });
-
-    it('should return null when the sphere does not exist', () => {
-      renderWithJotai(<TestComponent sphereEh="nonExistentSphereEH" />, { initialState: mockAppStateWithSpheres as any });
-
-      expect(screen.getByTestId('sphereId').textContent).toBe('null');
-    });
-
-    it('should return null when the spheres object is empty', () => {
-      const emptySpheresState = {
-        ...mockAppStateWithSpheres,
-        spheres: {
-          byHash: {},
-          currentSphereHash: '',
-        },
-      };
-
-      renderWithJotai(<TestComponent sphereEh="sphereEH1" />, { initialState: emptySpheresState });
-
-      expect(screen.getByTestId('sphereId').textContent).toBe('null');
-    });
-
-    it('should return the correct sphere id when multiple spheres exist', () => {
-      renderWithJotai(<TestComponent sphereEh="sphereEH3" />, { initialState: mockAppStateWithSpheres as any });
-
-      expect(screen.getByTestId('sphereId').textContent).toBe('sphere3');
-    });
-  });
-
-  describe('AppState - sphereHasCachedNodesAtom', () => {
-    it('should return null when there are no hierarchies for the sphere', () => {
-      const modifiedMockState = {
-        ...mockAppState,
-        spheres: {
-          ...mockAppState.spheres,
-          byHash: {
-            ...mockAppState.spheres.byHash,
-            [mockAppState.spheres.currentSphereHash]: {
-              ...mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash],
-              hierarchyRootOrbitEntryHashes: [],
-            },
-          },
-        },
-      };
-
-      const TestComponent = () => {
-        const sphereId = mockAppState.spheres.currentSphereHash;
-        const sphereHasCachedNodesAtomMemo = useMemo(() => sphereHasCachedNodesAtom(sphereId), [sphereId])
-        const [hasCachedNodes] = useAtom(sphereHasCachedNodesAtomMemo);
-        return <div>{hasCachedNodes === null ? 'null' : hasCachedNodes.toString()}</div>;
-      };
-
-      renderWithJotai(<TestComponent />, { initialState: modifiedMockState as any });
-
-      expect(screen.getByText('null')).toBeTruthy();
-    });
-  });
 });
 
 describe('Orbit selectors', () => {
@@ -325,6 +323,157 @@ describe('Orbit selectors', () => {
   })
   afterEach(() => {
     cleanup();
+  });
+
+  describe('AppState - currentOrbitIdAtom', () => {
+    const TestComponent = () => {
+      const [currentOrbitId, setCurrentOrbitId] = useAtom(currentOrbitIdAtom);
+      return (
+        <div>
+          <div data-testid="currentOrbitId">{JSON.stringify(currentOrbitId)}</div>
+          <button onClick={() => setCurrentOrbitId('newOrbitId')}>Set New Orbit</button>
+        </div>
+      );
+    };
+
+    it('should return null when no orbit is selected', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        orbitNodes: {
+          ...mockAppState.orbitNodes,
+          currentOrbitHash: null,
+        },
+      };
+      renderWithJotai(<TestComponent />, { initialState: modifiedMockState });
+
+      expect(screen.getByTestId('currentOrbitId').textContent).toBe('null');
+    });
+
+    it('should return the current orbit id when an orbit is selected', () => {
+      renderWithJotai(<TestComponent />);
+
+      const currentOrbitId = JSON.parse(screen.getByTestId('currentOrbitId').textContent || 'null');
+      expect(currentOrbitId).not.toBeNull();
+      expect(currentOrbitId.id).toBe(mockAppState.orbitNodes.currentOrbitHash);
+    });
+
+    it('should update the current orbit id when set', async () => {
+      renderWithJotai(<TestComponent />);
+
+      await act(async () => {
+        await userEvent.click(screen.getByText('Set New Orbit'));
+      });
+
+      const updatedOrbitId = JSON.parse(screen.getByTestId('currentOrbitId').textContent || 'null');
+      expect(updatedOrbitId).not.toBeNull();
+      expect(updatedOrbitId.id).toBe('newOrbitId');
+    });
+  });
+
+  describe('AppState - getOrbitIdFromEh', () => {
+    const TestComponent = ({ orbitEh }: { orbitEh: EntryHashB64 }) => {
+      const orbitIdAtom = useMemo(() => getOrbitIdFromEh(orbitEh), [orbitEh]);
+      const [orbitId] = useAtom(orbitIdAtom);
+      return <div data-testid="orbitId">{orbitId || 'null'}</div>;
+    };
+
+    it('should return the correct orbit id when the orbit exists', () => {
+      const orbitEh = mockAppState.orbitNodes.byHash[mockAppState.orbitNodes.currentOrbitHash!].eH;
+      renderWithJotai(<TestComponent orbitEh={orbitEh} />);
+
+      expect(screen.getByTestId('orbitId').textContent).toBe(mockAppState.orbitNodes.currentOrbitHash);
+    });
+
+    it('should return null when the orbit does not exist', () => {
+      renderWithJotai(<TestComponent orbitEh="nonExistentOrbitEH" />);
+
+      expect(screen.getByTestId('orbitId').textContent).toBe('null');
+    });
+  });
+
+  describe('AppState - getOrbitEhFromId', () => {
+    const TestComponent = ({ orbitId }: { orbitId: ActionHashB64 }) => {
+      const orbitEhAtom = useMemo(() => getOrbitEhFromId(orbitId), [orbitId]);
+      const [orbitEh] = useAtom(orbitEhAtom);
+      return <div data-testid="orbitEh">{orbitEh || 'null'}</div>;
+    };
+
+    it('should return the correct orbit entry hash when the orbit exists', () => {
+      const orbitId = mockAppState.orbitNodes.currentOrbitHash;
+      renderWithJotai(<TestComponent orbitId={orbitId!} />);
+
+      expect(screen.getByTestId('orbitEh').textContent).toBe(mockAppState.orbitNodes.byHash[orbitId].eH);
+    });
+
+    it('should return null when the orbit does not exist', () => {
+      renderWithJotai(<TestComponent orbitId="nonExistentOrbitId" />);
+
+      expect(screen.getByTestId('orbitEh').textContent).toBe('null');
+    });
+  });
+
+  describe('AppState - orbitWinDataAtom', () => {
+    const TestComponent = ({ orbitId }: { orbitId: ActionHashB64 }) => {
+      const winDataAtom = useMemo(() => orbitWinDataAtom(orbitId), [orbitId]);
+      const [winData] = useAtom(winDataAtom);
+      return <div data-testid="winData">{JSON.stringify(winData)}</div>;
+    };
+
+    it('should return win data for a specific orbit', () => {
+      const orbitId = mockAppState.orbitNodes.currentOrbitHash;
+      const mockWinData = { '2023-05-01': true, '2023-05-02': false };
+      const modifiedMockState = {
+        ...mockAppState,
+        wins: {
+          [orbitId!]: mockWinData,
+        },
+      };
+
+      renderWithJotai(<TestComponent orbitId={orbitId!} />, { initialState: modifiedMockState });
+
+      const winData = JSON.parse(screen.getByTestId('winData').textContent || '{}');
+      expect(winData).toEqual(mockWinData);
+    });
+
+    it('should return an empty object if no win data exists for the orbit', () => {
+      renderWithJotai(<TestComponent orbitId="orbitWithNoWinData" />);
+
+      const winData = JSON.parse(screen.getByTestId('winData').textContent || '{}');
+      expect(winData).toEqual({});
+    });
+  });
+
+  describe('AppState - currentSphereOrbitNodesAtom', () => {
+    it('should return orbit nodes for the current sphere', () => {
+      const TestComponent = () => {
+        const [sphereNodes] = useAtom(currentSphereOrbitNodesAtom);
+        return <div>{JSON.stringify(sphereNodes)}</div>;
+      };
+
+      renderWithJotai(<TestComponent />);
+
+      const expectedNodes = JSON.stringify(mockAppState.orbitNodes.byHash);
+      expect(screen.getByText(expectedNodes)).toBeTruthy();
+    });
+
+    it('should return null when there are no orbit nodes', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        orbitNodes: {
+          ...mockAppState.orbitNodes,
+          byHash: {},
+        },
+      };
+
+      const TestComponent = () => {
+        const [sphereNodes] = useAtom(currentSphereOrbitNodesAtom);
+        return <div data-testid="container">{JSON.stringify(sphereNodes)}</div>;
+      };
+
+      renderWithJotai(<TestComponent />, { initialState: modifiedMockState });
+
+      expect(screen.getByTestId("container").textContent).toBe("null");
+    });
   });
 
   describe('IndexDB - getOrbitNodeDetailsFromEhAtom', () => {
@@ -518,7 +667,7 @@ describe('Orbit selectors', () => {
       };
       clearCustomMocks();
       addCustomMock('partial', [
-        ['sphere2Id', { 'orbit3EH': { id: 'orbit3', eH: 'orbit3EH', name: 'Orbit 3', sphereHash: 'sphere2' } }],
+        ['sphere2Id', { 'orbit3EH': { id: 'orbit3', eH: 'orbit3EH', name: 'Orbit 3', sphereHash: 'sphere2Id' } } as any],
       ]);
 
       renderWithJotai(<TestComponentWithSphereChange />, { initialState: modifiedMockState as any });
@@ -535,39 +684,6 @@ describe('Orbit selectors', () => {
       expect(updatedSphereOrbitNodeDetails).not.toBeNull();
       expect(Object.keys(updatedSphereOrbitNodeDetails).length).toBe(1);
       expect(updatedSphereOrbitNodeDetails['orbit3EH']).toBeDefined();
-    });
-  });
-
-  describe('AppState - currentSphereOrbitNodesAtom', () => {
-    it('should return orbit nodes for the current sphere', () => {
-      const TestComponent = () => {
-        const [sphereNodes] = useAtom(currentSphereOrbitNodesAtom);
-        return <div>{JSON.stringify(sphereNodes)}</div>;
-      };
-
-      renderWithJotai(<TestComponent />);
-
-      const expectedNodes = JSON.stringify(mockAppState.orbitNodes.byHash);
-      expect(screen.getByText(expectedNodes)).toBeTruthy();
-    });
-
-    it('should return null when there are no orbit nodes', () => {
-      const modifiedMockState = {
-        ...mockAppState,
-        orbitNodes: {
-          ...mockAppState.orbitNodes,
-          byHash: {},
-        },
-      };
-
-      const TestComponent = () => {
-        const [sphereNodes] = useAtom(currentSphereOrbitNodesAtom);
-        return <div data-testid="container">{JSON.stringify(sphereNodes)}</div>;
-      };
-
-      renderWithJotai(<TestComponent />, { initialState: modifiedMockState });
-
-      expect(screen.getByTestId("container").textContent).toBe("null");
     });
   });
 
@@ -608,298 +724,202 @@ describe('Orbit selectors', () => {
     });
   });
 
+  describe('IndexDB - getCurrentSphereOrbitNodeDetailsFromEhAtom', () => {
+    beforeEach(() => {
+      resetMocks()
+      clearCustomMocks();
+      addCustomMock('all', mockedCacheEntries);
+    })
+    afterEach(() => {
+      cleanup();
+    });
 
-  // describe('setOrbitWithEntryHashAtom', () => {
-  //   let testOrbitActionHash: ActionHashB64;
-  //   let testOrbitEntryHash: EntryHashB64;
+    const TestComponent = ({ orbitEh }: { orbitEh: EntryHashB64 }) => {
+      const getCurrentSphereOrbitNodeDetailsAtom = useMemo(() => getCurrentSphereOrbitNodeDetailsFromEhAtom(orbitEh), [orbitEh]);
+      const [orbitNodeDetails] = useAtom(getCurrentSphereOrbitNodeDetailsAtom);
+      return <div data-testid="orbitNodeDetails">{JSON.stringify(orbitNodeDetails)}</div>;
+    };
 
-  //   beforeEach(() => {
-  //     const orbitEntry = Object.entries(mockAppState.orbitNodes.byHash)[0];
-  //     testOrbitActionHash = orbitEntry[0];
-  //     testOrbitEntryHash = orbitEntry[1].eH;
-  //   });
+    it('should return null when no sphere is selected', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        spheres: {
+          ...mockAppState.spheres,
+          currentSphereHash: null,
+        },
+      };
 
-  //   const TestComponent = () => {
-  //     const [, setOrbitAtom] = useAtom(setOrbitWithEntryHashAtom);
-  //     const orbitAtom = useMemo(() => getOrbitNodeDetailsFromIdAtom(testOrbitActionHash), [testOrbitActionHash]);
-  //     const [orbitDetails] = useAtom(orbitAtom);
+      renderWithJotai(<TestComponent orbitEh="uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />, { initialState: modifiedMockState as any });
 
-  //     const updateOrbit = () => {
-  //       setOrbitAtom({
-  //         orbitEh: testOrbitEntryHash,
-  //         update: { name: 'Updated Orbit Name' }
-  //       });
-  //     };
+      expect(screen.getByTestId('orbitNodeDetails').textContent).toBe('null');
+    });
 
-  //     return (
-  //       <div>
-  //         <div data-testid="orbitDetails">{JSON.stringify(orbitDetails)}</div>
-  //         <button onClick={updateOrbit}>Update Orbit</button>
-  //       </div>
-  //     );
-  //   };
+    it('should return orbit details when the orbit exists in the current sphere', () => {
+      renderWithJotai(<TestComponent orbitEh="uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />);
 
-  //   it('should update orbit details when the orbit exists', async () => {
-  //     await act(async () => {
-  //       render(
-  //         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //           <TestComponent />
-  //         </TestProvider>
-  //       );
-  //     });
+      const orbitNodeDetails = JSON.parse(screen.getByTestId('orbitNodeDetails').textContent || 'null');
+      expect(orbitNodeDetails).not.toBeNull();
+      expect(orbitNodeDetails.id).toBe('uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj');
+      expect(orbitNodeDetails.name).toBe('Be the best');
+    });
 
-  //     const initialDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
-  //     expect(initialDetails.name).not.toBe('Updated Orbit Name');
+    it('should return null when the orbit does not exist in the current sphere', () => {
+      renderWithJotai(<TestComponent orbitEh="nonExistentOrbitEH" />);
 
-  //     await act(async () => {
-  //       fireEvent.click(screen.getByText('Update Orbit'));
-  //     });
+      expect(screen.getByTestId('orbitNodeDetails').textContent).toBe('null');
+    });
 
-  //     const updatedDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
-  //     expect(updatedDetails.name).toBe('Updated Orbit Name');
-  //   });
+    it('should return null when the current sphere has no orbit node details', () => {
+      clearCustomMocks();
+      addCustomMock('partial', [[mockAppState.spheres.currentSphereHash, null as any]]);
 
-  //   it('should not update orbit details when the orbit is not found', async () => {
-  //     const TestComponentWithNonExistentOrbit = () => {
-  //       const [, setOrbitAtom] = useAtom(setOrbitWithEntryHashAtom);
-  //       const orbitAtom = useMemo(() => getOrbitNodeDetailsFromIdAtom(testOrbitActionHash), [testOrbitActionHash]);
-  //       const [orbitDetails] = useAtom(orbitAtom);
+      renderWithJotai(<TestComponent orbitEh="uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />);
 
-  //       const updateOrbit = () => {
-  //         setOrbitAtom({
-  //           orbitEh: 'nonExistentOrbitEh',
-  //           update: { name: 'Updated Orbit Name' }
-  //         });
-  //       };
+      expect(screen.getByTestId('orbitNodeDetails').textContent).toBe('null');
+    });
 
-  //       return (
-  //         <div>
-  //           <div data-testid="orbitDetails">{JSON.stringify(orbitDetails)}</div>
-  //           <button onClick={updateOrbit}>Update Orbit</button>
-  //         </div>
-  //       );
-  //     };
+    it('should update when the current sphere changes', async () => {
+      const TestComponentWithSphereChange = ({ orbitEh }: { orbitEh: EntryHashB64 }) => {
+        const [, setCurrentSphereHashes] = useAtom(currentSphereHashesAtom);
+        const getCurrentSphereOrbitNodeDetailsAtom = useMemo(() => getCurrentSphereOrbitNodeDetailsFromEhAtom(orbitEh), [orbitEh]);
+        const [orbitNodeDetails] = useAtom(getCurrentSphereOrbitNodeDetailsAtom);
 
-  //     await act(async () => {
-  //       render(
-  //         <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //           <TestComponentWithNonExistentOrbit />
-  //         </TestProvider>
-  //       );
-  //     });
+        return (
+          <div>
+            <div data-testid="orbitNodeDetails">{JSON.stringify(orbitNodeDetails)}</div>
+            <button onClick={() => setCurrentSphereHashes({ actionHash: 'sphere2Id' })}>
+              Change Sphere
+            </button>
+          </div>
+        );
+      };
 
-  //     const initialDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
+      const modifiedMockState = {
+        ...mockAppState,
+        spheres: {
+          currentSphereHash: 'sphere2Id',
+          byHash: {
+            ...mockAppState.spheres.byHash,
+            sphere2Id: { details: { entryHash: 'sphere2EH' } },
+          },
+        },
+      };
 
-  //     await act(async () => {
-  //       fireEvent.click(screen.getByText('Update Orbit'));
-  //     });
+      clearCustomMocks();
+      addCustomMock('partial', [
+        [mockAppState.spheres.currentSphereHash, mockedCacheEntries[0][1]],
+        ['sphere2Id', { 'orbit3EH': { id: 'orbit3', eH: 'orbit3EH', name: 'Orbit 3', sphereHash: 'sphere2Id' } } as any],
+      ]);
 
-  //     const updatedDetails = JSON.parse(screen.getByTestId('orbitDetails').textContent || '{}');
-  //     expect(updatedDetails).toEqual(initialDetails);
-  //   });
-  // });
+      renderWithJotai(<TestComponentWithSphereChange orbitEh="orbit3EH" />, { initialState: modifiedMockState as any });
+      await act(async () => {
+        await userEvent.click(screen.getByText('Change Sphere'));
+      });
+      const updatedOrbitNodeDetails = JSON.parse(screen.getByTestId('orbitNodeDetails').textContent || 'null');
+      expect(updatedOrbitNodeDetails).not.toBeNull();
+      expect(updatedOrbitNodeDetails.id).toBe('orbit3');
+      expect(updatedOrbitNodeDetails.name).toBe('Orbit 3');
+    });
+  });
 
-  // describe('getOrbitFrequency', () => {
-  //   const TestComponent = ({ orbitId }: { orbitId: string }) => {
-  //     const [frequency] = useAtom(useMemo(() => getOrbitFrequency(orbitId), [orbitId]));
-  //     return <div data-testid="container">{frequency}</div>;
-  //   };
+  describe('IndexDB - getCurrentOrbitStartTimeFromEh', () => {
+    beforeEach(() => {
+      resetMocks()
+      clearCustomMocks();
+      addCustomMock('all', mockedCacheEntries);
+    })
+    afterEach(() => {
+      cleanup();
+    });
 
-  //   it('should return the correct frequency for daily orbit', () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId="uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />
-  //       </TestProvider>
-  //     );
+    const TestComponent = ({ orbitEh }: { orbitEh: EntryHashB64 }) => {
+      const [getStartTime] = useAtom(getCurrentOrbitStartTimeFromEh);
+      const startTime = getStartTime(orbitEh);
+      return <div data-testid="startTime">{startTime !== null ? startTime.toString() : 'null'}</div>;
+    };
 
-  //     expect(screen.getByTestId('container').textContent).toBe(Frequency.DAILY_OR_MORE.DAILY.toString());
-  //   });
+    it('should return the start time when the orbit exists in the current sphere', () => {
+      const orbitEh = 'uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj';
+      renderWithJotai(<TestComponent orbitEh={orbitEh} />);
 
-  //   it('should return the correct frequency for weekly orbit', () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId="uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc" />
-  //       </TestProvider>
-  //     );
-  //     expect(screen.getByTestId('container').textContent).toBe(Frequency.LESS_THAN_DAILY.WEEKLY.toString());
-  //   });
+      const startTime = screen.getByTestId('startTime').textContent;
+      expect(startTime).not.toBe('null');
+      expect(Number(startTime)).toBe(1617235100);
+    });
 
-  //   it('should return the correct frequency for monthly orbit', () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId="uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc" />
-  //       </TestProvider>
-  //     );
-  //     expect(screen.getByTestId('container').textContent).toBe(Frequency.LESS_THAN_DAILY.MONTHLY.toString());
-  //   });
+    it('should return null when the orbit does not exist in the current sphere', () => {
+      renderWithJotai(<TestComponent orbitEh="nonExistentOrbitEH" />);
 
-  //   it('should return null for non-existent orbit', () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId="non-existent-orbit" />
-  //       </TestProvider>
-  //     );
-  //     expect(screen.getByTestId('container').textContent).toBe('');
-  //   });
-  // });
+      expect(screen.getByTestId('startTime').textContent).toBe('null');
+    });
 
-  // describe('orbitWinDataAtom', () => {
-  //   const TestComponent = ({ orbitId }: { orbitId: string }) => {
-  //     const [winData] = useAtom(useMemo(() => orbitWinDataAtom(orbitId), [orbitId]));
-  //     return <div data-testid='container'>{JSON.stringify(winData)}</div>;
-  //   };
-  //   it('should return win data for a specific orbit', () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId='uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc' />
-  //       </TestProvider>
-  //     );
+    it('should return null when the current sphere has no orbit node details', () => {
+      clearCustomMocks();
+      addCustomMock('partial', [[mockAppState.spheres.currentSphereHash, null as any]]);
 
-  //     expect(screen.getByText(JSON.stringify(mockAppState.wins.uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc))).toBeTruthy();
-  //   });
+      renderWithJotai(<TestComponent orbitEh="uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />);
 
-  //   it('should return empty object for non-existent orbit win data', () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId='non-existent-orbit' />
-  //       </TestProvider>
-  //     );
+      expect(screen.getByTestId('startTime').textContent).toBe('null');
+    });
 
-  //     expect(screen.getByTestId('container').textContent).toBe('{}');
-  //   });
-  // });
+    it('should return null when the orbit exists but has no start time', () => {
+      const orbitEhWithNoStartTime = 'orbitWithNoStartTime';
+      const modifiedCacheEntries = [
+        ...mockedCacheEntries,
+        [mockAppState.spheres.currentSphereHash, {
+          [orbitEhWithNoStartTime]: { id: 'orbitId', eH: orbitEhWithNoStartTime, name: 'Orbit Without Start Time' }
+        }]
+      ];
+      clearCustomMocks();
+      addCustomMock('all', modifiedCacheEntries as any);
 
-  // describe('setWinForOrbit', () => {
-  //   const TestComponent = ({ orbitId, date, winIndex, hasWin }: { orbitId: string, date: string, winIndex?: number, hasWin: boolean }) => {
-  //     const [winData] = useAtom(useMemo(() => orbitWinDataAtom(orbitId), [orbitId]));
-  //     const [, setWin] = useAtom(setWinForOrbit);
-  //     return (
-  //       <div>
-  //         <div data-testid="container">{JSON.stringify(winData)}</div>
-  //         <button onClick={() => setWin({ orbitHash: orbitId, date, winIndex, hasWin })}>Set Win</button>
-  //       </div>
-  //     );
-  //   };
+      renderWithJotai(<TestComponent orbitEh={orbitEhWithNoStartTime} />);
 
-  //   it('should set a win for an orbit with frequency == 1', async () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId='uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' date='2023-05-04' hasWin={true} />
-  //       </TestProvider>
-  //     );
+      expect(screen.getByTestId('startTime').textContent).toBe('null');
+    });
 
-  //     await act(async () => {
-  //       await userEvent.click(screen.getByText('Set Win'));
-  //     });
+    it('should update when the current sphere changes', async () => {
+      const TestComponentWithSphereChange = ({ orbitEh }: { orbitEh: EntryHashB64 }) => {
+        const [, setCurrentSphereHashes] = useAtom(currentSphereHashesAtom);
+        const [getStartTime] = useAtom(getCurrentOrbitStartTimeFromEh);
+        const startTime = getStartTime(orbitEh);
 
-  //     const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
-  //     expect(updatedWinData['2023-05-04']).toBe(true);
-  //   });
+        return (
+          <div>
+            <div data-testid="startTime">{startTime !== null ? startTime.toString() : 'null'}</div>
+            <button onClick={() => setCurrentSphereHashes({ actionHash: 'sphere2Id' })}>
+              Change Sphere
+            </button>
+          </div>
+        );
+      };
 
-  //   it('should set a win for an orbit with frequency < 1', async () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId='uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc' date='2023-07' hasWin={true} />
-  //       </TestProvider>
-  //     );
+      const modifiedMockState = {
+        ...mockAppState,
+        spheres: {
+          ...mockAppState.spheres,
+          byHash: {
+            ...mockAppState.spheres.byHash,
+            sphere2Id: { details: { entryHash: 'sphere2EH' } },
+          },
+        },
+      };
 
-  //     await act(async () => {
-  //       await userEvent.click(screen.getByText('Set Win'));
-  //     })
+      clearCustomMocks();
+      addCustomMock('partial', [
+        [mockAppState.spheres.currentSphereHash, mockedCacheEntries[0][1]],
+        ['sphere2Id', { 'orbit3EH': { id: 'orbit3', eH: 'orbit3EH', name: 'Orbit 3', sphereHash: 'sphere2', startTime: 1620000000000 } } as any],
+      ]);
 
-  //     const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
-  //     expect(updatedWinData['2023-07']).toBe(true);
-  //   });
+      renderWithJotai(<TestComponentWithSphereChange orbitEh="orbit3EH" />, { initialState: modifiedMockState as any });
 
-  //   it('should set a win for an orbit with frequency > 1', async () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId='uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc' date='2023-05-04' winIndex={1} hasWin={true} />
-  //       </TestProvider>
-  //     );
+      expect(screen.getByTestId('startTime').textContent).toBe('null');
 
-  //     await act(async () => {
-  //       await userEvent.click(screen.getByText('Set Win'));
-  //     })
+      await act(async () => {
+        await userEvent.click(screen.getByText('Change Sphere'));
+      });
 
-  //     const updatedWinData = JSON.parse(screen.getByTestId('container').textContent || '{}');
-  //     expect(Array.isArray(updatedWinData['2023-05-04'])).toBe(true);
-  //     expect(updatedWinData['2023-05-04'][1]).toBe(true);
-  //   });
-
-  //   it('should not set a win for a non-existent orbit', async () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId='non-existent-orbit' date='2023-05-04' hasWin={true} />
-  //       </TestProvider>
-  //     );
-
-  //     await act(async () => {
-  //       await userEvent.click(screen.getByText('Set Win'));
-  //     })
-
-  //     expect(screen.getByTestId('container').textContent).toBe('{}');
-  //   });
-  // });
-
-  // describe('calculateCompletionStatusAtom', () => {
-  //   const TestComponent = ({ orbitId }: { orbitId: string }) => {
-  //     const [completionStatus] = useAtom(useMemo(() => calculateCompletionStatusAtom(orbitId), [orbitId]));
-  //     return <div data-testid="container">{completionStatus}</div>;
-  //   };
-
-  //   it('should calculate completion status', () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId='uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' />
-  //       </TestProvider>
-  //     );
-
-  //     // This is a placeholder test. Update it when you implement the actual completion status calculation logic.
-  //     expect(screen.getByText('0')).toBeTruthy();
-  //   });
-
-  //   it('should return null completion status for non-existent orbit', () => {
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent orbitId='non-existent-orbit' />
-  //       </TestProvider>
-  //     );
-
-  //     expect(screen.getByTestId('container').textContent).toBe('');
-  //   });
-  // });
-
-  // describe('calculateStreakAtom', () => {
-  //   it('should calculate streak information', () => {
-  //     const TestComponent = () => {
-  //       const [streak] = useAtom(calculateStreakAtom('uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj'));
-  //       return <div>{streak}</div>;
-  //     };
-
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent />
-  //       </TestProvider>
-  //     );
-
-  //     // This is a placeholder test. Update it when you implement the actual streak calculation logic.
-  //     expect(screen.getByText('0')).toBeTruthy();
-  //   });
-
-  //   it('should return null streak for non-existent orbit', () => {
-  //     const TestComponent = () => {
-  //       const [streak] = useAtom(calculateStreakAtom('non-existent-orbit'));
-  //       return <div data-testid="streak">{streak === null ? 'null' : streak}</div>;
-  //     };
-
-  //     render(
-  //       <TestProvider initialValues={[[appStateAtom, mockAppState]]}>
-  //         <TestComponent />
-  //       </TestProvider>
-  //     );
-
-  //     expect(screen.getByTestId('streak').textContent).toBe('null');
-  //   });
-  // });
+      expect(screen.getByTestId('startTime').textContent).toBe('1620000000000');
+    });
+  });
 });

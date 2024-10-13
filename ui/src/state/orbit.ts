@@ -124,13 +124,14 @@ export const getOrbitNodeDetailsFromIdAtom = (orbitId: ActionHashB64) =>
 
 /** Within CURRENT SPHERE context: */
 
-// TODO: test
 /**
  * Selector atom to get the IndexDB cache item of ONE OF THE CURRENT SPHERE's orbits based on entry hash
  * @param eH - The EntryHash of the orbit to retrieve.
  * @returns {OrbitNodeDetails | null | undefined} the id of that orbit if it exists, null if it doesn't exist under that sphere or we couldn't get the pre-requisite details, undefined otherwise
  */
-export const getCurrentSphereOrbitNodeDetailsFromEh = (orbitEh: EntryHashB64) =>
+export const getCurrentSphereOrbitNodeDetailsFromEhAtom = (
+  orbitEh: EntryHashB64
+) =>
   atom((get) => {
     const state = get(appStateAtom);
     const currentSphereHash = state.spheres.currentSphereHash;
@@ -143,7 +144,7 @@ export const getCurrentSphereOrbitNodeDetailsFromEh = (orbitEh: EntryHashB64) =>
     if (!sphereOrbitNodeDetails) return null;
     const orbitCacheItem = sphereOrbitNodeDetails[orbitEh];
 
-    return orbitCacheItem;
+    return orbitCacheItem || null;
   });
 
 /**
@@ -153,12 +154,12 @@ export const getCurrentSphereOrbitNodeDetailsFromEh = (orbitEh: EntryHashB64) =>
  */
 export const getCurrentOrbitStartTimeFromEh = atom(
   (get) => (orbitEh: EntryHashB64) => {
-    const cacheItem = get(getCurrentSphereOrbitNodeDetailsFromEh(orbitEh));
+    const cacheItem = get(getCurrentSphereOrbitNodeDetailsFromEhAtom(orbitEh));
     return cacheItem?.startTime || null;
   }
 );
 
-//TODO: update
+/** IndexDB/Mixed UNTESTED TODO: */
 /**
  * Write-only atom for updating orbit details in IndexDB using its entry hash.
  *
@@ -280,7 +281,6 @@ export const getOrbitIdFromEh = (orbitEh: EntryHashB64) =>
     return orbitActionHash || null;
   });
 
-//TODO: test
 /**
  * Selector atom to get the entry hash of the orbit based on id
  * @param id - The ActionHashB64 of the orbit to retrieve.
@@ -304,6 +304,30 @@ export const orbitWinDataAtom = (orbitId: ActionHashB64) => {
     return state.wins[orbitId] || {};
   });
   return selectWinData;
+};
+
+// TODO: implement below
+
+/**
+ * Calculates the streak information for a specific orbit
+ * @param orbitHash The ActionHash of the orbit
+ * @returns An atom that resolves to the streak count, or null if the orbit doesn't exist
+ */
+export const calculateStreakAtom = (orbitHash: ActionHashB64) => {
+  const calculateStreak = atom<number | null>((get) => {
+    const state = get(appStateAtom);
+    const orbit = state.orbitNodes.byHash[orbitHash];
+    const winData = state.wins[orbitHash] || {};
+
+    if (!orbit) {
+      return null; // Return null for non-existent orbits
+    }
+
+    // Implement streak calculation logic here based on frequency
+    // This is a placeholder implementation
+    return 0;
+  });
+  return calculateStreak;
 };
 
 /**
@@ -368,25 +392,3 @@ export const setWinForOrbit = atom(
     });
   }
 );
-
-/**
- * Calculates the streak information for a specific orbit
- * @param orbitHash The ActionHash of the orbit
- * @returns An atom that resolves to the streak count, or null if the orbit doesn't exist
- */
-export const calculateStreakAtom = (orbitHash: ActionHashB64) => {
-  const calculateStreak = atom<number | null>((get) => {
-    const state = get(appStateAtom);
-    const orbit = state.orbitNodes.byHash[orbitHash];
-    const winData = state.wins[orbitHash] || {};
-
-    if (!orbit) {
-      return null; // Return null for non-existent orbits
-    }
-
-    // Implement streak calculation logic here based on frequency
-    // This is a placeholder implementation
-    return 0;
-  });
-  return calculateStreak;
-};
