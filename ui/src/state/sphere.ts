@@ -92,9 +92,8 @@ export const sphereHasCachedNodesAtom = (sphereId: ActionHashB64) =>
     const selectedSphere = state.spheres.byHash[sphereId];
     if (!selectedSphere) return null;
     const rootOrbitHashes = selectedSphere.hierarchyRootOrbitEntryHashes;
-    if (!rootOrbitHashes || rootOrbitHashes.length == 0) return null;
+    if (!rootOrbitHashes || rootOrbitHashes.length == 0) return false;
     const sphereNodeDetailsCache = get(nodeCache.item(sphereId));
-    // console.log("sphereNodeDetailsCache :>> ", sphereNodeDetailsCache);
     if (!sphereNodeDetailsCache) return null;
     // This now strictly checks that we have both an entry in the store (hashes, used for indexing) and an indexDB cache entry for each node.
     // It makes no assurances about staleness of the data or otherwise

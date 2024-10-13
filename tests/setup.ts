@@ -1,9 +1,7 @@
 import "fake-indexeddb/auto";
-import { mockAppState, SPHERE_ID } from "./integration/mocks/mockAppState";
+import { SPHERE_ID } from "./integration/mocks/mockAppState";
 import { vi } from "vitest";
-import { atom, WritableAtom } from "jotai";
 import { mockStore } from "./setupMockStore";
-import { appStateAtom } from "@ui/src/state";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");

@@ -10,10 +10,9 @@ import { createTestIndexDBAtom, mockedCacheEntries } from "./setupMockStore";
 
 export const renderWithJotai = (
   element: React.ReactElement,
-  { initialState = mockAppState } = {}
+  { initialState = mockAppState, initialCache = [] } = {}
 ): RenderResult => {
   const testStore = createTestStore(initialState);
-
   return render(
     <Provider store={testStore}>
       <TestProvider initialValues={[
