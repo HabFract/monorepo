@@ -9,7 +9,7 @@ export const mockedCacheEntries = [
   [
     SPHERE_ID,
     {
-      uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
+      uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
         id: "uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
         eH: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
         sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
@@ -20,7 +20,7 @@ export const mockedCacheEntries = [
         endTime: undefined,
         frequency: Frequency.LESS_THAN_DAILY.QUARTERLY,
       },
-      uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc: {
+      uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc: {
         id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
         eH: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
         sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
@@ -32,7 +32,7 @@ export const mockedCacheEntries = [
         endTime: 1617321600,
         frequency: Frequency.DAILY_OR_MORE.DAILY,
       },
-      uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc: {
+      uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc: {
         id: "uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
         eH: "uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
         sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
@@ -45,7 +45,7 @@ export const mockedCacheEntries = [
         endTime: 1617321600,
         frequency: Frequency.LESS_THAN_DAILY.WEEKLY,
       },
-      uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
+      uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
         id: "uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
         eH: "uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
         sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
@@ -58,7 +58,7 @@ export const mockedCacheEntries = [
         endTime: 1617321650,
         frequency: Frequency.DAILY_OR_MORE.TWO,
       },
-      uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
+      uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
         id: "uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
         eH: "uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
         sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
@@ -119,7 +119,6 @@ export const createTestIndexDBAtom = (initialCache?) => {
       };
     },
   };
-  mockedCacheEntries;
 };
 
 // Function to add custom mocks
@@ -128,7 +127,7 @@ export const addCustomMock = (
   mock: Partial<typeof mockedCacheEntries>
 ) => {
   customMocks.set(descriptor, Object.fromEntries(mock as any));
-  // console.log("new custommock :>> ", descriptor, customMocks.get(descriptor));
+  console.log("new custommock :>> ", descriptor, customMocks.get(descriptor));
 };
 
 // Function to clear all custom mocks (useful in beforeEach or afterEach hooks)

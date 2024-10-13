@@ -3,31 +3,28 @@ import { appStateAtom } from "./store";
 import { SphereDetails, SphereHashes } from "./types/sphere";
 import { nodeCache } from "./store";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import {
-  getCurrentSphereOrbitNodeDetailsFromEh,
-  getOrbitNodeDetailsFromEhAtom,
-} from "./orbit";
+import { getOrbitEhFromId, getOrbitNodeDetailsFromEhAtom } from "./orbit";
 
 /**
- * Read-write atom for the current sphere's hashes
- * @returns {SphereHashes | {}}
+ * Read-write atom for the current sphere's hashes or null if the current hash doesn't resolve to a sphere's details
+ * @returns {SphereHashes | null}
  */
 export const currentSphereHashesAtom = atom(
   (get) => {
     const state = get(appStateAtom);
     const currentSphereHash = state.spheres.currentSphereHash;
     const currentSphere = state.spheres.byHash[currentSphereHash];
-
     return currentSphere
       ? {
           entryHash: currentSphere.details.entryHash,
           actionHash: currentSphereHash,
         }
-      : {};
+      : null;
   },
   (_get, set, newSphereHashes: SphereHashes) => {
     set(appStateAtom, (prevState) => {
       const newCurrentSphereHash = newSphereHashes.actionHash || "";
+
       return {
         ...prevState,
         spheres: {
@@ -49,7 +46,6 @@ export const currentSphereDetailsAtom = atom<SphereDetails | null>((get) => {
   return state.spheres.byHash[currentSphereHash]?.details || null;
 });
 
-//TODO: rewrite tests for following
 /**
  * Derived atom to get a Sphere's id from it's eH
  * @returns {ActionHashB64 | null} The sphere's id or null if no sphere is present in app state
@@ -66,7 +62,6 @@ export const getSphereIdFromEhAtom = (sphereEh: EntryHashB64) =>
     return sphere[0] || null;
   });
 
-//TODO: rewrite tests for following
 /**
  * Derived atom to check if current Sphere has cached nodes in the IndexDB
  * @returns {boolean | null} See below
@@ -79,7 +74,6 @@ export const currentSphereHasCachedNodesAtom = atom<boolean | null>((get) => {
   return get(sphereHasCachedNodesAtom(sphereId));
 });
 
-//TODO: rewrite tests for following
 /**
  * Derived atom to check if a particular Sphere has cached nodes in the IndexDB
  * @returns {boolean | null}
@@ -92,7 +86,7 @@ export const sphereHasCachedNodesAtom = (sphereId: ActionHashB64) =>
     const selectedSphere = state.spheres.byHash[sphereId];
     if (!selectedSphere) return null;
     const rootOrbitHashes = selectedSphere.hierarchyRootOrbitEntryHashes;
-    if (!rootOrbitHashes || rootOrbitHashes.length == 0) return false;
+    if (!rootOrbitHashes || rootOrbitHashes.length == 0) return null;
     const sphereNodeDetailsCache = get(nodeCache.item(sphereId));
     if (!sphereNodeDetailsCache) return null;
     // This now strictly checks that we have both an entry in the store (hashes, used for indexing) and an indexDB cache entry for each node.
@@ -102,8 +96,9 @@ export const sphereHasCachedNodesAtom = (sphereId: ActionHashB64) =>
       const hierarchy = state.hierarchies.byRootOrbitEntryHash[hash];
       return (
         hierarchy &&
-        hierarchy.nodeHashes.every((nodeEh: EntryHashB64) => {
-          const cacheItem = get(getOrbitNodeDetailsFromEhAtom(nodeEh));
+        hierarchy.nodeHashes.every((nodeId: ActionHashB64) => {
+          const eH = get(getOrbitEhFromId(nodeId));
+          const cacheItem = get(getOrbitNodeDetailsFromEhAtom(eH));
           return !!cacheItem;
         })
       );

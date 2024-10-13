@@ -2,12 +2,7 @@ import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { atom } from "jotai";
 import { appStateAtom } from "./store";
 import { SphereOrbitNodeDetails, SphereOrbitNodes } from "./types/sphere";
-import {
-  Frequency,
-  OrbitDetails,
-  OrbitHashes,
-  OrbitNodeDetails,
-} from "./types/orbit";
+import { Frequency, OrbitHashes, OrbitNodeDetails } from "./types/orbit";
 import { Orbit, Frequency as Freq } from "../graphql/generated";
 import { WinData } from "./types/win";
 import { nodeCache } from "./store";
@@ -60,7 +55,6 @@ export const mapToCacheObject = (orbit: Orbit): OrbitNodeDetails => {
 
 /** ----------------------------------------------------- */
 
-//TODO: update tests
 /**
  * Derived atom for current SphereOrbitNodeDetails
  * @returns {SphereOrbitNodeDetails | null} A record of orbit nodes for the current sphere or null if no sphere is selected
@@ -74,40 +68,9 @@ export const currentSphereOrbitNodeDetailsAtom =
     const sphereOrbitNodeDetails =
       (get(nodeCache.item(currentSphereHash)) as SphereOrbitNodeDetails) ||
       null;
-
     return sphereOrbitNodeDetails;
   });
 
-/**
- * Derived atom for current OrbitNodeDetails
- * @returns {OrbitNodeDetails | null} Details of the current Orbit's Node
- */
-export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
-  const state = get(appStateAtom);
-  const currentOrbitHash = state.orbitNodes.currentOrbitHash;
-  if (!currentOrbitHash) return null;
-  const eH = get(getOrbitEhFromId(currentOrbitHash));
-  if (!eH) return null;
-
-  return get(getOrbitNodeDetailsFromEhAtom(eH));
-});
-
-//TODO: update tests
-/**
- * Atom factory that creates an atom for getting orbit details from the indexDB cache by ID.
- *
- * @param orbitId - The ActionHashB64 of the orbit to retrieve.
- * @returns An atom that, when read, returns the OrbitNodeDetails for the specified orbitId, or null if not found.
- */
-export const getOrbitNodeDetailsFromIdAtom = (orbitId: ActionHashB64) =>
-  atom<OrbitNodeDetails | null>((get) => {
-    const eH = get(getOrbitEhFromId(orbitId));
-    if (!eH || typeof eH !== "string") return null;
-
-    return get(getOrbitNodeDetailsFromEhAtom(eH));
-  });
-
-//TODO: update tests
 /**
  * Atom factory that creates an atom for getting orbit details from the IndexDB cache by entryhash.
  *
@@ -123,13 +86,40 @@ export const getOrbitNodeDetailsFromEhAtom = (orbitEh: EntryHashB64) =>
         SphereOrbitNodeDetails,
       ]) => sphereNodeDetails
     ) as SphereOrbitNodeDetails[];
-    const foundOrbitEntry = allSphereNodeDetails?.find(
+    const foundSphereEntry = allSphereNodeDetails?.find(
       (entry) => entry[orbitEh]
     );
-    if (!allSphereNodeDetails || !foundOrbitEntry) return null;
+    if (!allSphereNodeDetails || !foundSphereEntry) return null;
 
-    const foundOrbitDetails = foundOrbitEntry[orbitEh];
+    const foundOrbitDetails = foundSphereEntry[orbitEh];
     return foundOrbitDetails || null;
+  });
+
+/**
+ * Derived atom for current OrbitNodeDetails
+ * @returns {OrbitNodeDetails | null} Details of the current Orbit's Node
+ */
+export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
+  const state = get(appStateAtom);
+  const currentOrbitHash = state.orbitNodes.currentOrbitHash;
+  if (!currentOrbitHash) return null;
+  const eH = get(getOrbitEhFromId(currentOrbitHash));
+  if (!eH) return null;
+  return get(getOrbitNodeDetailsFromEhAtom(eH));
+});
+
+/**
+ * Atom factory that creates an atom for getting orbit details from the indexDB cache by ID.
+ *
+ * @param orbitId - The ActionHashB64 of the orbit to retrieve.
+ * @returns An atom that, when read, returns the OrbitNodeDetails for the specified orbitId, or null if not found.
+ */
+export const getOrbitNodeDetailsFromIdAtom = (orbitId: ActionHashB64) =>
+  atom<OrbitNodeDetails | null>((get) => {
+    const eH = get(getOrbitEhFromId(orbitId));
+    if (!eH || typeof eH !== "string") return null;
+
+    return get(getOrbitNodeDetailsFromEhAtom(eH));
   });
 
 /** Within CURRENT SPHERE context: */
