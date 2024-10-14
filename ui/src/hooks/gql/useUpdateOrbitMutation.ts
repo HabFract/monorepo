@@ -49,6 +49,8 @@ export const useUpdateOrbitMutation = (opts) => {
         )
       );
 
+      console.warn('Cache update from useUpdateOrbit')
+
       // A change to an orbit will mean a new entry hash is created, changing the tree, so we need to invalidate.
       invalidateOrbitHierarchyCache(updatedOrbit.sphereHash);
 

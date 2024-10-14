@@ -39,6 +39,8 @@ export const useGetOrbitsQuery = (opts) => {
           setAppState((prevState) =>
             updateAppStateWithOrbit(prevState, orbitHashes, false)
           );
+
+          console.warn('Cache update from useGetOrbits')
         });
       }
 

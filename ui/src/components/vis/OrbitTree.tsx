@@ -215,9 +215,9 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // Trigger caching of link paths needed for visual continuity
   useEffect(() => {
-    const isBaseLevel = dataLevel && getQueryParams()?.levelQuery?.orbitLevel !== dataLevel.getLowestSphereHierarchyLevel;
-    console.log('isBaseLevel :>> ', isBaseLevel);
+    const isBaseLevel = dataLevel && getQueryParams()?.levelQuery?.orbitLevel == dataLevel.getLowestSphereHierarchyLevel;
     if (hasCachedPaths || cache == null|| !isBaseLevel || currentOrbitTree == null) return;
+    console.log('isBaseLevel :>> ', isBaseLevel);
       try {
         console.log('Cached hierarchy link paths for visual continuity from base level: ', dataLevel);
         cache();

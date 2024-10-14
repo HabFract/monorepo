@@ -33,7 +33,7 @@ import OnboardingContinue from "./components/forms/buttons/OnboardingContinueBut
 import HomeContinue from "./components/home/HomeContinueButton";
 import Toast from "./components/Toast";
 import { useToast } from "./contexts/toast";
-import { currentSphereHashesAtom } from "./state/sphere";
+import { currentSphereDetailsAtom, currentSphereHashesAtom } from "./state/sphere";
 import { SphereDetails } from "./state/types/sphere";
 import { EntryHashB64 } from "@holochain/client";
 
@@ -61,21 +61,7 @@ function App({ children: pageComponent }) {
   const userHasSpheres =
     spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
 
-  const sphere = store.get(currentSphereHashesAtom);
-  const currentSphere =
-    userHasSpheres &&
-    extractEdges(spheres.spheres).find(
-      (possibleSphere) => possibleSphere.id == sphere.actionHash,
-    );
-  const currentSphereDetails = currentSphere
-    ? {
-      entryHash: currentSphere.eH,
-      name: currentSphere.name,
-      description: currentSphere.metadata?.description,
-      hashtag: "",
-      image: (currentSphere?.metadata?.image as string) || undefined,
-    }
-    : ({ entryHash: "" as EntryHashB64 } as SphereDetails);
+  const currentSphereDetails = store.get(currentSphereDetailsAtom);
 
   return (
     <Flowbite theme={{ theme: darkTheme }}>
@@ -135,7 +121,11 @@ function App({ children: pageComponent }) {
               ),
               submitBtn: state.match("Onboarding") && (
                 <OnboardingContinue
-                  onClick={() => transition(getNextOnboardingState(state))}
+                  onClick={() => {
+                    const nextStage = getNextOnboardingState(state);  
+                    const lastStageCompleted = nextStage == "PreloadAndCache"
+                    transition(nextStage, lastStageCompleted ? {} : {})
+                  }}
                 />
               ),
             }),

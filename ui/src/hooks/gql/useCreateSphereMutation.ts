@@ -27,6 +27,8 @@ export const useCreateSphereMutation = () => {
             },
           },
         }));
+
+        console.warn('Cache update from useCreateSphere')
       }
     },
   });

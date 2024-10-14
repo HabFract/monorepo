@@ -112,6 +112,8 @@ const Nav: React.FC<INav> = ({
           return;
         }
         store.set(currentSphereHashesAtom, {});
+
+        console.log('reset sphere from nav :>> ');
         setCurrentPage(Page.CreateSphere);
         setSideNavExpanded(false);
         transition("CreateSphere");
@@ -140,6 +142,8 @@ const Nav: React.FC<INav> = ({
           } else {
             const checkCachedOrbits = store.get(sphereHasCachedNodesAtom(e.key));
             if (checkCachedOrbits) {
+
+              console.log('set sphere from nav :>> ');
               store.set(currentSphereHashesAtom, {
                 entryHash: sphere(e.key)?.eH,
                 actionHash: e.key,
@@ -161,6 +165,8 @@ const Nav: React.FC<INav> = ({
           }
         } else if ([Page.ListSpheres].includes(currentPage as Page)) {
           if (!(e.key == store.get(currentSphereHashesAtom).actionHash)) {
+
+            console.log('set sphere from nav :>> ');
             store.set(currentSphereHashesAtom, {
               entryHash: sphere(e.key)?.eH,
               actionHash: e.key,
@@ -172,6 +178,7 @@ const Nav: React.FC<INav> = ({
           if (store.get(currentSphereHashesAtom)?.actionHash == e.key)
             setSideNavExpanded(true);
           // Set current sphere from action hash of sphere clicked
+          console.log('set sphere from nav :>> ');
           store.set(currentSphereHashesAtom, {
             entryHash: sphere(e.key)?.eH,
             actionHash: e.key,

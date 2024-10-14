@@ -68,7 +68,7 @@ export function withVisCanvas<T extends IVisualization>(
   const ComponentWithVis: React.FC<WithVisCanvasProps> = (
     _visParams: WithVisCanvasProps,
   ) => {
-    // useRedirect();
+    useRedirect();
 
     const mountingDivId = "vis-root"; // Declared at the router level
     const svgId = "vis"; // May need to be declared dynamically when we want multiple vis on a page
@@ -77,7 +77,10 @@ export function withVisCanvas<T extends IVisualization>(
     const cachedCurrentOrbit: OrbitNodeDetails | null = store.get(
       currentOrbitDetailsAtom,
     );
-
+    console.log('VIS CONTEXT: ', selectedSphere, cachedCurrentOrbit);
+if(selectedSphere == null || cachedCurrentOrbit == null) {
+  debugger;
+}
     useEffect(() => {
       if (document.querySelector(`#${mountingDivId} #${svgId}`)) return;
       const appended = !!appendSvg(mountingDivId, svgId);

@@ -55,7 +55,6 @@ function ListSpheres() {
                   entryHash: sphere.eH,
                   actionHash: sphere.id,
                 });
-                console.log("Set new current Sphere: ", sphere.id)
               }}
               hasCachedNodes={sphereHasCachedNodes}
             />

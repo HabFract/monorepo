@@ -1,4 +1,4 @@
-import { createStore } from "jotai";
+import { atom, createStore } from "jotai";
 import { MiniDb } from "jotai-minidb";
 import { atomWithStorage } from "jotai/utils";
 import { AppState } from "./types/store";
@@ -33,17 +33,17 @@ export const store: any = createStore();
 /**
  * Persisted atom for the entire app state, can later be used to hydrate app state when no Holochain network availability is possible
  */
-export const appStateAtom = atomWithStorage<AppState>("appState", {
+export const appStateChangeAtom = atomWithStorage<AppState>("appState", {
   spheres: {
     currentSphereHash: "",
-    byHash: {},
+    byHash: { default: {} as any},
   },
   hierarchies: {
     byRootOrbitEntryHash: {},
   },
   orbitNodes: {
     currentOrbitHash: null,
-    byHash: {},
+    byHash: { default: {} as any},
   },
   wins: {},
   ui: {
@@ -54,3 +54,10 @@ export const appStateAtom = atomWithStorage<AppState>("appState", {
     currentDay: new Date().toISOString(),
   },
 });
+export const appStateAtom = atom(
+  (get) => get(appStateChangeAtom),
+  (get, set, update: AppState) => {
+    console.log("AppState being updated:", update);
+    set(appStateChangeAtom, update);
+  }
+);

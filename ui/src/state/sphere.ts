@@ -21,15 +21,41 @@ export const currentSphereHashesAtom = atom(
         }
       : null;
   },
-  (_get, set, newSphereHashes: SphereHashes) => {
+  (get, set, newSphereHashes: SphereHashes) => {
     set(appStateAtom, (prevState) => {
       const newCurrentSphereHash = newSphereHashes.actionHash || "";
-
+      console.log('Setting new current Sphere with state :>> ', {
+        ...prevState,
+        spheres: {
+          ...prevState.spheres,
+          currentSphereHash: newCurrentSphereHash,
+          byHash: {
+            ...prevState.spheres.byHash,
+            [newCurrentSphereHash]: {
+              ...prevState.spheres.byHash[newCurrentSphereHash],
+              details: {
+                ...prevState.spheres.byHash[newCurrentSphereHash]?.details,
+                entryHash: newSphereHashes.entryHash,
+              },
+            },
+          },
+        },
+      });
       return {
         ...prevState,
         spheres: {
           ...prevState.spheres,
           currentSphereHash: newCurrentSphereHash,
+          byHash: {
+            ...prevState.spheres.byHash,
+            [newCurrentSphereHash]: {
+              ...prevState.spheres.byHash[newCurrentSphereHash],
+              details: {
+                ...prevState.spheres.byHash[newCurrentSphereHash]?.details,
+                entryHash: newSphereHashes.entryHash,
+              },
+            },
+          },
         },
       };
     });
@@ -96,9 +122,9 @@ export const sphereHasCachedNodesAtom = (sphereId: ActionHashB64) =>
       const hierarchy = state.hierarchies.byRootOrbitEntryHash[hash];
       return (
         hierarchy &&
-        hierarchy.nodeHashes.every((nodeId: ActionHashB64) => {
-          const eH = get(getOrbitEhFromId(nodeId));
-          const cacheItem = get(getOrbitNodeDetailsFromEhAtom(eH));
+        hierarchy.nodeHashes.every((nodeEh: EntryHashB64) => {
+          // const eH = get(getOrbitEhFromId(nodeId));
+          const cacheItem = get(getOrbitNodeDetailsFromEhAtom(nodeEh));
           return !!cacheItem;
         })
       );

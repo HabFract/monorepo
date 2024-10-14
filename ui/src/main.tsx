@@ -30,7 +30,9 @@ export const AppMachine = new StateMachine<AppState, AppStateStore>(
 
 Object.entries(routes).forEach(([routeName, component]) => {
   AppMachine.on(routeName as AppState, async (state: StateStore<AppState>) => {
-    console.log('state :>> ', state);
+    if(routeName == 'PreloadAndCache') {
+      debugger;
+    }
     const PageComponentWithProps = React.cloneElement(component as React.ReactElement, {
       ...state.params,
       key: JSON.stringify(state.params),

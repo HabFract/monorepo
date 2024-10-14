@@ -87,7 +87,7 @@ export const updateAppStateWithOrbit = (
   if (!orbitDetails.parentEh) {
     const sphereHash = orbitDetails.sphereHash;
     const sphereId = Object.entries(updatedState.spheres.byHash).find(
-      ([id, sphere]) => sphere.details.entryHash === sphereHash
+      ([_id, sphere]) => sphere?.details?.entryHash === sphereHash
     )?.[0];
 
     if (
@@ -105,6 +105,7 @@ export const updateAppStateWithOrbit = (
           updatedState.spheres.byHash[
             sphereId
           ].hierarchyRootOrbitEntryHashes.indexOf(oldOrbitId);
+          //TODO: check this is the right kind of hash
         if (index !== -1) {
           updatedState.spheres.byHash[sphereId].hierarchyRootOrbitEntryHashes[
             index

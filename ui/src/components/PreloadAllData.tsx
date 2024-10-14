@@ -18,29 +18,34 @@ import { debounce } from "./vis/helpers";
 import { useSetAtom } from "jotai";
 import { OrbitHashes, OrbitNodeDetails } from "../state";
 import { updateAppStateWithOrbit } from "../hooks/gql/utils";
+import { sleep } from "./lists/OrbitSubdivisionList";
 
 type PreloadAllDataProps = {
   landingSphereEh?: EntryHashB64;
   landingSphereId?: ActionHashB64;
-  landingPage?: string;
+  // landingPage?: string;
   onPreloadComplete?: () => void;
 };
 
 /**
  * A component that does a batch fetch and cache of SphereOrbitNodeDetails for all Spheres
- * @param {PreloadAllDataProps} - provides optional context on where to route after the data has been loaded 
+ * @param {PreloadAllDataProps} - provides optional context on where to route after the data has been loaded:
+ *  - Current sphereHashes are set to the provided context eH & iD or else the first sphere in the response from the getSpheres query
  * 
+ *  - If onPreloadComplete handler is passed then we call that after all effects have been run
+ *  - Else no onPreloadComplete handler is passed so we default to routing to the Vis page
+ *    -- with the provided landingSphereEh, landingSphereId context
  */
 const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   landingSphereEh,
   landingSphereId,
-  landingPage,
   onPreloadComplete
 }) => {
   const [_, transition] = useStateTransition(); // Top level state machine and routing
   const preloadCompleted = useRef(false);
 
   const setAppState = useSetAtom(appStateAtom);
+  const setCurentSphere = useSetAtom(currentSphereHashesAtom);
   // Fetch spheres (which are the beginning of any graph of data in the app)
   const {
     loading: loadingSpheres,
@@ -49,6 +54,10 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   } = useGetSpheresQuery();
 
   const sphereNodes = data ? extractEdges(data.spheres) as Sphere[] : [];
+
+  // Fall back to the first Sphere as redirect context after effects
+  const id = sphereNodes?.[0]?.id;
+  const eH = sphereNodes?.[0]?.eH;
 
   const fetchData = useCallback(
     async () => {
@@ -87,9 +96,13 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                   Object.fromEntries(indexedOrbitNodeDetails),
                 );
                 // Update app state for each orbit
-                setAppState((prevState) => {
+                await setAppState((prevState) => {
+                  console.log('prevState Preload :>> ', prevState);
                   let updatedState = prevState;
-                  orbitHashes.forEach(orbitHash => {
+                  orbitHashes.sort((hashesA, hashesB) => {
+                    // Process the root hash last which will set it as current Orbit
+                    return +((!!hashesB?.parentEh)) - (+(!!hashesA?.parentEh))
+                  }).forEach(orbitHash => {
                     updatedState = updateAppStateWithOrbit(updatedState, orbitHash, true);
                   });
 
@@ -102,14 +115,19 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                         details: {
                           entryHash: eH,
                         },
-                        hierarchyRootOrbitEntryHashes: [],
+                        hierarchyRootOrbitEntryHashes: orbitHashes.filter(hashes => typeof hashes.parentEh == 'undefined').map(hashes => hashes.eH),
                       },
                     },
                   };
                   console.log('updatedState :>> ', updatedState);
                   return updatedState;
                 });
-                console.log('orbits :>> ', Object.fromEntries(indexedOrbitNodeDetails));
+                await sleep(100);
+
+                await setCurentSphere({
+                  actionHash: landingSphereId || id,
+                  entryHash: landingSphereEh || eH,
+                });
               }
             } catch (error) {
               console.error(error);
@@ -146,24 +164,19 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
       return;
     }
 
-    // Use either first returned Sphere as the landing vis (this will always work for Onboarding) or a passed in parameter
-    const { id, eH } = sphereNodes[0];
-    const landingId = landingSphereId || id;
-    const landingEh = landingSphereEh || eH;
-
-    store.set(currentSphereHashesAtom, {
-      actionHash: landingId,
-      entryHash: landingEh,
-    });
-
     debouncedFetchData().then(() => {
       console.log('Preloaded all data for each sphere...');
       if (!preloadCompleted.current && onPreloadComplete) {
-        preloadCompleted.current = true;
         onPreloadComplete();
+      } else {
+        transition("Vis", {
+          currentSphereEhB64: landingSphereEh || eH,
+          currentSphereAhB64: landingSphereId || id,
+        });  
       }
+      preloadCompleted.current = true;
     });
-  }, [sphereNodes, onPreloadComplete, data, fetchData, landingSphereEh, landingSphereId, landingPage]);
+  }, [sphereNodes, onPreloadComplete, data, fetchData, landingSphereEh, landingSphereId]);
 
   return <Spinner aria-label="Loading!" size="xl" className="full-spinner" />;
 };
