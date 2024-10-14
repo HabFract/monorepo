@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect } from "react";
+import "../App.css";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useStateTransition } from "../hooks/useStateTransition";
 import {
   GetOrbitsDocument,
@@ -13,32 +14,37 @@ import { client } from "../graphql/client";
 import { currentSphereHashesAtom } from "../state/sphere";
 import { Spinner } from "flowbite-react";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { debounce } from "./vis/helpers";
 
 type PreloadAllDataProps = {
   landingSphereEh?: EntryHashB64;
   landingSphereId?: ActionHashB64;
   landingPage?: string;
+  onPreloadComplete?: () => void;
 };
 
 /**
  * A component that does a batch fetch and cache of SphereOrbitNodeDetails for all Spheres
- * @param {PreloadAllDataProps} - provides context on where to route after the data has been loaded 
+ * @param {PreloadAllDataProps} - provides optional context on where to route after the data has been loaded 
  * 
  */
 const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   landingSphereEh,
   landingSphereId,
-  landingPage
+  landingPage,
+  onPreloadComplete
 }) => {
   const [_, transition] = useStateTransition(); // Top level state machine and routing
+  const preloadCompleted = useRef(false);
 
+  // Fetch spheres (which are the beginning of any graph of data in the app)
   const {
     loading: loadingSpheres,
     error,
-    data: spheres,
+    data,
   } = useGetSpheresQuery();
 
-  const sphereNodes = extractEdges(spheres!.spheres) as Sphere[];
+  const sphereNodes = data ? extractEdges(data.spheres) as Sphere[] : [];
 
   const fetchData = useCallback(
     async (id: ActionHashB64, eH: EntryHashB64) => {
@@ -91,10 +97,22 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
     },
     [sphereNodes],
   );
+  const debouncedFetchData = useCallback(
+    debounce(fetchData, 3000),
+    [fetchData]
+  );
 
   useEffect(() => {
-    if (!sphereNodes.length) return;
-    if (!sphereNodes.length) return;
+    if (!data) return;
+    // This means we just don't have any Spheres, so no data to preload!
+    if (data && !sphereNodes.length) { 
+      if (!preloadCompleted.current && onPreloadComplete) {
+        console.log('No data preload was needed...');
+        preloadCompleted.current = true;
+        onPreloadComplete();
+      }
+      return;
+    }
 
     // Use either first returned Sphere as the landing vis (this will always work for Onboarding) or a passed in parameter
     const { id, eH } = sphereNodes[0];
@@ -106,10 +124,16 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
       entryHash: landingEh,
     });
 
-    fetchData(landingId, landingEh);
-  }, [sphereNodes]);
+    debouncedFetchData(landingId, landingEh).then(() => {
+      console.log('Preloaded all data for each sphere...');
+      if (!preloadCompleted.current && onPreloadComplete) {
+        preloadCompleted.current = true;
+        onPreloadComplete();
+      }
+    });
+  }, [sphereNodes, onPreloadComplete, data, fetchData, landingSphereEh, landingSphereId, landingPage]);
 
   return <Spinner aria-label="Loading!" size="xl" className="full-spinner" />;
 };
 
-export default PreloadAllData;
+export default React.memo(PreloadAllData);

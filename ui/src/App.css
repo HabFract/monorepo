@@ -35,7 +35,7 @@
   flex-direction: column;
   height: 100vh;
   overflow-x: hidden;
-  min-width: 100vw;
+  width: 100vw;
   z-index: 5;
   align-items: center;
 }

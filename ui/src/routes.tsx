@@ -1,6 +1,6 @@
 import { CreateSphere, CreateOrbit, RefineOrbit } from "./components/forms";
 import { ListOrbits, ListSpheres } from "./components/lists";
-import PreloadOrbitData from "./components/Preload";
+import PreloadOrbitData from "./components/PreloadAllData";
 
 import Home from "./components/layouts/Home";
 import OrbitTree from "./components/vis/OrbitTree";
@@ -10,7 +10,6 @@ import { StateTransitions } from "./state/types/stateMachine";
 import FirstHomeLayout from "./components/layouts/FirstHome";
 
 export type AppState = // Currently just for routing in the state machine
-
   | "Home"
   | "Welcome"
   | "PreloadAndCache"
@@ -30,14 +29,14 @@ export type Routes = {
 export type AppStateStore = {
   currentState: AppState;
   params?: object;
-  client: any;
+  connection: any;
 };
 
 export const initialState: AppStateStore = {
   // Home route
   currentState: "Home",
   params: {},
-  client: null,
+  connection: null,
 };
 
 export const routes: Routes = {
@@ -74,7 +73,7 @@ const lists = ["ListSpheres", "ListOrbits"];
 export const AppTransitions: StateTransitions<AppState> = {
   PreloadAndCache: ["Vis", "CreateSphere", "CreateOrbit"],
   Welcome: ["Onboarding1", "PreloadAndCache"],
-  Home: ["Welcome", ...lists, ...forms, "Vis", "Onboarding1", "PreloadAndCache"],
+  Home: ["Welcome","Home", ...lists, ...forms, "Vis", "Onboarding1", "PreloadAndCache"],
   Onboarding1: ["Home", "Onboarding2"],
   Onboarding2: ["Onboarding1", "Onboarding2", "Onboarding3"],
   Onboarding3: ["Onboarding2", "Onboarding3", "PreloadAndCache"],

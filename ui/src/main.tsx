@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
-import BootScreen from "./BootScreen";
 import "broadcastchannel-polyfill";
 import App from "./App";
-import { StateMachine } from "./state/types/stateMachine";
+import { StateMachine, StateStore } from "./state/types/stateMachine";
 import {
   AppState,
   AppStateStore,
@@ -13,6 +12,12 @@ import {
 } from "./routes";
 import { Provider } from "jotai";
 import { store } from "./state/store";
+import { ToastProvider } from "./contexts/toast";
+import { StateMachineContext } from "./contexts/state-machine";
+import BootSequence from "./BootSequence";
+import { ApolloClient, ApolloProvider, NormalizedCacheObject } from "@apollo/client";
+import { getConnection } from "./graphql/connection";
+import { Modal, Spinner } from "flowbite-react";
 
 /*
 Application State Management (Courtesy of Ada Burrows for hREA playspace)
@@ -24,32 +29,46 @@ export const AppMachine = new StateMachine<AppState, AppStateStore>(
 );
 
 Object.entries(routes).forEach(([routeName, component]) => {
-  AppMachine.on(routeName as AppState, async (state: any) => {
-    const ComponentWithProps = React.cloneElement(
-      component as React.ReactElement,
-      {
-        ...state.params,
-        key: JSON.stringify(state.params), // Use a unique key based on state.params to ensure Vis re-renders when sphere hash changes.
-      },
-    );
-    renderComponent(ComponentWithProps);
+  AppMachine.on(routeName as AppState, async (state: StateStore<AppState>) => {
+    console.log('state :>> ', state);
+    const PageComponentWithProps = React.cloneElement(component as React.ReactElement, {
+      ...state.params,
+      key: JSON.stringify(state.params),
+    });
+    renderPage(PageComponentWithProps, AppMachine.state.connection.apolloClient);
   });
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
-export async function renderComponent(component: React.ReactNode) {
-  root.render(
-    <React.StrictMode>
-      <BootScreen>
-        <App>{component}</App>
-      </BootScreen>
-    </React.StrictMode>,
-  );
-}
-
-AppMachine.go();
-
-export const WithCacheStore = (component: React.ReactNode) => {
+export const withJotaiStore = (component: React.ReactNode) => {
   return <Provider store={store}>{component}</Provider>;
 };
+
+export async function renderPage(page: React.ReactNode, client) {
+  root.render(
+    <React.StrictMode>
+      <ApolloProvider client={client}>
+        <StateMachineContext.Provider value={AppMachine as any}>
+          <ToastProvider>
+            {withJotaiStore(<App>{page}</App>)}
+          </ToastProvider>
+        </StateMachineContext.Provider>
+      </ApolloProvider>
+    </React.StrictMode>
+  );
+}
+const Main = () => {
+  return (
+      <StateMachineContext.Provider value={AppMachine}>
+        {/* You can render the initial component or a Boot wrapper here */}
+        <BootSequence />
+      </StateMachineContext.Provider>
+  );
+};
+
+root.render(
+  <React.StrictMode>
+    <Main />
+  </React.StrictMode>
+);

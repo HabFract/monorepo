@@ -27,7 +27,7 @@ export class StateMachine<S extends State, T extends StateStore<S>> {
   }
 
   public to(state: S, params: object) {
-    if (
+    if (  
       this.transitions[this.state.currentState].findIndex(
         (nState) => state == nState,
       ) >= 0

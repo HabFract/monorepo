@@ -105,16 +105,39 @@ export const isSuperSmallScreen = () => {
   return document.body.getBoundingClientRect().width < 340;
 };
 
-export const debounce = function (func, delay) {
-  let timeout;
-  return (...args) => {
+export const debounce = function <T extends (...args: any[]) => Promise<any>>(func: T, delay: number) {
+  let timeout: NodeJS.Timeout | null = null;
+  let isExecuting = false;
+
+  return async (...args: Parameters<T>): Promise<ReturnType<T>> => {
     if (timeout) {
       clearTimeout(timeout);
     }
-    timeout = setTimeout(() => func.apply(null, args), delay);
+
+    if (!isExecuting) {
+      isExecuting = true;
+      try {
+        const result = await func(...args);
+        isExecuting = false;
+        return result;
+      } catch (error) {
+        isExecuting = false;
+        throw error;
+      }
+    } else {
+      return new Promise((resolve, reject) => {
+        timeout = setTimeout(async () => {
+          try {
+            const result = await func(...args);
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          }
+        }, delay);
+      });
+    }
   };
 };
-
 // General helpers
 
 export const getTransform = (node, xScale) => {

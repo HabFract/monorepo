@@ -34,6 +34,7 @@ import deepForEach from "deep-for-each";
 import { format, parse } from "fecha";
 import isObject from "is-object";
 import { Base64 } from "js-base64";
+import { debounce } from "../components/vis/helpers";
 
 type RecordId = [HoloHash, HoloHash];
 
@@ -58,33 +59,42 @@ const DEFAULT_CONNECTION_URI =
 const HOLOCHAIN_APP_ID = (HAPP_ID as string) || "";
 
 const CONNECTION_CACHE: { [i: string]: any } = {};
+let connectionPromise: Promise<any> | null = null;
 
 export async function autoConnect(conductorUri?: string) {
-  console.log(`Environment: `, NODE_ENV);
-  const dev = NODE_ENV == "dev";
-  let dnaConfig, appWs;
-  if (!conductorUri) {
-    conductorUri = dev ? DEFAULT_CONNECTION_URI : `ws://localhost:NONE`;
+  if (connectionPromise) {
+    return connectionPromise;
   }
-  if (!dev) {
-    appWs = await openConnection();
-    dnaConfig = await sniffHolochainAppCells(appWs);
-  } else {
-    const adminWs = await AdminWebsocket.connect({
-      url: new URL(`ws://localhost:${ADMIN_WS_PORT}`),
-    } as any);
-    const token = await adminWs.issueAppAuthenticationToken({
-      installed_app_id: HAPP_ID,
-    });
-    appWs = await openConnection(token.token);
-    dnaConfig = await sniffHolochainAppCells(appWs);
-    await adminWs.authorizeSigningCredentials(
-      dnaConfig[HAPP_DNA_NAME]!.cell_id!
-    );
-  }
-  CONNECTION_CACHE[HAPP_ID] = { client: appWs, dnaConfig, conductorUri };
 
-  return CONNECTION_CACHE[HAPP_ID];
+  connectionPromise = (async () => {
+    console.log(`Environment: `, NODE_ENV);
+    const dev = NODE_ENV == "dev";
+    let dnaConfig, appWs;
+    if (!conductorUri) {
+      conductorUri = dev ? DEFAULT_CONNECTION_URI : `ws://localhost:NONE`;
+    }
+    if (!dev) {
+      appWs = await openConnection();
+      dnaConfig = await sniffHolochainAppCells(appWs);
+    } else {
+      const adminWs = await AdminWebsocket.connect({
+        url: new URL(`ws://localhost:${ADMIN_WS_PORT}`),
+      } as any);
+      const token = await adminWs.issueAppAuthenticationToken({
+        installed_app_id: HAPP_ID,
+      });
+      appWs = await openConnection(token.token);
+      dnaConfig = await sniffHolochainAppCells(appWs);
+      await adminWs.authorizeSigningCredentials(
+        dnaConfig[HAPP_DNA_NAME]!.cell_id!
+      );
+    }
+    CONNECTION_CACHE[HAPP_ID] = { client: appWs, dnaConfig, conductorUri };
+    console.log("Holochain connection established");
+    return CONNECTION_CACHE[HAPP_ID];
+  })();
+
+  return connectionPromise;
 }
 
 export const openConnection = (token?: AppAuthenticationToken) => {
@@ -93,18 +103,12 @@ export const openConnection = (token?: AppAuthenticationToken) => {
       ? { token, url: DEFAULT_CONNECTION_URI }
       : (undefined as any)
   ).then((client) => {
-    console.log(`Holochain connection to ${HAPP_ID} OK:`, client);
+    // console.log(`Holochain connection to ${HAPP_ID} OK:`, client);
     return client;
   });
 };
 
-export const getConnection = async () => {
-  if (!CONNECTION_CACHE[HAPP_ID]) {
-    return autoConnect();
-  }
-
-  return CONNECTION_CACHE[HAPP_ID];
-};
+export const getConnection = debounce(autoConnect, 300);
 
 /**
  * Introspect an active Holochain connection's app cells to determine cell IDs

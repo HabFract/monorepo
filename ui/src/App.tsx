@@ -1,3 +1,7 @@
+import "./App.css";
+import "habit-fract-design-system/dist/style.css";
+import "./typo.css";
+
 import { useStateTransition } from "./hooks/useStateTransition";
 import withLayout from "./components/HOC/withLayout";
 
