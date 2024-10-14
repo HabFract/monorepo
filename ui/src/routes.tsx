@@ -1,6 +1,6 @@
 import { CreateSphere, CreateOrbit, RefineOrbit } from "./components/forms";
 import { ListOrbits, ListSpheres } from "./components/lists";
-import PreloadOrbitData from "./components/PreloadAllData";
+import PreloadAndCache from "./components/PreloadAllData";
 
 import Home from "./components/layouts/Home";
 import OrbitTree from "./components/vis/OrbitTree";
@@ -42,7 +42,7 @@ export const initialState: AppStateStore = {
 export const routes: Routes = {
   Home: <Home />,
   Welcome: <FirstHomeLayout />,
-  PreloadAndCache: <PreloadOrbitData />,
+  PreloadAndCache: <PreloadAndCache />,
   Vis: (() => renderVis(OrbitTree))(),
   Onboarding1: <CreateSphere editMode={false} />,
   Onboarding2: (

@@ -1,7 +1,4 @@
-import { useRedirect } from "../../hooks/useRedirect";
-
 function HomeLayout({ startBtn, firstVisit = true }: any) {
-  useRedirect();
   return (
     <div className="home-layout">
       <div className="action">{firstVisit && startBtn}</div>

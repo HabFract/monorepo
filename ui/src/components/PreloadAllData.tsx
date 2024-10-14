@@ -8,13 +8,16 @@ import {
   useGetSpheresQuery,
 } from "../graphql/generated";
 import { extractEdges, serializeAsyncActions } from "../graphql/utils";
-import { nodeCache, store } from "../state/store";
+import { appStateAtom, nodeCache, store } from "../state/store";
 import { mapToCacheObject } from "../state/orbit";
 import { client } from "../graphql/client";
 import { currentSphereHashesAtom } from "../state/sphere";
 import { Spinner } from "flowbite-react";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { debounce } from "./vis/helpers";
+import { useSetAtom } from "jotai";
+import { OrbitHashes, OrbitNodeDetails } from "../state";
+import { updateAppStateWithOrbit } from "../hooks/gql/utils";
 
 type PreloadAllDataProps = {
   landingSphereEh?: EntryHashB64;
@@ -37,6 +40,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   const [_, transition] = useStateTransition(); // Top level state machine and routing
   const preloadCompleted = useRef(false);
 
+  const setAppState = useSetAtom(appStateAtom);
   // Fetch spheres (which are the beginning of any graph of data in the app)
   const {
     loading: loadingSpheres,
@@ -47,7 +51,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   const sphereNodes = data ? extractEdges(data.spheres) as Sphere[] : [];
 
   const fetchData = useCallback(
-    async (id: ActionHashB64, eH: EntryHashB64) => {
+    async () => {
       try {
         await serializeAsyncActions<any>([
           ...sphereNodes.map(({ id, eH }) => async () => {
@@ -64,14 +68,48 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                 }));
               if (data?.data?.orbits) {
                 const orbits = extractEdges(data.data.orbits) as Orbit[];
-                const indexedOrbitData = Object.entries(
+                const indexedOrbitNodeDetails = Object.entries(
                   orbits.map(mapToCacheObject),
                 ).map(([_idx, value]) => [value.eH, value]);
+
+                const orbitHashes = Object.entries(
+                  orbits.map(mapToCacheObject),
+                ).map(([_idx, value]) => ({
+                  id: value.id,
+                  eH: value.eH,
+                  sphereHash: value.sphereHash,
+                  childEh: value?.childEh,
+                  parentEh: value?.parentEh,
+                }));
                 store.set(
                   nodeCache.set,
                   id,
-                  Object.fromEntries(indexedOrbitData),
+                  Object.fromEntries(indexedOrbitNodeDetails),
                 );
+                // Update app state for each orbit
+                setAppState((prevState) => {
+                  let updatedState = prevState;
+                  orbitHashes.forEach(orbitHash => {
+                    updatedState = updateAppStateWithOrbit(updatedState, orbitHash, true);
+                  });
+
+                  updatedState.spheres = {
+                    ...updatedState.spheres,
+                    currentSphereHash: id,
+                    byHash: {
+                      ...prevState.spheres.byHash,
+                      [id]: {
+                        details: {
+                          entryHash: eH,
+                        },
+                        hierarchyRootOrbitEntryHashes: [],
+                      },
+                    },
+                  };
+                  console.log('updatedState :>> ', updatedState);
+                  return updatedState;
+                });
+                console.log('orbits :>> ', Object.fromEntries(indexedOrbitNodeDetails));
               }
             } catch (error) {
               console.error(error);
@@ -81,15 +119,9 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
             Promise.resolve(
               console.log(
                 "Preloaded and cached! :>> ",
-                store.get(nodeCache.items),
+                store.get(nodeCache.entries),
               ),
             ),
-          async () => {
-            transition(landingPage || "Vis", {
-              currentSphereEhB64: eH,
-              currentSphereAhB64: id,
-            })
-          },
         ]);
       } catch (error) {
         console.error(error);
@@ -124,7 +156,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
       entryHash: landingEh,
     });
 
-    debouncedFetchData(landingId, landingEh).then(() => {
+    debouncedFetchData().then(() => {
       console.log('Preloaded all data for each sphere...');
       if (!preloadCompleted.current && onPreloadComplete) {
         preloadCompleted.current = true;

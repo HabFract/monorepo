@@ -147,7 +147,6 @@ export class TreeVisualization extends BaseVisualization {
         const orbit = store.get(getOrbitNodeDetailsFromIdAtom(id));
         const isRootNode = store.get(getHierarchyAtom(node.data.content)) !== null
         const zoomOffsetY = -(this._viewConfig.isSmallScreen() ? isRootNode ? 300 : 100 : 0)
-debugger;
         const scale = (this._viewConfig.isSmallScreen() ? 0.5 : 1) * chooseZoomScaleForOrbit(orbit);
         const x = -(node as any).x * scale + this._viewConfig.canvasWidth / 2;
         const y = -(node as any).y * scale + this._viewConfig.canvasHeight / 2 + zoomOffsetY;

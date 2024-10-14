@@ -13,6 +13,9 @@ export function useStateTransition() {
   const [state, setState] = useState(stateMachine.state.currentState);
   const transition = (newState: string, params: object) => {
     stateMachine.to(newState, params);
+    if(newState == 'PreloadAndCache') {
+      debugger;
+    }
     setState(newState);
   };
 

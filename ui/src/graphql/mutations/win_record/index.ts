@@ -53,7 +53,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       orbitId, winData
     });
     const entryRecord = new EntryRecord<WinRecord>(rawRecord as any);
-debugger;
+// debugger;
     return {
       ...entryRecord.entry
     };
@@ -67,7 +67,7 @@ debugger;
       winRecordId, updatedWinRecord
     });
     const entryRecord = new EntryRecord<WinRecord>(rawRecord as any);
-    debugger;
+    // debugger;
     return {
       ...entryRecord.entry
     };

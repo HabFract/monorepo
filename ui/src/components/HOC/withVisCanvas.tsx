@@ -68,7 +68,7 @@ export function withVisCanvas<T extends IVisualization>(
   const ComponentWithVis: React.FC<WithVisCanvasProps> = (
     _visParams: WithVisCanvasProps,
   ) => {
-    useRedirect();
+    // useRedirect();
 
     const mountingDivId = "vis-root"; // Declared at the router level
     const svgId = "vis"; // May need to be declared dynamically when we want multiple vis on a page

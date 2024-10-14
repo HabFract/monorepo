@@ -33,31 +33,34 @@ function ListSpheres() {
   const spheres = extractEdges(data!.spheres) as Sphere[];
 
   if (!spheres.length) return <></>;
-
   return (
     <div className="layout spheres">
       <PageHeader title="Sphere Breakdown" />
       <div></div>
       <div className="spheres-list">
-        {spheres.map((sphere: Sphere) => (
-          <SphereCard
-            key={sphere.id}
-            sphere={sphere}
-            transition={transition}
-            isHeader={false}
-            orbitScales={[]}
-            runDelete={() => runDelete({ variables: { id: sphere.id } })}
-            showToast={showToast}
-            setSphereIsCurrent={() => {
-              store.set(currentSphereHashesAtom, {
-                entryHash: sphere.eH,
-                actionHash: sphere.id,
-              });
-              console.log("Set new current Sphere: ", sphere.id)
-            }}
-            hasCachedNodes={store.get(sphereHasCachedNodesAtom(sphere.id))}
-          />
-        ))}
+        {spheres.map((sphere: Sphere) => {
+          const sphereHasCachedNodes = store.get(sphereHasCachedNodesAtom(sphere.id))
+          console.log('sphereHasCachedNodes :>> ', sphereHasCachedNodes);
+          return (
+            <SphereCard
+              key={sphere.id}
+              sphere={sphere}
+              transition={transition}
+              isHeader={false}
+              orbitScales={[]}
+              runDelete={() => runDelete({ variables: { id: sphere.id } })}
+              showToast={showToast}
+              setSphereIsCurrent={() => {
+                store.set(currentSphereHashesAtom, {
+                  entryHash: sphere.eH,
+                  actionHash: sphere.id,
+                });
+                console.log("Set new current Sphere: ", sphere.id)
+              }}
+              hasCachedNodes={sphereHasCachedNodes}
+            />
+          )
+        })}
       </div>
     </div>
   );

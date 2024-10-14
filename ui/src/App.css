@@ -20,7 +20,7 @@
   padding-left: 40px;
 }
 
-.ant-app {
+#root {
   color: white;
   @apply bg-gray-500;
   display: grid;
@@ -35,7 +35,7 @@
   flex-direction: column;
   height: 100vh;
   overflow-x: hidden;
-  width: 100vw;
+  width: 100%;
   z-index: 5;
   align-items: center;
 }
@@ -217,7 +217,7 @@ nav + main.page-container .orbits-list {
 }
 
 @media screen and (min-width: 440px) {
-  .ant-app {
+  #root {
     grid-template-columns: 10% 80% 10%;
     place-content: center;
   }
@@ -251,7 +251,7 @@ nav + main.page-container .orbits-list {
 }
 
 @media screen and (min-width: 768px) {
-  .ant-app {
+  #root {
     grid-template-columns: 5% 90% 5%;
     grid-template-rows: 5% 90% 5%;
   }
@@ -278,7 +278,7 @@ nav + main.page-container .orbits-list {
   }
 }
 @media screen and (min-width: 1200px) {
-  .ant-app {
+  #root {
     grid-template-columns: 8% 22% 40% 22% 8%;
     grid-template-rows: 4% 1fr 4%;
   }

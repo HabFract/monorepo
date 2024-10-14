@@ -16,72 +16,73 @@ import { extractEdges } from "../graphql/utils";
  *
  */
 export const useRedirect = (bypass?: boolean) => {
-  const [state, transition, params] = useStateTransition();
+  const [state, transition] = useStateTransition();
   const sphere = useAtomValue(currentSphereHashesAtom);
-  const isSameSphere =
-    (params?.landingSphereId &&
-      sphere.actionHash &&
-      params.landingSphereId !== sphere.actionHash) ||
-    (params?.currentSphereAhB64 &&
-      sphere.actionHash &&
-      params.currentSphereAhB64 !== sphere.actionHash);
-  if (isSameSphere) return;
-
   const sphereHasCachedOrbits = useAtomValue(currentSphereHasCachedNodesAtom);
-  const { showToast } = useToast();
-  const [hasFetched, setHasFetched] = useState<boolean>(false);
-  const [getOrbits, { data: orbits, loading: getAllLoading, error }] =
-    useGetOrbitsLazyQuery({
-      fetchPolicy: "network-only",
-      variables: { sphereEntryHashB64: sphere.entryHash },
-    });
-
-  // First check for a current Sphere context
-  if (!sphere?.actionHash && params?.currentSphereAhB64) {
-    store.set(currentSphereHashesAtom, {
-      actionHash: params.currentSphereAhB64,
-      entryHash: params.currentSphereEhB64,
-    });
-  }
-  // Then use orbits query if we have a Sphere
   useEffect(() => {
-    if (!sphere?.actionHash) return;
-    getOrbits();
-    setHasFetched(true);
-  }, [sphere?.actionHash]);
+    if (bypass || sphereHasCachedOrbits) return;
+    
+    if (!sphere?.actionHash || !sphereHasCachedOrbits) {
+      console.log('sphereHasCachedOrbits :>> ', sphereHasCachedOrbits);
+      transition('PreloadAndCache');
+    }
+  }, [bypass, sphere, sphereHasCachedOrbits, transition]);
 
-  // Use orbits query to check if we have orbits we could cache, If so, redirect
-  useEffect(() => {
-    if (bypass || !orbits || sphereHasCachedOrbits) return;
+  // const sphereHasCachedOrbits = useAtomValue(currentSphereHasCachedNodesAtom);
+  // const { showToast } = useToast();
+  // const [hasFetched, setHasFetched] = useState<boolean>(false);
+  // const [getOrbits, { data: orbits, loading: getAllLoading, error }] =
+  //   useGetOrbitsLazyQuery({
+  //     fetchPolicy: "network-only",
+  //     variables: { sphereEntryHashB64: sphere.entryHash },
+  //   });
 
-    const orbitEdges = extractEdges((orbits as any)?.orbits) as Orbit[];
+  // // First check for a current Sphere context
+  // if (!sphere?.actionHash && params?.currentSphereAhB64) {
+  //   store.set(currentSphereHashesAtom, {
+  //     actionHash: params.currentSphereAhB64,
+  //     entryHash: params.currentSphereEhB64,
+  //   });
+  // }
+  // // Then use orbits query if we have a Sphere
+  // useEffect(() => {
+  //   if (!sphere?.actionHash) return;
+  //   getOrbits();
+  //   setHasFetched(true);
+  // }, [sphere?.actionHash]);
 
-    orbitEdges.length > 0 &&
-      !sphereHasCachedOrbits &&
-      transition("PreloadAndCache", {
-        landingSphereEh: sphere.entryHash,
-        landingSphereId: sphere.actionHash,
-        landingPage: state,
-      });
-  }, [bypass, sphereHasCachedOrbits, getOrbits]);
+  // // Use orbits query to check if we have orbits we could cache, If so, redirect
+  // useEffect(() => {
+  //   if (bypass || !orbits || sphereHasCachedOrbits) return;
 
-  useEffect(() => {
-    if (bypass || !hasFetched || error || getAllLoading) return;
+  //   const orbitEdges = extractEdges((orbits as any)?.orbits) as Orbit[];
 
-    const firstVisit = !orbits;
-    console.log("firstVisit :>> ", firstVisit);
-    transition(firstVisit ? "FirstHome" : "Home");
-    // showToast(
-    //   "You need to create an Orbit before you can Visualise!",
-    //   5000,
-    //   sphereHasCachedOrbits
-    // );
-    // if (!sphereHasCachedOrbits) {
-    //   transition("CreateOrbit", {
-    //     editMode: false,
-    //     forwardTo: "Vis",
-    //     sphereEh: sphere.entryHash,
-    //   });
-    // }
-  }, [isSameSphere]);
+  //   orbitEdges.length > 0 &&
+  //     !sphereHasCachedOrbits &&
+  //     transition("PreloadAndCache", {
+  //       landingSphereEh: sphere.entryHash,
+  //       landingSphereId: sphere.actionHash,
+  //       landingPage: state,
+  //     });
+  // }, [bypass, sphereHasCachedOrbits, getOrbits]);
+
+  // useEffect(() => {
+  //   if (bypass || !hasFetched || error || getAllLoading) return;
+
+  //   const firstVisit = !orbits;
+  //   console.log("firstVisit :>> ", firstVisit);
+  //   transition(firstVisit ? "FirstHome" : "Home");
+  //   // showToast(
+  //   //   "You need to create an Orbit before you can Visualise!",
+  //   //   5000,
+  //   //   sphereHasCachedOrbits
+  //   // );
+  //   // if (!sphereHasCachedOrbits) {
+  //   //   transition("CreateOrbit", {
+  //   //     editMode: false,
+  //   //     forwardTo: "Vis",
+  //   //     sphereEh: sphere.entryHash,
+  //   //   });
+  //   // }
+  // }, [isSameSphere]);
 };
