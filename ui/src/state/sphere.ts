@@ -3,7 +3,7 @@ import { appStateAtom } from "./store";
 import { SphereDetails, SphereHashes } from "./types/sphere";
 import { nodeCache } from "./store";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { getOrbitEhFromId, getOrbitNodeDetailsFromEhAtom } from "./orbit";
+import { getOrbitNodeDetailsFromEhAtom } from "./orbit";
 
 /**
  * Read-write atom for the current sphere's hashes or null if the current hash doesn't resolve to a sphere's details
@@ -14,6 +14,7 @@ export const currentSphereHashesAtom = atom(
     const state = get(appStateAtom);
     const currentSphereHash = state.spheres.currentSphereHash;
     const currentSphere = state.spheres.byHash[currentSphereHash];
+
     return currentSphere
       ? {
           entryHash: currentSphere.details.entryHash,
@@ -21,9 +22,10 @@ export const currentSphereHashesAtom = atom(
         }
       : null;
   },
-  (get, set, newSphereHashes: SphereHashes) => {
+  (_get, set, newSphereHashes: SphereHashes) => {
     set(appStateAtom, (prevState) => {
       const newCurrentSphereHash = newSphereHashes.actionHash || "";
+      //TODO: think about whether a guard clause woule be helpeful for when the sphere is not already cached with details
       return {
         ...prevState,
         spheres: {

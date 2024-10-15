@@ -67,7 +67,7 @@ describe('Sphere selectors', () => {
       expect(JSON.parse(screen.getByTestId("container").textContent || "{}")).toBe(null);
     });
 
-    it('should update sphere hashes when set (to invalid hash)', async () => {
+    it('should update sphere hashes when set', async () => {
       const TestComponent = () => {
         const [sphereHashes, setSphereHashes] = useAtom(currentSphereHashesAtom);
 
@@ -92,13 +92,11 @@ describe('Sphere selectors', () => {
 
       await act(async () => {
         await userEvent.click(screen.getByText('Update Hashes'));
-        // Sets to a hash not in the mocks
       });
 
       const updatedHashes = JSON.parse(screen.getByTestId('hashes').textContent || '{}');
-      // No sphere details to our invalid hash, so returns null
-      // May need to test both happy/sad paths with more indepth mocks later
-      expect(updatedHashes).toBe(null);
+      expect(updatedHashes.entryHash).toBe('newEntryHash');
+      expect(updatedHashes.actionHash).toBe('newActionHash');
     });
   });
 

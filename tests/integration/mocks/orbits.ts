@@ -10,7 +10,7 @@ import {
 } from "../../../ui/src/graphql/generated/index";
 
 import { SPHERE_ID } from "./mockAppState";
-import { mockedCacheEntries } from "./mockNodeCache";
+import { mockedCacheEntries } from "../../setupMockStore";
 
 const orbitData = mockedCacheEntries[0][1];
 
