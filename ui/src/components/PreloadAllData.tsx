@@ -1,5 +1,5 @@
 import "../App.css";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useStateTransition } from "../hooks/useStateTransition";
 import {
   GetOrbitsDocument,
@@ -16,7 +16,6 @@ import { Spinner } from "flowbite-react";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { debounce } from "./vis/helpers";
 import { useSetAtom } from "jotai";
-import { OrbitHashes, OrbitNodeDetails } from "../state";
 import { updateAppStateWithOrbit } from "../hooks/gql/utils";
 import { sleep } from "./lists/OrbitSubdivisionList";
 
@@ -42,7 +41,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   onPreloadComplete
 }) => {
   const [_, transition] = useStateTransition(); // Top level state machine and routing
-  const preloadCompleted = useRef(false);
+  const [preloadCompleted, setPreloadCompleted] = useState(false);
 
   const setAppState = useSetAtom(appStateAtom);
   const setNodeCache = useSetAtom(nodeCache.set);
@@ -129,12 +128,25 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
               }
             } catch (error) {
               console.error(error);
+              return Promise.reject()
             }
           }),
+          async () => {
+            await sleep(100);
+            await setPreloadCompleted(true);
+            return Promise.resolve(
+              console.log(
+                "Preloaded and cached! :>> ",
+                store.get(nodeCache.entries),
+              ),
+            )
+          },
         ]);
       } catch (error) {
         console.error(error);
+        return Promise.reject()
       }
+      return Promise.resolve(sleep(100))
     },
     [sphereNodes],
   );
@@ -143,25 +155,29 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   useEffect(() => {
     if (!data) return;
     // This means we just don't have any Spheres, so no data to preload!
-    if (data && !sphereNodes.length) { 
-      if (!preloadCompleted.current && onPreloadComplete) {
+    if (data && !sphereNodes.length) {
+      if (!preloadCompleted && onPreloadComplete) {
         console.log('No data preload was needed...');
-        preloadCompleted.current = true;
+
+        setPreloadCompleted(true);
         onPreloadComplete();
       }
       return;
     }
-
-    debouncedFetchData().then(() => {
-      console.log('Preloaded all data for each sphere...');
-      if (!preloadCompleted.current && onPreloadComplete) {
-        onPreloadComplete();
-      } else {
-        transition("Vis");  
-      }
-      preloadCompleted.current = true;
-    });
+    debouncedFetchData();
   }, [sphereNodes, onPreloadComplete, data, fetchData, landingSphereEh, landingSphereId]);
+
+  useEffect(() => {
+    if (!preloadCompleted) return;
+    console.log('preloadCompleted :>> ', preloadCompleted);
+
+    if (onPreloadComplete) {
+      console.log('Preloaded all data for each sphere... moving on.');
+      onPreloadComplete();
+    } else {
+      transition("Vis");
+    }
+  }, [preloadCompleted]);
 
   return <Spinner aria-label="Loading!" size="xl" className="full-spinner" />;
 };

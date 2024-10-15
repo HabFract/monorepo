@@ -24,20 +24,15 @@ export const determineVisCoverage = (params, y) =>
 /**
  * Generates query parameters for fetching orbit hierarchy
  * @param visCoverage - The current visual coverage type
- * @param params - The current parameters
+ * @param sphereHashB64 - The current sphere's entry hash
  * @returns The query parameters for fetching orbit hierarchy
  */
-export const generateQueryParams = (visCoverage, params) => (customDepth?: number): OrbitHierarchyQueryParams | null => {
-  if (!(params?.orbitEh || params?.currentSphereEhB64)) {
-    console.error("Invalid routing params for this page to generate a visualization")
-    return null
-  };
-
+export const generateQueryParams = (visCoverage, sphereHashB64: EntryHashB64) => (customDepth?: number): OrbitHierarchyQueryParams | null => {
   return visCoverage == VisCoverage.CompleteOrbit
-    ? { orbitEntryHashB64: params.orbitEh }
+    ? { orbitEntryHashB64: null }// } TODO: update or remove this functionality
     : {
       levelQuery: {
-        sphereHashB64: params?.currentSphereEhB64,
+        sphereHashB64: sphereHashB64,
         orbitLevel: customDepth || 0,
       },
     }
@@ -144,7 +139,7 @@ export const fetchHierarchyDataForLevel = async ({
     console.log("Fetching current hierarchy level from Apollo cache...")
     return cachedData
   } else {
-    console.log("Fetching current hierarchy level from source chain: ", { variables: { params: { ...query } } } )
+    console.log("Fetching current hierarchy level from source chain: ", { variables: { params: { ...query } } })
     await getHierarchy({ variables: { params: { ...query } } });
   }
 };
@@ -183,7 +178,7 @@ export const calculateAndSetBreadthBounds = (setBreadthBounds, params, visCovera
  * @returns Boolean indicating if there are new nodes
  */
 export const checkNewDescendantsAdded = (sorted, currentOrbitTree): boolean => {
-  if(!currentOrbitTree.rootData) return false;
+  if (!currentOrbitTree.rootData) return false;
   const newHierarchyDescendants = hierarchy(sorted[0])?.sort(byStartTime)?.descendants()?.length;
   const oldHierarchyDescendants = currentOrbitTree?.rootData.descendants().length;
   return newHierarchyDescendants === oldHierarchyDescendants;

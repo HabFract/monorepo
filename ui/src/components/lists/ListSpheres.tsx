@@ -42,7 +42,6 @@ function ListSpheres() {
       <div className="spheres-list">
         {spheres.map((sphere: Sphere) => {
           const sphereHasCachedNodes = store.get(sphereHasCachedNodesAtom(sphere.id))
-          console.log('sphereHasCachedNodes :>> ', sphereHasCachedNodes);
           return (
             <SphereCard
               key={sphere.id}

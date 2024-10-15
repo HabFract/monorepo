@@ -51,7 +51,6 @@ export const updateNodeCache = (
       [orbitDetails.eH]: orbitDetails,
     };
     // Remove old entry if it exists
-    console.log('oldOrbitEh, orbitDetails :>> ', oldOrbitEh, orbitDetails);
     if (oldOrbitEh && oldOrbitEh !== orbitDetails.eH) {
       delete newSphereOrbitNodeDetails[oldOrbitEh];
     }
@@ -107,7 +106,7 @@ export const updateAppStateWithOrbit = (
           updatedState.spheres.byHash[
             sphereId
           ].hierarchyRootOrbitEntryHashes.indexOf(oldOrbitId);
-          //TODO: check this is the right kind of hash
+        //TODO: check this is the right kind of hash
         if (index !== -1) {
           updatedState.spheres.byHash[sphereId].hierarchyRootOrbitEntryHashes[
             index

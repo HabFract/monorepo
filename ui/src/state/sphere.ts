@@ -24,23 +24,6 @@ export const currentSphereHashesAtom = atom(
   (get, set, newSphereHashes: SphereHashes) => {
     set(appStateAtom, (prevState) => {
       const newCurrentSphereHash = newSphereHashes.actionHash || "";
-      console.log('Setting new current Sphere with state :>> ', {
-        ...prevState,
-        spheres: {
-          ...prevState.spheres,
-          currentSphereHash: newCurrentSphereHash,
-          byHash: {
-            ...prevState.spheres.byHash,
-            [newCurrentSphereHash]: {
-              ...prevState.spheres.byHash[newCurrentSphereHash],
-              details: {
-                ...prevState.spheres.byHash[newCurrentSphereHash]?.details,
-                entryHash: newSphereHashes.entryHash,
-              },
-            },
-          },
-        },
-      });
       return {
         ...prevState,
         spheres: {
@@ -124,9 +107,9 @@ export const sphereHasCachedNodesAtom = (sphereId: ActionHashB64) =>
       // return (
       //   hierarchy &&
       //   hierarchy.nodeHashes.every((nodeEh: EntryHashB64) => {
-          // const eH = get(getOrbitEhFromId(nodeId));
-          const cacheItem = get(getOrbitNodeDetailsFromEhAtom(nodeEh));
-          return !!cacheItem;
+      // const eH = get(getOrbitEhFromId(nodeId));
+      const cacheItem = get(getOrbitNodeDetailsFromEhAtom(nodeEh));
+      return !!cacheItem;
       //   })
       // );
     });

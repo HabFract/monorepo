@@ -68,7 +68,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const visCoverage = useMemo(() => determineVisCoverage(params, y), [params, y]);
 
   // Parameters for fetching data depend on the coverage type
-  const getQueryParams = useCallback(generateQueryParams(visCoverage, params), [visCoverage, params]);
+  const getQueryParams = useCallback(generateQueryParams(visCoverage, sphere.entryHash!), [visCoverage, params]);
 
 
   // ## -- Initialisation/data retrieval/transformation callbacks  -- ##
@@ -129,7 +129,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       : parseOrbitHierarchyData(data.getOrbitHierarchy);
 
     await setJson(JSON.stringify(sortedTrees));
-    console.log('Processing result... :>> ');
 
     calculateAndSetBreadthBounds(setBreadthBounds, params, visCoverage, sortedTrees.length);
     const newLevelXIndex = determineNewLevelIndex(sortedTrees);
@@ -145,6 +144,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   // Processes last fetched hierarchy level and triggers a new fetch - implicitly cached in the GraphQL client - for the next level down (in anticipation of next render)
   const processHierarchyLevelAndFetchNext = async (newJson) => {
     await processNewHierarchyLevel(newJson);
+    if (currentOrbitTree?.rootData && currentOrbitTree?.rootData!.children!.length == 0) return;
+
     const nextLevelQuery = getQueryParams(y + 1);
     usePrefetchNextLevel(nextLevelQuery!, true);
   };
@@ -217,15 +218,15 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   // Trigger caching of link paths needed for visual continuity
   useEffect(() => {
     const isBaseLevel = dataLevel && getQueryParams()?.levelQuery?.orbitLevel == dataLevel.getLowestSphereHierarchyLevel;
-    if (hasCachedPaths || cache == null|| !isBaseLevel || currentOrbitTree == null) return;
+    if (hasCachedPaths || cache == null || !isBaseLevel || currentOrbitTree == null) return;
     console.log('isBaseLevel :>> ', isBaseLevel);
-      try {
-        console.log('Cached hierarchy link paths for visual continuity from base level: ', dataLevel);
-        cache();
-        setHasCachedPaths(true);
-      } catch (error) {
-        console.error(error);
-      }
+    try {
+      console.log('Cached hierarchy link paths for visual continuity from base level: ', dataLevel);
+      cache();
+      setHasCachedPaths(true);
+    } catch (error) {
+      console.error(error);
+    }
   }, [currentOrbitTree]);
 
   // ## -- RENDER  -- ##

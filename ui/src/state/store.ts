@@ -36,14 +36,14 @@ export const store: any = createStore();
 export const appStateChangeAtom = atomWithStorage<AppState>("appState", {
   spheres: {
     currentSphereHash: "",
-    byHash: { default: {} as any},
+    byHash: { default: {} as any },
   },
   hierarchies: {
     byRootOrbitEntryHash: {},
   },
   orbitNodes: {
     currentOrbitHash: null,
-    byHash: { default: {} as any},
+    byHash: { default: {} as any },
   },
   wins: {},
   ui: {
@@ -57,7 +57,7 @@ export const appStateChangeAtom = atomWithStorage<AppState>("appState", {
 export const appStateAtom = atom(
   (get) => get(appStateChangeAtom),
   (get, set, update: AppState) => {
-    console.log("AppState being updated:", update);
+    // console.log("AppState being updated:", update);
     set(appStateChangeAtom, update);
   }
 );

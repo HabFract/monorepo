@@ -40,8 +40,8 @@ import {
   SIX_CHILDREN_RIGHT_3,
 } from "../components/vis/links/paths";
 import { nodeCache, store } from "../state/store";
-import { currentSphereOrbitNodesAtom, getOrbitIdFromEh } from "../state/orbit";
-import { ActionHashB64 } from "@holochain/client";
+import { currentSphereOrbitNodeDetailsAtom } from "../state/orbit";
+import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import {
   ONE_CHILD,
   THREE_CHILDREN_LEFT,
@@ -77,9 +77,8 @@ export const useDeriveAndCacheHierarchyPaths = ({
     };
   }
   const sphereNodes = store.get(
-    currentSphereOrbitNodesAtom
-  ) as SphereOrbitNodes;
-
+    currentSphereOrbitNodeDetailsAtom
+  ) as SphereOrbitNodeDetails;
 
   function cacheOrbitPaths(d3Hierarchy: object): boolean {
     let cached = false;
@@ -97,13 +96,9 @@ export const useDeriveAndCacheHierarchyPaths = ({
 
       (d3Hierarchy as any)
         .sort(byStartTime)
-        .each((node) =>
-          cachePath(
-            store.get(getOrbitIdFromEh(node?.data?.content)),
-            getPath(node)
-          )
-        );
+        .each((node) => cachePath(node?.data?.content, getPath(node)));
       existingCache[currentSphereId] = workingSphereNodes;
+      console.log("workingSphereNodes :>> ", workingSphereNodes);
       store.set(nodeCache.setMany, Object.entries(existingCache));
       cached = true;
     } catch (error) {
@@ -111,12 +106,11 @@ export const useDeriveAndCacheHierarchyPaths = ({
     }
     return cached;
 
-    function cachePath(id: string, path: string | null) {
-      if (typeof id != "string" || path == null) return;
-      const cacheNodeItem = { ...sphereNodes[id] } as OrbitNodeDetails;
-      console.log('cacheNodeItem :>> ', cacheNodeItem);
+    function cachePath(eH: EntryHashB64, path: string | null) {
+      if (typeof eH != "string" || path == null) return;
+      const cacheNodeItem = { ...sphereNodes[eH] } as OrbitNodeDetails;
       cacheNodeItem.path = path;
-      workingSphereNodes[id] = cacheNodeItem;
+      workingSphereNodes[eH] = cacheNodeItem;
     }
   }
 

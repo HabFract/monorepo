@@ -196,15 +196,15 @@ export abstract class BaseVisualization implements IVisualization {
    * Caches Orbit data for a given Sphere.
    */
   async cacheOrbits(orbitEntries: Array<[EntryHashB64, OrbitNodeDetails]>) {
-    try {
-      store.set(nodeCache.setMany, orbitEntries);
-      //@ts-ignore
-      // TODO check this form before using
-      this.nodeDetails = Object.entries(orbitEntries);
-      console.log("Sphere orbits fetched and cached!");
-    } catch (error) {
-      console.error("error :>> ", error);
-    }
+    // try {
+    //   store.set(nodeCache.setMany, orbitEntries);
+    //   //@ts-ignore
+    //   // TODO check this form before using
+    //   this.nodeDetails = Object.entries(orbitEntries);
+    //   console.log("Sphere orbits fetched and cached!");
+    // } catch (error) {
+    //   console.error("error :>> ", error);
+    // }
   }
 
   /**

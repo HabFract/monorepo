@@ -1,2 +1,2 @@
-generated-types.ts
-ui/graphql/generated/index.ts
+design-system/src/generated-types.ts
+ui/src/graphql/generated/index.ts
