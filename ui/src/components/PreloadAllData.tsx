@@ -45,6 +45,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   const preloadCompleted = useRef(false);
 
   const setAppState = useSetAtom(appStateAtom);
+  const setNodeCache = useSetAtom(nodeCache.set);
   const setCurentSphere = useSetAtom(currentSphereHashesAtom);
   // Fetch spheres (which are the beginning of any graph of data in the app)
   const {
@@ -60,9 +61,9 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   const eH = sphereNodes?.[0]?.eH;
 
   const fetchData = useCallback(
-    async () => {
+    () => {
       try {
-        await serializeAsyncActions<any>([
+        serializeAsyncActions<any>([
           ...sphereNodes.map(({ id, eH }) => async () => {
             const variables = { sphereEntryHashB64: eH };
             let data;
@@ -90,20 +91,18 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                   childEh: value?.childEh,
                   parentEh: value?.parentEh,
                 }));
-                store.set(
-                  nodeCache.set,
+                setNodeCache(
                   id,
                   Object.fromEntries(indexedOrbitNodeDetails),
                 );
                 // Update app state for each orbit
-                await setAppState((prevState) => {
-                  console.log('prevState Preload :>> ', prevState);
+                setAppState((prevState) => {
                   let updatedState = prevState;
                   orbitHashes.sort((hashesA, hashesB) => {
                     // Process the root hash last which will set it as current Orbit
                     return +((!!hashesB?.parentEh)) - (+(!!hashesA?.parentEh))
-                  }).forEach(orbitHash => {
-                    updatedState = updateAppStateWithOrbit(updatedState, orbitHash, true);
+                  }).forEach(orbitHashes => {
+                    updatedState = updateAppStateWithOrbit(updatedState, orbitHashes, true);
                   });
 
                   updatedState.spheres = {
@@ -115,16 +114,15 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                         details: {
                           entryHash: eH,
                         },
-                        hierarchyRootOrbitEntryHashes: orbitHashes.filter(hashes => typeof hashes.parentEh == 'undefined').map(hashes => hashes.eH),
+                        hierarchyRootOrbitEntryHashes: orbitHashes.filter(hashes => typeof hashes.parentEh == 'undefined').reduce((acc, hashes) => { !acc.includes(hashes.eH) && acc.push(hashes.eH); return acc }, []),
                       },
                     },
                   };
-                  console.log('updatedState :>> ', updatedState);
                   return updatedState;
                 });
-                await sleep(100);
+                sleep(100);
 
-                await setCurentSphere({
+                setCurentSphere({
                   actionHash: landingSphereId || id,
                   entryHash: landingSphereEh || eH,
                 });
@@ -133,13 +131,6 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
               console.error(error);
             }
           }),
-          async () =>
-            Promise.resolve(
-              console.log(
-                "Preloaded and cached! :>> ",
-                store.get(nodeCache.entries),
-              ),
-            ),
         ]);
       } catch (error) {
         console.error(error);
@@ -147,10 +138,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
     },
     [sphereNodes],
   );
-  const debouncedFetchData = useCallback(
-    debounce(fetchData, 3000),
-    [fetchData]
-  );
+  const debouncedFetchData = debounce(fetchData, 3000);
 
   useEffect(() => {
     if (!data) return;
@@ -169,10 +157,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
       if (!preloadCompleted.current && onPreloadComplete) {
         onPreloadComplete();
       } else {
-        transition("Vis", {
-          currentSphereEhB64: landingSphereEh || eH,
-          currentSphereAhB64: landingSphereId || id,
-        });  
+        transition("Vis");  
       }
       preloadCompleted.current = true;
     });

@@ -118,15 +118,16 @@ export const sphereHasCachedNodesAtom = (sphereId: ActionHashB64) =>
     // This now strictly checks that we have both an entry in the store (hashes, used for indexing) and an indexDB cache entry for each node.
     // It makes no assurances about staleness of the data or otherwise
 
-    return rootOrbitHashes.every((hash) => {
-      const hierarchy = state.hierarchies.byRootOrbitEntryHash[hash];
-      return (
-        hierarchy &&
-        hierarchy.nodeHashes.every((nodeEh: EntryHashB64) => {
+    return rootOrbitHashes.every((nodeEh) => {
+      // TODO: strengthen this check when we have properly cached hierarchy info
+      // const hierarchy = state.hierarchies.byRootOrbitEntryHash[hash];
+      // return (
+      //   hierarchy &&
+      //   hierarchy.nodeHashes.every((nodeEh: EntryHashB64) => {
           // const eH = get(getOrbitEhFromId(nodeId));
           const cacheItem = get(getOrbitNodeDetailsFromEhAtom(nodeEh));
           return !!cacheItem;
-        })
-      );
+      //   })
+      // );
     });
   });

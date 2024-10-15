@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import "broadcastchannel-polyfill";
 import App from "./App";
@@ -15,9 +15,7 @@ import { store } from "./state/store";
 import { ToastProvider } from "./contexts/toast";
 import { StateMachineContext } from "./contexts/state-machine";
 import BootSequence from "./BootSequence";
-import { ApolloClient, ApolloProvider, NormalizedCacheObject } from "@apollo/client";
-import { getConnection } from "./graphql/connection";
-import { Modal, Spinner } from "flowbite-react";
+import { ApolloProvider } from "@apollo/client";
 
 /*
 Application State Management (Courtesy of Ada Burrows for hREA playspace)
@@ -30,9 +28,6 @@ export const AppMachine = new StateMachine<AppState, AppStateStore>(
 
 Object.entries(routes).forEach(([routeName, component]) => {
   AppMachine.on(routeName as AppState, async (state: StateStore<AppState>) => {
-    if(routeName == 'PreloadAndCache') {
-      debugger;
-    }
     const PageComponentWithProps = React.cloneElement(component as React.ReactElement, {
       ...state.params,
       key: JSON.stringify(state.params),

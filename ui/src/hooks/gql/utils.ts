@@ -51,6 +51,7 @@ export const updateNodeCache = (
       [orbitDetails.eH]: orbitDetails,
     };
     // Remove old entry if it exists
+    console.log('oldOrbitEh, orbitDetails :>> ', oldOrbitEh, orbitDetails);
     if (oldOrbitEh && oldOrbitEh !== orbitDetails.eH) {
       delete newSphereOrbitNodeDetails[oldOrbitEh];
     }
@@ -79,6 +80,7 @@ export const updateAppStateWithOrbit = (
       [orbitDetails.id]: orbitDetails as OrbitHashes,
     },
   };
+
   // Remove old entry if it exists
   if (oldOrbitId && oldOrbitId !== orbitDetails.id) {
     delete updatedState.orbitNodes.byHash[oldOrbitId];

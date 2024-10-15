@@ -1,4 +1,3 @@
-import { decode } from '@msgpack/msgpack';
 import {
   encodeHashToBase64,
 } from "@holochain/client";
@@ -7,7 +6,6 @@ import { pause, runScenario } from "@holochain/tryorama";
 import pkg from "tape-promise/tape";
 import { setUpAliceandBob } from "../../../../utils-backend";
 import { anOrbit, setupSphere } from '../../personal/orbits/utils';
-import { aWinRecord } from '../../../../../ui/src/graphql/generated/mocks';
 import { Orbit, WinRecord } from "../../../../../ui/src/graphql/generated";
 import { EntryRecord } from "@holochain-open-dev/utils";
 import { sortWinRecordEntryArrayByWinRecordDateIndex } from './utils';
@@ -80,7 +78,7 @@ export default () => {
       await cleanup();
     });
   });
-  test.only("Win Record CRUD - Happy path 2  (batch creates)", async (t) => {
+  test("Win Record CRUD - Happy path 2  (batch creates)", async (t) => {
     await runScenario(async (scenario) => {
       const {
         alice,

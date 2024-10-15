@@ -37,7 +37,7 @@ export const useUpdateOrbitMutation = (opts) => {
       };
 
       // Extract the old ID from the mutation variables
-      const oldOrbitId = variables?.orbitFields?.id;
+      const oldOrbitId = variables?.orbitFields?.eH;
       updateNodeCache(updatedOrbitDetails, oldOrbitId);
 
       setAppState((prevState) =>

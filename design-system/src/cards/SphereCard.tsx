@@ -73,10 +73,7 @@ const SphereCard: React.FC<SphereCardProps> = ({
       );
       return;
     }
-    transition?.("Vis", {
-      currentSphereEhB64: sphere.eH,
-      currentSphereAhB64: id,
-    });
+    transition?.("Vis");
   }
   return (
     <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>

@@ -144,8 +144,8 @@ export const fetchHierarchyDataForLevel = async ({
     console.log("Fetching current hierarchy level from Apollo cache...")
     return cachedData
   } else {
-    console.log("Fetching current hierarchy level from source chain...")
-    getHierarchy({ variables: { params: { ...query } } });
+    console.log("Fetching current hierarchy level from source chain: ", { variables: { params: { ...query } } } )
+    await getHierarchy({ variables: { params: { ...query } } });
   }
 };
 

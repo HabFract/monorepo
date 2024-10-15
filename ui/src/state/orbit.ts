@@ -101,11 +101,17 @@ export const getOrbitNodeDetailsFromEhAtom = (orbitEh: EntryHashB64) =>
  */
 export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
   const state = get(appStateAtom);
+
   const currentOrbitHash = state.orbitNodes.currentOrbitHash;
   if (!currentOrbitHash) return null;
-  const eH = get(getOrbitEhFromId(currentOrbitHash));
-  if (!eH) return null;
-  return get(getOrbitNodeDetailsFromEhAtom(eH));
+  let hash = currentOrbitHash;
+  // Failsafe in case action hash was stored instead of entry hash
+  if(!hash.startsWith("uhCE")) {
+    const eH = get(getOrbitEhFromId(currentOrbitHash));
+    if (!eH) return null;
+    hash = eH
+  }
+  return get(getOrbitNodeDetailsFromEhAtom(hash));
 });
 
 /**

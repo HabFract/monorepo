@@ -13,8 +13,10 @@ import { extractEdges } from "../../graphql/utils";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import { useToast } from "../../contexts/toast";
 import { currentSphereHashesAtom, sphereHasCachedNodesAtom, store } from "../../state";
+import { useSetAtom } from "jotai";
 
 function ListSpheres() {
+  const [_state, transition] = useStateTransition(); // Top level state machine and routing
   const [
     runDelete,
     { loading: loadingDelete, error: errorDelete, data: dataDelete },
@@ -25,7 +27,7 @@ function ListSpheres() {
   const { loading, error, data } = useGetSpheresQuery();
 
   const { showToast, hideToast } = useToast();
-  const [_state, transition] = useStateTransition(); // Top level state machine and routing
+  const setCurrentSphere = useSetAtom(currentSphereHashesAtom);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
@@ -51,7 +53,7 @@ function ListSpheres() {
               runDelete={() => runDelete({ variables: { id: sphere.id } })}
               showToast={showToast}
               setSphereIsCurrent={() => {
-                store.set(currentSphereHashesAtom, {
+                setCurrentSphere({
                   entryHash: sphere.eH,
                   actionHash: sphere.id,
                 });

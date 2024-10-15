@@ -38,6 +38,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery({
     fetchPolicy: "cache-and-network",
   });
+
   const { data: dataLevel } = useGetLowestSphereHierarchyLevelQuery({
     skip: !sphere?.entryHash,
     variables: { sphereEntryHashB64: sphere.entryHash as string },
@@ -127,8 +128,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       ? JSON.parse(json!)
       : parseOrbitHierarchyData(data.getOrbitHierarchy);
 
-    console.log('Processing with result... :>> ', sortedTrees);
-    setJson(JSON.stringify(sortedTrees));
+    await setJson(JSON.stringify(sortedTrees));
+    console.log('Processing result... :>> ');
 
     calculateAndSetBreadthBounds(setBreadthBounds, params, visCoverage, sortedTrees.length);
     const newLevelXIndex = determineNewLevelIndex(sortedTrees);
@@ -170,7 +171,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       setTimeout(() => setCanTriggerNextTreeVisRender(true), 0)
     };
     fetchAndProcess()
-  }, [data, y]);
+  }, [data, y, json]);
 
   // Allow the following useEffect to be unguarded after a change in the breadthIndex, triggering a render of the tree at that index
   useEffect(() => {
@@ -245,4 +246,4 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   );
 };
 
-export default React.memo(OrbitTree);
+export default OrbitTree;

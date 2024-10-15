@@ -23,7 +23,7 @@ import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 //@ts-ignore
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { AppMachine } from "../../main";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
   currentSphereHasCachedNodesAtom,
   currentSphereHashesAtom,
@@ -68,6 +68,7 @@ const Nav: React.FC<INav> = ({
   const sideMenuRef = useRef(null);
   useSideMenuToggle(sideMenuRef, setSideNavExpanded);
 
+  const setCurrentSphere = useSetAtom(currentSphereHashesAtom);
   const { showToast, hideToast } = useToast();
   let loading = loadingSpheres || !spheres;
 
@@ -111,7 +112,7 @@ const Nav: React.FC<INav> = ({
           setSideNavExpanded(true);
           return;
         }
-        store.set(currentSphereHashesAtom, {});
+        setCurrentSphere({});
 
         console.log('reset sphere from nav :>> ');
         setCurrentPage(Page.CreateSphere);
@@ -144,7 +145,7 @@ const Nav: React.FC<INav> = ({
             if (checkCachedOrbits) {
 
               console.log('set sphere from nav :>> ');
-              store.set(currentSphereHashesAtom, {
+              setCurrentSphere({
                 entryHash: sphere(e.key)?.eH,
                 actionHash: e.key,
               });
@@ -167,7 +168,7 @@ const Nav: React.FC<INav> = ({
           if (!(e.key == store.get(currentSphereHashesAtom).actionHash)) {
 
             console.log('set sphere from nav :>> ');
-            store.set(currentSphereHashesAtom, {
+            setCurrentSphere({
               entryHash: sphere(e.key)?.eH,
               actionHash: e.key,
             });
@@ -179,7 +180,7 @@ const Nav: React.FC<INav> = ({
             setSideNavExpanded(true);
           // Set current sphere from action hash of sphere clicked
           console.log('set sphere from nav :>> ');
-          store.set(currentSphereHashesAtom, {
+          setCurrentSphere({
             entryHash: sphere(e.key)?.eH,
             actionHash: e.key,
           });

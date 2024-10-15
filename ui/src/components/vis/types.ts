@@ -29,7 +29,6 @@ export enum VisCoverage {
  */
 export type WithVisCanvasProps =
   | { orbitEh: EntryHashB64 } // Entry hash of the root node used for partial VisCoverage.
-  | { currentSphereEhB64: EntryHashB64; currentSphereAhB64: ActionHashB64 }; // For complete VisCoverage
 
 /**
  * Interface for the base visualization class.
