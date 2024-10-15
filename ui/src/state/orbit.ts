@@ -106,10 +106,10 @@ export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
   if (!currentOrbitHash) return null;
   let hash = currentOrbitHash;
   // Failsafe in case action hash was stored instead of entry hash
-  if(!hash.startsWith("uhCE")) {
+  if (!hash.startsWith("uhCE")) {
     const eH = get(getOrbitEhFromId(currentOrbitHash));
     if (!eH) return null;
-    hash = eH
+    hash = eH;
   }
   return get(getOrbitNodeDetailsFromEhAtom(hash));
 });
@@ -263,13 +263,22 @@ export const currentOrbitIdAtom = atom(
       : null;
   },
   (_get, set, newOrbitId: EntryHashB64) => {
-    set(appStateAtom, (prevState) => ({
-      ...prevState,
-      orbitNodes: {
-        ...prevState.orbitNodes,
-        currentOrbitHash: newOrbitId,
-      },
-    }));
+    set(appStateAtom, (prevState) => {
+      console.log("Setting orbit id :>> ", {
+        ...prevState,
+        orbitNodes: {
+          ...prevState.orbitNodes,
+          currentOrbitHash: newOrbitId,
+        },
+      });
+      return {
+        ...prevState,
+        orbitNodes: {
+          ...prevState.orbitNodes,
+          currentOrbitHash: newOrbitId,
+        },
+      };
+    });
   }
 );
 

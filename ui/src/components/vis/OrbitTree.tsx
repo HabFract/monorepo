@@ -15,7 +15,6 @@ import { TreeVisualization } from "./base-classes/TreeVis";
 import { byStartTime, determineNewLevelIndex, parseAndSortTrees } from "./helpers";
 import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, checkNewDescendantsAdded, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state";
-import { AppMachine } from "../../main";
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   selectedSphere: sphere,
@@ -237,11 +236,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
         json &&
         currentOrbitTree &&
         render(
-          currentOrbitTree,
-          visCoverage,
-          x,
-          y,
-          hierarchy(getJsonDerivation(json)),
+          currentOrbitTree
         )}
     </>
   );

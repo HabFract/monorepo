@@ -98,7 +98,6 @@ export const useDeriveAndCacheHierarchyPaths = ({
         .sort(byStartTime)
         .each((node) => cachePath(node?.data?.content, getPath(node)));
       existingCache[currentSphereId] = workingSphereNodes;
-      console.log("workingSphereNodes :>> ", workingSphereNodes);
       store.set(nodeCache.setMany, Object.entries(existingCache));
       cached = true;
     } catch (error) {

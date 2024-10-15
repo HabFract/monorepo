@@ -1,4 +1,4 @@
-import React, { ComponentType, ReactNode, useEffect, useState } from "react";
+import React, { ComponentType, ReactNode, useCallback, useEffect, useState } from "react";
 
 import "../vis/vis.css";
 
@@ -23,7 +23,6 @@ import TraversalButton from "../navigation/TraversalButton";
 import { OverlayLayout, VisControls } from "habit-fract-design-system";
 import { currentDayAtom } from "../../state/date";
 import { byStartTime, isSmallScreen } from "../vis/helpers";
-import { useRedirect } from "../../hooks/useRedirect";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import { HierarchyNode } from "d3-hierarchy";
 import {
@@ -65,12 +64,8 @@ const appendSvg = (mountingDivId: string, divId: string) => {
 export function withVisCanvas<T extends IVisualization>(
   Component: ComponentType<VisProps<T>>,
 ): ReactNode {
-  const ComponentWithVis = ((
-    // _visParams: WithVisCanvasProps,
-  ) => {
-    // useRedirect();
-
-    const mountingDivId = "vis-root"; // Declared at the router level
+  const ComponentWithVis = (() => {
+    const mountingDivId = "vis-root";
     const svgId = "vis"; // May need to be declared dynamically when we want multiple vis on a page
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
     const selectedSphere = store.get(currentSphereHashesAtom);
@@ -103,12 +98,13 @@ export function withVisCanvas<T extends IVisualization>(
       maxBreadth,
       setBreadthIndex,
       maxDepth,
+      depthIndex,
+      breadthIndex
     } = useNodeTraversal(
       sphereHierarchyBounds[
       selectedSphere!.entryHash as keyof SphereHierarchyBounds
       ] as HierarchyBounds,
     );
-
     // Store and update date in local component state to ensure re-render with VisControls, Calendar
     const [currentDate, setCurrentDate] = useState(store.get(currentDayAtom));
     store.sub(currentDayAtom, () => {
@@ -120,8 +116,12 @@ export function withVisCanvas<T extends IVisualization>(
         canvasWidth={canvasWidth}
         margin={defaultMargins}
         selectedSphere={selectedSphere}
-        render={(currentVis: T, queryType: VisCoverage, x, y, newRootData) => {
+        render={(currentVis: T) => {
 
+          const traversalButtons = renderTraversalButtons(
+            { x: breadthIndex, y: depthIndex },
+            currentVis,
+          )
           if (appendedSvg) {
             // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
             currentVis.modalOpen = setIsModalOpen;
@@ -184,10 +184,7 @@ export function withVisCanvas<T extends IVisualization>(
               {isSmallScreen()
                 ? <OverlayLayout {...mockArgs}></OverlayLayout>
                 : <VisControls // To be phased out once desktop design work is done.
-                  buttons={renderTraversalButtons(
-                    { x, y },
-                    currentVis,
-                  )}
+                  buttons={traversalButtons}
                 />
               }
 
@@ -371,6 +368,16 @@ export function withVisCanvas<T extends IVisualization>(
         maxBreadth,
         maxDepth
       );
+
+      console.log('canMoveUp, canTraverseUp, canMoveDown, canTraverseDownMiddle, canTraverseDownLeft, canTraverseLeft, canMoveLeft, canMoveRight, canTraverseRight, :>> ', canMoveUp,
+        canTraverseUp,
+        canMoveDown,
+        canTraverseDownMiddle,
+        canTraverseDownLeft,
+        canTraverseLeft,
+        canMoveLeft,
+        canMoveRight,
+        canTraverseRight);
       // Consolidate move/traverse conditions such that there is only one action presented to the user for each direction
       const canGoUp = !!(canMoveUp || canTraverseUp);
       const canGoDown = !!(canMoveDown || canTraverseDownMiddle || canTraverseDownLeft);// canMove && currentOrbitIsRoot && children && children.length > 0;

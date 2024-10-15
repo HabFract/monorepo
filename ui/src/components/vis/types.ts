@@ -27,8 +27,7 @@ export enum VisCoverage {
  * Props for the higher order component that wraps all vis types with a canvas and navigation controls,
  * depending on the coverage type.
  */
-export type WithVisCanvasProps =
-  | { orbitEh: EntryHashB64 } // Entry hash of the root node used for partial VisCoverage.
+export type WithVisCanvasProps = { orbitEh: EntryHashB64 }; // Entry hash of the root node used for partial VisCoverage.
 
 /**
  * Interface for the base visualization class.
@@ -102,19 +101,9 @@ export type VisProps<T extends IVisualization> = {
   /**
    * Render function for the visualization
    * @param currentVis - The current visualization instance
-   * @param queryType - The type of query (partial or complete)
-   * @param x - X coordinate (used for navigation of partial coverage vis)
-   * @param y - Y coordinate (used for navigation of partial coverage vis)
-   * @param newRootData - New root data for the hierarchy
    * @returns React node to render
    */
-  render: (
-    currentVis: T,
-    queryType: VisCoverage,
-    x: number,
-    y: number,
-    newRootData: HierarchyNode<unknown>
-  ) => React.ReactNode;
+  render: (currentVis: T) => React.ReactNode;
 };
 
 /**
