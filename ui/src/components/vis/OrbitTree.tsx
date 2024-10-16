@@ -181,7 +181,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   // Allow the following useEffect to be unguarded after a change in the breadthIndex, triggering a render of the tree at that index
   useEffect(() => {
     setTimeout(() => setCanTriggerNextTreeVisRender(true), 0)
-  }, [y]);
+  }, [y, x]);
 
   // Sets up and triggers the next render when a new set of hierarchy data needs to be visualised
   useEffect(() => {
@@ -209,6 +209,9 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       );
       const noNewFocusNode = typeof newlySelectedNodeId === 'undefined'; // These signifies a lateral traversal where the new selected node is by default the root, selected from withVisCanvas
 
+      // TODO: add 'direction == left/right' (currenty null) contingencies here where:
+      // -- newlySelectedNodeId should be undedined (so it defaults to the root)
+      // -- currentOrbitTree._lastRenderParentSiblingIndexId tracks to the new root data id (so that it then traverses back up from the right intermediate node.)
       const reverseIntermediateNode = (currentOrbitTree?.rootData?.children as any)?.[newRenderNodeDetails?.previousRenderSiblingIndex];
       if(!!reverseIntermediateNode) {
         currentOrbitTree._lastRenderParentSiblingIndexId = reverseIntermediateNode.data.content
@@ -222,7 +225,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
       setCanTriggerNextTreeVisRender(false)
     }
-  }, [canTriggerNextTreeVisRender, json]);
+  }, [canTriggerNextTreeVisRender, json, x]);
 
   // Trigger caching of link paths needed for visual continuity
   useEffect(() => {

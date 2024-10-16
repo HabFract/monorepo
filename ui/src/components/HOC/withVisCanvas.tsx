@@ -221,6 +221,13 @@ export function withVisCanvas<T extends IVisualization>(
       const canMoveRight = canMove && rootId !== currentId && children && children[children.length - 1].data.content !== currentId;
       const currentOrbitIsRoot = currentId === rootId;
       const hasOneChild = children && children.length == 1;
+      const canTraverseDownMiddle = !!(
+        children &&
+        children
+        ?.filter((child) => child.children && child.children.length > 0).map(node => node.data.content)
+          .includes(currentId)
+      );
+
       return {
         canMove,
         canMoveUp: canMove && rootId !== currentId,
@@ -230,13 +237,7 @@ export function withVisCanvas<T extends IVisualization>(
         canMoveDown: canMove && currentOrbitIsRoot && children,
         canMoveDownLeft: canMove && currentOrbitIsRoot && children && !hasOneChild,
         canMoveDownRight: canMove && currentOrbitIsRoot && children && !hasOneChild,
-        canTraverseDownMiddle: !!(
-          children &&
-          children
-            .slice(1, -1)
-            ?.find((child) => child.children && child.children.length > 0)?.data
-            .content == currentId
-        ),
+        canTraverseDownMiddle,
         canTraverseDown: children && hasOneChild && children[0].children && children[0].children.length == 1,
         canTraverseLeft: x !== 0 && currentOrbitIsRoot,
         canTraverseRight: currentOrbitIsRoot && maxBreadth && x < maxBreadth,
