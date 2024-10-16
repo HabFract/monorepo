@@ -284,12 +284,15 @@ export function withVisCanvas<T extends IVisualization>(
         traverseDown: () => {
           console.log('Traversing down...')
           const grandChildren = children?.find(child => child.data.content == currentId)?.children;
+          const currentRenderSiblingIndex = children?.findIndex(child => child.data.content == currentId);
+
           if (grandChildren && grandChildren.length > 0) {
             const newId = grandChildren[0].data.content;
             try {
               (currentVis?.eventHandlers.memoizedhandleNodeZoom.call(currentVis, newId, undefined) as any)
                 .on("end", () => {
                   incrementDepth();
+
                   const newChild =
                     children &&
                     ((
@@ -298,7 +301,8 @@ export function withVisCanvas<T extends IVisualization>(
                       ) as HierarchyNode<any>
                     )?.children?.[0] as HierarchyNode<any>);
                   const newId = newChild && newChild.parent?.data?.content;
-                  store.set(newTraversalLevelIndexId, { id: newId, direction: 'down' });
+                  store.set(newTraversalLevelIndexId, { id: newId, direction: 'down', previousRenderSiblingIndex: currentRenderSiblingIndex });
+                  console.log('set new render details :>> ', { id: newId, direction: 'down', previousRenderSiblingIndex: currentRenderSiblingIndex });
                   setBreadthIndex(0);
                 });
             } catch (error) {
@@ -346,7 +350,7 @@ export function withVisCanvas<T extends IVisualization>(
       if (!currentId) {
         store.set(currentOrbitIdAtom, rootId);
         currentId = rootId;
-        console.log("Set default focus node to the root...");
+        console.warn("Set default focus node to the root...");
       }
       const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
 

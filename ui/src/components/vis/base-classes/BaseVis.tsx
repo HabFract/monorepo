@@ -24,7 +24,7 @@ import {
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { GetOrbitsDocument, Orbit, Scale } from "../../../graphql/generated";
 import { client } from "../../../graphql/client";
-import { store, nodeCache } from "../../../state/store";
+import { store } from "../../../state/store";
 import { mapToCacheObject } from "../../../state/orbit";
 import { newTraversalLevelIndexId } from "../../../state/hierarchy";
 import { OrbitNodeDetails } from "../../../state/types";
@@ -115,6 +115,7 @@ export abstract class BaseVisualization implements IVisualization {
   startInFocusMode: boolean = false;
   activeNode: any = null;
   isNewActiveNode: boolean = false;
+  _lastRenderParentSiblingIndexId: EntryHashB64 | null = null;
   _hasRendered: boolean = false;
 
   /**
@@ -327,16 +328,18 @@ export abstract class BaseVisualization implements IVisualization {
 
       !hasUpdated && this.applyInitialTransform();
       if (!(this.coverageType == VisCoverage.Partial || this.noCanvas())) {
-        this.initializeZoomer();
+        // this.initializeZoomer();
       }
 
       if (this.startInFocusMode && hasUpdated) {
         const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
         const finalNodeToFocus = newRenderNodeDetails?.id;
-        console.log('newRenderDetails :>> ', newRenderNodeDetails);
         // console.log('Actual new focus node :>> ', finalNodeToFocus);
+
         this._lastOrbitId = null;
-        const initialNodeZoomId = newRenderNodeDetails?.intermediateId || finalNodeToFocus || this.rootData.data.content;
+        const initialNodeZoomId = 
+          newRenderNodeDetails?.intermediateId || finalNodeToFocus || this._lastRenderParentSiblingIndexId;
+
         let initialZoom = this.eventHandlers.memoizedhandleNodeZoom.call(
           this,
           initialNodeZoomId,
@@ -351,6 +354,7 @@ export abstract class BaseVisualization implements IVisualization {
         }
 
         store.set(newTraversalLevelIndexId, { id: null, intermediateId: null });
+        // this._lastRenderParentSiblingIndexId = null;
         this.startInFocusMode = false;
       }
       this._hasRendered = true;

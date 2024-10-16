@@ -143,6 +143,7 @@ export const setBreadths = atom(
 export const newTraversalLevelIndexId = atom<{
   id: EntryHashB64 | null;
   intermediateId?: EntryHashB64 | null;
+  previousRenderSiblingIndex?: number;
   direction?: "up" | "down";
 }>({
   id: null,

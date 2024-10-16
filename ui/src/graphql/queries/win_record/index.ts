@@ -25,7 +25,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     winRecord: async (_, args): Promise<WinRecord & { id: ActionHashB64}> => {
       const rawRecord = await read(args.id);
       const entryRecord = new EntryRecord<WinRecord>(rawRecord as any);
-      debugger;
+      // debugger;
       return {
         ...entryRecord.entry,
         id: encodeHashToBase64(entryRecord.actionHash),

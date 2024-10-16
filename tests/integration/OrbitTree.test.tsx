@@ -3,7 +3,7 @@ import { expect, test, it, afterEach, describe, beforeAll, vi } from 'vitest'
 import { render, waitFor, screen, act, cleanup } from '@testing-library/react';
 import { renderVis } from '../../ui/src/components/vis/helpers';
   
-import OrbitTree from '../../ui/src/components/vis/OrbitTree';
+import OrbitTree from '../../ui/src/components/vis/OrbitTree-2';
 
 import { HIERARCHY_MOCKS } from './mocks/hierarchy-root-only';
 import { ORBITS_MOCKS } from './mocks/orbits';

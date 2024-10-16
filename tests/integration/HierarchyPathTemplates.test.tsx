@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, expect, vi, it, afterEach, beforeAll } from 'vitest'
 
 import { MockedProvider } from '@apollo/client/testing';
-import OrbitTree from '../../ui/src/components/vis/OrbitTree';
+import OrbitTree from '../../ui/src/components/vis/OrbitTree-2';
 import { renderVis } from '../../ui/src/components/vis/helpers';
 import { cleanup, render, waitFor } from '@testing-library/react';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
