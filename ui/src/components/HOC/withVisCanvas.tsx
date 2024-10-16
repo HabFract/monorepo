@@ -7,6 +7,7 @@ import { select } from "d3-selection";
 import { useNodeTraversal } from "../../hooks/useNodeTraversal";
 import {
   currentSphereHierarchyBounds,
+  currentSphereHierarchyIndices,
   newTraversalLevelIndexId,
 } from "../../state/hierarchy";
 
@@ -32,6 +33,7 @@ import {
   NodeContent,
 } from "../../state/types/hierarchy";
 import { Scale } from "../../graphql/generated";
+import { useAtomValue } from "jotai";
 
 const defaultMargins: Margins = {
   top: 0,
@@ -68,12 +70,16 @@ export function withVisCanvas<T extends IVisualization>(
     const mountingDivId = "vis-root";
     const svgId = "vis"; // May need to be declared dynamically when we want multiple vis on a page
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
-    const selectedSphere = store.get(currentSphereHashesAtom);
-    const cachedCurrentOrbit: OrbitNodeDetails | null = store.get(
-      currentOrbitDetailsAtom,
-    );
-    console.log('VIS CONTEXT: ', selectedSphere, cachedCurrentOrbit);
 
+    const selectedSphere = store.get(currentSphereHashesAtom);
+    const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
+    
+    const [currentParentOrbitEh, setCurrentParentOrbitEh] =
+    useState<EntryHashB64>();
+    const [currentChildOrbitEh, setCurrentChildOrbitEh] =
+    useState<EntryHashB64>();
+    
+    // console.log('VIS CONTEXT: ', selectedSphere, currentOrbitDetails);
     useEffect(() => {
       if (document.querySelector(`#${mountingDivId} #${svgId}`)) return;
       const appended = !!appendSvg(mountingDivId, svgId);
@@ -82,13 +88,12 @@ export function withVisCanvas<T extends IVisualization>(
 
     const { canvasHeight, canvasWidth } = getCanvasDimensions();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [currentParentOrbitEh, setCurrentParentOrbitEh] =
-      useState<EntryHashB64>();
-    const [currentChildOrbitEh, setCurrentChildOrbitEh] =
-      useState<EntryHashB64>();
 
-    const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
+    const sphereHierarchyBounds: SphereHierarchyBounds = useAtomValue(
       currentSphereHierarchyBounds,
+    );
+    const currentHierarchyIndices: Coords = useAtomValue(
+      currentSphereHierarchyIndices,
     );
     const {
       incrementBreadth,
@@ -98,8 +103,6 @@ export function withVisCanvas<T extends IVisualization>(
       maxBreadth,
       setBreadthIndex,
       maxDepth,
-      depthIndex,
-      breadthIndex
     } = useNodeTraversal(
       sphereHierarchyBounds[
       selectedSphere!.entryHash as keyof SphereHierarchyBounds
@@ -116,11 +119,12 @@ export function withVisCanvas<T extends IVisualization>(
         canvasWidth={canvasWidth}
         margin={defaultMargins}
         selectedSphere={selectedSphere}
+        coords={currentHierarchyIndices}
         render={(currentVis: T) => {
-
           const traversalButtons = renderTraversalButtons(
-            { x: breadthIndex, y: depthIndex },
+            currentHierarchyIndices,
             currentVis,
+            currentOrbitDetails!
           )
           if (appendedSvg) {
             // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
@@ -251,9 +255,6 @@ export function withVisCanvas<T extends IVisualization>(
       children: Array<HierarchyNode<any>>,
       currentDetails: any,
       store: any,
-      incrementDepth: () => void,
-      decrementDepth: () => void,
-      setBreadthIndex: (index: number) => void
     ) {
       return {
         moveLeft: () => {
@@ -285,21 +286,24 @@ export function withVisCanvas<T extends IVisualization>(
           const grandChildren = children?.find(child => child.data.content == currentId)?.children;
           if (grandChildren && grandChildren.length > 0) {
             const newId = grandChildren[0].data.content;
-
-            currentVis?.eventHandlers.memoizedhandleNodeZoom.call(currentVis, newId, undefined)
-              ?.on("end", () => {
-                incrementDepth();
-                const newChild =
-                  children &&
-                  ((
-                    children?.find(
-                      (child) => child?.data?.content == currentId && !!child.children,
-                    ) as HierarchyNode<any>
-                  )?.children?.[0] as HierarchyNode<any>);
-                const newId = newChild && newChild.parent?.data?.content;
-                store.set(newTraversalLevelIndexId, { id: newId, direction: 'down' });
-                setBreadthIndex(0);
-              });
+            try {
+              (currentVis?.eventHandlers.memoizedhandleNodeZoom.call(currentVis, newId, undefined) as any)
+                .on("end", () => {
+                  incrementDepth();
+                  const newChild =
+                    children &&
+                    ((
+                      children?.find(
+                        (child) => child?.data?.content == currentId && !!child.children,
+                      ) as HierarchyNode<any>
+                    )?.children?.[0] as HierarchyNode<any>);
+                  const newId = newChild && newChild.parent?.data?.content;
+                  store.set(newTraversalLevelIndexId, { id: newId, direction: 'down' });
+                  setBreadthIndex(0);
+                });
+            } catch (error) {
+              console.log('Could not complete zoom and traverse action.');
+            }
           }
         },
 
@@ -334,17 +338,16 @@ export function withVisCanvas<T extends IVisualization>(
     function renderTraversalButtons<T extends IVisualization>(
       coords: Coords,
       currentVis: T,
+      currentDetails: OrbitNodeDetails
     ) {
       const { x, y } = coords;
       const rootId = currentVis.rootData.data.content;
-      const currentDetails = store.get(currentOrbitDetailsAtom);
       let currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
       if (!currentId) {
         store.set(currentOrbitIdAtom, rootId);
         currentId = rootId;
         console.log("Set default focus node to the root...");
       }
-
       const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
 
       // Calculate conditions for either moving (within current window of sphere hierarchy data) or traversing (across windows)
@@ -368,16 +371,8 @@ export function withVisCanvas<T extends IVisualization>(
         maxBreadth,
         maxDepth
       );
+      // console.table({  canMoveUp, canTraverseUp, canMoveDown, canTraverseDownMiddle, canTraverseDownLeft, canTraverseLeft, canMoveLeft, canMoveRight, canTraverseRight})
 
-      console.log('canMoveUp, canTraverseUp, canMoveDown, canTraverseDownMiddle, canTraverseDownLeft, canTraverseLeft, canMoveLeft, canMoveRight, canTraverseRight, :>> ', canMoveUp,
-        canTraverseUp,
-        canMoveDown,
-        canTraverseDownMiddle,
-        canTraverseDownLeft,
-        canTraverseLeft,
-        canMoveLeft,
-        canMoveRight,
-        canTraverseRight);
       // Consolidate move/traverse conditions such that there is only one action presented to the user for each direction
       const canGoUp = !!(canMoveUp || canTraverseUp);
       const canGoDown = !!(canMoveDown || canTraverseDownMiddle || canTraverseDownLeft);// canMove && currentOrbitIsRoot && children && children.length > 0;
@@ -391,9 +386,6 @@ export function withVisCanvas<T extends IVisualization>(
         children,
         currentDetails,
         store,
-        incrementDepth,
-        decrementDepth,
-        setBreadthIndex
       );
 
       return [

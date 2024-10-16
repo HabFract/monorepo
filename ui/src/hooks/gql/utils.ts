@@ -31,6 +31,7 @@ export const invalidateOrbitHierarchyCache = (sphereHashB64: string) => {
         },
       },
     });
+    // console.log('Evicting cache with id :>> ', normalizedId);
     client.cache.evict({ id: normalizedId });
     client.cache.gc();
   });

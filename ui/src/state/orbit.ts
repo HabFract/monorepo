@@ -101,7 +101,6 @@ export const getOrbitNodeDetailsFromEhAtom = (orbitEh: EntryHashB64) =>
  */
 export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
   const state = get(appStateAtom);
-
   const currentOrbitHash = state.orbitNodes.currentOrbitHash;
   if (!currentOrbitHash) return null;
   let hash = currentOrbitHash;
@@ -111,6 +110,7 @@ export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
     if (!eH) return null;
     hash = eH;
   }
+  // console.log("Getting current orbit details :>> ", get(getOrbitNodeDetailsFromEhAtom(hash)))
   return get(getOrbitNodeDetailsFromEhAtom(hash));
 });
 

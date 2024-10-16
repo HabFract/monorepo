@@ -136,7 +136,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
             await setPreloadCompleted(true);
             return Promise.resolve(
               console.log(
-                "Preloaded and cached! :>> ",
+                "Current cache: :>> ",
                 store.get(nodeCache.entries),
               ),
             )
@@ -172,7 +172,6 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
     console.log('preloadCompleted :>> ', preloadCompleted);
 
     if (onPreloadComplete) {
-      console.log('Preloaded all data for each sphere... moving on.');
       onPreloadComplete();
     } else {
       transition("Vis");

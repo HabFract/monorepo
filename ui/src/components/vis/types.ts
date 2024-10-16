@@ -3,7 +3,7 @@ import { HierarchyNode } from "d3-hierarchy";
 import { Selection } from "d3-selection";
 import { D3ZoomEvent, ZoomBehavior } from "d3-zoom";
 import { SphereOrbitNodeDetails, SphereHashes } from "../../state/types/sphere";
-import { NodeContent } from "../../state";
+import { Coords, NodeContent } from "../../state";
 
 /**
  * Enum for visualization types.
@@ -98,6 +98,7 @@ export type VisProps<T extends IVisualization> = {
   margin: Margins;
   /** Selected sphere action and entry hash as base64 */
   selectedSphere: SphereHashes;
+  coords: Coords;
   /**
    * Render function for the visualization
    * @param currentVis - The current visualization instance

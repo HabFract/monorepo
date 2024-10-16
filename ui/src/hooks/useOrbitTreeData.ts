@@ -24,6 +24,7 @@ export const useOrbitTreeData = (sphereHashes) => {
   const [, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
   const { x, y } = useAtomValue(currentSphereHierarchyIndices);
+
   const { breadthIndex, setBreadthIndex } = useNodeTraversal(
     hierarchyBounds[sphereHashes.entryHash as keyof SphereHierarchyBounds]
   );

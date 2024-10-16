@@ -15,9 +15,11 @@ import { TreeVisualization } from "./base-classes/TreeVis";
 import { byStartTime, determineNewLevelIndex, parseAndSortTrees } from "./helpers";
 import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, checkNewDescendantsAdded, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state";
+import { useAtomValue } from "jotai";
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   selectedSphere: sphere,
+  coords: {x, y},
   canvasHeight,
   canvasWidth,
   margin,
@@ -26,12 +28,14 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   // ## -- Router level state -- ##
   const [_state, transition, params] = useStateTransition();
 
+
   // ## -- Component level state -- ##
   const [json, setJson] = useState<string | null>(null);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<TreeVisualization | null>(null);
   const [usedCachedHierarchy, setUsedCachedHierarchy] = useState<boolean>(false); // Caching of hierarchy in Apollo client
   const [hasCachedPaths, setHasCachedPaths] = useState<boolean>(false); // Caching of hierarchy paths for appendage in the vis
   const [canTriggerNextTreeVisRender, setCanTriggerNextTreeVisRender] = useState<boolean>(false);
+  const newRenderNodeDetails = useAtomValue(newTraversalLevelIndexId);
 
   // ## -- Data fetching hooks -- ##
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery({
@@ -53,8 +57,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     setBreadthBounds,
     depthBounds,
     setDepthBounds,
-    x,
-    y,
     breadthIndex,
     setBreadthIndex,
   } = useOrbitTreeData(sphere);
@@ -176,7 +178,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   // Allow the following useEffect to be unguarded after a change in the breadthIndex, triggering a render of the tree at that index
   useEffect(() => {
     setTimeout(() => setCanTriggerNextTreeVisRender(true), 0)
-  }, [x]);
+  }, [y]);
 
   // Sets up and triggers the next render when a new set of hierarchy data needs to be visualised
   useEffect(() => {
@@ -186,13 +188,14 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       currentOrbitTree &&
       json
     ) {
+      if(!newRenderNodeDetails.id) return;
+
       console.log('Triggered a new hierarchy render in focus mode');
 
       currentOrbitTree._nextRootData = hierarchy(
         getJsonDerivation(json),
       ).sort(byStartTime);
 
-      const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
       const newDefaultNodeTarget = currentOrbitTree._nextRootData.data.children.sort(byStartTime)?.[0]?.content;
       // TODO: correct index above so that intermediate node is the correct one (not just 0)
       // console.log('newRenderNodeDetails :>> ', newRenderNodeDetails);
@@ -212,7 +215,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
       setTimeout(() => setCanTriggerNextTreeVisRender(false), 0)
     }
-  }, [json, canTriggerNextTreeVisRender]);
+  }, [json, canTriggerNextTreeVisRender, newRenderNodeDetails]);
 
   // Trigger caching of link paths needed for visual continuity
   useEffect(() => {
@@ -228,16 +231,18 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     }
   }, [currentOrbitTree]);
 
+  const memoisedRender = useCallback(() => {
+    if(!json ||!currentOrbitTree || error) return <div className="error">Error!</div>
+    console.log('newRenderNodeDetails :>> ', newRenderNodeDetails);
+    return render(
+    currentOrbitTree!,
+  )}, [currentOrbitTree, x, y, newRenderNodeDetails]);
+
   // ## -- RENDER  -- ##
   return (
     <>
       {(loading || !hasNodes) && <span data-testid={"vis-spinner"} />}
-      {!error &&
-        json &&
-        currentOrbitTree &&
-        render(
-          currentOrbitTree
-        )}
+      {memoisedRender()}
     </>
   );
 };
