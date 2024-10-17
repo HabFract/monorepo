@@ -137,8 +137,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     setBreadthIndex(isNewLevelXIndexValid ? newLevelXIndex : breadthIndex);
 
     handleZoomerInitialization(currentOrbitTree, visCoverage);
-
-    // setHasCachedNodes(true);
   };
 
 
@@ -153,7 +151,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
 
   // Caches link paths for each node on the current hierarchy which will be appended to the partial Visualisation types for visual continuity when traversing deeper than the root
-  // TODO: remove the combined cacheing duties this currently has with OrbitNodeDetails
   const { cache } = useDeriveAndCacheHierarchyPaths({
     currentTree: currentOrbitTree as any,
     currentSphereId: sphere.actionHash as string,
@@ -200,24 +197,25 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
       const newDefaultNodeTarget = currentOrbitTree._nextRootData.data.children.sort(byStartTime)?.[0]?.content;
 
-      const newlySelectedNodeId = newRenderNodeDetails?.direction == 'up'
-        ? currentOrbitTree._nextRootData.find(node => node.data.content == newRenderNodeDetails?.id)?.data?.content
-        : newDefaultNodeTarget;
+      const newlySelectedNodeId = !newRenderNodeDetails?.direction ? null :
+        newRenderNodeDetails?.direction == 'up'
+            ? (currentOrbitTree as any)!._originalRootData.find(node => node.data.content == newRenderNodeDetails?.id)?.data?.content
+            : newDefaultNodeTarget;
+
       store.set(
         currentOrbitIdAtom,
         newlySelectedNodeId,
       );
-      const noNewFocusNode = typeof newlySelectedNodeId === 'undefined'; // These signifies a lateral traversal where the new selected node is by default the root, selected from withVisCanvas
+      const noNewFocusNode = (newlySelectedNodeId == null || typeof newlySelectedNodeId === 'undefined');
+      // These signifies a lateral traversal where the new selected node is by default the root, selected from withVisCanvas
 
-      // TODO: add 'direction == left/right' (currenty null) contingencies here where:
-      // -- newlySelectedNodeId should be undedined (so it defaults to the root)
-      // -- currentOrbitTree._lastRenderParentSiblingIndexId tracks to the new root data id (so that it then traverses back up from the right intermediate node.)
-      const reverseIntermediateNode = (currentOrbitTree?.rootData?.children as any)?.[newRenderNodeDetails?.previousRenderSiblingIndex];
+      // Set the intermediate zoom node's id for when we traverse back up.
+      const reverseIntermediateNode = noNewFocusNode ? currentOrbitTree._nextRootData : (currentOrbitTree?.rootData?.children as any)?.[newRenderNodeDetails?.previousRenderSiblingIndex];
       if(!!reverseIntermediateNode) {
-        currentOrbitTree._lastRenderParentSiblingIndexId = reverseIntermediateNode.data.content
+        currentOrbitTree._lastRenderParentId = reverseIntermediateNode.data.content
       }
 
-      const intermediateId = newRenderNodeDetails?.direction == 'up' ? currentOrbitTree._lastRenderParentSiblingIndexId : (noNewFocusNode ? currentOrbitTree._nextRootData.data.content : null)
+      const intermediateId = newRenderNodeDetails?.direction == 'up' ? currentOrbitTree._lastRenderParentId : (noNewFocusNode ? currentOrbitTree._nextRootData.data.content : null)
       setNewRenderTraversalDetails((prev) => ({ ...prev, id: newlySelectedNodeId, intermediateId}))
 
       currentOrbitTree.startInFocusMode = true;

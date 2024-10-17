@@ -234,7 +234,7 @@ export function withVisCanvas<T extends IVisualization>(
         canTraverseUp: y !== 0,
         canMoveRight,
         canMoveLeft,
-        canMoveDown: canMove && currentOrbitIsRoot && children,
+        canMoveDown: canMove && currentOrbitIsRoot && children?.length > 0,
         canMoveDownLeft: canMove && currentOrbitIsRoot && children && !hasOneChild,
         canMoveDownRight: canMove && currentOrbitIsRoot && children && !hasOneChild,
         canTraverseDownMiddle,
@@ -303,7 +303,6 @@ export function withVisCanvas<T extends IVisualization>(
                     )?.children?.[0] as HierarchyNode<any>);
                   const newId = newChild && newChild.parent?.data?.content;
                   store.set(newTraversalLevelIndexId, { id: newId, direction: 'down', previousRenderSiblingIndex: currentRenderSiblingIndex });
-                  console.log('set new render details :>> ', { id: newId, direction: 'down', previousRenderSiblingIndex: currentRenderSiblingIndex });
                   setBreadthIndex(0);
                 });
             } catch (error) {
@@ -317,6 +316,7 @@ export function withVisCanvas<T extends IVisualization>(
           console.log('Traversing up... :>> ');
           store.set(newTraversalLevelIndexId, {
             id: currentDetails?.parentEh,
+            intermediateId: currentDetails.id,
             direction: 'up'
           });
         },
@@ -334,7 +334,7 @@ export function withVisCanvas<T extends IVisualization>(
           const orbit = store.get(currentOrbitDetailsAtom);
           const newId = (!!orbit && orbit?.parentEh !== rootId) ? orbit?.parentEh : rootId;
           store.set(currentOrbitIdAtom, newId);
-
+          (currentVis as any)._lastRenderParentId = newId;
           console.log("Moving up... to", newId)
         }
       };
@@ -380,9 +380,9 @@ export function withVisCanvas<T extends IVisualization>(
 
       // Consolidate move/traverse conditions such that there is only one action presented to the user for each direction
       const canGoUp = !!(canMoveUp || canTraverseUp);
-      const canGoDown = !!(canMoveDown || canTraverseDownMiddle || canTraverseDownLeft);// canMove && currentOrbitIsRoot && children && children.length > 0;
-      const canGoLeft = !!(canMoveLeft || canTraverseLeft) // canMove && canGoUp && children && children[0].data.content !== currentId;
-      const canGoRight = !!(canMoveRight || canTraverseRight)// canMove && canGoUp && children && children[children.length - 1].data.content !== currentId;
+      const canGoDown = !!(canMoveDown || canTraverseDownMiddle || canTraverseDownLeft);
+      const canGoLeft = !!(canMoveLeft || canTraverseLeft)
+      const canGoRight = !!(canMoveRight || canTraverseRight)
       // Generate actions based on the flags computed above
       const actions = generateNavigationActions(
         currentVis as any,

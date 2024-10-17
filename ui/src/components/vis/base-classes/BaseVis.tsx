@@ -45,6 +45,7 @@ export abstract class BaseVisualization implements IVisualization {
   nodeDetails: SphereOrbitNodeDetails;
   _nextRootData: HierarchyNode<any> | null;
 
+  _originalRootData?: HierarchyNode<any>;
   _svgId: string;
   _canvas: Selection<SVGGElement, unknown, HTMLElement, any> | undefined;
   _viewConfig: ViewConfig;
@@ -115,7 +116,7 @@ export abstract class BaseVisualization implements IVisualization {
   startInFocusMode: boolean = false;
   activeNode: any = null;
   isNewActiveNode: boolean = false;
-  _lastRenderParentSiblingIndexId: EntryHashB64 | null = null;
+  _lastRenderParentId: EntryHashB64 | null = null;
   _hasRendered: boolean = false;
 
   /**
@@ -306,6 +307,7 @@ export abstract class BaseVisualization implements IVisualization {
       this.calibrateViewPortAttrs();
       this.calibrateViewBox();
       this.setdXdY();
+      this._originalRootData = this.rootData;
     }
 
     if (this.firstRender() || this.hasNextData()) {
@@ -331,14 +333,16 @@ export abstract class BaseVisualization implements IVisualization {
         // this.initializeZoomer();
       }
 
+      const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
+      const finalNodeToFocus = newRenderNodeDetails?.id;
+      console.log('finalNodeToFocus :>> ', finalNodeToFocus);
       if (this.startInFocusMode && hasUpdated) {
-        const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
-        const finalNodeToFocus = newRenderNodeDetails?.id;
+
         // console.log('Actual new focus node :>> ', finalNodeToFocus);
 
         this._lastOrbitId = null;
         const initialNodeZoomId = 
-          newRenderNodeDetails?.intermediateId || finalNodeToFocus || this._lastRenderParentSiblingIndexId;
+          newRenderNodeDetails?.intermediateId || finalNodeToFocus || this._lastRenderParentId;
 
         let initialZoom = this.eventHandlers.memoizedhandleNodeZoom.call(
           this,
@@ -353,8 +357,8 @@ export abstract class BaseVisualization implements IVisualization {
             });
         }
 
-        store.set(newTraversalLevelIndexId, { id: null, intermediateId: null });
-        // this._lastRenderParentSiblingIndexId = null;
+        // store.set(newTraversalLevelIndexId, { id: null, intermediateId: null });
+        // this._lastRenderParentId = null;
         this.startInFocusMode = false;
       }
       this._hasRendered = true;
