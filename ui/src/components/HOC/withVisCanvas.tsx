@@ -219,7 +219,7 @@ export function withVisCanvas<T extends IVisualization>(
           const selectedActions = {} as any;
           selectedActions.moveLeft = actions.moveLeft;
           selectedActions.moveRight = actions.moveRight;
-          selectedActions.moveUp = actions.moveUp;
+          selectedActions.moveUp = () => {console.log('triggering move up'); actions.moveUp()};
           selectedActions.moveDown = actions.moveDown;
           return (
             <>

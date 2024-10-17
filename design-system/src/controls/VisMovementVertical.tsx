@@ -109,8 +109,6 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
     const container = containerRef.current;
     if (!container) return;
 
-    const currentScrollTop = container.scrollTop;
-
     if (scrollTimeout.current) {
       clearTimeout(scrollTimeout.current);
     }
@@ -135,7 +133,7 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
         snapToCenter(mostCenteredPlanetId);
       }
     }, 10);
-  }, 1000), [selectedOrbit, snapToCenter, getMostCenteredPlanet, chooseMoveDebounced]);
+  }, 100), [selectedOrbit, snapToCenter, getMostCenteredPlanet, chooseMoveDebounced]);
 
   useEffect(() => {
     const container = containerRef.current;

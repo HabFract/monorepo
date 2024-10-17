@@ -173,7 +173,7 @@ export class TreeVisualization extends BaseVisualization {
 
       memoizedhandleNodeZoom(id: EntryHashB64, foundNode?: HierarchyNode<NodeContent>) {
         if (id === this._lastOrbitId) {
-          // console.log('Returned early from zoom... ');
+          console.log('Returned early from zoom... ');
           return select(null)
         }; // Memoization check
         this._lastOrbitId = id;
@@ -502,6 +502,7 @@ export class TreeVisualization extends BaseVisualization {
 
     store.sub(currentOrbitIdAtom, () => {
       if (AppMachine.state.currentState !== "Vis") return;
+      console.log("TRIGGERED ZOOM because of orbit id change")
       this.eventHandlers.memoizedhandleNodeZoom.call(this, store.get(currentOrbitIdAtom)?.id);
       (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
     })
