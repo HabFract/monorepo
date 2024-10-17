@@ -13,19 +13,10 @@ import { Scale } from "../generated-types";
 
 export type OverlayLayoutProps = VisMovementLateralProps & VisMovementVerticalProps & WinCountProps & StreakCountProps & {
   setNewDate: Function,
-  currentDate: DateTime
+  currentDate: DateTime,
+  actions: any,
+  orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }>;
 };
-
-const sampleOrbits = [
-  { orbitName: "Mercury", orbitScale: Scale.Astro },
-  { orbitName: "Venus", orbitScale: Scale.Astro },
-  { orbitName: "Earth", orbitScale: Scale.Astro },
-  { orbitName: "Mars", orbitScale: Scale.Astro },
-  { orbitName: "Jupiter", orbitScale: Scale.Astro },
-  { orbitName: "Saturn", orbitScale: Scale.Astro },
-  { orbitName: "Uranus", orbitScale: Scale.Astro },
-  { orbitName: "Neptune", orbitScale: Scale.Astro },
-]
 
 const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   currentStreak,
@@ -34,7 +25,9 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   setNewDate,
   orbitFrequency,
   orbits,
-  currentWins
+  currentWins,
+  actions,
+  orbitDescendants
 }): ReactNode => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const [calendarHeight, setCalendarHeight] = useState(0);
@@ -54,8 +47,8 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
           <>
             <div className="overlay-controls-container">
               <motion.span>
-                <VisMovementLateral orbits={orbits}></VisMovementLateral>
-                <VisMovementVertical orbitDescendants={sampleOrbits}></VisMovementVertical>
+                <VisMovementLateral orbits={orbits} moveLeftAction={actions.moveLeft} moveRightAction={actions.moveRight}></VisMovementLateral>
+                <VisMovementVertical orbitDescendants={orbitDescendants} moveUpAction={actions.moveUp} moveDownAction={actions.moveDown}></VisMovementVertical>
                 <div className="center-marker"></div>
               </motion.span>
               {/* <VisMovementLateral></VisMovementLateral> */}

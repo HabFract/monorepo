@@ -14,6 +14,7 @@ import {
 import {
   currentOrbitDetailsAtom,
   currentOrbitIdAtom,
+  getOrbitNodeDetailsFromEhAtom,
 } from "../../state/orbit";
 import { WithVisCanvasProps } from "../vis/types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
@@ -23,7 +24,7 @@ import VisModal from "../VisModal";
 import TraversalButton from "../navigation/TraversalButton";
 import { OverlayLayout, VisControls } from "habit-fract-design-system";
 import { currentDayAtom } from "../../state/date";
-import { byStartTime, isSmallScreen } from "../vis/helpers";
+import { byStartTime, debounce, isSmallScreen } from "../vis/helpers";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import { HierarchyNode } from "d3-hierarchy";
 import {
@@ -73,12 +74,12 @@ export function withVisCanvas<T extends IVisualization>(
 
     const selectedSphere = store.get(currentSphereHashesAtom);
     const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
-    
+
     const [currentParentOrbitEh, setCurrentParentOrbitEh] =
-    useState<EntryHashB64>();
+      useState<EntryHashB64>();
     const [currentChildOrbitEh, setCurrentChildOrbitEh] =
-    useState<EntryHashB64>();
-    
+      useState<EntryHashB64>();
+
     // console.log('VIS CONTEXT: ', selectedSphere, currentOrbitDetails);
     useEffect(() => {
       if (document.querySelector(`#${mountingDivId} #${svgId}`)) return;
@@ -179,6 +180,47 @@ export function withVisCanvas<T extends IVisualization>(
               "2023-W19": false
             }
           }
+          // Generate actions to be fed into mob/desktop vis control components
+          const rootId = currentVis.rootData.data.content;
+          let currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
+          if (!currentId) {
+            // console.log('currentId :>> ', currentId);
+            store.set(currentOrbitIdAtom, rootId);
+            currentId = rootId;
+            console.warn("Set default focus node to the root...");
+          }
+          const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
+
+          const orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }> = [];
+          function getFirstDescendantLineage(node: HierarchyNode<NodeContent>) {
+            // Add the current node to the lineage
+            const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
+
+            orbitDescendants.push({
+              orbitName: orbitInfo.name,
+              orbitScale: orbitInfo.scale,
+            } as any);
+
+            // If this node has children, traverse to the first child
+            if (node.children && node.children.length > 0) {
+              getFirstDescendantLineage(node.children[0]);
+            }
+          }
+
+          getFirstDescendantLineage(currentVis.rootData);
+          const actions = generateNavigationActions(
+            currentVis as any,
+            currentId,
+            rootId,
+            children,
+            currentOrbitDetails,
+            store,
+          ) as any;
+          const selectedActions = {} as any;
+          selectedActions.moveLeft = actions.moveLeft;
+          selectedActions.moveRight = actions.moveRight;
+          selectedActions.moveUp = actions.moveUp;
+          selectedActions.moveDown = actions.moveDown;
           return (
             <>
               {/* {<currentVis.coverageType !== VisCoverage.Partial && <svg className="fixed text-white top-1 right-1 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -186,7 +228,7 @@ export function withVisCanvas<T extends IVisualization>(
                 </svg>
                 }> */}
               {isSmallScreen()
-                ? <OverlayLayout {...mockArgs}></OverlayLayout>
+                ? <OverlayLayout {...mockArgs} orbitDescendants={orbitDescendants} actions={selectedActions}></OverlayLayout>
                 : <VisControls // To be phased out once desktop design work is done.
                   buttons={traversalButtons}
                 />
@@ -224,7 +266,7 @@ export function withVisCanvas<T extends IVisualization>(
       const canTraverseDownMiddle = !!(
         children &&
         children
-        ?.filter((child) => child.children && child.children.length > 0).map(node => node.data.content)
+          ?.filter((child) => child.children && child.children.length > 0).map(node => node.data.content)
           .includes(currentId)
       );
 
