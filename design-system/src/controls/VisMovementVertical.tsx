@@ -8,6 +8,8 @@ export interface VisMovementVerticalProps {
   moveDownAction: Function
   orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }>;
 }
+const SCROLL_TIMEOUT = 100; // ms to wait before snapping back
+
 
 const mapToPlanetName = (planetId: string) => planetId!.split("planet-")![1];
 const mapToPlanetId = (planetName: string) => `planet-${planetName.split(' ').join('-')}`;
@@ -19,6 +21,8 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
   const isAnimating = useRef(false);
   const lastExecutionTime = useRef(0);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+  const scrollStartTime = useRef<number | null>(null);
+  const latestSnapBackTimeout = useRef<any>(null);
   const scrollDirection = useRef<'up' | 'down'>();
   const lastSnappedPlanet = useRef<string | null>(null);
 
@@ -55,29 +59,30 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
   }, 500),
   [moveUpAction, moveDownAction]);
 
-  const snapToCenter = ((orbitId: string) => {
+  const snapToCenter = useCallback((orbitId: string) => {
     const container = containerRef.current;
     const planet = container?.querySelector(`#${orbitId}`);
-
+  
     if (!container || !planet) return;
-
+  
     const containerHeight = container.offsetHeight;
     const planetHeight = (planet as HTMLElement).offsetHeight;
     const planetTop = (planet as HTMLElement).offsetTop;
     const targetScrollTop = planetTop - (containerHeight - planetHeight) / 2;
-
+  
     isAnimating.current = true;
     lastSnappedPlanet.current = orbitId;
-
+    scrollStartTime.current = null; // Reset scroll start time
+  
     container.scrollTo({
       top: targetScrollTop,
       behavior: 'smooth'
     });
-    chooseMoveDebounced();
+    orbitId !== selectedOrbit && chooseMoveDebounced();
     setTimeout(() => {
       isAnimating.current = false;
     }, 150);
-  });
+  }, [chooseMoveDebounced]);
 
   const getMostCenteredPlanet = useCallback(() => {
     const container = containerRef.current;
@@ -103,16 +108,31 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
     return (closestPlanet as any)?.id || null;
   }, []);
 
+
   const handleScroll = useCallback(throttle(() => {
     if (isAnimating.current) return;
-
+  
     const container = containerRef.current;
     if (!container) return;
-
+  
+    // Set scroll start time if it hasn't been set
+    if (scrollStartTime.current === null) {
+      scrollStartTime.current = Date.now();
+      if(latestSnapBackTimeout.current) {
+        clearTimeout(latestSnapBackTimeout.current);
+      }
+      latestSnapBackTimeout.current = setTimeout(() => {
+        if (selectedOrbit == getMostCenteredPlanet()) {
+          // If we've exceeded the scroll timeout, snap back to the currently selected planet
+          snapToCenter(selectedOrbit!);
+        }
+      }, SCROLL_TIMEOUT);
+    }
+  
     if (scrollTimeout.current) {
       clearTimeout(scrollTimeout.current);
     }
-
+  
     scrollTimeout.current = setTimeout(() => {
       const mostCenteredPlanetId = getMostCenteredPlanet();
       if (mostCenteredPlanetId && mostCenteredPlanetId !== selectedOrbit) {
@@ -122,18 +142,22 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
         } else {
           const fromIndex = orbits.findIndex(planet => (planet.orbitName == mapToPlanetName(selectedOrbit as string)));
           const toIndex = orbits.findIndex(planet => (planet.orbitName == mapToPlanetName(mostCenteredPlanetId)));
-          triggerSnap = Math.abs(toIndex - fromIndex) == 1
+          triggerSnap = Math.abs(toIndex - fromIndex) == 1;
           scrollDirection.current = (toIndex < fromIndex ? 'up' : 'down');
         }
-        if (!triggerSnap) return;
-
-        lastSnappedPlanet.current = mostCenteredPlanetId;
-        setSelectedOrbit(mostCenteredPlanetId);
-        console.log("Setting y axis planet to: ", mostCenteredPlanetId);
-        snapToCenter(mostCenteredPlanetId);
+  
+        if (triggerSnap) {
+          lastSnappedPlanet.current = mostCenteredPlanetId;
+          setSelectedOrbit(mostCenteredPlanetId);
+          console.log("Setting y axis planet to: ", mostCenteredPlanetId);
+          snapToCenter(mostCenteredPlanetId);
+        }
       }
+  
+      // Reset scroll start time
+      scrollStartTime.current = null;
     }, 10);
-  }, 100), [selectedOrbit, snapToCenter, getMostCenteredPlanet, chooseMoveDebounced]);
+  }, 50), [selectedOrbit, snapToCenter, getMostCenteredPlanet, chooseMoveDebounced, orbits]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -145,19 +169,6 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
       container.removeEventListener('scroll', handleScroll);
     };
   }, [handleScroll]);
-
-  // useEffect(() => {
-  //   if (containerRef.current && orbits.length > 0) {
-  //     const firstPlanet = containerRef.current.querySelector(".intersecting-planet");
-  //     if (firstPlanet) {
-  //       console.log('trigger firstPlanet :>> ');
-  //       const firstOrbitId = `planet-${orbits[0].orbitName.split(' ').join('-')}`;
-  //       setSelectedOrbit(firstOrbitId);
-  //       lastSnappedPlanet.current = firstOrbitId;
-  //       snapToCenter(firstOrbitId);
-  //     }
-  //   }
-  // }, [orbits, snapToCenter]);
 
   const getIconForScale = (scale: Scale) => {
     // Implement logic to return appropriate icon based on scale

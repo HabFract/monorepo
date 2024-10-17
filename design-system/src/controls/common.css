@@ -239,7 +239,7 @@ div.handle span {
   @apply flex flex-col relative;
   flex-wrap: nowrap;
   height: fit-content;
-  padding: calc(4.5rem + 30px) 0 6rem 0; 
+  padding: 3.3rem 0; 
 }
 
 .intersecting-pill-row {
