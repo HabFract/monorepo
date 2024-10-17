@@ -322,8 +322,6 @@ export function withVisCanvas<T extends IVisualization>(
         },
 
         moveDown: () => {
-          // const childrenMiddle =
-          //   children!.length > 0 ? Math.ceil(children!.length / 2) - 1 : 0;
           const newId = (children![0] as any).data.content; // Always move to the start of the next level, not the middle
           store.set(currentOrbitIdAtom, newId);
 
@@ -349,6 +347,7 @@ export function withVisCanvas<T extends IVisualization>(
       const rootId = currentVis.rootData.data.content;
       let currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
       if (!currentId) {
+        console.log('currentId :>> ', currentId);
         store.set(currentOrbitIdAtom, rootId);
         currentId = rootId;
         console.warn("Set default focus node to the root...");

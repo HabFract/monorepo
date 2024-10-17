@@ -335,9 +335,7 @@ export abstract class BaseVisualization implements IVisualization {
 
       const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
       const finalNodeToFocus = newRenderNodeDetails?.id;
-      console.log('finalNodeToFocus :>> ', finalNodeToFocus);
       if (this.startInFocusMode && hasUpdated) {
-
         // console.log('Actual new focus node :>> ', finalNodeToFocus);
 
         this._lastOrbitId = null;
@@ -357,8 +355,7 @@ export abstract class BaseVisualization implements IVisualization {
             });
         }
 
-        // store.set(newTraversalLevelIndexId, { id: null, intermediateId: null });
-        // this._lastRenderParentId = null;
+        store.set(newTraversalLevelIndexId, { id: null, intermediateId: null });
         this.startInFocusMode = false;
       }
       this._hasRendered = true;
