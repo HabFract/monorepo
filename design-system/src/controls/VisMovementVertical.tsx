@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Scale } from "../generated-types";
 import "./common.css";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { getIconForPlanetValue } from "..";
 import { debounce } from "./utils";
 
 export interface VisMovementVerticalProps {
@@ -158,20 +159,15 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
     };
   }, [handleScroll]);
 
-  const getIconForScale = (scale: Scale) => {
-    // Implement logic to return appropriate icon based on scale
-    // For now, we'll just return a placeholder
-    return "🪐";
-  };
-
   return (
     <div ref={containerRef} className="vis-move-vertical-container">
 
-      <motion.div
+      <div
         ref={columnRef}
         className="intersecting-planet-column">
-        {orbits.map((orbit, idx) => (
-          <span
+        {orbits.map((orbit, idx) => { 
+          const Icon = getIconForPlanetValue(orbit.orbitScale);
+          return (<span
             key={`${idx + orbit.orbitName}`}
             id={mapToPlanetId(orbit.orbitName)}
             className={
@@ -179,11 +175,10 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
                 ? "intersecting-planet selected"
                 : "intersecting-planet"
             }
-          >
-            {getIconForScale(orbit.orbitScale)}
-          </span>
-        ))}
-      </motion.div>
+          ><Icon></Icon>
+          </span>)
+        })}
+      </div>
     </div>
   );
 };

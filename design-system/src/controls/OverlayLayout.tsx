@@ -13,10 +13,7 @@ import { Scale } from "../generated-types";
 
 export type OverlayLayoutProps = VisMovementLateralProps & VisMovementVerticalProps & WinCountProps & StreakCountProps & {
   setNewDate: Function,
-  currentDate: DateTime,
-  actions: any,
-  orbitSiblings: Array<{ orbitName: string, orbitScale: Scale }>;
-  orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }>;
+  currentDate: DateTime
 };
 
 const OverlayLayout: React.FC<OverlayLayoutProps> = ({

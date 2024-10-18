@@ -20,9 +20,7 @@
   background: transparent;
   @apply absolute inset-x-1 flex flex-col gap-2;
 }
-.overlay-controls-container > span {
-  opacity: 0.76;
-}
+
 .overlay-win-streak-container {
   @apply flex gap-2 justify-between;
   padding-bottom: .5rem !important;
@@ -61,14 +59,14 @@
 }
 
 .orbit-pill-container {
-  @apply rounded-full border-line min-w-20 h-8 bg-secondary flex gap-4 text-xs text-white font-light flex gap-1 items-center justify-start px-2;
+  @apply rounded-full border-line min-w-24 h-8 bg-secondary flex gap-4 text-xs text-white font-light flex gap-1 items-center justify-start px-2;
   flex-wrap: nowrap;
   max-width: 8rem;
-  border-width: 1px;
 }
 
 .orbit-pill-container.selected {
   @apply border-2;
+  background-color: #6a817f;
 }
 
 .orbit-pill-container .orbit-name {
@@ -218,6 +216,7 @@ div.handle span {
   font-size: 24px;
   margin: 3.5rem 0;
   transition: transform 0.3s ease-in;
+  @apply flex justify-center;
 }
 
 .intersecting-planet.selected {
@@ -226,8 +225,8 @@ div.handle span {
 
 .center-marker {
   position: relative;
-  left: 2rem;
-  bottom: 10.75rem;
+  left: 2.5rem;
+  bottom: 10.8rem;
   z-index: 50;
   width: 1rem;
   height: 2px;
