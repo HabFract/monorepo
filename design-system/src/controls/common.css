@@ -261,7 +261,6 @@ div.handle span {
   left: calc(-50%);
   height: 100%;
   width: 1px;
-  background-color: red;
 }
 
 .vis-move-lateral-container::-webkit-scrollbar,

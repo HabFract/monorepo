@@ -16,6 +16,7 @@ import {
 } from "../constants";
 import { BaseVisualization } from "./BaseVis";
 import { select } from "d3-selection";
+import { easeCubicOut } from "d3-ease";
 import { store } from "../../../state/store";
 import { NodeContent, OrbitNodeDetails } from "../../../state/types";
 import {
@@ -164,7 +165,8 @@ export class TreeVisualization extends BaseVisualization {
         return this._canvas!
           //@ts-expect-error
           .transition()
-          .duration(this.startInFocusMode ? 0 : 900)
+          .duration(this.startInFocusMode ? 0 : 750)
+          .ease(easeCubicOut)
           .attr("transform", `translate(${x},${y}) scale(${scale})`)
           .on("end", () => {
             this._zoomConfig.focusMode = true;

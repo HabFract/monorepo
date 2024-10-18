@@ -190,7 +190,7 @@ export function withVisCanvas<T extends IVisualization>(
             console.warn("Set default focus node to the root...");
           }
           const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
-          const orbitSiblings = children.map(node => {
+          const orbitSiblings = (currentId == rootId ? [currentVis.rootData] : children).map(node => {
             const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
             return {
               orbitName: orbitInfo.name,

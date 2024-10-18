@@ -9,11 +9,11 @@ import Calendar from "./Calendar";
 import mockAppState from "../mockState";
 import { DateTime } from "luxon";
 import { motion } from "framer-motion";
-import { Scale } from "../generated-types";
 
 export type OverlayLayoutProps = VisMovementLateralProps & VisMovementVerticalProps & WinCountProps & StreakCountProps & {
   setNewDate: Function,
-  currentDate: DateTime
+  currentDate: DateTime,
+  actions: any,
 };
 
 const OverlayLayout: React.FC<OverlayLayoutProps> = ({
@@ -22,7 +22,6 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   handleSaveWins,
   setNewDate,
   orbitFrequency,
-  orbits,
   currentWins,
   actions,
   orbitDescendants,
@@ -31,7 +30,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   const calendarRef = useRef<HTMLDivElement>(null);
   const [calendarHeight, setCalendarHeight] = useState(0);
   const padding = document.body.getBoundingClientRect().width < 340 ? -30 : (document.body.getBoundingClientRect().width < 520 ? -88 : -100);
-  const calendarHeightWithPadding = useMemo(() => calendarRef?.current?.firstElementChild?.offsetHeight + padding, [calendarHeight]);
+  const calendarHeightWithPadding = useMemo(() => (calendarRef?.current?.firstElementChild as any)?.offsetHeight + padding, [calendarHeight]);
 
   useEffect(() => {
     if (calendarRef.current) {
@@ -46,7 +45,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
           <>
             <div className="overlay-controls-container">
               <motion.span>
-                <VisMovementLateral orbits={orbitSiblings} moveLeftAction={actions.moveLeft} moveRightAction={actions.moveRight}></VisMovementLateral>
+                <VisMovementLateral orbitSiblings={orbitSiblings} moveLeftAction={actions.moveLeft} moveRightAction={actions.moveRight}></VisMovementLateral>
                 <VisMovementVertical orbitDescendants={orbitDescendants} moveUpAction={actions.moveUp} moveDownAction={actions.moveDown}></VisMovementVertical>
                 <div className="center-marker"></div>
               </motion.span>

@@ -3,20 +3,19 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./common.css";
 import { Scale } from "..//generated-types";
 import OrbitPill from "./OrbitPill";
-import { useScroll, useSpring, useTransform } from "framer-motion";
 import { debounce } from "./utils";
 
 export interface VisMovementLateralProps {
   moveLeftAction: Function;
   moveRightAction: Function
-  orbits: Array<{ orbitName: string, orbitScale: Scale, handleOrbitSelect: () => void }>;
+  orbitSiblings: Array<{ orbitName: string, orbitScale: Scale, handleOrbitSelect: () => void }>;
 }
 const SCROLL_TIMEOUT = 100; // ms to wait before snapping back
 
 
-const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbits, moveLeftAction, moveRightAction }) => {
+const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, moveLeftAction, moveRightAction }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selectedOrbit, setSelectedOrbit] = useState<string | null>(`pill-${orbits[0].orbitName.split(' ').join('-')}`);
+  const [selectedOrbit, setSelectedOrbit] = useState<string | null>(`pill-${orbitSiblings[0].orbitName.split(' ').join('-')}`);
   const isAnimating = useRef(false);
   const lastExecutionTime = useRef(0);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -129,9 +128,9 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbits, moveLef
         if (selectedOrbit == null) {
           triggerSnap = true;
         } else {
-          const fromIndex = orbits.findIndex(planet => (planet.orbitName.split(' ').join('-') == selectedOrbit!.split("pill-")![1]));
-          const toIndex = orbits.findIndex(planet => (planet.orbitName.split(' ').join('-') == mostCenteredPillId.split("pill-")![1]));
-          triggerSnap = Math.abs(toIndex - fromIndex) == 1;
+          const fromIndex = orbitSiblings.findIndex(planet => (planet.orbitName.split(' ').join('-') == selectedOrbit!.split("pill-")![1]));
+          const toIndex = orbitSiblings.findIndex(planet => (planet.orbitName.split(' ').join('-') == mostCenteredPillId.split("pill-")![1]));
+          triggerSnap = Math.abs(toIndex - fromIndex) <=3;
           scrollDirection.current = (toIndex > fromIndex ? 'right' : 'left');
           console.log('toIndex, fromIndex, triggerSnap :>> ', toIndex, fromIndex, triggerSnap);
         }
@@ -143,23 +142,33 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbits, moveLef
         }
       }
     }, 200);
-  }, 1000), [selectedOrbit, snapToCenter, getMostCenteredPill, chooseMoveDebounced, orbits]);
+  }, 1000), [selectedOrbit, snapToCenter, getMostCenteredPill, chooseMoveDebounced, orbitSiblings]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+  //   const decreaseScrollWheelVelocity = debounce((event) => {
+  //     event.preventDefault();
+  //     // getting the scrolling speed.
+  //     const newDeltaX = event.deltaX / 500;
+  //     const ev = new WheelEvent('wheel', { deltaY: event.deltaY, deltaZ: event.deltaZ, deltaMode: event.deltaMode, deltaX: newDeltaX});
+  //     if(event.isTrusted) container.dispatchEvent(ev);
+      
+  // }, 100);
 
     container.addEventListener('scroll', handleScroll);
+    // container.addEventListener('wheel', decreaseScrollWheelVelocity);
 
     return () => {
       container.removeEventListener('scroll', handleScroll);
+      // container.removeEventListener('wheel', decreaseScrollWheelVelocity);
     };
   }, [handleScroll]);
 
   return (
     <div ref={containerRef} className="vis-move-lateral-container">
       <div className="intersecting-pill-row">
-        {orbits.map((orbit, idx) => (
+        {orbitSiblings.map((orbit, idx) => (
           <span
             key={`${idx + orbit.orbitName}`}
             id={`pill-${orbit.orbitName.split(' ').join('-')}`}

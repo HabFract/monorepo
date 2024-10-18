@@ -19,7 +19,7 @@ type Story = StoryObj<VisMovementLateralProps & { content: string }>;
 
 export const Default: Story = {
   args: {
-    orbits: [{
+    orbitSiblings: [{
       orbitName: "10k run",
       orbitScale: Scale.Sub,
       handleOrbitSelect: () => console.log("10k run selected"),
@@ -38,7 +38,7 @@ export const Default: Story = {
 
 export const Overflowing: Story = {
   args: {
-    orbits: [{
+    orbitSiblings: [{
       orbitName: "1k run",
       orbitScale: Scale.Atom,
       handleOrbitSelect: () => console.log("10k run selected")
