@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Scale } from "../generated-types";
 import "./common.css";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { debounce } from "./utils";
 
 export interface VisMovementVerticalProps {
   moveUpAction: Function;
@@ -35,19 +36,6 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
       }
     };
   };
-  function debounce(func: Function, wait: number) {
-    let timeout: NodeJS.Timeout | null = null;
-    return function executedFunction(...args: any[]) {
-      const later = () => {
-        timeout = null;
-        func(...args);
-      };
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-      timeout = setTimeout(later, wait);
-    };
-  }
 
   const chooseMoveDebounced = useCallback(
     debounce(()  => {

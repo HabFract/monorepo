@@ -15,6 +15,7 @@ export type OverlayLayoutProps = VisMovementLateralProps & VisMovementVerticalPr
   setNewDate: Function,
   currentDate: DateTime,
   actions: any,
+  orbitSiblings: Array<{ orbitName: string, orbitScale: Scale }>;
   orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }>;
 };
 
@@ -27,7 +28,8 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   orbits,
   currentWins,
   actions,
-  orbitDescendants
+  orbitDescendants,
+  orbitSiblings,
 }): ReactNode => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const [calendarHeight, setCalendarHeight] = useState(0);
@@ -47,7 +49,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
           <>
             <div className="overlay-controls-container">
               <motion.span>
-                <VisMovementLateral orbits={orbits} moveLeftAction={actions.moveLeft} moveRightAction={actions.moveRight}></VisMovementLateral>
+                <VisMovementLateral orbits={orbitSiblings} moveLeftAction={actions.moveLeft} moveRightAction={actions.moveRight}></VisMovementLateral>
                 <VisMovementVertical orbitDescendants={orbitDescendants} moveUpAction={actions.moveUp} moveDownAction={actions.moveDown}></VisMovementVertical>
                 <div className="center-marker"></div>
               </motion.span>

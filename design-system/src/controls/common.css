@@ -198,7 +198,7 @@ div.handle span {
 .vis-move-lateral-container, .vis-move-vertical-container {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
-  @apply flex gap-2 bg-menu-bg rounded-2xl p-1;
+  @apply flex bg-menu-bg rounded-2xl p-1;
 }
 
 .vis-move-lateral-container {
@@ -243,8 +243,17 @@ div.handle span {
 }
 
 .intersecting-pill-row {
-  @apply flex gap-10;
-  padding: 0 calc(50% - 2.5rem);
+  @apply flex;
+  padding: 0 calc(50% - 4.5rem);
+}
+.intersecting-pill {
+  @apply mx-5;
+}
+.intersecting-pill:first-child {
+  @apply pl-3
+}
+.intersecting-pill:last-child {
+  @apply pr-3
 }
 
 .vis-move-lateral-intersector {

@@ -190,7 +190,12 @@ export function withVisCanvas<T extends IVisualization>(
             console.warn("Set default focus node to the root...");
           }
           const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
-
+          const orbitSiblings = children.map(node => {
+            const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
+            return {
+              orbitName: orbitInfo.name,
+              orbitScale: orbitInfo.scale,
+          }})
           const orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }> = [];
           function getFirstDescendantLineage(node: HierarchyNode<NodeContent>) {
             // Add the current node to the lineage
@@ -206,7 +211,7 @@ export function withVisCanvas<T extends IVisualization>(
               getFirstDescendantLineage(node.children[0]);
             }
           }
-
+console.log('orbitSiblings :>> ', orbitSiblings);
           getFirstDescendantLineage(currentVis.rootData);
           const actions = generateNavigationActions(
             currentVis as any,
@@ -228,7 +233,7 @@ export function withVisCanvas<T extends IVisualization>(
                 </svg>
                 }> */}
               {isSmallScreen()
-                ? <OverlayLayout {...mockArgs} orbitDescendants={orbitDescendants} actions={selectedActions}></OverlayLayout>
+                ? <OverlayLayout {...mockArgs} orbitSiblings={orbitSiblings}  orbitDescendants={orbitDescendants} actions={selectedActions}></OverlayLayout>
                 : <VisControls // To be phased out once desktop design work is done.
                   buttons={traversalButtons}
                 />

@@ -200,7 +200,6 @@ export class TreeVisualization extends BaseVisualization {
           // console.log('Zoomed to focus node based on store sub to currentOrbitId... ');
           return this.eventHandlers.handleNodeZoom.call(this, e as any, node);
         } else {
-          debugger;
           console.error("Tried to zoom to node that isn't in the hierarchy")
           return null
         }

@@ -4,20 +4,27 @@ import "./common.css";
 import { Scale } from "..//generated-types";
 import OrbitPill from "./OrbitPill";
 import { useScroll, useSpring, useTransform } from "framer-motion";
+import { debounce } from "./utils";
 
 export interface VisMovementLateralProps {
   moveLeftAction: Function;
   moveRightAction: Function
   orbits: Array<{ orbitName: string, orbitScale: Scale, handleOrbitSelect: () => void }>;
 }
+const SCROLL_TIMEOUT = 100; // ms to wait before snapping back
+
 
 const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbits, moveLeftAction, moveRightAction }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selectedOrbit, setSelectedOrbit] = useState<string | null>(null);
+  const [selectedOrbit, setSelectedOrbit] = useState<string | null>(`pill-${orbits[0].orbitName.split(' ').join('-')}`);
   const isAnimating = useRef(false);
   const lastExecutionTime = useRef(0);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   const scrollDirection = useRef<'left' | 'right'>();
+  const scrollStartTime = useRef<number | null>(null);
+  const latestSnapBackTimeout = useRef<any>(null);
+
+  const lastSnappedPlanet = useRef<string | null>(null);
 
   // Throttle function
   const throttle = (func: Function, limit: number) => {
@@ -30,6 +37,16 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbits, moveLef
     };
   };
 
+  const chooseMoveDebounced = useCallback(
+    debounce(() => {
+      if (scrollDirection.current === 'left') {
+        return Promise.resolve(moveLeftAction());
+      } else if (scrollDirection.current === 'right') {
+        return Promise.resolve(moveRightAction());
+      }
+    }, 500),
+    [moveLeftAction, moveRightAction]);
+
   const snapToCenter = useCallback((orbitId: string) => {
     const container = containerRef.current;
     const pill = container?.querySelector(`#${orbitId}`);
@@ -41,22 +58,21 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbits, moveLef
     const pillLeft = (pill as HTMLElement).offsetLeft;
     const targetScrollLeft = pillLeft - (containerWidth - pillWidth) / 2;
 
+    console.log('lastSNappedPlanet.current :>> ', lastSnappedPlanet.current, orbitId);
     isAnimating.current = true;
+    lastSnappedPlanet.current = orbitId;
+    scrollStartTime.current = null;
+
     container.scrollTo({
       left: targetScrollLeft,
       behavior: 'smooth'
     });
+    orbitId !== selectedOrbit && chooseMoveDebounced();
 
     setTimeout(() => {
       isAnimating.current = false;
-      console.log('scrollDirection.current :>> ', scrollDirection.current);
-      if (scrollDirection.current === 'left') {
-        moveLeftAction();
-      } else if (scrollDirection.current === 'right') {
-        moveRightAction()
-      }
-    }, 30);
-  }, []);
+    }, 150);
+  }, [chooseMoveDebounced]);
 
   const getMostCenteredPill = useCallback(() => {
     const container = containerRef.current;
@@ -85,6 +101,22 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbits, moveLef
   const handleScroll = useCallback(throttle(() => {
     if (isAnimating.current) return;
 
+    // Set scroll start time if it hasn't been set
+    if (scrollStartTime.current === null) {
+      scrollStartTime.current = Date.now();
+      console.log('scrollStartTime.current :>> ', scrollStartTime.current);
+      if (latestSnapBackTimeout.current) {
+        clearTimeout(latestSnapBackTimeout.current);
+      }
+      latestSnapBackTimeout.current = setTimeout(() => {
+        console.log("Trying snapback", selectedOrbit, getMostCenteredPill())
+        if (selectedOrbit == getMostCenteredPill()) {
+          // If we've exceeded the scroll timeout, snap back to the currently selected planet
+          snapToCenter(getMostCenteredPill());
+        }
+      }, SCROLL_TIMEOUT);
+    }
+
     if (scrollTimeout.current) {
       clearTimeout(scrollTimeout.current);
     }
@@ -92,14 +124,26 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbits, moveLef
     scrollTimeout.current = setTimeout(() => {
       const mostCenteredPillId = getMostCenteredPill();
       if (mostCenteredPillId && mostCenteredPillId !== selectedOrbit) {
-        setSelectedOrbit(mostCenteredPillId);
-        const toIndex = orbits.findIndex(planet => (planet.orbitName.split(' ').join('-') == selectedOrbit!.split("pill-")![1]));
-        const fromIndex = orbits.findIndex(planet => (planet.orbitName.split(' ').join('-') == mostCenteredPillId.split("pill-")![1]));
-        scrollDirection.current = (toIndex > fromIndex  ? 'left' : 'right');
-        snapToCenter(mostCenteredPillId);
+
+        let triggerSnap = false;
+        if (selectedOrbit == null) {
+          triggerSnap = true;
+        } else {
+          const fromIndex = orbits.findIndex(planet => (planet.orbitName.split(' ').join('-') == selectedOrbit!.split("pill-")![1]));
+          const toIndex = orbits.findIndex(planet => (planet.orbitName.split(' ').join('-') == mostCenteredPillId.split("pill-")![1]));
+          triggerSnap = Math.abs(toIndex - fromIndex) == 1;
+          scrollDirection.current = (toIndex > fromIndex ? 'right' : 'left');
+          console.log('toIndex, fromIndex, triggerSnap :>> ', toIndex, fromIndex, triggerSnap);
+        }
+        if (triggerSnap) {
+          lastSnappedPlanet.current = mostCenteredPillId;
+          setSelectedOrbit(mostCenteredPillId);
+          console.log("Setting x axis planet to: ", mostCenteredPillId);
+          snapToCenter(mostCenteredPillId);
+        }
       }
     }, 200);
-  }, 1000), [selectedOrbit, snapToCenter, getMostCenteredPill]); 
+  }, 1000), [selectedOrbit, snapToCenter, getMostCenteredPill, chooseMoveDebounced, orbits]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -112,24 +156,13 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbits, moveLef
     };
   }, [handleScroll]);
 
-  useEffect(() => {
-    if (containerRef.current && orbits.length > 0) {
-      const firstPill = containerRef.current.querySelector(".intersecting-pill");
-      if (firstPill) {
-        const firstOrbitId = `pill-${orbits[0].orbitName.split(' ').join('-')}`;
-        setSelectedOrbit(firstOrbitId);
-        snapToCenter(firstOrbitId);
-      }
-    }
-  }, [orbits, snapToCenter]);
-
   return (
     <div ref={containerRef} className="vis-move-lateral-container">
       <div className="intersecting-pill-row">
         {orbits.map((orbit, idx) => (
-          <span 
-            key={`${idx + orbit.orbitName}`} 
-            id={`pill-${orbit.orbitName.split(' ').join('-')}`} 
+          <span
+            key={`${idx + orbit.orbitName}`}
+            id={`pill-${orbit.orbitName.split(' ').join('-')}`}
             className="intersecting-pill"
           >
             <OrbitPill

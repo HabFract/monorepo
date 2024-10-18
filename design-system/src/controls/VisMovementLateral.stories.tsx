@@ -8,7 +8,7 @@ const meta: Meta<VisMovementLateralProps> = {
   component: VisMovementLateral,
   argTypes: {},
   render: (args: VisMovementLateralProps) => (
-    <VisMovementLateral {...args}
+    <VisMovementLateral {...args} moveLeftAction={() => console.log("Handle move left")} moveRightAction={() => console.log("Handle move right")}
     ></VisMovementLateral>
   ),
 };
@@ -22,7 +22,7 @@ export const Default: Story = {
     orbits: [{
       orbitName: "10k run",
       orbitScale: Scale.Sub,
-      handleOrbitSelect: () => console.log("10k run selected")
+      handleOrbitSelect: () => console.log("10k run selected"),
     }, {
       orbitName: "12k run",
       orbitScale: Scale.Sub,
