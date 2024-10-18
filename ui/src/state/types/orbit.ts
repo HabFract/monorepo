@@ -9,6 +9,8 @@ export namespace Frequency {
     QUARTERLY: 0.011, // 1/91 rounded to 3 decimal places
   } as const;
 
+  export const ONE_SHOT = 0;
+
   export const DAILY_OR_MORE = {
     DAILY: 1.0,
     TWO: 2.0,
@@ -48,7 +50,8 @@ export namespace Frequency {
 
   export type Rationals =
     | LessThanDailyRationalRepresentation
-    | DailyOrMoreRationalRepresentation;
+    | DailyOrMoreRationalRepresentation
+    | typeof ONE_SHOT;
 }
 
 /**

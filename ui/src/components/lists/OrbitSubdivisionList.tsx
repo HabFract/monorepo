@@ -104,7 +104,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                       variables: {
                         name: orbit.name,
                         scale,
-                        frequency: Frequency.Day,
+                        frequency: Frequency.DailyOrMore_1d,
                         startTime: +new Date(),
                         sphereHash: sphere.entryHash as string,
                         parentHash: currentHash as string,

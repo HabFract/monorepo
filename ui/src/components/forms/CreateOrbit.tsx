@@ -124,7 +124,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
     description: "",
     startTime: DateTime.now().toMillis(),
     endTime: DateTime.now().toMillis(),
-    frequency: Frequency.Day,
+    frequency: Frequency.DailyOrMore_1d,
     scale: undefined,
     archival: false,
     parentHash: !!childOrbitEh ? "root" : parentOrbitEh || null,
@@ -342,27 +342,43 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                   labelValue={"Scale:"}
                 />
               </div>
-
-              {/* FIELD STRIPPED OUT OF MVP: <div className="field">
-              <Label htmlFor='frequency'>Frequency: <span className="reqd">*</span>
-              </Label>
               <div className="flex form-field">
-                <Field name="frequency" >
-                  {({ field }) => (
-                    <Select
-                      {...field}
-                      color={errors.frequency && touched.frequency ? "invalid" : "default"}
-                    >
-                      {Object.values(Frequency).map((freq, i) =>
-                        <option key={i} value={freq}>{freq}</option>
-                      )
-                      }
-                    </Select>
-                  )}
-                </Field>
-                {CustomErrorLabel('frequency', errors, touched)}
+                <Field
+                  component={SelectInputField}
+                  size="base"
+                  name="frequency"
+                  value={values?.frequency}
+                  id="frequency"
+                  icon={(() => {
+                    // const currentValue = values.frequency || scaleDefault;
+                    // return getIconForPlanetValue(
+                    //   cannotBeAstro && cannotBeSub
+                    //     ? Scale.Atom
+                    //     : currentValue == Scale.Astro && cannotBeAstro
+                    //       ? Scale.Sub
+                    //       : currentValue,
+                    // );
+                  })()}
+                  iconSide={"left"}
+                  disabled={false}
+                  // withInfo={true}
+                  // onClickInfo={() => ({
+                  //   title: "Scales, Explained",
+                  //   body: "This refers to the magnitude of your behaviour. Astronomic goes well with anything vast, like running a marathon. Atomic is for small, incremental actions, like putting on your running shoes. Sub-astronomic is anything inbetween!",
+                  // })}
+                  options={[
+                    ...Object.values(Frequency).map((frequency) => {
+                      return (
+                        <option key={frequency} value={frequency}>
+                          {getFrequencyDisplayName(frequency)}
+                        </option>
+                      );
+                    }),
+                  ].filter((el) => el !== null)}
+                  required={true}
+                  labelValue={"Frequency:"}
+                />
               </div>
-            </div> */}
 
               {/* {!inOnboarding && <Flex className={"field"} vertical={true}>
               <Flex justify='space-around'>
@@ -435,5 +451,16 @@ export function getDisplayName(scale: Scale) {
       return "Sub-astronomic";
     case Scale.Atom:
       return "Atomic";
+  }
+}
+
+export function getFrequencyDisplayName(freq: Frequency) {
+  switch (freq) {
+    case Frequency.DailyOrMore_10d:
+      return "10/day";
+    // case Scale.Sub:
+    //   return "Sub-astronomic";
+    default:
+      return freq;
   }
 }

@@ -3,7 +3,7 @@ import { atom } from "jotai";
 import { appStateAtom } from "./store";
 import { SphereOrbitNodeDetails, SphereOrbitNodes } from "./types/sphere";
 import { Frequency, OrbitHashes, OrbitNodeDetails } from "./types/orbit";
-import { Orbit, Frequency as Freq } from "../graphql/generated";
+import { Orbit, Frequency as GraphQLFrequency } from "../graphql/generated";
 import { WinData } from "./types/win";
 import { nodeCache } from "./store";
 
@@ -13,19 +13,44 @@ import { nodeCache } from "./store";
 
 /** ----------------------------------------------------- */
 
-export const decodeFrequency = (frequency: Freq): Frequency.Rationals => {
+/**
+ * Decodes from the Rust/GraphQL string enum type into an easier to work with numerical representation from the Frequency namespace
+ * @param frequency The frequency type as returned from GraphQL resolvers
+ * @returns a frequency using our frontend type system 
+ */
+export const decodeFrequency = (frequency: GraphQLFrequency): Frequency.Rationals => {
   switch (frequency) {
-    case Freq.Day:
+    case GraphQLFrequency.OneShot:
+      return Frequency.ONE_SHOT;
+    case GraphQLFrequency.DailyOrMore_1d:
       return Frequency.DAILY_OR_MORE.DAILY;
-    case Freq.Month:
+    case GraphQLFrequency.DailyOrMore_2d:
+      return Frequency.DAILY_OR_MORE.TWO;
+    case GraphQLFrequency.DailyOrMore_3d:
+      return Frequency.DAILY_OR_MORE.THREE;
+    case GraphQLFrequency.DailyOrMore_4d:
+      return Frequency.DAILY_OR_MORE.FOUR;
+    case GraphQLFrequency.DailyOrMore_5d:
+      return Frequency.DAILY_OR_MORE.FIVE;
+    case GraphQLFrequency.DailyOrMore_6d:
+      return Frequency.DAILY_OR_MORE.SIX;
+    case GraphQLFrequency.DailyOrMore_7d:
+      return Frequency.DAILY_OR_MORE.SEVEN;
+    case GraphQLFrequency.DailyOrMore_8d:
+      return Frequency.DAILY_OR_MORE.EIGHT;
+    case GraphQLFrequency.DailyOrMore_9d:
+      return Frequency.DAILY_OR_MORE.NINE;
+    case GraphQLFrequency.DailyOrMore_10d:
+      return Frequency.DAILY_OR_MORE.TEN;
+    case GraphQLFrequency.LessThanDaily_1w:
+      return Frequency.LESS_THAN_DAILY.WEEKLY;
+    case GraphQLFrequency.LessThanDaily_1m:
       return Frequency.LESS_THAN_DAILY.MONTHLY;
-    case Freq.Quarter:
+    case GraphQLFrequency.LessThanDaily_1q:
       return Frequency.LESS_THAN_DAILY.QUARTERLY;
-    // case Freq.Year:
-    //   return Frequency.LESS_THAN_DAILY.YEARLY;
     default:
-      return Frequency.DAILY_OR_MORE.DAILY;
-  }
+      throw new Error(`Unsupported GraphQL frequency: ${frequency}`);
+  };
 };
 
 /**
