@@ -1,5 +1,6 @@
 import React, { FC, ComponentProps } from "react";
-import { Scale } from "../generated-types";
+import { Frequency, Scale } from "../generated-types";
+import FrequencyIndicator from "./frequency-indicator";
 
 export function getIconForPlanetValue(
   scale: Scale,
@@ -29,8 +30,11 @@ export function getIconForPlanetValue(
   }
 }
 export function getIconSvg(
-  icon: string | FC<ComponentProps<"svg">>,
-): FC<ComponentProps<"svg">> | undefined {
+  icon: string,
+): FC<ComponentProps<"svg">> | FC<ComponentProps<any>> {
+  if (Object.values(Frequency).includes(icon as Frequency)) {
+    return () => <FrequencyIndicator size={"sm"} frequency={icon as Frequency} />;
+  }
   if (typeof icon !== "string") return icon;
   switch (icon) {
     case "tag":
@@ -146,6 +150,6 @@ export function getIconSvg(
         </svg>
       );
     default:
-      return;
+      return () => <svg></svg>;
   }
 }

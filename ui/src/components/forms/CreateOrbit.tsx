@@ -25,6 +25,7 @@ import {
   TextInputField,
   SelectInputField,
   getIconForPlanetValue,
+  FrequencyIndicator,
 } from "habit-fract-design-system";
 import { OrbitFetcher } from "./utils";
 import { currentSphereHashesAtom } from "../../state/sphere";
@@ -350,14 +351,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                   value={values?.frequency}
                   id="frequency"
                   icon={(() => {
-                    // const currentValue = values.frequency || scaleDefault;
-                    // return getIconForPlanetValue(
-                    //   cannotBeAstro && cannotBeSub
-                    //     ? Scale.Atom
-                    //     : currentValue == Scale.Astro && cannotBeAstro
-                    //       ? Scale.Sub
-                    //       : currentValue,
-                    // );
+                    const currentValue = values.frequency || Frequency.DailyOrMore_1d; 
+                    return currentValue; 
                   })()}
                   iconSide={"left"}
                   disabled={false}

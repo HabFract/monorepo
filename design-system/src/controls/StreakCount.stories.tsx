@@ -72,19 +72,6 @@ export const ShortQuarterly: Story = {
   },
 };
 
-export const Twoly: Story = {
-  args: {
-    orbitFrequency: Frequency.DAILY_OR_MORE.TWO,
-    currentStreak: 9,
-  },
-};
-export const Eightly: Story = {
-  args: {
-    orbitFrequency: Frequency.DAILY_OR_MORE.EIGHT,
-    currentStreak: 3,
-  },
-};
-
 export const LongQuarterly: Story = {
   args: {
     orbitFrequency: Frequency.LESS_THAN_DAILY.QUARTERLY,

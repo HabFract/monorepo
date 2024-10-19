@@ -12,7 +12,12 @@ const meta: Meta<OverlayLayoutProps> = {
   component: OverlayLayout,
   argTypes: {},
   render: (args: OverlayLayoutProps) => (
-    <OverlayLayout {...args}
+    <OverlayLayout {...args} actions={{
+      moveUp: () => console.log("Up"),
+      moveDown: () => console.log("Down"),
+      moveLeft: () => console.log("Left"),
+      moveRight: () => console.log("Right"),
+    }}
     ></OverlayLayout>
   ),
 };

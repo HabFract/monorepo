@@ -23,11 +23,9 @@ const StreakCount: React.FC<StreakCountProps> = ({
       case Frequency.LESS_THAN_DAILY.MONTHLY:
         return "Monthly"
       case Frequency.LESS_THAN_DAILY.QUARTERLY:
-        return "1/4-ly"
-      case Frequency.DAILY_OR_MORE.DAILY:
-        return "Daily"
+        return "Quarterly"
       default:
-        return `${orbitFrequency}-daily`;
+        return "Daily"
     }
   }
   const frequencyParts = getFrequencyText(orbitFrequency).split('-');

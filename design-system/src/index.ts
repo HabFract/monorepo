@@ -15,6 +15,7 @@ import { SphereVis, OrbitVis } from "./vis";
 import { ProgressBar } from "./onboarding";
 import { Button } from "./buttons";
 import { HelperText } from "./copy";
+import FrequencyIndicator  from "./icons/frequency-indicator";
 import { VisControls } from "./controls";
 import { default as darkTheme } from "./darkTheme";
 
@@ -43,5 +44,6 @@ export {
   SphereVis,
   OrbitVis,
   getIconForPlanetValue,
+  FrequencyIndicator,
   darkTheme,
 };

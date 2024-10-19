@@ -4,14 +4,16 @@ import { Frequency } from "../generated-types";
 
 export interface FrequencyIndicatorProps {
   frequency: Frequency
+  size: "sm" | "md" | "lg"
 }
 
 const FrequencyIndicator: React.FC<FrequencyIndicatorProps> = ({
   frequency,
+  size
 }: FrequencyIndicatorProps) => {
   const displayFreq = getFrequencyDisplayName(frequency);
   return (
-    <div className="frequency-indicator-container">
+    <div className={`frequency-indicator-container ${size}`}>
       <span className={displayFreq.length > 3 ? "tracking-narrower": ""}>{displayFreq}</span>
     </div>
   );

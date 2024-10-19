@@ -10,6 +10,7 @@ const meta: Meta<FrequencyIndicatorProps> = {
   render: (args: any) => (
     <FrequencyIndicator
       frequency={args.frequency}
+      size={"md"}
     />
   ),
 };

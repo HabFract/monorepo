@@ -382,34 +382,6 @@ export type WinDateValueInput = {
   multiple?: InputMaybe<Array<Scalars['Boolean']['input']>>;
 };
 
-export type CreateSphereMutationVariables = Exact<{
-  variables: SphereCreateParams;
-}>;
-
-
-export type CreateSphereMutation = { __typename?: 'Mutation', createSphere: { __typename?: 'CreateSphereResponsePayload', actionHash: string, entryHash: string } };
-
-export type DeleteSphereMutationVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type DeleteSphereMutation = { __typename?: 'Mutation', deleteSphere: string };
-
-export type UpdateSphereMutationVariables = Exact<{
-  sphere: SphereUpdateParams;
-}>;
-
-
-export type UpdateSphereMutation = { __typename?: 'Mutation', updateSphere: { __typename?: 'CreateSphereResponsePayload', actionHash: string, entryHash: string } };
-
-export type CreateOrbitMutationVariables = Exact<{
-  variables: OrbitCreateParams;
-}>;
-
-
-export type CreateOrbitMutation = { __typename?: 'Mutation', createOrbit: { __typename?: 'CreateOrbitResponsePayload', id: string, eH: string, name: string, parentHash?: string | null, sphereHash: string, scale: Scale, frequency: Frequency, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
-
 export type DeleteOrbitMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -423,6 +395,34 @@ export type UpdateOrbitMutationVariables = Exact<{
 
 
 export type UpdateOrbitMutation = { __typename?: 'Mutation', updateOrbit: { __typename?: 'UpdateOrbitResponsePayload', id: string, eH: string, name: string, parentHash?: string | null, sphereHash: string, scale: Scale, frequency: Frequency, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
+
+export type CreateOrbitMutationVariables = Exact<{
+  variables: OrbitCreateParams;
+}>;
+
+
+export type CreateOrbitMutation = { __typename?: 'Mutation', createOrbit: { __typename?: 'CreateOrbitResponsePayload', id: string, eH: string, name: string, parentHash?: string | null, sphereHash: string, scale: Scale, frequency: Frequency, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
+
+export type DeleteSphereMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteSphereMutation = { __typename?: 'Mutation', deleteSphere: string };
+
+export type CreateSphereMutationVariables = Exact<{
+  variables: SphereCreateParams;
+}>;
+
+
+export type CreateSphereMutation = { __typename?: 'Mutation', createSphere: { __typename?: 'CreateSphereResponsePayload', actionHash: string, entryHash: string } };
+
+export type UpdateSphereMutationVariables = Exact<{
+  sphere: SphereUpdateParams;
+}>;
+
+
+export type UpdateSphereMutation = { __typename?: 'Mutation', updateSphere: { __typename?: 'CreateSphereResponsePayload', actionHash: string, entryHash: string } };
 
 export type CreateWinRecordMutationVariables = Exact<{
   winRecord: WinRecordCreateParams;
@@ -459,13 +459,6 @@ export type GetOrbitsQueryVariables = Exact<{
 
 export type GetOrbitsQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, parentHash?: string | null, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } }> } };
 
-export type GetWinRecordQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type GetWinRecordQuery = { __typename?: 'Query', winRecord?: { __typename?: 'WinRecord', id: string, eH: string, orbitId: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } | null };
-
 export type GetLowestSphereHierarchyLevelQueryVariables = Exact<{
   sphereEntryHashB64: Scalars['String']['input'];
 }>;
@@ -485,152 +478,14 @@ export type GetSpheresQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetSpheresQuery = { __typename?: 'Query', spheres: { __typename?: 'SphereConnection', edges: Array<{ __typename?: 'SphereEdge', node: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, image?: string | null } | null } }> } };
 
+export type GetWinRecordQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
 
-export const CreateSphereDocument = gql`
-    mutation createSphere($variables: SphereCreateParams!) {
-  createSphere(sphere: $variables) {
-    actionHash
-    entryHash
-  }
-}
-    `;
-export type CreateSphereMutationFn = Apollo.MutationFunction<CreateSphereMutation, CreateSphereMutationVariables>;
 
-/**
- * __useCreateSphereMutation__
- *
- * To run a mutation, you first call `useCreateSphereMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSphereMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createSphereMutation, { data, loading, error }] = useCreateSphereMutation({
- *   variables: {
- *      variables: // value for 'variables'
- *   },
- * });
- */
-export function useCreateSphereMutation(baseOptions?: Apollo.MutationHookOptions<CreateSphereMutation, CreateSphereMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateSphereMutation, CreateSphereMutationVariables>(CreateSphereDocument, options);
-      }
-export type CreateSphereMutationHookResult = ReturnType<typeof useCreateSphereMutation>;
-export type CreateSphereMutationResult = Apollo.MutationResult<CreateSphereMutation>;
-export type CreateSphereMutationOptions = Apollo.BaseMutationOptions<CreateSphereMutation, CreateSphereMutationVariables>;
-export const DeleteSphereDocument = gql`
-    mutation deleteSphere($id: ID!) {
-  deleteSphere(sphereHash: $id)
-}
-    `;
-export type DeleteSphereMutationFn = Apollo.MutationFunction<DeleteSphereMutation, DeleteSphereMutationVariables>;
+export type GetWinRecordQuery = { __typename?: 'Query', winRecord?: { __typename?: 'WinRecord', id: string, eH: string, orbitId: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } | null };
 
-/**
- * __useDeleteSphereMutation__
- *
- * To run a mutation, you first call `useDeleteSphereMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteSphereMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteSphereMutation, { data, loading, error }] = useDeleteSphereMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteSphereMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSphereMutation, DeleteSphereMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteSphereMutation, DeleteSphereMutationVariables>(DeleteSphereDocument, options);
-      }
-export type DeleteSphereMutationHookResult = ReturnType<typeof useDeleteSphereMutation>;
-export type DeleteSphereMutationResult = Apollo.MutationResult<DeleteSphereMutation>;
-export type DeleteSphereMutationOptions = Apollo.BaseMutationOptions<DeleteSphereMutation, DeleteSphereMutationVariables>;
-export const UpdateSphereDocument = gql`
-    mutation updateSphere($sphere: SphereUpdateParams!) {
-  updateSphere(sphere: $sphere) {
-    actionHash
-    entryHash
-  }
-}
-    `;
-export type UpdateSphereMutationFn = Apollo.MutationFunction<UpdateSphereMutation, UpdateSphereMutationVariables>;
 
-/**
- * __useUpdateSphereMutation__
- *
- * To run a mutation, you first call `useUpdateSphereMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateSphereMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateSphereMutation, { data, loading, error }] = useUpdateSphereMutation({
- *   variables: {
- *      sphere: // value for 'sphere'
- *   },
- * });
- */
-export function useUpdateSphereMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSphereMutation, UpdateSphereMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateSphereMutation, UpdateSphereMutationVariables>(UpdateSphereDocument, options);
-      }
-export type UpdateSphereMutationHookResult = ReturnType<typeof useUpdateSphereMutation>;
-export type UpdateSphereMutationResult = Apollo.MutationResult<UpdateSphereMutation>;
-export type UpdateSphereMutationOptions = Apollo.BaseMutationOptions<UpdateSphereMutation, UpdateSphereMutationVariables>;
-export const CreateOrbitDocument = gql`
-    mutation createOrbit($variables: OrbitCreateParams!) {
-  createOrbit(orbit: $variables) {
-    id
-    eH
-    name
-    parentHash
-    sphereHash
-    scale
-    frequency
-    metadata {
-      description
-      timeframe {
-        startTime
-        endTime
-      }
-    }
-  }
-}
-    `;
-export type CreateOrbitMutationFn = Apollo.MutationFunction<CreateOrbitMutation, CreateOrbitMutationVariables>;
-
-/**
- * __useCreateOrbitMutation__
- *
- * To run a mutation, you first call `useCreateOrbitMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateOrbitMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createOrbitMutation, { data, loading, error }] = useCreateOrbitMutation({
- *   variables: {
- *      variables: // value for 'variables'
- *   },
- * });
- */
-export function useCreateOrbitMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrbitMutation, CreateOrbitMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateOrbitMutation, CreateOrbitMutationVariables>(CreateOrbitDocument, options);
-      }
-export type CreateOrbitMutationHookResult = ReturnType<typeof useCreateOrbitMutation>;
-export type CreateOrbitMutationResult = Apollo.MutationResult<CreateOrbitMutation>;
-export type CreateOrbitMutationOptions = Apollo.BaseMutationOptions<CreateOrbitMutation, CreateOrbitMutationVariables>;
 export const DeleteOrbitDocument = gql`
     mutation deleteOrbit($id: ID!) {
   deleteOrbit(orbitHash: $id)
@@ -708,6 +563,151 @@ export function useUpdateOrbitMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateOrbitMutationHookResult = ReturnType<typeof useUpdateOrbitMutation>;
 export type UpdateOrbitMutationResult = Apollo.MutationResult<UpdateOrbitMutation>;
 export type UpdateOrbitMutationOptions = Apollo.BaseMutationOptions<UpdateOrbitMutation, UpdateOrbitMutationVariables>;
+export const CreateOrbitDocument = gql`
+    mutation createOrbit($variables: OrbitCreateParams!) {
+  createOrbit(orbit: $variables) {
+    id
+    eH
+    name
+    parentHash
+    sphereHash
+    scale
+    frequency
+    metadata {
+      description
+      timeframe {
+        startTime
+        endTime
+      }
+    }
+  }
+}
+    `;
+export type CreateOrbitMutationFn = Apollo.MutationFunction<CreateOrbitMutation, CreateOrbitMutationVariables>;
+
+/**
+ * __useCreateOrbitMutation__
+ *
+ * To run a mutation, you first call `useCreateOrbitMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrbitMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrbitMutation, { data, loading, error }] = useCreateOrbitMutation({
+ *   variables: {
+ *      variables: // value for 'variables'
+ *   },
+ * });
+ */
+export function useCreateOrbitMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrbitMutation, CreateOrbitMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrbitMutation, CreateOrbitMutationVariables>(CreateOrbitDocument, options);
+      }
+export type CreateOrbitMutationHookResult = ReturnType<typeof useCreateOrbitMutation>;
+export type CreateOrbitMutationResult = Apollo.MutationResult<CreateOrbitMutation>;
+export type CreateOrbitMutationOptions = Apollo.BaseMutationOptions<CreateOrbitMutation, CreateOrbitMutationVariables>;
+export const DeleteSphereDocument = gql`
+    mutation deleteSphere($id: ID!) {
+  deleteSphere(sphereHash: $id)
+}
+    `;
+export type DeleteSphereMutationFn = Apollo.MutationFunction<DeleteSphereMutation, DeleteSphereMutationVariables>;
+
+/**
+ * __useDeleteSphereMutation__
+ *
+ * To run a mutation, you first call `useDeleteSphereMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSphereMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSphereMutation, { data, loading, error }] = useDeleteSphereMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteSphereMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSphereMutation, DeleteSphereMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSphereMutation, DeleteSphereMutationVariables>(DeleteSphereDocument, options);
+      }
+export type DeleteSphereMutationHookResult = ReturnType<typeof useDeleteSphereMutation>;
+export type DeleteSphereMutationResult = Apollo.MutationResult<DeleteSphereMutation>;
+export type DeleteSphereMutationOptions = Apollo.BaseMutationOptions<DeleteSphereMutation, DeleteSphereMutationVariables>;
+export const CreateSphereDocument = gql`
+    mutation createSphere($variables: SphereCreateParams!) {
+  createSphere(sphere: $variables) {
+    actionHash
+    entryHash
+  }
+}
+    `;
+export type CreateSphereMutationFn = Apollo.MutationFunction<CreateSphereMutation, CreateSphereMutationVariables>;
+
+/**
+ * __useCreateSphereMutation__
+ *
+ * To run a mutation, you first call `useCreateSphereMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSphereMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSphereMutation, { data, loading, error }] = useCreateSphereMutation({
+ *   variables: {
+ *      variables: // value for 'variables'
+ *   },
+ * });
+ */
+export function useCreateSphereMutation(baseOptions?: Apollo.MutationHookOptions<CreateSphereMutation, CreateSphereMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSphereMutation, CreateSphereMutationVariables>(CreateSphereDocument, options);
+      }
+export type CreateSphereMutationHookResult = ReturnType<typeof useCreateSphereMutation>;
+export type CreateSphereMutationResult = Apollo.MutationResult<CreateSphereMutation>;
+export type CreateSphereMutationOptions = Apollo.BaseMutationOptions<CreateSphereMutation, CreateSphereMutationVariables>;
+export const UpdateSphereDocument = gql`
+    mutation updateSphere($sphere: SphereUpdateParams!) {
+  updateSphere(sphere: $sphere) {
+    actionHash
+    entryHash
+  }
+}
+    `;
+export type UpdateSphereMutationFn = Apollo.MutationFunction<UpdateSphereMutation, UpdateSphereMutationVariables>;
+
+/**
+ * __useUpdateSphereMutation__
+ *
+ * To run a mutation, you first call `useUpdateSphereMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSphereMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSphereMutation, { data, loading, error }] = useUpdateSphereMutation({
+ *   variables: {
+ *      sphere: // value for 'sphere'
+ *   },
+ * });
+ */
+export function useUpdateSphereMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSphereMutation, UpdateSphereMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSphereMutation, UpdateSphereMutationVariables>(UpdateSphereDocument, options);
+      }
+export type UpdateSphereMutationHookResult = ReturnType<typeof useUpdateSphereMutation>;
+export type UpdateSphereMutationResult = Apollo.MutationResult<UpdateSphereMutation>;
+export type UpdateSphereMutationOptions = Apollo.BaseMutationOptions<UpdateSphereMutation, UpdateSphereMutationVariables>;
 export const CreateWinRecordDocument = gql`
     mutation createWinRecord($winRecord: WinRecordCreateParams!) {
   createWinRecord(winRecord: $winRecord) {
@@ -948,59 +948,6 @@ export type GetOrbitsQueryHookResult = ReturnType<typeof useGetOrbitsQuery>;
 export type GetOrbitsLazyQueryHookResult = ReturnType<typeof useGetOrbitsLazyQuery>;
 export type GetOrbitsSuspenseQueryHookResult = ReturnType<typeof useGetOrbitsSuspenseQuery>;
 export type GetOrbitsQueryResult = Apollo.QueryResult<GetOrbitsQuery, GetOrbitsQueryVariables>;
-export const GetWinRecordDocument = gql`
-    query getWinRecord($id: ID!) {
-  winRecord(id: $id) {
-    id
-    eH
-    orbitId
-    winData {
-      date
-      value {
-        ... on SingleWin {
-          single
-        }
-        ... on MultipleWins {
-          multiple
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetWinRecordQuery__
- *
- * To run a query within a React component, call `useGetWinRecordQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetWinRecordQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetWinRecordQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetWinRecordQuery(baseOptions: Apollo.QueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables> & ({ variables: GetWinRecordQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
-      }
-export function useGetWinRecordLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
-        }
-export function useGetWinRecordSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
-        }
-export type GetWinRecordQueryHookResult = ReturnType<typeof useGetWinRecordQuery>;
-export type GetWinRecordLazyQueryHookResult = ReturnType<typeof useGetWinRecordLazyQuery>;
-export type GetWinRecordSuspenseQueryHookResult = ReturnType<typeof useGetWinRecordSuspenseQuery>;
-export type GetWinRecordQueryResult = Apollo.QueryResult<GetWinRecordQuery, GetWinRecordQueryVariables>;
 export const GetLowestSphereHierarchyLevelDocument = gql`
     query getLowestSphereHierarchyLevel($sphereEntryHashB64: String!) {
   getLowestSphereHierarchyLevel(sphereEntryHashB64: $sphereEntryHashB64)
@@ -1134,3 +1081,56 @@ export type GetSpheresQueryHookResult = ReturnType<typeof useGetSpheresQuery>;
 export type GetSpheresLazyQueryHookResult = ReturnType<typeof useGetSpheresLazyQuery>;
 export type GetSpheresSuspenseQueryHookResult = ReturnType<typeof useGetSpheresSuspenseQuery>;
 export type GetSpheresQueryResult = Apollo.QueryResult<GetSpheresQuery, GetSpheresQueryVariables>;
+export const GetWinRecordDocument = gql`
+    query getWinRecord($id: ID!) {
+  winRecord(id: $id) {
+    id
+    eH
+    orbitId
+    winData {
+      date
+      value {
+        ... on SingleWin {
+          single
+        }
+        ... on MultipleWins {
+          multiple
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetWinRecordQuery__
+ *
+ * To run a query within a React component, call `useGetWinRecordQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWinRecordQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWinRecordQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetWinRecordQuery(baseOptions: Apollo.QueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables> & ({ variables: GetWinRecordQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
+      }
+export function useGetWinRecordLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
+        }
+export function useGetWinRecordSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
+        }
+export type GetWinRecordQueryHookResult = ReturnType<typeof useGetWinRecordQuery>;
+export type GetWinRecordLazyQueryHookResult = ReturnType<typeof useGetWinRecordLazyQuery>;
+export type GetWinRecordSuspenseQueryHookResult = ReturnType<typeof useGetWinRecordSuspenseQuery>;
+export type GetWinRecordQueryResult = Apollo.QueryResult<GetWinRecordQuery, GetWinRecordQueryVariables>;

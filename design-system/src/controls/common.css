@@ -140,6 +140,10 @@ div.handle span {
   grid-template-columns: 1fr 1fr 1fr;
   min-width: 8rem;
 }
+.win-count-container.winning .title {
+  @apply text-yellow-400;
+  transition: color .5s ease-in;
+}
 
 .win-count-container .title,
 .streak-count-container .title {
