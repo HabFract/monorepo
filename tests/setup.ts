@@ -2,7 +2,6 @@ import "fake-indexeddb/auto";
 import { SPHERE_ID } from "./integration/mocks/mockAppState";
 import { vi } from "vitest";
 import { mockStore } from "./setupMockStore";
-import { testStore } from "./utils-frontend";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -72,7 +71,9 @@ vi.mock(
   "../ui/src/hooks/useDeriveAndCacheHierarchyPaths",
   async (importOriginal) => {
     const actual = (await importOriginal()) as any;
-    return actual;
+    return {
+      useDeriveAndCacheHierarchyPaths: () => ({ cache: () => {}})
+    }
   }
 );
 vi.mock(
@@ -110,7 +111,13 @@ vi.mock("../ui/src/constants", async (importOriginal) => {
 });
 
 // Mock the entry point
-vi.mock("../ui/src/main", async (importOriginal) => ({}));
+vi.mock("../ui/src/main", async (importOriginal) => ({
+  AppMachine: {
+    state: {
+        currentState: mockUseStateTransitionResponse
+    }
+  }
+}));
 
 // Mock Holochain client
 vi.mock("@holochain/client", () => ({

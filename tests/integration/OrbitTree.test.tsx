@@ -187,7 +187,7 @@ describe.only('OrbitTree', () => {
     await waitFor(() => {
       expect(screen.getByTestId('vis-spinner')).toBeTruthy();
     });
-
+screen.debug()
     await waitFor(() => {
       expect(screen.getAllByTestId("test-node").length).toBe(1);
     });
