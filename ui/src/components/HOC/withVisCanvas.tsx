@@ -194,18 +194,17 @@ export function withVisCanvas<T extends IVisualization>(
           const orbitSiblings = (currentId == rootId ? [currentVis.rootData] : children).map(node => {
             const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
             return {
-              orbitName: orbitInfo.name,
-              orbitScale: orbitInfo.scale,
+              orbitName: orbitInfo?.name,
+              orbitScale: orbitInfo?.scale,
             }
           })
           const orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }> = [];
           function getFirstDescendantLineage(node: HierarchyNode<NodeContent>) {
             // Add the current node to the lineage
             const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
-
             orbitDescendants.push({
-              orbitName: orbitInfo.name,
-              orbitScale: orbitInfo.scale,
+              orbitName: orbitInfo?.name,
+              orbitScale: orbitInfo?.scale,
             } as any);
 
             // If this node has children, traverse to the first child
@@ -265,8 +264,8 @@ export function withVisCanvas<T extends IVisualization>(
       maxDepth: number
     ) {
       const canMove = !isSmallScreen() || currentVis.coverageType == VisCoverage.CompleteSphere;
-      const canMoveLeft = canMove && rootId !== currentId && children && children[0].data.content !== currentId;
-      const canMoveRight = canMove && rootId !== currentId && children && children[children.length - 1].data.content !== currentId;
+      const canMoveLeft = canMove && rootId !== currentId && children && children[0] && children[0].data.content !== currentId;
+      const canMoveRight = canMove && rootId !== currentId && children && children[children.length - 1] && children[children.length - 1].data.content !== currentId;
       const currentOrbitIsRoot = currentId === rootId;
       const hasOneChild = children && children.length == 1;
       const canTraverseDownMiddle = !!(
@@ -289,7 +288,7 @@ export function withVisCanvas<T extends IVisualization>(
         canTraverseDown: children && hasOneChild && children[0].children && children[0].children.length == 1,
         canTraverseLeft: x !== 0 && currentOrbitIsRoot,
         canTraverseRight: currentOrbitIsRoot && maxBreadth && x < maxBreadth,
-        canTraverseDownLeft: !canMoveLeft && !currentOrbitIsRoot && children && !hasOneChild && children[0].children,
+        canTraverseDownLeft: !canMoveLeft && !currentOrbitIsRoot && children && !hasOneChild && children[0]?.children,
         canTraverseDownRight: !canMoveRight && !currentOrbitIsRoot && maxDepth && y < maxDepth && children && !hasOneChild &&
           !!children?.find(
             (child) => child?.data?.content == currentId && !!child.children,

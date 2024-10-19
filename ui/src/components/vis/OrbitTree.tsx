@@ -110,7 +110,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       getHierarchy,
       client
     });
-    if (!json && (!result || !data)) return;
+    if (!json && (!result && !data)) return;
     setUsedCachedHierarchy(!!result);
 
     const newJson = !(result || data)
@@ -168,7 +168,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // Fetches data to populate the vis
   useEffect(() => {
-    console.log("Fetching for coords...", x, y)
+    // console.log("Fetching for coords...", x, y)
 
     const fetchAndProcess = async () => {
       let newJson = await fetchCurrentLevel()

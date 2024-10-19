@@ -95,6 +95,8 @@ export const currentSphereOrbitNodeDetailsAtom =
       null;
     return sphereOrbitNodeDetails;
   });
+(currentSphereOrbitNodeDetailsAtom as any).testId = "currentSphereOrbitNodeDetailsAtom";
+
 
 /**
  * Atom factory that creates an atom for getting orbit details from the IndexDB cache by entryhash.
@@ -119,6 +121,7 @@ export const getOrbitNodeDetailsFromEhAtom = (orbitEh: EntryHashB64) =>
     const foundOrbitDetails = foundSphereEntry[orbitEh];
     return foundOrbitDetails || null;
   });
+(getOrbitNodeDetailsFromEhAtom as any).testId = "getOrbitNodeDetailsFromEhAtom";
 
 /**
  * Derived atom for current OrbitNodeDetails
@@ -138,6 +141,7 @@ export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
   // console.log("Getting current orbit details :>> ", get(getOrbitNodeDetailsFromEhAtom(hash)))
   return get(getOrbitNodeDetailsFromEhAtom(hash));
 });
+(currentOrbitDetailsAtom as any).testId = "currentOrbitDetailsAtom";
 
 /**
  * Atom factory that creates an atom for getting orbit details from the indexDB cache by ID.
@@ -289,13 +293,13 @@ export const currentOrbitIdAtom = atom(
   },
   (_get, set, newOrbitId: EntryHashB64) => {
     set(appStateAtom, (prevState) => {
-      console.log("Setting orbit id :>> ", {
-        ...prevState,
-        orbitNodes: {
-          ...prevState.orbitNodes,
-          currentOrbitHash: newOrbitId,
-        },
-      });
+      // console.log("Setting orbit id :>> ", {
+      //   ...prevState,
+      //   orbitNodes: {
+      //     ...prevState.orbitNodes,
+      //     currentOrbitHash: newOrbitId,
+      //   },
+      // });
       return {
         ...prevState,
         orbitNodes: {
@@ -306,6 +310,7 @@ export const currentOrbitIdAtom = atom(
     });
   }
 );
+(currentOrbitIdAtom as any).testId = "currentOrbitIdAtom";
 
 /**
  * Selector atom to get the id of the orbit based on entry hash

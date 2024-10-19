@@ -15,6 +15,7 @@ import { resetMocks, setMockUseStateTransitionResponse } from '../setup';
 import { addCustomMock, clearCustomMocks, mockedCacheEntries, mockStore } from '../setupMockStore';
 import { GetOrbitHierarchyDocument } from '../../ui/src/graphql/generated';
 import { InMemoryCache } from '@apollo/client';
+import { Frequency } from '../../ui/src/state';
 
 const mockClient = createMockClient();
 
@@ -39,6 +40,95 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
       hashtag: "fitness",
       image: "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2Q==",
     },
+    currentSphereOrbitNodeDetailsAtom: {
+      uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
+        id: "uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+        eH: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+        sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
+        name: "Be the best",
+        scale: "Astro",
+        description: "Focus on physical health, exercise, and nutrition.",
+        startTime: 1617235100,
+        endTime: undefined,
+        frequency: 0.011, //quarterly
+      },
+      uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc: {
+        id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+        eH: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+        sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
+        parentEh: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+        name: "Daily Exercise",
+        scale: "Sub",
+        description: "Engage in daily physical activities for better health.",
+        startTime: 1617235150,
+        endTime: 1617321600,
+        frequency: 1,
+      },
+      uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc: {
+        id: "uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
+        eH: "uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
+        sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
+        parentEh: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+        name: "Weekly Gym Session",
+        scale: "Sub",
+        description:
+          "Strength training to build muscle and increase metabolism.",
+        startTime: 1617235200,
+        endTime: 1617321600,
+        frequency: 0.143, //weekly
+      },
+      uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
+        id: "uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
+        eH: "uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
+        sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
+        parentEh: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+        name: "Daily Meditation",
+        scale: "Atom",
+        description:
+          "Practice mindfulness and reduce stress through daily meditation.",
+        startTime: 1617235250,
+        endTime: 1617321650,
+        frequency: 2,
+      },
+      uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
+        id: "uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
+        eH: "uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
+        sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
+        parentEh: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+        name: "Monthly Health Check",
+        scale: "Molecule",
+        description: "Regular health check-ups to monitor overall well-being.",
+        startTime: 1617235300,
+        endTime: 1617321700,
+        frequency: 0.032, //monthly
+      },
+    },
+    currentOrbitDetailsAtom: {
+      id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+      eH: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+      sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
+      parentEh: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+      name: "Daily Exercise",
+      scale: "Sub",
+      description: "Engage in daily physical activities for better health.",
+      startTime: 1617235150,
+      endTime: 1617321600,
+      frequency: 1,
+    },
+    currentOrbitIdAtom: { id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc" },
+    getOrbitNodeDetailsFromEhAtom: () => ({
+      id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+      eH: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+      sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
+      parentEh: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+      name: "Daily Exercise",
+      scale: "Sub",
+      description: "Engage in daily physical activities for better health.",
+      startTime: 1617235150,
+      endTime: 1617321600,
+      frequency: 1,
+    }),
+    newTraversalLevelIndexId: { id: null, intermediateId: null, direction: null },
     currentSphereHierarchyIndices: { x: 0, y: 0 },
     currentSphereHierarchyBounds: { minBreadth: 0, maxBreadth: 2, minDepth: 0, maxDepth: 2 },
   };
@@ -78,7 +168,7 @@ describe.only('OrbitTree', () => {
 
   test('renders an svg', async () => {
     // Arrange
-    renderWithJotai(renderVis(OrbitTree) as any);
+    renderWithJotai(renderVis(OrbitTree) as any, { initialHierarchy: HIERARCHY_MOCKS});
 
     // Assert
     await waitFor(async () => {

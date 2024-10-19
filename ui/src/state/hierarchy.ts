@@ -150,3 +150,4 @@ export const newTraversalLevelIndexId = atom<{
 }>({
   id: null,
 });
+(newTraversalLevelIndexId as any).testId = "newTraversalLevelIndexId";

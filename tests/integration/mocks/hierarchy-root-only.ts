@@ -12,10 +12,31 @@ export const HIERARCHY_MOCKS = [
       query: GetOrbitHierarchyDocument,
       variables: {
         params: {
-          levelQuery: {
-            sphereHashB64: SPHERE_EH, // Ensure this matches the SPHERE_EH from your mockAppState
-            orbitLevel: 0,
+          levelQuery: {"sphereHashB64":"uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX","orbitLevel":0},
+        },
+      },
+    },
+    result: {
+      data: {
+        getOrbitHierarchy: JSON.stringify({
+          result: {
+            level_trees: [
+              {
+                content: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+                children: [],
+              },
+            ],
           },
+        }),
+      },
+    },
+  },
+  {
+    request: {
+      query: GetOrbitHierarchyDocument,
+      variables: {
+        params: {
+          levelQuery: {"sphereHashB64":"uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX","orbitLevel":0},
         },
       },
     },
