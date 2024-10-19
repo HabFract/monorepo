@@ -1,4 +1,4 @@
-import React, { ComponentType, ReactNode, useCallback, useEffect, useState } from "react";
+import React, { ComponentType, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import "../vis/vis.css";
 
@@ -73,7 +73,8 @@ export function withVisCanvas<T extends IVisualization>(
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
 
     const selectedSphere = store.get(currentSphereHashesAtom);
-    const currentOrbitDetails: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
+    const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
+    const allFirstChildDescendantOrbits = useRef<any>(null);
 
     const [currentParentOrbitEh, setCurrentParentOrbitEh] =
       useState<EntryHashB64>();
@@ -112,9 +113,13 @@ export function withVisCanvas<T extends IVisualization>(
     );
     // Store and update date in local component state to ensure re-render with VisControls, Calendar
     const [currentDate, setCurrentDate] = useAtom(currentDayAtom);
-    // store.sub(currentDayAtom, () => {
-    //   setCurrentDate(store.get(currentDayAtom));
-    // });
+    useEffect(() => {
+      const unsubscribe = store.sub(currentDayAtom, () => {
+        setCurrentDate(store.get(currentDayAtom));
+      });
+      return unsubscribe;
+    }, []);
+
     return (
       <Component
         canvasHeight={canvasHeight}
@@ -128,15 +133,7 @@ export function withVisCanvas<T extends IVisualization>(
             currentVis,
             currentOrbitDetails!
           )
-          if (appendedSvg) {
-            // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
-            currentVis.modalOpen = setIsModalOpen;
-            currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
-            currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
 
-            // Trigger the Vis object render function only once the SVG is appended to the DOM
-            currentVis?.render();
-          }
           const mockArgs = {
             currentDate,
             setNewDate: setCurrentDate,
@@ -173,7 +170,7 @@ export function withVisCanvas<T extends IVisualization>(
               }
             ],
             handleSaveWins: () => { },
-            "orbitFrequency": Frequency.DAILY_OR_MORE.DAILY,
+            "orbitFrequency": currentOrbitDetails?.frequency,
             "currentWins": 0,
             "currentStreak": 0,
             "orbitWins": {
@@ -181,51 +178,22 @@ export function withVisCanvas<T extends IVisualization>(
               "2023-W19": false
             }
           }
-          // Generate actions to be fed into mob/desktop vis control components
-          const rootId = currentVis.rootData.data.content;
-          let currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
-          if (!currentId) {
-            // console.log('currentId :>> ', currentId);
-            store.set(currentOrbitIdAtom, rootId);
-            currentId = rootId;
-            console.warn("Set default focus node to the root...");
-          }
-          const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
-          const orbitSiblings = (currentId == rootId ? [currentVis.rootData] : children).map(node => {
-            const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
-            return {
-              orbitName: orbitInfo?.name,
-              orbitScale: orbitInfo?.scale,
-            }
-          })
-          const orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }> = [];
-          function getFirstDescendantLineage(node: HierarchyNode<NodeContent>) {
-            // Add the current node to the lineage
-            const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
-            orbitDescendants.push({
-              orbitName: orbitInfo?.name,
-              orbitScale: orbitInfo?.scale,
-            } as any);
 
-            // If this node has children, traverse to the first child
-            if (node.children && node.children.length > 0) {
-              getFirstDescendantLineage(node.children[0]);
-            }
+          const {
+            consolidatedActions,
+            orbitDescendants,
+            orbitSiblings
+          } = getActionsAndDataForControls(currentVis);
+  
+          if (appendedSvg) {
+            // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
+            currentVis.modalOpen = setIsModalOpen;
+            currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
+            currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
+
+            // Trigger the Vis object render function only once the SVG is appended to the DOM
+            currentVis?.render();
           }
-          getFirstDescendantLineage(currentVis.rootData);
-          const actions = generateNavigationActions(
-            currentVis as any,
-            currentId,
-            rootId,
-            children,
-            currentOrbitDetails,
-            store,
-          ) as any;
-          const selectedActions = {} as any;
-          selectedActions.moveLeft = actions.moveLeft;
-          selectedActions.moveRight = actions.moveRight;
-          selectedActions.moveUp = () => { console.log('triggering move up'); actions.moveUp() };
-          selectedActions.moveDown = actions.moveDown;
           return (
             <>
               {/* {<currentVis.coverageType !== VisCoverage.Partial && <svg className="fixed text-white top-1 right-1 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -233,7 +201,7 @@ export function withVisCanvas<T extends IVisualization>(
                 </svg>
                 }> */}
               {isSmallScreen()
-                ? <OverlayLayout {...mockArgs} orbitSiblings={orbitSiblings} orbitDescendants={orbitDescendants} actions={selectedActions}></OverlayLayout>
+                ? <OverlayLayout {...mockArgs} orbitSiblings={orbitSiblings} orbitDescendants={orbitDescendants} actions={consolidatedActions}></OverlayLayout>
                 : <VisControls // To be phased out once desktop design work is done.
                   buttons={traversalButtons}
                 />
@@ -385,6 +353,78 @@ export function withVisCanvas<T extends IVisualization>(
       };
     }
 
+    function getActionsAndDataForControls(currentVis: T) {
+      // Determine current vis render-specific data and context
+      const rootId = currentVis.rootData.data.content;
+      let currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
+      // if (!currentId) {
+      //   console.log('currentId :>> ', currentId);
+      //   store.set(currentOrbitIdAtom, rootId);
+      //   currentId = rootId;
+      //   console.warn("Set default focus node to the root...");
+      // }
+      const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
+      const orbitSiblings = (currentId == rootId ? [currentVis.rootData] : children).map(node => {
+        const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
+        return {
+          orbitName: orbitInfo.name,
+          orbitScale: orbitInfo.scale,
+          handleOrbitSelect: () => console.log("orbit selected")
+        }
+      })
+      const orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }> = [];
+      if(allFirstChildDescendantOrbits.current == null && currentId == rootId) {
+        getFirstDescendantLineage(currentVis.rootData);
+        allFirstChildDescendantOrbits.current = orbitDescendants;
+        console.log('orbitDescendants, currentId :>> ', orbitDescendants, allFirstChildDescendantOrbits.current); 
+      }
+      // Generate actions to be fed into mob/desktop vis control components
+      const flags = generateNavigationFlags(
+        currentVis,
+        currentId,
+        rootId,
+        children,
+        currentHierarchyIndices.x,
+        currentHierarchyIndices.y,
+        maxBreadth,
+        maxDepth
+      );
+      const actions = generateNavigationActions(
+        currentVis,
+        currentId,
+        rootId,
+        children,
+        currentOrbitDetails,
+        store,
+      );
+      const consolidatedActions = {} as any;
+      consolidatedActions.moveLeft = flags.canMoveLeft ? actions.moveLeft : actions.traverseLeft;
+      consolidatedActions.moveRight = flags.canMoveRight ? actions.moveRight : actions.traverseRight;
+      consolidatedActions.moveUp = flags.canMoveUp ? actions.moveUp : actions.traverseUp;
+      consolidatedActions.moveDown = flags.canMoveDown ? actions.moveDown : actions.traverseDown;
+
+      return {
+        consolidatedActions,
+        orbitSiblings,
+        orbitDescendants: allFirstChildDescendantOrbits.current
+      }
+
+      function getFirstDescendantLineage(node: HierarchyNode<NodeContent>) {
+        // Add the current node to the lineage
+        const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
+
+        orbitDescendants.push({
+          orbitName: orbitInfo.name,
+          orbitScale: orbitInfo.scale,
+        } as any);
+
+        // If this node has children, traverse to the first child
+        if (node.children && node.children.length > 0) {
+          getFirstDescendantLineage(node.children[0]);
+        }
+      }
+    }
+
     function renderTraversalButtons<T extends IVisualization>(
       coords: Coords,
       currentVis: T,
@@ -393,12 +433,6 @@ export function withVisCanvas<T extends IVisualization>(
       const { x, y } = coords;
       const rootId = currentVis.rootData.data.content;
       let currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
-      if (!currentId) {
-        console.log('currentId :>> ', currentId);
-        store.set(currentOrbitIdAtom, rootId);
-        currentId = rootId;
-        console.warn("Set default focus node to the root...");
-      }
       const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
 
       // Calculate conditions for either moving (within current window of sphere hierarchy data) or traversing (across windows)
