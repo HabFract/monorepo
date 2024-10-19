@@ -47,6 +47,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // ## -- State for a specific TreeVis render -- ##
 
+  const useVisState = useCallback(() => useOrbitTreeData(sphere), [sphere.actionHash])
   // Hook to manage hierarchy traversal state
   const {
     setBreadthBounds,
@@ -56,11 +57,10 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     y,
     breadthIndex,
     setBreadthIndex,
-  } = useOrbitTreeData(sphere);
+  } = useVisState();
 
   // Cached OrbitNodeDetails for the Sphere
   const sphereNodeDetails = store.get(currentSphereOrbitNodeDetailsAtom)
-
   // -- Memoised parameters/flags  --
 
   // Type of visualisation coverage for the sphere (partial or complete)
@@ -199,8 +199,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
       const newlySelectedNodeId = !newRenderNodeDetails?.direction ? null :
         newRenderNodeDetails?.direction == 'up'
-            ? (currentOrbitTree as any)!._originalRootData.find(node => node.data.content == newRenderNodeDetails?.id)?.data?.content
-            : newDefaultNodeTarget;
+          ? (currentOrbitTree as any)!._originalRootData.find(node => node.data.content == newRenderNodeDetails?.id)?.data?.content
+          : newDefaultNodeTarget;
 
       store.set(
         currentOrbitIdAtom,
@@ -211,12 +211,12 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
       // Set the intermediate zoom node's id for when we traverse back up.
       const reverseIntermediateNode = noNewFocusNode ? currentOrbitTree._nextRootData : (currentOrbitTree?.rootData?.children as any)?.[newRenderNodeDetails?.previousRenderSiblingIndex];
-      if(!!reverseIntermediateNode) {
+      if (!!reverseIntermediateNode) {
         currentOrbitTree._lastRenderParentId = reverseIntermediateNode.data.content
       }
 
       const intermediateId = newRenderNodeDetails?.direction == 'up' ? currentOrbitTree._lastRenderParentId : (noNewFocusNode ? currentOrbitTree._nextRootData.data.content : null)
-      setNewRenderTraversalDetails((prev) => ({ ...prev, id: newlySelectedNodeId, intermediateId}))
+      setNewRenderTraversalDetails((prev) => ({ ...prev, id: newlySelectedNodeId, intermediateId }))
 
       currentOrbitTree.startInFocusMode = true;
       currentOrbitTree.render();

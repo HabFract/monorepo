@@ -2,6 +2,7 @@ import "fake-indexeddb/auto";
 import { SPHERE_ID } from "./integration/mocks/mockAppState";
 import { vi } from "vitest";
 import { mockStore } from "./setupMockStore";
+import { testStore } from "./utils-frontend";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -27,11 +28,15 @@ let mockUseStateTransitionResponse = [
   vi.fn(() => {}),
   initialStateMachineState,
 ];
-export function setMockUseStateTransitionRessetupMockStoreponse(
+export function setMockUseStateTransitionResponse(
   route: string,
-  params: typeof initialStateMachineState
+  params?: typeof initialStateMachineState
 ) {
-  mockUseStateTransitionResponse = [route, vi.fn(() => {}), params];
+  mockUseStateTransitionResponse = [
+    route,
+    vi.fn(() => {}),
+    (params || {}) as any,
+  ];
 }
 
 vi.mock("../ui/src/hooks/useStateTransition", () => ({
@@ -42,17 +47,44 @@ vi.mock("../ui/src/hooks/useRedirect", async () => {
   return { useRedirect: () => null };
 });
 
-vi.mock("../ui/src/state/store", async (importOriginal) => {
-  const actual = (await importOriginal()) as any;
-  return {
-    ...actual,
-    ...mockStore,
-  };
-});
+// vi.mock("../ui/src/state/store", async (importOriginal) => {
+//   const store = {
+//     get: vi.fn((atom) => {
+//       return mockStore.store.get(atom);
+//     }),
+//     set: vi.fn((atom) => {
+//       return mockStore.store.set(atom);
+//     }),
+//     sub: (atom, cb) => {
+//       return mockStore.store.sub(atom, cb);
+//     },
+//   };
+//   const actual = (await importOriginal()) as any;
+//   return {
+//     ...actual,
+//     store,
+//   };
+// });
 
 export function resetMocks() {
   vi.resetAllMocks();
 }
+
+// Mock vis helpers
+vi.mock("../ui/src/components/vis/helpers", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    debounce: vi.fn((func) => func),
+    renderVis: vi.fn(() => {}),
+  };
+});
+
+// Mock fetch hook
+vi.mock("../ui/src/hooks/gql/useFetchNextLevel", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return actual;
+});
 
 // Mock app level constants
 vi.mock("../ui/src/constants", async (importOriginal) => {
@@ -67,10 +99,15 @@ vi.mock("../ui/src/constants", async (importOriginal) => {
   };
 });
 
-// Mock the main client
-vi.mock("../ui/src/main", () => ({
+// Mock the entry point
+vi.mock("../ui/src/main", async (importOriginal) => ({}));
+
+// Mock the client
+vi.mock("../ui/src/graphql/client", async (importOriginal) => ({
+  ...importOriginal,
   client: () => ({
     query: vi.fn(),
+    // query: vi.fn(),
   }),
 }));
 

@@ -34,7 +34,7 @@ import {
   NodeContent,
 } from "../../state/types/hierarchy";
 import { Scale } from "../../graphql/generated";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 const defaultMargins: Margins = {
   top: 0,
@@ -73,7 +73,7 @@ export function withVisCanvas<T extends IVisualization>(
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
 
     const selectedSphere = store.get(currentSphereHashesAtom);
-    const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
+    const currentOrbitDetails: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
 
     const [currentParentOrbitEh, setCurrentParentOrbitEh] =
       useState<EntryHashB64>();
@@ -90,12 +90,13 @@ export function withVisCanvas<T extends IVisualization>(
     const { canvasHeight, canvasWidth } = getCanvasDimensions();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-    const sphereHierarchyBounds: SphereHierarchyBounds = useAtomValue(
+    const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
       currentSphereHierarchyBounds,
     );
-    const currentHierarchyIndices: Coords = useAtomValue(
+    const currentHierarchyIndices: Coords = store.get(
       currentSphereHierarchyIndices,
     );
+
     const {
       incrementBreadth,
       decrementBreadth,
@@ -110,10 +111,10 @@ export function withVisCanvas<T extends IVisualization>(
       ] as HierarchyBounds,
     );
     // Store and update date in local component state to ensure re-render with VisControls, Calendar
-    const [currentDate, setCurrentDate] = useState(store.get(currentDayAtom));
-    store.sub(currentDayAtom, () => {
-      setCurrentDate(store.get(currentDayAtom));
-    });
+    const [currentDate, setCurrentDate] = useAtom(currentDayAtom);
+    // store.sub(currentDayAtom, () => {
+    //   setCurrentDate(store.get(currentDayAtom));
+    // });
     return (
       <Component
         canvasHeight={canvasHeight}
@@ -195,7 +196,8 @@ export function withVisCanvas<T extends IVisualization>(
             return {
               orbitName: orbitInfo.name,
               orbitScale: orbitInfo.scale,
-          }})
+            }
+          })
           const orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }> = [];
           function getFirstDescendantLineage(node: HierarchyNode<NodeContent>) {
             // Add the current node to the lineage
@@ -211,7 +213,6 @@ export function withVisCanvas<T extends IVisualization>(
               getFirstDescendantLineage(node.children[0]);
             }
           }
-console.log('orbitSiblings :>> ', orbitSiblings);
           getFirstDescendantLineage(currentVis.rootData);
           const actions = generateNavigationActions(
             currentVis as any,
@@ -224,7 +225,7 @@ console.log('orbitSiblings :>> ', orbitSiblings);
           const selectedActions = {} as any;
           selectedActions.moveLeft = actions.moveLeft;
           selectedActions.moveRight = actions.moveRight;
-          selectedActions.moveUp = () => {console.log('triggering move up'); actions.moveUp()};
+          selectedActions.moveUp = () => { console.log('triggering move up'); actions.moveUp() };
           selectedActions.moveDown = actions.moveDown;
           return (
             <>
@@ -233,7 +234,7 @@ console.log('orbitSiblings :>> ', orbitSiblings);
                 </svg>
                 }> */}
               {isSmallScreen()
-                ? <OverlayLayout {...mockArgs} orbitSiblings={orbitSiblings}  orbitDescendants={orbitDescendants} actions={selectedActions}></OverlayLayout>
+                ? <OverlayLayout {...mockArgs} orbitSiblings={orbitSiblings} orbitDescendants={orbitDescendants} actions={selectedActions}></OverlayLayout>
                 : <VisControls // To be phased out once desktop design work is done.
                   buttons={traversalButtons}
                 />

@@ -1,9 +1,9 @@
 import { vi } from "vitest";
-import mockAppState from "./integration/mocks/mockAppState";
 
 import { ActionHashB64 } from "@holochain/client";
 import { Frequency } from "../ui/src/state/types";
-import { SPHERE_ID } from "./integration/mocks/mockAppState";
+import mockAppState, { SPHERE_ID } from "./integration/mocks/mockAppState";
+import { createTestStore } from "./utils-frontend";
 
 export const mockedCacheEntries = [
   [
@@ -127,7 +127,7 @@ export const addCustomMock = (
   mock: Partial<typeof mockedCacheEntries>
 ) => {
   customMocks.set(descriptor, Object.fromEntries(mock as any));
-  console.log("new custommock :>> ", descriptor, customMocks.get(descriptor));
+  // console.log("new custommock :>> ", descriptor, customMocks.get(descriptor));
 };
 
 // Function to clear all custom mocks (useful in beforeEach or afterEach hooks)
@@ -135,32 +135,7 @@ export const clearCustomMocks = () => {
   customMocks.clear();
 };
 
-const currentSphereHash = mockAppState.spheres.currentSphereHash;
-const currentSphere = mockAppState.spheres.byHash[currentSphereHash];
-const currentHierarchyRootHash = currentSphere.hierarchyRootOrbitEntryHashes[0];
-const currentHierarchy =
-  mockAppState.hierarchies.byRootOrbitEntryHash[currentHierarchyRootHash];
-
-const storeMock = {
-  get: (atom) => {
-    // Direct mapping of atoms to their mocked values
-    const atomMappings = {
-      currentSphereHashesAtom: {
-        entryHash: currentSphere.details.entryHash,
-        actionHash: currentSphereHash,
-      },
-      currentSphereDetailsAtom: currentSphere,
-      currentSphereHasCachedNodesAtom: true,
-      currentSphereHierarchyBounds: currentHierarchy.bounds,
-      currentSphereHierarchyIndices: currentHierarchy.indices,
-      currentSphereOrbitNodesAtom: mockAppState.orbitNodes.byHash,
-    };
-    return atomMappings[atom.toString()] || undefined;
-  },
-  set: vi.fn(),
-  sub: vi.fn(),
-};
-
 const mockNodeCache = createTestIndexDBAtom(mockedCacheEntries);
+const testStore = createTestStore(mockAppState);
 
-export const mockStore = { store: storeMock, nodeCache: mockNodeCache };
+export const mockStore = { store: testStore, nodeCache: mockNodeCache };

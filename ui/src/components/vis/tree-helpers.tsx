@@ -7,6 +7,7 @@ import { SphereOrbitNodeDetails, store, currentSphereHierarchyIndices } from "..
 import { TreeVisualization } from "./base-classes/TreeVis";
 import { byStartTime, parseAndSortTrees } from "./helpers";
 import { VisCoverage, VisType } from "./types";
+import { NODE_ENV } from "../../constants";
 
 /**
  * Determines the visual coverage type based on current parameters
@@ -126,12 +127,16 @@ export const fetchHierarchyDataForLevel = async ({
 
   let cachedData;
   try {
-    const gql: ApolloClient<NormalizedCacheObject> =
-      (await client) as ApolloClient<NormalizedCacheObject>;
-    cachedData = gql.readQuery({
-      query: GetOrbitHierarchyDocument,
-      variables: { params: { ...query } },
-    });
+    if (NODE_ENV !== 'test') {
+      const gql: ApolloClient<NormalizedCacheObject> =
+        (await client) as ApolloClient<NormalizedCacheObject>;
+      cachedData = gql.readQuery({
+        query: GetOrbitHierarchyDocument,
+        variables: { params: { ...query } },
+      });
+    } else {
+      return {}
+    }
   } catch (error) {
     console.error("Couldn't get client or data from Apollo cache")
   }

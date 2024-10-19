@@ -9,6 +9,7 @@ import { renderVis } from '../../ui/src/components/vis/helpers';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
+import { renderWithJotai } from '../utils-frontend';
 
 let x = 0;
 let y = 0;

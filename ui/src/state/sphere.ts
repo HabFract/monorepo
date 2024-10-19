@@ -46,6 +46,7 @@ export const currentSphereHashesAtom = atom(
     });
   }
 );
+(currentSphereHashesAtom as any).testId = "currentSphereHashes";
 
 /**
  * Derived atom for the current sphere details
@@ -56,6 +57,7 @@ export const currentSphereDetailsAtom = atom<SphereDetails | null>((get) => {
   const currentSphereHash = state.spheres.currentSphereHash;
   return state.spheres.byHash[currentSphereHash]?.details || null;
 });
+(currentSphereDetailsAtom as any).testId = "currentSphereDetailsAtom";
 
 /**
  * Derived atom to get a Sphere's id from it's eH

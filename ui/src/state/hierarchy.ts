@@ -79,6 +79,7 @@ export const getHierarchyOrbitsAtom = (
  * @type {Atom<SphereHierarchyBounds>}
  */
 export const currentSphereHierarchyBounds = atom<SphereHierarchyBounds>({});
+(currentSphereHierarchyBounds as any).testId = "currentSphereHierarchyBounds";
 
 /**
  * Atom representing the current indices for hierarchy traversal.
@@ -88,6 +89,7 @@ export const currentSphereHierarchyIndices = atom<HierarchyTraversalIndices>({
   x: 0,
   y: 0,
 });
+(currentSphereHierarchyIndices as any).testId = "currentSphereHierarchyIndices";
 
 /**
  * Atom for setting the current breadth in the hierarchy.

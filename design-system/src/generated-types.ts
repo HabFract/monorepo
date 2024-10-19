@@ -459,6 +459,13 @@ export type GetOrbitsQueryVariables = Exact<{
 
 export type GetOrbitsQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, parentHash?: string | null, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } }> } };
 
+export type GetWinRecordQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetWinRecordQuery = { __typename?: 'Query', winRecord?: { __typename?: 'WinRecord', id: string, eH: string, orbitId: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } | null };
+
 export type GetLowestSphereHierarchyLevelQueryVariables = Exact<{
   sphereEntryHashB64: Scalars['String']['input'];
 }>;
@@ -477,13 +484,6 @@ export type GetSpheresQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetSpheresQuery = { __typename?: 'Query', spheres: { __typename?: 'SphereConnection', edges: Array<{ __typename?: 'SphereEdge', node: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, image?: string | null } | null } }> } };
-
-export type GetWinRecordQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type GetWinRecordQuery = { __typename?: 'Query', winRecord?: { __typename?: 'WinRecord', id: string, eH: string, orbitId: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } | null };
 
 
 export const CreateOrbitDocument = gql`
@@ -948,6 +948,59 @@ export type GetOrbitsQueryHookResult = ReturnType<typeof useGetOrbitsQuery>;
 export type GetOrbitsLazyQueryHookResult = ReturnType<typeof useGetOrbitsLazyQuery>;
 export type GetOrbitsSuspenseQueryHookResult = ReturnType<typeof useGetOrbitsSuspenseQuery>;
 export type GetOrbitsQueryResult = Apollo.QueryResult<GetOrbitsQuery, GetOrbitsQueryVariables>;
+export const GetWinRecordDocument = gql`
+    query getWinRecord($id: ID!) {
+  winRecord(id: $id) {
+    id
+    eH
+    orbitId
+    winData {
+      date
+      value {
+        ... on SingleWin {
+          single
+        }
+        ... on MultipleWins {
+          multiple
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetWinRecordQuery__
+ *
+ * To run a query within a React component, call `useGetWinRecordQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWinRecordQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWinRecordQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetWinRecordQuery(baseOptions: Apollo.QueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables> & ({ variables: GetWinRecordQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
+      }
+export function useGetWinRecordLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
+        }
+export function useGetWinRecordSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
+        }
+export type GetWinRecordQueryHookResult = ReturnType<typeof useGetWinRecordQuery>;
+export type GetWinRecordLazyQueryHookResult = ReturnType<typeof useGetWinRecordLazyQuery>;
+export type GetWinRecordSuspenseQueryHookResult = ReturnType<typeof useGetWinRecordSuspenseQuery>;
+export type GetWinRecordQueryResult = Apollo.QueryResult<GetWinRecordQuery, GetWinRecordQueryVariables>;
 export const GetLowestSphereHierarchyLevelDocument = gql`
     query getLowestSphereHierarchyLevel($sphereEntryHashB64: String!) {
   getLowestSphereHierarchyLevel(sphereEntryHashB64: $sphereEntryHashB64)
@@ -1081,56 +1134,3 @@ export type GetSpheresQueryHookResult = ReturnType<typeof useGetSpheresQuery>;
 export type GetSpheresLazyQueryHookResult = ReturnType<typeof useGetSpheresLazyQuery>;
 export type GetSpheresSuspenseQueryHookResult = ReturnType<typeof useGetSpheresSuspenseQuery>;
 export type GetSpheresQueryResult = Apollo.QueryResult<GetSpheresQuery, GetSpheresQueryVariables>;
-export const GetWinRecordDocument = gql`
-    query getWinRecord($id: ID!) {
-  winRecord(id: $id) {
-    id
-    eH
-    orbitId
-    winData {
-      date
-      value {
-        ... on SingleWin {
-          single
-        }
-        ... on MultipleWins {
-          multiple
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetWinRecordQuery__
- *
- * To run a query within a React component, call `useGetWinRecordQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetWinRecordQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetWinRecordQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetWinRecordQuery(baseOptions: Apollo.QueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables> & ({ variables: GetWinRecordQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
-      }
-export function useGetWinRecordLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
-        }
-export function useGetWinRecordSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetWinRecordQuery, GetWinRecordQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetWinRecordQuery, GetWinRecordQueryVariables>(GetWinRecordDocument, options);
-        }
-export type GetWinRecordQueryHookResult = ReturnType<typeof useGetWinRecordQuery>;
-export type GetWinRecordLazyQueryHookResult = ReturnType<typeof useGetWinRecordLazyQuery>;
-export type GetWinRecordSuspenseQueryHookResult = ReturnType<typeof useGetWinRecordSuspenseQuery>;
-export type GetWinRecordQueryResult = Apollo.QueryResult<GetWinRecordQuery, GetWinRecordQueryVariables>;
