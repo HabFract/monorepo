@@ -32,6 +32,7 @@
 
 .calendar-day {
   @apply flex flex-col gap-1 w-full px-1;
+  max-width: 4rem;
 }
 
 .calendar-day-title {
@@ -143,7 +144,7 @@ div.handle span {
 .win-count-container .title {
   @apply pl-2
 }
-.win-count-container.winning .title {
+.win-count-container.winning .title, .streak-count-container.winning .title {
   @apply text-yellow-400;
   transition: color .5s ease-in;
 }

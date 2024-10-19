@@ -6,11 +6,12 @@ import { Overflowing as VisMovementLateralStory1 } from "./VisMovementLateral.st
 import { Default as WinCountStory1 } from "./WinCount.stories";
 import { Default as StreakCountStory1 } from "./StreakCount.stories";
 import { Default as CalendarStory1 } from "./Calendar.stories";
+import { Frequency } from "../generated-types";
 
 const meta: Meta<OverlayLayoutProps> = {
   title: "Components/Controls/OverlayLayout",
   component: OverlayLayout,
-  argTypes: {},
+  argTypes: {} as any,
   render: (args: OverlayLayoutProps) => (
     <OverlayLayout {...args} actions={{
       moveUp: () => console.log("Up"),
@@ -30,8 +31,9 @@ export const Layout1: Story = {
   args: {
     ...VisMovementVerticalStory1.args,
     ...VisMovementLateralStory1.args,
-    ...WinCountStory1.args,
-    ...StreakCountStory1.args,
+    orbitFrequency: Frequency.DailyOrMore_1d,
+    currentWins: 0,
+    currentStreak: 2  ,
     ...CalendarStory1.args,
   },
 };

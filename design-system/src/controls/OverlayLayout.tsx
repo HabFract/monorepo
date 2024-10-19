@@ -44,12 +44,11 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
         {({ bindDrag }) => (
           <>
             <div className="overlay-controls-container">
-              <motion.span>
+              <span>
                 <VisMovementLateral orbitSiblings={orbitSiblings} moveLeftAction={actions.moveLeft} moveRightAction={actions.moveRight}></VisMovementLateral>
                 <VisMovementVertical orbitDescendants={orbitDescendants} moveUpAction={actions.moveUp} moveDownAction={actions.moveDown}></VisMovementVertical>
                 <div className="center-marker"></div>
-              </motion.span>
-              {/* <VisMovementLateral></VisMovementLateral> */}
+              </span>
               <div className="overlay-win-streak-container" onPointerDownCapture={stopPropagation}>
                 <WinCount handleSaveWins={handleSaveWins} currentWins={currentWins} orbitFrequency={orbitFrequency}></WinCount>
                 <StreakCount currentStreak={currentStreak} orbitFrequency={orbitFrequency}></StreakCount>
