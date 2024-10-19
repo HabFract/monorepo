@@ -353,6 +353,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
+      mock-apollo-client:
+        specifier: ^1.3.1
+        version: 1.3.1(@apollo/client@3.11.8(@types/react@18.3.8)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       path:
         specifier: ^0.12.7
         version: 0.12.7
@@ -5991,6 +5994,11 @@ packages:
 
   mlly@1.7.1:
     resolution: {integrity: sha512-rrVRZRELyQzrIUAVMHxP97kv+G786pHmOKzuFII8zDYahFBS7qnHh2AlYSl1GAHhaMPCz6/oHjVMcfFYgFYHgA==}
+
+  mock-apollo-client@1.3.1:
+    resolution: {integrity: sha512-jBl1YGofh9RpTUFfShwIumiry5qRkR1LYW12K1iZ576kMFh03psHTRiuY2k3dT6cUQ28RAK4gRFl9lVloazGhA==}
+    peerDependencies:
+      '@apollo/client': ^3.0.0
 
   mock-property@1.1.0:
     resolution: {integrity: sha512-1/JjbLoGwv87xVsutkX0XJc0M0W4kb40cZl/K41xtTViBOD9JuFPKfyMNTrLJ/ivYAd0aPqu/vduamXO0emTFQ==}
@@ -15289,6 +15297,10 @@ snapshots:
       pathe: 1.1.2
       pkg-types: 1.2.0
       ufo: 1.5.4
+
+  mock-apollo-client@1.3.1(@apollo/client@3.11.8(@types/react@18.3.8)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
+    dependencies:
+      '@apollo/client': 3.11.8(@types/react@18.3.8)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   mock-property@1.1.0:
     dependencies:

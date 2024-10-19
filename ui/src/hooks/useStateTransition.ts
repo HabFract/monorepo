@@ -6,7 +6,7 @@ export function useStateTransition() {
 
   if (!stateMachine) {
     throw new Error(
-      "useStateTransition must be used within a StateMachineProvider",
+      "useStateTransition must be used within a StateMachineProvider"
     );
   }
 
@@ -15,6 +15,10 @@ export function useStateTransition() {
     stateMachine.to(newState, params);
     setState(newState);
   };
-
-  return [state, transition, stateMachine.state.params];
+  return [
+    state,
+    transition,
+    stateMachine.state.params,
+    stateMachine.state?.connection?.apolloClient,
+  ];
 }

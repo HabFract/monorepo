@@ -30,12 +30,14 @@ let mockUseStateTransitionResponse = [
 ];
 export function setMockUseStateTransitionResponse(
   route: string,
-  params?: typeof initialStateMachineState
+  params?: typeof initialStateMachineState,
+  client?: any
 ) {
   mockUseStateTransitionResponse = [
     route,
     vi.fn(() => {}),
     (params || {}) as any,
+    client,
   ];
 }
 
@@ -46,25 +48,6 @@ vi.mock("../ui/src/hooks/useStateTransition", () => ({
 vi.mock("../ui/src/hooks/useRedirect", async () => {
   return { useRedirect: () => null };
 });
-
-// vi.mock("../ui/src/state/store", async (importOriginal) => {
-//   const store = {
-//     get: vi.fn((atom) => {
-//       return mockStore.store.get(atom);
-//     }),
-//     set: vi.fn((atom) => {
-//       return mockStore.store.set(atom);
-//     }),
-//     sub: (atom, cb) => {
-//       return mockStore.store.sub(atom, cb);
-//     },
-//   };
-//   const actual = (await importOriginal()) as any;
-//   return {
-//     ...actual,
-//     store,
-//   };
-// });
 
 export function resetMocks() {
   vi.resetAllMocks();
@@ -80,8 +63,35 @@ vi.mock("../ui/src/components/vis/helpers", async (importOriginal) => {
   };
 });
 
-// Mock fetch hook
+// Mock hooks
 vi.mock("../ui/src/hooks/gql/useFetchNextLevel", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return actual;
+});
+vi.mock(
+  "../ui/src/hooks/useDeriveAndCacheHierarchyPaths",
+  async (importOriginal) => {
+    const actual = (await importOriginal()) as any;
+    return actual;
+  }
+);
+vi.mock(
+  "../ui/src/hooks/gql/useUpdateOrbitMutation",
+  async (importOriginal) => {
+    return {
+      useUpdateOrbitMutation: vi.fn(() => {}),
+    };
+  }
+);
+vi.mock(
+  "../ui/src/hooks/gql/useCreateOrbitMutation",
+  async (importOriginal) => {
+    return {
+      useCreateOrbitMutation: vi.fn(() => {}),
+    };
+  }
+);
+vi.mock("../ui/src/hooks/gql/utils", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return actual;
 });
@@ -101,15 +111,6 @@ vi.mock("../ui/src/constants", async (importOriginal) => {
 
 // Mock the entry point
 vi.mock("../ui/src/main", async (importOriginal) => ({}));
-
-// Mock the client
-vi.mock("../ui/src/graphql/client", async (importOriginal) => ({
-  ...importOriginal,
-  client: () => ({
-    query: vi.fn(),
-    // query: vi.fn(),
-  }),
-}));
 
 // Mock Holochain client
 vi.mock("@holochain/client", () => ({

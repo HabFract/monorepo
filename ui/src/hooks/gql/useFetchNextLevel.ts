@@ -11,6 +11,7 @@ import { client } from "../../graphql/client";
 
 const usePrefetchNextLevel = async (
   queryParams: OrbitHierarchyQueryParams,
+  client,
   bypass: boolean = false
 ) => {
   const gql: ApolloClient<NormalizedCacheObject> =

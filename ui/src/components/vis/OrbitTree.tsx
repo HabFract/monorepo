@@ -25,7 +25,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   render,
 }) => {
   // ## -- Router level state -- ##
-  const [_state, transition, params] = useStateTransition();
+  const [_state, transition, params, client] = useStateTransition();
 
 
   // ## -- Component level state -- ##
@@ -108,11 +108,14 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       getQueryParams,
       y,
       getHierarchy,
+      client
     });
+    if (!json && (!result || !data)) return;
     setUsedCachedHierarchy(!!result);
-    const newJson = !result
+
+    const newJson = !(result || data)
       ? JSON.parse(json!)?.sort(byStartTime)
-      : JSON.stringify(parseAndSortTrees(result.getOrbitHierarchy));
+      : JSON.stringify(parseAndSortTrees(result?.getOrbitHierarchy || data?.getOrbitHierarchy));
 
     setJson(newJson);
     return newJson
@@ -146,7 +149,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     if (currentOrbitTree?.rootData && currentOrbitTree?.rootData!.children!.length == 0) return;
 
     const nextLevelQuery = getQueryParams(y + 1);
-    usePrefetchNextLevel(nextLevelQuery!, true);
+    usePrefetchNextLevel(nextLevelQuery!, client, true);
   };
 
 

@@ -39,6 +39,7 @@ export const renderWithJotai = (
     <Provider store={testStore}>
       <TestProvider initialHierarchy={initialHierarchy} initialValues={[
         [appStateAtom, initialState],
+        [currentSphereHierarchyIndices, { x: 0, y: 0 }],
       ]}>
         {React.cloneElement(element)}
       </TestProvider>
@@ -52,21 +53,6 @@ const HydrateAtoms = ({ initialValues, children }) => {
 }
 
 export const TestProvider = ({ initialValues, initialHierarchy, children }) => {
-  // const cache = new InMemoryCache().restore({
-  //   ROOT_QUERY: {
-  //     user: {
-  //       type: 'id',
-  //       id: 'asdf',
-  //       generated: false,
-  //     },
-  //   },
-  //   asdf: {
-  //     companyName: 'Example Company',
-  //     email: 'test@example.com',
-  //     __typename: 'user',
-  //   },
-  // });
-  console.log('initialHierarchy :>> ', initialHierarchy);
   return <Provider>
     <HydrateAtoms initialValues={initialValues}>
       <ApolloProvider mocks={initialHierarchy} addTypename={false}>

@@ -119,6 +119,7 @@ export const fetchHierarchyDataForLevel = async ({
   getQueryParams,
   y,
   getHierarchy,
+  client
 }) => {
   if (error) return;
   const query = depthBounds
@@ -134,8 +135,6 @@ export const fetchHierarchyDataForLevel = async ({
         query: GetOrbitHierarchyDocument,
         variables: { params: { ...query } },
       });
-    } else {
-      return {}
     }
   } catch (error) {
     console.error("Couldn't get client or data from Apollo cache")
@@ -144,7 +143,7 @@ export const fetchHierarchyDataForLevel = async ({
     console.log("Fetching current hierarchy level from Apollo cache...")
     return cachedData
   } else {
-    console.log("Fetching current hierarchy level from source chain: ", { variables: { params: { ...query } } })
+    console.log("Fetching current hierarchy level from source chain: ", JSON.stringify({ variables: { params: { ...query } } }, null, 2))
     await getHierarchy({ variables: { params: { ...query } } });
   }
 };

@@ -1,29 +1,30 @@
 import React from 'react';
-import { expect, test, it, afterEach, describe, beforeAll, vi } from 'vitest'
+import { expect, test, it, afterEach, describe, beforeAll, vi, beforeEach } from 'vitest'
 import { render, waitFor, screen, act, cleanup } from '@testing-library/react';
   
 import OrbitTree from '../../ui/src/components/vis/OrbitTree';
 
 import { HIERARCHY_MOCKS } from './mocks/hierarchy-root-only';
 import { ORBITS_MOCKS } from './mocks/orbits';
-import { MockedProvider } from '@apollo/client/testing';
+import { createMockClient } from 'mock-apollo-client';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { renderWithJotai, renderVis } from '../utils-frontend';;
 import { currentSphereOrbitNodesAtom } from '../../ui/src/state/orbit';
 import mockAppState from './mocks/mockAppState';
 import { resetMocks, setMockUseStateTransitionResponse } from '../setup';
 import { addCustomMock, clearCustomMocks, mockedCacheEntries, mockStore } from '../setupMockStore';
+import { GetOrbitHierarchyDocument } from '../../ui/src/graphql/generated';
+import { InMemoryCache } from '@apollo/client';
 
-beforeAll(() => {
-  resetMocks()
-  clearCustomMocks();
-  setMockUseStateTransitionResponse("Vis")
-  addCustomMock('all', mockedCacheEntries);
-});
+const mockClient = createMockClient();
 
-afterEach(() => {
-  cleanup();
-});
+vi.mock("../../ui/src/graphql/client", async (importOriginal) => {  
+  const actual = (await importOriginal()) as any;
+  return {
+    // ...actual,
+    client: () => { return  mockClient }
+  }
+})
 
 vi.mock("../../ui/src/state/store", async (importOriginal) => {
   const atomMappings = {
@@ -58,32 +59,45 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
     store,
   };
 });
-
 describe.only('OrbitTree', () => {
+  beforeEach(() => {
+    const mockClient = createMockClient({cache: new InMemoryCache({})});
+    resetMocks()
+    clearCustomMocks();
+    setMockUseStateTransitionResponse("Vis", undefined, mockClient)
+    addCustomMock('all', mockedCacheEntries);
+    mockClient.setRequestHandler(
+      GetOrbitHierarchyDocument,
+      () => {return Promise.resolve(HIERARCHY_MOCKS[0].result)});
+  
+  });
+  
+  beforeEach(() => {
+    cleanup();
+  });
+
   test('renders an svg', async () => {
     // Arrange
-    renderWithJotai(renderVis(OrbitTree) as any, {initialHierarchy: HIERARCHY_MOCKS} as any);
+    renderWithJotai(renderVis(OrbitTree) as any);
 
     // Assert
     await waitFor(async () => {
       expect(screen.queryAllByTestId("svg").length).toBe(1);
     });
   });
-});
 
-
-// test('renders details about the orbit', async () => {
-//   // Arrange
-//   const { getByText } = render(
-//     <MockedProvider mocks={HIERARCHY_MOCKS} addTypename={false}>
-//       {WithCurrentOrbitCoordsMockedAtom(renderVis(OrbitTree), {x: 0, y: 0})}</MockedProvider> );
-
-//   const orbitName = ORBITS_MOCKS[0].result.data.orbits!.edges[0].node.name;
+  test('renders details about the orbit', async () => {
+    // Arrange
+    renderWithJotai(renderVis(OrbitTree) as any, {initialHierarchy: HIERARCHY_MOCKS} as any);
   
-//   await waitFor(() => {
-//     expect(getByText(orbitName)).toBeTruthy();
-//   });
-// });
+    const orbitName = ORBITS_MOCKS[0].result.data.orbits!.edges[0].node.name;
+    
+    await waitFor(() => {
+      expect(screen.getByText(orbitName)).toBeTruthy();
+    });
+  });
+
+});
 
 // test('renders a loading state, then an orbit tree vis with two nodes', async () => {
 //   // Arrange

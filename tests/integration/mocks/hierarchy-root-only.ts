@@ -1,4 +1,3 @@
-import orbit from "@ui/src/graphql/mutations/orbit";
 import {
   GetLowestSphereHierarchyLevelDocument,
   GetOrbitHierarchyDocument,
