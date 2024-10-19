@@ -1,0 +1,10 @@
+.frequency-indicator-container {
+  background: url('/assets/icons/calendar.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  letter-spacing: -1px;
+  @apply text-primary relative pt-3 w-14 h-14 font-sans font-bold text-lg grid place-content-center;
+}
+.frequency-indicator-container .tracking-narrower {
+  letter-spacing: -0.1em;
+}

@@ -1,5 +1,5 @@
 import React, { FC, ComponentProps } from "react";
-import { Scale } from "./generated-types";
+import { Scale } from "../generated-types";
 
 export function getIconForPlanetValue(
   scale: Scale,

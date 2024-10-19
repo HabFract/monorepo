@@ -20,7 +20,7 @@ import { default as darkTheme } from "./darkTheme";
 
 import "./inputs/common.css";
 import "./onboarding/common.css";
-import { getIconForPlanetValue } from "./icons";
+import { getIconForPlanetValue } from "./icons/icons";
 export * from "./controls"
 
 export {

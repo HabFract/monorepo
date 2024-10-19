@@ -1,7 +1,7 @@
 import { ToggleSwitch as FBSwitch, Label } from "flowbite-react";
 import { ComponentProps, FC, useState } from "react";
 import { darkThemeToggleSwitch } from "../darkTheme";
-import { getIconSvg } from "../icons";
+import { getIconSvg } from "../icons/icons";
 import "./common.css";
 
 export interface ToggleSwitchProps {

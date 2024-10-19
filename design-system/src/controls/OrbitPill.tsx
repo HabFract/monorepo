@@ -2,7 +2,7 @@ import { Frequency } from "@ui/src/state";
 import { ReactNode } from "react";
 import "./common.css";
 import { Scale } from "../generated-types";
-import { getIconForPlanetValue } from "../icons";
+import { getIconForPlanetValue } from "../icons/icons";
 
 export interface OrbitPillProps { name: string, scale: Scale, selected?: boolean};
 

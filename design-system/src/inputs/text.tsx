@@ -1,5 +1,5 @@
 import { darkThemeTextInput } from "../darkTheme";
-import { getIconSvg } from "../icons";
+import { getIconSvg } from "../icons/icons";
 import { TextInputProps } from "./text.stories";
 
 import "./common.css";

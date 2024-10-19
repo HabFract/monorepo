@@ -1,5 +1,5 @@
 import { darkThemeSelect } from "../darkTheme";
-import { getIconForPlanetValue, getIconSvg } from "../icons";
+import { getIconForPlanetValue, getIconSvg } from "../icons/icons";
 import { SelectProps } from "./select.stories";
 import { Select as FBSelect } from "flowbite-react";
 import "./common.css";
