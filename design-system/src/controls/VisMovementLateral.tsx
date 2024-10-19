@@ -15,7 +15,7 @@ const SCROLL_TIMEOUT = 100; // ms to wait before snapping back
 
 const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, moveLeftAction, moveRightAction }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selectedOrbit, setSelectedOrbit] = useState<string | null>(`pill-${orbitSiblings[0].orbitName.split(' ').join('-')}`);
+  const [selectedOrbit, setSelectedOrbit] = useState<string | null>(`pill-${orbitSiblings[0]?.orbitName?.split(' ')?.join('-')}`);
   const isAnimating = useRef(false);
   const lastExecutionTime = useRef(0);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -128,8 +128,8 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, 
         if (selectedOrbit == null) {
           triggerSnap = true;
         } else {
-          const fromIndex = orbitSiblings.findIndex(planet => (planet.orbitName.split(' ').join('-') == selectedOrbit!.split("pill-")![1]));
-          const toIndex = orbitSiblings.findIndex(planet => (planet.orbitName.split(' ').join('-') == mostCenteredPillId.split("pill-")![1]));
+          const fromIndex = orbitSiblings.findIndex(planet => (planet?.orbitName?.split(' ')?.join('-') == selectedOrbit!.split("pill-")![1]));
+          const toIndex = orbitSiblings.findIndex(planet => (planet?.orbitName?.split(' ')?.join('-') == mostCenteredPillId.split("pill-")![1]));
           triggerSnap = Math.abs(toIndex - fromIndex) <=3;
           scrollDirection.current = (toIndex > fromIndex ? 'right' : 'left');
           console.log('toIndex, fromIndex, triggerSnap :>> ', toIndex, fromIndex, triggerSnap);
@@ -170,14 +170,14 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, 
       <div className="intersecting-pill-row">
         {orbitSiblings.map((orbit, idx) => (
           <span
-            key={`${idx + orbit.orbitName}`}
-            id={`pill-${orbit.orbitName.split(' ').join('-')}`}
+            key={`${idx + orbit?.orbitName}`}
+            id={`pill-${orbit?.orbitName?.split(' ')?.join('-')}`}
             className="intersecting-pill"
           >
             <OrbitPill
-              name={orbit.orbitName}
-              scale={orbit.orbitScale}
-              selected={selectedOrbit === `pill-${orbit.orbitName.split(' ').join('-')}`}
+              name={orbit?.orbitName}
+              scale={orbit?.orbitScale}
+              selected={selectedOrbit === `pill-${orbit?.orbitName?.split(' ')?.join('-')}`}
             />
           </span>
         ))}

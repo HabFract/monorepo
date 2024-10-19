@@ -365,7 +365,8 @@ export function withVisCanvas<T extends IVisualization>(
       // }
       const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
       const orbitSiblings = (currentId == rootId ? [currentVis.rootData] : children).map(node => {
-        const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
+        const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content));
+        console.log('orbitInfo :>> ', orbitInfo);
         return {
           orbitName: orbitInfo.name,
           orbitScale: orbitInfo.scale,
@@ -376,7 +377,7 @@ export function withVisCanvas<T extends IVisualization>(
       if(allFirstChildDescendantOrbits.current == null && currentId == rootId) {
         getFirstDescendantLineage(currentVis.rootData);
         allFirstChildDescendantOrbits.current = orbitDescendants;
-        console.log('orbitDescendants, currentId :>> ', orbitDescendants, allFirstChildDescendantOrbits.current); 
+        // console.log('orbitDescendants, currentId :>> ', orbitDescendants, allFirstChildDescendantOrbits.current); 
       }
       // Generate actions to be fed into mob/desktop vis control components
       const flags = generateNavigationFlags(

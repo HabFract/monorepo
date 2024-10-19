@@ -116,7 +116,8 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
       frequency: 1,
     },
     currentOrbitIdAtom: { id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc" },
-    getOrbitNodeDetailsFromEhAtom: () => ({
+    "getOrbitNodeDetailsFromEhAtom": () => {
+      return ({
       id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
       eH: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
       sphereHash: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
@@ -127,7 +128,7 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
       startTime: 1617235150,
       endTime: 1617321600,
       frequency: 1,
-    }),
+    })},
     newTraversalLevelIndexId: { id: null, intermediateId: null, direction: null },
     currentSphereHierarchyIndices: { x: 0, y: 0 },
     currentSphereHierarchyBounds: { minBreadth: 0, maxBreadth: 2, minDepth: 0, maxDepth: 2 },
@@ -149,6 +150,9 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
     store,
   };
 });
+
+
+
 describe.only('OrbitTree', () => {
   beforeEach(() => {
     const mockClient = createMockClient({cache: new InMemoryCache({})});
@@ -159,7 +163,6 @@ describe.only('OrbitTree', () => {
     mockClient.setRequestHandler(
       GetOrbitHierarchyDocument,
       () => {return Promise.resolve(HIERARCHY_MOCKS[0].result)});
-  
   });
   
   beforeEach(() => {
@@ -176,16 +179,30 @@ describe.only('OrbitTree', () => {
     });
   });
 
-  test('renders details about the orbit', async () => {
+  test('renders a loading spinner, then the right number of nodes', async () => {
     // Arrange
     renderWithJotai(renderVis(OrbitTree) as any, {initialHierarchy: HIERARCHY_MOCKS} as any);
   
-    const orbitName = ORBITS_MOCKS[0].result.data.orbits!.edges[0].node.name;
-    
+    // Assert
     await waitFor(() => {
-      expect(screen.getByText(orbitName)).toBeTruthy();
+      expect(screen.getByTestId('vis-spinner')).toBeTruthy();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId("test-node").length).toBe(1);
     });
   });
+
+  // test('renders details about the orbit', async () => {
+  //   // Arrange
+  //   renderWithJotai(renderVis(OrbitTree) as any, {initialHierarchy: HIERARCHY_MOCKS} as any);
+  
+  //   const orbitName = ORBITS_MOCKS[0].result.data.orbits!.edges[0].node.name;
+    
+  //   await waitFor(() => {
+  //     expect(screen.getByText(orbitName)).toBeTruthy();
+  //   });
+  // });
 
 });
 

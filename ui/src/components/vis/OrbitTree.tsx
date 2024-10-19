@@ -146,7 +146,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   // Processes last fetched hierarchy level and triggers a new fetch - implicitly cached in the GraphQL client - for the next level down (in anticipation of next render)
   const processHierarchyLevelAndFetchNext = async (newJson) => {
     await processNewHierarchyLevel(newJson);
-    if (currentOrbitTree?.rootData && currentOrbitTree?.rootData!.children!.length == 0) return;
+    if (currentOrbitTree?.rootData && currentOrbitTree.rootData?.children && currentOrbitTree.rootData.children?.length == 0) return;
 
     const nextLevelQuery = getQueryParams(y + 1);
     usePrefetchNextLevel(nextLevelQuery!, client, true);

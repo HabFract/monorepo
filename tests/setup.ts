@@ -175,12 +175,8 @@ vi.mock("d3-scale", () => ({
   scaleOrdinal: vi.fn(() => null),
 }));
 
-vi.mock("d3-zoom", () => ({
-  zoom: vi.fn(() => ({
-    apply: vi.fn(() => false),
-    call: vi.fn(() => false),
-    scaleExtent: vi.fn(() => ({
-      on: vi.fn(() => vi.fn()),
-    })),
-  })),
-}));
+vi.mock("d3-zoom", async (importOriginal) => {
+    const actual = (await importOriginal()) as any;
+    return {
+      ...actual,
+}});

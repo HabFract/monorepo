@@ -165,7 +165,7 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
       <div
         ref={columnRef}
         className="intersecting-planet-column">
-        {orbits.map((orbit, idx) => { 
+        {(orbits || []).map((orbit, idx) => { 
           const Icon = getIconForPlanetValue(orbit.orbitScale);
           return (<span
             key={`${idx + orbit.orbitName}`}
