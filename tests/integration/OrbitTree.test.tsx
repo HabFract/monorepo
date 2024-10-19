@@ -3,14 +3,13 @@ import { expect, test, it, afterEach, describe, beforeAll, vi } from 'vitest'
 import { render, waitFor, screen, act, cleanup } from '@testing-library/react';
 import { renderVis } from '../../ui/src/components/vis/helpers';
   
-import OrbitTree from '../../ui/src/components/vis/OrbitTree-2';
+import OrbitTree from '../../ui/src/components/vis/OrbitTree';
 
 import { HIERARCHY_MOCKS } from './mocks/hierarchy-root-only';
 import { ORBITS_MOCKS } from './mocks/orbits';
 import { MockedProvider } from '@apollo/client/testing';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
-import { renderWithJotai } from '../utils-frontend';
-import { setMockUseStateTransitionResponse } from '../setup';
+import { renderWithJotai } from '../utils-frontend';;
 import { currentSphereOrbitNodesAtom } from '../../ui/src/state/orbit';
 import mockAppState from './mocks/mockAppState';
 import { beforeEach } from 'node:test';

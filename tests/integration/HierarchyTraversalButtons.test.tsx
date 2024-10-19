@@ -4,12 +4,11 @@ import { HIERARCHY_ROOT_THREE_LEVELS_UNBALANCED_MOCKS } from './mocks/hierarchy-
 
 
 import { MockedProvider } from '@apollo/client/testing';
-import OrbitTree from '../../ui/src/components/vis/OrbitTree-2';
+import OrbitTree from '../../ui/src/components/vis/OrbitTree';
 import { renderVis } from '../../ui/src/components/vis/helpers';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
 import { HIERARCHY_ROOT_TWO_CHILDREN_MOCKS } from './mocks/hierarchy-root-2-children';
-import { WithCurrentOrbitCoordsMockedAtom } from '../utils-frontend';
 
 let x = 0;
 let y = 0;
