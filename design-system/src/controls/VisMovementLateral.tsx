@@ -62,7 +62,7 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, 
     lastSnappedPlanet.current = orbitId;
     scrollStartTime.current = null;
 
-    container.scrollTo({
+    container?.scrollTo({
       left: targetScrollLeft,
       behavior: 'smooth'
     });
@@ -130,7 +130,7 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, 
         } else {
           const fromIndex = orbitSiblings.findIndex(planet => (planet?.orbitName?.split(' ')?.join('-') == selectedOrbit!.split("pill-")![1]));
           const toIndex = orbitSiblings.findIndex(planet => (planet?.orbitName?.split(' ')?.join('-') == mostCenteredPillId.split("pill-")![1]));
-          triggerSnap = Math.abs(toIndex - fromIndex) <=3;
+          triggerSnap = Math.abs(toIndex - fromIndex) <= 3;
           scrollDirection.current = (toIndex > fromIndex ? 'right' : 'left');
           console.log('toIndex, fromIndex, triggerSnap :>> ', toIndex, fromIndex, triggerSnap);
         }
@@ -147,14 +147,14 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-  //   const decreaseScrollWheelVelocity = debounce((event) => {
-  //     event.preventDefault();
-  //     // getting the scrolling speed.
-  //     const newDeltaX = event.deltaX / 500;
-  //     const ev = new WheelEvent('wheel', { deltaY: event.deltaY, deltaZ: event.deltaZ, deltaMode: event.deltaMode, deltaX: newDeltaX});
-  //     if(event.isTrusted) container.dispatchEvent(ev);
-      
-  // }, 100);
+    //   const decreaseScrollWheelVelocity = debounce((event) => {
+    //     event.preventDefault();
+    //     // getting the scrolling speed.
+    //     const newDeltaX = event.deltaX / 500;
+    //     const ev = new WheelEvent('wheel', { deltaY: event.deltaY, deltaZ: event.deltaZ, deltaMode: event.deltaMode, deltaX: newDeltaX});
+    //     if(event.isTrusted) container.dispatchEvent(ev);
+
+    // }, 100);
 
     container.addEventListener('scroll', handleScroll);
     // container.addEventListener('wheel', decreaseScrollWheelVelocity);

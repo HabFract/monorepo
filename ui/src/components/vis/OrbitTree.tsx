@@ -16,6 +16,7 @@ import { byStartTime, determineNewLevelIndex, parseAndSortTrees } from "./helper
 import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state";
 import { useSetAtom } from "jotai";
+import { NODE_ENV } from "../../constants";
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   selectedSphere: sphere,
@@ -129,7 +130,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       ? JSON.parse(json!)
       : parseOrbitHierarchyData(data.getOrbitHierarchy);
 
-    console.log('Processing with result... :>> ', sortedTrees);
+    !(NODE_ENV == 'test') && console.log('Processing with result... :>> ', sortedTrees);
     setJson(JSON.stringify(sortedTrees));
 
     calculateAndSetBreadthBounds(setBreadthBounds, params, visCoverage, sortedTrees.length);

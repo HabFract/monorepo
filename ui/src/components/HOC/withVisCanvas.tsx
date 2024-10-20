@@ -73,7 +73,7 @@ export function withVisCanvas<T extends IVisualization>(
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
 
     const selectedSphere = store.get(currentSphereHashesAtom);
-    const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
+    const currentOrbitDetails: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
     const allFirstChildDescendantOrbits = useRef<any>(null);
 
     const [currentParentOrbitEh, setCurrentParentOrbitEh] =
@@ -184,7 +184,7 @@ export function withVisCanvas<T extends IVisualization>(
             orbitDescendants,
             orbitSiblings
           } = getActionsAndDataForControls(currentVis);
-  
+
           if (appendedSvg) {
             // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
             currentVis.modalOpen = setIsModalOpen;
@@ -374,7 +374,7 @@ export function withVisCanvas<T extends IVisualization>(
         }
       })
       const orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }> = [];
-      if(allFirstChildDescendantOrbits.current == null && currentId == rootId) {
+      if (allFirstChildDescendantOrbits.current == null && currentOrbitDetails?.eH == rootId && currentVis.rootData) {
         getFirstDescendantLineage(currentVis.rootData);
         allFirstChildDescendantOrbits.current = orbitDescendants;
         // console.log('orbitDescendants, currentId :>> ', orbitDescendants, allFirstChildDescendantOrbits.current); 
@@ -396,6 +396,7 @@ export function withVisCanvas<T extends IVisualization>(
         rootId,
         children,
         currentOrbitDetails,
+        currentOrbitDetails,
         store,
       );
       const consolidatedActions = {} as any;
@@ -413,7 +414,7 @@ export function withVisCanvas<T extends IVisualization>(
       function getFirstDescendantLineage(node: HierarchyNode<NodeContent>) {
         // Add the current node to the lineage
         const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
-
+        console.log('orbitInfo :>> ', orbitInfo);
         orbitDescendants.push({
           orbitName: orbitInfo.name,
           orbitScale: orbitInfo.scale,

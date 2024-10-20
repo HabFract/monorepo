@@ -12,7 +12,10 @@ export const HIERARCHY_MOCKS = [
       query: GetOrbitHierarchyDocument,
       variables: {
         params: {
-          levelQuery: {"sphereHashB64":"uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX","orbitLevel":0},
+          levelQuery: {
+            sphereHashB64: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
+            orbitLevel: 0,
+          },
         },
       },
     },
@@ -36,7 +39,10 @@ export const HIERARCHY_MOCKS = [
       query: GetOrbitHierarchyDocument,
       variables: {
         params: {
-          levelQuery: {"sphereHashB64":"uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX","orbitLevel":0},
+          levelQuery: {
+            sphereHashB64: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
+            orbitLevel: 0,
+          },
         },
       },
     },
@@ -46,8 +52,34 @@ export const HIERARCHY_MOCKS = [
           result: {
             level_trees: [
               {
-                content: SPHERE_ID,
-                name: "Health and Fitness", // Example name, adjust based on your mockAppState
+                content: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+                children: [],
+              },
+            ],
+          },
+        }),
+      },
+    },
+  },
+  {
+    request: {
+      query: GetOrbitHierarchyDocument,
+      variables: {
+        params: {
+          levelQuery: {
+            sphereHashB64: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX",
+            orbitLevel: 0,
+          },
+        },
+      },
+    },
+    result: {
+      data: {
+        getOrbitHierarchy: JSON.stringify({
+          result: {
+            level_trees: [
+              {
+                content: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
                 children: [],
               },
             ],

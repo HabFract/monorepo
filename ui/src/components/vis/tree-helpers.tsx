@@ -104,7 +104,7 @@ export const parseOrbitHierarchyData = (
   hierarchyData: string,
 ) => {
   const sortedTrees = parseAndSortTrees(hierarchyData);
-  console.log('Parsing result... :>> ', sortedTrees);
+  !(NODE_ENV == 'test') && console.log('Parsing result... :>> ', sortedTrees);
 
   return sortedTrees;
 };

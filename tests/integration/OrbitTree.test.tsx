@@ -50,7 +50,7 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
         description: "Focus on physical health, exercise, and nutrition.",
         startTime: 1617235100,
         endTime: undefined,
-        frequency: 0.011, //quarterly
+        frequency: "LESS_THAN_DAILY_1q",
       },
       uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc: {
         id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
@@ -62,7 +62,7 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
         description: "Engage in daily physical activities for better health.",
         startTime: 1617235150,
         endTime: 1617321600,
-        frequency: 1,
+        frequency: "DAILY_OR_MORE_1d",
       },
       uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc: {
         id: "uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
@@ -75,7 +75,7 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
           "Strength training to build muscle and increase metabolism.",
         startTime: 1617235200,
         endTime: 1617321600,
-        frequency: 0.143, //weekly
+        frequency: "LESS_THAN_DAILY_1w",
       },
       uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
         id: "uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
@@ -88,7 +88,7 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
           "Practice mindfulness and reduce stress through daily meditation.",
         startTime: 1617235250,
         endTime: 1617321650,
-        frequency: 2,
+        frequency: "DAILY_OR_MORE_2d",
       },
       uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
         id: "uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
@@ -100,7 +100,7 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
         description: "Regular health check-ups to monitor overall well-being.",
         startTime: 1617235300,
         endTime: 1617321700,
-        frequency: 0.032, //monthly
+        frequency: "LESS_THAN_DAILY_1m",
       },
     },
     currentOrbitDetailsAtom: {
@@ -113,7 +113,7 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
       description: "Engage in daily physical activities for better health.",
       startTime: 1617235150,
       endTime: 1617321600,
-      frequency: 1,
+      frequency:"DAILY_OR_MORE_1d",
     },
     currentOrbitIdAtom: { id: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc" },
     "getOrbitNodeDetailsFromEhAtom": () => {
@@ -127,7 +127,7 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
       description: "Engage in daily physical activities for better health.",
       startTime: 1617235150,
       endTime: 1617321600,
-      frequency: 1,
+      frequency: "DAILY_OR_MORE_1d",
     })},
     newTraversalLevelIndexId: { id: null, intermediateId: null, direction: null },
     currentSphereHierarchyIndices: { x: 0, y: 0 },

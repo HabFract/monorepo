@@ -26,11 +26,12 @@ const WinCount: React.FC<WinCountProps> = ({
   currentWins,
   orbitFrequency: rawFreq
 }): ReactNode => {
-  if (typeof currentWins == 'undefined' || typeof currentWins !== 'number') {
+  if (typeof currentWins == 'undefined' || typeof rawFreq == 'undefined' || typeof currentWins !== 'number') {
     console.warn("Win tracking component fed bad props")
     return <Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
   };
-  const orbitFrequency = decodeFrequency(rawFreq!);
+
+  const orbitFrequency = decodeFrequency(rawFreq);
   const [winCount, setWinCount] = useState<number>(currentWins);
   const [savedWinCount, setSavedWinCount] = useState<number>(currentWins);
   const winPercent = useMemo(() => (100) * (winCount / orbitFrequency!), [winCount]);
@@ -81,7 +82,7 @@ const WinCount: React.FC<WinCountProps> = ({
           <span className="win-control-indicator">{winCount}/{orbitFrequency}</span>
         }
         size={"small"}
-        type="circle" 
+        type="circle"
         className="text-center text-sm"
         strokeColor={twoColors}
       />

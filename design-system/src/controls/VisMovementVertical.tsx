@@ -33,37 +33,37 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
       const now = Date.now();
       if (now - lastExecutionTime.current >= limit) {
         func(...args);
-        lastExecutionTime.current = now;  
+        lastExecutionTime.current = now;
       }
     };
   };
 
   const chooseMoveDebounced = useCallback(
-    debounce(()  => {
-    if (scrollDirection.current === 'up') {
-      return Promise.resolve(moveUpAction());
-    } else if (scrollDirection.current === 'down') {
-      return Promise.resolve(moveDownAction());
-    }
-  }, 500),
-  [moveUpAction, moveDownAction]);
+    debounce(() => {
+      if (scrollDirection.current === 'up') {
+        return Promise.resolve(moveUpAction());
+      } else if (scrollDirection.current === 'down') {
+        return Promise.resolve(moveDownAction());
+      }
+    }, 500),
+    [moveUpAction, moveDownAction]);
 
   const snapToCenter = useCallback((orbitId: string) => {
     const container = containerRef.current;
     const planet = container?.querySelector(`#${orbitId}`);
-  
+
     if (!container || !planet) return;
-  
+
     const containerHeight = container.offsetHeight;
     const planetHeight = (planet as HTMLElement).offsetHeight;
     const planetTop = (planet as HTMLElement).offsetTop;
     const targetScrollTop = planetTop - (containerHeight - planetHeight) / 2;
-  
+
     isAnimating.current = true;
     lastSnappedPlanet.current = orbitId;
     scrollStartTime.current = null; // Reset scroll start time
-  
-    container.scrollTo({
+
+    container?.scrollTo({
       top: targetScrollTop,
       behavior: 'smooth'
     });
@@ -100,14 +100,14 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
 
   const handleScroll = useCallback(throttle(() => {
     if (isAnimating.current) return;
-  
+
     const container = containerRef.current;
     if (!container) return;
-  
+
     // Set scroll start time if it hasn't been set
     if (scrollStartTime.current === null) {
       scrollStartTime.current = Date.now();
-      if(latestSnapBackTimeout.current) {
+      if (latestSnapBackTimeout.current) {
         clearTimeout(latestSnapBackTimeout.current);
       }
       latestSnapBackTimeout.current = setTimeout(() => {
@@ -117,16 +117,16 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
         }
       }, SCROLL_TIMEOUT);
     }
-  
+
     if (scrollTimeout.current) {
       clearTimeout(scrollTimeout.current);
     }
-  
+
     scrollTimeout.current = setTimeout(() => {
       const mostCenteredPlanetId = getMostCenteredPlanet();
       if (mostCenteredPlanetId && mostCenteredPlanetId !== selectedOrbit) {
         let triggerSnap = false;
-        if(selectedOrbit == null) {
+        if (selectedOrbit == null) {
           triggerSnap = true;
         } else {
           const fromIndex = orbits.findIndex(planet => (planet.orbitName == mapToPlanetName(selectedOrbit as string)));
@@ -134,7 +134,7 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
           triggerSnap = Math.abs(toIndex - fromIndex) == 1;
           scrollDirection.current = (toIndex < fromIndex ? 'up' : 'down');
         }
-  
+
         if (triggerSnap) {
           lastSnappedPlanet.current = mostCenteredPlanetId;
           setSelectedOrbit(mostCenteredPlanetId);
@@ -142,7 +142,7 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
           snapToCenter(mostCenteredPlanetId);
         }
       }
-  
+
       // Reset scroll start time
       scrollStartTime.current = null;
     }, 10);
@@ -165,7 +165,7 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
       <div
         ref={columnRef}
         className="intersecting-planet-column">
-        {(orbits || []).map((orbit, idx) => { 
+        {(orbits || []).map((orbit, idx) => {
           const Icon = getIconForPlanetValue(orbit.orbitScale);
           return (<span
             key={`${idx + orbit.orbitName}`}
