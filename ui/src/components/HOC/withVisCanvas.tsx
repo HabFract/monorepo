@@ -37,7 +37,7 @@ import {
 } from "../../state/types/hierarchy";
 import { Scale, useGetWinRecordForOrbitForMonthQuery, useCreateWinRecordMutation, useUpdateWinRecordMutation } from "../../graphql/generated";
 import { useAtom, useAtomValue } from "jotai";
-import { toYearDotMonth } from "../vis/tree-helpers";
+import { isMoreThenDaily, toYearDotMonth } from "../vis/tree-helpers";
 
 const defaultMargins: Margins = {
   top: 0,
@@ -131,9 +131,7 @@ export function withVisCanvas<T extends IVisualization>(
       if (currentOrbitDetails == null) return null;
 
       if (!data?.getWinRecordForOrbitForMonth) { // TODO: add && !haveCachedWinsForOrbit condition, write test.
-        const isMoreThenDaily = (frequency: Frequency.Rationals): boolean => {
-          return frequency > 1; // Simplified check, adjust according to your actual logic
-        };
+
         const blankWinRecordForFrequency: WinData<Frequency.Rationals> = {
           [currentDate.toLocaleString()]: isMoreThenDaily(currentOrbitDetails.frequency)
             ? new Array(currentOrbitDetails.frequency).fill(false) as FixedLengthArray<boolean, typeof currentOrbitDetails.frequency>
@@ -157,6 +155,10 @@ export function withVisCanvas<T extends IVisualization>(
 
         return blankWinRecordForFrequency
       } else if (data && data.getWinRecordForOrbitForMonth) {
+        console.log('parsed win record return value :>> ', data.getWinRecordForOrbitForMonth.winData.reduce((acc: any, { date, value: val }: any) => {
+          acc[date] = ("single" in val ? val.single : val.multiple);
+          return acc;
+        }, {}));
         return data.getWinRecordForOrbitForMonth.winData.reduce((acc: any, { date, value: val }: any) => {
           acc[date] = ("single" in val ? val.single : val.multiple);
           return acc;
@@ -164,7 +166,26 @@ export function withVisCanvas<T extends IVisualization>(
       }
       return null
     }, [data, currentOrbitDetails])
-
+    console.log('data :>> ', data);
+    const handlePersistWins = () => {
+      if (!currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || typeof workingWinDataForOrbit?.[currentDate.toLocaleString()] == 'undefined') {
+        console.error("Not enough details to persist.")
+      }
+      createOrUpdateWinRecord({
+        variables: {
+          winRecord: {
+            orbitEh: currentOrbitDetails!.eH,
+            winData: [{
+              date: currentDate.toLocaleString(),
+              ...{
+                [isMoreThenDaily(currentOrbitDetails!.frequency) ? 'multiple' : 'single']: workingWinDataForOrbit![currentDate.toLocaleString()]
+              }
+            }
+            ]
+          }
+        }
+      })
+    }
     console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
     return (
       <Component
@@ -207,7 +228,7 @@ export function withVisCanvas<T extends IVisualization>(
                   setNewDate={setCurrentDate}
                   currentStreak={1}
                   currentWins={workingWinDataForOrbit}
-                  persistWins={() => { console.log(workingWinDataForOrbit, "NOW PERSIST") }}
+                  persistWins={handlePersistWins}
                   orbitFrequency={currentOrbitDetails?.frequency || 1.0}
                   orbitSiblings={orbitSiblings}
                   orbitDescendants={orbitDescendants}

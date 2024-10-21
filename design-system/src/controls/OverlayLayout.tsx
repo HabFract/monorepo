@@ -11,7 +11,6 @@ import { DateTime } from "luxon";
 import { motion } from "framer-motion";
 import { Scale } from "../generated-types";
 import { FixedLengthArray, Frequency, WinData } from "@ui/src/state";
-import { toYearDotMonth } from ".";
 
 export type OverlayLayoutProps = {
   setNewDate: Function,
@@ -30,51 +29,48 @@ export type OverlayLayoutProps = {
 };
 
 const OverlayLayout: React.FC<OverlayLayoutProps> = ({
-  currentStreak,
   currentDate,
   setNewDate,
   orbitFrequency,
+  orbitDescendants,
+  orbitSiblings,
+  currentStreak,
   currentWins,
   persistWins,
   actions,
-  orbitDescendants,
-  orbitSiblings,
 }): ReactNode => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const [calendarHeight, setCalendarHeight] = useState(0);
   const padding = document.body.getBoundingClientRect().width < 340 ? -30 : (document.body.getBoundingClientRect().width < 520 ? -88 : -100);
   const calendarHeightWithPadding = useMemo(() => (calendarRef?.current?.firstElementChild as any)?.offsetHeight + padding, [calendarHeight]);
 
-  const currentYearDotMonth = toYearDotMonth(currentDate.toLocaleString());
-  const [wins, setWins] = useState<number>();
+  const [_, setWins] = useState<number | null>(null);
 
   const currentDateWins = useMemo((): number | null => {
-    if (!currentWins || !currentDate) return null;
-
-    const currentDateWinData = currentWins[currentYearDotMonth];
+    const currentDateWinData = currentWins?.[currentDate.toLocaleString()];
+    if (currentWins == null || typeof currentDateWinData == 'undefined' || orbitFrequency > 1 && typeof currentDateWinData !== 'object') return null;
     // Count wins depending on frequency and hence type of WinData
     const wins = orbitFrequency > 1
       ? (currentDateWinData as FixedLengthArray<boolean, typeof orbitFrequency>).filter(win => win).length
       : +(currentDateWinData as boolean)
     return wins
-  }, [currentDate, currentWins])
+  }, [currentDate, currentWins, orbitFrequency])
 
   const handleSaveWins = () => {
     if (currentWins == null) return;
-    console.log(currentWins[currentYearDotMonth])
     persistWins()
   }
   const handleUpdateWorkingWins = (newWinCount: number) => {
     if (currentWins == null) return;
-    currentWins[currentYearDotMonth] = orbitFrequency > 1
-      ? Array.apply(null, Array(5)).map((_, i) => i < newWinCount - 1)
+    currentWins[currentDate.toLocaleString()] = orbitFrequency > 1
+      ? Array.apply(null, Array(orbitFrequency)).map((_, i) => i < newWinCount)
       : !!newWinCount as any
   }
 
   useEffect(() => {
     if (!currentDateWins) return;
     setWins(currentDateWins);
-  }, [currentDate, currentWins]);
+  }, [currentDate, currentWins, orbitFrequency]);
 
   useEffect(() => {
     if (calendarRef.current) {
