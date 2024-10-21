@@ -126,17 +126,16 @@ export function withVisCanvas<T extends IVisualization>(
     const skipFlag: boolean = (currentOrbitDetails == null || !currentOrbitDetails?.eH);
     const { data, loading, error } = useGetWinRecordForOrbitForMonthQuery({ variables: { params: { yearDotMonth: currentYearDotMonth, orbitEh: currentOrbitDetails?.eH as EntryHashB64 } }, skip: skipFlag });
     const [createOrUpdateWinRecord, { data: createOrUpdateWinRecordResponse, loading: createOrUpdateWinRecordLoading, error: createOrUpdateWinRecordError }] = useCreateWinRecordMutation();
-    // const [updateWinRecord, { data: updateWinRecordResponse, loading: updateWinRecordLoading, error: updateWinRecordError }] = useUpdateWinRecordMutation({ skip: skipFlag });
-    console.log('decode :>> ', decode([130, 167, 111, 114, 98, 105, 116, 69, 104, 196, 39, 132, 33, 36, 229, 213, 1, 2, 210, 122, 188, 166, 32, 223, 27, 225, 192, 87, 170, 222, 26, 151, 188, 122, 185, 152, 212, 139, 12, 110, 164, 65, 115, 250, 214, 2, 6, 222, 191, 234, 167, 119, 105, 110, 68, 97, 116, 97, 129, 170, 50, 49, 47, 49, 48, 47, 50, 48, 50, 52, 130, 164, 116, 121, 112, 101, 166, 115, 105, 110, 103, 108, 101, 165, 118, 97, 108, 117, 101, 194]));
+
     const workingWinDataForOrbit = useMemo((): WinData<Frequency.Rationals> | null => {
       if (currentOrbitDetails == null) return null;
 
-      if (!data?.getWinRecordForOrbitForMonth || data.getWinRecordForOrbitForMonth == null) {
+      if (!data?.getWinRecordForOrbitForMonth) { // TODO: add && !haveCachedWinsForOrbit condition, write test.
         const isMoreThenDaily = (frequency: Frequency.Rationals): boolean => {
           return frequency > 1; // Simplified check, adjust according to your actual logic
         };
         const blankWinRecordForFrequency: WinData<Frequency.Rationals> = {
-          [currentYearDotMonth]: isMoreThenDaily(currentOrbitDetails.frequency)
+          [currentDate.toLocaleString()]: isMoreThenDaily(currentOrbitDetails.frequency)
             ? new Array(currentOrbitDetails.frequency).fill(false) as FixedLengthArray<boolean, typeof currentOrbitDetails.frequency>
             : false as any,
         };
@@ -148,7 +147,7 @@ export function withVisCanvas<T extends IVisualization>(
               winData: [{
                 date: currentDate.toLocaleString(),
                 ...{
-                  [isMoreThenDaily(currentOrbitDetails.frequency) ? 'multiple' : 'single']: blankWinRecordForFrequency[currentYearDotMonth]
+                  [isMoreThenDaily(currentOrbitDetails.frequency) ? 'multiple' : 'single']: blankWinRecordForFrequency[currentDate.toLocaleString()]
                 }
               }
               ]
@@ -157,9 +156,15 @@ export function withVisCanvas<T extends IVisualization>(
         })
 
         return blankWinRecordForFrequency
+      } else if (data && data.getWinRecordForOrbitForMonth) {
+        return data.getWinRecordForOrbitForMonth.winData.reduce((acc: any, { date, value: val }: any) => {
+          acc[date] = ("single" in val ? val.single : val.multiple);
+          return acc;
+        }, {})
       }
       return null
     }, [data, currentOrbitDetails])
+
     console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
     return (
       <Component
@@ -202,7 +207,7 @@ export function withVisCanvas<T extends IVisualization>(
                   setNewDate={setCurrentDate}
                   currentStreak={1}
                   currentWins={workingWinDataForOrbit}
-                  persistWins={() => { console.log(workingWinDataForOrbit) }}
+                  persistWins={() => { console.log(workingWinDataForOrbit, "NOW PERSIST") }}
                   orbitFrequency={currentOrbitDetails?.frequency || 1.0}
                   orbitSiblings={orbitSiblings}
                   orbitDescendants={orbitDescendants}

@@ -2,7 +2,6 @@ mutation createWinRecord($winRecord: WinRecordCreateParams!) {
   createWinRecord(winRecord: $winRecord) {
     id
     eH
-    orbitId
     winData {
       date
       value {

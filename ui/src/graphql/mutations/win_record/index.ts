@@ -10,7 +10,10 @@ import {
   WinRecordUpdateParams,
 } from "../../generated";
 import { EntryRecord } from "@holochain-open-dev/utils";
-import { Record as HolochainRecord } from "@holochain/client";
+import {
+  encodeHashToBase64,
+  Record as HolochainRecord,
+} from "@holochain/client";
 
 export type createHandler = (
   root: any,
@@ -30,7 +33,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     "create_or_update_win_record"
   );
 
-  const createWinRecord: createHandler = async (_, args) => {
+  const createWinRecord = async (_, args) => {
     // Bypass typechecking here since GraphQL doesn't allow hashmaps.
     const { winRecord } = args as any;
     const rawRecord = await runCreate({
@@ -43,9 +46,11 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     });
     const entryRecord = new EntryRecord<WinRecord>(rawRecord as any);
     return {
-      ...entryRecord.entry,
+      winData: Object.entries(entryRecord.entry.winData).map(
+        ([date, value]) => ({ date, value })
+      ),
       id: entryRecord.actionHash,
-      eH: entryRecord.entryHash,
+      eH: encodeHashToBase64(entryRecord.entryHash),
     };
   };
 

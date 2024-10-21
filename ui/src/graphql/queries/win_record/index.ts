@@ -4,7 +4,7 @@ import {
   HAPP_DNA_NAME,
   HAPP_ZOME_NAME_PERSONAL_HABITS,
 } from "../../../constants";
-import { Maybe, WinRecord } from "../../generated";
+import { Maybe, WinDateEntry, WinRecord } from "../../generated";
 import { EntryRecord } from "@holochain-open-dev/utils";
 import {
   ActionHashB64,
@@ -46,9 +46,11 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       );
       if (entryRecords.length > 0) {
         return {
-          winData: entryRecords[0].entry,
-          orbitId: args.orbitEh,
-          id: encodeHashToBase64(entryRecords[0].actionHash),
+          winData: Object.entries(entryRecords[0].entry.winData).map(
+            ([date, value]) => ({ date, value })
+          ) as WinDateEntry[],
+          orbitId: args.params.orbitEh,
+          id: entryRecords[0].actionHash,
           eH: encodeHashToBase64(entryRecords[0].entryHash),
         };
       } else {

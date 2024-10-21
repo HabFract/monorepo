@@ -430,7 +430,7 @@ export type CreateWinRecordMutationVariables = Exact<{
 }>;
 
 
-export type CreateWinRecordMutation = { __typename?: 'Mutation', createWinRecord: { __typename?: 'WinRecord', id: string, eH: string, orbitId: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } };
+export type CreateWinRecordMutation = { __typename?: 'Mutation', createWinRecord: { __typename?: 'WinRecord', id: string, eH: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } };
 
 export type UpdateWinRecordMutationVariables = Exact<{
   winRecord: WinRecordUpdateParams;
@@ -484,7 +484,7 @@ export type GetWinRecordForOrbitForMonthQueryVariables = Exact<{
 }>;
 
 
-export type GetWinRecordForOrbitForMonthQuery = { __typename?: 'Query', getWinRecordForOrbitForMonth?: { __typename?: 'WinRecord', id: string, eH: string, orbitId: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } | null };
+export type GetWinRecordForOrbitForMonthQuery = { __typename?: 'Query', getWinRecordForOrbitForMonth?: { __typename?: 'WinRecord', id: string, eH: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } | null };
 
 
 export const CreateOrbitDocument = gql`
@@ -714,7 +714,6 @@ export const CreateWinRecordDocument = gql`
   createWinRecord(winRecord: $winRecord) {
     id
     eH
-    orbitId
     winData {
       date
       value {
@@ -1087,7 +1086,6 @@ export const GetWinRecordForOrbitForMonthDocument = gql`
   getWinRecordForOrbitForMonth(params: $params) {
     id
     eH
-    orbitId
     winData {
       date
       value {
