@@ -6,7 +6,7 @@ type Query {
   orbits(sphereEntryHashB64: String): OrbitConnection!
   getOrbitHierarchy(params: OrbitHierarchyQueryParams!): String!
   getLowestSphereHierarchyLevel(sphereEntryHashB64: String!): Int!
-  winRecord(id: ID!): WinRecord
+  getWinRecordForOrbitForMonth(params: OrbitWinRecordQueryParams): WinRecord
   winRecords: [WinRecord!]!
   me: AgentProfile!
 }
@@ -258,6 +258,11 @@ type MultipleWins {
 }
 
 # Win Record Input Types
+input OrbitWinRecordQueryParams {
+  orbitEh: String!
+  yearDotMonth: String!
+}
+
 input WinRecordCreateParams {
   orbitId: ID!
   winData: [WinDateEntryInput!]!

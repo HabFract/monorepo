@@ -31,7 +31,7 @@ export const invalidateOrbitHierarchyCache = (sphereHashB64: string) => {
         },
       },
     });
-    // console.log('Evicting cache with id :>> ', normalizedId);
+    console.log("Evicting cache with id :>> ", normalizedId);
     client.cache.evict({ id: normalizedId });
     client.cache.gc();
   });
@@ -74,7 +74,6 @@ export const updateAppStateWithOrbit = (
   // Update orbitNodes
   updatedState.orbitNodes = {
     ...prevState.orbitNodes,
-    currentOrbitHash: orbitDetails.id,
     byHash: {
       ...prevState.orbitNodes.byHash,
       [orbitDetails.id]: orbitDetails as OrbitHashes,

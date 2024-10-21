@@ -1,5 +1,5 @@
-query getWinRecord($id: ID!) {
-  winRecord(id: $id) {
+query getWinRecordForOrbitForMonth($params: OrbitWinRecordQueryParams!) {
+  getWinRecordForOrbitForMonth(params: $params) {
     id
     eH
     orbitId

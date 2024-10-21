@@ -1,7 +1,7 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import FrequencyIndicator, { FrequencyIndicatorProps } from "./frequency-indicator";
-import { Frequency } from "../generated-types";
+import { Frequency } from "@ui/src/state/types";
 
 const meta: Meta<FrequencyIndicatorProps> = {
   title: "Components/Icons/FrequencyIndicator",
@@ -21,43 +21,43 @@ type Story = StoryObj<FrequencyIndicatorProps & { content: string }>;
 
 export const Daily: Story = {
   args: {
-    frequency: Frequency.DailyOrMore_1d
+    frequency: Frequency.DAILY_OR_MORE.DAILY
   },
 };
 
 export const Weekly: Story = {
   args: {
-    frequency: Frequency.LessThanDaily_1w
+    frequency: Frequency.LESS_THAN_DAILY.WEEKLY
   },
 };
 
 export const Monthly: Story = {
   args: {
-    frequency: Frequency.LessThanDaily_1m
+    frequency: Frequency.LESS_THAN_DAILY.MONTHLY
   },
 };
 
 export const Quarterly: Story = {
   args: {
-    frequency: Frequency.LessThanDaily_1q
+    frequency: Frequency.LESS_THAN_DAILY.QUARTERLY
   },
 };
 
 export const TwiceDaily: Story = {
   args: {
-    frequency: Frequency.DailyOrMore_2d
+    frequency: Frequency.DAILY_OR_MORE.TWO
   },
 };
 
 export const ThriceDaily: Story = {
   args: {
-    frequency: Frequency.DailyOrMore_3d
+    frequency: Frequency.DAILY_OR_MORE.THREE
   },
 };
 
 export const TenDaily: Story = {
   args: {
-    frequency: Frequency.DailyOrMore_10d
+    frequency: Frequency.DAILY_OR_MORE.TEN
   },
 };
 

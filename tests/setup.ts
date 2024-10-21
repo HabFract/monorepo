@@ -72,8 +72,9 @@ vi.mock(
   async (importOriginal) => {
     const actual = (await importOriginal()) as any;
     return {
-      useDeriveAndCacheHierarchyPaths: () => ({ cache: () => {}})
-    }
+      ...actual,
+      useDeriveAndCacheHierarchyPaths: () => ({ cache: () => {} }),
+    };
   }
 );
 vi.mock(
@@ -92,6 +93,11 @@ vi.mock(
     };
   }
 );
+vi.mock("../ui/src/graphql/connection", async (importOriginal) => {
+  return {
+    debounce: vi.fn(() => {}),
+  };
+});
 vi.mock("../ui/src/hooks/gql/utils", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return actual;
@@ -114,9 +120,9 @@ vi.mock("../ui/src/constants", async (importOriginal) => {
 vi.mock("../ui/src/main", async (importOriginal) => ({
   AppMachine: {
     state: {
-        currentState: mockUseStateTransitionResponse
-    }
-  }
+      currentState: mockUseStateTransitionResponse,
+    },
+  },
 }));
 
 // Mock Holochain client
@@ -183,7 +189,8 @@ vi.mock("d3-scale", () => ({
 }));
 
 vi.mock("d3-zoom", async (importOriginal) => {
-    const actual = (await importOriginal()) as any;
-    return {
-      ...actual,
-}});
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+  };
+});

@@ -439,10 +439,10 @@ pub fn get_orbit_hierarchy_json(input: OrbitHierarchyInput) -> ExternResult<serd
                                         sphere_hash_b64: Some(hash.clone()),
                                     }),
                                 });
-                                debug!(
-                                    "_+_+_+_+_+_+_+_+_+_ Tree recursion: {:#?}",
-                                    tree.clone(),
-                                );
+                                // debug!(
+                                //     "_+_+_+_+_+_+_+_+_+_ Tree recursion: {:#?}",
+                                //     tree.clone(),
+                                // );
                                 tree
                             })
                             .filter_map(|tree| {// Filter out delete nodes

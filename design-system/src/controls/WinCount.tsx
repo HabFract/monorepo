@@ -6,14 +6,14 @@ import Progress, { ProgressProps } from "antd/es/progress";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Spinner } from "flowbite-react";
 import { OPAL, SEA_GREEN } from "../../colour-palette";
-import { Frequency } from "@ui/src/graphql/generated";
-import { decodeFrequency } from "@ui/src/state";
+import { Frequency } from "@ui/src/state/types";
 import FrequencyIndicator from "../icons/frequency-indicator";
 
 export interface WinCountProps {
+  currentWins: number | null;
+  orbitFrequency: Frequency.Rationals;
+  handleUpdateWorkingWins: (winCount: number) => void;
   handleSaveWins: () => void;
-  currentWins?: number;
-  orbitFrequency?: Frequency;
 }
 
 const twoColors: ProgressProps['strokeColor'] = {
@@ -23,15 +23,16 @@ const twoColors: ProgressProps['strokeColor'] = {
 
 const WinCount: React.FC<WinCountProps> = ({
   handleSaveWins,
+  handleUpdateWorkingWins,
   currentWins,
-  orbitFrequency: rawFreq
+  orbitFrequency
 }): ReactNode => {
-  if (typeof currentWins == 'undefined' || typeof rawFreq == 'undefined' || typeof currentWins !== 'number') {
-    console.warn("Win tracking component fed bad props")
-    return <Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
+  if (currentWins == null || typeof orbitFrequency == 'undefined' || typeof currentWins !== 'number') {
+    console.log("Win tracking component fed bad props", currentWins, orbitFrequency,)
+    return <div className="win-count-container loading"><Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
+    </div>
   };
 
-  const orbitFrequency = decodeFrequency(rawFreq);
   const [winCount, setWinCount] = useState<number>(currentWins);
   const [savedWinCount, setSavedWinCount] = useState<number>(currentWins);
   const winPercent = useMemo(() => (100) * (winCount / orbitFrequency!), [winCount]);
@@ -41,10 +42,12 @@ const WinCount: React.FC<WinCountProps> = ({
   const upperLimitMet = useMemo(() => winCount >= orbitFrequency!, [winCount]);
   const incrementWins = () => {
     if (upperLimitMet) return;
+    handleUpdateWorkingWins(winCount + 1)
     setWinCount(winCount + 1);
   }
   const decrementWins = () => {
     if (lowerLimitMet) return;
+    handleUpdateWorkingWins(winCount - 1)
     setWinCount(winCount - 1);
   }
   useEffect(() => {
@@ -67,7 +70,7 @@ const WinCount: React.FC<WinCountProps> = ({
         </svg>
         <span className="text-white"> / </span>
         <span className="-ml-1">
-          <FrequencyIndicator frequency={rawFreq!} size="md" />
+          <FrequencyIndicator frequency={orbitFrequency} size="md" />
         </span>
       </div>
       {orbitFrequency! > 0

@@ -7,7 +7,7 @@ export const aQuery = (overrides?: Partial<Query>): Query => {
         orbits: overrides && overrides.hasOwnProperty('orbits') ? overrides.orbits! : anOrbitConnection(),
         getOrbitHierarchy: overrides && overrides.hasOwnProperty('getOrbitHierarchy') ? overrides.getOrbitHierarchy! : 'sint',
         getLowestSphereHierarchyLevel: overrides && overrides.hasOwnProperty('getLowestSphereHierarchyLevel') ? overrides.getLowestSphereHierarchyLevel! : 7407,
-        winRecord: overrides && overrides.hasOwnProperty('winRecord') ? overrides.winRecord! : aWinRecord(),
+        getWinRecordForOrbitForMonth: overrides && overrides.hasOwnProperty('getWinRecordForOrbitForMonth') ? overrides.getWinRecordForOrbitForMonth! : aWinRecord(),
         winRecords: overrides && overrides.hasOwnProperty('winRecords') ? overrides.winRecords! : [aWinRecord()],
         me: overrides && overrides.hasOwnProperty('me') ? overrides.me! : anAgentProfile(),
     };
@@ -273,6 +273,13 @@ export const aSingleWin = (overrides?: Partial<SingleWin>): SingleWin => {
 export const aMultipleWins = (overrides?: Partial<MultipleWins>): MultipleWins => {
     return {
         multiple: overrides && overrides.hasOwnProperty('multiple') ? overrides.multiple! : [false],
+    };
+};
+
+export const anOrbitWinRecordQueryParams = (overrides?: Partial<OrbitWinRecordQueryParams>): OrbitWinRecordQueryParams => {
+    return {
+        orbitEh: overrides && overrides.hasOwnProperty('orbitEh') ? overrides.orbitEh! : 'ut',
+        yearDotMonth: overrides && overrides.hasOwnProperty('yearDotMonth') ? overrides.yearDotMonth! : 'voluptatem',
     };
 };
 

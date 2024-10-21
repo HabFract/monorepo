@@ -326,7 +326,6 @@ export abstract class BaseVisualization implements IVisualization {
       this.setNodeAndLabelGroups();
       this.appendNodeVectors();
       this.appendLinkPath();
-      this.firstRender() && store.set(currentOrbitIdAtom, this.rootData.data.content);
 
       !hasUpdated && this.applyInitialTransform();
       if (!(this.coverageType == VisCoverage.Partial || this.noCanvas())) {

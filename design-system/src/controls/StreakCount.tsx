@@ -11,7 +11,6 @@ export interface StreakCountProps {
   orbitFrequency: Frequency.Rationals;
 }
 
-
 const StreakCount: React.FC<StreakCountProps> = ({
   currentStreak,
   orbitFrequency,

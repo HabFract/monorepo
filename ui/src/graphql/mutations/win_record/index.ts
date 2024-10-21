@@ -10,66 +10,57 @@ import {
   WinRecordUpdateParams,
 } from "../../generated";
 import { EntryRecord } from "@holochain-open-dev/utils";
-import {
-  Record as HolochainRecord,
-} from "@holochain/client";
+import { Record as HolochainRecord } from "@holochain/client";
 
 export type createHandler = (
   root: any,
-  args: WinRecordCreateParams,
+  args: WinRecordCreateParams
 ) => Promise<WinRecord>;
 export type updateHandler = (
   root: any,
-  args: WinRecordUpdateParams,
+  args: WinRecordUpdateParams
 ) => Promise<WinRecord>;
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
-  const runCreate = mapZomeFn<
-    WinRecordCreateParams,
-    HolochainRecord
-  >(
+  const runCreate = mapZomeFn<WinRecordCreateParams, HolochainRecord>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "create_my_win_record",
+    "create_my_win_record"
   );
-  const runUpdate = mapZomeFn<
-    WinRecordUpdateParams,
-    HolochainRecord
-  >(
+  const runUpdate = mapZomeFn<WinRecordUpdateParams, HolochainRecord>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "update_win_record",
+    "update_win_record"
   );
 
-  const createWinRecord: createHandler = async (
-    _,
-    { orbitId, winData },
-  ) => {
+  const createWinRecord: createHandler = async (_, { orbitId, winData }) => {
+    debugger;
     const rawRecord = await runCreate({
-      orbitId, winData
+      orbitId,
+      winData,
     });
     const entryRecord = new EntryRecord<WinRecord>(rawRecord as any);
-// debugger;
     return {
-      ...entryRecord.entry
+      ...entryRecord.entry,
     };
   };
 
   const updateWinRecord: updateHandler = async (
     _,
-    { winRecordId, updatedWinRecord },
+    { winRecordId, updatedWinRecord }
   ) => {
     const rawRecord = await runUpdate({
-      winRecordId, updatedWinRecord
+      winRecordId,
+      updatedWinRecord,
     });
     const entryRecord = new EntryRecord<WinRecord>(rawRecord as any);
     // debugger;
     return {
-      ...entryRecord.entry
+      ...entryRecord.entry,
     };
   };
 

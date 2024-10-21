@@ -1,3 +1,4 @@
+import { currentOrbitIdAtom } from "./orbit";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { atom } from "jotai";
 import { appStateAtom } from "./store";
@@ -16,9 +17,11 @@ import { nodeCache } from "./store";
 /**
  * Decodes from the Rust/GraphQL string enum type into an easier to work with numerical representation from the Frequency namespace
  * @param frequency The frequency type as returned from GraphQL resolvers
- * @returns a frequency using our frontend type system 
+ * @returns a frequency using our frontend type system
  */
-export const decodeFrequency = (frequency: GraphQLFrequency): Frequency.Rationals => {
+export const decodeFrequency = (
+  frequency: GraphQLFrequency
+): Frequency.Rationals => {
   switch (frequency) {
     case GraphQLFrequency.OneShot:
       return Frequency.ONE_SHOT;
@@ -50,7 +53,7 @@ export const decodeFrequency = (frequency: GraphQLFrequency): Frequency.Rational
       return Frequency.LESS_THAN_DAILY.QUARTERLY;
     default:
       throw new Error(`Unsupported GraphQL frequency: ${frequency}`);
-  };
+  }
 };
 
 /**
@@ -95,8 +98,8 @@ export const currentSphereOrbitNodeDetailsAtom =
       null;
     return sphereOrbitNodeDetails;
   });
-(currentSphereOrbitNodeDetailsAtom as any).testId = "currentSphereOrbitNodeDetailsAtom";
-
+(currentSphereOrbitNodeDetailsAtom as any).testId =
+  "currentSphereOrbitNodeDetailsAtom";
 
 /**
  * Atom factory that creates an atom for getting orbit details from the IndexDB cache by entryhash.
@@ -128,8 +131,7 @@ export const getOrbitNodeDetailsFromEhAtom = (orbitEh: EntryHashB64) =>
  * @returns {OrbitNodeDetails | null} Details of the current Orbit's Node
  */
 export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
-  const state = get(appStateAtom);
-  const currentOrbitHash = state.orbitNodes.currentOrbitHash;
+  const currentOrbitHash = get(currentOrbitIdAtom)?.id;
   if (!currentOrbitHash) return null;
   let hash = currentOrbitHash;
   // Failsafe in case action hash was stored instead of entry hash
@@ -138,6 +140,7 @@ export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
     if (!eH) return null;
     hash = eH;
   }
+  console.log("gotOrbitDetails :>> ", get(getOrbitNodeDetailsFromEhAtom(hash)));
   // console.log("Getting current orbit details :>> ", get(getOrbitNodeDetailsFromEhAtom(hash)))
   return get(getOrbitNodeDetailsFromEhAtom(hash));
 });

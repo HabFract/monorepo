@@ -2,12 +2,13 @@ import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { EntryHashB64, ActionHashB64 } from "@holochain/client";
 import { hierarchy } from "d3-hierarchy";
 import { OrbitHierarchyQueryParams, GetOrbitHierarchyDocument } from "../../graphql/generated";
-import { client } from "../../graphql/client";
 import { SphereOrbitNodeDetails, store, currentSphereHierarchyIndices } from "../../state";
 import { TreeVisualization } from "./base-classes/TreeVis";
 import { byStartTime, parseAndSortTrees } from "./helpers";
 import { VisCoverage, VisType } from "./types";
 import { NODE_ENV } from "../../constants";
+
+export const toYearDotMonth = (date: string) => date.split("/").slice(1).reverse().join(".");
 
 /**
  * Determines the visual coverage type based on current parameters

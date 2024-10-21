@@ -141,9 +141,15 @@ div.handle span {
   grid-template-columns: 1fr 1fr 1fr;
   min-width: 8rem;
 }
+
+.win-count-container.loading {
+  @apply flex items-center justify-center;
+}
+
 .win-count-container .title {
   @apply pl-2
 }
+
 .win-count-container.winning .title, .streak-count-container.winning .title {
   @apply text-yellow-400;
   transition: color .5s ease-in;
@@ -201,9 +207,12 @@ div.handle span {
   justify-self: end;
 }
 
-.vis-move-lateral-container, .vis-move-vertical-container {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+.vis-move-lateral-container,
+.vis-move-vertical-container {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
   @apply flex bg-menu-bg rounded-2xl p-1;
 }
 
@@ -220,6 +229,7 @@ div.handle span {
   bottom: 3rem;
   width: 2.5rem;
 }
+
 .intersecting-planet {
   font-size: 24px;
   margin: 3.5rem 0;
@@ -246,19 +256,22 @@ div.handle span {
   @apply flex flex-col relative;
   flex-wrap: nowrap;
   height: fit-content;
-  padding: 3.3rem 0; 
+  padding: 3.3rem 0;
 }
 
 .intersecting-pill-row {
   @apply flex;
   padding: 0 calc(50% - 4.5rem);
 }
+
 .intersecting-pill {
   @apply mx-5;
 }
+
 .intersecting-pill:first-child {
   @apply pl-3
 }
+
 .intersecting-pill:last-child {
   @apply pr-3
 }
@@ -273,7 +286,7 @@ div.handle span {
 
 .vis-move-lateral-container::-webkit-scrollbar,
 .vis-move-vertical-container::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 
