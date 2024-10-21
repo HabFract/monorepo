@@ -1,5 +1,7 @@
 use crate::utils::{
-    delete_month_bucket_win_record_link, delete_orbit_to_win_record_link, entry_from_record, extract_year_dot_month, get_latest, get_path_links_from_year_dot_month, group_win_data_by_year_dot_month, orbit_to_win_record_links, win_record_year_month_anchor
+    delete_month_bucket_win_record_link, delete_orbit_to_win_record_link, entry_from_record,
+    extract_year_dot_month, get_latest, get_path_links_from_year_dot_month,
+    group_win_data_by_year_dot_month, orbit_to_win_record_links, win_record_year_month_anchor,
 };
 use hdk::prelude::*;
 use personal_integrity::*;
@@ -39,24 +41,29 @@ pub fn create_or_update_win_record(win_record: WinRecord) -> ExternResult<Record
                     .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
                         "Could not get Orbit to WinRecord linked entry"
                     ))))?;
-                if let Details::Entry(details) = get_details(win_target_hash.clone(), GetOptions::default())?.ok_or(wasm_error!(
-                    WasmErrorInner::Guest("Record not found for given EntryHash".into())
-                ))? {
+                if let Details::Entry(details) =
+                    get_details(win_target_hash.clone(), GetOptions::default())?.ok_or(
+                        wasm_error!(WasmErrorInner::Guest(
+                            "Record not found for given EntryHash".into()
+                        )),
+                    )?
+                {
                     let possible_action_hashes = details.actions;
                     let latest_entrys_action: Option<Record> = possible_action_hashes
                         .into_iter()
                         .take(1)
-                        .map(
-                        |action_hash| get_latest(action_hash.clone().hashed.hash)
-                    ).next().ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
-                        "Could not map entry updates to latest record"
-                    ))))??;
+                        .map(|action_hash| get_latest(action_hash.clone().hashed.hash))
+                        .next()
+                        .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+                            "Could not map entry updates to latest record"
+                        ))))??;
                     let latest_action_hash = latest_entrys_action.unwrap().action_address().clone();
 
                     return Ok(update_win_record(UpdateWinRecordInput {
                         win_record_id: latest_action_hash,
                         updated_win_record: win_record.clone(),
-                    })?.unwrap())
+                    })?
+                    .unwrap());
                 };
             }
             _ => {
@@ -106,11 +113,12 @@ pub fn create_or_update_win_record(win_record: WinRecord) -> ExternResult<Record
             LinkTypes::OrbitToWinRecord,
             (),
         )?;
-        return Ok(record)
+
+        return Ok(record);
     };
     return Err(wasm_error!(WasmErrorInner::Guest(String::from(
         "Unreachable"
-    ))))
+    ))));
 }
 
 /// Get a single latest WinRecord from the source chain using its ActionHash
@@ -138,9 +146,18 @@ pub fn update_win_record(input: UpdateWinRecordInput) -> ExternResult<Option<Rec
         get(input.win_record_id.clone(), GetOptions::default())?.ok_or(wasm_error!(
             WasmErrorInner::Guest(String::from("Could not find the original WinRecord"))
         ))?;
+    // Get necessary data from old record (many local variables used to prevent creation of temporaries)
     let old_win_record = entry_from_record::<WinRecord>(old_record.clone())?;
-    let old_entry_hash = hash_entry(&old_win_record)?;
+    let old_entry_signed_hashed = old_record.signed_action();
+    let old_entry_action = old_entry_signed_hashed.clone().hashed.into_content();
+    let old_entry_hash =
+        old_entry_action
+            .entry_hash()
+            .ok_or(wasm_error!(WasmErrorInner::Guest(
+                "Could not get old WinRecord EntryHash".into()
+            )))?;
     let new_entry_hash = hash_entry(&input.updated_win_record)?;
+
     let date_indices = input.updated_win_record.win_data.keys();
     let date_index = date_indices
         .clone()
@@ -151,7 +168,10 @@ pub fn update_win_record(input: UpdateWinRecordInput) -> ExternResult<Option<Rec
     ))?;
 
     let _link_deleted_1 = delete_month_bucket_win_record_link(&prefix, old_entry_hash.clone())?;
-    let _link_deleted_2 = delete_orbit_to_win_record_link(input.updated_win_record.orbit_eh.clone().into(), old_entry_hash)?;
+    let _link_deleted_2 = delete_orbit_to_win_record_link(
+        input.updated_win_record.orbit_eh.clone().into(),
+        old_entry_hash.clone(),
+    )?;
 
     let path = win_record_year_month_anchor(&prefix)?;
     path.ensure()?;
@@ -192,12 +212,12 @@ pub fn get_an_orbits_win_record_for_month(
         let mut query_hashes: HashSet<EntryHash> = HashSet::new();
 
         let hashes: Vec<EntryHash> = links
-        .into_iter()
+            .into_iter()
             .filter_map(|link| link.target.into_entry_hash())
             .collect();
 
         for hash in hashes {
-                query_hashes.insert(hash.clone().into());
+            query_hashes.insert(hash.clone().into());
         }
         let filter = ChainQueryFilter::new()
             .entry_hashes(query_hashes)

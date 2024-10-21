@@ -37,36 +37,48 @@ const WinCount: React.FC<WinCountProps> = ({
   }, [currentWins, currentDate]);
 
   const [winCount, setWinCount] = useState<number>(currentDateWins || 0);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
 
   useEffect(() => {
-    if (currentDateWins === null) return;
-    setWinCount(currentDateWins);
-  }, [currentDateWins]);
+    if (currentWins !== null && currentWins !== winCount) {
+      setWinCount(currentWins);
+      setHasUnsavedChanges(false);
+    }
+  }, [currentWins]);
 
   const winPercent = useMemo(() => (100) * (winCount / orbitFrequency), [winCount, orbitFrequency]);
 
   const lowerLimitMet = winCount <= 0;
   const upperLimitMet = winCount >= orbitFrequency;
 
-  const incrementWins = () => {
-    if (upperLimitMet) return;
-    const newWinCount = winCount + 1;
+  const updateWins = useCallback((newWinCount: number) => {
     setWinCount(newWinCount);
     handleUpdateWorkingWins(newWinCount);
+    setHasUnsavedChanges(true);
+  }, [handleUpdateWorkingWins]);
+
+  const incrementWins = () => {
+    if (upperLimitMet) return;
+    updateWins(winCount + 1);
   };
 
   const decrementWins = () => {
     if (lowerLimitMet) return;
-    const newWinCount = winCount - 1;
-    setWinCount(newWinCount);
-    handleUpdateWorkingWins(newWinCount);
+    updateWins(winCount - 1);
   };
 
   useEffect(() => {
-    const saveToSourceChain = setInterval(handleSaveWins, SAVE_WINS_FREQUENCY);
-    return () => clearInterval(saveToSourceChain);
-  }, [handleSaveWins]);
-
+    let saveInterval: NodeJS.Timeout;
+    if (hasUnsavedChanges) {
+      saveInterval = setInterval(() => {
+        handleSaveWins();
+        setHasUnsavedChanges(false);
+      }, SAVE_WINS_FREQUENCY);
+    }
+    return () => {
+      if (saveInterval) clearInterval(saveInterval);
+    };
+  }, [hasUnsavedChanges, handleSaveWins]);
   if (currentDateWins === null || typeof orbitFrequency === 'undefined') {
     return <div className="win-count-container loading"><Spinner aria-label="Loading!" className="menu-spinner" size="xl" /></div>;
   }
@@ -108,4 +120,4 @@ const WinCount: React.FC<WinCountProps> = ({
   );
 };
 
-export default WinCount;
+export default React.memo(WinCount);

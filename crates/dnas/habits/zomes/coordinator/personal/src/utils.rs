@@ -90,7 +90,11 @@ pub fn win_record_year_month_anchor(year_dot_month: &String) -> ExternResult<Typ
 }
 
 pub fn delete_orbit_to_win_record_link(orbit_hash: EntryHash, target_hash: EntryHash) -> ExternResult<bool> {
-    let maybe_replaceable_links: Option<Vec<Link>> = orbit_to_win_record_links(orbit_hash)?;
+    let maybe_replaceable_links: Option<Vec<Link>> = orbit_to_win_record_links(orbit_hash.clone())?;
+    debug!(
+        "_+_+_+_+_+_+_+_+_+_ deleting orbit to win record links fpr eh. taget hash  {:?}: {:?} {:#?} ",orbit_hash.clone(),target_hash.clone(),  maybe_replaceable_links.clone()
+    );
+    
     let replaceable_links: Vec<Vec<Link>> = maybe_replaceable_links
         .into_iter()
         .filter(|all_links| {
