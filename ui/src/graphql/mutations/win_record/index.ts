@@ -27,45 +27,29 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "create_my_win_record"
-  );
-  const runUpdate = mapZomeFn<WinRecordUpdateParams, HolochainRecord>(
-    dnaConfig,
-    conductorUri,
-    HAPP_DNA_NAME,
-    HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "update_win_record"
+    "create_or_update_win_record"
   );
 
-  const createWinRecord: createHandler = async (_, { orbitId, winData }) => {
-    debugger;
+  const createWinRecord: createHandler = async (_, args) => {
+    // Bypass typechecking here since GraphQL doesn't allow hashmaps.
+    const { winRecord } = args as any;
     const rawRecord = await runCreate({
-      orbitId,
-      winData,
+      orbitEh: winRecord.orbitEh,
+      winData: winRecord.winData.reduce((acc, val) => {
+        acc[val.date] =
+          "single" in val ? { single: val.single } : { multiple: val.multiple };
+        return acc;
+      }, {}) as any,
     });
     const entryRecord = new EntryRecord<WinRecord>(rawRecord as any);
     return {
       ...entryRecord.entry,
-    };
-  };
-
-  const updateWinRecord: updateHandler = async (
-    _,
-    { winRecordId, updatedWinRecord }
-  ) => {
-    const rawRecord = await runUpdate({
-      winRecordId,
-      updatedWinRecord,
-    });
-    const entryRecord = new EntryRecord<WinRecord>(rawRecord as any);
-    // debugger;
-    return {
-      ...entryRecord.entry,
+      id: entryRecord.actionHash,
+      eH: entryRecord.entryHash,
     };
   };
 
   return {
     createWinRecord,
-    updateWinRecord,
   };
 };

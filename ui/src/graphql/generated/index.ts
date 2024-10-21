@@ -368,7 +368,7 @@ export type OrbitWinRecordQueryParams = {
 };
 
 export type WinRecordCreateParams = {
-  orbitId: Scalars['ID']['input'];
+  orbitEh: Scalars['String']['input'];
   winData: Array<WinDateEntryInput>;
 };
 
@@ -379,10 +379,6 @@ export type WinRecordUpdateParams = {
 
 export type WinDateEntryInput = {
   date: Scalars['String']['input'];
-  value: WinDateValueInput;
-};
-
-export type WinDateValueInput = {
   single?: InputMaybe<Scalars['Boolean']['input']>;
   multiple?: InputMaybe<Array<Scalars['Boolean']['input']>>;
 };
@@ -471,6 +467,13 @@ export type GetLowestSphereHierarchyLevelQueryVariables = Exact<{
 
 export type GetLowestSphereHierarchyLevelQuery = { __typename?: 'Query', getLowestSphereHierarchyLevel: number };
 
+export type GetSphereQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetSphereQuery = { __typename?: 'Query', sphere: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, image?: string | null } | null } };
+
 export type GetSpheresQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -482,13 +485,6 @@ export type GetWinRecordForOrbitForMonthQueryVariables = Exact<{
 
 
 export type GetWinRecordForOrbitForMonthQuery = { __typename?: 'Query', getWinRecordForOrbitForMonth?: { __typename?: 'WinRecord', id: string, eH: string, orbitId: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } | null };
-
-export type GetSphereQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type GetSphereQuery = { __typename?: 'Query', sphere: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, image?: string | null } | null } };
 
 
 export const CreateOrbitDocument = gql`
@@ -991,6 +987,52 @@ export type GetLowestSphereHierarchyLevelQueryHookResult = ReturnType<typeof use
 export type GetLowestSphereHierarchyLevelLazyQueryHookResult = ReturnType<typeof useGetLowestSphereHierarchyLevelLazyQuery>;
 export type GetLowestSphereHierarchyLevelSuspenseQueryHookResult = ReturnType<typeof useGetLowestSphereHierarchyLevelSuspenseQuery>;
 export type GetLowestSphereHierarchyLevelQueryResult = Apollo.QueryResult<GetLowestSphereHierarchyLevelQuery, GetLowestSphereHierarchyLevelQueryVariables>;
+export const GetSphereDocument = gql`
+    query getSphere($id: ID!) {
+  sphere(id: $id) {
+    id
+    eH
+    name
+    metadata {
+      description
+      image
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetSphereQuery__
+ *
+ * To run a query within a React component, call `useGetSphereQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSphereQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSphereQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetSphereQuery(baseOptions: Apollo.QueryHookOptions<GetSphereQuery, GetSphereQueryVariables> & ({ variables: GetSphereQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSphereQuery, GetSphereQueryVariables>(GetSphereDocument, options);
+      }
+export function useGetSphereLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSphereQuery, GetSphereQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSphereQuery, GetSphereQueryVariables>(GetSphereDocument, options);
+        }
+export function useGetSphereSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSphereQuery, GetSphereQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSphereQuery, GetSphereQueryVariables>(GetSphereDocument, options);
+        }
+export type GetSphereQueryHookResult = ReturnType<typeof useGetSphereQuery>;
+export type GetSphereLazyQueryHookResult = ReturnType<typeof useGetSphereLazyQuery>;
+export type GetSphereSuspenseQueryHookResult = ReturnType<typeof useGetSphereSuspenseQuery>;
+export type GetSphereQueryResult = Apollo.QueryResult<GetSphereQuery, GetSphereQueryVariables>;
 export const GetSpheresDocument = gql`
     query getSpheres {
   spheres {
@@ -1093,49 +1135,3 @@ export type GetWinRecordForOrbitForMonthQueryHookResult = ReturnType<typeof useG
 export type GetWinRecordForOrbitForMonthLazyQueryHookResult = ReturnType<typeof useGetWinRecordForOrbitForMonthLazyQuery>;
 export type GetWinRecordForOrbitForMonthSuspenseQueryHookResult = ReturnType<typeof useGetWinRecordForOrbitForMonthSuspenseQuery>;
 export type GetWinRecordForOrbitForMonthQueryResult = Apollo.QueryResult<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>;
-export const GetSphereDocument = gql`
-    query getSphere($id: ID!) {
-  sphere(id: $id) {
-    id
-    eH
-    name
-    metadata {
-      description
-      image
-    }
-  }
-}
-    `;
-
-/**
- * __useGetSphereQuery__
- *
- * To run a query within a React component, call `useGetSphereQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSphereQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetSphereQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetSphereQuery(baseOptions: Apollo.QueryHookOptions<GetSphereQuery, GetSphereQueryVariables> & ({ variables: GetSphereQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetSphereQuery, GetSphereQueryVariables>(GetSphereDocument, options);
-      }
-export function useGetSphereLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSphereQuery, GetSphereQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetSphereQuery, GetSphereQueryVariables>(GetSphereDocument, options);
-        }
-export function useGetSphereSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSphereQuery, GetSphereQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetSphereQuery, GetSphereQueryVariables>(GetSphereDocument, options);
-        }
-export type GetSphereQueryHookResult = ReturnType<typeof useGetSphereQuery>;
-export type GetSphereLazyQueryHookResult = ReturnType<typeof useGetSphereLazyQuery>;
-export type GetSphereSuspenseQueryHookResult = ReturnType<typeof useGetSphereSuspenseQuery>;
-export type GetSphereQueryResult = Apollo.QueryResult<GetSphereQuery, GetSphereQueryVariables>;

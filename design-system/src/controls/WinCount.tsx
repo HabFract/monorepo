@@ -27,14 +27,10 @@ const WinCount: React.FC<WinCountProps> = ({
   currentWins,
   orbitFrequency
 }): ReactNode => {
-  if (currentWins == null || typeof orbitFrequency == 'undefined' || typeof currentWins !== 'number') {
-    console.log("Win tracking component fed bad props", currentWins, orbitFrequency,)
-    return <div className="win-count-container loading"><Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
-    </div>
-  };
 
-  const [winCount, setWinCount] = useState<number>(currentWins);
-  const [savedWinCount, setSavedWinCount] = useState<number>(currentWins);
+
+  const [winCount, setWinCount] = useState<number>(currentWins || 0);
+  const [savedWinCount, setSavedWinCount] = useState<number>(currentWins || 0);
   const winPercent = useMemo(() => (100) * (winCount / orbitFrequency!), [winCount]);
   const savedWinPercent = useMemo(() => (100) * (savedWinCount / orbitFrequency!), [savedWinCount]);
 
@@ -62,6 +58,11 @@ const WinCount: React.FC<WinCountProps> = ({
     return () => clearInterval(saveToSourceChain);
   }, [savedWinPercent, winPercent, winCount, handleSaveWins]);
 
+  if (currentWins == null || typeof orbitFrequency == 'undefined' || typeof currentWins !== 'number') {
+    console.log("Win tracking component fed bad props", currentWins, orbitFrequency,)
+    return <div className="win-count-container loading"><Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
+    </div>
+  };
   return (
     <div className={orbitFrequency == winCount ? "win-count-container winning" : "win-count-container"}>
       <div className="title">

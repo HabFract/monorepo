@@ -264,7 +264,7 @@ input OrbitWinRecordQueryParams {
 }
 
 input WinRecordCreateParams {
-  orbitId: ID!
+  orbitEh: String!
   winData: [WinDateEntryInput!]!
 }
 
@@ -275,10 +275,6 @@ input WinRecordUpdateParams {
 
 input WinDateEntryInput {
   date: String!
-  value: WinDateValueInput!
-}
-
-input WinDateValueInput {
   single: Boolean
   multiple: [Boolean!]
 }
