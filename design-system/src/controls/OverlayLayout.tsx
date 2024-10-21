@@ -20,11 +20,15 @@ export type OverlayLayoutProps = {
   longestStreak?: number;
 
   currentWins: WinData<Frequency.Rationals> | null;
-  persistWins: () => void;
   orbitFrequency: Frequency.Rationals;
 
   orbitSiblings: Array<{ orbitName: string, orbitScale: Scale, handleOrbitSelect: () => void }>
   orbitDescendants: Array<{ orbitName: string, orbitScale: Scale, handleOrbitSelect: () => void }>
+
+  handlePersistWins: () => void;
+  handleUpdateWorkingWins: (newWinCount: number) => void;
+
+  workingWinDataForOrbit: any,
   actions: any,
 };
 
@@ -36,7 +40,9 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   orbitSiblings,
   currentStreak,
   currentWins,
-  persistWins,
+  handlePersistWins,
+  handleUpdateWorkingWins,
+  workingWinDataForOrbit,
   actions,
 }): ReactNode => {
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -44,33 +50,25 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   const padding = document.body.getBoundingClientRect().width < 340 ? -30 : (document.body.getBoundingClientRect().width < 520 ? -88 : -100);
   const calendarHeightWithPadding = useMemo(() => (calendarRef?.current?.firstElementChild as any)?.offsetHeight + padding, [calendarHeight]);
 
-  const [_, setWins] = useState<number | null>(null);
+  const [wins, setWins] = useState<number | null>(null);
 
-  const currentDateWins = useMemo((): number | null => {
-    const currentDateWinData = currentWins?.[currentDate.toLocaleString()];
-    if (currentWins == null || typeof currentDateWinData == 'undefined' || orbitFrequency > 1 && typeof currentDateWinData !== 'object') return null;
-    // Count wins depending on frequency and hence type of WinData
-    const wins = orbitFrequency > 1
-      ? (currentDateWinData as FixedLengthArray<boolean, typeof orbitFrequency>).filter(win => win).length
-      : +(currentDateWinData as boolean)
-    return wins
-  }, [currentDate, currentWins, orbitFrequency])
+  const currentDateWins = useMemo(() => {
+    if (!workingWinDataForOrbit || !currentDate) return null;
+    const dateString = currentDate.toLocaleString();
+    const winData = workingWinDataForOrbit[dateString];
+    if (typeof winData == 'undefined') return null;
+    return Array.isArray(winData) ? winData.filter(Boolean).length : winData ? 1 : 0;
+  }, [workingWinDataForOrbit, currentDate]);
 
   const handleSaveWins = () => {
     if (currentWins == null) return;
-    persistWins()
-  }
-  const handleUpdateWorkingWins = (newWinCount: number) => {
-    if (currentWins == null) return;
-    currentWins[currentDate.toLocaleString()] = orbitFrequency > 1
-      ? Array.apply(null, Array(orbitFrequency)).map((_, i) => i < newWinCount)
-      : !!newWinCount as any
+    handlePersistWins()
   }
 
   useEffect(() => {
-    if (!currentDateWins) return;
+    if (currentDateWins == null) return;
     setWins(currentDateWins);
-  }, [currentDate, currentWins, orbitFrequency]);
+  }, [currentDateWins]);
 
   useEffect(() => {
     if (calendarRef.current) {
@@ -90,7 +88,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
                 <div className="center-marker"></div>
               </span>
               <div className="overlay-win-streak-container" onPointerDownCapture={stopPropagation}>
-                <WinCount handleUpdateWorkingWins={handleUpdateWorkingWins} handleSaveWins={handleSaveWins} currentWins={currentDateWins} orbitFrequency={orbitFrequency}></WinCount>
+                <WinCount currentDate={currentDate} handleUpdateWorkingWins={handleUpdateWorkingWins} handleSaveWins={handleSaveWins} currentWins={wins} orbitFrequency={orbitFrequency}></WinCount>
                 <StreakCount currentStreak={currentStreak} orbitFrequency={orbitFrequency}></StreakCount>
               </div>
             </div>

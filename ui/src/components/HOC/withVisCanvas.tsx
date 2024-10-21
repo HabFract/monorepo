@@ -70,7 +70,7 @@ const appendSvg = (mountingDivId: string, divId: string) => {
 export function withVisCanvas<T extends IVisualization>(
   Component: ComponentType<VisProps<T>>,
 ): ReactNode {
-  const ComponentWithVis = (() => {
+  const ComponentWithVis = React.memo(() => {
     const mountingDivId = "vis-root";
     const svgId = "vis"; // May need to be declared dynamically when we want multiple vis on a page
     const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
@@ -127,65 +127,68 @@ export function withVisCanvas<T extends IVisualization>(
     const { data, loading, error } = useGetWinRecordForOrbitForMonthQuery({ variables: { params: { yearDotMonth: currentYearDotMonth, orbitEh: currentOrbitDetails?.eH as EntryHashB64 } }, skip: skipFlag });
     const [createOrUpdateWinRecord, { data: createOrUpdateWinRecordResponse, loading: createOrUpdateWinRecordLoading, error: createOrUpdateWinRecordError }] = useCreateWinRecordMutation();
 
-    const workingWinDataForOrbit = useMemo((): WinData<Frequency.Rationals> | null => {
-      if (currentOrbitDetails == null) return null;
 
-      if (!data?.getWinRecordForOrbitForMonth) { // TODO: add && !haveCachedWinsForOrbit condition, write test.
+    const [workingWinDataForOrbit, setWorkingWinDataForOrbit] = useState<WinData<Frequency.Rationals> | null>(null);
 
-        const blankWinRecordForFrequency: WinData<Frequency.Rationals> = {
-          [currentDate.toLocaleString()]: isMoreThenDaily(currentOrbitDetails.frequency)
-            ? new Array(currentOrbitDetails.frequency).fill(false) as FixedLengthArray<boolean, typeof currentOrbitDetails.frequency>
-            : false as any,
-        };
+    useEffect(() => {
+      if (currentOrbitDetails == null || !data?.getWinRecordForOrbitForMonth) return;
 
-        createOrUpdateWinRecord({
-          variables: {
-            winRecord: {
-              orbitEh: currentOrbitDetails.eH,
-              winData: [{
-                date: currentDate.toLocaleString(),
-                ...{
-                  [isMoreThenDaily(currentOrbitDetails.frequency) ? 'multiple' : 'single']: blankWinRecordForFrequency[currentDate.toLocaleString()]
-                }
-              }
-              ]
-            }
-          }
-        })
+      const newWinData = data.getWinRecordForOrbitForMonth.winData.reduce((acc: any, { date, value: val }: any) => {
+        acc[date] = ("single" in val ? val.single : val.multiple);
+        return acc;
+      }, {});
 
-        return blankWinRecordForFrequency
-      } else if (data && data.getWinRecordForOrbitForMonth) {
-        console.log('parsed win record return value :>> ', data.getWinRecordForOrbitForMonth.winData.reduce((acc: any, { date, value: val }: any) => {
-          acc[date] = ("single" in val ? val.single : val.multiple);
-          return acc;
-        }, {}));
-        return data.getWinRecordForOrbitForMonth.winData.reduce((acc: any, { date, value: val }: any) => {
-          acc[date] = ("single" in val ? val.single : val.multiple);
-          return acc;
-        }, {})
+      setWorkingWinDataForOrbit(newWinData);
+    }, [data, currentOrbitDetails]);
+
+    const handleUpdateWorkingWins = useCallback((newWinCount: number) => {
+      if (workingWinDataForOrbit == null || currentOrbitDetails == null) return;
+
+      setWorkingWinDataForOrbit(prevData => ({
+        ...prevData,
+        [currentDate.toLocaleString()]: currentOrbitDetails.frequency > 1
+          ? Array(currentOrbitDetails.frequency).fill(false).map((_, i) => i < newWinCount)
+          : !!newWinCount
+      }));
+    }, [workingWinDataForOrbit, currentOrbitDetails, currentDate]);
+
+    const handlePersistWins = useCallback(() => {
+      if (!currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit) {
+        console.error("Not enough details to persist.");
+        return;
       }
-      return null
-    }, [data, currentOrbitDetails])
-    console.log('data :>> ', data);
-    const handlePersistWins = () => {
-      if (!currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || typeof workingWinDataForOrbit?.[currentDate.toLocaleString()] == 'undefined') {
-        console.error("Not enough details to persist.")
-      }
+
       createOrUpdateWinRecord({
         variables: {
           winRecord: {
-            orbitEh: currentOrbitDetails!.eH,
-            winData: [{
-              date: currentDate.toLocaleString(),
-              ...{
-                [isMoreThenDaily(currentOrbitDetails!.frequency) ? 'multiple' : 'single']: workingWinDataForOrbit![currentDate.toLocaleString()]
-              }
-            }
-            ]
+            orbitEh: currentOrbitDetails.eH,
+            winData: Object.entries(workingWinDataForOrbit).map(([date, value]) => ({
+              date,
+              ...(isMoreThenDaily(currentOrbitDetails.frequency)
+                ? { multiple: value }
+                : { single: value })
+            }))
           }
         }
-      })
-    }
+      });
+    }, [currentOrbitDetails, workingWinDataForOrbit, createOrUpdateWinRecord]);
+
+    useEffect(() => {
+      if (currentOrbitDetails == null || !currentDate) return;
+
+      setWorkingWinDataForOrbit(prevData => {
+        if (!prevData || !(currentDate.toLocaleString() in prevData)) {
+          return {
+            ...prevData,
+            [currentDate.toLocaleString()]: isMoreThenDaily(currentOrbitDetails.frequency)
+              ? new Array(currentOrbitDetails.frequency).fill(false)
+              : false
+          };
+        }
+        return prevData;
+      });
+    }, [currentDate, currentOrbitDetails]);
+
     console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
     return (
       <Component
@@ -227,8 +230,10 @@ export function withVisCanvas<T extends IVisualization>(
                   currentDate={currentDate}
                   setNewDate={setCurrentDate}
                   currentStreak={1}
+                  workingWinDataForOrbit={workingWinDataForOrbit}
                   currentWins={workingWinDataForOrbit}
-                  persistWins={handlePersistWins}
+                  handleUpdateWorkingWins={handleUpdateWorkingWins}
+                  handlePersistWins={handlePersistWins}
                   orbitFrequency={currentOrbitDetails?.frequency || 1.0}
                   orbitSiblings={orbitSiblings}
                   orbitDescendants={orbitDescendants}

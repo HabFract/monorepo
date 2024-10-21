@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo, useState } from "react";
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import "./common.css";
 import { SAVE_WINS_FREQUENCY } from "@ui/src/components/vis/constants";
@@ -8,10 +8,12 @@ import { Spinner } from "flowbite-react";
 import { OPAL, SEA_GREEN } from "../../colour-palette";
 import { Frequency } from "@ui/src/state/types";
 import FrequencyIndicator from "../icons/frequency-indicator";
+import { DateTime } from "luxon";
 
 export interface WinCountProps {
   currentWins: number | null;
   orbitFrequency: Frequency.Rationals;
+  currentDate: DateTime;
   handleUpdateWorkingWins: (winCount: number) => void;
   handleSaveWins: () => void;
 }
@@ -24,45 +26,51 @@ const twoColors: ProgressProps['strokeColor'] = {
 const WinCount: React.FC<WinCountProps> = ({
   handleSaveWins,
   handleUpdateWorkingWins,
+  currentDate,
   currentWins,
   orbitFrequency
 }): ReactNode => {
 
+  const currentDateWins = useMemo(() => {
+    if (currentWins == null || !currentDate) return null;
+    return currentWins
+  }, [currentWins, currentDate]);
 
-  const [winCount, setWinCount] = useState<number>(currentWins || 0);
-  const [savedWinCount, setSavedWinCount] = useState<number>(currentWins || 0);
-  const winPercent = useMemo(() => (100) * (winCount / orbitFrequency!), [winCount]);
-  const savedWinPercent = useMemo(() => (100) * (savedWinCount / orbitFrequency!), [savedWinCount]);
+  const [winCount, setWinCount] = useState<number>(currentDateWins || 0);
 
-  const lowerLimitMet = useMemo(() => winCount <= 0, [winCount]);
-  const upperLimitMet = useMemo(() => winCount >= orbitFrequency!, [winCount]);
+  useEffect(() => {
+    if (currentDateWins === null) return;
+    setWinCount(currentDateWins);
+  }, [currentDateWins]);
+
+  const winPercent = useMemo(() => (100) * (winCount / orbitFrequency), [winCount, orbitFrequency]);
+
+  const lowerLimitMet = winCount <= 0;
+  const upperLimitMet = winCount >= orbitFrequency;
+
   const incrementWins = () => {
     if (upperLimitMet) return;
-    handleUpdateWorkingWins(winCount + 1)
-    setWinCount(winCount + 1);
-  }
+    const newWinCount = winCount + 1;
+    setWinCount(newWinCount);
+    handleUpdateWorkingWins(newWinCount);
+  };
+
   const decrementWins = () => {
     if (lowerLimitMet) return;
-    handleUpdateWorkingWins(winCount - 1)
-    setWinCount(winCount - 1);
-  }
-  useEffect(() => {
-    const saveToSourceChain = setInterval((() => {
-      if (savedWinPercent !== winPercent) {
-        handleSaveWins();
-        setSavedWinCount(winCount)
-      }
-
-    }), SAVE_WINS_FREQUENCY);
-
-    return () => clearInterval(saveToSourceChain);
-  }, [savedWinPercent, winPercent, winCount, handleSaveWins]);
-
-  if (currentWins == null || typeof orbitFrequency == 'undefined' || typeof currentWins !== 'number') {
-    console.log("Win tracking component fed bad props", currentWins, orbitFrequency,)
-    return <div className="win-count-container loading"><Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
-    </div>
+    const newWinCount = winCount - 1;
+    setWinCount(newWinCount);
+    handleUpdateWorkingWins(newWinCount);
   };
+
+  useEffect(() => {
+    const saveToSourceChain = setInterval(handleSaveWins, SAVE_WINS_FREQUENCY);
+    return () => clearInterval(saveToSourceChain);
+  }, [handleSaveWins]);
+
+  if (currentDateWins === null || typeof orbitFrequency === 'undefined') {
+    return <div className="win-count-container loading"><Spinner aria-label="Loading!" className="menu-spinner" size="xl" /></div>;
+  }
+
   return (
     <div className={orbitFrequency == winCount ? "win-count-container winning" : "win-count-container"}>
       <div className="title">
