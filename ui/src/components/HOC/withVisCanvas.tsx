@@ -114,6 +114,7 @@ export function withVisCanvas<T extends IVisualization>(
       selectedSphere!.entryHash as keyof SphereHierarchyBounds
       ] as HierarchyBounds,
     );
+
     // Store and update date in local component state to ensure re-render with VisControls, Calendar
     const [currentDate, setCurrentDate] = useAtom(currentDayAtom);
     useEffect(() => {
@@ -122,11 +123,26 @@ export function withVisCanvas<T extends IVisualization>(
       });
       return unsubscribe;
     }, []);
+    // Source chain queries and mutation parameters/handlers
     const currentYearDotMonth = toYearDotMonth(currentDate.toLocaleString());
     const skipFlag: boolean = (currentOrbitDetails == null || !currentOrbitDetails?.eH);
-    const { data, loading, error } = useGetWinRecordForOrbitForMonthQuery({ variables: { params: { yearDotMonth: currentYearDotMonth, orbitEh: currentOrbitDetails?.eH as EntryHashB64 } }, skip: skipFlag });
+    const { data, loading, error, refetch } = useGetWinRecordForOrbitForMonthQuery({
+      variables: { params: { yearDotMonth: currentYearDotMonth, orbitEh: currentOrbitDetails?.eH as EntryHashB64 } },
+      skip: skipFlag
+    });
     const [createOrUpdateWinRecord, { data: createOrUpdateWinRecordResponse, loading: createOrUpdateWinRecordLoading, error: createOrUpdateWinRecordError }] = useCreateWinRecordMutation();
 
+    // Store and update currentOrbit working win data to ensure re-render with VisControls, Calendar
+    useEffect(() => {
+      console.log('skipFlag :>> ', skipFlag, currentOrbitDetails?.eH);
+      if (!currentOrbitDetails) return;
+      // Reset working win data
+      setWorkingWinDataForOrbit(null);
+      // Fetch new win data for the current orbit
+      if (!skipFlag) {
+        refetch({ params: { yearDotMonth: currentYearDotMonth, orbitEh: currentOrbitDetails?.eH as EntryHashB64 } });
+      }
+    }, [currentOrbitDetails?.eH]);
 
     const [workingWinDataForOrbit, setWorkingWinDataForOrbit] = useState<WinData<Frequency.Rationals> | null>(null);
 
@@ -137,9 +153,9 @@ export function withVisCanvas<T extends IVisualization>(
         acc[date] = ("single" in val ? val.single : val.multiple);
         return acc;
       }, {});
-
+      console.log('data.get 1:>> ', data?.getWinRecordForOrbitForMonth);
       setWorkingWinDataForOrbit(newWinData);
-    }, [data, currentOrbitDetails]);
+    }, [data]);
 
     const handleUpdateWorkingWins = useCallback((newWinCount: number) => {
       if (workingWinDataForOrbit == null || currentOrbitDetails == null) return;
@@ -158,19 +174,24 @@ export function withVisCanvas<T extends IVisualization>(
         return;
       }
 
-      createOrUpdateWinRecord({
-        variables: {
-          winRecord: {
-            orbitEh: currentOrbitDetails.eH,
-            winData: Object.entries(workingWinDataForOrbit).map(([date, value]) => ({
-              date,
-              ...(isMoreThenDaily(currentOrbitDetails.frequency)
-                ? { multiple: value }
-                : { single: value })
-            }))
+      // Check if the current orbit is a leaf (you'll need to implement this logic)
+      if (isLeafOrbit(currentOrbitDetails)) {
+        createOrUpdateWinRecord({
+          variables: {
+            winRecord: {
+              orbitEh: currentOrbitDetails.eH,
+              winData: Object.entries(workingWinDataForOrbit).map(([date, value]) => ({
+                date,
+                ...(isMoreThenDaily(currentOrbitDetails.frequency)
+                  ? { multiple: value }
+                  : { single: value })
+              }))
+            }
           }
-        }
-      });
+        });
+      } else {
+        console.log("Current orbit is not a leaf. Wins will be calculated from child nodes.");
+      }
     }, [currentOrbitDetails, workingWinDataForOrbit, createOrUpdateWinRecord]);
 
     useEffect(() => {
@@ -189,7 +210,13 @@ export function withVisCanvas<T extends IVisualization>(
       });
     }, [currentDate, currentOrbitDetails]);
 
-    console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
+    const isLeafOrbit = (orbitDetails: OrbitNodeDetails | null): boolean => {
+      if (orbitDetails == null) return false
+      // TODO: implement a store atom for this.
+      // Implement logic to determine if the orbit is a leaf
+      // For example, you might check if it has any children
+      return true;
+    };
     return (
       <Component
         canvasHeight={canvasHeight}
@@ -237,6 +264,8 @@ export function withVisCanvas<T extends IVisualization>(
                   orbitFrequency={currentOrbitDetails?.frequency || 1.0}
                   orbitSiblings={orbitSiblings}
                   orbitDescendants={orbitDescendants}
+                  isLeafOrbit={isLeafOrbit(currentOrbitDetails)}
+                  currentOrbitDetails={currentOrbitDetails}
                   actions={consolidatedActions}
                 ></OverlayLayout>
                 : <VisControls // To be phased out once desktop design work is done.

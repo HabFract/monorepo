@@ -10,7 +10,7 @@ import mockAppState from "../mockState";
 import { DateTime } from "luxon";
 import { motion } from "framer-motion";
 import { Scale } from "../generated-types";
-import { FixedLengthArray, Frequency, WinData } from "@ui/src/state";
+import { Frequency, OrbitNodeDetails, WinData } from "@ui/src/state";
 
 export type OverlayLayoutProps = {
   setNewDate: Function,
@@ -27,8 +27,9 @@ export type OverlayLayoutProps = {
 
   handlePersistWins: () => void;
   handleUpdateWorkingWins: (newWinCount: number) => void;
-
+  isLeafOrbit: boolean;
   workingWinDataForOrbit: any,
+  currentOrbitDetails: OrbitNodeDetails | null,
   actions: any,
 };
 
@@ -43,6 +44,8 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   handlePersistWins,
   handleUpdateWorkingWins,
   workingWinDataForOrbit,
+  isLeafOrbit,
+  currentOrbitDetails,
   actions,
 }): ReactNode => {
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -58,7 +61,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
     const winData = workingWinDataForOrbit[dateString];
     if (typeof winData == 'undefined') return null;
     return Array.isArray(winData) ? winData.filter(Boolean).length : winData ? 1 : 0;
-  }, [workingWinDataForOrbit, currentDate]);
+  }, [workingWinDataForOrbit, currentDate, currentOrbitDetails?.eH]);
 
   const handleSaveWins = () => {
     if (currentWins == null) return;
