@@ -12,6 +12,7 @@ export const toYearDotMonth = (date: string) => date.split("/").slice(1).reverse
 
 export const isMoreThenDaily = (frequency: Frequency.Rationals): boolean => frequency > 1;
 
+
 /**
  * Determines the visual coverage type based on current parameters
  * @param params - The current parameters

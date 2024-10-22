@@ -1,5 +1,6 @@
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { CurrentOrbitId, OrbitNodeDetails, RootOrbitEntryHash } from "./orbit";
+import { CurrentOrbitId, RootOrbitEntryHash } from "./orbit";
+import { Scale } from "../../graphql/generated";
 
 /**
  *  Bounds for the min/max traversal indices.
@@ -39,4 +40,25 @@ export interface Hierarchy {
   currentNode?: CurrentOrbitId;
   /** Reference to the nomalised orbit nodes of the hierarchy which will be needed to extract and serialise full hierarchy data  */
   nodeHashes: Array<ActionHashB64>;
+}
+
+// Type for consolidated navigation flags
+export interface ConsolidatedFlags {
+  canGoUp: boolean;
+  canGoDown: boolean;
+  canGoLeft: boolean;
+  canGoRight: boolean;
+}
+
+// Type for consolidated navigation actions
+export interface ConsolidatedActions {
+  moveLeft: () => void;
+  moveRight: () => void;
+  moveUp: () => void;
+  moveDown: () => void;
+}
+
+export interface OrbitDescendant {
+  orbitName: string;
+  orbitScale: Scale;
 }

@@ -11,8 +11,8 @@ export type WinData<F extends Frequency.Rationals> =
     : { [dayIndex: string]: boolean };
 
 // WinState type that uses a mapped type to create frequency-dependent WinData for each orbit
-export type WinState = {
+export type WinDataPerOrbitNode = {
   [nodeId: ActionHashB64]: WinData<OrbitNodeDetails["frequency"]>;
 };
 
-export default WinState;
+export default WinDataPerOrbitNode;

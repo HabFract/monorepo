@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import "./common.css";
 import VisMovementLateral from "./VisMovementLateral";
 import WinCount from "./WinCount";
@@ -9,11 +9,11 @@ import Calendar from "./Calendar";
 import mockAppState from "../mockState";
 import { DateTime } from "luxon";
 import { motion } from "framer-motion";
-import { Scale } from "../generated-types";
-import { Frequency, OrbitNodeDetails, WinData } from "@ui/src/state";
+import { ConsolidatedActions, Frequency, OrbitDescendant, OrbitNodeDetails, WinData, WinDataPerOrbitNode } from "@ui/src/state";
+import { SetAtom } from "@ui/src/state/types/store";
 
 export type OverlayLayoutProps = {
-  setNewDate: Function,
+  setNewDate: SetAtom<[SetStateAction<DateTime<true>>], void>,
   currentDate: DateTime,
 
   currentStreak: number;
@@ -22,15 +22,15 @@ export type OverlayLayoutProps = {
   currentWins: WinData<Frequency.Rationals> | null;
   orbitFrequency: Frequency.Rationals;
 
-  orbitSiblings: Array<{ orbitName: string, orbitScale: Scale, handleOrbitSelect: () => void }>
-  orbitDescendants: Array<{ orbitName: string, orbitScale: Scale, handleOrbitSelect: () => void }>
+  orbitSiblings: Array<OrbitDescendant & { handleOrbitSelect: () => void }>
+  orbitDescendants: Array<OrbitDescendant>
 
   handlePersistWins: () => void;
   handleUpdateWorkingWins: (newWinCount: number) => void;
   isLeafOrbit: boolean;
-  workingWinDataForOrbit: any,
+  workingWinDataForOrbit: WinData<Frequency.Rationals> | null,
   currentOrbitDetails: OrbitNodeDetails | null,
-  actions: any,
+  actions: ConsolidatedActions,
 };
 
 const OverlayLayout: React.FC<OverlayLayoutProps> = ({

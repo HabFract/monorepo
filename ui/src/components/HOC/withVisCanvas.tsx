@@ -18,12 +18,11 @@ import {
 } from "../../state/orbit";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { store } from "../../state/store";
-import { Frequency, OrbitNodeDetails, SphereHashes, WinData } from "../../state/types";
+import { OrbitNodeDetails, SphereHashes } from "../../state/types";
 import VisModal from "../VisModal";
-import TraversalButton from "../navigation/TraversalButton";
-import { OverlayLayout, VisControls } from "habit-fract-design-system";
+import { OverlayLayout } from "habit-fract-design-system";
 import { currentDayAtom } from "../../state/date";
-import { appendSvg, byStartTime, debounce, getCanvasDimensions, isSmallScreen } from "../vis/helpers";
+import { byStartTime, getCanvasDimensions, isSmallScreen } from "../vis/helpers";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import { HierarchyNode } from "d3-hierarchy";
 import {
@@ -31,37 +30,48 @@ import {
   HierarchyBounds,
   Coords,
   NodeContent,
+  ConsolidatedActions,
+  ConsolidatedFlags,
+  OrbitDescendant,
 } from "../../state/types/hierarchy";
-import { Scale, useGetWinRecordForOrbitForMonthQuery, useCreateWinRecordMutation, useUpdateWinRecordMutation } from "../../graphql/generated";
+import { useCreateWinRecordMutation } from "../../graphql/generated";
 import { useAtom, useAtomValue } from "jotai";
 import { isMoreThenDaily, toYearDotMonth } from "../vis/tree-helpers";
 import { useVisCanvas } from "../../hooks/useVisCanvas";
 import TraversalButtons from "../navigation/TraversalButtons";
 import { DEFAULT_MARGINS } from "../vis/constants";
+import { StoreType } from "../../state/types/store";
+import { Spinner } from "flowbite-react";
+import { useWinData } from "../../hooks/useWinData";
+import { DateTime } from "luxon";
 
+/**
+ * Higher-order component to enhance a visualization component with additional logic and state management.
+ *
+ * @template T the type of Visualisation object (Must extend the BaseVisualization interface)
+ * @param {ComponentType<VisProps<T>>} Component - The visualization component to be enhanced.
+ * @returns {ReactNode} A new component wrapped with additional logic and state management.
+ *
+ * @example
+ * const EnhancedComponent = withVisCanvas(MyVisualizationComponent);
+ *
+ * @description
+ * The `withVisCanvas` HOC is responsible for:
+ * - Appending the visualization canvas to the DOM.
+ * - Setting up sane defaults before rendering the visualization.
+ * - Calculating logical conditions for the controls that need to be rendered.
+ * - Encapsulating the traversal state and logic for navigating the visualization.
+ *
+ * This HOC abstracts away the complexity of managing the visualization's state and side effects,
+ * allowing the wrapped component to focus on rendering the visualization itself.
+ */
 export function withVisCanvas<T extends IVisualization>(
   Component: ComponentType<VisProps<T>>,
 ): ReactNode {
   const ComponentWithVis = React.memo(() => {
-    // Get the details of the current Orbit's context which will trigger re-rerenders of the Vis OverlayLayout/controls
+    // Get the details of the current Orbit in context, and the calculated bounds for navigation of the rendered hierarchy
+    // which will determine the state/visibility of the Vis OverlayLayout/controls
     const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
-
-    // Get the hashes of the current Sphere's context and use it as a useEffect dependency for appending the SVG canvas.
-    const selectedSphere: SphereHashes = store.get(currentSphereHashesAtom);
-    const { appendedSvg } = useVisCanvas(selectedSphere);
-
-    const allFirstChildDescendantOrbits = useRef<any>(null);
-
-    const [currentParentOrbitEh, setCurrentParentOrbitEh] =
-      useState<EntryHashB64>();
-    const [currentChildOrbitEh, setCurrentChildOrbitEh] =
-      useState<EntryHashB64>();
-
-    // console.log('VIS CONTEXT: ', selectedSphere, currentOrbitDetails);
-
-    const { canvasHeight, canvasWidth } = getCanvasDimensions();
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
     const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
       currentSphereHierarchyBounds,
     );
@@ -69,6 +79,12 @@ export function withVisCanvas<T extends IVisualization>(
       currentSphereHierarchyIndices,
     );
 
+    // Get the hashes of the current Sphere's context and use it as a useEffect dependency for appending the SVG canvas.
+    const selectedSphere: SphereHashes = store.get(currentSphereHashesAtom);
+    const { appendedSvg } = useVisCanvas(selectedSphere);
+    const { canvasHeight, canvasWidth } = getCanvasDimensions();
+
+    // Get actions for Node traversal and update of the hierarchy bounds/current indices
     const {
       incrementBreadth,
       decrementBreadth,
@@ -83,64 +99,45 @@ export function withVisCanvas<T extends IVisualization>(
       ] as HierarchyBounds,
     );
 
+    // ## -- Component level state -- ##
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+    const allFirstChildDescendantOrbits = useRef<any>(null);
+    const [currentParentOrbitEh, setCurrentParentOrbitEh] =
+      useState<EntryHashB64>();
+    const [currentChildOrbitEh, setCurrentChildOrbitEh] =
+      useState<EntryHashB64>();
+
     // Store and update date in local component state to ensure re-render with VisControls, Calendar
-    const [currentDate, setCurrentDate] = useAtom(currentDayAtom);
+    const [currentDate, setCurrentDate] = useAtom<DateTime>(currentDayAtom);
     useEffect(() => {
       const unsubscribe = store.sub(currentDayAtom, () => {
         setCurrentDate(store.get(currentDayAtom));
       });
       return unsubscribe;
     }, []);
-    // Source chain queries and mutation parameters/handlers
-    const currentYearDotMonth = toYearDotMonth(currentDate.toLocaleString());
-    const skipFlag: boolean = (currentOrbitDetails == null || !currentOrbitDetails?.eH);
-    const { data, loading, error, refetch } = useGetWinRecordForOrbitForMonthQuery({
-      variables: { params: { yearDotMonth: currentYearDotMonth, orbitEh: currentOrbitDetails?.eH as EntryHashB64 } },
-      skip: skipFlag
-    });
+
+    // ## -- Source chain queries and mutation parameters/handlers -- ##
     const [createOrUpdateWinRecord, { data: createOrUpdateWinRecordResponse, loading: createOrUpdateWinRecordLoading, error: createOrUpdateWinRecordError }] = useCreateWinRecordMutation();
 
-    // Store and update currentOrbit working win data to ensure re-render with VisControls, Calendar
-    useEffect(() => {
-      if (!currentOrbitDetails) return;
-      // Reset working win data
-      setWorkingWinDataForOrbit(null);
-      // Fetch new win data for the current orbit
-      if (!skipFlag) {
-        refetch({ params: { yearDotMonth: currentYearDotMonth, orbitEh: currentOrbitDetails?.eH as EntryHashB64 } });
-      }
-    }, [currentOrbitDetails?.eH]);
+    // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
+    const { workingWinDataForOrbit, handleUpdateWorkingWins } = useWinData(currentOrbitDetails, currentDate);
+    console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
+    // TODO: handle derived error/loading states
+    // const loading = useGetWinRecordForOrbitForMonthQueryLoading || createOrUpdateWinRecordLoading;
+    // const error = useGetWinRecordForOrbitForMonthQueryError || createOrUpdateWinRecordError;
 
-    const [workingWinDataForOrbit, setWorkingWinDataForOrbit] = useState<WinData<Frequency.Rationals> | null>(null);
-
-    useEffect(() => {
-      if (currentOrbitDetails == null || !data?.getWinRecordForOrbitForMonth) return;
-
-      const newWinData = data.getWinRecordForOrbitForMonth.winData.reduce((acc: any, { date, value: val }: any) => {
-        acc[date] = ("single" in val ? val.single : val.multiple);
-        return acc;
-      }, {});
-      setWorkingWinDataForOrbit(newWinData);
-    }, [data]);
-
-    const handleUpdateWorkingWins = useCallback((newWinCount: number) => {
-      if (workingWinDataForOrbit == null || currentOrbitDetails == null) return;
-
-      setWorkingWinDataForOrbit(prevData => ({
-        ...prevData,
-        [currentDate.toLocaleString()]: currentOrbitDetails.frequency > 1
-          ? Array(currentOrbitDetails.frequency).fill(false).map((_, i) => i < newWinCount)
-          : !!newWinCount
-      }));
-    }, [workingWinDataForOrbit, currentOrbitDetails, currentDate]);
+    const isLeafOrbit = (orbitDetails: OrbitNodeDetails | null): boolean => {
+      if (orbitDetails == null) return false
+      return true;
+    };
 
     const handlePersistWins = useCallback(() => {
       if (!currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit) {
         console.error("Not enough details to persist.");
         return;
       }
-
-      // Check if the current orbit is a leaf (you'll need to implement this logic)
+      console.log("Persisting new win data...");
       if (isLeafOrbit(currentOrbitDetails)) {
         createOrUpdateWinRecord({
           variables: {
@@ -160,41 +157,20 @@ export function withVisCanvas<T extends IVisualization>(
       }
     }, [currentOrbitDetails, workingWinDataForOrbit, createOrUpdateWinRecord]);
 
-    useEffect(() => {
-      if (currentOrbitDetails == null || !currentDate) return;
-
-      setWorkingWinDataForOrbit(prevData => {
-        if (!prevData || !(currentDate.toLocaleString() in prevData)) {
-          return {
-            ...prevData,
-            [currentDate.toLocaleString()]: isMoreThenDaily(currentOrbitDetails.frequency)
-              ? new Array(currentOrbitDetails.frequency).fill(false)
-              : false
-          };
-        }
-        return prevData;
-      });
-    }, [currentDate, currentOrbitDetails]);
-
-    const isLeafOrbit = (orbitDetails: OrbitNodeDetails | null): boolean => {
-      if (orbitDetails == null) return false
-      // TODO: implement a store atom for this.
-      // Implement logic to determine if the orbit is a leaf
-      // For example, you might check if it has any children
-      return true;
-    };
     return (
       <Component
         canvasHeight={canvasHeight}
         canvasWidth={canvasWidth}
         margin={DEFAULT_MARGINS}
         render={(currentVis: T) => {
+          if (!currentOrbitDetails?.eH) return <Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
+
           const {
             consolidatedFlags,
             consolidatedActions,
             orbitDescendants,
             orbitSiblings
-          } = getActionsAndDataForControls(currentVis, currentOrbitDetails?.eH);
+          } = getActionsAndDataForControls(currentVis, currentOrbitDetails.eH);
 
           if (appendedSvg) {
             // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
@@ -202,15 +178,17 @@ export function withVisCanvas<T extends IVisualization>(
             currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
             currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
 
-            // Trigger the Vis object render function only once the SVG is appended to the DOM
+            // Trigger the Vis object render function ONLY once the SVG is appended to the DOM
             currentVis?.render();
           }
           return (
             <>
-              {/* {<currentVis.coverageType !== VisCoverage.Partial && <svg className="fixed text-white top-1 right-1 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z" clipRule="evenodd" />
-                </svg>
-                }> */}
+              {/* Magnification Icon for indicating when full zoom capability is present */}
+              {currentVis.coverageType == VisCoverage.CompleteSphere && currentHierarchyIndices.y == 0 && <svg className="fixed text-white top-1 right-1 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fillRule="evenodd" d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z" clipRule="evenodd" />
+              </svg>
+              }
+              {/* Currently we are only supporting mobile for Navigation/Win Completion */}
               {isSmallScreen()
                 ? <OverlayLayout
                   currentDate={currentDate}
@@ -230,6 +208,7 @@ export function withVisCanvas<T extends IVisualization>(
                 : null
               }
 
+              {/* Modal, primarily for appending/prepending new nodes to the hierarchy from the Vis */}
               {VisModal<T>(
                 isModalOpen,
                 setIsModalOpen,
@@ -243,6 +222,9 @@ export function withVisCanvas<T extends IVisualization>(
         }}
       ></Component>
     );
+
+
+    // ## -- Helpers for generating flags and actions for Hierarchy traversal are left in function scope to simplify, since they are not currently to be used elsewhere -- ##
 
     function generateNavigationFlags(
       currentVis: T,
@@ -291,9 +273,9 @@ export function withVisCanvas<T extends IVisualization>(
       currentVis: T,
       currentId: ActionHashB64,
       rootId: string,
-      children: Array<HierarchyNode<any>>,
-      currentDetails: any,
-      store: any,
+      children: Array<HierarchyNode<NodeContent>>,
+      currentDetails: OrbitNodeDetails | null,
+      store: StoreType,
     ) {
       return {
         moveLeft: () => {
@@ -337,8 +319,8 @@ export function withVisCanvas<T extends IVisualization>(
                     ((
                       children?.find(
                         (child) => child?.data?.content == currentId && !!child.children,
-                      ) as HierarchyNode<any>
-                    )?.children?.[0] as HierarchyNode<any>);
+                      ) as HierarchyNode<NodeContent>
+                    )?.children?.[0] as HierarchyNode<NodeContent>);
                   const newId = newChild && newChild.parent?.data?.content;
                   store.set(newTraversalLevelIndexId, { id: newId, direction: 'down', previousRenderSiblingIndex: currentRenderSiblingIndex });
                   setBreadthIndex(0);
@@ -354,7 +336,7 @@ export function withVisCanvas<T extends IVisualization>(
           console.log('Traversing up... :>> ');
           store.set(newTraversalLevelIndexId, {
             id: currentDetails?.parentEh,
-            intermediateId: currentDetails.id,
+            intermediateId: currentDetails?.id,
             direction: 'up'
           });
         },
@@ -376,12 +358,12 @@ export function withVisCanvas<T extends IVisualization>(
       };
     }
 
-    function getActionsAndDataForControls(currentVis: T, currentId?: EntryHashB64) {
+    function getActionsAndDataForControls(currentVis: T, currentId: EntryHashB64) {
       // Determine current vis render-specific data and context
       const rootId = currentVis.rootData.data.content;
-      const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
+      const children = (((currentVis.rootData?.children) as Array<HierarchyNode<NodeContent>>) || []).sort(byStartTime);
       const sphereNodeDetails = store.get(currentSphereOrbitNodeDetailsAtom);
-      const orbitSiblings = (currentId == rootId ? [currentVis.rootData] : children).map(node => {
+      const orbitSiblings: Array<OrbitDescendant & { handleOrbitSelect: () => void }> = (currentId == rootId ? [currentVis.rootData] : children).map(node => {
         const orbitInfo = sphereNodeDetails[node.data.content];
         return {
           orbitName: orbitInfo.name,
@@ -389,7 +371,7 @@ export function withVisCanvas<T extends IVisualization>(
           handleOrbitSelect: () => console.log("orbit selected")
         }
       })
-      const orbitDescendants: Array<{ orbitName: string, orbitScale: Scale }> = [];
+      const orbitDescendants: Array<OrbitDescendant> = [];
       if (allFirstChildDescendantOrbits.current == null && currentOrbitDetails?.eH == rootId && currentVis.rootData) {
         getFirstDescendantLineage(currentVis.rootData);
         allFirstChildDescendantOrbits.current = orbitDescendants;
@@ -414,13 +396,13 @@ export function withVisCanvas<T extends IVisualization>(
         store,
       );
       // Consolidate down into 4 directions for the mobile control overlay
-      const consolidatedFlags = {
+      const consolidatedFlags: ConsolidatedFlags = {
         canGoUp: !!(flags.canMoveUp || flags.canTraverseUp),
         canGoDown: !!(flags.canMoveDown || flags.canTraverseDownMiddle || flags.canTraverseDownLeft),
         canGoLeft: !!(flags.canMoveLeft || flags.canTraverseLeft),
         canGoRight: !!(flags.canMoveRight || flags.canTraverseRight),
       };
-      const consolidatedActions = {
+      const consolidatedActions: ConsolidatedActions = {
         moveLeft: flags.canMoveLeft ? actions.moveLeft : actions.traverseLeft,
         moveRight: flags.canMoveRight ? actions.moveRight : actions.traverseRight,
         moveUp: flags.canMoveUp ? actions.moveUp : actions.traverseUp,
@@ -440,7 +422,7 @@ export function withVisCanvas<T extends IVisualization>(
         orbitDescendants.push({
           orbitName: orbitInfo.name,
           orbitScale: orbitInfo.scale,
-        } as any);
+        } as OrbitDescendant);
 
         // If this node has children, traverse to the first child
         if (node.children && node.children.length > 0) {
