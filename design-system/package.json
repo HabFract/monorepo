@@ -46,6 +46,7 @@
     "react-dom": "^18.2.0",
     "rollup-plugin-postcss": "^4.0.2",
     "storybook": "8.3.3",
+    "storybook-dark-mode": "^4.0.2",
     "vite": "^5.4.8"
   }
 }

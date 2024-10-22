@@ -1,0 +1,13 @@
+.header-action-container{
+  @apply w-full flex justify-between items-center text-base bg-bg text-white;
+  padding: 12px 16px;
+  height: 64px;
+  max-width: 440px;
+}
+.header-action-container h1 {
+  @apply font-sans text-base font-bold text-center;
+  letter-spacing: 0.02rem;
+  line-height: 21.86px;
+  text-align: center;
+  
+}

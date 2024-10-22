@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const tailwindConfig = {
+  darkMode: 'class',
   content: [
     "./**/*.{js,jsx,ts,tsx}",
     "../../node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
@@ -28,8 +29,8 @@ const tailwindConfig = {
       uppercase: "uppercase",
     },
     fontFamily: {
-      sans: ["Lexend, Nunito", "Arial"],
-      heading: ["Nunito", "Arial"],
+      sans: ["Manrope, Nunito", "Arial"],
+      heading: ["Manrope", "Arial"],
     },
     extend: {
       fontWeight: {

@@ -13,19 +13,19 @@ export function getIconForPlanetValue(
           src="/assets/sun.svg"
         />
       );
-      case Scale.Sub:
-        return () => (
-          <img
-          style={{ height: "24px", width: "auto",  transform: 'scale(1.2)', marginTop: '8px', objectFit: "cover" }}
+    case Scale.Sub:
+      return () => (
+        <img
+          style={{ height: "24px", width: "auto", transform: 'scale(1.2)', marginTop: '8px', objectFit: "cover" }}
           src="/assets/planet.svg"
-          />
-        );
-      case Scale.Atom:
-        return () => (
-          <img
-            style={{ height: "24px", width: "auto", transform: 'scale(0.8)', marginTop: '0px', objectFit: "cover" }}
-            src="/assets/moon.svg"
-          />
+        />
+      );
+    case Scale.Atom:
+      return () => (
+        <img
+          style={{ height: "24px", width: "auto", transform: 'scale(0.8)', marginTop: '0px', objectFit: "cover" }}
+          src="/assets/moon.svg"
+        />
       );
   }
 }
@@ -147,6 +147,20 @@ export function getIconSvg(
             strokeLinecap="round"
             strokeLinejoin="round"
           />
+        </svg>
+      );
+    case "back":
+      return () => (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 5L8.43004 11.6237C8.20238 11.8229 8.20238 12.1771 8.43004 12.3763L16 19" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      );
+    case "more":
+      return () => (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="2" fill="white"/>
+          <circle cx="4" cy="12" r="2" fill="white"/>
+          <circle cx="20" cy="12" r="2" fill="white"/>
         </svg>
       );
     default:
