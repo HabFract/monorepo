@@ -1,10 +1,8 @@
-import React, { ComponentType, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { ComponentType, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import "../vis/vis.css";
 
-import { Margins, VisProps, VisCoverage, IVisualization } from "../vis/types";
-import { select } from "d3-selection";
-import { decode } from "@msgpack/msgpack";
+import { VisProps, VisCoverage, IVisualization } from "../vis/types";
 import { useNodeTraversal } from "../../hooks/useNodeTraversal";
 import {
   currentSphereHierarchyBounds,
@@ -18,15 +16,14 @@ import {
   currentSphereOrbitNodeDetailsAtom,
   getOrbitNodeDetailsFromEhAtom,
 } from "../../state/orbit";
-import { WithVisCanvasProps } from "../vis/types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { store } from "../../state/store";
-import { FixedLengthArray, Frequency, OrbitNodeDetails, WinData, WinState } from "../../state/types";
+import { Frequency, OrbitNodeDetails, SphereHashes, WinData } from "../../state/types";
 import VisModal from "../VisModal";
 import TraversalButton from "../navigation/TraversalButton";
 import { OverlayLayout, VisControls } from "habit-fract-design-system";
 import { currentDayAtom } from "../../state/date";
-import { byStartTime, debounce, isSmallScreen } from "../vis/helpers";
+import { appendSvg, byStartTime, debounce, getCanvasDimensions, isSmallScreen } from "../vis/helpers";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import { HierarchyNode } from "d3-hierarchy";
 import {
@@ -38,45 +35,21 @@ import {
 import { Scale, useGetWinRecordForOrbitForMonthQuery, useCreateWinRecordMutation, useUpdateWinRecordMutation } from "../../graphql/generated";
 import { useAtom, useAtomValue } from "jotai";
 import { isMoreThenDaily, toYearDotMonth } from "../vis/tree-helpers";
-
-const defaultMargins: Margins = {
-  top: 0,
-  right: 0,
-  bottom: 0,
-  left: 0,
-};
-
-const getCanvasDimensions = function () {
-  const { height, width } = document.body.getBoundingClientRect();
-  const canvasHeight = height - defaultMargins.top - defaultMargins.bottom;
-  const canvasWidth = width - defaultMargins.right - defaultMargins.left;
-
-  return { canvasHeight, canvasWidth };
-};
-
-const appendSvg = (mountingDivId: string, divId: string) => {
-  return (
-    select(`#${divId}`).empty() &&
-    select(`#${mountingDivId}`)
-      .append("svg")
-      .attr("id", `${divId}`)
-      .attr("width", "100vw")
-      .attr("data-testid", "svg")
-      .attr("height", "100vh")
-      .attr("style", "pointer-events: all")
-  );
-};
+import { useVisCanvas } from "../../hooks/useVisCanvas";
+import TraversalButtons from "../navigation/TraversalButtons";
+import { DEFAULT_MARGINS } from "../vis/constants";
 
 export function withVisCanvas<T extends IVisualization>(
   Component: ComponentType<VisProps<T>>,
 ): ReactNode {
   const ComponentWithVis = React.memo(() => {
-    const mountingDivId = "vis-root";
-    const svgId = "vis"; // May need to be declared dynamically when we want multiple vis on a page
-    const [appendedSvg, setAppendedSvg] = useState<boolean>(false);
-
-    const selectedSphere = store.get(currentSphereHashesAtom);
+    // Get the details of the current Orbit's context which will trigger re-rerenders of the Vis OverlayLayout/controls
     const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
+
+    // Get the hashes of the current Sphere's context and use it as a useEffect dependency for appending the SVG canvas.
+    const selectedSphere: SphereHashes = store.get(currentSphereHashesAtom);
+    const { appendedSvg } = useVisCanvas(selectedSphere);
+
     const allFirstChildDescendantOrbits = useRef<any>(null);
 
     const [currentParentOrbitEh, setCurrentParentOrbitEh] =
@@ -85,11 +58,6 @@ export function withVisCanvas<T extends IVisualization>(
       useState<EntryHashB64>();
 
     // console.log('VIS CONTEXT: ', selectedSphere, currentOrbitDetails);
-    useEffect(() => {
-      if (document.querySelector(`#${mountingDivId} #${svgId}`)) return;
-      const appended = !!appendSvg(mountingDivId, svgId);
-      setAppendedSvg(appended);
-    }, [selectedSphere?.actionHash]);
 
     const { canvasHeight, canvasWidth } = getCanvasDimensions();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -134,7 +102,6 @@ export function withVisCanvas<T extends IVisualization>(
 
     // Store and update currentOrbit working win data to ensure re-render with VisControls, Calendar
     useEffect(() => {
-      console.log('skipFlag :>> ', skipFlag, currentOrbitDetails?.eH);
       if (!currentOrbitDetails) return;
       // Reset working win data
       setWorkingWinDataForOrbit(null);
@@ -153,7 +120,6 @@ export function withVisCanvas<T extends IVisualization>(
         acc[date] = ("single" in val ? val.single : val.multiple);
         return acc;
       }, {});
-      console.log('data.get 1:>> ', data?.getWinRecordForOrbitForMonth);
       setWorkingWinDataForOrbit(newWinData);
     }, [data]);
 
@@ -221,17 +187,12 @@ export function withVisCanvas<T extends IVisualization>(
       <Component
         canvasHeight={canvasHeight}
         canvasWidth={canvasWidth}
-        margin={defaultMargins}
+        margin={DEFAULT_MARGINS}
         selectedSphere={selectedSphere}
         coords={currentHierarchyIndices}
         render={(currentVis: T) => {
-          const traversalButtons = renderTraversalButtons(
-            currentHierarchyIndices,
-            currentVis,
-            currentOrbitDetails!
-          )
-
           const {
+            consolidatedFlags,
             consolidatedActions,
             orbitDescendants,
             orbitSiblings
@@ -269,7 +230,7 @@ export function withVisCanvas<T extends IVisualization>(
                   actions={consolidatedActions}
                 ></OverlayLayout>
                 : <VisControls // To be phased out once desktop design work is done.
-                  buttons={traversalButtons}
+                  buttons={<TraversalButtons actions={consolidatedActions} {...consolidatedFlags} />}
                 />
               }
 
@@ -441,9 +402,8 @@ export function withVisCanvas<T extends IVisualization>(
       if (allFirstChildDescendantOrbits.current == null && currentOrbitDetails?.eH == rootId && currentVis.rootData) {
         getFirstDescendantLineage(currentVis.rootData);
         allFirstChildDescendantOrbits.current = orbitDescendants;
-        // console.log('orbitDescendants, currentId :>> ', orbitDescendants, allFirstChildDescendantOrbits.current); 
       }
-      // Generate actions to be fed into mob/desktop vis control components
+      // Generate a full range of conditions/actions that could be fed into mob/desktop vis control components
       const flags = generateNavigationFlags(
         currentVis,
         currentId,
@@ -462,13 +422,22 @@ export function withVisCanvas<T extends IVisualization>(
         currentOrbitDetails,
         store,
       );
-      const consolidatedActions = {} as any;
-      consolidatedActions.moveLeft = flags.canMoveLeft ? actions.moveLeft : actions.traverseLeft;
-      consolidatedActions.moveRight = flags.canMoveRight ? actions.moveRight : actions.traverseRight;
-      consolidatedActions.moveUp = flags.canMoveUp ? actions.moveUp : actions.traverseUp;
-      consolidatedActions.moveDown = flags.canMoveDown ? actions.moveDown : actions.traverseDown;
+      // Consolidate down into 4 directions for the mobile control overlay
+      const consolidatedFlags = {
+        canGoUp: !!(flags.canMoveUp || flags.canTraverseUp),
+        canGoDown: !!(flags.canMoveDown || flags.canTraverseDownMiddle || flags.canTraverseDownLeft),
+        canGoLeft: !!(flags.canMoveLeft || flags.canTraverseLeft),
+        canGoRight: !!(flags.canMoveRight || flags.canTraverseRight),
+      };
+      const consolidatedActions = {
+        moveLeft: flags.canMoveLeft ? actions.moveLeft : actions.traverseLeft,
+        moveRight: flags.canMoveRight ? actions.moveRight : actions.traverseRight,
+        moveUp: flags.canMoveUp ? actions.moveUp : actions.traverseUp,
+        moveDown: flags.canMoveDown ? actions.moveDown : actions.traverseDown,
+      };
 
       return {
+        consolidatedFlags,
         consolidatedActions,
         orbitSiblings,
         orbitDescendants: allFirstChildDescendantOrbits.current
@@ -488,82 +457,6 @@ export function withVisCanvas<T extends IVisualization>(
         }
       }
     }
-
-    function renderTraversalButtons<T extends IVisualization>(
-      coords: Coords,
-      currentVis: T,
-      currentDetails: OrbitNodeDetails
-    ) {
-      const { x, y } = coords;
-      const rootId = currentVis.rootData.data.content;
-      let currentId = store.get(currentOrbitIdAtom)?.id as ActionHashB64;
-      const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
-
-      // Calculate conditions for either moving (within current window of sphere hierarchy data) or traversing (across windows)
-      const {
-        canMoveUp,
-        canTraverseUp,
-        canMoveDown,
-        canTraverseDownMiddle,
-        canTraverseDownLeft,
-        canTraverseLeft,
-        canMoveLeft,
-        canMoveRight,
-        canTraverseRight,
-      } = generateNavigationFlags(
-        currentVis as any,
-        currentId,
-        rootId,
-        children,
-        x,
-        y,
-        maxBreadth,
-        maxDepth
-      );
-      // console.table({  canMoveUp, canTraverseUp, canMoveDown, canTraverseDownMiddle, canTraverseDownLeft, canTraverseLeft, canMoveLeft, canMoveRight, canTraverseRight})
-
-      // Consolidate move/traverse conditions such that there is only one action presented to the user for each direction
-      const canGoUp = !!(canMoveUp || canTraverseUp);
-      const canGoDown = !!(canMoveDown || canTraverseDownMiddle || canTraverseDownLeft);
-      const canGoLeft = !!(canMoveLeft || canTraverseLeft)
-      const canGoRight = !!(canMoveRight || canTraverseRight)
-      // Generate actions based on the flags computed above
-      const actions = generateNavigationActions(
-        currentVis as any,
-        currentId,
-        rootId,
-        children,
-        currentDetails,
-        store,
-      );
-
-      return [
-        <TraversalButton
-          condition={canGoUp}
-          iconType="up"
-          onClick={canMoveUp ? actions.moveUp : actions.traverseUp}
-          dataTestId="vis-go-up"
-        />,
-        <TraversalButton
-          condition={canGoDown}
-          iconType="down"
-          onClick={canMoveDown ? actions.moveDown : actions.traverseDown}
-          dataTestId="vis-go-down"
-        />,
-        <TraversalButton
-          condition={canGoLeft}
-          iconType="left"
-          onClick={canMoveLeft ? actions.moveLeft : actions.traverseLeft}
-          dataTestId="vis-go-left"
-        />,
-        <TraversalButton
-          condition={canGoRight}
-          iconType="right"
-          onClick={canMoveRight ? actions.moveRight : actions.traverseRight}
-          dataTestId="vis-go-right"
-        />,
-      ];
-    };
   })
   //@ts-ignore
   return <ComponentWithVis />;

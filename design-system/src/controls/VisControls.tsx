@@ -1,9 +1,9 @@
-import React, { ReactNode } from "react";
+import React, { ReactElement, ReactNode } from "react";
 
 import "./common.css";
 
 export interface VisControlsProps {
-  buttons: ReactNode[];
+  buttons: ReactElement<any, any>;
   allowPrepend?: boolean;
 }
 
@@ -16,7 +16,7 @@ const VisControls: React.FC<VisControlsProps> = ({
       {allowPrepend && (
         <button className="add-node-button higher-button"></button>
       )}
-      {...buttons}
+      {buttons}
       {allowPrepend && (
         <button className="add-node-button lower-button"></button>
       )}

@@ -1,12 +1,33 @@
-import { IVisualization, ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
+import { IVisualization, Margins, ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
 import { ReactNode } from "react";
 import { withVisCanvas } from "../HOC/withVisCanvas";
-import { BASE_SCALE, FOCUS_MODE_SCALE } from "./constants";
+import { BASE_SCALE, DEFAULT_MARGINS, FOCUS_MODE_SCALE } from "./constants";
 import { store } from "../../state/store";
 import { getCurrentOrbitStartTimeFromEh } from "../../state/orbit";
 import { newTraversalLevelIndexId, NodeContent, OrbitNodeDetails } from "../../state";
 import { HierarchyNode } from "d3-hierarchy";
 import { Scale } from "../..//graphql/generated";
+import { select } from "d3-selection";
+
+export const getCanvasDimensions = () => {
+  const { height, width } = document.body.getBoundingClientRect();
+  const canvasHeight = height - DEFAULT_MARGINS.top - DEFAULT_MARGINS.bottom;
+  const canvasWidth = width - DEFAULT_MARGINS.right - DEFAULT_MARGINS.left;
+  return { canvasHeight, canvasWidth };
+};
+
+export const appendSvg = (mountingDivId: string, divId: string) => {
+  return (
+    select(`#${divId}`).empty() &&
+    select(`#${mountingDivId}`)
+      .append("svg")
+      .attr("id", `${divId}`)
+      .attr("width", "100vw")
+      .attr("data-testid", "svg")
+      .attr("height", "100vh")
+      .attr("style", "pointer-events: all")
+  );
+};
 
 // Helper function to return a ReactNode that is a combination of the Vis component, wrapped by the withCanvas higher order component, contained by a mounting div
 export const renderVis = (
