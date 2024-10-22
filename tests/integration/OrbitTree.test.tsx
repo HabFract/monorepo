@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { expect, test, it, afterEach, describe, beforeAll, vi, beforeEach } from 'vitest'
 import { render, waitFor, screen, act, cleanup } from '@testing-library/react';
   
@@ -15,7 +15,7 @@ import { resetMocks, setMockUseStateTransitionResponse } from '../setup';
 import { addCustomMock, clearCustomMocks, mockedCacheEntries, mockStore } from '../setupMockStore';
 import { GetOrbitHierarchyDocument } from '../../ui/src/graphql/generated';
 import { InMemoryCache } from '@apollo/client';
-import { appStateAtom, Frequency } from '../../ui/src/state';
+import { appStateAtom, Frequency, getHierarchyAtom } from '../../ui/src/state';
 import { useAtom } from 'jotai';
 
 const mockClient = createMockClient();
@@ -230,11 +230,11 @@ describe.only('OrbitTree', () => {
     });
   });
 
-  test('updates hierarchy details in AppState', async () => {
+  test('updates hierarchy details in AppState with the level trees array JSON and hierarchy node hashes', async () => {
     // Arrange
 
     const TestComponent = () => {
-      const appState = useAtom(appStateAtom);
+      const appState = useAtom(useMemo(() => getHierarchyAtom("uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj"), []));
       return <div data-testid="container">
         {renderVis(OrbitTree)}
         {JSON.stringify(appState)}
@@ -245,32 +245,21 @@ describe.only('OrbitTree', () => {
     renderWithJotai(<TestComponent />, {initialHierarchy: HIERARCHY_MOCKS} as any);
     
     await waitFor(() => {
-      const currentHierarchyAppState = JSON.parse(screen.getByTestId("container").textContent as string)[0]["hierarchies"];
+      const currentHierarchy = JSON.parse(screen.getByTestId("container").textContent as string)[0];
 
       // Assert
-      expect(currentHierarchyAppState.byRootOrbitEntryHash["uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj"]).toBeTruthy();
+      expect(currentHierarchy).toBeTruthy();
       
-      expect(currentHierarchyAppState.byRootOrbitEntryHash["uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj"]).toBe({
-        "bounds": {
-          "maxBreadth": 2,
-          "maxDepth": 2,
-          "minBreadth": 0,
-          "minDepth": 0,
-        },
-        "currentNode": "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
-        "indices": {
-          "x": 0,
-          "y": 0,
-        },
-        "json": "{\"content\":\"uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj\",\"name\":\"Be the best\",\"children\":[{\"content\":\"uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc\",\"name\":\"Daily Exercise\",\"children\":[{\"content\":\"uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc\",\"name\":\"Weekly Gym Session\"},{\"content\":\"uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc\",\"name\":\"Daily Meditation\"}]},{\"content\":\"uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc\",\"name\":\"Monthly Health Check\"}]}",
+      expect(currentHierarchy).toStrictEqual({
+        "json": JSON.stringify([{
+          content: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+          children: [],
+        }]),
         "nodeHashes": [
           "uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
-          "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
-          "uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
-          "uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
-          "uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
         ],
-        "rootNode": "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj"});
+        "rootNode": "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+      });
     });
   });
 

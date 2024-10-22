@@ -46,6 +46,7 @@ export abstract class BaseVisualization implements IVisualization {
   nodeDetails: SphereOrbitNodeDetails;
   _nextRootData: HierarchyNode<any> | null;
 
+  _json?: string;
   _originalRootData?: HierarchyNode<any>;
   _svgId: string;
   _canvas: Selection<SVGGElement, unknown, HTMLElement, any> | undefined;

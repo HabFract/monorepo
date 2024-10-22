@@ -34,7 +34,7 @@ export interface Hierarchy {
   rootNode: RootOrbitEntryHash;
   /** The structure of the hierarchy as fed to the d3.hierarchy method */
   json: string;
-  bounds: HierarchyBounds;
+  bounds?: HierarchyBounds;
   indices?: HierarchyTraversalIndices;
   /** Currently selected Orbit in the hierarchy */
   currentNode?: CurrentOrbitId;

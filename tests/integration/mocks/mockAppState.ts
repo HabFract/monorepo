@@ -29,22 +29,7 @@ export const mockAppState: AppState = {
     },
   },
   hierarchies: {
-    byRootOrbitEntryHash: {
-      uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
-        rootNode: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
-        json: "",
-        bounds: { minBreadth: 0, maxBreadth: 2, minDepth: 0, maxDepth: 2 },
-        indices: { x: 0, y: 0 },
-        currentNode: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
-        nodeHashes: [
-          "uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
-          "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
-          "uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
-          "uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
-          "uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
-        ],
-      },
-    },
+    byRootOrbitEntryHash: {},
   },
   orbitNodes: {
     currentOrbitHash: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",

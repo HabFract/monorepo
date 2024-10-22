@@ -1,16 +1,20 @@
+import { ActionHashB64 } from "@holochain/client";
 // ui/src/state/hierarchy.ts
 import { atom } from "jotai";
 import {
   HierarchyTraversalIndices,
+  NodeContent,
   SphereHierarchyBounds,
 } from "./types/hierarchy";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { EntryHashB64 } from "@holochain/client";
 import { appStateAtom } from "./store";
 import { OrbitNodeDetails, RootOrbitEntryHash } from "./types/orbit";
 import { Hierarchy } from "./types/hierarchy";
 import { nodeCache } from "./store";
 import { SphereOrbitNodeDetails } from "./types";
 import { getSphereIdFromEhAtom } from "./sphere";
+import { HierarchyNode } from "d3-hierarchy";
+import { getOrbitIdFromEh } from "./orbit";
 
 /**
  * Calculates the overall completion status for a specific orbit
@@ -46,6 +50,63 @@ export const getHierarchyAtom = (rootOrbitEntryHash: RootOrbitEntryHash) => {
   });
   return selectHierarchy;
 };
+
+/**
+ * Atom for updating the appState with new hierarchy data.
+ * @type {WritableAtom<null, [string], void>}
+ */
+export const updateHierarchy = atom(
+  null,
+  (
+    get,
+    set,
+    newHierarchy: {
+      rootData: HierarchyNode<NodeContent>;
+      each: Function;
+      _json: string;
+    }
+  ) => {
+    if (!newHierarchy?.rootData) return null;
+
+    const currentAppState = get(appStateAtom);
+    const rootNode = newHierarchy.rootData.data.content;
+    const nodeHashes: ActionHashB64[] = [];
+    // Derive nodeHashes, rootNode, etc. from the newHierarchy
+    let currentHierarchyNode: EntryHashB64 | undefined = undefined;
+    const possibleNodes = Object.keys(currentAppState.orbitNodes.byHash);
+    newHierarchy.rootData.each((node) => {
+      const eH = node.data.content;
+      const id = possibleNodes.find(
+        (key) => currentAppState.orbitNodes.byHash[key].eH === eH
+      );
+      if (!id) return;
+      if (currentAppState.orbitNodes.currentOrbitHash == id)
+        currentHierarchyNode = id;
+      nodeHashes.push(id as ActionHashB64);
+    });
+    // Update the appState with the new hierarchy data
+    const updatedHierarchy: Hierarchy = {
+      rootNode,
+      json: newHierarchy?._json,
+      bounds: undefined, // TODO: decide whether to keep this as a primitive atom and remove from appstate
+      indices: undefined, // TODO: decide whether to keep this as a primitive atom and remove from appstate
+      currentNode: currentHierarchyNode,
+      nodeHashes,
+    };
+
+    set(appStateAtom, {
+      ...currentAppState,
+      hierarchies: {
+        ...currentAppState.hierarchies,
+        byRootOrbitEntryHash: {
+          ...currentAppState.hierarchies.byRootOrbitEntryHash,
+          [rootNode]: updatedHierarchy,
+        },
+      },
+    });
+  }
+);
+
 //TODO: update tests
 /**
  * Gets all orbits for a given hierarchy

@@ -163,7 +163,7 @@ export class TreeVisualization extends BaseVisualization {
           // this.resetZoomer()
         }
 
-        return this._canvas! && NODE_ENV !== 'test'
+        return !!(NODE_ENV !== 'test' && !this.noCanvas()) && this._canvas!
           //@ts-expect-error
           .transition()
           .duration(this.startInFocusMode ? 0 : 750)

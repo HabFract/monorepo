@@ -14,7 +14,7 @@ import { useDeriveAndCacheHierarchyPaths } from "../../hooks/useDeriveAndCacheHi
 import { TreeVisualization } from "./base-classes/TreeVis";
 import { byStartTime, debounce, determineNewLevelIndex, parseAndSortTrees } from "./helpers";
 import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
-import { currentSphereHashesAtom, newTraversalLevelIndexId, SphereHashes } from "../../state";
+import { currentSphereHashesAtom, newTraversalLevelIndexId, SphereHashes, updateHierarchy } from "../../state";
 import { useSetAtom } from "jotai";
 import { NODE_ENV } from "../../constants";
 
@@ -34,6 +34,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const [usedCachedHierarchy, setUsedCachedHierarchy] = useState<boolean>(false);
   const [canTriggerNextTreeVisRender, setCanTriggerNextTreeVisRender] = useState<boolean>(false);
   const setNewCurrentOrbitId = useSetAtom(currentOrbitIdAtom);
+  const setHierarchyInAppState = useSetAtom(updateHierarchy);
 
   // ## -- Data fetching hooks -- ##
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery({
@@ -82,6 +83,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
       setNewCurrentOrbitId(newTree.rootData.data.content);
       setCurrentOrbitTree(newTree);
+      newTree._json = json
+      setHierarchyInAppState(newTree as any);
     }
   };
 
