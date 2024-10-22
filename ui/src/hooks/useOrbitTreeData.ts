@@ -1,4 +1,4 @@
-import { useAtomValue, useAtom } from "jotai";
+import { useAtomValue, useAtom, useSetAtom } from "jotai";
 import {
   nodeCache,
   currentSphereOrbitNodesAtom,
@@ -10,6 +10,7 @@ import {
   SphereOrbitNodes,
   currentSphereHasCachedNodesAtom,
   SphereOrbitNodeDetails,
+  newTraversalLevelIndexId,
 } from "../state";
 import { useNodeTraversal } from "./useNodeTraversal";
 
@@ -23,14 +24,18 @@ export const useOrbitTreeData = (sphereHashes) => {
   const hierarchyBounds = useAtomValue(currentSphereHierarchyBounds);
   const [, setBreadthBounds] = useAtom(setBreadths);
   const [depthBounds, setDepthBounds] = useAtom(setDepths);
+  const setNewRenderTraversalDetails = useSetAtom(newTraversalLevelIndexId);
   const { x, y } = useAtomValue(currentSphereHierarchyIndices);
+  const setNewHierarchyIndices = useSetAtom(currentSphereHierarchyIndices);
 
   const { breadthIndex, setBreadthIndex } = useNodeTraversal(
     hierarchyBounds[sphereHashes.entryHash as keyof SphereHierarchyBounds]
   );
 
   // IndexDB Cached OrbitNodeDetails for the Sphere
-  const nodeDetailsCache = useAtomValue(nodeCache.item(sphereHashes.actionHash)) as SphereOrbitNodeDetails;
+  const nodeDetailsCache = useAtomValue(
+    nodeCache.item(sphereHashes.actionHash)
+  ) as SphereOrbitNodeDetails;
 
   return {
     nodeDetailsCache,
@@ -43,5 +48,7 @@ export const useOrbitTreeData = (sphereHashes) => {
     y,
     breadthIndex,
     setBreadthIndex,
+    setNewRenderTraversalDetails,
+    setNewHierarchyIndices,
   };
 };

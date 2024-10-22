@@ -12,14 +12,13 @@ import { store } from "../../state/store";
 import { currentOrbitIdAtom, currentSphereOrbitNodeDetailsAtom } from "../../state/orbit";
 import { useDeriveAndCacheHierarchyPaths } from "../../hooks/useDeriveAndCacheHierarchyPaths";
 import { TreeVisualization } from "./base-classes/TreeVis";
-import { byStartTime, determineNewLevelIndex, parseAndSortTrees } from "./helpers";
+import { byStartTime, debounce, determineNewLevelIndex, parseAndSortTrees } from "./helpers";
 import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
-import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state";
+import { currentSphereHashesAtom, newTraversalLevelIndexId, SphereHashes } from "../../state";
 import { useSetAtom } from "jotai";
 import { NODE_ENV } from "../../constants";
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
-  selectedSphere: sphere,
   canvasHeight,
   canvasWidth,
   margin,
@@ -28,28 +27,26 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   // ## -- Router level state -- ##
   const [_state, transition, params, client] = useStateTransition();
 
-
   // ## -- Component level state -- ##
   const [json, setJson] = useState<string | null>(null);
   const [currentOrbitTree, setCurrentOrbitTree] = useState<TreeVisualization | null>(null);
-  const [hasCachedNodes, setHasCachedNodes] = useState<boolean>(false); // Caching of OrbitNodeDetails
-  const [usedCachedHierarchy, setUsedCachedHierarchy] = useState<boolean>(false); // Caching of hierarchy in Apollo client
+  const [hasCachedNodes, setHasCachedNodes] = useState<boolean>(false);
+  const [usedCachedHierarchy, setUsedCachedHierarchy] = useState<boolean>(false);
   const [canTriggerNextTreeVisRender, setCanTriggerNextTreeVisRender] = useState<boolean>(false);
-  const setNewRenderTraversalDetails = useSetAtom(newTraversalLevelIndexId);
+  const setNewCurrentOrbitId = useSetAtom(currentOrbitIdAtom);
 
   // ## -- Data fetching hooks -- ##
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery({
     fetchPolicy: "cache-and-network",
   });
+  // Get the hashes of the current Sphere's context
+  const sphere: SphereHashes = store.get(currentSphereHashesAtom);
   const { data: dataLevel } = useGetLowestSphereHierarchyLevelQuery({
     variables: { sphereEntryHashB64: sphere.entryHash as string },
   });
 
-
   // ## -- State for a specific TreeVis render -- ##
-
-  const useVisState = useCallback(() => useOrbitTreeData(sphere), [sphere.actionHash])
-  // Hook to manage hierarchy traversal state
+  const useVisState = useCallback(() => useOrbitTreeData(sphere), [sphere.actionHash]);
   const {
     setBreadthBounds,
     depthBounds,
@@ -58,30 +55,18 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     y,
     breadthIndex,
     setBreadthIndex,
+    setNewHierarchyIndices,
+    setNewRenderTraversalDetails
   } = useVisState();
 
-  // Cached OrbitNodeDetails for the Sphere
-  const sphereNodeDetails = store.get(currentSphereOrbitNodeDetailsAtom)
-  // -- Memoised parameters/flags  --
+  const sphereNodeDetails = store.get(currentSphereOrbitNodeDetailsAtom);
 
-  // Type of visualisation coverage for the sphere (partial or complete)
   const visCoverage = useMemo(() => determineVisCoverage(params, y), [params, y]);
-
-  // Parameters for fetching data depend on the coverage type
   const getQueryParams = useCallback(generateQueryParams(visCoverage, sphere.entryHash!), [visCoverage, params]);
 
-
-  // ## -- Initialisation/data retrieval/transformation callbacks  -- ##
-
-  // Initialises a new TreeVis object to encapsulate layout, rendering and interactive elements of the vis
   const instantiateVisObject = () => {
-    if (
-      !error &&
-      json &&
-      !currentOrbitTree &&
-      sphereNodeDetails
-    ) {
-      console.log("Instantiating tree...")
+    if (!error && json && !currentOrbitTree && sphereNodeDetails) {
+      console.log("Instantiating tree...");
       const newTree = createTreeVisualization({
         json,
         visCoverage,
@@ -94,14 +79,14 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
         getJsonDerivation,
         setDepthBounds,
       });
+
+      setNewCurrentOrbitId(newTree.rootData.data.content);
       setCurrentOrbitTree(newTree);
     }
   };
 
-  // Transforms/derives correct form of d3 hierarchy JSON
   const getJsonDerivation = useCallback((json: string) => deriveJsonData(json, visCoverage, x), [json, visCoverage, x]);
 
-  // Retrieves current level's hierarchy from the source chain
   const fetchCurrentLevel = async () => {
     let result = await fetchHierarchyDataForLevel({
       error,
@@ -119,10 +104,9 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       : JSON.stringify(parseAndSortTrees(result?.getOrbitHierarchy || data?.getOrbitHierarchy));
 
     setJson(newJson);
-    return newJson
+    return newJson;
   };
 
-  // Transforms fetched level data and sets traversal bounds, zoom configuration and cache validity 
   const processNewHierarchyLevel = async (json) => {
     if (!json || !data?.getOrbitHierarchy) return;
 
@@ -137,61 +121,49 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     const newLevelXIndex = determineNewLevelIndex(sortedTrees);
     const isNewLevelXIndexValid = (newLevelXIndex !== null && newLevelXIndex !== -1);
 
-    isNewLevelXIndexValid && store.set(currentSphereHierarchyIndices, { x: newLevelXIndex, y });
+    if (isNewLevelXIndexValid) {
+      setNewHierarchyIndices({ x: newLevelXIndex, y });
+    }
     setBreadthIndex(isNewLevelXIndexValid ? newLevelXIndex : breadthIndex);
 
     handleZoomerInitialization(currentOrbitTree, visCoverage);
   };
 
-
-  // Processes last fetched hierarchy level and triggers a new fetch - implicitly cached in the GraphQL client - for the next level down (in anticipation of next render)
   const processHierarchyLevelAndFetchNext = async (newJson) => {
     await processNewHierarchyLevel(newJson);
-    if (currentOrbitTree?.rootData && currentOrbitTree.rootData?.children && currentOrbitTree.rootData.children?.length == 0) return;
+    if (currentOrbitTree?.rootData && currentOrbitTree.rootData?.children && currentOrbitTree.rootData.children?.length === 0) return;
 
     const nextLevelQuery = getQueryParams(y + 1);
+    console.log("Prefetching next level");
     usePrefetchNextLevel(nextLevelQuery!, client, true);
   };
 
-
-  // Caches link paths for each node on the current hierarchy which will be appended to the partial Visualisation types for visual continuity when traversing deeper than the root
   const { cache } = useDeriveAndCacheHierarchyPaths({
     currentTree: currentOrbitTree as any,
     currentSphereId: sphere.actionHash as string,
     bypassEntirely: false,
   });
 
-
-  // ## -- Execution of effect callbacks  -- ##
-
-  // Initialises the TreeVis object ready for rendering in the return value of OrbitTree
-  useEffect(instantiateVisObject, [json]);
-
-  // Fetches data to populate the vis
   useEffect(() => {
-    // console.log("Fetching for coords...", x, y)
+    instantiateVisObject();
+  }, [json]);
 
-    const fetchAndProcess = async () => {
-      let newJson = await fetchCurrentLevel()
-      await processHierarchyLevelAndFetchNext(newJson)
-      setCanTriggerNextTreeVisRender(true)
-    };
-    fetchAndProcess()
-  }, [data, y, json]);
-
-  // Allow the following useEffect to be unguarded after a change in the breadthIndex, triggering a render of the tree at that index
   useEffect(() => {
-    setTimeout(() => setCanTriggerNextTreeVisRender(true), 0)
+    const fetchAndProcess = debounce(async () => {
+      let newJson = await fetchCurrentLevel();
+      if (!newJson) return;
+      await processHierarchyLevelAndFetchNext(newJson);
+      setCanTriggerNextTreeVisRender(true);
+    }, 1000);
+    fetchAndProcess();
+  }, [data, y]);
+
+  useEffect(() => {
+    setTimeout(() => setCanTriggerNextTreeVisRender(true), 0);
   }, [y, x]);
 
-  // Sets up and triggers the next render when a new set of hierarchy data needs to be visualised
   useEffect(() => {
-    if (
-      canTriggerNextTreeVisRender &&
-      !error &&
-      currentOrbitTree &&
-      json
-    ) {
+    if (canTriggerNextTreeVisRender && !error && currentOrbitTree && json) {
       console.log('Triggered a new hierarchy render in focus mode');
 
       currentOrbitTree._nextRootData = hierarchy(
@@ -202,38 +174,33 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       const newDefaultNodeTarget = currentOrbitTree._nextRootData.data.children.sort(byStartTime)?.[0]?.content;
 
       const newlySelectedNodeId = !newRenderNodeDetails?.direction ? null :
-        newRenderNodeDetails?.direction == 'up'
-          ? (currentOrbitTree as any)!._originalRootData.find(node => node.data.content == newRenderNodeDetails?.id)?.data?.content
+        newRenderNodeDetails?.direction === 'up'
+          ? (currentOrbitTree as any)!._originalRootData.find(node => node.data.content === newRenderNodeDetails?.id)?.data?.content
           : newDefaultNodeTarget;
 
-      store.set(
-        currentOrbitIdAtom,
-        newlySelectedNodeId,
-      );
+      setNewCurrentOrbitId(newlySelectedNodeId);
       const noNewFocusNode = (newlySelectedNodeId == null || typeof newlySelectedNodeId === 'undefined');
-      // These signifies a lateral traversal where the new selected node is by default the root, selected from withVisCanvas
 
-      // Set the intermediate zoom node's id for when we traverse back up.
       const reverseIntermediateNode = noNewFocusNode ? currentOrbitTree._nextRootData : (currentOrbitTree?.rootData?.children as any)?.[newRenderNodeDetails?.previousRenderSiblingIndex];
       if (!!reverseIntermediateNode) {
-        currentOrbitTree._lastRenderParentId = reverseIntermediateNode.data.content
+        currentOrbitTree._lastRenderParentId = reverseIntermediateNode.data.content;
       }
 
-      const intermediateId = newRenderNodeDetails?.direction == 'up' ? currentOrbitTree._lastRenderParentId : (noNewFocusNode ? currentOrbitTree._nextRootData.data.content : null)
-      setNewRenderTraversalDetails((prev) => ({ ...prev, id: newlySelectedNodeId, intermediateId }))
+      const intermediateId = newRenderNodeDetails?.direction === 'up' ? currentOrbitTree._lastRenderParentId : (noNewFocusNode ? currentOrbitTree._nextRootData.data.content : null);
+      console.log("Setting new render traversal details");
+      setNewRenderTraversalDetails((prev) => ({ ...prev, id: newlySelectedNodeId, intermediateId }));
 
       currentOrbitTree.startInFocusMode = true;
       currentOrbitTree.render();
 
-      setCanTriggerNextTreeVisRender(false)
+      setCanTriggerNextTreeVisRender(false);
     }
   }, [canTriggerNextTreeVisRender, json, x]);
 
-  // Trigger caching of link paths needed for visual continuity
   useEffect(() => {
     if (!hasCachedNodes && cache !== null) {
       try {
-        console.log('Cached hierarchy link paths for visual continuity...');
+        console.log('Caching hierarchy link paths for visual continuity...');
         cache();
         setHasCachedNodes(true);
       } catch (error) {
@@ -242,7 +209,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     }
   }, [cache, hasCachedNodes]);
 
-  // ## -- RENDER  -- ##
   return (
     <>
       {loading && <span data-testid={"vis-spinner"} />}
@@ -251,10 +217,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
         currentOrbitTree &&
         render(
           currentOrbitTree,
-          // visCoverage,
-          // x,
-          // y,
-          // hierarchy(getJsonDerivation(json)),
         )}
     </>
   );

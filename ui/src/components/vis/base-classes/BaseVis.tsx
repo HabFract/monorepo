@@ -327,9 +327,15 @@ export abstract class BaseVisualization implements IVisualization {
       this.appendNodeVectors();
       this.appendLinkPath();
 
-      !hasUpdated && this.applyInitialTransform();
+      if (!hasUpdated) {
+        this.applyInitialTransform();
+        this.eventHandlers.memoizedhandleNodeZoom.call(
+          this,
+          this.rootData.data.content,
+        )
+      }
       if (!(this.coverageType == VisCoverage.Partial || this.noCanvas())) {
-        // this.initializeZoomer();
+        this.initializeZoomer();
       }
 
       const newRenderNodeDetails = store.get(newTraversalLevelIndexId);

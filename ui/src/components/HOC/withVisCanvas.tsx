@@ -188,8 +188,6 @@ export function withVisCanvas<T extends IVisualization>(
         canvasHeight={canvasHeight}
         canvasWidth={canvasWidth}
         margin={DEFAULT_MARGINS}
-        selectedSphere={selectedSphere}
-        coords={currentHierarchyIndices}
         render={(currentVis: T) => {
           const {
             consolidatedFlags,
@@ -229,9 +227,7 @@ export function withVisCanvas<T extends IVisualization>(
                   currentOrbitDetails={currentOrbitDetails}
                   actions={consolidatedActions}
                 ></OverlayLayout>
-                : <VisControls // To be phased out once desktop design work is done.
-                  buttons={<TraversalButtons actions={consolidatedActions} {...consolidatedFlags} />}
-                />
+                : null
               }
 
               {VisModal<T>(
@@ -383,11 +379,6 @@ export function withVisCanvas<T extends IVisualization>(
     function getActionsAndDataForControls(currentVis: T, currentId?: EntryHashB64) {
       // Determine current vis render-specific data and context
       const rootId = currentVis.rootData.data.content;
-      if (!currentId) {
-        store.set(currentOrbitIdAtom, rootId);
-        currentId = rootId;
-        console.log("Set default focus node to the root...", rootId);
-      }
       const children = (((currentVis.rootData?.children) as Array<HierarchyNode<any>>) || []).sort(byStartTime);
       const sphereNodeDetails = store.get(currentSphereOrbitNodeDetailsAtom);
       const orbitSiblings = (currentId == rootId ? [currentVis.rootData] : children).map(node => {

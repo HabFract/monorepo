@@ -140,8 +140,6 @@ export const currentOrbitDetailsAtom = atom<OrbitNodeDetails | null>((get) => {
     if (!eH) return null;
     hash = eH;
   }
-  console.log("gotOrbitDetails :>> ", get(getOrbitNodeDetailsFromEhAtom(hash)));
-  // console.log("Getting current orbit details :>> ", get(getOrbitNodeDetailsFromEhAtom(hash)))
   return get(getOrbitNodeDetailsFromEhAtom(hash));
 });
 (currentOrbitDetailsAtom as any).testId = "currentOrbitDetailsAtom";
@@ -296,13 +294,13 @@ export const currentOrbitIdAtom = atom(
   },
   (_get, set, newOrbitId: EntryHashB64) => {
     set(appStateAtom, (prevState) => {
-      // console.log("Setting orbit id :>> ", {
-      //   ...prevState,
-      //   orbitNodes: {
-      //     ...prevState.orbitNodes,
-      //     currentOrbitHash: newOrbitId,
-      //   },
-      // });
+      console.log("Setting orbit id :>> ", {
+        ...prevState,
+        orbitNodes: {
+          ...prevState.orbitNodes,
+          currentOrbitHash: newOrbitId,
+        },
+      });
       return {
         ...prevState,
         orbitNodes: {

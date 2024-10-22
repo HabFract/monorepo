@@ -57,7 +57,6 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, 
     const pillLeft = (pill as HTMLElement).offsetLeft;
     const targetScrollLeft = pillLeft - (containerWidth - pillWidth) / 2;
 
-    console.log('lastSNappedPlanet.current :>> ', lastSnappedPlanet.current, orbitId);
     isAnimating.current = true;
     lastSnappedPlanet.current = orbitId;
     scrollStartTime.current = null;
@@ -103,12 +102,10 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, 
     // Set scroll start time if it hasn't been set
     if (scrollStartTime.current === null) {
       scrollStartTime.current = Date.now();
-      console.log('scrollStartTime.current :>> ', scrollStartTime.current);
       if (latestSnapBackTimeout.current) {
         clearTimeout(latestSnapBackTimeout.current);
       }
       latestSnapBackTimeout.current = setTimeout(() => {
-        console.log("Trying snapback", selectedOrbit, getMostCenteredPill())
         if (selectedOrbit == getMostCenteredPill()) {
           // If we've exceeded the scroll timeout, snap back to the currently selected planet
           snapToCenter(getMostCenteredPill());
@@ -132,7 +129,6 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, 
           const toIndex = orbitSiblings.findIndex(planet => (planet?.orbitName?.split(' ')?.join('-') == mostCenteredPillId.split("pill-")![1]));
           triggerSnap = Math.abs(toIndex - fromIndex) <= 3;
           scrollDirection.current = (toIndex > fromIndex ? 'right' : 'left');
-          console.log('toIndex, fromIndex, triggerSnap :>> ', toIndex, fromIndex, triggerSnap);
         }
         if (triggerSnap) {
           lastSnappedPlanet.current = mostCenteredPillId;

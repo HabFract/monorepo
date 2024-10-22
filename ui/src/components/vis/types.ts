@@ -97,8 +97,8 @@ export type VisProps<T extends IVisualization> = {
   canvasWidth: number;
   margin: Margins;
   /** Selected sphere action and entry hash as base64 */
-  selectedSphere: SphereHashes;
-  coords: Coords;
+  // selectedSphere: SphereHashes;
+  // coords: Coords;
   /**
    * Render function for the visualization
    * @param currentVis - The current visualization instance

@@ -138,7 +138,6 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
         if (triggerSnap) {
           lastSnappedPlanet.current = mostCenteredPlanetId;
           setSelectedOrbit(mostCenteredPlanetId);
-          console.log("Setting y axis planet to: ", mostCenteredPlanetId);
           snapToCenter(mostCenteredPlanetId);
         }
       }
