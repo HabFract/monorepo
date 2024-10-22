@@ -71,7 +71,7 @@ export function withVisCanvas<T extends IVisualization>(
   const ComponentWithVis = React.memo(() => {
     // Get the details of the current Orbit in context, and the calculated bounds for navigation of the rendered hierarchy
     // which will determine the state/visibility of the Vis OverlayLayout/controls
-    const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
+    const currentOrbitDetails: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
     const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
       currentSphereHierarchyBounds,
     );
@@ -163,7 +163,7 @@ export function withVisCanvas<T extends IVisualization>(
         canvasWidth={canvasWidth}
         margin={DEFAULT_MARGINS}
         render={(currentVis: T) => {
-          if (!currentOrbitDetails?.eH) return <Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
+          if (!currentOrbitDetails?.eH) return <Spinner aria-label="Loading Vis Canvas!" className="menu-spinner" size="xl" />
 
           const {
             consolidatedFlags,

@@ -157,6 +157,7 @@ export const getOrbitNodeDetailsFromIdAtom = (orbitId: ActionHashB64) =>
 
     return get(getOrbitNodeDetailsFromEhAtom(eH));
   });
+(getOrbitNodeDetailsFromIdAtom as any).testId = "getOrbitNodeDetailsFromIdAtom";
 
 /** Within CURRENT SPHERE context: */
 
@@ -326,6 +327,7 @@ export const getOrbitIdFromEh = (orbitEh: EntryHashB64) =>
     );
     return orbitActionHash || null;
   });
+(getOrbitIdFromEh as any).testId = "getOrbitIdFromEh";
 
 /**
  * Selector atom to get the entry hash of the orbit based on id

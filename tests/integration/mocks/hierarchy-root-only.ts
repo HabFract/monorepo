@@ -1,6 +1,7 @@
 import {
   GetLowestSphereHierarchyLevelDocument,
   GetOrbitHierarchyDocument,
+  GetWinRecordForOrbitForMonthDocument,
 } from "../../../ui/src/graphql/generated/index";
 import { SPHERE_EH, SPHERE_ID } from "./mockAppState";
 
@@ -97,6 +98,33 @@ export const HIERARCHY_MOCKS = [
     },
     result: {
       data: { getLowestSphereHierarchyLevel: 0 }, // Adjust the level based on your mockAppState or test needs
+    },
+  },
+  {
+    request: {
+      query: GetWinRecordForOrbitForMonthDocument,
+      variables: {
+        params: {
+          orbitEh: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+          yearDotMonth: "2024.10",
+        },
+      },
+    },
+    result: {
+      data: {
+        getWinRecordForOrbitForMonth: {
+          id: "uhCAkWR15d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+          eH: "uhCEkWR15d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
+          winData: [
+            {
+              date: "01/10/2024",
+              value: {
+                single: true,
+              },
+            },
+          ],
+        },
+      },
     },
   },
   // Add more mocks as needed for other queries or expected data

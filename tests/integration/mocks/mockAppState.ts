@@ -32,30 +32,7 @@ export const mockAppState: AppState = {
     byRootOrbitEntryHash: {
       uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
         rootNode: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
-        json: JSON.stringify({
-          content: "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
-          name: "Be the best",
-          children: [
-            {
-              content: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
-              name: "Daily Exercise",
-              children: [
-                {
-                  content: "uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
-                  name: "Weekly Gym Session",
-                },
-                {
-                  content: "uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
-                  name: "Daily Meditation",
-                },
-              ],
-            },
-            {
-              content: "uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
-              name: "Monthly Health Check",
-            },
-          ],
-        }),
+        json: "",
         bounds: { minBreadth: 0, maxBreadth: 2, minDepth: 0, maxDepth: 2 },
         indices: { x: 0, y: 0 },
         currentNode: "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",

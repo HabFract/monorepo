@@ -149,12 +149,12 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   }, [json]);
 
   useEffect(() => {
-    const fetchAndProcess = debounce(async () => {
+    const fetchAndProcess = async () => {
       let newJson = await fetchCurrentLevel();
       if (!newJson) return;
       await processHierarchyLevelAndFetchNext(newJson);
       setCanTriggerNextTreeVisRender(true);
-    }, 1000);
+    };
     fetchAndProcess();
   }, [data, y]);
 

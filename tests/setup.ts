@@ -2,6 +2,7 @@ import "fake-indexeddb/auto";
 import { SPHERE_ID } from "./integration/mocks/mockAppState";
 import { vi } from "vitest";
 import { mockStore } from "./setupMockStore";
+import { linkVertical } from "d3-shape";
 
 //@ts-ignore
 window.ResizeObserver = require("resize-observer-polyfill");
@@ -181,12 +182,36 @@ vi.mock("@dicebear/collection", () => ({
   icons: null,
 }));
 
-vi.mock("d3-scale", () => ({
-  scaleLinear: vi.fn(() => ({
-    domain: vi.fn(() => vi.fn()),
-  })),
-  scaleOrdinal: vi.fn(() => null),
-}));
+vi.mock("d3-ease", async (importOriginal) => {
+  return {
+    easeCubicOut: vi.fn(() => ({})),
+  };
+});
+vi.mock("d3-shape", async (importOriginal) => {
+  return {
+    linkVertical: () => ({
+      x: vi.fn(() => ({ y: vi.fn(() => {}) })),
+    }),
+  };
+});
+
+vi.mock("d3-selection", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("d3-scale", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    scaleLinear: vi.fn(() => ({
+      domain: vi.fn(() => vi.fn()),
+    })),
+    scaleOrdinal: vi.fn(() => null),
+  };
+});
 
 vi.mock("d3-zoom", async (importOriginal) => {
   const actual = (await importOriginal()) as any;

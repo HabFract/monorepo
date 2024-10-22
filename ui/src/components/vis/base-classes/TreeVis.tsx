@@ -60,7 +60,6 @@ import {
   SIX_CHILDREN_RIGHT_3_XS,
 } from "../links/paths";
 import {
-  byStartTime,
   chooseZoomScaleForOrbit,
   debounce,
   getInitialXTranslate,
@@ -73,6 +72,7 @@ import { currentOrbitIdAtom, getOrbitNodeDetailsFromIdAtom, getOrbitIdFromEh } f
 import { EntryHashB64 } from "@holochain/client";
 import { getHierarchyAtom } from "../../../state/hierarchy";
 import { AppMachine } from "../../../main";
+import { NODE_ENV } from "../../../constants";
 
 export class TreeVisualization extends BaseVisualization {
   layout!: TreeLayout<unknown>;
@@ -163,7 +163,7 @@ export class TreeVisualization extends BaseVisualization {
           // this.resetZoomer()
         }
 
-        return this._canvas!
+        return this._canvas! && NODE_ENV !== 'test'
           //@ts-expect-error
           .transition()
           .duration(this.startInFocusMode ? 0 : 750)

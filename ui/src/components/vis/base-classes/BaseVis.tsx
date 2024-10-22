@@ -32,6 +32,7 @@ import { extractEdges } from "../../../graphql/utils";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { currentOrbitIdAtom } from "../../../state/orbit";
 import { SphereOrbitNodeDetails } from "../../../state/types/sphere";
+import { NODE_ENV } from "../../../constants";
 
 /**
  * Base class for creating D3 hierarchical visualizations.
@@ -500,7 +501,7 @@ export abstract class BaseVisualization implements IVisualization {
       x = t.x * scale;
       y = t.y * scale;
     }
-    this._canvas && this._canvas
+    !!(NODE_ENV !== 'test' && !this.noCanvas()) && this._canvas!
       //@ts-expect-error
       .transition()
       .ease(easeLinear)
