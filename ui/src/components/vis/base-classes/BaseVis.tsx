@@ -6,6 +6,10 @@ import _ from "lodash";
 
 import {
   BASE_SCALE,
+  DX_RESCALE_FACTOR_MD_LG,
+  DX_RESCALE_FACTOR_SM,
+  DY_RESCALE_FACTOR_MD_LG,
+  DY_RESCALE_FACTOR_SM,
   FOCUS_MODE_SCALE,
   LG_LEVELS_HIGH,
   LG_LEVELS_WIDE,
@@ -33,6 +37,7 @@ import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { currentOrbitIdAtom } from "../../../state/orbit";
 import { SphereOrbitNodeDetails } from "../../../state/types/sphere";
 import { NODE_ENV } from "../../../constants";
+import { getScaleForPlanet } from "../tree-helpers";
 
 /**
  * Base class for creating D3 hierarchical visualizations.
@@ -276,8 +281,8 @@ export abstract class BaseVisualization implements IVisualization {
       this._viewConfig.canvasHeight /
       ((this._viewConfig.levelsWide as number) * 6);
     //adjust for taller aspect ratio
-    this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? 8.5 : 1.5;
-    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? 1.7 : 3;
+    this._viewConfig.dx *= this._viewConfig.isSmallScreen() ? DX_RESCALE_FACTOR_SM : DX_RESCALE_FACTOR_MD_LG;
+    this._viewConfig.dy *= this._viewConfig.isSmallScreen() ? DY_RESCALE_FACTOR_SM : DY_RESCALE_FACTOR_MD_LG;
   }
 
   /**
@@ -286,8 +291,8 @@ export abstract class BaseVisualization implements IVisualization {
   setNodeAndLinkGroups(): void {
     !this.firstRender() && this.clearNodesAndLinks();
 
-    this._gLink = this._canvas!.append("g").classed("links", true);
-    // .attr("transform", transformation);
+    this._gLink = this._canvas!.append("g").classed("links", true)
+    .attr("style", "transform: translateY(148px)");
     this._gNode = this._canvas!.append("g").classed("nodes", true);
     // .attr("transform", transformation);
   }
@@ -326,7 +331,7 @@ export abstract class BaseVisualization implements IVisualization {
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
       this.setNodeAndLabelGroups();
-      this.appendNodeVectors();
+      this.firstRender() && this.appendNodeVectors();
       this.appendLinkPath();
 
       if (!hasUpdated) {
@@ -431,27 +436,18 @@ export abstract class BaseVisualization implements IVisualization {
       .attr("transform", (d) => {
         const cachedNode = this.nodeDetails[d.data.content];
         const { scale } = cachedNode;
-        const getScale = () => {
-          switch (scale) {
-            case Scale.Astro:
-              return 0.4;
-            case Scale.Sub:
-              return 0.3;
-            case Scale.Atom:
-              return 0.25;
-          }
-        };
-        return `scale(${this._viewConfig.isSmallScreen() ? getScale() : 0.75})`;
+
+        return `scale(${this._viewConfig.isSmallScreen() ? getScaleForPlanet(scale)/3 : 0.75})`;
       })
       .attr("x", "-375")
       .attr("y", (d) => {
         const cachedNode = this.nodeDetails[d.data.content];
         const { scale } = cachedNode;
-        return scale == Scale.Atom ? "-150" : Scale.Sub ? "-60" : "-50";
+        return scale == Scale.Atom ? "-150" : Scale.Sub ? "0" : "-50";
       })
-      .attr("width", "650")
+      .attr("width", "50")
+      .attr("height", "50")
       .style("overflow", "visible")
-      .attr("height", "650")
       .html(this.appendLabelHtml);
   }
 

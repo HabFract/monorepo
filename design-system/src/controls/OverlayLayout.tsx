@@ -84,7 +84,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
         {({ bindDrag }) => (
           <>
             <div className="overlay-controls-container">
-              <span>
+              <span className="vis-controls-container">
                 <VisMovementLateral orbitSiblings={orbitSiblings} moveLeftAction={actions.moveLeft} moveRightAction={actions.moveRight}></VisMovementLateral>
                 <VisMovementVertical orbitDescendants={orbitDescendants} moveUpAction={actions.moveUp} moveDownAction={actions.moveDown}></VisMovementVertical>
                 <div className="center-marker"></div>

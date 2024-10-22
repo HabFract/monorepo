@@ -21,3 +21,23 @@ export const DEFAULT_MARGINS: Margins = {
   bottom: 0,
   left: 0,
 };
+export const PLANNIT_ZOOM_TRANSITION_DURATION = 750;
+
+export const PLANNIT_SPECIFIC_ZOOM_RESCALE_FACTOR_ASTRO = 1.25;
+export const PLANNIT_SPECIFIC_ZOOM_RESCALE_FACTOR_SUB = 1.75;
+export const PLANNIT_SPECIFIC_ZOOM_RESCALE_FACTOR_ATOM = 2.5;
+
+export const NODE_RESCALE_FACTOR_SM = 0.75;
+export const NODE_RESCALE_FACTOR_MD_LG = 1;
+
+export const DX_RESCALE_FACTOR_SM = 5;
+export const DY_RESCALE_FACTOR_SM = 1.3;
+export const DX_RESCALE_FACTOR_MD_LG =  1.5;
+export const DY_RESCALE_FACTOR_MD_LG = 3;
+
+export const NEGATIVE_ZOOM_Y_OFFSET_SM_ROOT = 400;
+export const NEGATIVE_ZOOM_Y_OFFSET_SM_NONROOT = 300;
+export const NEGATIVE_ZOOM_Y_OFFSET_MD_LG = 0;
+
+export const LINK_COLOR = "rgba(139, 139, 139, 1)";
+export const LINK_THICKNESS = "2px";

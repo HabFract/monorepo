@@ -1,7 +1,7 @@
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { EntryHashB64, ActionHashB64 } from "@holochain/client";
 import { hierarchy } from "d3-hierarchy";
-import { OrbitHierarchyQueryParams, GetOrbitHierarchyDocument } from "../../graphql/generated";
+import { OrbitHierarchyQueryParams, GetOrbitHierarchyDocument, Scale } from "../../graphql/generated";
 import { SphereOrbitNodeDetails, store, currentSphereHierarchyIndices, Frequency } from "../../state";
 import { TreeVisualization } from "./base-classes/TreeVis";
 import { byStartTime, parseAndSortTrees } from "./helpers";
@@ -12,6 +12,87 @@ export const toYearDotMonth = (date: string) => date.split("/").slice(1).reverse
 
 export const isMoreThenDaily = (frequency: Frequency.Rationals): boolean => frequency > 1;
 
+
+function CustomBezier(context) {
+  this._context = context;
+}
+CustomBezier.prototype = {
+  areaStart: function () {
+    this._line = 0;
+  },
+  areaEnd: function () {
+    this._line = NaN;
+  },
+  lineStart: function () {
+    this._x = this._y = NaN;
+    this._point = 0;
+  },
+  lineEnd: function () {
+    if (this._point === 2) this._context.lineTo(this._x, this._y);
+    if (this._line || (this._line !== 0 && this._point === 1))
+      this._context.closePath();
+    if (this._line >= 0) this._line = 1 - this._line;
+  },
+  point: function (x, y) {
+    (x = +x), (y = +y);
+
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        this._context.moveTo(x, y);
+        break;
+
+      case 1:
+        this._point = 2;
+        // falls through
+
+      default: {
+        const dx = x - this._x;
+        const dy = y - this._y;
+
+        if (Math.abs(dx) > 1e-6) {
+
+        // To create a shape like a curly brace:
+        // - Start with steep vertical rise/fall at the anchors
+        // - Flatten quickly into horizontal
+        // - Steepen back into vertical to meet the next anchor
+        
+        // Control points to create a quick approach and departure in y, long horizontal stretch
+        const x1 = this._x + (dx * 0.0002);  // Start control: quick horizontal shift
+        const y1 = this._y + (dy * 0.9999);  // Strong vertical pull down near initial point
+        const x2 = x - (dx * 0.0002);        // End control: quick horizontal shift
+        const y2 = y - (dy * 0.9999);        // Strong vertical pull down near final point
+
+        this._context.bezierCurveTo(x1, y1, x2, y2, x, y);
+      } else {
+        // Close to vertical line, straight line segment
+        this._context.lineTo(x, y);
+      }
+      break;
+    }
+  }
+  (this._x = x), (this._y = y);
+}
+};
+
+
+
+export const curves = {
+  curveCustomBezier: function(context) {
+    return new CustomBezier(context);
+  }
+};
+
+export const getScaleForPlanet = (scale) => {
+  switch (scale) {
+    case Scale.Astro:
+      return 2.5;
+    case Scale.Sub:
+      return 1.75;
+    case Scale.Atom:
+      return 0.8;
+  }
+};
 
 /**
  * Determines the visual coverage type based on current parameters

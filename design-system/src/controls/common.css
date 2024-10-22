@@ -14,6 +14,12 @@
   right: 1rem;
 }
 
+.vis-controls-container {
+  height: 0;
+  position: relative;
+  bottom: 18.5rem;
+}
+
 .overlay-controls-container {
   bottom: 100%;
   pointer-events: auto;

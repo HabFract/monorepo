@@ -1,7 +1,7 @@
 import { IVisualization, Margins, ViewConfig, VisProps, VisType, ZoomConfig } from "./types";
 import { ReactNode } from "react";
 import { withVisCanvas } from "../HOC/withVisCanvas";
-import { BASE_SCALE, DEFAULT_MARGINS, FOCUS_MODE_SCALE } from "./constants";
+import { BASE_SCALE, DEFAULT_MARGINS, FOCUS_MODE_SCALE, NODE_RESCALE_FACTOR_SM, PLANNIT_SPECIFIC_ZOOM_RESCALE_FACTOR_ASTRO, PLANNIT_SPECIFIC_ZOOM_RESCALE_FACTOR_ATOM, PLANNIT_SPECIFIC_ZOOM_RESCALE_FACTOR_SUB } from "./constants";
 import { store } from "../../state/store";
 import { getCurrentOrbitStartTimeFromEh } from "../../state/orbit";
 import { newTraversalLevelIndexId, NodeContent, OrbitNodeDetails } from "../../state";
@@ -74,11 +74,11 @@ export function byStartTime(
 export function chooseZoomScaleForOrbit(orbit: OrbitNodeDetails) {
   switch (orbit.scale) {
     case Scale.Astro:
-      return 2
+      return PLANNIT_SPECIFIC_ZOOM_RESCALE_FACTOR_ASTRO
     case Scale.Sub:
-      return 3
+      return PLANNIT_SPECIFIC_ZOOM_RESCALE_FACTOR_SUB
     case Scale.Atom:
-      return 4
+      return PLANNIT_SPECIFIC_ZOOM_RESCALE_FACTOR_ATOM
     default:
       return FOCUS_MODE_SCALE;
   }
