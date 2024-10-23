@@ -2,16 +2,14 @@ import React, { ReactNode } from "react";
 import { Provider } from "jotai/react";
 import { useHydrateAtoms } from "jotai/utils";
 import { createStore } from "jotai";
-import { appStateAtom, nodeCache } from "../ui/src/state/store";
+import { appStateAtom } from "../ui/src/state/store";
 import mockAppState from "./integration/mocks/mockAppState";
 import { render, RenderResult } from "@testing-library/react";
 import { AppState } from "../ui/src/state/types/store";
-import { Coords, currentSphereHierarchyIndices } from "../ui/src/state";
+import { currentSphereHierarchyIndices } from "../ui/src/state";
 import { withVisCanvas } from "../ui/src/components/HOC/withVisCanvas";
 import { IVisualization, VisProps } from "../ui/src/components/vis/types";
 import { MockedProvider as ApolloProvider } from "@apollo/client/testing";
-import { HIERARCHY_MOCKS } from "./integration/mocks/hierarchy-root-only";
-import { InMemoryCache } from "@apollo/client";
 
 export const renderVis = (
   visComponent: React.ComponentType<VisProps<IVisualization>>,
@@ -53,11 +51,9 @@ const HydrateAtoms = ({ initialValues, children }) => {
 }
 
 export const TestProvider = ({ initialValues, initialHierarchy, children }) => {
-  return <Provider>
-    <HydrateAtoms initialValues={initialValues}>
-      <ApolloProvider mocks={initialHierarchy} addTypename={false}>
-        {children}
-      </ApolloProvider>
-    </HydrateAtoms>,
-  </Provider>
+  return <HydrateAtoms initialValues={initialValues}>
+    <ApolloProvider mocks={initialHierarchy} addTypename={false}>
+      {children}
+    </ApolloProvider>
+  </HydrateAtoms>
 }

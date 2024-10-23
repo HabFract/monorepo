@@ -22,7 +22,9 @@ import {
   orbitWinDataAtom
 } from '../../ui/src/state/orbit';
 import { getHierarchyAtom, isLeafNodeHashAtom, updateHierarchyAtom } from '../../ui/src/state/hierarchy';
-import { hierarchy, HierarchyNode } from 'd3-hierarchy';
+import { getWinDataForOrbitAtom, setWinRecordAtom } from '../../ui/src/state/win';
+import { hierarchy } from 'd3-hierarchy';
+import { appStateAtom } from '../../ui/src/state';
 
 describe('Sphere Atoms', () => {
   beforeEach(() => {
@@ -1046,4 +1048,77 @@ describe('Hierarchy Atoms', () => {
       expect(screen.getByTestId('leafNodeHashAtom').textContent).toBe('false');
     });
   });
+});
+
+describe('Win Record Atoms', () => {
+  beforeEach(() => {
+    resetMocks()
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  describe('AppState - setWinRecordAtom', () => {
+    const TestComponent = () => {
+      const [appState] = useAtom(appStateAtom);
+      const [_, setWinRecord] = useAtom(setWinRecordAtom);
+      return (
+        <div>
+          <button
+            onClick={() => {
+              setWinRecord({ orbitHash: 'orbit1', date: '2023-05-01', winData: true });
+            }}
+          >
+            Set Win Record
+          </button>
+          <div data-testid="winState">{JSON.stringify(appState.wins) || 'null'}</div>
+        </div>
+      );
+    };
+
+    it('should set a win record for a specific orbit and date', async () => {
+      renderWithJotai(<TestComponent />);
+
+      await act(async () => {
+        await userEvent.click(screen.getByText('Set Win Record'));
+      });
+      const state = JSON.parse(screen.getByTestId('winState').textContent as string);
+      expect("orbit1" in state).toBeTruthy();
+      expect(state!["orbit1"]).toStrictEqual({ "2023-05-01": true });
+    });
+  });
+
+  describe('AppState - getWinRecordForOrbitAtom', () => {
+    const TestComponent = ({ orbitHash }: { orbitHash: string }) => {
+      const winDataAtom = useMemo(() => getWinDataForOrbitAtom(orbitHash), [orbitHash]);
+
+      const [winData] = useAtom(winDataAtom);
+      return <div data-testid="winState">{winData == null ? 'null' : JSON.stringify(winData)}</div>;
+    };
+
+    it('should return null when there is no win data for a specific orbit', () => {
+      renderWithJotai(<TestComponent orbitHash="orbit1" />);
+
+      const state = JSON.parse(screen.getByTestId('winState').textContent as string);
+      expect(state).toEqual(null);
+    });
+
+    it('should get win data for a specific orbit', () => {
+      // Arrange
+      const modifiedMockState = {
+        ...mockAppState,
+        wins: {
+          "orbit1": { '2023-05-01': true },
+        },
+      };
+      // Act
+      renderWithJotai(<TestComponent orbitHash="orbit1" />, { initialState: modifiedMockState });
+      screen.debug()
+      // Assert
+      const state = JSON.parse(screen.getByTestId('winState').textContent as string);
+      expect(state).toEqual({ '2023-05-01': true });
+    });
+  });
+
 });

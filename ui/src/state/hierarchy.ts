@@ -10,8 +10,6 @@ import { EntryHashB64 } from "@holochain/client";
 import { appStateAtom } from "./store";
 import { OrbitNodeDetails, RootOrbitEntryHash } from "./types/orbit";
 import { Hierarchy } from "./types/hierarchy";
-import { nodeCache } from "./store";
-import { SphereOrbitNodeDetails } from "./types";
 import { getSphereIdFromEhAtom } from "./sphere";
 import { HierarchyNode } from "d3-hierarchy";
 
