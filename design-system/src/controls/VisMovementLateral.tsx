@@ -4,16 +4,17 @@ import "./common.css";
 import { Scale } from "..//generated-types";
 import OrbitPill from "./OrbitPill";
 import { debounce } from "./utils";
+import { OrbitDescendant } from "@ui/src/state";
 
 export interface VisMovementLateralProps {
-  moveLeftAction: Function;
-  moveRightAction: Function
-  orbitSiblings: Array<{ orbitName: string, orbitScale: Scale, handleOrbitSelect: () => void }>;
+  goLeftAction: Function;
+  goRightAction: Function
+  orbitSiblings: Array<OrbitDescendant>;
 }
 const SCROLL_TIMEOUT = 100; // ms to wait before snapping back
 
 
-const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, moveLeftAction, moveRightAction }) => {
+const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, goLeftAction, goRightAction }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedOrbit, setSelectedOrbit] = useState<string | null>(`pill-${orbitSiblings[0]?.orbitName?.split(' ')?.join('-')}`);
   const isAnimating = useRef(false);
@@ -37,16 +38,16 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, 
   };
 
   const chooseMoveDebounced = useCallback(
-    debounce(() => {
+    debounce((orbitIndex: number) => {
       if (scrollDirection.current === 'left') {
-        return Promise.resolve(moveLeftAction());
+        return Promise.resolve(goLeftAction(orbitIndex));
       } else if (scrollDirection.current === 'right') {
-        return Promise.resolve(moveRightAction());
+        return Promise.resolve(goRightAction(orbitIndex));
       }
     }, 500),
-    [moveLeftAction, moveRightAction]);
+    [goLeftAction, goRightAction]);
 
-  const snapToCenter = useCallback((orbitId: string) => {
+  const snapToCenter = useCallback((orbitId: string, orbitIndex?: number) => {
     const container = containerRef.current;
     const pill = container?.querySelector(`#${orbitId}`);
 
@@ -65,7 +66,7 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, 
       left: targetScrollLeft,
       behavior: 'smooth'
     });
-    orbitId !== selectedOrbit && chooseMoveDebounced();
+    orbitId !== selectedOrbit && chooseMoveDebounced(orbitIndex);
 
     setTimeout(() => {
       isAnimating.current = false;
@@ -134,7 +135,7 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({ orbitSiblings, 
           lastSnappedPlanet.current = mostCenteredPillId;
           setSelectedOrbit(mostCenteredPillId);
           console.log("Setting x axis planet to: ", mostCenteredPillId);
-          snapToCenter(mostCenteredPillId);
+          snapToCenter(mostCenteredPillId, orbitSiblings.findIndex(planet => (planet?.orbitName?.split(' ')?.join('-') == mostCenteredPillId.split("pill-")![1])));
         }
       }
     }, 200);

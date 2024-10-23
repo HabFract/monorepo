@@ -53,10 +53,10 @@ export interface ConsolidatedFlags {
 
 // Type for consolidated navigation actions
 export interface ConsolidatedActions {
-  moveLeft: () => void;
-  moveRight: () => void;
-  moveUp: () => void;
-  moveDown: () => void;
+  goLeft: () => void;
+  goRight: () => void;
+  goUp: () => void;
+  goDown: () => void;
 }
 
 // Slimmed down OrbitNodeDetails for the Vis Vertical/Lateral controls on mobile

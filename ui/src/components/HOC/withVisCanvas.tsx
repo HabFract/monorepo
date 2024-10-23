@@ -277,6 +277,10 @@ export function withVisCanvas<T extends IVisualization>(
       store: StoreType,
     ) {
       return {
+        moveToId: (newIndex) => {
+          if(typeof newIndex !== 'number') return console.error("Cannot move without valid index ");
+          store.set(currentOrbitIdAtom, children[newIndex].data.content);
+        },
         moveLeft: () => {
           const currentIndex = children?.findIndex(
             (child) => child.data.content == currentId,
@@ -402,10 +406,10 @@ export function withVisCanvas<T extends IVisualization>(
         canGoRight: !!(flags.canMoveRight || flags.canTraverseRight),
       };
       const consolidatedActions: ConsolidatedActions = {
-        moveLeft: flags.canMoveLeft ? actions.moveLeft : actions.traverseLeft,
-        moveRight: flags.canMoveRight ? actions.moveRight : actions.traverseRight,
-        moveUp: flags.canMoveUp ? actions.moveUp : actions.traverseUp,
-        moveDown: flags.canMoveDown ? actions.moveDown : actions.traverseDown,
+        goLeft: actions.moveToId as any,//actions.traverseLeft,
+        goRight: actions.moveToId as any, //flags.canMoveRight ? actions.moveRight : actions.moveRight,
+        goUp: flags.canMoveUp ? actions.moveUp : actions.moveUp,// actions.traverseUp,
+        goDown: flags.canMoveDown ? actions.moveDown : actions.moveDown //actions.traverseDown,
       };
 
       return {
