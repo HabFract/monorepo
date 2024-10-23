@@ -10,7 +10,7 @@ export const useCreateSphereMutation = () => {
     update(_cache, { data }) {
       if (data?.createSphere) {
         const newSphere = data.createSphere;
-
+console.log('newSphere', newSphere)
         setAppState((prevState) => ({
           ...prevState,
           spheres: {
@@ -21,6 +21,7 @@ export const useCreateSphereMutation = () => {
               [newSphere.actionHash]: {
                 details: {
                   entryHash: newSphere.entryHash,
+                  name: newSphere.name,
                 },
                 hierarchyRootOrbitEntryHashes: [],
               },

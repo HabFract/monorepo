@@ -129,9 +129,7 @@ function App({ children: pageComponent }) {
                 />
               ),
             }),
-            state,
             transition,
-            params,
           )({ currentSphereDetails, newUser: !!userHasSpheres })
         )}
       </main>

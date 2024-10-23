@@ -152,7 +152,7 @@ export function getIconSvg(
     case "back":
       return () => (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 5L8.43004 11.6237C8.20238 11.8229 8.20238 12.1771 8.43004 12.3763L16 19" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M16 5L8.43004 11.6237C8.20238 11.8229 8.20238 12.1771 8.43004 12.3763L16 19" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       );
     case "more":

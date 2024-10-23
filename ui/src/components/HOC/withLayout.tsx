@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Sphere } from "../../graphql/generated";
 import { AppMachine } from "../../main";
 import { SphereDetails } from "../../state/types/sphere";
+import VisLayout from "../layouts/VisLayout";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -30,11 +31,12 @@ interface WithLayoutProps {
 
 const withLayout = (
   component: ReactNode,
-  state: any,
-  transition: any,
-  params: any,
+  transition: Function
 ): FC<WithLayoutProps> => {
   return (props: WithLayoutProps): ReactNode => {
+    const state = AppMachine.state.currentState;
+    const params = AppMachine.state.params;
+    console.log('props', props)
     switch (true) {
       case !!state.match("Onboarding"):
         return <Onboarding>{withPageTransition(component)}</Onboarding>;
@@ -42,6 +44,10 @@ const withLayout = (
         if (state == "Home" && props?.newUser)
           return <Home firstVisit={false}></Home>;
         return withPageTransition(component);
+      case state == "Vis":
+        return <VisLayout transition={transition} currentSphereName={props.currentSphereDetails.name}>
+          {component}
+        </VisLayout>
       default:
         return (
           <div className="p-1 w-full">

@@ -16,12 +16,13 @@ import { ProgressBar } from "./onboarding";
 import { Button } from "./buttons";
 import { HelperText } from "./copy";
 import FrequencyIndicator  from "./icons/frequency-indicator";
+import HeaderAction from "./header/header-action";
 import { VisControls } from "./controls";
 import { default as darkTheme } from "./darkTheme";
 
 import "./inputs/common.css";
 import "./onboarding/common.css";
-import { getIconForPlanetValue } from "./icons/icons";
+import { getIconForPlanetValue, getIconSvg } from "./icons/icons";
 export * from "./controls"
 
 export {
@@ -36,6 +37,7 @@ export {
   Label,
   ErrorLabel,
   HelperText,
+  HeaderAction,
   VisControls,
   SphereCard,
   OrbitCard,
@@ -44,6 +46,7 @@ export {
   SphereVis,
   OrbitVis,
   getIconForPlanetValue,
+  getIconSvg,
   FrequencyIndicator,
   darkTheme,
 };

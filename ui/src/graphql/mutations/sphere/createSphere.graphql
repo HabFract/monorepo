@@ -2,5 +2,6 @@ mutation createSphere($variables: SphereCreateParams!) {
   createSphere(sphere: $variables) {
     actionHash
     entryHash
+    name
   }
 }

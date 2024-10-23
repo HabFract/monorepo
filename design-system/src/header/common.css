@@ -5,7 +5,7 @@
   max-width: 440px;
 }
 .header-action-container h1 {
-  @apply font-sans text-base font-bold text-center;
+  @apply font-sans text-lg font-bold text-center;
   letter-spacing: 0.02rem;
   line-height: 21.86px;
   text-align: center;
