@@ -135,7 +135,7 @@ export function withVisCanvas<T extends IVisualization>(
         return;
       }
       console.log("Persisting new win data...");
-      if (currentOrbitIsLeaf    ) {
+      if (currentOrbitIsLeaf) {
         createOrUpdateWinRecord({
           variables: {
             winRecord: {
