@@ -955,7 +955,7 @@ describe('Hierarchy Atoms', () => {
       renderWithJotai(<TestComponent rootOrbitEntryHash={rootOrbitEntryHash} />, { initialState: modifiedMockState as any });
 
       const hierarchy = JSON.parse(screen.getByTestId('hierarchy').textContent || 'null');
-      console.log('hierarchy :>> ', hierarchy);
+
       // Assert
       expect(hierarchy).not.toBeNull();
       expect(hierarchy.rootNode).toBe(rootOrbitEntryHash);

@@ -1,7 +1,5 @@
 // tests/integration/mocks/mockAppState.ts
 import { AppState } from "../../../ui/src/state/types/store";
-import { Frequency } from "../../../ui/src/state/types/orbit";
-import { Scale } from "../../../ui/src/graphql/generated";
 
 // This is a placeholder base64 representation of a small JPG image
 const placeholderImageBase64 =
