@@ -22,7 +22,7 @@ import {
   orbitWinDataAtom
 } from '../../ui/src/state/orbit';
 import { getHierarchyAtom, isLeafNodeHashAtom, updateHierarchyAtom } from '../../ui/src/state/hierarchy';
-import { getWinDataForOrbitAtom, setWinRecordAtom } from '../../ui/src/state/win';
+import { getWinDataForOrbitAtom, setWinRecordAtom, winRecordForOrbitAtom } from '../../ui/src/state/win';
 import { hierarchy } from 'd3-hierarchy';
 import { appStateAtom } from '../../ui/src/state';
 
@@ -1089,12 +1089,23 @@ describe('Win Record Atoms', () => {
     });
   });
 
-  describe('AppState - getWinRecordForOrbitAtom', () => {
+  describe('AppState - winRecordForOrbitAtom', () => {
     const TestComponent = ({ orbitHash }: { orbitHash: string }) => {
-      const winDataAtom = useMemo(() => getWinDataForOrbitAtom(orbitHash), [orbitHash]);
+      const winDataAtomInstance = useMemo(() => winRecordForOrbitAtom(orbitHash), [orbitHash]) as any;
+      const [winData, setWinData] = useAtom(winDataAtomInstance);
 
-      const [winData] = useAtom(winDataAtom);
-      return <div data-testid="winState">{winData == null ? 'null' : JSON.stringify(winData)}</div>;
+      return (
+        <div>
+          <button
+            onClick={() => {
+              setWinData({ date: '2023-05-01', winData: true });
+            }}
+          >
+            Set Win Data
+          </button>
+          <div data-testid="winState">{winData == null ? 'null' : JSON.stringify(winData)}</div>
+        </div>
+      );
     };
 
     it('should return null when there is no win data for a specific orbit', () => {
@@ -1118,6 +1129,22 @@ describe('Win Record Atoms', () => {
       // Assert
       const state = JSON.parse(screen.getByTestId('winState').textContent as string);
       expect(state).toEqual({ '2023-05-01': true });
+    });
+
+    it('should set win data for a specific orbit', async () => {
+      renderWithJotai(<TestComponent orbitHash="orbit1" />);
+
+      // Initially, there should be no win data
+      expect(screen.getByTestId('winState').textContent).toBe('null');
+
+      // Set win data
+      await act(async () => {
+        await userEvent.click(screen.getByText('Set Win Data'));
+      });
+
+      // Verify the win data is set
+      const winState = JSON.parse(screen.getByTestId('winState').textContent || '{}');
+      expect(winState).toEqual({ '2023-05-01': true });
     });
   });
 
