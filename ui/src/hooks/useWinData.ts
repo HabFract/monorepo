@@ -11,6 +11,14 @@ import { toYearDotMonth } from "habit-fract-design-system";
 import { isMoreThenDaily } from "../components/vis/tree-helpers";
 import { DateTime } from "luxon";
 
+export const winDataArrayToWinRecord = (
+  acc: any,
+  { date, value: val }: any
+) => {
+  acc[date] = "single" in val ? val.single : val.multiple;
+  return acc;
+};
+
 /**
  * Custom hook to manage win data for a specific orbit and date.
  *
@@ -62,10 +70,7 @@ export function useWinData(
       data.getWinRecordForOrbitForMonth.winData
     );
     const newWinData = data.getWinRecordForOrbitForMonth.winData.reduce(
-      (acc: any, { date, value: val }: any) => {
-        acc[date] = "single" in val ? val.single : val.multiple;
-        return acc;
-      },
+      winDataArrayToWinRecord,
       {}
     );
     setWorkingWinDataForOrbit(newWinData);

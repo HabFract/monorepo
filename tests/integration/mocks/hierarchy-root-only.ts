@@ -3,7 +3,7 @@ import {
   GetOrbitHierarchyDocument,
   GetWinRecordForOrbitForMonthDocument,
 } from "../../../ui/src/graphql/generated/index";
-import { SPHERE_EH, SPHERE_ID } from "./mockAppState";
+import { SPHERE_EH } from "./mockAppState";
 
 // NOTE: In order for the Orbit Details to render on the visualisaiton, the content field of each node should match the id field in the mocked cache.
 // This is not always relevant, but useful to know.
@@ -118,7 +118,8 @@ export const HIERARCHY_MOCKS = [
           winData: [
             {
               date: "01/10/2024",
-              value: { multiple: true },
+              value: { multiple: true, __typename: "MultipleWin" },
+              __typename: "WinDateEntry",
             },
           ],
         },
@@ -126,4 +127,4 @@ export const HIERARCHY_MOCKS = [
     },
   },
   // Add more mocks as needed for other queries or expected data
-];
+] as any;
