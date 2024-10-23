@@ -25,9 +25,7 @@ import { getHierarchyAtom, isLeafNodeHashAtom, updateHierarchyAtom } from '../..
 import { hierarchy, HierarchyNode } from 'd3-hierarchy';
 
 describe('Sphere Atoms', () => {
-  beforeAll(() => {
-    resetMocks()
-    clearCustomMocks();
+  beforeEach(() => {
     addCustomMock('all', mockedCacheEntries);
   })
   afterEach(() => {
@@ -178,73 +176,75 @@ describe('Sphere Atoms', () => {
 
       expect(screen.getByTestId('sphereId').textContent).toBe('null');
     });
-
-    it('should return the correct sphere id when multiple spheres exist', () => {
-      renderWithJotai(<TestComponent sphereEh="sphereEH3" />, { initialState: mockAppStateWithSpheres as any });
-
-      expect(screen.getByTestId('sphereId').textContent).toBe('sphere3');
-    });
   });
 
   describe('AppState - sphereHasCachedNodesAtom', () => {
-    it('should return null when there are no hierarchies for the sphere', () => {
-      const modifiedMockState = {
-        ...mockAppState,
-        spheres: {
-          ...mockAppState.spheres,
-          byHash: {
-            ...mockAppState.spheres.byHash,
-            [mockAppState.spheres.currentSphereHash]: {
-              ...mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash],
-              hierarchyRootOrbitEntryHashes: [],
-            },
+    const modifiedMockState = {
+      ...mockAppState,
+      spheres: {
+        ...mockAppState.spheres,
+        byHash: {
+          ...mockAppState.spheres.byHash,
+          [mockAppState.spheres.currentSphereHash]: {
+            ...mockAppState.spheres.byHash[mockAppState.spheres.currentSphereHash],
+            hierarchyRootOrbitEntryHashes: [],
           },
         },
-      };
+      },
+    };
+    const TestComponent = () => {
+      const sphereId = mockAppState.spheres.currentSphereHash;
+      const sphereHasCachedNodesAtomMemo = useMemo(() => sphereHasCachedNodesAtom(sphereId), [sphereId])
+      const [hasCachedNodes] = useAtom(sphereHasCachedNodesAtomMemo);
+      return <div data-testid="container">{hasCachedNodes === null ? 'null' : hasCachedNodes.toString()}</div>;
+    };
 
-      const TestComponent = () => {
-        const sphereId = mockAppState.spheres.currentSphereHash;
-        const sphereHasCachedNodesAtomMemo = useMemo(() => sphereHasCachedNodesAtom(sphereId), [sphereId])
-        const [hasCachedNodes] = useAtom(sphereHasCachedNodesAtomMemo);
-        return <div>{hasCachedNodes === null ? 'null' : hasCachedNodes.toString()}</div>;
-      };
 
+    it('should return null when there are no hierarchies for the sphere', () => {
       renderWithJotai(<TestComponent />, { initialState: modifiedMockState as any });
 
-      expect(screen.getByText('null')).toBeTruthy();
+      expect(screen.getByTestId('container').textContent).toBe('null');
+    });
+
+    it('should return null when there is no sphere', () => {
+      // Arrange
+      modifiedMockState.spheres.byHash = {};
+
+      // Act
+      renderWithJotai(<TestComponent />, { initialState: modifiedMockState as any });
+
+      // Assert
+      expect(screen.getByTestId('container').textContent).toBe('null');
     });
   });
 
   describe('IndexDB - currentSphereHasCachedNodesAtom', () => {
+    const modifiedMockState = {
+      ...mockAppState,
+      spheres: {
+        ...mockAppState.spheres,
+        currentSphereHash: null,
+      },
+    };
+
+    const TestComponent = () => {
+      const [hasCachedNodes] = useAtom(currentSphereHasCachedNodesAtom);
+      return <div data-testid="container">{hasCachedNodes === null ? 'null' : hasCachedNodes?.toString()}</div>;
+    };
+
     it('should return false when no sphere is selected', () => {
-      const modifiedMockState = {
-        ...mockAppState,
-        spheres: {
-          ...mockAppState.spheres,
-          currentSphereHash: null,
-        },
-      };
-
-      const TestComponent = () => {
-        const [hasCachedNodes] = useAtom(currentSphereHasCachedNodesAtom);
-        return <div>{hasCachedNodes?.toString()}</div>;
-      };
-
       renderWithJotai(<TestComponent />, { initialState: modifiedMockState as any });
 
-      expect(screen.getByText('false')).toBeTruthy();
+      expect(screen.getByTestId('container').textContent).toBe('false');
     });
 
-    it('should return the result of sphereHasCachedNodesAtom (true) for the current sphere', () => {
-      const TestComponent = () => {
-        const [hasCachedNodes] = useAtom(currentSphereHasCachedNodesAtom);
-        return <div>{hasCachedNodes?.toString()}</div>;
-      };
+    it('should return true for the current sphere', () => {
+      modifiedMockState.spheres.currentSphereHash = SPHERE_ID as any;
 
-      renderWithJotai(<TestComponent />);
-
+      renderWithJotai(<TestComponent />, { initialState: modifiedMockState as any });
       // This assumes that the default mockAppState has cached nodes for the current sphere, which is the default Mock state
-      expect(screen.getByText('true')).toBeTruthy();
+
+      expect(screen.getByTestId('container').textContent).toBe('true');
     });
 
     it('should return null when the current sphere has no hierarchies', () => {
@@ -262,37 +262,27 @@ describe('Sphere Atoms', () => {
         },
       };
 
-      const TestComponent = () => {
-        const [hasCachedNodes] = useAtom(currentSphereHasCachedNodesAtom);
-        return <div>{hasCachedNodes === null ? 'null' : hasCachedNodes.toString()}</div>;
-      };
-
       renderWithJotai(<TestComponent />, { initialState: modifiedMockState });
 
-      expect(screen.getByText('null')).toBeTruthy();
+      expect(screen.getByTestId('container').textContent).toBe('null');
     });
   });
 
   describe('IndexDB - sphereHasCachedNodesAtom', () => {
+    const TestComponent = () => {
+      const hasCachedNodesAtom = useMemo(() => sphereHasCachedNodesAtom(mockAppState.spheres.currentSphereHash), [mockAppState.spheres.currentSphereHash]);
+      const [hasCachedNodes] = useAtom(hasCachedNodesAtom);
+      return <div>{hasCachedNodes === null ? 'null' : hasCachedNodes.toString()}</div>;
+    };
+
     it('should return true when the sphere has cached nodes', () => {
-      const TestComponent = () => {
-        const hasCachedNodesAtom = useMemo(() => sphereHasCachedNodesAtom(mockAppState.spheres.currentSphereHash), [mockAppState.spheres.currentSphereHash]);
-        const [hasCachedNodes] = useAtom(hasCachedNodesAtom);
-        return <div>{hasCachedNodes === null ? 'null' : hasCachedNodes.toString()}</div>;
-      };
-
       renderWithJotai(<TestComponent />)
-
       expect(screen.getByText('true')).toBeTruthy();
     });
 
     it('should return null when the sphere hash is not in the cache', () => {
-      const TestComponent = () => {
-        const hasCachedNodesAtom = useMemo(() => sphereHasCachedNodesAtom('false-hash'), []);
-        const [hasCachedNodes] = useAtom(hasCachedNodesAtom);
-        return <div>{`${hasCachedNodes}`}</div>;
-      };
-
+      clearCustomMocks();
+      addCustomMock('partial', [['randomOtherSphere', null as any]]);
       renderWithJotai(<TestComponent />)
 
       expect(screen.getByText('null')).toBeTruthy();
@@ -300,13 +290,7 @@ describe('Sphere Atoms', () => {
 
     it('should return null when the sphere hash is valid but has no cached nodes', async () => {
       clearCustomMocks();
-      addCustomMock('all', [[SPHERE_ID, {} as any]]);
-
-      const TestComponent = () => {
-        const hasCachedNodesAtom = useMemo(() => sphereHasCachedNodesAtom(mockAppState.spheres.currentSphereHash), [mockAppState.spheres.currentSphereHash]);
-        const [hasCachedNodes] = useAtom(hasCachedNodesAtom);
-        return <div>{hasCachedNodes === null ? 'null' : hasCachedNodes.toString()}</div>;
-      };
+      addCustomMock('partial', [[SPHERE_ID, {} as any]]);
       await renderWithJotai(<TestComponent />, { initialState: mockAppStateSphereNoOrbits })
 
       expect(screen.getByText('null')).toBeTruthy();

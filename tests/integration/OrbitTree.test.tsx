@@ -8,7 +8,7 @@ import { HIERARCHY_MOCKS } from './mocks/hierarchy-root-only';
 import { ORBITS_MOCKS } from './mocks/orbits';
 import { createMockClient } from 'mock-apollo-client';
 import { HIERARCHY_ROOT_ONE_CHILD_MOCKS } from './mocks/hierarchy-root-1-child';
-import { renderWithJotai, renderVis } from '../utils-frontend';;
+import { renderWithJotai, renderVis, createTestStore } from '../utils-frontend';;
 import { currentSphereOrbitNodesAtom, getOrbitNodeDetailsFromEhAtom } from '../../ui/src/state/orbit';
 import mockAppState from './mocks/mockAppState';
 import { resetMocks, setMockUseStateTransitionResponse } from '../setup';
@@ -21,9 +21,7 @@ import { useAtom } from 'jotai';
 const mockClient = createMockClient();
 
 vi.mock("../../ui/src/graphql/client", async (importOriginal) => {  
-  const actual = (await importOriginal()) as any;
   return {
-    // ...actual,
     client: () => { return  mockClient }
   }
 })
@@ -40,6 +38,7 @@ vi.mock("../../ui/src/state/orbit", async (importOriginal) => {
     getOrbitIdFromEh: () => ({ testId: "getOrbitIdFromEh"}),
   }
 })
+const testStore = createTestStore(mockAppState);
 
 vi.mock("../../ui/src/state/store", async (importOriginal) => {
   const currentMockSphereNodes = {
@@ -175,10 +174,10 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
       return atomMappings[atom.testId] || console.log(atom);
     },
     set: (atom) => {
-      return mockStore.store.set(atom);
+      return testStore.set(atom);
     },
     sub: (atom, cb) => {
-      return mockStore.store.sub(atom, cb);
+      return testStore.sub(atom, cb);
     },
   };
   const actual = (await importOriginal()) as any;

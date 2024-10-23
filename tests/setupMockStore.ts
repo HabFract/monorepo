@@ -77,7 +77,6 @@ const customMocks = new Map<ActionHashB64, any>();
 
 export const createTestIndexDBAtom = (initialCache?) => {
   const cache = Object.fromEntries(initialCache || []);
-
   return {
     items: {
       toString: vi.fn(),
@@ -88,7 +87,9 @@ export const createTestIndexDBAtom = (initialCache?) => {
     entries: {
       toString: () => {},
       init: [],
-      read: () => Object.entries(cache),
+      read: () => {
+        return Object.entries(cache);
+      },
       write: () => {},
     },
     keys: {
@@ -136,6 +137,5 @@ export const clearCustomMocks = () => {
 };
 
 const mockNodeCache = createTestIndexDBAtom(mockedCacheEntries);
-const testStore = createTestStore(mockAppState);
 
-export const mockStore = { store: testStore, nodeCache: mockNodeCache };
+export const mockStore = { nodeCache: mockNodeCache };
