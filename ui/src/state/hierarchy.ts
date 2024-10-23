@@ -181,7 +181,7 @@ export const isLeafNodeHashAtom = (nodeHash: ActionHashB64) => {
 
     for (const hierarchyKey in hierarchies) {
       const hierarchy = hierarchies[hierarchyKey];
-      if (hierarchy.leafNodeHashes.includes(nodeHash)) {
+      if (hierarchy?.leafNodeHashes?.includes(nodeHash)) {
         return true;
       }
     }

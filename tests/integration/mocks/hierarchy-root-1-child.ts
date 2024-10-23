@@ -1,4 +1,7 @@
-import { GetLowestSphereHierarchyLevelDocument, GetOrbitHierarchyDocument } from "../../../ui/src/graphql/generated/index";
+import {
+  GetLowestSphereHierarchyLevelDocument,
+  GetOrbitHierarchyDocument,
+} from "../../../ui/src/graphql/generated/index";
 import { SPHERE_ID } from "./spheres";
 
 // NOTE: In order for the Orbit Details to render on the visualisaiton, the content field of each node should match the id field in the cache.
@@ -10,7 +13,8 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
       query: GetOrbitHierarchyDocument,
       variables: {
         params: {
-          orbitEntryHashB64: "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX6l-ncJWu"
+          orbitEntryHashB64:
+            "uhCEkK4tYe6wTVt56vtr5pszKBHwjwh2cPYFv4ej5KvfX6l-ncJWu",
         },
       },
     },
@@ -29,7 +33,7 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
             sphereHashB64: SPHERE_ID,
             orbitLevel: 0,
           },
-        }
+        },
       },
     },
     result: {
@@ -47,7 +51,7 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
             sphereHashB64: SPHERE_ID,
             orbitLevel: 1,
           },
-        }
+        },
       },
     },
     result: {
@@ -67,4 +71,4 @@ export const HIERARCHY_ROOT_ONE_CHILD_MOCKS = [
       data: { getLowestSphereHierarchyLevel: 0 },
     },
   },
-];
+] as any;
