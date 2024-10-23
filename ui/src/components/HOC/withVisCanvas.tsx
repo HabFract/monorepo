@@ -7,7 +7,6 @@ import { useNodeTraversal } from "../../hooks/useNodeTraversal";
 import {
   currentSphereHierarchyBounds,
   currentSphereHierarchyIndices,
-  isLeafNodeHashAtom,
   newTraversalLevelIndexId,
 } from "../../state/hierarchy";
 
@@ -36,7 +35,7 @@ import {
   ConsolidatedFlags,
   OrbitDescendant,
 } from "../../state/types/hierarchy";
-import { useCreateWinRecordMutation } from "../../graphql/generated";
+import { useCreateOrUpdateWinRecord } from "../../hooks/gql/useCreateOrUpdateWinRecord";
 import { useAtom, useAtomValue } from "jotai";
 import { isMoreThenDaily, toYearDotMonth } from "../vis/tree-helpers";
 import { useVisCanvas } from "../../hooks/useVisCanvas";
@@ -46,6 +45,7 @@ import { StoreType } from "../../state/types/store";
 import { Spinner } from "flowbite-react";
 import { useWinData } from "../../hooks/useWinData";
 import { DateTime } from "luxon";
+import { skip } from "node:test";
 
 /**
  * Higher-order component to enhance a visualization component with additional logic and state management.
@@ -121,36 +121,37 @@ export function withVisCanvas<T extends IVisualization>(
       return unsubscribe;
     }, []);
 
-    // ## -- Source chain queries and mutation parameters/handlers -- ##
-    const [createOrUpdateWinRecord, { data: createOrUpdateWinRecordResponse, loading: createOrUpdateWinRecordLoading, error: createOrUpdateWinRecordError }] = useCreateWinRecordMutation();
 
     // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
     const { workingWinDataForOrbit, handleUpdateWorkingWins } = useWinData(currentOrbitDetails, currentDate);
+
+    const skipFlag = !currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit || typeof workingWinDataForOrbit !== 'object';
+    const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
+      variables: {
+        winRecord: {
+          orbitEh: currentOrbitDetails?.eH,
+          winData: workingWinDataForOrbit !== null && Object.entries(workingWinDataForOrbit!).map(([date, value]) => ({
+            date,
+            ...(isMoreThenDaily(currentOrbitDetails!.frequency)
+              ? { multiple: value }
+              : { single: value })
+          }))
+        }
+      },
+      skip: skipFlag
+    });
     console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
     // TODO: handle derived error/loading states
     // const loading = useGetWinRecordForOrbitForMonthQueryLoading || createOrUpdateWinRecordLoading;
     // const error = useGetWinRecordForOrbitForMonthQueryError || createOrUpdateWinRecordError;
 
     const handlePersistWins = useCallback(() => {
-      if (!currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit) {
-        console.error("Not enough details to persist.");
-        return;
-      }
+      if (typeof createOrUpdateWinRecord !== 'function') return
+      if (skipFlag) { console.error("Not enough details to persist."); return }
+
       console.log("Persisting new win data...");
       if (currentOrbitIsLeaf) {
-        createOrUpdateWinRecord({
-          variables: {
-            winRecord: {
-              orbitEh: currentOrbitDetails.eH,
-              winData: Object.entries(workingWinDataForOrbit).map(([date, value]) => ({
-                date,
-                ...(isMoreThenDaily(currentOrbitDetails.frequency)
-                  ? { multiple: value }
-                  : { single: value })
-              }))
-            }
-          }
-        });
+        createOrUpdateWinRecord();
       } else {
         console.log("Current orbit is not a leaf. Wins will be calculated from child nodes.");
       }

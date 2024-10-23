@@ -29,8 +29,8 @@ describe('useCreateOrUpdateWinRecord Hook', () => {
   it('should update win record in app state after mutation', async () => {
     const TestComponent = ({ orbitHash }: { orbitHash: string }) => {
       const winDataAtomInstance = useMemo(() => winDataPerOrbitNodeAtom(orbitHash), [orbitHash]) as any;
-      const [winData, setWinData] = useAtom(winDataAtomInstance);
-      const [runMutation] = useCreateOrUpdateWinRecord({
+      const [winData, _setWinData] = useAtom(winDataAtomInstance);
+      const runMutation = useCreateOrUpdateWinRecord({
         variables: {
           winRecord: {
             orbitEh: 'aTestOrbitEh',
