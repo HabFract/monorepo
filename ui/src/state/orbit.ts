@@ -1,3 +1,4 @@
+import { NODE_ENV } from "./../constants";
 import { currentOrbitIdAtom } from "./orbit";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { atom } from "jotai";
@@ -295,13 +296,14 @@ export const currentOrbitIdAtom = atom(
   },
   (_get, set, newOrbitId: EntryHashB64) => {
     set(appStateAtom, (prevState) => {
-      console.log("Setting orbit id :>> ", {
-        ...prevState,
-        orbitNodes: {
-          ...prevState.orbitNodes,
-          currentOrbitHash: newOrbitId,
-        },
-      });
+      NODE_ENV !== "test" &&
+        console.log("Setting orbit id :>> ", {
+          ...prevState,
+          orbitNodes: {
+            ...prevState.orbitNodes,
+            currentOrbitHash: newOrbitId,
+          },
+        });
       return {
         ...prevState,
         orbitNodes: {

@@ -57,7 +57,10 @@ export function useWinData(
   useEffect(() => {
     if (currentOrbitDetails == null || !data?.getWinRecordForOrbitForMonth)
       return;
-
+    console.log(
+      "data.getWinRecordForOrbitForMonth.winData :>> ",
+      data.getWinRecordForOrbitForMonth.winData
+    );
     const newWinData = data.getWinRecordForOrbitForMonth.winData.reduce(
       (acc: any, { date, value: val }: any) => {
         acc[date] = "single" in val ? val.single : val.multiple;

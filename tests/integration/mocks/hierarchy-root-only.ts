@@ -118,9 +118,7 @@ export const HIERARCHY_MOCKS = [
           winData: [
             {
               date: "01/10/2024",
-              value: {
-                single: true,
-              },
+              value: { multiple: true },
             },
           ],
         },

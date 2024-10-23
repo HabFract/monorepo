@@ -188,8 +188,6 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
   };
 });
 
-
-
 describe.only('OrbitTree', () => {
   beforeEach(() => {
     const mockClient = createMockClient({cache: new InMemoryCache({})});
@@ -256,6 +254,9 @@ describe.only('OrbitTree', () => {
           children: [],
         }]),
         "nodeHashes": [
+          "uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+        ],
+        "leafNodeHashes": [
           "uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
         ],
         "rootNode": "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",

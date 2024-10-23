@@ -21,6 +21,9 @@ import {
   getOrbitEhFromId,
   orbitWinDataAtom
 } from '../../ui/src/state/orbit';
+import { getHierarchyAtom, isLeafNodeHashAtom, updateHierarchyAtom } from '../../ui/src/state/hierarchy';
+import { NodeContent } from '@ui/src/state';
+import { hierarchy, HierarchyNode } from 'd3-hierarchy';
 
 describe('Sphere selectors', () => {
   beforeAll(() => {
@@ -918,6 +921,146 @@ describe('Orbit selectors', () => {
       });
 
       expect(screen.getByTestId('startTime').textContent).toBe('1620000000000');
+    });
+  });
+});
+
+describe('Hierarchy Atoms', () => {
+  beforeEach(() => {
+    resetMocks()
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  const modifiedMockState = {
+    ...mockAppState,
+    hierarchies: {
+      ...mockAppState.hierarchies,
+      byRootOrbitEntryHash: {
+        ["uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj"]: {
+          rootNode: 'uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj',
+          json: '[{"content":"uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj","children":[{"content":"uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc","children":[]},{"content":"uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc","children":[]}]}]',
+          currentNode: 'uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc',
+          nodeHashes: [
+            'uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj',
+            'uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc',
+            'uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc'
+          ],
+          leafNodeHashes: [
+            'uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc',
+            'uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc'
+          ]
+        }
+      },
+    },
+  };
+
+  describe('getHierarchyAtom', () => {
+    const TestComponent = ({ rootOrbitEntryHash }: { rootOrbitEntryHash: string }) => {
+      const hierarchyAtom = useMemo(() => getHierarchyAtom(rootOrbitEntryHash), [rootOrbitEntryHash]);
+      const [hierarchy] = useAtom(hierarchyAtom);
+      return <div data-testid="hierarchy">{JSON.stringify(hierarchy)}</div>;
+    };
+
+    it('should return the hierarchy for a given root orbit entry hash', () => {
+      // Arrange
+      const rootOrbitEntryHash = "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj";
+      renderWithJotai(<TestComponent rootOrbitEntryHash={rootOrbitEntryHash} />, { initialState: modifiedMockState as any });
+
+      const hierarchy = JSON.parse(screen.getByTestId('hierarchy').textContent || 'null');
+      console.log('hierarchy :>> ', hierarchy);
+      // Assert
+      expect(hierarchy).not.toBeNull();
+      expect(hierarchy.rootNode).toBe(rootOrbitEntryHash);
+    });
+
+    it('should return null if the hierarchy does not exist', () => {
+      // Act
+      renderWithJotai(<TestComponent rootOrbitEntryHash="nonExistentHash" />);
+
+      // Assert
+      expect(screen.getByTestId('hierarchy').textContent).toBe('null');
+    });
+  });
+
+  describe('AppState - updateHierarchyAtom', () => {
+    it('given a blank state it should update the appState with correct new hierarchy data', async () => {
+      // Arrange
+      const rootHash = "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj";
+      const childEntryHashes = ["uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc", "uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc"];
+      const childActionHashes = childEntryHashes.map(hash => hash.replace('E', 'A'));
+      const json = JSON.stringify([
+        {
+          content: rootHash,
+          children: [{
+            content: childEntryHashes[0],
+            children: [],
+          }, {
+            content: childEntryHashes[1],
+            children: [],
+          }],
+        },
+      ]);
+      const d3Hierarchy = hierarchy(JSON.parse(json)[0]);
+      const TestComponent = () => {
+        const [, setHierarchy] = useAtom(updateHierarchyAtom);
+        const hierarchy = useAtom(useMemo(() => getHierarchyAtom(rootHash), []));
+        return (
+          <div>
+            <button
+              onClick={() => {
+                const newHierarchy = {
+                  rootData: d3Hierarchy,
+                  _json: json,
+                };
+                setHierarchy(newHierarchy as any);
+              }}
+            >
+              Update Hierarchy
+            </button>
+            <div data-testid="getHierarchy">{JSON.stringify(hierarchy)}</div>
+          </div>
+        );
+      };
+      // Act
+      renderWithJotai(<TestComponent />);
+
+      await act(async () => {
+        await userEvent.click(screen.getByText('Update Hierarchy'));
+      });
+
+      // Assert
+      const updatedAppState = JSON.parse(screen.getByTestId('getHierarchy').textContent as string)[0];
+      expect(updatedAppState.rootNode).toStrictEqual(rootHash);
+      expect(updatedAppState.nodeHashes).toStrictEqual(["uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj", ...childActionHashes]);
+      expect(updatedAppState.leafNodeHashes).toStrictEqual(childActionHashes);
+      expect(updatedAppState.currentNode).toStrictEqual("uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc");
+      expect(updatedAppState.json).toStrictEqual(json);
+    });
+  });
+
+  describe('AppState - isLeafNodeHashAtom', () => {
+    const TestComponent = ({ nodeHash }: { nodeHash: string }) => {
+      const leafNodeHashAtom = useMemo(() => isLeafNodeHashAtom(nodeHash), [nodeHash]);
+      const [leafNodeHashExists] = useAtom(leafNodeHashAtom);
+      return <div data-testid="leafNodeHashAtom">{leafNodeHashExists.toString()}</div>;
+    };
+    it('should return true if the node hash exists in leafNodeHashes', () => {
+      // Act
+      renderWithJotai(<TestComponent nodeHash="uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc" />, { initialState: modifiedMockState as any });
+
+      // Assert
+      expect(screen.getByTestId('leafNodeHashAtom').textContent).toBe('true');
+    });
+
+    it('should return false if the node hash does not exist in leafNodeHashes', () => {
+      // Act
+      renderWithJotai(<TestComponent nodeHash="nonExistentLeafNodeHash" />, { initialState: modifiedMockState as any });
+
+      // Assert
+      expect(screen.getByTestId('leafNodeHashAtom').textContent).toBe('false');
     });
   });
 });

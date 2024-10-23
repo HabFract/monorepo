@@ -65,22 +65,7 @@ export const mockAppState: AppState = {
       },
     },
   },
-  wins: {
-    // Only include win data for leaf nodes as all other nodes will be calculated dynamically in the client
-    uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc: {
-      "2023-W18": true,
-      "2023-W19": false,
-    },
-    uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
-      "2023-05-01": [true, false],
-      "2023-05-02": [false, false],
-      "2023-05-03": [true, true],
-    },
-    uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc: {
-      "2023-05": true,
-      "2023-06": false,
-    },
-  },
+  wins: {},
   ui: {
     listSortFilter: {
       sortCriteria: "name",

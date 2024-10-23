@@ -1,5 +1,5 @@
-import { ActionHashB64 } from "@holochain/client";
 // ui/src/state/hierarchy.ts
+import { ActionHashB64 } from "@holochain/client";
 import { atom } from "jotai";
 import {
   HierarchyTraversalIndices,
@@ -14,7 +14,131 @@ import { nodeCache } from "./store";
 import { SphereOrbitNodeDetails } from "./types";
 import { getSphereIdFromEhAtom } from "./sphere";
 import { HierarchyNode } from "d3-hierarchy";
-import { getOrbitIdFromEh } from "./orbit";
+
+/**
+ * Gets the hierarchy for a given root orbit entry hash
+ * @param rootOrbitEntryHash The EntryHash of the root orbit
+ * @returns An atom that resolves to the hierarchy, or null if it doesn't exist
+ */
+export const getHierarchyAtom = (rootOrbitEntryHash: RootOrbitEntryHash) => {
+  const selectHierarchy = atom<Hierarchy | null>((get) => {
+    const state = get(appStateAtom);
+    return state.hierarchies.byRootOrbitEntryHash[rootOrbitEntryHash] || null;
+  });
+  return selectHierarchy;
+};
+
+/**
+ * Atom for updating the appState with new hierarchy data, ready for potential serialisation and use in RPCs.
+ * @type {WritableAtom<null, [string], void>}
+ */
+export const updateHierarchyAtom = atom(
+  null,
+  (
+    get,
+    set,
+    newHierarchy: {
+      rootData: HierarchyNode<
+        NodeContent & { children?: HierarchyNode<NodeContent> }
+      >;
+      each: Function;
+      _json: string;
+    }
+  ) => {
+    if (!newHierarchy?.rootData) return null;
+
+    const currentAppState = get(appStateAtom);
+    const rootNode = newHierarchy.rootData.data.content;
+    const nodeHashes: ActionHashB64[] = [];
+    const leafNodeHashes: ActionHashB64[] = [];
+    // Derive nodeHashes, rootNode, etc. from the newHierarchy
+    let currentHierarchyNode: EntryHashB64 | undefined = undefined;
+    const possibleNodes = Object.keys(currentAppState.orbitNodes.byHash);
+
+    newHierarchy.rootData.each((node) => {
+      const eH = node.data.content;
+      const id = possibleNodes.find(
+        (key) => currentAppState.orbitNodes.byHash[key].eH === eH
+      );
+      if (!id) return;
+      if (currentAppState.orbitNodes.currentOrbitHash == id)
+        currentHierarchyNode = id;
+      nodeHashes.push(id as ActionHashB64);
+      if (node.data?.children && node.data.children.length == 0)
+        leafNodeHashes.push(id as ActionHashB64);
+    });
+    // Update the appState with the new hierarchy data
+    const updatedHierarchy: Hierarchy = {
+      rootNode,
+      json: newHierarchy?._json,
+      bounds: undefined, // TODO: decide whether to keep this as a primitive atom and remove from appstate
+      indices: undefined, // TODO: decide whether to keep this as a primitive atom and remove from appstate
+      currentNode: currentHierarchyNode,
+      nodeHashes,
+      leafNodeHashes,
+    };
+
+    set(appStateAtom, {
+      ...currentAppState,
+      hierarchies: {
+        ...currentAppState.hierarchies,
+        byRootOrbitEntryHash: {
+          ...currentAppState.hierarchies.byRootOrbitEntryHash,
+          [rootNode]: updatedHierarchy,
+        },
+      },
+    });
+  }
+);
+
+/**
+ * Atom to check if a node hash exists in the leafNodeHashes of any hierarchy in appState.
+ * @param nodeHash The node hash to check
+ * @returns An atom that resolves to a boolean indicating existence
+ */
+export const isLeafNodeHashAtom = (nodeHash: ActionHashB64) => {
+  return atom<boolean>((get) => {
+    const state = get(appStateAtom);
+    const hierarchies = state.hierarchies.byRootOrbitEntryHash;
+
+    for (const hierarchyKey in hierarchies) {
+      const hierarchy = hierarchies[hierarchyKey];
+      if (hierarchy.leafNodeHashes.includes(nodeHash)) {
+        return true;
+      }
+    }
+    return false;
+  });
+};
+
+//TODO: write tests
+/**
+ * Gets all orbits for a given hierarchy
+ * @param rootOrbitEntryHash The EntryHash of the root orbit
+ * @returns An atom that resolves to an array of orbit details
+ */
+export const getHierarchyOrbitDeailsAtom = (
+  rootOrbitEntryHash: RootOrbitEntryHash
+) => {
+  const selectOrbits = atom<OrbitNodeDetails[] | null>((get) => {
+    const state = get(appStateAtom);
+    const hierarchy =
+      state.hierarchies.byRootOrbitEntryHash[rootOrbitEntryHash];
+    const sphereEh = state.orbitNodes.byHash[rootOrbitEntryHash].sphereHash;
+    const sphereId = get(getSphereIdFromEhAtom(sphereEh));
+
+    if (!hierarchy || typeof sphereId !== "string") return null;
+
+    return null; // TODO: flesh this out after getOrbitFromCache has been refactored
+    // const sphereNodeDetailsCache = get(nodeCache.item(sphereId)) as
+    //   | SphereOrbitNodeDetails
+    //   | undefined;
+    // if (!sphereNodeDetailsCache || typeof sphereNodeDetailsCache !== "object")
+    //   return null;
+    // return Object.values(sphereNodeDetailsCache);
+  });
+  return selectOrbits;
+};
 
 /**
  * Calculates the overall completion status for a specific orbit
@@ -38,102 +162,7 @@ export const calculateCompletionStatusAtom = (orbitHash: ActionHashB64) => {
   return calculateCompletionStatus;
 };
 
-/**
- * Gets the hierarchy for a given root orbit entry hash
- * @param rootOrbitEntryHash The EntryHash of the root orbit
- * @returns An atom that resolves to the hierarchy, or null if it doesn't exist
- */
-export const getHierarchyAtom = (rootOrbitEntryHash: RootOrbitEntryHash) => {
-  const selectHierarchy = atom<Hierarchy | null>((get) => {
-    const state = get(appStateAtom);
-    return state.hierarchies.byRootOrbitEntryHash[rootOrbitEntryHash] || null;
-  });
-  return selectHierarchy;
-};
-
-/**
- * Atom for updating the appState with new hierarchy data.
- * @type {WritableAtom<null, [string], void>}
- */
-export const updateHierarchy = atom(
-  null,
-  (
-    get,
-    set,
-    newHierarchy: {
-      rootData: HierarchyNode<NodeContent>;
-      each: Function;
-      _json: string;
-    }
-  ) => {
-    if (!newHierarchy?.rootData) return null;
-
-    const currentAppState = get(appStateAtom);
-    const rootNode = newHierarchy.rootData.data.content;
-    const nodeHashes: ActionHashB64[] = [];
-    // Derive nodeHashes, rootNode, etc. from the newHierarchy
-    let currentHierarchyNode: EntryHashB64 | undefined = undefined;
-    const possibleNodes = Object.keys(currentAppState.orbitNodes.byHash);
-    newHierarchy.rootData.each((node) => {
-      const eH = node.data.content;
-      const id = possibleNodes.find(
-        (key) => currentAppState.orbitNodes.byHash[key].eH === eH
-      );
-      if (!id) return;
-      if (currentAppState.orbitNodes.currentOrbitHash == id)
-        currentHierarchyNode = id;
-      nodeHashes.push(id as ActionHashB64);
-    });
-    // Update the appState with the new hierarchy data
-    const updatedHierarchy: Hierarchy = {
-      rootNode,
-      json: newHierarchy?._json,
-      bounds: undefined, // TODO: decide whether to keep this as a primitive atom and remove from appstate
-      indices: undefined, // TODO: decide whether to keep this as a primitive atom and remove from appstate
-      currentNode: currentHierarchyNode,
-      nodeHashes,
-    };
-
-    set(appStateAtom, {
-      ...currentAppState,
-      hierarchies: {
-        ...currentAppState.hierarchies,
-        byRootOrbitEntryHash: {
-          ...currentAppState.hierarchies.byRootOrbitEntryHash,
-          [rootNode]: updatedHierarchy,
-        },
-      },
-    });
-  }
-);
-
-//TODO: update tests
-/**
- * Gets all orbits for a given hierarchy
- * @param rootOrbitEntryHash The EntryHash of the root orbit
- * @returns An atom that resolves to an array of orbit details
- */
-export const getHierarchyOrbitsAtom = (
-  rootOrbitEntryHash: RootOrbitEntryHash
-) => {
-  const selectOrbits = atom<OrbitNodeDetails[] | null>((get) => {
-    const state = get(appStateAtom);
-    const hierarchy =
-      state.hierarchies.byRootOrbitEntryHash[rootOrbitEntryHash];
-    const sphereEh = state.orbitNodes.byHash[rootOrbitEntryHash].sphereHash;
-    const sphereId = get(getSphereIdFromEhAtom(sphereEh));
-
-    if (!hierarchy || typeof sphereId !== "string") return null;
-
-    const sphereNodeDetailsCache = get(nodeCache.item(sphereId)) as
-      | SphereOrbitNodeDetails
-      | undefined;
-    if (!sphereNodeDetailsCache || typeof sphereNodeDetailsCache !== "object")
-      return null;
-    return Object.values(sphereNodeDetailsCache);
-  });
-  return selectOrbits;
-};
+/** PRIMITIVE (not currently in AppState or IndexDB) */
 
 /**
  * Atom representing the hierarchy bounds for each sphere.

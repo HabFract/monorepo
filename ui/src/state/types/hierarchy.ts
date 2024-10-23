@@ -40,6 +40,7 @@ export interface Hierarchy {
   currentNode?: CurrentOrbitId;
   /** Reference to the nomalised orbit nodes of the hierarchy which will be needed to extract and serialise full hierarchy data  */
   nodeHashes: Array<ActionHashB64>;
+  leafNodeHashes: Array<ActionHashB64>;
 }
 
 // Type for consolidated navigation flags
@@ -58,6 +59,7 @@ export interface ConsolidatedActions {
   moveDown: () => void;
 }
 
+// Slimmed down OrbitNodeDetails for the Vis Vertical/Lateral controls on mobile
 export interface OrbitDescendant {
   orbitName: string;
   orbitScale: Scale;
