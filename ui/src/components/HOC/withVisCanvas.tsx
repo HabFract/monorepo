@@ -1,4 +1,4 @@
-import React, { ComponentType, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import React, { ComponentType, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import "../vis/vis.css";
 
@@ -7,12 +7,14 @@ import { useNodeTraversal } from "../../hooks/useNodeTraversal";
 import {
   currentSphereHierarchyBounds,
   currentSphereHierarchyIndices,
+  isLeafNodeHashAtom,
   newTraversalLevelIndexId,
 } from "../../state/hierarchy";
 
 import {
   currentOrbitDetailsAtom,
   currentOrbitIdAtom,
+  currentOrbitIsLeafAtom,
   currentSphereOrbitNodeDetailsAtom,
   getOrbitNodeDetailsFromEhAtom,
 } from "../../state/orbit";
@@ -72,6 +74,8 @@ export function withVisCanvas<T extends IVisualization>(
     // Get the details of the current Orbit in context, and the calculated bounds for navigation of the rendered hierarchy
     // which will determine the state/visibility of the Vis OverlayLayout/controls
     const currentOrbitDetails: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
+    const currentOrbitIsLeaf = useAtomValue(currentOrbitIsLeafAtom);
+
     const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
       currentSphereHierarchyBounds,
     );
@@ -126,11 +130,6 @@ export function withVisCanvas<T extends IVisualization>(
     // TODO: handle derived error/loading states
     // const loading = useGetWinRecordForOrbitForMonthQueryLoading || createOrUpdateWinRecordLoading;
     // const error = useGetWinRecordForOrbitForMonthQueryError || createOrUpdateWinRecordError;
-
-    const isLeafOrbit = (orbitDetails: OrbitNodeDetails | null): boolean => {
-      if (orbitDetails == null) return false
-      return true;
-    };
 
     const handlePersistWins = useCallback(() => {
       if (!currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit) {
@@ -201,7 +200,7 @@ export function withVisCanvas<T extends IVisualization>(
                   orbitFrequency={currentOrbitDetails?.frequency || 1.0}
                   orbitSiblings={orbitSiblings}
                   orbitDescendants={orbitDescendants}
-                  isLeafOrbit={isLeafOrbit(currentOrbitDetails)}
+                  isLeafOrbit={!!currentOrbitIsLeaf}
                   currentOrbitDetails={currentOrbitDetails}
                   actions={consolidatedActions}
                 ></OverlayLayout>

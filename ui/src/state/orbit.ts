@@ -1,5 +1,4 @@
 import { NODE_ENV } from "./../constants";
-import { currentOrbitIdAtom } from "./orbit";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { atom } from "jotai";
 import { appStateAtom } from "./store";
@@ -8,6 +7,7 @@ import { Frequency, OrbitHashes, OrbitNodeDetails } from "./types/orbit";
 import { Orbit, Frequency as GraphQLFrequency } from "../graphql/generated";
 import { WinData } from "./types/win";
 import { nodeCache } from "./store";
+import { isLeafNodeHashAtom } from "./hierarchy";
 
 /** ----------------------------------------------------- */
 
@@ -207,6 +207,7 @@ export const getCurrentOrbitStartTimeFromEh = atom(
  * This atom directly updates the orbit details in the indexDB cache.
  * If the orbit is not found, no update occurs.
  */
+
 export const setOrbitWithEntryHashAtom = atom(
   null,
   (
@@ -240,6 +241,18 @@ export const setOrbitWithEntryHashAtom = atom(
     });
   }
 );
+
+/**
+ * Derived atom for determining if the current node is a leaf in any hierarchy
+ * @returns {boolean | null}
+ */
+export const currentOrbitIsLeafAtom = atom<boolean | null>((get) => {
+  const currentOrbitId = get(currentOrbitDetailsAtom)?.id;
+  if (!currentOrbitId) return null;
+
+  return get(isLeafNodeHashAtom(currentOrbitId));
+});
+(currentOrbitIsLeafAtom as any).testId = "currentOrbitIsLeafAtom";
 
 /**
  * Gets the frequency of a given Orbit from IndexDB
@@ -355,90 +368,3 @@ export const orbitWinDataAtom = (orbitId: ActionHashB64) => {
   });
   return selectWinData;
 };
-
-// TODO: implement below
-
-/**
- * Calculates the streak information for a specific orbit
- * @param orbitHash The ActionHash of the orbit
- * @returns An atom that resolves to the streak count, or null if the orbit doesn't exist
- */
-export const calculateStreakAtom = (orbitHash: ActionHashB64) => {
-  const calculateStreak = atom<number | null>((get) => {
-    const state = get(appStateAtom);
-    const orbit = state.orbitNodes.byHash[orbitHash];
-    const winData = state.wins[orbitHash] || {};
-
-    if (!orbit) {
-      return null; // Return null for non-existent orbits
-    }
-
-    // Implement streak calculation logic here based on frequency
-    // This is a placeholder implementation
-    return 0;
-  });
-  return calculateStreak;
-};
-
-/**
- * Sets a win for a specific orbit on a given date
- * @param orbitHash The ActionHash of the orbit
- * @param date The date for the win
- * @param winIndex The index of the win (for frequencies > 1)
- * @param hasWin Whether the win is achieved or not
- */
-export const setWinForOrbit = atom(
-  null,
-  (
-    get,
-    set,
-    {
-      orbitHash,
-      date,
-      winIndex,
-      hasWin,
-    }: {
-      orbitHash: ActionHashB64;
-      date: string;
-      winIndex?: number;
-      hasWin: boolean;
-    }
-  ) => {
-    const state = get(appStateAtom);
-    const orbit = state.orbitNodes.byHash[orbitHash];
-
-    if (!orbit) {
-      console.warn(`Attempted to set win for non-existent orbit: ${orbitHash}`);
-      return;
-    }
-
-    const frequency = orbit.frequency;
-    const currentWinData = state.wins[orbitHash] || {};
-
-    let newWinData: WinData<typeof frequency>;
-    if (frequency > 1) {
-      const currentDayData = Array.isArray(currentWinData[date])
-        ? (currentWinData[date] as boolean[])
-        : new Array(Math.round(frequency)).fill(false);
-      const newDayData = [...currentDayData];
-      if (winIndex !== undefined && winIndex < Math.round(frequency)) {
-        newDayData[winIndex] = hasWin;
-      }
-      newWinData = { ...currentWinData, [date]: newDayData } as WinData<
-        typeof frequency
-      >;
-    } else {
-      newWinData = { ...currentWinData, [date]: hasWin } as WinData<
-        typeof frequency
-      >;
-    }
-
-    set(appStateAtom, {
-      ...state,
-      wins: {
-        ...state.wins,
-        [orbitHash]: newWinData,
-      },
-    });
-  }
-);

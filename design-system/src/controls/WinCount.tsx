@@ -79,7 +79,7 @@ const WinCount: React.FC<WinCountProps> = ({
       if (saveInterval) clearInterval(saveInterval);
     };
   }, [hasUnsavedChanges, handleSaveWins]);
-  if (currentDateWins === null || typeof orbitFrequency === 'undefined') {
+  if (currentDateWins === null || !orbitFrequency) {
     return <div className="win-count-container loading"><Spinner aria-label="Loading!" className="menu-spinner" size="xl" /></div>;
   }
 

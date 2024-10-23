@@ -12,7 +12,7 @@ import { resetMocks } from '../setup';
 import { addCustomMock, clearCustomMocks, mockedCacheEntries } from '../setupMockStore';
 
 import {
-  currentOrbitDetailsAtom, currentOrbitIdAtom, currentSphereOrbitNodesAtom, getOrbitNodeDetailsFromIdAtom, setOrbitWithEntryHashAtom, getOrbitFrequency,
+  currentOrbitDetailsAtom, currentOrbitIdAtom, currentSphereOrbitNodesAtom, getOrbitNodeDetailsFromIdAtom,
   getOrbitNodeDetailsFromEhAtom,
   currentSphereOrbitNodeDetailsAtom,
   getCurrentSphereOrbitNodeDetailsFromEhAtom,
@@ -22,10 +22,9 @@ import {
   orbitWinDataAtom
 } from '../../ui/src/state/orbit';
 import { getHierarchyAtom, isLeafNodeHashAtom, updateHierarchyAtom } from '../../ui/src/state/hierarchy';
-import { NodeContent } from '@ui/src/state';
 import { hierarchy, HierarchyNode } from 'd3-hierarchy';
 
-describe('Sphere selectors', () => {
+describe('Sphere Atoms', () => {
   beforeAll(() => {
     resetMocks()
     clearCustomMocks();
@@ -315,7 +314,7 @@ describe('Sphere selectors', () => {
   });
 });
 
-describe('Orbit selectors', () => {
+describe('Orbit Atoms', () => {
   beforeEach(() => {
     resetMocks()
     clearCustomMocks();
