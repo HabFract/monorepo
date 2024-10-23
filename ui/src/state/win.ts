@@ -51,7 +51,10 @@ export const winDataPerOrbitNodeAtom = (orbitHash: ActionHashB64) => {
     },
     (get, set, winRecord: WinDataPerOrbitNode) => {
       const state = get(appStateAtom);
-
+      console.log("setNew Windata :>> ", {
+        ...state.wins,
+        [orbitHash]: winRecord,
+      });
       set(appStateAtom, {
         ...state,
         wins: {
