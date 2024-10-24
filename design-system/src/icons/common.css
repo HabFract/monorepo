@@ -1,21 +1,29 @@
+/* Frequency Indicator */
 .frequency-indicator-container {
   background: url('/assets/icons/calendar.svg');
   background-repeat: no-repeat;
   background-size: cover;
   letter-spacing: -1px;
-  @apply text-primary relative pt-3 w-14 h-14 font-sans font-bold text-lg grid place-content-center;
+  @apply text-white relative pt-3 w-14 h-14 font-sans text-sm grid place-content-center;
 }
+/* Frequency Indicator Viewport Adjustments */
 .frequency-indicator-container.md {
-  @apply h-8 w-8 px-2 py-1 mb-1 font-medium text-base;
+  @apply h-8 w-8 px-2 py-1 mb-1 font-medium;
 }
 .frequency-indicator-container.md span, .frequency-indicator-container.sm span {
   width: inherit;
+  text-align: center;
+  @apply font-bold
 }
 
+.frequency-indicator-container.sm span {
+  margin-top: .35rem;
+  font-size: .56rem;
+}  
 .frequency-indicator-container.md span {  
+  margin-top: .45rem;
   font-size: .6rem;
   line-height: .6rem;
-  margin-top: .3rem;
 }
 
 .frequency-indicator-container.sm {

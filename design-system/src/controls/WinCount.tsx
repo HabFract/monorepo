@@ -7,7 +7,7 @@ import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Spinner } from "flowbite-react";
 import { OPAL, SEA_GREEN } from "../../colour-palette";
 import { Frequency } from "@ui/src/state/types";
-import FrequencyIndicator from "../icons/frequency-indicator";
+import FrequencyIndicator from "../icons/FrequencyIndicator";
 import { DateTime } from "luxon";
 
 export interface WinCountProps {

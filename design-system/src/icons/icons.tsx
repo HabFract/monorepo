@@ -1,6 +1,6 @@
 import React, { FC, ComponentProps } from "react";
 import { Frequency, Scale } from "../generated-types";
-import FrequencyIndicator from "./frequency-indicator";
+import FrequencyIndicator from "./FrequencyIndicator";
 
 export function getIconForPlanetValue(
   scale: Scale,

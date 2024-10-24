@@ -1,6 +1,6 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
-import FrequencyIndicator, { FrequencyIndicatorProps } from "./frequency-indicator";
+import FrequencyIndicator, { FrequencyIndicatorProps } from "./FrequencyIndicator";
 import { Frequency } from "@ui/src/state/types";
 
 const meta: Meta<FrequencyIndicatorProps> = {

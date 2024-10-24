@@ -131,7 +131,7 @@ export function withVisCanvas<T extends IVisualization>(
           orbitEh: currentOrbitDetails?.eH,
           winData: workingWinDataForOrbit !== null && Object.entries(workingWinDataForOrbit!).map(([date, value]) => ({
             date,
-            ...(isMoreThenDaily(currentOrbitDetails!.frequency)
+            ...(isMoreThenDaily(currentOrbitDetails?.frequency || 0)
               ? { multiple: value }
               : { single: value })
           }))

@@ -35,11 +35,16 @@ const tailwindConfig = {
     extend: {
       fontWeight: {
         std: 300,
+        medium: 400,
+        semibold: 700,
+        bold: 900,
       },
       lineHeight: {
+        sm: "17.76px",
         std: "24px",
       },
       fontSize: {
+        "sm": "13px",
         "std-input": "14px",
         base: "16px",
       },

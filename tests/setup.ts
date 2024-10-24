@@ -200,6 +200,9 @@ vi.mock("d3-shape", async (importOriginal) => {
     linkVertical: () => ({
       x: vi.fn(() => ({ y: vi.fn(() => {}) })),
     }),
+    link: () => ({
+      x: vi.fn(() => ({ y: vi.fn(() => {}) })),
+    }),
   };
 });
 

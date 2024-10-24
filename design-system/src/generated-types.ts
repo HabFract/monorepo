@@ -425,19 +425,19 @@ export type UpdateSphereMutationVariables = Exact<{
 
 export type UpdateSphereMutation = { __typename?: 'Mutation', updateSphere: { __typename?: 'CreateSphereResponsePayload', actionHash: string, entryHash: string } };
 
-export type UpdateWinRecordMutationVariables = Exact<{
-  winRecord: WinRecordUpdateParams;
-}>;
-
-
-export type UpdateWinRecordMutation = { __typename?: 'Mutation', updateWinRecord: { __typename?: 'WinRecord', id: string, eH: string, orbitId: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } };
-
 export type CreateWinRecordMutationVariables = Exact<{
   winRecord: WinRecordCreateParams;
 }>;
 
 
 export type CreateWinRecordMutation = { __typename?: 'Mutation', createWinRecord: { __typename?: 'WinRecord', id: string, eH: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } };
+
+export type UpdateWinRecordMutationVariables = Exact<{
+  winRecord: WinRecordUpdateParams;
+}>;
+
+
+export type UpdateWinRecordMutation = { __typename?: 'Mutation', updateWinRecord: { __typename?: 'WinRecord', id: string, eH: string, orbitId: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } };
 
 export type GetOrbitQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -710,6 +710,51 @@ export function useUpdateSphereMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateSphereMutationHookResult = ReturnType<typeof useUpdateSphereMutation>;
 export type UpdateSphereMutationResult = Apollo.MutationResult<UpdateSphereMutation>;
 export type UpdateSphereMutationOptions = Apollo.BaseMutationOptions<UpdateSphereMutation, UpdateSphereMutationVariables>;
+export const CreateWinRecordDocument = gql`
+    mutation createWinRecord($winRecord: WinRecordCreateParams!) {
+  createWinRecord(winRecord: $winRecord) {
+    id
+    eH
+    winData {
+      date
+      value {
+        ... on SingleWin {
+          single
+        }
+        ... on MultipleWins {
+          multiple
+        }
+      }
+    }
+  }
+}
+    `;
+export type CreateWinRecordMutationFn = Apollo.MutationFunction<CreateWinRecordMutation, CreateWinRecordMutationVariables>;
+
+/**
+ * __useCreateWinRecordMutation__
+ *
+ * To run a mutation, you first call `useCreateWinRecordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWinRecordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWinRecordMutation, { data, loading, error }] = useCreateWinRecordMutation({
+ *   variables: {
+ *      winRecord: // value for 'winRecord'
+ *   },
+ * });
+ */
+export function useCreateWinRecordMutation(baseOptions?: Apollo.MutationHookOptions<CreateWinRecordMutation, CreateWinRecordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateWinRecordMutation, CreateWinRecordMutationVariables>(CreateWinRecordDocument, options);
+      }
+export type CreateWinRecordMutationHookResult = ReturnType<typeof useCreateWinRecordMutation>;
+export type CreateWinRecordMutationResult = Apollo.MutationResult<CreateWinRecordMutation>;
+export type CreateWinRecordMutationOptions = Apollo.BaseMutationOptions<CreateWinRecordMutation, CreateWinRecordMutationVariables>;
 export const UpdateWinRecordDocument = gql`
     mutation updateWinRecord($winRecord: WinRecordUpdateParams!) {
   updateWinRecord(winRecord: $winRecord) {
@@ -756,51 +801,6 @@ export function useUpdateWinRecordMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateWinRecordMutationHookResult = ReturnType<typeof useUpdateWinRecordMutation>;
 export type UpdateWinRecordMutationResult = Apollo.MutationResult<UpdateWinRecordMutation>;
 export type UpdateWinRecordMutationOptions = Apollo.BaseMutationOptions<UpdateWinRecordMutation, UpdateWinRecordMutationVariables>;
-export const CreateWinRecordDocument = gql`
-    mutation createWinRecord($winRecord: WinRecordCreateParams!) {
-  createWinRecord(winRecord: $winRecord) {
-    id
-    eH
-    winData {
-      date
-      value {
-        ... on SingleWin {
-          single
-        }
-        ... on MultipleWins {
-          multiple
-        }
-      }
-    }
-  }
-}
-    `;
-export type CreateWinRecordMutationFn = Apollo.MutationFunction<CreateWinRecordMutation, CreateWinRecordMutationVariables>;
-
-/**
- * __useCreateWinRecordMutation__
- *
- * To run a mutation, you first call `useCreateWinRecordMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateWinRecordMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createWinRecordMutation, { data, loading, error }] = useCreateWinRecordMutation({
- *   variables: {
- *      winRecord: // value for 'winRecord'
- *   },
- * });
- */
-export function useCreateWinRecordMutation(baseOptions?: Apollo.MutationHookOptions<CreateWinRecordMutation, CreateWinRecordMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateWinRecordMutation, CreateWinRecordMutationVariables>(CreateWinRecordDocument, options);
-      }
-export type CreateWinRecordMutationHookResult = ReturnType<typeof useCreateWinRecordMutation>;
-export type CreateWinRecordMutationResult = Apollo.MutationResult<CreateWinRecordMutation>;
-export type CreateWinRecordMutationOptions = Apollo.BaseMutationOptions<CreateWinRecordMutation, CreateWinRecordMutationVariables>;
 export const GetOrbitDocument = gql`
     query getOrbit($id: ID!) {
   orbit(id: $id) {
