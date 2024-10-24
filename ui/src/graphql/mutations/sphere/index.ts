@@ -83,7 +83,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     return {
       actionHash: entryRecord.actionHash as any,
       entryHash: encodeHashToBase64(entryRecord.entryHash),
-      name: entryRecord.entry.name
+      name
     };
   };
 

@@ -86,11 +86,22 @@ export const curves = {
 export const getScaleForPlanet = (scale) => {
   switch (scale) {
     case Scale.Astro:
-      return 2.5;
+      return 2;
     case Scale.Sub:
       return 1.75;
     case Scale.Atom:
       return 0.8;
+  }
+};
+
+export const getLabelScale = (scale) => {
+  switch (scale) {
+    case Scale.Astro:
+      return 1.25;
+    case Scale.Sub:
+      return 1;
+    case Scale.Atom:
+      return 0.75;
   }
 };
 

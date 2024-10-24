@@ -9,7 +9,7 @@ export function getIconForPlanetValue(
     case Scale.Astro:
       return () => (
         <img
-          style={{ height: "24px", width: "auto", transform: 'scale(1.2)', objectFit: "cover" }}
+          style={{ height: "24px", width: "auto", transform: 'scale(1.2)', marginTop: '0px', objectFit: "cover" }}
           src="/assets/sun.svg"
         />
       );
@@ -61,19 +61,11 @@ export function getIconSvg(
       );
     case "pencil":
       return () => (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="input-icon"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-          />
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10.4908 2.22039C10.7779 1.9333 11.2434 1.9333 11.5305 2.22039L13.2601 3.94996C13.5472 4.23706 13.5472 4.70253 13.2601 4.98962L12.6552 5.59449C12.5117 5.73804 12.2789 5.73804 12.1354 5.59449L9.88598 3.34509C9.74243 3.20155 9.74243 2.96881 9.88598 2.82526L10.4908 2.22039Z" fill="black"/>
+          <path d="M8.6598 3.90447C8.94689 3.61738 9.41236 3.61738 9.69946 3.90447L11.429 5.63404C11.7161 5.92114 11.7161 6.38661 11.429 6.67371L6.00084 12.1019C5.97213 12.1306 5.92558 12.1306 5.89687 12.1019L3.23161 9.43663C3.2029 9.40792 3.2029 9.36137 3.23161 9.33266L8.6598 3.90447Z" fill="black"/>
+          <path d="M2.69741 9.99174C2.70597 9.93177 2.77933 9.90732 2.82217 9.95016L5.38347 12.5115C5.4263 12.5543 5.40185 12.6276 5.34188 12.6362L3.22701 12.9383C2.74184 13.0077 2.32597 12.5918 2.39528 12.1066L2.69741 9.99174Z" fill="black"/>
+          <path d="M3.33344 14H12.8904" stroke="black" strokeLinecap="round"/>
         </svg>
       );
     case "tick":
@@ -155,12 +147,25 @@ export function getIconSvg(
           <path d="M16 5L8.43004 11.6237C8.20238 11.8229 8.20238 12.1771 8.43004 12.3763L16 19" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       );
+    case "arrow-right":
+      return () => (
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6.66669 4.16669L12.9033 9.62373C13.131 9.82294 13.131 10.1771 12.9033 10.3763L6.66669 15.8334" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      );
     case "more":
       return () => (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="12" cy="12" r="2" fill="white"/>
           <circle cx="4" cy="12" r="2" fill="white"/>
           <circle cx="20" cy="12" r="2" fill="white"/>
+        </svg>
+      );
+    case "plus":
+      return () => (
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 1.33337L6 10.6667" stroke="black" stroke-width="2" stroke-linecap="round"/>
+          <path d="M10.6667 6L1.33335 6" stroke="black" stroke-width="2" stroke-linecap="round"/>
         </svg>
       );
     default:

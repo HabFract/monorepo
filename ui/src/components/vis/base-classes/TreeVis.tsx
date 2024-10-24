@@ -432,7 +432,7 @@ export class TreeVisualization extends BaseVisualization {
   setNodeAndLinkEnterSelections(): void {
     const nodes = this._gNode!.selectAll("g.node").data(
       // Remove habits that weren't being tracked then
-      this.rootData.descendants().filter((d) => {
+      this.rootData.descendants().reverse().filter((d) => {
         // const outOfBounds = outOfBoundsNode(d, this.rootData);
         // // Set new active node when this one is out of bounds
         // if (outOfBounds && this.activeNode?.data.name == d.data.name) {
@@ -513,7 +513,6 @@ export class TreeVisualization extends BaseVisualization {
         return false;
         // return store.get(currentOrbitIdAtom).id == d.data.content;
       });
-    this._gTooltip = this.clearAndRedrawLabels();
   }
 
   appendNodeVectors(): void {
@@ -534,10 +533,10 @@ export class TreeVisualization extends BaseVisualization {
       switch (scale) {
         case "Astro":
           return "-5";
+        case "Sub":
+          return "30";
         case "Atom":
           return "100";
-        case "Sub":
-          return "50";
         }
     })      
     .append("xhtml:div")

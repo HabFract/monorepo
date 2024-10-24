@@ -8,7 +8,7 @@
   hyphens: auto;
 }
 .orbit-label-container h2 {
-  @apply font-semibold items-center flex gap-4;
+  @apply font-semibold items-center flex gap-4 justify-between;
 }
 .orbit-label-container p {
   @apply pr-2;
@@ -29,6 +29,15 @@
 /* Orbit Vis Label Frequency Indicator */
 .orbit-label-container .frequency-indicator-container {
   margin-top: -.1rem;
+}
+
+/* Orbit Vis Controls */
+.orbit-controls-container {
+  @apply flex flex-col gap-2 w-8 flex-wrap;
+  position: relative;
+  margin-left: auto;
+  top: 0;
+  margin-bottom: 12px;
 }
 
 

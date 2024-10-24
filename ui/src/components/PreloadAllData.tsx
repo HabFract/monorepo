@@ -63,7 +63,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
     () => {
       try {
         serializeAsyncActions<any>([
-          ...sphereNodes.map(({ id, eH }) => async () => {
+          ...sphereNodes.map(({ id, eH, name }) => async () => {
             const variables = { sphereEntryHashB64: eH };
             let data;
             try {
@@ -111,7 +111,9 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                       ...prevState.spheres.byHash,
                       [id]: {
                         details: {
+                          ...(prevState.spheres.byHash[id]?.details || {}),
                           entryHash: eH,
+                          name
                         },
                         hierarchyRootOrbitEntryHashes: orbitHashes.filter(hashes => typeof hashes.parentEh == 'undefined').reduce((acc, hashes) => { !acc.includes(hashes.eH) && acc.push(hashes.eH); return acc }, []),
                       },

@@ -1,7 +1,7 @@
 nav.side-nav {
   @apply bg-gray-500 fixed left-0 z-10 h-full flex justify-between flex-col;
   height: auto;
-  top: 3rem;
+  top: 5rem;
   bottom: auto;
   gap: 0.5rem;
   background: transparent;
@@ -13,6 +13,35 @@ nav.side-nav {
 
 nav.side-nav ul[role="menu"] {
   border-radius: 1.25rem;
+}
+nav.side-nav.off-screen {
+  left: -4.5rem;
+}
+nav.side-nav .off-screen-toggle-button {
+  display: none;
+}
+
+nav.side-nav.off-screen .off-screen-toggle-button {
+  position: relative;
+  left: 100%;
+  top: 0;
+  display: block;
+  width: 28px;
+  height: 60px;
+  border-radius: 12px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+  background: rgb(58, 58, 58);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: .2rem;
+}
+
+.off-screen-toggle-button button {
+  @apply w-full h-full cursor-pointer;
 }
 
 nav.side-nav+.page-container .sphere-card.list-header button.add-orbit,

@@ -4,10 +4,19 @@ g.nodes {
 }
 
 #vis {
-  background-size: 30px 30px;
+  background-size: calc(100vw/12) calc(100vw/12);
   background-image:
     linear-gradient(to right, rgba(57, 57, 57, 1) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(57, 57, 57, 1) 1px, transparent 1px);
+}
+
+.orbit-overlay-container {
+  @apply absolute;
+  width: 100%;
+  bottom: 0;
+}
+.orbit-overlay-container {
+  position: absolute;
 }
 
 .node-subgroup {
@@ -29,59 +38,6 @@ svg path.link {
   fill: none;
 }
 
-.tooltip-inner .content {
-  padding: 0.75rem 1.5rem;
-  color: rgba(219, 228, 226, 1);
-  background: linear-gradient(0deg,
-      rgba(69, 97, 95, 1) -20%,
-      rgba(69, 97, 95, 0.5) 100%);
-  border-radius: 1.75rem;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  opacity: 1;
-  margin-top: 12px;
-  margin-right: 4px;
-}
-
-.tooltip-inner .content span.title {
-  text-transform: uppercase;
-  @apply font-sans font-semibold tracking-wider;
-}
-
-.tooltip-inner .content p {
-  @apply font-normal tracking-normal mb-2;
-}
-
-.buttons,
-.tooltip-inner {
-  cursor: initial;
-}
-
-.tooltip-actions {
-  display: block;
-  margin: -39rem 0 0 -8rem;
-}
-
-.tooltip-actions .buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.tooltip-inner {
-  background: url(/assets/line-corner-vector.svg);
-  background-position: right;
-  background-position-y: 0.5rem;
-  background-size: contain;
-  background-repeat: no-repeat;
-  height: 100%;
-  width: 100%;
-  padding-top: calc(50% + 0.5rem);
-  padding-left: 3%;
-  padding-right: 3px;
-  font-size: 2rem;
-  margin-left: 0rem;
-}
 
 @media screen and (min-width: 768px) {
   .node-subgroup {

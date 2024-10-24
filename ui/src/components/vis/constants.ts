@@ -30,13 +30,13 @@ export const PLANNIT_SPECIFIC_ZOOM_RESCALE_FACTOR_ATOM = 2.5;
 export const NODE_RESCALE_FACTOR_SM = 0.75;
 export const NODE_RESCALE_FACTOR_MD_LG = 1;
 
-export const DX_RESCALE_FACTOR_SM = 5;
-export const DY_RESCALE_FACTOR_SM = 1.3;
+export const DX_RESCALE_FACTOR_SM = 4;
+export const DY_RESCALE_FACTOR_SM = 1.35;
 export const DX_RESCALE_FACTOR_MD_LG =  1.5;
 export const DY_RESCALE_FACTOR_MD_LG = 3;
 
-export const NEGATIVE_ZOOM_Y_OFFSET_SM_ROOT = 400;
-export const NEGATIVE_ZOOM_Y_OFFSET_SM_NONROOT = 300;
+export const NEGATIVE_ZOOM_Y_OFFSET_SM_ROOT = 420;
+export const NEGATIVE_ZOOM_Y_OFFSET_SM_NONROOT = 400;
 export const NEGATIVE_ZOOM_Y_OFFSET_MD_LG = 0;
 
 export const LINK_COLOR = "rgba(139, 139, 139, 1)";

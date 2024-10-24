@@ -2,7 +2,7 @@ import { select, Selection } from "d3-selection";
 import { zoom, ZoomBehavior } from "d3-zoom";
 import { HierarchyLink, HierarchyNode, tree } from "d3-hierarchy";
 import { easeCubic, easeLinear } from "d3-ease";
-import _ from "lodash";
+import { renderToStaticMarkup } from 'react-dom/server';
 
 import {
   BASE_SCALE,
@@ -37,7 +37,8 @@ import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { currentOrbitIdAtom } from "../../../state/orbit";
 import { SphereOrbitNodeDetails } from "../../../state/types/sphere";
 import { NODE_ENV } from "../../../constants";
-import { getScaleForPlanet } from "../tree-helpers";
+import { getLabelScale, getScaleForPlanet } from "../tree-helpers";
+import { OrbitControls, OrbitLabel } from "habit-fract-design-system";
 
 /**
  * Base class for creating D3 hierarchical visualizations.
@@ -331,8 +332,10 @@ export abstract class BaseVisualization implements IVisualization {
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
       this.setNodeAndLabelGroups();
+      
       this.firstRender() && this.appendNodeVectors();
       this.appendLinkPath();
+      this._gTooltip = this.clearAndRedrawLabels();
 
       if (!hasUpdated) {
         this.applyInitialTransform();
@@ -437,17 +440,21 @@ export abstract class BaseVisualization implements IVisualization {
         const cachedNode = this.nodeDetails[d.data.content];
         const { scale } = cachedNode;
 
-        return `scale(${this._viewConfig.isSmallScreen() ? getScaleForPlanet(scale)/3 : 0.75})`;
+        return `scale(${this._viewConfig.isSmallScreen() ? getLabelScale(scale) : 0.75})`;
       })
-      .attr("x", "-375")
       .attr("y", (d) => {
         const cachedNode = this.nodeDetails[d.data.content];
-        const { scale } = cachedNode;
-        return scale == Scale.Atom ? "-150" : Scale.Sub ? "0" : "-50";
+        const { scale, parentEh } = cachedNode;
+
+        return scale == Scale.Astro
+          ? (!!parentEh ? "-50" : "-24") 
+          : scale == Scale.Sub 
+            ? (!!parentEh ? "-12" : "12") 
+            : "42";
       })
-      .attr("width", "50")
-      .attr("height", "50")
-      .style("overflow", "visible")
+      .attr("x", "-100")
+      .attr("width", "200")
+      .attr("height", "250")
       .html(this.appendLabelHtml);
   }
 
@@ -530,16 +537,10 @@ export abstract class BaseVisualization implements IVisualization {
     if (!d?.data?.content || !this.nodeDetails[d.data.content]) return "";
     const isCurrentOrbit = store.get(currentOrbitIdAtom)?.id === d.data.content;
     if (!isCurrentOrbit) return "";
+    const { name, description, frequency } = this.nodeDetails[d.data.content];
 
-    const cachedNode = this.nodeDetails[d.data.content];
-    const { name, description, scale } = cachedNode;
-    return `<div class="tooltip-inner">
-      <div class="content">
-      <span class="title">Name:</span>
-      <p>${name}</p>
-      <span class="title">Description:</span>
-      <p>${description || "<br />"}</p>
-      </div>
-    </div>`;
+    const controlsMarkup = renderToStaticMarkup(<OrbitControls handleAppendNode={() => {}}  handleEdit={() => {}} />);
+    const labelMarkup = renderToStaticMarkup(<OrbitLabel orbitDetails={{ name, description, frequency }} />);
+    return `<div class="orbit-overlay-container">${controlsMarkup}${labelMarkup}</div>`;
   };
 }

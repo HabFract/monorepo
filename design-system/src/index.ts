@@ -18,6 +18,8 @@ import { HelperText } from "./copy";
 import FrequencyIndicator  from "./icons/FrequencyIndicator";
 import HeaderAction from "./header/header-action";
 import { VisControls } from "./controls";
+import OrbitControls  from "./vis/OrbitControls";
+import OrbitLabel  from "./vis/OrbitLabel";
 import { default as darkTheme } from "./darkTheme";
 
 import "./inputs/common.css";
@@ -45,6 +47,8 @@ export {
   ProgressBar,
   SphereVis,
   OrbitVis,
+  OrbitControls,
+  OrbitLabel,
   getIconForPlanetValue,
   getIconSvg,
   FrequencyIndicator,

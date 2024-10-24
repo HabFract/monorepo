@@ -12,6 +12,7 @@ import {
 } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { useEffect, useRef, useState } from "react";
+import { getIconSvg } from "habit-fract-design-system";
 import { Sphere, useGetSpheresQuery } from "../../graphql/generated";
 import { Button, DarkThemeToggle, Spinner } from "flowbite-react";
 import useSideMenuToggle from "../../hooks/useSideMenuToggle";
@@ -292,12 +293,15 @@ const Nav: React.FC<INav> = ({
     <>
       <nav
         ref={sideMenuRef}
-        className={sideNavExpanded ? "side-nav expanded" : "side-nav"}
+        className={sideNavExpanded ? "side-nav expanded" : "side-nav off-screen"}
       >
         {loading ? (
           <Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
         ) : (
           <>
+            <div className="off-screen-toggle-button">
+              <button type="button" onClick={() => { sideMenuRef.current?.classList?.toggle("off-screen")}} className="off-screen-icon-button">{getIconSvg('arrow-right')()}</button>
+            </div>
             <Menu
               inlineCollapsed={!sideNavExpanded}
               onClick={onClick}

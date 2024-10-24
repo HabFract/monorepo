@@ -4,7 +4,7 @@ import { Button as FBButton } from "flowbite-react";
 import { darkThemeButton } from "../darkTheme";
 
 export interface ButtonProps {
-  type: "onboarding" | "primary" | "secondary" | "icon";
+  type: "onboarding" | "primary" | "secondary" | "icon"| "circle-icon";
   onClick: Function;
   children?: any;
   icon?: React.ReactElement;
