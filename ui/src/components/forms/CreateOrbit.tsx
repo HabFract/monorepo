@@ -13,7 +13,7 @@ import {
 } from "../../graphql/generated";
 import { extractEdges } from "../../graphql/utils";
 import { useCreateOrbitMutation } from "../../hooks/gql/useCreateOrbitMutation";
-import { ActionHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import { currentOrbitIdAtom, getOrbitNodeDetailsFromEhAtom } from "../../state/orbit";
 
@@ -133,15 +133,13 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
   });
   const orbitEdges = extractEdges((orbits as any)?.orbits) as Orbit[];
 
-  const parentNodeAtom = useMemo(
-    () => { if (!currentOrbitValues.parentHash) return; return store.get(getOrbitNodeDetailsFromEhAtom(currentOrbitValues.parentHash)) },
-    [currentOrbitValues.parentHash],
-  );
+  const parentNodeAtom = useMemo(() => getOrbitNodeDetailsFromEhAtom(currentOrbitValues?.parentHash as EntryHashB64), [currentOrbitValues.parentHash]);
 
   const parentNodeDetails =
     !(editMode && state.match("Onboarding")) &&
     currentOrbitValues.parentHash !== null &&
     store.get(parentNodeAtom);
+
   return (
     <Formik
       initialValues={currentOrbitValues}
@@ -319,6 +317,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                   iconSide={"left"}
                   disabled={
                     !editMode &&
+                    !parentOrbitEh &&
                     !state.match("Onboarding") &&
                     !(touched?.parentHash || touched?.childHash) &&
                     parentOrbitEh !== null

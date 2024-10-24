@@ -447,13 +447,13 @@ export abstract class BaseVisualization implements IVisualization {
         const { scale, parentEh } = cachedNode;
 
         return scale == Scale.Astro
-          ? (!!parentEh ? "-50" : "-24") 
+          ? (!parentEh ? "-30" : "-50") 
           : scale == Scale.Sub 
-            ? (!!parentEh ? "-12" : "12") 
-            : "42";
+            ? (!parentEh ? "12" : "10") 
+            : (!parentEh ? "12" : "85");
       })
-      .attr("x", "-100")
-      .attr("width", "200")
+      .attr("x", "-110")
+      .attr("width", "220")
       .attr("height", "250")
       .html(this.appendLabelHtml);
   }
@@ -537,9 +537,9 @@ export abstract class BaseVisualization implements IVisualization {
     if (!d?.data?.content || !this.nodeDetails[d.data.content]) return "";
     const isCurrentOrbit = store.get(currentOrbitIdAtom)?.id === d.data.content;
     if (!isCurrentOrbit) return "";
-    const { name, description, frequency } = this.nodeDetails[d.data.content];
+    const { name, description, frequency, eH } = this.nodeDetails[d.data.content];
 
-    const controlsMarkup = renderToStaticMarkup(<OrbitControls handleAppendNode={() => {}}  handleEdit={() => {}} />);
+    const controlsMarkup = renderToStaticMarkup(<OrbitControls handleAppendNode={() => {}}  handleEdit={() => {}} nodeEh={eH} />); // Events bound on the general node click handler
     const labelMarkup = renderToStaticMarkup(<OrbitLabel orbitDetails={{ name, description, frequency }} />);
     return `<div class="orbit-overlay-container">${controlsMarkup}${labelMarkup}</div>`;
   };

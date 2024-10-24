@@ -1,7 +1,7 @@
 import { EntryHashB64, ActionHashB64 } from "@holochain/client";
 import { Modal } from "flowbite-react";
 
-import { currentSphereOrbitNodesAtom } from "../state/orbit";
+import { currentSphereOrbitNodeDetailsAtom, currentSphereOrbitNodesAtom } from "../state/orbit";
 import { SphereOrbitNodeDetails, SphereHashes } from "../state/types/sphere";
 import { store } from "../state/store";
 import { CreateOrbit } from "./forms";
@@ -34,7 +34,7 @@ export default function VisModal<T extends IVisualization>(
             setIsModalOpen(false);
             currentVis.isModalOpen = false; // TODO, let this happen on cancel by adding onCancel callback
             currentVis.nodeDetails = store.get(
-              currentSphereOrbitNodesAtom,
+              currentSphereOrbitNodeDetailsAtom,
             ) as SphereOrbitNodeDetails;
             currentVis.setNodeAndLinkGroups.call(currentVis);
             currentVis.setNodeAndLinkEnterSelections.call(currentVis);

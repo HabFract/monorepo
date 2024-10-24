@@ -299,9 +299,6 @@ const Nav: React.FC<INav> = ({
           <Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
         ) : (
           <>
-            <div className="off-screen-toggle-button">
-              <button type="button" onClick={() => { sideMenuRef.current?.classList?.toggle("off-screen")}} className="off-screen-icon-button">{getIconSvg('arrow-right')()}</button>
-            </div>
             <Menu
               inlineCollapsed={!sideNavExpanded}
               onClick={onClick}
@@ -309,6 +306,9 @@ const Nav: React.FC<INav> = ({
               mode="inline"
               items={menuItems}
             />
+            <div className="off-screen-toggle-button">
+              <button type="button" onClick={() => { sideMenuRef.current?.classList?.toggle("off-screen")}} className="off-screen-icon-button">{getIconSvg('arrow-right')()}</button>
+            </div>
             <div className={"main-actions-menu"}>
               <div
                 style={{ display: !sideNavExpanded ? "none" : "flex" }}

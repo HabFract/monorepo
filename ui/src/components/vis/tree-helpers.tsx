@@ -97,11 +97,11 @@ export const getScaleForPlanet = (scale) => {
 export const getLabelScale = (scale) => {
   switch (scale) {
     case Scale.Astro:
-      return 1.25;
+      return 1.2;
     case Scale.Sub:
-      return 1;
+      return 0.85;
     case Scale.Atom:
-      return 0.75;
+      return 0.6;
   }
 };
 

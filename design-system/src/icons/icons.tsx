@@ -150,7 +150,7 @@ export function getIconSvg(
     case "arrow-right":
       return () => (
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6.66669 4.16669L12.9033 9.62373C13.131 9.82294 13.131 10.1771 12.9033 10.3763L6.66669 15.8334" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M6.66669 4.16669L12.9033 9.62373C13.131 9.82294 13.131 10.1771 12.9033 10.3763L6.66669 15.8334" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
         </svg>
       );
     case "more":
@@ -164,8 +164,8 @@ export function getIconSvg(
     case "plus":
       return () => (
         <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 1.33337L6 10.6667" stroke="black" stroke-width="2" stroke-linecap="round"/>
-          <path d="M10.6667 6L1.33335 6" stroke="black" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 1.33337L6 10.6667" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+          <path d="M10.6667 6L1.33335 6" stroke="black" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       );
     default:

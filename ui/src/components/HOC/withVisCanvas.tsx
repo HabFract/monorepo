@@ -174,9 +174,8 @@ export function withVisCanvas<T extends IVisualization>(
           if (appendedSvg) {
             // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
             currentVis.modalOpen = setIsModalOpen;
-            currentVis.modalParentOrbitEh = setCurrentParentOrbitEh;
+            currentVis.modalParentOrbitEh = (val) => {console.log('val :>> ', val); setCurrentParentOrbitEh(val)};
             currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
-
             // Trigger the Vis object render function ONLY once the SVG is appended to the DOM
             currentVis?.render();
           }

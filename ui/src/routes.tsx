@@ -34,7 +34,7 @@ export type AppStateStore = {
 
 export const initialState: AppStateStore = {
   // Home route
-  currentState: "Home",
+  currentState: "Vis",
   params: {},
   connection: null,
 };

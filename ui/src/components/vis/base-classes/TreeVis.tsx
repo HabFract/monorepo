@@ -143,14 +143,14 @@ export class TreeVisualization extends BaseVisualization {
   initializeEventHandlers(): EventHandlers {
     return {
       handlePrependNode: function ({ childOrbitEh }) {
-        this.modalOpen(true);
-        this.modalIsOpen = true;
         this.modalChildOrbitEh(childOrbitEh);
-      },
-      handleAppendNode: function ({ parentOrbitEh }) {
         this.modalOpen(true);
         this.modalIsOpen = true;
+      },
+      handleAppendNode: function ({parentOrbitEh}) {
         this.modalParentOrbitEh(parentOrbitEh);
+        this.modalOpen(true);
+        this.modalIsOpen = true;
       },
       //@ts-ignore
       handleNodeZoom: (event: any, node: HierarchyNode<NodeContent>) => {
@@ -222,13 +222,29 @@ export class TreeVisualization extends BaseVisualization {
       handleZoomOut: () => {
         this.zoomOut();
       },
-      handleNodeClick() {
+
+      handleNodeClick(e) {
+        const target = e?.target as HTMLElement | undefined;
+
+        const isAppendNodeButtonTarget = !!(target && target.closest(".orbit-controls-container button:first-child"))
+        const isEditNodeButtonTarget = !!(target && target.closest(".orbit-controls-container button:last-child"))
+
         this._enteringNodes.select(".tooltip foreignObject").html(this.appendLabelHtml);
         this._gCircle.classed("checked", (d): boolean => {
           // if (!d?.data?.content || !this.nodeDetails[d.data.content])
           return false;
           // return store.get(currentOrbitIdAtom) == d.data.content;
         });
+
+        if(isAppendNodeButtonTarget) {
+          const nodeEh = (target.closest(".orbit-controls-container") as HTMLElement).dataset?.nodeEntryHash;
+          this.eventHandlers.handleAppendNode.call(this, {parentOrbitEh: nodeEh})
+        }
+        if(isEditNodeButtonTarget) {
+          const nodeEh = (target.closest(".orbit-controls-container") as HTMLElement).dataset?.nodeEntryHash;
+          this.eventHandlers.handlePrependNode.call(this, {childOrbitEh: nodeEh})
+
+        }
       },
     };
   }

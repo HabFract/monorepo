@@ -35,7 +35,7 @@ export const DY_RESCALE_FACTOR_SM = 1.35;
 export const DX_RESCALE_FACTOR_MD_LG =  1.5;
 export const DY_RESCALE_FACTOR_MD_LG = 3;
 
-export const NEGATIVE_ZOOM_Y_OFFSET_SM_ROOT = 420;
+export const NEGATIVE_ZOOM_Y_OFFSET_SM_ROOT = 380;
 export const NEGATIVE_ZOOM_Y_OFFSET_SM_NONROOT = 400;
 export const NEGATIVE_ZOOM_Y_OFFSET_MD_LG = 0;
 

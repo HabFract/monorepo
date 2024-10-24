@@ -24,7 +24,7 @@
   border: 8px solid transparent;
   @apply border-b-secondary;
   left: calc(50% - 8px);
-  top: -16px;
+  top: -12px;
 }
 /* Orbit Vis Label Frequency Indicator */
 .orbit-label-container .frequency-indicator-container {
