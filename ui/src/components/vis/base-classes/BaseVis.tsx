@@ -307,6 +307,7 @@ export abstract class BaseVisualization implements IVisualization {
       return;
     }
     if (this.noCanvas()) {
+      console.log('this._canvas :>> ', this._canvas);
       this.setupCanvas();
     }
 
@@ -450,7 +451,7 @@ export abstract class BaseVisualization implements IVisualization {
           ? (!parentEh ? "-30" : "-50") 
           : scale == Scale.Sub 
             ? (!parentEh ? "12" : "10") 
-            : (!parentEh ? "12" : "85");
+            : (!parentEh ? "12" : "66");
       })
       .attr("x", "-110")
       .attr("width", "220")

@@ -82,7 +82,7 @@ import { EntryHashB64 } from "@holochain/client";
 import { getHierarchyAtom } from "../../../state/hierarchy";
 import { AppMachine } from "../../../main";
 import { NODE_ENV } from "../../../constants";
-import { curves, getScaleForPlanet } from "../tree-helpers";
+import { curves, getClassesForNodeVectorGroup, getScaleForPlanet } from "../tree-helpers";
 
 export class TreeVisualization extends BaseVisualization {
   layout!: TreeLayout<unknown>;
@@ -225,17 +225,21 @@ export class TreeVisualization extends BaseVisualization {
 
       handleNodeClick(e) {
         const target = e?.target as HTMLElement | undefined;
+        const currentOrbitId = store.get(currentOrbitIdAtom)?.id;
 
         const isAppendNodeButtonTarget = !!(target && target.closest(".orbit-controls-container button:first-child"))
         const isEditNodeButtonTarget = !!(target && target.closest(".orbit-controls-container button:last-child"))
 
         this._enteringNodes.select(".tooltip foreignObject").html(this.appendLabelHtml);
-        this._gCircle.classed("checked", (d): boolean => {
-          // if (!d?.data?.content || !this.nodeDetails[d.data.content])
-          return false;
-          // return store.get(currentOrbitIdAtom) == d.data.content;
-        });
+        this._enteringNodes.select(".node-vector-group").attr("class", (d: any) => {
+          const selected = currentOrbitId && currentOrbitId == d.data.content
+          const cachedNode = this.nodeDetails[d.data.content];
+          if(!cachedNode) return "node-vector-group";
+          const { scale } = cachedNode;
 
+          return "node-vector-group" + getClassesForNodeVectorGroup(selected, scale)
+        });
+    
         if(isAppendNodeButtonTarget) {
           const nodeEh = (target.closest(".orbit-controls-container") as HTMLElement).dataset?.nodeEntryHash;
           this.eventHandlers.handleAppendNode.call(this, {parentOrbitEh: nodeEh})
@@ -511,7 +515,7 @@ export class TreeVisualization extends BaseVisualization {
       this.eventHandlers.handleNodeZoom.call(this, e, d);
     });
 
-    const debouncedZoom = debounce(() => Promise.resolve(this.eventHandlers.memoizedhandleNodeZoom.call(this, store.get(currentOrbitIdAtom)?.id)), 1000)
+    const debouncedZoom = debounce(() => Promise.resolve(this.eventHandlers.memoizedhandleNodeZoom.call(this, )), 1000)
     store.sub(currentOrbitIdAtom, () => {
       if (AppMachine.state.currentState !== "Vis") return;
       console.log("TRIGGERED ZOOM because of orbit id change")
@@ -543,6 +547,7 @@ export class TreeVisualization extends BaseVisualization {
     .attr("width", "100")  
     .attr("height", "100") 
     .attr("x", "-50")      
+    //@ts-expect-error
     .attr("y", (d: any) => {
       if (!d?.data?.content || !this.nodeDetails[d.data.content]) return "";
       const { scale } = this.nodeDetails[d.data.content];
@@ -556,6 +561,9 @@ export class TreeVisualization extends BaseVisualization {
         }
     })      
     .append("xhtml:div")
+    .classed("node-vector-group", true)
+    .append("xhtml:div")
+    .classed("node-vector", true)
     .attr("xmlns", "http://www.w3.org/1999/xhtml")
     //@ts-expect-error
     .attr("style", (d: any) => {

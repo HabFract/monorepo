@@ -94,12 +94,16 @@ export const getScaleForPlanet = (scale) => {
   }
 };
 
+export const getClassesForNodeVectorGroup = (selected: boolean, scale): string => {
+  return `${selected ? " selected" : ""} ${scale.toString().toLowerCase()}`
+};
+
 export const getLabelScale = (scale) => {
   switch (scale) {
     case Scale.Astro:
       return 1.2;
     case Scale.Sub:
-      return 0.85;
+      return 0.86;
     case Scale.Atom:
       return 0.6;
   }

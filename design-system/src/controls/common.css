@@ -230,10 +230,10 @@ div.handle span {
 
 .vis-move-vertical-container {
   overflow-x: hidden;
-  @apply left-0 relative h-64 justify-center text-center;
+  @apply left-0 relative h-48 justify-center text-center;
   left: 0px;
-  bottom: 3rem;
-  width: 2.5rem;
+  bottom: -1rem;
+  width: 3rem;
 }
 
 .intersecting-planet {
@@ -249,13 +249,24 @@ div.handle span {
 
 .center-marker {
   position: relative;
-  left: 2.5rem;
-  bottom: 10.8rem;
+  left: 3rem;
+  bottom: 4.8rem;
   z-index: 50;
   width: 1rem;
   height: 2px;
-  background-color: rgba(255, 255, 255, 0.5);
   pointer-events: none;
+}
+.center-marker::before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  
+  border: 12px solid transparent;
+  border-right-color: #ffffff80;
+  left: -16px;
+  top: -15px;
 }
 
 .intersecting-planet-column {

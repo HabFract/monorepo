@@ -1,8 +1,9 @@
-g.nodes {
+g.node-subgroup {
   cursor: pointer;
   pointer-events: all;
 }
 
+/* Gridlines */
 #vis {
   background-size: calc(100vw/12) calc(100vw/12);
   background-image:
@@ -10,28 +11,57 @@ g.nodes {
     linear-gradient(to bottom, rgba(57, 57, 57, 1) 1px, transparent 1px);
 }
 
+/* Orbit Label and Actions container */
 .orbit-overlay-container {
   @apply absolute;
   width: 100%;
   bottom: 0;
 }
-.orbit-overlay-container {
-  position: absolute;
+
+/* Vectors manually appended for each hierarchy node */
+.node-vector {
+  @apply relative;
+  z-index: 16;
+}
+.node-vector-group {
+  @apply w-full h-full;
 }
 
-.node-subgroup {
-  color: #ccc;
+/* Outline for selected node (not-winning) */
+.node-vector-group.selected::before {
+  @apply absolute h-full w-full;
+  content: "";
+  z-index: 15;
+  left: -.25px;
+  top: .5px;
+  background: url(assets/plannit-selected-outline-no-win.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+}
+/* Outline for selected node (winning) */
+.node-vector-group.selected.winning::before {
+  background: url(assets/plannit-selected-outline-win.svg);
+}
+/* Tick icon for selected node (winning) */
+.node-vector-group.selected.winning::after {
+  @apply absolute top-2 left-2 h-full w-full;
+  content: "";
+  z-index: 16;
+  background: url(assets/icons/plannit-winning-icon.svg) no-repeat;
+  background-size: 1.5rem;
 }
 
-.node-subgroup.checked {
-  color: rgba(11, 254, 184, 1);
+/* Outline poisitioning for specific node scales */
+.node-vector-group.selected.astro::before {
+  background-size: 87px;
 }
-
-.controls-div {
-  height: 15vh;
-  background-color: #dddddd;
-  opacity: 0.4;
-  z-index: 10;
+.node-vector-group.selected.sub::before {
+  background-size: 70px;
+  left: -.5px;
+  top: -14.5px;
+}
+.node-vector-group.selected.atom::before {
+  background-size: 96px;
 }
 
 svg path.link {

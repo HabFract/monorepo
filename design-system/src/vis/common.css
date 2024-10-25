@@ -6,6 +6,9 @@
   -moz-hyphens: auto;
   -ms-hyphens: auto;
   hyphens: auto;
+  outline: 1px solid rgba(255,255,255,0.1);
+  outline-offset: -1px;
+
 }
 .orbit-label-container h2 {
   @apply font-semibold items-center flex gap-4 justify-between;
@@ -21,10 +24,10 @@
   height: 0;
   position: absolute;
   
-  border: 8px solid transparent;
+  border: 12px solid transparent;
   @apply border-b-secondary;
   left: calc(50% - 8px);
-  top: -12px;
+  top: -17px;
 }
 /* Orbit Vis Label Frequency Indicator */
 .orbit-label-container .frequency-indicator-container {
