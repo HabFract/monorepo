@@ -73,7 +73,7 @@ export function withVisCanvas<T extends IVisualization>(
   const ComponentWithVis = React.memo(() => {
     // Get the details of the current Orbit in context, and the calculated bounds for navigation of the rendered hierarchy
     // which will determine the state/visibility of the Vis OverlayLayout/controls
-    const currentOrbitDetails: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
+    const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
     const currentOrbitIsLeaf = useAtomValue(currentOrbitIsLeafAtom);
 
     const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
@@ -124,7 +124,7 @@ export function withVisCanvas<T extends IVisualization>(
 
     // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
     const { workingWinDataForOrbit, handleUpdateWorkingWins } = useWinData(currentOrbitDetails, currentDate);
-
+    console.log('currentOrbitDetails?.eH, workingWinDataForOrbit :>> ', currentOrbitDetails?.eH, workingWinDataForOrbit);
     const skipFlag = !currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit || typeof workingWinDataForOrbit !== 'object';
     const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
       variables: {
@@ -140,7 +140,7 @@ export function withVisCanvas<T extends IVisualization>(
       },
       skip: skipFlag
     });
-    console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
+
     // TODO: handle derived error/loading states
     // const loading = useGetWinRecordForOrbitForMonthQueryLoading || createOrUpdateWinRecordLoading;
     // const error = useGetWinRecordForOrbitForMonthQueryError || createOrUpdateWinRecordError;

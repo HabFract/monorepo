@@ -24,7 +24,6 @@ pub fn validate_create_wins(
     _action: EntryCreationAction,
     _wins: WinRecord,
 ) -> ExternResult<ValidateCallbackResult> {
-
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_update_wins(

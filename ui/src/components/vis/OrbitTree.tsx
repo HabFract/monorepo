@@ -134,10 +134,10 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   const processHierarchyLevelAndFetchNext = async (newJson) => {
     await processNewHierarchyLevel(newJson);
-    if (currentOrbitTree?.rootData && currentOrbitTree.rootData?.children && currentOrbitTree.rootData.children?.length === 0) return;
+    if (!currentOrbitTree?.rootData?.children || currentOrbitTree?.rootData && currentOrbitTree.rootData?.children && currentOrbitTree.rootData.children?.length === 0) return;
 
     const nextLevelQuery = getQueryParams(y + 1);
-    console.log("Prefetching next level");
+    console.log("Prefetching next level with query: ", nextLevelQuery);
     usePrefetchNextLevel(nextLevelQuery!, client, true);
   };
 
@@ -154,6 +154,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   useEffect(() => {
     const fetchAndProcess = async () => {
       let newJson = await fetchCurrentLevel();
+      console.log('newJson :>> ', newJson);
       if (!newJson) return;
       await processHierarchyLevelAndFetchNext(newJson);
       setCanTriggerNextTreeVisRender(true);
