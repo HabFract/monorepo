@@ -1,15 +1,20 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   WinData,
   Frequency,
   OrbitNodeDetails,
   FixedLengthArray,
 } from "../state/types";
-import { useGetWinRecordForOrbitForMonthQuery } from "../graphql/generated";
+import {
+  useGetWinRecordForOrbitForMonthLazyQuery,
+  useGetWinRecordForOrbitForMonthQuery,
+} from "../graphql/generated";
 import { EntryHashB64 } from "@holochain/client";
 import { toYearDotMonth } from "habit-fract-design-system";
 import { isMoreThenDaily } from "../components/vis/tree-helpers";
 import { DateTime } from "luxon";
+import { useAtom } from "jotai";
+import { winDataPerOrbitNodeAtom } from "../state/win";
 
 export const winDataArrayToWinRecord = (
   acc: any,
@@ -20,7 +25,7 @@ export const winDataArrayToWinRecord = (
 };
 
 /**
- * Custom hook to manage win data for a specific orbit and date.
+ * Custom hook to manage win data fetchin and caching for a specific orbit and date.
  *
  * @param {OrbitNodeDetails | null} currentOrbitDetails - The details of the current orbit.
  * @param {DateTime} currentDate - The current date for which win data is being managed.
@@ -39,81 +44,106 @@ export function useWinData(
   currentOrbitDetails: OrbitNodeDetails | null,
   currentDate: DateTime
 ) {
-  const [workingWinDataForOrbit, setWorkingWinDataForOrbit] =
-    useState<WinData<Frequency.Rationals> | null>(null);
   const currentYearDotMonth = toYearDotMonth(currentDate.toLocaleString());
   const skipFlag = !currentOrbitDetails || !currentOrbitDetails.eH;
+  const orbitHash = currentOrbitDetails?.eH as EntryHashB64;
 
-  const { data, refetch } = useGetWinRecordForOrbitForMonthQuery({
-    variables: {
-      params: {
-        yearDotMonth: currentYearDotMonth,
-        orbitEh: currentOrbitDetails?.eH as EntryHashB64,
-      },
-    },
-    skip: skipFlag,
-  });
+  const [workingWinDataForOrbit, setWorkingWinDataForOrbit] = useAtom(
+    useMemo(() => winDataPerOrbitNodeAtom(orbitHash), [orbitHash])
+  );
+
+  const [getWinRecord, { data, loading, error }] =
+    useGetWinRecordForOrbitForMonthLazyQuery();
 
   useEffect(() => {
-    if (!currentOrbitDetails) return;
-    setWorkingWinDataForOrbit(null);
-    if (!skipFlag) {
-      refetch();
+    if (!orbitHash) return;
+
+    if (!skipFlag && !workingWinDataForOrbit) {
+      console.log("VARIABLES", {
+        variables: {
+          params: {
+            yearDotMonth: currentYearDotMonth,
+            orbitEh: currentOrbitDetails?.eH as EntryHashB64,
+          },
+        },
+      });
+      getWinRecord({
+        variables: {
+          params: {
+            yearDotMonth: currentYearDotMonth,
+            orbitEh: currentOrbitDetails?.eH as EntryHashB64,
+          },
+        },
+      });
     }
-  }, [currentOrbitDetails?.eH]);
+  }, [currentOrbitDetails?.eH, workingWinDataForOrbit]);
 
   useEffect(() => {
     if (currentOrbitDetails == null || !data?.getWinRecordForOrbitForMonth)
       return;
-    console.log(
-      "data.getWinRecordForOrbitForMonth.winData :>> ",
-      data.getWinRecordForOrbitForMonth.winData
-    );
+
     const newWinData = data.getWinRecordForOrbitForMonth.winData.reduce(
       winDataArrayToWinRecord,
       {}
     );
     setWorkingWinDataForOrbit(newWinData);
-  }, [data]);
+  }, [data, orbitHash]);
 
   useEffect(() => {
-    if (currentOrbitDetails == null || !currentDate) return;
+    if (
+      loading ||
+      currentOrbitDetails == null ||
+      !currentDate ||
+      (!data && !error) ||
+      (data?.getWinRecordForOrbitForMonth &&
+        data.getWinRecordForOrbitForMonth.winData.length > 0)
+    )
+      return;
 
-    setWorkingWinDataForOrbit((prevData) => {
-      if (!prevData || !(currentDate.toLocaleString() in prevData)) {
-        return {
-          ...prevData,
-          [currentDate.toLocaleString()]: isMoreThenDaily(
-            currentOrbitDetails.frequency
-          )
-            ? (new Array(currentOrbitDetails.frequency).fill(
-                false
-              ) as FixedLengthArray<
-                boolean,
-                typeof currentOrbitDetails.frequency
-              >)
-            : (false as any),
-        };
-      }
-      return prevData;
-    });
-  }, [currentDate, currentOrbitDetails]);
+    if (
+      !workingWinDataForOrbit ||
+      !(currentDate.toLocaleString() in workingWinDataForOrbit)
+    ) {
+      const newData = {
+        ...workingWinDataForOrbit,
+        [currentDate.toLocaleString()]: isMoreThenDaily(
+          currentOrbitDetails.frequency
+        )
+          ? (new Array(currentOrbitDetails.frequency).fill(
+              false
+            ) as FixedLengthArray<
+              boolean,
+              typeof currentOrbitDetails.frequency
+            >)
+          : false,
+      } as any;
+      console.log("newData :>> ", newData);
+      setWorkingWinDataForOrbit(newData);
+    }
+  }, [data, currentDate, orbitHash]);
 
   const handleUpdateWorkingWins = useCallback(
     (newWinCount: number) => {
       if (workingWinDataForOrbit == null || currentOrbitDetails == null) return;
 
-      setWorkingWinDataForOrbit((prevData) => ({
-        ...prevData,
+      const updatedData = {
+        ...workingWinDataForOrbit,
         [currentDate.toLocaleString()]:
           currentOrbitDetails.frequency > 1
             ? Array(currentOrbitDetails.frequency)
                 .fill(false)
                 .map((_, i) => i < newWinCount)
             : !!newWinCount,
-      }));
+      } as any;
+      setWorkingWinDataForOrbit(updatedData);
+      console.log("updatedData :>> ", updatedData);
     },
-    [workingWinDataForOrbit, currentOrbitDetails, currentDate]
+    [
+      workingWinDataForOrbit,
+      currentOrbitDetails,
+      currentDate,
+      setWorkingWinDataForOrbit,
+    ]
   );
 
   return { workingWinDataForOrbit, handleUpdateWorkingWins };

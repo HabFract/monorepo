@@ -4,15 +4,12 @@ import TreeVisIcon from "../icons/TreeVisIcon";
 import {
   UnorderedListOutlined,
   AppstoreOutlined,
-  PlusCircleFilled,
-  ArrowsAltOutlined,
   PlusCircleOutlined,
   SettingFilled,
-  WarningOutlined,
 } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
-import { useEffect, useRef, useState } from "react";
-import { getIconSvg } from "habit-fract-design-system";
+import { ReactElement, useEffect, useRef, useState } from "react";
+import { getIconSvg, Button as DSButton } from "habit-fract-design-system";
 import { Sphere, useGetSpheresQuery } from "../../graphql/generated";
 import { Button, DarkThemeToggle, Spinner } from "flowbite-react";
 import useSideMenuToggle from "../../hooks/useSideMenuToggle";
@@ -320,13 +317,13 @@ const Nav: React.FC<INav> = ({
                 {buttonWithTooltipHandling("secondary")}
                 {buttonWithTooltipHandling("primary")}
               </div>
-              <Menu
+              {/* <Menu
                 inlineCollapsed={!sideNavExpanded}
                 onClick={(e) => onClick(e)}
                 style={{ width: !sideNavExpanded ? 72 : 256 }}
                 mode="inline"
                 items={createFixedMenuItems()}
-              />
+              /> */}
             </div>
           </>
         )}
@@ -366,9 +363,7 @@ const Nav: React.FC<INav> = ({
       getItem(
         "New Sphere",
         "add-sphere",
-        <PlusCircleFilled
-          className={spheresArray.length >= 4 ? "grayed" : ""}
-        />,
+        <DSButton type={"circle-icon"} icon={getIconSvg("plus")() as ReactElement} disabled={spheresArray.length >= 4}/>,
         undefined,
         undefined,
         false,

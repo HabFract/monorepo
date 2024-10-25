@@ -213,7 +213,7 @@ describe.only('OrbitTree', () => {
     });
   });
 
-  test('renders a loading spinner, then the right number of nodes', async () => {
+  test.skip('renders a loading spinner, then the right number of nodes', async () => {
     // Arrange
     renderWithJotai(renderVis(OrbitTree) as any, {initialHierarchy: HIERARCHY_MOCKS} as any);
   

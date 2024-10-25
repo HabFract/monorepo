@@ -58,7 +58,7 @@ const tailwindConfig = {
           500: "rgba(69, 97, 95, 0.5)",
         },
         bg: "#242424", // RAISIN_BLACK
-        "menu-bg": "#3a4040",
+        "menu-bg": "#3A3A3A",
 
         warn: {
           DEFAULT: "rgba(251,200,43, 1)",

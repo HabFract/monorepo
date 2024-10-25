@@ -209,11 +209,56 @@ pub fn get_an_orbits_win_record_for_month(
     let maybe_links = get_path_links_from_year_dot_month(&params.year_dot_month)?;
 
     if let Some(links) = maybe_links {
+        // TODO: tidy up during the backend refactor.
         let mut query_hashes: HashSet<EntryHash> = HashSet::new();
-
         let hashes: Vec<EntryHash> = links
             .into_iter()
-            .filter_map(|link| link.target.into_entry_hash())
+            .map(|link| link)
+            .filter_map(|link| {
+                // Attempt to get the win record entry
+                if let Ok(Some(Details::Entry(details))) = get_details::<EntryHash>(
+                    link.target.clone().into_entry_hash()?,
+                    GetOptions::default(),
+                )
+                .map_err(|_e| {
+                    wasm_error!(WasmErrorInner::Guest(
+                        "Entry not found for given EntryHash".into()
+                    ))
+                }) {
+                    let possible_action_hashes = details.actions;
+                    let latest_entrys_action = possible_action_hashes
+                        .into_iter()
+                        .take(1)
+                        .map(|action_hash| get_latest(action_hash.clone().hashed.hash))
+                        .next();
+                    let latest_action_hash = latest_entrys_action
+                        .unwrap()
+                        .unwrap()?
+                        .action_address()
+                        .clone();
+                    let maybe_record = get_my_win_record(latest_action_hash).map_err(|_e| {
+                        wasm_error!(WasmErrorInner::Guest(String::from(
+                            "Could not get Orbit to WinRecord linked entry"
+                        )))
+                    });
+                    if let Ok(Some(record)) = maybe_record {
+                        if let Ok(win_record) = entry_from_record::<WinRecord>(record.clone()) {
+                            // Check if the orbit_eh matches
+                            if win_record.orbit_eh == params.orbit_eh {
+                                return link.target.into_entry_hash();
+                            } else {
+                                return None;
+                            }
+                        } else {
+                            return None;
+                        }
+                    } else {
+                        return None;
+                    }
+                } else {
+                    return None;
+                };
+            })
             .collect();
 
         for hash in hashes {

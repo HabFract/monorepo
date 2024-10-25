@@ -1,3 +1,4 @@
+/* Container for Vis sphere navigation */
 nav.side-nav {
   @apply bg-gray-500 fixed left-0 z-10 h-full flex justify-between flex-col;
   height: auto;
@@ -11,33 +12,66 @@ nav.side-nav {
   border-bottom-left-radius: 0;
 }
 
+/* Restyled AntMenu for Vis sphere navigation */
 nav.side-nav ul[role="menu"] {
-  border-radius: 1.25rem;
+  border-radius: 12px;
+  padding-bottom: 16px;
+  padding-top: 56px;
+  
+  @apply bg-menu-bg text-title;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
 }
+nav.side-nav:not(.off-screen):not(.expanded) ul[role="menu"] {
+  width: 4rem !important;
+}
+/* Side nav divider */
+nav.side-nav ul[role="menu"]::before {
+  content: "";
+  width: 32px;
+  position: absolute;
+  top: 55px;
+  left: 16px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Button to show/hide the nav */
 nav.side-nav.off-screen {
   left: -4.5rem;
 }
 nav.side-nav .off-screen-toggle-button {
-  display: none;
+  display: block;
+  position: absolute;
+  left: calc(50% - 20px);
+  top: 16px;
+  padding: 8px;
+}
+nav.side-nav.off-screen .off-screen-toggle-button button {
+  transform: scaleX(1);
+  transition: transform .15s ease-in;
+}
+nav.side-nav .off-screen-toggle-button button {
+  transition: transform .15s ease-in;
+  transform: scaleX(-1);
 }
 
 nav.side-nav.off-screen .off-screen-toggle-button {
+  transition: transform 1s ease-in;
   position: relative;
   left: 100%;
-  top: -8rem;
+  top: -12rem !important;
   display: block;
   width: 28px;
   height: 60px;
   border-radius: 12px;
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
-  background: rgb(58, 58, 58);
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  display: flex;
+    background: rgb(58, 58, 58);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    display: flex;
   justify-content: center;
   align-items: center;
-  padding-left: .2rem;
 }
 
 .off-screen-toggle-button button {
@@ -110,6 +144,9 @@ nav.side-nav+.page-container .sphere-card.list-header button.add-orbit {
 .side-nav.expanded .ant-menu-item:first-child {
   padding-left: 22px !important;
 }
+.ant-menu-item:first-child {
+  @apply flex justify-center items-center pt-2 !important;
+}
 
 .side-nav.expanded .ant-menu-item:not(.ant-menu-item:first-child) {
   padding-left: 22px !important;
@@ -123,8 +160,8 @@ nav.side-nav+.page-container .sphere-card.list-header button.add-orbit {
 }
 
 .side-nav.expanded>.ant-menu-root:first-child .ant-menu-item img {
-  min-width: 64px !important;
-  height: 64px !important;
+  max-width: 32px !important;
+  height: 100% !important;
 }
 
 .side-nav.expanded>.ant-menu-root:first-child::before,
@@ -167,18 +204,19 @@ nav.side-nav+.page-container .sphere-card.list-header button.add-orbit {
 .ant-menu-item-icon,
 .ant-menu-item-icon.selected,
 .ant-menu-submenu-title img {
-  height: 60px !important;
-  width: 60px !important;
+  height: 48px !important;
+  width: 48px !important;
   object-fit: cover;
   margin-left: -0.125rem;
   border-radius: 1.05rem;
 }
 
 .side-nav:not(.expanded)>.ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) {
-  min-height: 62px;
-  min-width: 60px !important;
-  padding-inline: calc(0.15rem) !important;
-  padding-top: 2px;
+  height: 48px !important;
+  min-width: 48px !important;
+  display: grid;
+  place-content: center;
+  margin: 0 auto;
 }
 
 /* Vertical collapse button */
@@ -227,12 +265,6 @@ nav.side-nav+.page-container .sphere-card.list-header button.add-orbit {
 .main-actions-menu {
   @apply flex flex-col items-center gap-2;
   border-radius: 1rem;
-}
-
-ul[role="menu"] {
-  @apply bg-secondary-500 text-title;
-  border-bottom-left-radius: 1.125rem;
-  border-bottom-right-radius: 1.125rem;
 }
 
 .sphere-context-actions {
@@ -486,8 +518,6 @@ button[data-testid="dark-themetheme-toggle"]:active,
 }
 
 ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] img {
-  /* transition: .3s all cubic-bezier(1, 0.13, 0.13, 1); */
-  width: 3rem;
   border-radius: 1.35rem;
   object-fit: scale-down;
 }
