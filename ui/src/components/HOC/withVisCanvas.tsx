@@ -113,17 +113,17 @@ export function withVisCanvas<T extends IVisualization>(
 
     // Store and update date in local component state to ensure re-render with VisControls, Calendar
     const [currentDate, setCurrentDate] = useAtom<DateTime>(currentDayAtom);
-    useEffect(() => {
-      const unsubscribe = store.sub(currentDayAtom, () => {
-        setCurrentDate(store.get(currentDayAtom));
-      });
-      return unsubscribe;
-    }, []);
 
 
     // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
-    const { workingWinDataForOrbit, handleUpdateWorkingWins } = useWinData(currentOrbitDetails, currentDate);
-    console.log('currentOrbitDetails?.eH, workingWinDataForOrbit :>> ', currentOrbitDetails?.eH, workingWinDataForOrbit);
+    const withWinData = useCallback(() => {
+      return useWinData(currentOrbitDetails, currentDate)
+    },
+      [currentOrbitDetails, currentDate]);
+    const { workingWinDataForOrbit, handleUpdateWorkingWins } = withWinData();
+
+
+
     const skipFlag = !currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit || typeof workingWinDataForOrbit !== 'object';
     const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
       variables: {
