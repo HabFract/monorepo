@@ -22,7 +22,7 @@
     "generate": "graphql-codegen --config codegen.ts",
     "generate:watch": "graphql-codegen --watch --config codegen.ts",
     "zip": "cd ./dist && bestzip ../../ui.zip *",
-    "clean": "rimraf ui.zip dist"
+    "clean": "rimraf ../ui.zip dist"
   },
   "dependencies": {
     "@apollo/client": "^3.8.6",
@@ -64,6 +64,7 @@
     "graphql-codegen-typescript-mock-data": "^3.7.1",
     "graphql.macro": "^1.4.2",
     "rc-picker": "4.0.0-alpha.9",
+    "rimraf": "^3.0.2",
     "vite": "5.4.8"
   }
 }
