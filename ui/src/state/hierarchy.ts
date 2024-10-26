@@ -14,6 +14,7 @@ import { Hierarchy } from "./types/hierarchy";
 import { getSphereIdFromEhAtom } from "./sphere";
 import { HierarchyNode } from "d3-hierarchy";
 import { WinData } from "./types";
+import { DateTime } from "luxon";
 
 /** PRIMITIVE (not currently in AppState or IndexDB) */
 
@@ -191,93 +192,111 @@ export const isLeafNodeHashAtom = (nodeHash: ActionHashB64) => {
   });
 };
 
-// TODO: implement below
-
 /**
- * Calculates the streak information for a specific orbit
+ * Calculates the current streak for a specific orbit (either through wins - leaf nodes - or through derived win completion - nonleaf nodes)
  * @param orbitHash The ActionHash of the orbit
  * @returns An atom that resolves to the streak count, or null if the orbit doesn't exist
  */
-export const calculateStreakAtom = (orbitHash: ActionHashB64) => {
+export const calculateCurrentStreakAtom = (orbitHash: ActionHashB64) => {
   const calculateStreak = atom<number | null>((get) => {
     const state = get(appStateAtom);
-    const orbit = state.orbitNodes.byHash[orbitHash];
+    const currentDate = DateTime.now().toLocaleString();
+    const orbit: OrbitNodeDetails | null = get(
+      getOrbitNodeDetailsFromIdAtom(orbitHash)
+    );
     const winData = state.wins[orbitHash] || {};
 
-    if (!orbit) {
-      return null; // Return null for non-existent orbits
+    if (!orbit) return null;
+
+    let streak = 0;
+    let date = DateTime.fromFormat(currentDate, "dd/MM/yyyy");
+
+    while (true) {
+      const dateString = date.toFormat("dd/MM/yyyy");
+      const winEntry = winData[dateString];
+
+      if (winEntry === undefined) continue;
+
+      if (Array.isArray(winEntry)) {
+        if (winEntry.every(Boolean)) {
+          streak++;
+        } else {
+          break;
+        }
+      } else if (winEntry === true) {
+        streak++;
+      } else {
+        break;
+      }
+
+      date = date.minus({ days: 1 });
     }
 
-    // Implement streak calculation logic here based on frequency
-    // This is a placeholder implementation
-    return 0;
+    return streak;
   });
+
   return calculateStreak;
 };
 
 /**
- * Sets a win for a specific orbit on a given date
+ * Calculates the longest streak for a specific orbit based on its win data.
  * @param orbitHash The ActionHash of the orbit
- * @param date The date for the win
- * @param winIndex The index of the win (for frequencies > 1)
- * @param hasWin Whether the win is achieved or not
+ * @returns An atom that resolves to the longest streak count, or null if the orbit doesn't exist
  */
-export const setWinForOrbit = atom(
-  null,
-  (
-    get,
-    set,
-    {
-      orbitHash,
-      date,
-      winIndex,
-      hasWin,
-    }: {
-      orbitHash: ActionHashB64;
-      date: string;
-      winIndex?: number;
-      hasWin: boolean;
-    }
-  ) => {
+export const calculateLongestStreakAtom = (orbitHash: ActionHashB64) => {
+  const calculateLongestStreak = atom<number | null>((get) => {
     const state = get(appStateAtom);
-    const orbit = get(getOrbitNodeDetailsFromIdAtom(orbitHash));
+    const orbit = state.orbitNodes.byHash[orbitHash];
+    const winData = state.wins[orbitHash] || {};
 
-    if (!orbit) {
-      console.warn(`Attempted to set win for non-existent orbit: ${orbitHash}`);
-      return;
-    }
+    if (!orbit) return null;
 
-    const frequency = orbit.frequency;
-    const currentWinData = state.wins[orbitHash] || {};
+    let longestStreak = 0;
+    let currentStreak = 0;
+    let previousDate: DateTime | null = null;
 
-    let newWinData: WinData<typeof frequency>;
-    if (frequency > 1) {
-      const currentDayData = Array.isArray(currentWinData[date])
-        ? (currentWinData[date] as boolean[])
-        : new Array(Math.round(frequency)).fill(false);
-      const newDayData = [...currentDayData];
-      if (winIndex !== undefined && winIndex < Math.round(frequency)) {
-        newDayData[winIndex] = hasWin;
-      }
-      newWinData = { ...currentWinData, [date]: newDayData } as WinData<
-        typeof frequency
-      >;
-    } else {
-      newWinData = { ...currentWinData, [date]: hasWin } as WinData<
-        typeof frequency
-      >;
-    }
-
-    set(appStateAtom, {
-      ...state,
-      wins: {
-        ...state.wins,
-        [orbitHash]: newWinData,
-      },
+    // Sort the dates using DateTime for correct chronological order
+    const sortedDates = Object.keys(winData).sort((a, b) => {
+      const dateA = DateTime.fromFormat(a, "dd/MM/yyyy");
+      const dateB = DateTime.fromFormat(b, "dd/MM/yyyy");
+      return dateA.toMillis() - dateB.toMillis();
     });
-  }
-);
 
+    for (const date of sortedDates) {
+      const winEntry = winData[date];
+      const currentDate = DateTime.fromFormat(date, "dd/MM/yyyy");
+
+      // Check if the current date is consecutive to the previous date
+      if (previousDate && currentDate.diff(previousDate, "days").days !== 1) {
+        currentStreak = 0; // Reset streak if not consecutive
+      }
+
+      if (Array.isArray(winEntry)) {
+        if (winEntry.every(Boolean)) {
+          currentStreak++;
+        } else {
+          currentStreak = 0;
+        }
+      } else if (winEntry === true) {
+        currentStreak++;
+      } else {
+        currentStreak = 0;
+      }
+
+      if (currentStreak > longestStreak) {
+        longestStreak = currentStreak;
+      }
+
+      previousDate = currentDate; // Update the previous date
+    }
+
+    return longestStreak;
+  });
+
+  return calculateLongestStreak;
+};
+
+// TODO: implement below
 /**
  * Gets all orbits for a given hierarchy
  * @param rootOrbitEntryHash The EntryHash of the root orbit

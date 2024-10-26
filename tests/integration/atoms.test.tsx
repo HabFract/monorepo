@@ -21,10 +21,11 @@ import {
   getOrbitEhFromId,
   orbitWinDataAtom
 } from '../../ui/src/state/orbit';
-import { getHierarchyAtom, isLeafNodeHashAtom, updateHierarchyAtom } from '../../ui/src/state/hierarchy';
+import { calculateCurrentStreakAtom, calculateLongestStreakAtom, getHierarchyAtom, isLeafNodeHashAtom, updateHierarchyAtom } from '../../ui/src/state/hierarchy';
 import { setWinDataAtom, winDataPerOrbitNodeAtom } from '../../ui/src/state/win';
 import { hierarchy } from 'd3-hierarchy';
 import { appStateAtom } from '../../ui/src/state';
+import { DateTime } from 'luxon';
 
 describe('Sphere Atoms', () => {
   beforeEach(() => {
@@ -1144,6 +1145,171 @@ describe('Win Record Atoms', () => {
       // Verify the win data is set
       const winState = JSON.parse(screen.getByTestId('winState').textContent || '{}');
       expect(winState).toEqual({ '2023-05-01': true, '2023-05-02': true, });
+    });
+  });
+
+  describe.skip('AppState - calculateCurrentStreakAtom', () => {
+    const mockAppState = {
+      orbitNodes: {
+        byHash: {
+          uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: { eH: 'uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' },
+        },
+        currentOrbitHash: 'uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj',
+      },
+      wins: {
+        uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
+          '10/10/2024': true,
+          '09/10/2024': true,
+          '08/10/2024': false,
+          '07/10/2024': true,
+        },
+      },
+    };
+
+    const TestComponent = ({ orbitHash }: { orbitHash: string }) => {
+      const streakAtom = useMemo(() => calculateCurrentStreakAtom(orbitHash), [orbitHash]);
+      const [streak] = useAtom(streakAtom);
+      return <div data-testid="streak">{streak !== null ? streak.toString() : 'null'}</div>;
+    };
+
+    beforeEach(() => {
+      resetMocks()
+      clearCustomMocks();
+      addCustomMock('all', mockedCacheEntries);
+      // Set the current date to 10/10/2024 for testing
+      const currentDate = DateTime.fromFormat('10/10/2024', 'dd/MM/yyyy') as DateTime<true>;
+      vi.spyOn(DateTime, 'now').mockReturnValue(currentDate);
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('should calculate the correct streak for a given orbit', () => {
+      renderWithJotai(<TestComponent orbitHash="uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />, { initialState: mockAppState as any });
+
+      expect(screen.getByTestId('streak').textContent).toBe('2');
+    });
+
+    it('should return 0 if there are no wins for the current date', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        wins: {
+          uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
+            '09/10/2024': true,
+            '08/10/2024': false,
+          },
+        },
+      };
+
+      renderWithJotai(<TestComponent orbitHash="uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />, { initialState: modifiedMockState as any });
+
+      expect(screen.getByTestId('streak').textContent).toBe('0');
+    });
+
+    it('should return null if the orbit does not exist', () => {
+      renderWithJotai(<TestComponent orbitHash="nonExistentOrbit" />, { initialState: mockAppState as any });
+
+      expect(screen.getByTestId('streak').textContent).toBe('null');
+    });
+  });
+
+  describe.skip('AppState - calculateLongestStreakAtom', () => {
+    const mockAppState = {
+      orbitNodes: {
+        byHash: {
+          uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: { eH: 'uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' },
+        },
+        currentOrbitHash: 'uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj',
+      },
+      wins: {
+        uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
+          '010/10/2024': true,
+          '09/10/2024': true,
+          '08/10/2024': true,
+          '07/10/2024': true,
+          '06/10/2024': false,
+          '05/10/2024': true,
+          '04/10/2024': true,
+          '03/10/2024': true,
+          '02/10/2024': true,
+          '01/10/2024': true,
+          '30/09/2024': true,
+        },
+      },
+    };
+
+    const TestComponent = ({ orbitHash }: { orbitHash: string }) => {
+      const longestStreakAtom = useMemo(() => calculateLongestStreakAtom(orbitHash), [orbitHash]);
+      const [longestStreak] = useAtom(longestStreakAtom);
+      return <div data-testid="longestStreak">{longestStreak !== null ? longestStreak.toString() : 'null'}</div>;
+    };
+
+    beforeEach(() => {
+      resetMocks();
+      clearCustomMocks();
+      addCustomMock('all', mockedCacheEntries);
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('should calculate the longest streak for a given orbit', () => {
+      renderWithJotai(<TestComponent orbitHash="uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />, { initialState: mockAppState as any });
+
+      expect(screen.getByTestId('longestStreak').textContent).toBe('6');
+    });
+
+    it('should calculate a streak from before after a break in entries', () => {
+      const modifiedMockState = {
+        orbitNodes: {
+          byHash: {
+            uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: { eH: 'uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' },
+          },
+          currentOrbitHash: 'uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj',
+        },
+        wins: {
+          uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
+            '10/10/2024': false,
+            '09/10/2024': false,
+            '08/10/2024': true,
+            '07/10/2024': false,
+            '06/10/2024': false,
+            '04/10/2024': true,
+            '02/10/2023': true,
+            '01/10/2023': true,
+            '30/09/2023': true,
+          },
+        },
+      };
+
+      renderWithJotai(<TestComponent orbitHash="uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />, { initialState: modifiedMockState as any });
+
+      expect(screen.getByTestId('longestStreak').textContent).toBe('3');
+    });
+
+
+    it('should return 0 if there are no consecutive wins', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        wins: {
+          uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
+            '09/10/2024': false,
+            '08/10/2024': false,
+          },
+        },
+      };
+
+      renderWithJotai(<TestComponent orbitHash="uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj" />, { initialState: modifiedMockState as any });
+
+      expect(screen.getByTestId('longestStreak').textContent).toBe('0');
+    });
+
+    it('should return null if the orbit does not exist', () => {
+      renderWithJotai(<TestComponent orbitHash="nonExistentOrbit" />, { initialState: mockAppState as any });
+
+      expect(screen.getByTestId('longestStreak').textContent).toBe('null');
     });
   });
 
