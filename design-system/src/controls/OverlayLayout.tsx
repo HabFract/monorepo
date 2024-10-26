@@ -6,7 +6,6 @@ import StreakCount from "./StreakCount";
 import VisMovementVertical from "./VisMovementVertical";
 import SwipeUpTab, { stopPropagation } from "./SwipeUpTab";
 import Calendar from "./Calendar";
-import mockAppState from "../mockState";
 import { DateTime } from "luxon";
 import { motion } from "framer-motion";
 import { ConsolidatedActions, Frequency, OrbitDescendant, OrbitNodeDetails, WinData, WinDataPerOrbitNode } from "@ui/src/state";
@@ -58,7 +57,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
     if (!workingWinDataForOrbit || !currentDate) return null;
     const dateString = currentDate.toLocaleString();
     const winData = workingWinDataForOrbit[dateString];
-    if (typeof winData == 'undefined') return null;
+    if (typeof winData == 'undefined') return 0;
     return Array.isArray(winData) ? winData.filter(Boolean).length : winData ? 1 : 0;
   }, [workingWinDataForOrbit, currentDate, currentOrbitDetails?.eH]);
 
@@ -99,7 +98,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
                 <span></span>
               </motion.div>
               <span onPointerDownCapture={stopPropagation}>
-                <Calendar currentDate={currentDate} setNewDate={setNewDate} orbitWins={mockAppState.wins['uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc']}></Calendar>
+                <Calendar currentDate={currentDate} orbitFrequency={orbitFrequency} setNewDate={setNewDate} orbitWins={currentWins || {}}></Calendar>
               </span>
             </motion.nav>
           </>
