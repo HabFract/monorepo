@@ -1,4 +1,4 @@
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { appStateAtom } from "../../state/store";
 import {
   CreateOrbitResponsePayload,
@@ -13,7 +13,7 @@ import {
 import { OrbitHashes, OrbitNodeDetails } from "../../state";
 
 export const useCreateOrbitMutation = (opts) => {
-  const setAppState = useSetAtom(appStateAtom);
+  const [prevState, setAppState] = useAtom(appStateAtom);
 
   return useCreateOrbitMutationGenerated({
     ...opts,
@@ -38,9 +38,13 @@ export const useCreateOrbitMutation = (opts) => {
 
       updateNodeCache(newOrbitDetails);
 
-      setAppState(((prevState) =>
-        updateAppStateWithOrbit(prevState, newOrbitHashes, true)) as any
+      const updatedState = updateAppStateWithOrbit(
+        prevState,
+        newOrbitHashes,
+        true
       );
+      setAppState(updatedState);
+      // console.log('Cache update from useCreateOrbit')
 
       invalidateOrbitHierarchyCache(newOrbit.sphereHash);
 

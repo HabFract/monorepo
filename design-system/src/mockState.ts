@@ -19,7 +19,9 @@ export const mockAppState = {
           hashtag: "fitness",
           image: placeholderImageBase64,
         },
-        hierarchyRootOrbitEntryHashes: ["uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj"],
+        hierarchyRootOrbitEntryHashes: [
+          "uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj",
+        ],
       },
     },
   },
@@ -35,11 +37,20 @@ export const mockAppState = {
               content: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
               name: "Daily Exercise",
               children: [
-                { content: "uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc", name: "Weekly Gym Session" },
-                { content: "uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc", name: "Daily Meditation" },
+                {
+                  content: "uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
+                  name: "Weekly Gym Session",
+                },
+                {
+                  content: "uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
+                  name: "Daily Meditation",
+                },
               ],
             },
-            { content: "uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc", name: "Monthly Health Check" },
+            {
+              content: "uhCEkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
+              name: "Monthly Health Check",
+            },
           ],
         }),
         bounds: { minBreadth: 0, maxBreadth: 2, minDepth: 0, maxDepth: 2 },
@@ -50,7 +61,7 @@ export const mockAppState = {
           "uhCAkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
           "uhCAkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc",
           "uhCAkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
-          "uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc"
+          "uhCAkZmN8Lk3Xj5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc",
         ],
       },
     },
@@ -105,7 +116,8 @@ export const mockAppState = {
         frequency: Frequency.DAILY_OR_MORE.TWO,
         startTime: 1617235200,
         endTime: undefined,
-        description: "Practice mindfulness and meditation daily. 10 minutes each session.",
+        description:
+          "Practice mindfulness and meditation daily. 10 minutes each session.",
         parentEh: "uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc",
         path: "M0,0C0,776.75,0,776.75,0,1553.5",
       },

@@ -1,3 +1,4 @@
+import { getOrbitNodeDetailsFromIdAtom } from "./orbit";
 // ui/src/state/hierarchy.ts
 import { ActionHashB64 } from "@holochain/client";
 import { atom } from "jotai";
@@ -12,6 +13,7 @@ import { OrbitNodeDetails, RootOrbitEntryHash } from "./types/orbit";
 import { Hierarchy } from "./types/hierarchy";
 import { getSphereIdFromEhAtom } from "./sphere";
 import { HierarchyNode } from "d3-hierarchy";
+import { WinData } from "./types";
 
 /** PRIMITIVE (not currently in AppState or IndexDB) */
 
@@ -238,7 +240,7 @@ export const setWinForOrbit = atom(
     }
   ) => {
     const state = get(appStateAtom);
-    const orbit = state.orbitNodes.byHash[orbitHash];
+    const orbit = get(getOrbitNodeDetailsFromIdAtom(orbitHash));
 
     if (!orbit) {
       console.warn(`Attempted to set win for non-existent orbit: ${orbitHash}`);

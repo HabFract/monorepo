@@ -57,10 +57,9 @@ export async function renderPage(page: React.ReactNode, client) {
 }
 const Main = () => {
   return (
-      <StateMachineContext.Provider value={AppMachine}>
-        {/* You can render the initial component or a Boot wrapper here */}
-        <BootSequence />
-      </StateMachineContext.Provider>
+    <StateMachineContext.Provider value={AppMachine}>
+      <BootSequence />
+    </StateMachineContext.Provider>
   );
 };
 

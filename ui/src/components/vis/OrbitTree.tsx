@@ -12,7 +12,7 @@ import { store } from "../../state/store";
 import { currentOrbitIdAtom, currentSphereOrbitNodeDetailsAtom } from "../../state/orbit";
 import { useDeriveAndCacheHierarchyPaths } from "../../hooks/useDeriveAndCacheHierarchyPaths";
 import { TreeVisualization } from "./base-classes/TreeVis";
-import { byStartTime, debounce, determineNewLevelIndex, parseAndSortTrees } from "./helpers";
+import { byStartTime, determineNewLevelIndex, parseAndSortTrees } from "./helpers";
 import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
 import { currentSphereHashesAtom, newTraversalLevelIndexId, SphereHashes, updateHierarchyAtom } from "../../state";
 import { useSetAtom } from "jotai";

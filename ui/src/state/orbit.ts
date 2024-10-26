@@ -8,6 +8,7 @@ import { Orbit, Frequency as GraphQLFrequency } from "../graphql/generated";
 import { WinData } from "./types/win";
 import { nodeCache } from "./store";
 import { isLeafNodeHashAtom } from "./hierarchy";
+import { AppState } from "./types/store";
 
 /** ----------------------------------------------------- */
 
@@ -218,27 +219,28 @@ export const setOrbitWithEntryHashAtom = atom(
       update,
     }: { orbitEh: EntryHashB64; update: Partial<OrbitNodeDetails> }
   ) => {
-    set(appStateAtom, (prevState) => {
-      const orbitActionHash = Object.keys(prevState.orbitNodes.byHash).find(
-        (key) => prevState.orbitNodes.byHash[key].eH === orbitEh
-      );
+    const prevState = get(appStateAtom);
+    const orbitActionHash = Object.keys(prevState.orbitNodes.byHash).find(
+      (key) => prevState.orbitNodes.byHash[key].eH === orbitEh
+    );
 
-      if (!orbitActionHash) return prevState; // Orbit not found, no update
+    if (!orbitActionHash) return; // Orbit not found, no update
 
-      return {
-        ...prevState,
-        orbitNodes: {
-          ...prevState.orbitNodes,
-          byHash: {
-            ...prevState.orbitNodes.byHash,
-            [orbitActionHash]: {
-              ...prevState.orbitNodes.byHash[orbitActionHash],
-              ...update,
-            },
+    const newState = {
+      ...prevState,
+      orbitNodes: {
+        ...prevState.orbitNodes,
+        byHash: {
+          ...prevState.orbitNodes.byHash,
+          [orbitActionHash]: {
+            ...prevState.orbitNodes.byHash[orbitActionHash],
+            ...update,
           },
         },
-      };
-    });
+      },
+    } as AppState;
+
+    set(appStateAtom, newState);
   }
 );
 
@@ -308,23 +310,18 @@ export const currentOrbitIdAtom = atom(
       : null;
   },
   (_get, set, newOrbitId: EntryHashB64) => {
-    set(appStateAtom, (prevState) => {
-      NODE_ENV !== "test" &&
-        console.log("Setting orbit id :>> ", {
-          ...prevState,
-          orbitNodes: {
-            ...prevState.orbitNodes,
-            currentOrbitHash: newOrbitId,
-          },
-        });
-      return {
-        ...prevState,
-        orbitNodes: {
-          ...prevState.orbitNodes,
-          currentOrbitHash: newOrbitId,
-        },
-      };
-    });
+    const prevState = _get(appStateAtom);
+    const newState = {
+      ...prevState,
+      orbitNodes: {
+        ...prevState.orbitNodes,
+        currentOrbitHash: newOrbitId,
+      },
+    } as AppState;
+
+    NODE_ENV !== "test" && console.log("Setting orbit id :>> ", newState);
+
+    set(appStateAtom, newState);
   }
 );
 (currentOrbitIdAtom as any).testId = "currentOrbitIdAtom";

@@ -16,7 +16,7 @@ export function getIconForPlanetValue(
     case Scale.Sub:
       return () => (
         <img
-          style={{ height: "24px", width: "auto", transform: 'scale(1.2)', marginTop: '8px', objectFit: "cover" }}
+          style={{ height: "24px", width: "auto", transform: 'scale(0.9)', marginTop: '0px', objectFit: "cover" }}
           src="/assets/planet.svg"
         />
       );
@@ -33,6 +33,7 @@ export function getIconSvg(
   icon: string,
 ): FC<ComponentProps<"svg">> | FC<ComponentProps<any>> {
   if (Object.values(Frequency).includes(icon as Frequency)) {
+    //@ts-expect-error
     return () => <FrequencyIndicator size={"sm"} frequency={icon as Frequency} />;
   }
   if (typeof icon !== "string") return icon;

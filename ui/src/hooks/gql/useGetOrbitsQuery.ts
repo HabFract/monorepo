@@ -1,4 +1,4 @@
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { appStateAtom } from "../../state/store";
 import {
   useGetOrbitsQuery as useGetOrbitsQueryGenerated,
@@ -8,10 +8,10 @@ import {
 import { updateNodeCache, updateAppStateWithOrbit } from "./utils";
 import { decodeFrequency } from "../../state/orbit";
 import { extractEdges } from "../../graphql/utils";
-import { OrbitHashes, OrbitNodeDetails } from "ui/src/state";
+import { OrbitHashes, OrbitNodeDetails } from "../../state";
 
 export const useGetOrbitsQuery = (opts) => {
-  const setAppState = useSetAtom(appStateAtom);
+  const [prevState, setAppState] = useAtom(appStateAtom);
 
   const result = useGetOrbitsQueryGenerated({
     ...opts,
@@ -36,11 +36,14 @@ export const useGetOrbitsQuery = (opts) => {
 
           updateNodeCache(orbitDetails);
 
-          setAppState((prevState) =>
-            updateAppStateWithOrbit(prevState, orbitHashes, false)
+          const updatedState = updateAppStateWithOrbit(
+            prevState,
+            orbitHashes,
+            false
           );
+          setAppState(updatedState);
 
-          console.warn('Cache update from useGetOrbits')
+          console.warn("Cache update from useGetOrbits");
         });
       }
 
@@ -57,7 +60,7 @@ export const useGetOrbitsQuery = (opts) => {
 };
 
 export const useGetOrbitsLazyQuery = (opts?) => {
-  const setAppState = useSetAtom(appStateAtom);
+  const [prevState, setAppState] = useAtom(appStateAtom);
 
   const [getOrbits, result] = useGetOrbitsLazyQueryGenerated({
     ...opts,
@@ -82,9 +85,12 @@ export const useGetOrbitsLazyQuery = (opts?) => {
 
           updateNodeCache(orbitDetails);
 
-          setAppState((prevState) =>
-            updateAppStateWithOrbit(prevState, orbitHashes, false)
+          const updatedState = updateAppStateWithOrbit(
+            prevState,
+            orbitHashes,
+            false
           );
+          setAppState(updatedState);
         });
       }
 
@@ -116,9 +122,12 @@ export const useGetOrbitsLazyQuery = (opts?) => {
 
             updateNodeCache(orbitDetails);
 
-            setAppState((prevState) =>
-              updateAppStateWithOrbit(prevState, orbitHashes, false)
+            const updatedState = updateAppStateWithOrbit(
+              prevState,
+              orbitHashes,
+              false
             );
+            setAppState(updatedState);
           });
         }
 

@@ -15,7 +15,7 @@ import { currentSphereHashesAtom } from "../state/sphere";
 import { Spinner } from "flowbite-react";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { debounce } from "./vis/helpers";
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { updateAppStateWithOrbit } from "../hooks/gql/utils";
 import { sleep } from "./lists/OrbitSubdivisionList";
 
@@ -43,7 +43,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   const [_, transition] = useStateTransition(); // Top level state machine and routing
   const [preloadCompleted, setPreloadCompleted] = useState(false);
 
-  const setAppState = useSetAtom(appStateAtom);
+  const [prevState, setAppState] = useAtom(appStateAtom);
   const setNodeCache = useSetAtom(nodeCache.set);
   const setCurentSphere = useSetAtom(currentSphereHashesAtom);
   // Fetch spheres (which are the beginning of any graph of data in the app)
@@ -94,33 +94,29 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                   id,
                   Object.fromEntries(indexedOrbitNodeDetails),
                 );
+                let updatedState = prevState;
                 // Update app state for each orbit
-                setAppState((prevState) => {
-                  let updatedState = prevState;
-                  orbitHashes.sort((hashesA, hashesB) => {
-                    // Process the root hash last which will set it as current Orbit
-                    return +((!!hashesB?.parentEh)) - (+(!!hashesA?.parentEh))
-                  }).forEach(orbitHashes => {
-                    updatedState = updateAppStateWithOrbit(updatedState, orbitHashes, true);
-                  });
-
-                  updatedState.spheres = {
-                    ...updatedState.spheres,
-                    currentSphereHash: id,
-                    byHash: {
-                      ...prevState.spheres.byHash,
-                      [id]: {
-                        details: {
-                          ...(prevState.spheres.byHash[id]?.details || {}),
-                          entryHash: eH,
-                          name
-                        },
-                        hierarchyRootOrbitEntryHashes: orbitHashes.filter(hashes => typeof hashes.parentEh == 'undefined').reduce((acc, hashes) => { !acc.includes(hashes.eH) && acc.push(hashes.eH); return acc }, []),
-                      },
-                    },
-                  };
-                  return updatedState;
+                orbitHashes.sort((hashesA, hashesB) => {
+                  // Process the root hash last which will set it as current Orbit
+                  return +((!!hashesB?.parentEh)) - (+(!!hashesA?.parentEh))
+                }).forEach(orbitHashes => {
+                  updatedState = updateAppStateWithOrbit(updatedState, orbitHashes, true);
                 });
+
+                updatedState.spheres = {
+                  ...updatedState.spheres,
+                  currentSphereHash: id,
+                  byHash: {
+                    ...prevState.spheres.byHash,
+                    [id]: {
+                      details: {
+                        entryHash: eH,
+                      },
+                      hierarchyRootOrbitEntryHashes: orbitHashes.filter(hashes => typeof hashes.parentEh == 'undefined').reduce((acc, hashes) => { !acc.includes(hashes.eH) && acc.push(hashes.eH); return acc }, [] as any),
+                    },
+                  },
+                };
+                setAppState(updatedState);
                 sleep(100);
 
                 setCurentSphere({
