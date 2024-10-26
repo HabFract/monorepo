@@ -1,5 +1,6 @@
-import { Profile } from "../graphql/generated";
 import { useState, useMemo, createContext } from "react";
+//@ts-ignore
+import { Profile } from "../graphql/generated";
 
 export const MyProfileContext = createContext(null);
 

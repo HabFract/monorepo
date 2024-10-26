@@ -117,7 +117,6 @@ export function useWinData(
             >)
           : false,
       } as any;
-      console.log("newData :>> ", newData);
       setWorkingWinDataForOrbit(newData);
     }
   }, [data, currentDate, orbitHash]);

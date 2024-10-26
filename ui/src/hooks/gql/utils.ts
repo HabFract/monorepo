@@ -127,6 +127,7 @@ export const updateAppStateWithOrbit = (
         indices: { x: 0, y: 0 },
         currentNode: orbitDetails.eH,
         nodeHashes: [orbitDetails.eH],
+        leafNodeHashes: [], // TODO: see if this needs to be derived now
       };
 
       updatedState.hierarchies.byRootOrbitEntryHash = {

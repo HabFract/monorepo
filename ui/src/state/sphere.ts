@@ -4,6 +4,7 @@ import { SphereDetails, SphereHashes } from "./types/sphere";
 import { nodeCache } from "./store";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { getOrbitNodeDetailsFromEhAtom } from "./orbit";
+import { AppState } from "./types/store";
 
 /**
  * Read-write atom for the current sphere's hashes or null if the current hash doesn't resolve to a sphere's details
@@ -23,27 +24,26 @@ export const currentSphereHashesAtom = atom(
       : null;
   },
   (_get, set, newSphereHashes: SphereHashes) => {
-    set(appStateAtom, (prevState) => {
-      const newCurrentSphereHash = newSphereHashes.actionHash || "";
-      //TODO: think about whether a guard clause woule be helpeful for when the sphere is not already cached with details
-      return {
-        ...prevState,
-        spheres: {
-          ...prevState.spheres,
-          currentSphereHash: newCurrentSphereHash,
-          byHash: {
-            ...prevState.spheres.byHash,
-            [newCurrentSphereHash]: {
-              ...prevState.spheres.byHash[newCurrentSphereHash],
-              details: {
-                ...prevState.spheres.byHash[newCurrentSphereHash]?.details,
-                entryHash: newSphereHashes.entryHash,
-              },
+    const prevState = _get(appStateAtom);
+    const newCurrentSphereHash = newSphereHashes.actionHash || "";
+    const newState = {
+      ...prevState,
+      spheres: {
+        ...prevState.spheres,
+        currentSphereHash: newCurrentSphereHash,
+        byHash: {
+          ...prevState.spheres.byHash,
+          [newCurrentSphereHash]: {
+            ...prevState.spheres.byHash[newCurrentSphereHash],
+            details: {
+              ...prevState.spheres.byHash[newCurrentSphereHash]?.details,
+              entryHash: newSphereHashes.entryHash,
             },
           },
         },
-      };
-    });
+      },
+    } as AppState;
+    set(appStateAtom, newState);
   }
 );
 (currentSphereHashesAtom as any).testId = "currentSphereHashes";

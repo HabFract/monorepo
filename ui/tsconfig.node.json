@@ -7,7 +7,7 @@
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": false,
-    "declarationDir": "dist/types"
+    "declarationDir": "dist/"
   },
   "include": ["src/**/*", "dist"],
   "exclude": [

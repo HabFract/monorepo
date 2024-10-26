@@ -1,5 +1,5 @@
-import { useSetAtom } from "jotai";
-import { appStateAtom } from "../../state/store";
+import { useAtom, useSetAtom } from "jotai";
+import { appStateAtom, store } from "../../state/store";
 import {
   UpdateOrbitResponsePayload,
   useUpdateOrbitMutation as useUpdateOrbitMutationGenerated,
@@ -9,11 +9,11 @@ import {
   updateAppStateWithOrbit,
   invalidateOrbitHierarchyCache,
 } from "./utils";
-import { decodeFrequency } from "../../state/orbit";
+import { decodeFrequency, getOrbitEhFromId } from "../../state/orbit";
 import { OrbitHashes } from "../../state";
 
 export const useUpdateOrbitMutation = (opts) => {
-  const setAppState = useSetAtom(appStateAtom);
+  const [prevState, setAppState] = useAtom(appStateAtom);
 
   return useUpdateOrbitMutationGenerated({
     ...opts,
@@ -37,19 +37,19 @@ export const useUpdateOrbitMutation = (opts) => {
       };
 
       // Extract the old ID from the mutation variables
-      const oldOrbitId = variables?.orbitFields?.eH;
+      const oldOrbitId = store.get(getOrbitEhFromId(variables!.orbitFields.id));
+      console.log("oldOrbitId :>> ", oldOrbitId);
       updateNodeCache(updatedOrbitDetails, oldOrbitId);
 
-      setAppState((prevState) =>
-        updateAppStateWithOrbit(
-          prevState,
-          updatedOrbitHashes,
-          false,
-          oldOrbitId
-        )
+      const updatedState = updateAppStateWithOrbit(
+        prevState,
+        updatedOrbitHashes,
+        false,
+        oldOrbitId
       );
+      setAppState(updatedState);
 
-      console.warn('Cache update from useUpdateOrbit')
+      console.warn("Cache update from useUpdateOrbit");
 
       // A change to an orbit will mean a new entry hash is created, changing the tree, so we need to invalidate.
       invalidateOrbitHierarchyCache(updatedOrbit.sphereHash);

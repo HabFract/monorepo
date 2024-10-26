@@ -3,10 +3,8 @@ import { StoryFn, Meta, StoryObj } from "@storybook/react";
 import OverlayLayout, { OverlayLayoutProps } from "./OverlayLayout";
 import { Default as VisMovementVerticalStory1 } from "./VisMovementVertical.stories";
 import { Overflowing as VisMovementLateralStory1 } from "./VisMovementLateral.stories";
-import { Default as WinCountStory1 } from "./WinCount.stories";
-import { Default as StreakCountStory1 } from "./StreakCount.stories";
 import { Default as CalendarStory1 } from "./Calendar.stories";
-import { Frequency } from "../generated-types";
+import { Frequency, WinData } from "@ui/src/state";
 
 const meta: Meta<OverlayLayoutProps> = {
   title: "Components/Controls/OverlayLayout",
@@ -31,9 +29,13 @@ export const Layout1: Story = {
   args: {
     ...VisMovementVerticalStory1.args,
     ...VisMovementLateralStory1.args,
-    orbitFrequency: Frequency.DailyOrMore_1d,
-    currentWins: 0,
-    currentStreak: 2  ,
+    orbitFrequency: Frequency.DAILY_OR_MORE.DAILY,
+    currentWins: {
+      "20/10/2024": true,
+      "21/10/2024": false,
+      "22/10/2024": true,
+    } as WinData<Frequency.Rationals>,
+    currentStreak: 2,
     ...CalendarStory1.args,
-  },
+  } as any,
 };

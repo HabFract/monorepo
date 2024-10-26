@@ -3,6 +3,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
+    "rootDir": "./src",
     "outDir": "./dist",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
@@ -15,7 +16,6 @@
     "emitDeclarationOnly": false,
     "allowSyntheticDefaultImports": true,
     "composite": true,
-    "declarationDir": "./types",
     "paths": {
       "@state/*": ["./src/state/*"]
     }
