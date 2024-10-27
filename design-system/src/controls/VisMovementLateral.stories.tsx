@@ -8,7 +8,7 @@ const meta: Meta<VisMovementLateralProps> = {
   component: VisMovementLateral,
   argTypes: {},
   render: (args: VisMovementLateralProps) => (
-    <VisMovementLateral {...args} moveLeftAction={() => console.log("Handle move left")} moveRightAction={() => console.log("Handle move right")}
+    <VisMovementLateral {...args} goLeftAction={() => console.log("Handle move left")} goRightAction={() => console.log("Handle move right")}
     ></VisMovementLateral>
   ),
 };
@@ -22,15 +22,12 @@ export const Default: Story = {
     orbitSiblings: [{
       orbitName: "10k run",
       orbitScale: Scale.Sub,
-      handleOrbitSelect: () => console.log("10k run selected"),
     }, {
       orbitName: "12k run",
       orbitScale: Scale.Sub,
-      handleOrbitSelect: () => console.log("12k run selected")
     }, {
       orbitName: "15k run",
       orbitScale: Scale.Sub,
-      handleOrbitSelect: () => console.log("15k run selected")
     }
   ]
   },
@@ -41,27 +38,21 @@ export const Overflowing: Story = {
     orbitSiblings: [{
       orbitName: "1k run",
       orbitScale: Scale.Atom,
-      handleOrbitSelect: () => console.log("10k run selected")
     }, {
       orbitName: "2k run",
       orbitScale: Scale.Atom,
-      handleOrbitSelect: () => console.log("12k run selected")
     }, {
       orbitName: "5k run",
       orbitScale: Scale.Sub,
-      handleOrbitSelect: () => console.log("15k run selected")
     }, {
       orbitName: "10k run",
       orbitScale: Scale.Sub,
-      handleOrbitSelect: () => console.log("10k run selected")
     }, {
       orbitName: "20k run",
       orbitScale: Scale.Astro,
-      handleOrbitSelect: () => console.log("12k run selected")
     }, {
       orbitName: "50k run",
       orbitScale: Scale.Astro,
-      handleOrbitSelect: () => console.log("15k run selected")
     }
   ]
   },
