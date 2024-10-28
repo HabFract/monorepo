@@ -293,7 +293,7 @@ export abstract class BaseVisualization implements IVisualization {
     !this.firstRender() && this.clearNodesAndLinks();
 
     this._gLink = this._canvas!.append("g").classed("links", true)
-    .attr("style", "transform: translateY(148px)");
+      .attr("style", "transform: translateY(148px)");
     this._gNode = this._canvas!.append("g").classed("nodes", true);
     // .attr("transform", transformation);
   }
@@ -307,7 +307,6 @@ export abstract class BaseVisualization implements IVisualization {
       return;
     }
     if (this.noCanvas()) {
-      console.log('this._canvas :>> ', this._canvas);
       this.setupCanvas();
     }
 
@@ -333,7 +332,7 @@ export abstract class BaseVisualization implements IVisualization {
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
       this.setNodeAndLabelGroups();
-      
+
       this.firstRender() && this.appendNodeVectors();
       this.appendLinkPath();
       this._gTooltip = this.clearAndRedrawLabels();
@@ -448,9 +447,9 @@ export abstract class BaseVisualization implements IVisualization {
         const { scale, parentEh } = cachedNode;
 
         return scale == Scale.Astro
-          ? (!parentEh ? "-30" : "-50") 
-          : scale == Scale.Sub 
-            ? (!parentEh ? "12" : "10") 
+          ? (!parentEh ? "-30" : "-50")
+          : scale == Scale.Sub
+            ? (!parentEh ? "12" : "10")
             : (!parentEh ? "12" : "66");
       })
       .attr("x", "-110")
@@ -540,7 +539,7 @@ export abstract class BaseVisualization implements IVisualization {
     if (!isCurrentOrbit) return "";
     const { name, description, frequency, eH } = this.nodeDetails[d.data.content];
 
-    const controlsMarkup = renderToStaticMarkup(<OrbitControls handleAppendNode={() => {}}  handleEdit={() => {}} nodeEh={eH} />); // Events bound on the general node click handler
+    const controlsMarkup = renderToStaticMarkup(<OrbitControls handleAppendNode={() => { }} handleEdit={() => { }} nodeEh={eH} />); // Events bound on the general node click handler
     const labelMarkup = renderToStaticMarkup(<OrbitLabel orbitDetails={{ name, description, frequency }} />);
     return `<div class="orbit-overlay-container">${controlsMarkup}${labelMarkup}</div>`;
   };

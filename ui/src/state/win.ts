@@ -137,11 +137,6 @@ export const calculateCompletionStatusAtom = (
 
       // Check completion status of all leaf descendants
       return leafDescendants.flat().every((leaf) => {
-        console.log(
-          "get(getWinCompletionForOrbitForDayAtom(leaf.content, date)) :>> ",
-          leaf.content,
-          get(getWinCompletionForOrbitForDayAtom(leaf.content, date))
-        );
         return get(getWinCompletionForOrbitForDayAtom(leaf.content, date));
       });
     }

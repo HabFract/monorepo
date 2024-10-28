@@ -73,7 +73,6 @@ export function withVisCanvas<T extends IVisualization>(
     // which will determine the state/visibility of the Vis OverlayLayout/controls
     const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
     const currentOrbitIsLeaf = useAtomValue(currentOrbitIsLeafAtom);
-    console.log('currentOrbitDetails :>> ', currentOrbitDetails);
     const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
       currentSphereHierarchyBounds,
     );
