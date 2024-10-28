@@ -44,7 +44,7 @@ export const useCreateOrbitMutation = (opts) => {
         true
       );
       setAppState(updatedState);
-      // console.log('Cache update from useCreateOrbit')
+      console.warn("Cache update from useCreateOrbit");
 
       invalidateOrbitHierarchyCache(newOrbit.sphereHash);
 

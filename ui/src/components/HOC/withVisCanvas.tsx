@@ -44,7 +44,6 @@ import { StoreType } from "../../state/types/store";
 import { Spinner } from "flowbite-react";
 import { useWinData } from "../../hooks/useWinData";
 import { DateTime } from "luxon";
-import { skip } from "node:test";
 
 /**
  * Higher-order component to enhance a visualization component with additional logic and state management.
@@ -74,7 +73,7 @@ export function withVisCanvas<T extends IVisualization>(
     // which will determine the state/visibility of the Vis OverlayLayout/controls
     const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
     const currentOrbitIsLeaf = useAtomValue(currentOrbitIsLeafAtom);
-
+    console.log('currentOrbitDetails :>> ', currentOrbitDetails);
     const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
       currentSphereHierarchyBounds,
     );
@@ -122,8 +121,6 @@ export function withVisCanvas<T extends IVisualization>(
       [currentOrbitDetails, currentDate]);
     const { workingWinDataForOrbit, handleUpdateWorkingWins } = withWinData();
 
-
-
     const skipFlag = !currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit || typeof workingWinDataForOrbit !== 'object';
     const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
       variables: {
@@ -162,6 +159,7 @@ export function withVisCanvas<T extends IVisualization>(
         canvasWidth={canvasWidth}
         margin={DEFAULT_MARGINS}
         render={(currentVis: T) => {
+          console.log('currentOrbitDetails :>> ', currentOrbitDetails);
           if (!currentOrbitDetails?.eH) return <Spinner aria-label="Loading Vis Canvas!" className="menu-spinner" size="xl" />
 
           const {
@@ -174,7 +172,7 @@ export function withVisCanvas<T extends IVisualization>(
           if (appendedSvg) {
             // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
             currentVis.modalOpen = setIsModalOpen;
-            currentVis.modalParentOrbitEh = (val) => {console.log('val :>> ', val); setCurrentParentOrbitEh(val)};
+            currentVis.modalParentOrbitEh = (val) => { console.log('Set parent id for new orbit in modal :>> ', val); setCurrentParentOrbitEh(val) };
             currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
             // Trigger the Vis object render function ONLY once the SVG is appended to the DOM
             currentVis?.render();
@@ -276,7 +274,7 @@ export function withVisCanvas<T extends IVisualization>(
     ) {
       return {
         moveToId: (newIndex) => {
-          if(typeof newIndex !== 'number') return console.error("Cannot move without valid index ");
+          if (typeof newIndex !== 'number') return console.error("Cannot move without valid index ");
           store.set(currentOrbitIdAtom, children[newIndex].data.content);
         },
         moveLeft: () => {

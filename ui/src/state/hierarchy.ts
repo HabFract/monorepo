@@ -1,7 +1,11 @@
-import { getOrbitNodeDetailsFromIdAtom } from "./orbit";
+import {
+  getOrbitNodeDetailsFromEhAtom,
+  getOrbitNodeDetailsFromIdAtom,
+} from "./orbit";
 // ui/src/state/hierarchy.ts
 import { ActionHashB64 } from "@holochain/client";
 import { atom } from "jotai";
+import { hierarchy } from "d3-hierarchy";
 import {
   HierarchyTraversalIndices,
   NodeContent,
@@ -173,18 +177,18 @@ export const updateHierarchyAtom = atom(
 );
 
 /**
- * Atom to check if a node hash exists in the leafNodeHashes of any hierarchy in appState.
- * @param nodeHash The node hash to check
+ * Atom to check if a Action Hash exists in the leafNodeHashes of any hierarchy in appState.
+ * @param nodeId The Action Hash to check
  * @returns An atom that resolves to a boolean indicating existence, or lack of
  */
-export const isLeafNodeHashAtom = (nodeHash: ActionHashB64) => {
+export const isLeafNodeHashAtom = (nodeId: ActionHashB64) => {
   return atom<boolean>((get) => {
     const state = get(appStateAtom);
     const hierarchies = state.hierarchies.byRootOrbitEntryHash;
 
     for (const hierarchyKey in hierarchies) {
       const hierarchy = hierarchies[hierarchyKey];
-      if (hierarchy?.leafNodeHashes?.includes(nodeHash)) {
+      if (hierarchy?.leafNodeHashes?.includes(nodeId)) {
         return true;
       }
     }
@@ -198,15 +202,15 @@ export const isLeafNodeHashAtom = (nodeHash: ActionHashB64) => {
  * @returns An atom that resolves to the streak count, or null if the orbit doesn't exist
  */
 export const calculateCurrentStreakAtom = (orbitHash: ActionHashB64) => {
-  const calculateStreak = atom<number | null>((get) => {
+  const orbitDetailsAtom = getOrbitNodeDetailsFromIdAtom(orbitHash);
+
+  const calculateStreak = atom((get) => {
+    const orbit = get(orbitDetailsAtom);
+    if (!orbit) return null;
+
     const state = get(appStateAtom);
     const currentDate = DateTime.now().toLocaleString();
-    const orbit: OrbitNodeDetails | null = get(
-      getOrbitNodeDetailsFromIdAtom(orbitHash)
-    );
     const winData = state.wins[orbitHash] || {};
-
-    if (!orbit) return null;
 
     let streak = 0;
     let date = DateTime.fromFormat(currentDate, "dd/MM/yyyy");
@@ -215,7 +219,7 @@ export const calculateCurrentStreakAtom = (orbitHash: ActionHashB64) => {
       const dateString = date.toFormat("dd/MM/yyyy");
       const winEntry = winData[dateString];
 
-      if (winEntry === undefined) continue;
+      if (winEntry === undefined) break;
 
       if (Array.isArray(winEntry)) {
         if (winEntry.every(Boolean)) {
@@ -296,7 +300,47 @@ export const calculateLongestStreakAtom = (orbitHash: ActionHashB64) => {
   return calculateLongestStreak;
 };
 
-// TODO: implement below
+// TODO: implement/test below
+/**
+ * Gets all descendant leaf nodes for a given orbit in a hierarchy
+ * @param orbitHash The EntryHashB64 of the orbit to find descendants for
+ * @returns An atom that resolves to an array of leaf node hashes, or null if the orbit doesn't exist
+ */
+export const getDescendantLeafNodesAtom = (orbitEh: EntryHashB64) => {
+  return atom((get) => {
+    const state = get(appStateAtom);
+
+    const orbit: OrbitNodeDetails | null = get(
+      getOrbitNodeDetailsFromEhAtom(orbitEh)
+    );
+    if (!orbit) return null;
+    const orbitHash = orbit.id;
+
+    // Find which hierarchy this orbit belongs to
+    let hierarchyJson: string | null = null;
+    let hierarchyRoot: string | null = null;
+
+    for (const [root, hierarchy] of Object.entries(
+      state.hierarchies.byRootOrbitEntryHash
+    )) {
+      if (hierarchy.nodeHashes.includes(orbitHash)) {
+        hierarchyJson = hierarchy.json;
+        hierarchyRoot = root;
+        break;
+      }
+    }
+
+    if (!hierarchyJson || !hierarchyRoot) return null;
+
+    // Parse the hierarchy JSON
+    const hierarchyData = JSON.parse(hierarchyJson);
+    const hierarchyD3 = hierarchy(hierarchyData[0]);
+    const leaves = hierarchyD3.leaves();
+
+    return leaves.map((node) => node.data);
+  });
+};
+
 /**
  * Gets all orbits for a given hierarchy
  * @param rootOrbitEntryHash The EntryHash of the root orbit
@@ -323,26 +367,4 @@ export const getHierarchyOrbitDetailsAtom = (
     // return Object.values(sphereNodeDetailsCache);
   });
   return selectOrbits;
-};
-
-/**
- * Calculates the overall completion status for a specific orbit
- * @param orbitHash The ActionHash of the orbit
- * @returns An atom that resolves to the completion status (as a percentage), or null if the orbit doesn't exist
- */
-export const calculateCompletionStatusAtom = (orbitHash: ActionHashB64) => {
-  const calculateCompletionStatus = atom<number | null>((get) => {
-    const state = get(appStateAtom);
-    const orbit = state.orbitNodes.byHash[orbitHash];
-    const winData = state.wins[orbitHash] || {};
-
-    if (!orbit) {
-      return null; // Return null for non-existent orbits
-    }
-
-    // Implement completion status calculation logic here based on frequency
-    // This is a placeholder implementation
-    return 0;
-  });
-  return calculateCompletionStatus;
 };

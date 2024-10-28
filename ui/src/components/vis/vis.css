@@ -23,6 +23,7 @@ g.node-subgroup {
   @apply relative;
   z-index: 16;
 }
+
 .node-vector-group {
   @apply w-full h-full;
 }
@@ -38,12 +39,14 @@ g.node-subgroup {
   background-repeat: no-repeat;
   background-position: center;
 }
-/* Outline for selected node (winning) */
-.node-vector-group.selected.winning::before {
-  background: url(/assets/plannit-selected-outline-win.svg);
+
+/* Outline for winning node (has hard coded win colour) */
+.node-vector-group.winning::before {
+  background: url(/assets/plannit-selected-outline-win.svg) no-repeat center;
 }
-/* Tick icon for selected node (winning) */
-.node-vector-group.selected.winning::after {
+
+/* Tick icon for winning node */
+.node-vector-group.winning::after {
   @apply absolute top-2 left-2 h-full w-full;
   content: "";
   z-index: 16;
@@ -55,11 +58,13 @@ g.node-subgroup {
 .node-vector-group.selected.astro::before {
   background-size: 87px;
 }
+
 .node-vector-group.selected.sub::before {
   background-size: 70px;
   left: -.5px;
   top: -14.5px;
 }
+
 .node-vector-group.selected.atom::before {
   background-size: 96px;
 }

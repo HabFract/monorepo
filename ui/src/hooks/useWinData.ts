@@ -59,14 +59,6 @@ export function useWinData(
     if (!orbitHash) return;
 
     if (!skipFlag && !workingWinDataForOrbit) {
-      console.log("VARIABLES", {
-        variables: {
-          params: {
-            yearDotMonth: currentYearDotMonth,
-            orbitEh: currentOrbitDetails?.eH as EntryHashB64,
-          },
-        },
-      });
       getWinRecord({
         variables: {
           params: {
@@ -135,7 +127,6 @@ export function useWinData(
             : !!newWinCount,
       } as any;
       setWorkingWinDataForOrbit(updatedData);
-      console.log("updatedData :>> ", updatedData);
     },
     [
       workingWinDataForOrbit,

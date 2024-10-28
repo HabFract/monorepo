@@ -36,7 +36,6 @@ const withLayout = (
   return (props: WithLayoutProps): ReactNode => {
     const state = AppMachine.state.currentState;
     const params = AppMachine.state.params;
-    console.log('props', props)
     switch (true) {
       case !!state.match("Onboarding"):
         return <Onboarding>{withPageTransition(component)}</Onboarding>;

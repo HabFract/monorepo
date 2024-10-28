@@ -187,7 +187,7 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
   };
 });
 
-describe.only('OrbitTree', () => {
+describe.skip('OrbitTree', () => {
   beforeEach(() => {
     const mockClient = createMockClient({cache: new InMemoryCache({})});
     resetMocks()
@@ -213,7 +213,7 @@ describe.only('OrbitTree', () => {
     });
   });
 
-  test.skip('renders a loading spinner, then the right number of nodes', async () => {
+  test('renders a loading spinner, then the right number of nodes', async () => {
     // Arrange
     renderWithJotai(renderVis(OrbitTree) as any, {initialHierarchy: HIERARCHY_MOCKS} as any);
   

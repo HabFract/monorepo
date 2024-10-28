@@ -80,14 +80,14 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   return (
     <section className="overlay-layout-container">
       <SwipeUpTab relativeElements={<span className="vis-controls-container">
-                <VisMovementLateral orbitSiblings={orbitSiblings} goLeftAction={actions.goLeft} goRightAction={actions.goRight}></VisMovementLateral>
-                <VisMovementVertical orbitDescendants={orbitDescendants} moveUpAction={actions.goUp} moveDownAction={actions.goDown}></VisMovementVertical>
-                <div className="center-marker"></div>
-              </span>} verticalOffset={calendarHeightWithPadding}>
+        <VisMovementLateral orbitSiblings={orbitSiblings} goLeftAction={actions.goLeft} goRightAction={actions.goRight}></VisMovementLateral>
+        <VisMovementVertical orbitDescendants={orbitDescendants} moveUpAction={actions.goUp} moveDownAction={actions.goDown}></VisMovementVertical>
+        <div className="center-marker"></div>
+      </span>} verticalOffset={calendarHeightWithPadding}>
         {({ bindDrag }) => (
           <>
             <div className="overlay-controls-container">
-              
+
               <div className="overlay-win-streak-container" onPointerDownCapture={stopPropagation}>
                 <WinCount currentDate={currentDate} handleUpdateWorkingWins={handleUpdateWorkingWins} handleSaveWins={handleSaveWins} currentWins={wins} orbitFrequency={isLeafOrbit ? orbitFrequency : 0}></WinCount>
                 <StreakCount currentStreak={currentStreak} orbitFrequency={orbitFrequency}></StreakCount>

@@ -111,6 +111,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                     [id]: {
                       details: {
                         entryHash: eH,
+                        name
                       },
                       hierarchyRootOrbitEntryHashes: orbitHashes.filter(hashes => typeof hashes.parentEh == 'undefined').reduce((acc, hashes) => { !acc.includes(hashes.eH) && acc.push(hashes.eH); return acc }, [] as any),
                     },

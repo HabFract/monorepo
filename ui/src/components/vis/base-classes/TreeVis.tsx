@@ -83,6 +83,8 @@ import { getHierarchyAtom } from "../../../state/hierarchy";
 import { AppMachine } from "../../../main";
 import { NODE_ENV } from "../../../constants";
 import { curves, getClassesForNodeVectorGroup, getScaleForPlanet } from "../tree-helpers";
+import { calculateCompletionStatusAtom, getWinCompletionForOrbitForDayAtom } from "../../../state/win";
+import { currentDayAtom } from "../../../state";
 
 export class TreeVisualization extends BaseVisualization {
   layout!: TreeLayout<unknown>;
@@ -147,7 +149,7 @@ export class TreeVisualization extends BaseVisualization {
         this.modalOpen(true);
         this.modalIsOpen = true;
       },
-      handleAppendNode: function ({parentOrbitEh}) {
+      handleAppendNode: function ({ parentOrbitEh }) {
         this.modalParentOrbitEh(parentOrbitEh);
         this.modalOpen(true);
         this.modalIsOpen = true;
@@ -160,7 +162,7 @@ export class TreeVisualization extends BaseVisualization {
         const isRootNode = orbit.eH == this._originalRootData?.data.content;
 
         const zoomOffsetY = -(this._viewConfig.isSmallScreen() ? (isRootNode ? NEGATIVE_ZOOM_Y_OFFSET_SM_ROOT : NEGATIVE_ZOOM_Y_OFFSET_SM_NONROOT) : NEGATIVE_ZOOM_Y_OFFSET_MD_LG)
-        const scale = (this._viewConfig.isSmallScreen() ? NODE_RESCALE_FACTOR_SM: NODE_RESCALE_FACTOR_MD_LG) * chooseZoomScaleForOrbit(orbit);
+        const scale = (this._viewConfig.isSmallScreen() ? NODE_RESCALE_FACTOR_SM : NODE_RESCALE_FACTOR_MD_LG) * chooseZoomScaleForOrbit(orbit);
         const x = -(node as any).x * scale + this._viewConfig.canvasWidth / 2;
         const y = -(node as any).y * scale + this._viewConfig.canvasHeight / 2 + zoomOffsetY;
 
@@ -234,19 +236,21 @@ export class TreeVisualization extends BaseVisualization {
         this._enteringNodes.select(".node-vector-group").attr("class", (d: any) => {
           const selected = currentOrbitId && currentOrbitId == d.data.content
           const cachedNode = this.nodeDetails[d.data.content];
-          if(!cachedNode) return "node-vector-group";
-          const { scale } = cachedNode;
+          if (!cachedNode) return "node-vector-group";
+          const { eH, scale, name } = cachedNode;
+          const currentDateString = store.get(currentDayAtom).toLocaleString();
+          const isWinning = store.get(calculateCompletionStatusAtom(eH, currentDateString));
 
-          return "node-vector-group" + getClassesForNodeVectorGroup(selected, scale)
+          return "node-vector-group" + (isWinning ? " winning" : "") + getClassesForNodeVectorGroup(selected, scale)
         });
-    
-        if(isAppendNodeButtonTarget) {
+
+        if (isAppendNodeButtonTarget) {
           const nodeEh = (target.closest(".orbit-controls-container") as HTMLElement).dataset?.nodeEntryHash;
-          this.eventHandlers.handleAppendNode.call(this, {parentOrbitEh: nodeEh})
+          this.eventHandlers.handleAppendNode.call(this, { parentOrbitEh: nodeEh })
         }
-        if(isEditNodeButtonTarget) {
+        if (isEditNodeButtonTarget) {
           const nodeEh = (target.closest(".orbit-controls-container") as HTMLElement).dataset?.nodeEntryHash;
-          this.eventHandlers.handlePrependNode.call(this, {childOrbitEh: nodeEh})
+          this.eventHandlers.handlePrependNode.call(this, { childOrbitEh: nodeEh })
 
         }
       },
@@ -445,8 +449,8 @@ export class TreeVisualization extends BaseVisualization {
 
   getLinkPathGenerator(): Link<any, DefaultLinkObject, [number, number]> {
     return link(curves.curveCustomBezier)
-    .x((d :any) => d.x)
-    .y((d :any) => d.y);
+      .x((d: any) => d.x)
+      .y((d: any) => d.y);
   }
 
   setNodeAndLinkEnterSelections(): void {
@@ -489,7 +493,7 @@ export class TreeVisualization extends BaseVisualization {
 
     // Links enter selection
     const links = this._gLink!.selectAll("line.link")
-      .data( this.rootData.links(), // .filter(
+      .data(this.rootData.links(), // .filter(
         //   ({ source, target }) =>
         //     !outOfBoundsNode(source, this.rootData) &&
         //     !outOfBoundsNode(target, this.rootData)
@@ -518,8 +522,12 @@ export class TreeVisualization extends BaseVisualization {
     const debouncedZoom = debounce((nodeId) => Promise.resolve(this.eventHandlers.memoizedhandleNodeZoom.call(this, nodeId)), 1000)
     store.sub(currentOrbitIdAtom, () => {
       if (AppMachine.state.currentState !== "Vis") return;
-      console.log("TRIGGERED ZOOM because of orbit id change")
+      // console.log("TRIGGERED ZOOM because of orbit id change")
       debouncedZoom(store.get(currentOrbitIdAtom)?.id);
+      (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
+    })
+    store.sub(currentDayAtom, () => {
+      if (AppMachine.state.currentState !== "Vis") return;
       (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
     })
   }
@@ -537,46 +545,46 @@ export class TreeVisualization extends BaseVisualization {
 
   appendNodeVectors(): void {
     this._gCircle!
-    .append('foreignObject')
-    .attr("transform", (d) => {
-      const cachedNode = this.nodeDetails[d.data.content];
-      const { scale } = cachedNode;
+      .append('foreignObject')
+      .attr("transform", (d) => {
+        const cachedNode = this.nodeDetails[d.data.content];
+        const { scale } = cachedNode;
 
-      return `scale(${this._viewConfig.isSmallScreen() ? getScaleForPlanet(scale) : 0.75})`;
-    })
-    .attr("width", "100")  
-    .attr("height", "100") 
-    .attr("x", "-50")      
-    //@ts-expect-error
-    .attr("y", (d: any) => {
-      if (!d?.data?.content || !this.nodeDetails[d.data.content]) return "";
-      const { scale } = this.nodeDetails[d.data.content];
-      switch (scale) {
-        case "Astro":
-          return "-5";
-        case "Sub":
-          return "30";
-        case "Atom":
-          return "100";
+        return `scale(${this._viewConfig.isSmallScreen() ? getScaleForPlanet(scale) : 0.75})`;
+      })
+      .attr("width", "100")
+      .attr("height", "100")
+      .attr("x", "-50")
+      //@ts-expect-error
+      .attr("y", (d: any) => {
+        if (!d?.data?.content || !this.nodeDetails[d.data.content]) return "";
+        const { scale } = this.nodeDetails[d.data.content];
+        switch (scale) {
+          case "Astro":
+            return "-5";
+          case "Sub":
+            return "30";
+          case "Atom":
+            return "100";
         }
-    })      
-    .append("xhtml:div")
-    .classed("node-vector-group", true)
-    .append("xhtml:div")
-    .classed("node-vector", true)
-    .attr("xmlns", "http://www.w3.org/1999/xhtml")
-    //@ts-expect-error
-    .attr("style", (d: any) => {
-      if (!d?.data?.content || !this.nodeDetails[d.data.content]) return "";
-      const { scale } = this.nodeDetails[d.data.content];
-      switch (scale) {
-        case "Atom":
-          return "background: url(assets/moon.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
-        case "Astro":
-          return "background: url(assets/sun.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
-        case "Sub":
-          return "background: url(assets/planet.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
-      }
-    });
+      })
+      .append("xhtml:div")
+      .classed("node-vector-group", true)
+      .append("xhtml:div")
+      .classed("node-vector", true)
+      .attr("xmlns", "http://www.w3.org/1999/xhtml")
+      //@ts-expect-error
+      .attr("style", (d: any) => {
+        if (!d?.data?.content || !this.nodeDetails[d.data.content]) return "";
+        const { scale } = this.nodeDetails[d.data.content];
+        switch (scale) {
+          case "Atom":
+            return "background: url(assets/moon.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
+          case "Astro":
+            return "background: url(assets/sun.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
+          case "Sub":
+            return "background: url(assets/planet.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
+        }
+      });
   }
 }

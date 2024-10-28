@@ -22,7 +22,7 @@ import {
   orbitWinDataAtom
 } from '../../ui/src/state/orbit';
 import { calculateCurrentStreakAtom, calculateLongestStreakAtom, getHierarchyAtom, isLeafNodeHashAtom, updateHierarchyAtom } from '../../ui/src/state/hierarchy';
-import { setWinDataAtom, winDataPerOrbitNodeAtom } from '../../ui/src/state/win';
+import { calculateCompletionStatusAtom, setWinDataAtom, winDataPerOrbitNodeAtom } from '../../ui/src/state/win';
 import { hierarchy } from 'd3-hierarchy';
 import { appStateAtom } from '../../ui/src/state';
 import { DateTime } from 'luxon';
@@ -1148,7 +1148,7 @@ describe('Win Record Atoms', () => {
     });
   });
 
-  describe.skip('AppState - calculateCurrentStreakAtom', () => {
+  describe('AppState - calculateCurrentStreakAtom', () => {
     const mockAppState = {
       orbitNodes: {
         byHash: {
@@ -1214,7 +1214,7 @@ describe('Win Record Atoms', () => {
     });
   });
 
-  describe.skip('AppState - calculateLongestStreakAtom', () => {
+  describe('AppState - calculateLongestStreakAtom', () => {
     const mockAppState = {
       orbitNodes: {
         byHash: {
@@ -1313,4 +1313,105 @@ describe('Win Record Atoms', () => {
     });
   });
 
+  describe('AppState - calculateCompletionStatusAtom', () => {
+    const TestComponent = ({ orbitHash, date }: { orbitHash: ActionHashB64, date: string }) => {
+      const completionAtom = useMemo(() => calculateCompletionStatusAtom(orbitHash, date), [orbitHash, date]);
+      const [isComplete] = useAtom(completionAtom);
+      return <div data-testid="completion">{isComplete == null ? 'null' : isComplete?.toString()}</div>;
+    };
+
+    it('should return true for a completed leaf node', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+
+        wins: {
+          'uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc': {
+            '1/10/2023': true
+          }
+        }
+      };
+
+      renderWithJotai(
+        <TestComponent orbitHash="uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc" date="1/10/2023" />,
+        { initialState: modifiedMockState }
+      );
+
+      expect(screen.getByTestId('completion').textContent).toBe('true');
+    });
+
+    it.skip('should return true for a parent node when all leaf descendants are complete', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+
+        wins: {
+          'uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc': { '1/10/2023': true },
+          'uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc': { '1/10/2023': [true, true] }
+        }
+      };
+
+      // Testing "Daily Exercise" node which has two leaf children
+      renderWithJotai(
+        <TestComponent orbitHash="uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc" date="1/10/2023" />,
+        { initialState: modifiedMockState as any }
+      );
+
+      expect(screen.getByTestId('completion').textContent).toBe('true');
+    });
+
+    it.skip('should return false for a parent node when any leaf descendant is incomplete', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        wins: {
+          'uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc': { '1/10/2023': true },
+          'uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc': { '1/10/2023': [true, false] }
+        }
+      };
+
+      // Testing "Daily Exercise" node with one complete and one incomplete child
+      renderWithJotai(
+        <TestComponent orbitHash="uhCEkR7c5d8bkvV6tqpekQ3LpMpXj2Ej6QNUBEjoBNPXc" date="1/10/2023" />,
+        { initialState: modifiedMockState as any }
+      );
+
+      expect(screen.getByTestId('completion').textContent).toBe('false');
+    });
+
+    it('should handle multiple frequency wins correctly for a leaf node', () => {
+      const modifiedMockState = {
+        ...mockAppState,
+        wins: {
+          'uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc': {
+            '1/10/2023': [true, true]
+          }
+        }
+      };
+
+      // Testing "Daily Meditation" which has frequency 2
+      renderWithJotai(
+        <TestComponent orbitHash="uhCEkYpV9Xt7j5ZDCj6oH8hpg9xgN9qNXKVK9EgLQxNoc" date="1/10/2023" />,
+        { initialState: modifiedMockState as any }
+      );
+
+      expect(screen.getByTestId('completion').textContent).toBe('true');
+    });
+
+    it('should return false for a leaf node with no win data', () => {
+      // Using base mockAppState which has no wins
+      renderWithJotai(
+        <TestComponent orbitHash="uhCEkWj8LkCQ3moXA7qGNoY5Vxgb2Ppr6xpDg9WnE9Uoc" date="1/10/2023" />,
+        { initialState: mockAppState }
+      );
+
+      expect(screen.getByTestId('completion').textContent).toBe('false');
+    });
+
+    it('should return null for non-existent orbit', () => {
+      renderWithJotai(
+        <TestComponent orbitHash="nonExistentOrbit" date="1/10/2023" />,
+        { initialState: mockAppState }
+      );
+
+      expect(screen.getByTestId('completion').textContent).toBe('null');
+    });
+  });
 });

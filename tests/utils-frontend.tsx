@@ -6,7 +6,7 @@ import { appStateAtom } from "../ui/src/state/store";
 import mockAppState from "./integration/mocks/mockAppState";
 import { render, RenderResult } from "@testing-library/react";
 import { AppState } from "../ui/src/state/types/store";
-import { currentSphereHierarchyIndices } from "../ui/src/state";
+import { currentOrbitDetailsAtom, currentSphereHierarchyIndices } from "../ui/src/state";
 import { withVisCanvas } from "../ui/src/components/HOC/withVisCanvas";
 import { IVisualization, VisProps } from "../ui/src/components/vis/types";
 import { MockedProvider as ApolloProvider } from "@apollo/client/testing";
