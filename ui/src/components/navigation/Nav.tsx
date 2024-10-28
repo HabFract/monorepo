@@ -304,7 +304,7 @@ const Nav: React.FC<INav> = ({
               items={menuItems}
             />
             <div className="off-screen-toggle-button">
-              <button type="button" onClick={() => { sideMenuRef.current?.classList?.toggle("off-screen")}} className="off-screen-icon-button">{getIconSvg('arrow-right')()}</button>
+              <button type="button" onClick={() => { (sideMenuRef.current as any)?.classList?.toggle("off-screen")}} className="off-screen-icon-button">{getIconSvg('arrow-right')({})}</button>
             </div>
             <div className={"main-actions-menu"}>
               <div
@@ -363,7 +363,7 @@ const Nav: React.FC<INav> = ({
       getItem(
         "New Sphere",
         "add-sphere",
-        <DSButton type={"circle-icon"} icon={getIconSvg("plus")() as ReactElement} disabled={spheresArray.length >= 4}/>,
+        <DSButton onClick={() => {}} type={"circle-icon"} icon={getIconSvg("plus")({}) as ReactElement}/>,
         undefined,
         undefined,
         false,

@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './common.css';
 import { motion, useMotionValue, useTransform, useAnimation, PanInfo, useSpring, MotionValue } from 'framer-motion';
+import VisMovementLateral from './VisMovementLateral';
+import VisMovementVertical from './VisMovementVertical';
+import { Scale } from '@ui/src/graphql/generated';
 
 interface BindDragProps {
   onPanStart: (event: any, info: PanInfo) => void;
@@ -10,6 +13,7 @@ interface BindDragProps {
 }
 interface SwipeUpTabProps {
   verticalOffset: number;
+  relativeElements: React.ReactNode;
   children: (props: { bindDrag: BindDragProps }) => React.ReactNode;
 }
 
@@ -20,7 +24,7 @@ export const stopPropagation = (event) => {
   }
 }
 
-const SwipeUpTab: React.FC<SwipeUpTabProps> = ({ verticalOffset, children }) => {
+const SwipeUpTab: React.FC<SwipeUpTabProps> = ({ verticalOffset, relativeElements, children }) => {
   const ref = useRef<HTMLDivElement>(null);
   
   const [height, setHeight] = useState(0);
@@ -66,21 +70,24 @@ const SwipeUpTab: React.FC<SwipeUpTabProps> = ({ verticalOffset, children }) => 
   };
 
   return (
-    <div className="relative border-1 border-red-100">
-      <motion.div
-        ref={ref}
-        dragConstraints={{ top: -height + verticalOffset, bottom: 0 }}
-        dragElastic={0.2}
-        drag="y"
-        style={{ y }}
-        className={"swipe-up-tab-container"}
-        initial={{ y: initialY }}
-        animate={controls}
-        onPointerDownCapture={stopPropagation}
-      >
-        {children({ bindDrag })}
+    <section>
+      <motion.div className="relative" style={{ y }}>
+        <div className="relative-controls-container">{relativeElements}</div>
       </motion.div>
-    </div>
+        <motion.div
+          ref={ref}
+          dragConstraints={{ top: -height + verticalOffset, bottom: 0 }}
+          dragElastic={0.2}
+          drag="y"
+          style={{ y }}
+          className={"swipe-up-tab-container"}
+          initial={{ y: initialY }}
+          animate={controls}
+          onPointerDownCapture={stopPropagation}
+        >
+          {children({ bindDrag })}
+        </motion.div>
+    </section>
   );
 };
 

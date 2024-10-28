@@ -34,20 +34,20 @@ g.node-subgroup {
   z-index: 15;
   left: -.25px;
   top: .5px;
-  background: url(assets/plannit-selected-outline-no-win.svg);
+  background: url(/assets/plannit-selected-outline-no-win.svg);
   background-repeat: no-repeat;
   background-position: center;
 }
 /* Outline for selected node (winning) */
 .node-vector-group.selected.winning::before {
-  background: url(assets/plannit-selected-outline-win.svg);
+  background: url(/assets/plannit-selected-outline-win.svg);
 }
 /* Tick icon for selected node (winning) */
 .node-vector-group.selected.winning::after {
   @apply absolute top-2 left-2 h-full w-full;
   content: "";
   z-index: 16;
-  background: url(assets/icons/plannit-winning-icon.svg) no-repeat;
+  background: url(/assets/icons/plannit-winning-icon.svg) no-repeat;
   background-size: 1.5rem;
 }
 

@@ -41,7 +41,7 @@ CustomBezier.prototype = {
         this._point = 1;
         this._context.moveTo(x, y);
         break;
-
+      //@ts-expect-error
       case 1:
         this._point = 2;
         // falls through

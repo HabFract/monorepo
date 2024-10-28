@@ -7,17 +7,82 @@
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+.clip-bottom-right {
+  --clip-size: 3rem; /* This should match the thickness of your components */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--clip-size)),
+    calc(100% - var(--clip-size)) 100%,
+    0 100%
+  );
+}
 
-.tickbox-container {
-  @apply relative;
-  top: -7rem;
-  right: 1rem;
+.clip-top-left {
+  --clip-size: 2.5rem; /* This should match the thickness of your components */
+  clip-path: polygon(
+    var(--clip-size) 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0 var(--clip-size)
+  );
+}
+
+.fade-edges-lateral {
+  --fade-width: 25%; /* Adjust this value to control the width of the fade effect */
+  
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--fade-width),
+    black calc(100% - var(--fade-width)),
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--fade-width),
+    black calc(100% - var(--fade-width)),
+    transparent
+  );
+}
+.fade-edges-vertical {
+  --fade-height: 25%; /* Adjust this value to control the height of the fade effect */
+  
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black var(--fade-height),
+    black calc(100% - var(--fade-height)),
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black var(--fade-height),
+    black calc(100% - var(--fade-height)),
+    transparent
+  );
+}
+
+.relative-controls-container {
+  top: -20.5rem;
+  width: 100%;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: 0;
+  position: absolute;
 }
 
 .vis-controls-container {
-  height: 0;
-  position: relative;
-  bottom: 18.5rem;
+  height: fit-content;
+  position: absolute;
+  bottom: -21rem;
+  padding: 0 .5rem;
+  width: 100%;
+  background: transparent;
 }
 
 .overlay-controls-container {
@@ -219,20 +284,26 @@ div.handle span {
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
-  @apply flex bg-menu-bg rounded-2xl p-1;
+  @apply bg-menu-bg rounded-2xl p-1;
 }
 
 .vis-move-lateral-container {
-  overflow-y: hidden;
+  width: 100%;
+  overflow: hidden;
   position: relative;
-  @apply top-64;
+  bottom: 3rem;
+  left: 0;
+  height: 3rem;
 }
 
 .vis-move-vertical-container {
   overflow-x: hidden;
-  @apply left-0 relative h-48 justify-center text-center;
-  left: 0px;
-  bottom: -1rem;
+  position: relative;
+  height: 12rem;
+  justify-content: center;
+  text-align: center;
+  left: 0;
+  bottom: 15rem;
   width: 3rem;
 }
 
@@ -250,7 +321,7 @@ div.handle span {
 .center-marker {
   position: relative;
   left: 3rem;
-  bottom: 4.8rem;
+  bottom: 20.5em;
   z-index: 50;
   width: 1rem;
   height: 2px;
@@ -273,24 +344,49 @@ div.handle span {
   @apply flex flex-col relative;
   flex-wrap: nowrap;
   height: fit-content;
-  padding: 3.3rem 0;
+  padding: 2rem 0;
 }
 
 .intersecting-pill-row {
-  @apply flex;
-  padding: 0 calc(50% - 4.5rem);
-}
-
-.intersecting-pill {
-  @apply mx-5;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  cursor: grab;
+  width: calc(100% + 12rem);
+  left: 2.5%;
+  position: relative;
 }
 
 .intersecting-pill:first-child {
-  @apply pl-3
+  margin-left: -2%;
 }
 
-.intersecting-pill:last-child {
-  @apply pr-3
+.intersecting-pill {
+  flex: 0 0 auto;
+  min-width: 100px; /* This should match the itemWidth in the component */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none; /* Disable pointer events on the pill container */
+  width: fit-content;
+  max-width: 120px;
+}
+
+.intersecting-pill-row .intersecting-pill {
+  margin-right: calc(3% * var(--n-multiplier, 1));
+}
+.intersecting-pill-row .intersecting-pill:nth-child(1) { --n-multiplier: 2.5; }
+.intersecting-pill-row .intersecting-pill:nth-child(2) { --n-multiplier: 3; }
+.intersecting-pill-row .intersecting-pill:nth-child(3) { --n-multiplier: 3.5; }
+.intersecting-pill-row .intersecting-pill:nth-child(4) { --n-multiplier: 4; }
+.intersecting-pill-row .intersecting-pill:nth-child(5) { --n-multiplier: 4.5; }
+
+.orbit-scale-icon > * {
+  pointer-events: none;
+}
+/* Re-enable pointer events for the OrbitPill content */
+.intersecting-pill > * {
+  cursor: pointer; /* Optional: changes cursor to pointer when hovering over the pill content */
 }
 
 .vis-move-lateral-intersector {
@@ -305,7 +401,6 @@ div.handle span {
 .vis-move-vertical-container::-webkit-scrollbar {
   display: none;
 }
-
 
 .add-node-button {
   border-radius: 100%;
@@ -325,41 +420,14 @@ div.handle span {
   opacity: 0.25;
 }
 
-.higher-button {
-  background-image: url(../../assets/higher-scale-icon.svg);
-  @apply absolute;
-  top: -2.5rem;
-  left: 15%;
-}
-
-.lower-button {
-  margin-bottom: -0.75rem;
-  background-image: url(../../assets/lower-scale-icon.svg);
-  @apply absolute;
-  top: -2.5rem;
-  right: 15%;
-}
-
-.date-nav-button {
-  @apply text-lg text-gray-100 ml-2;
-}
-
-.date-nav-button .date-nav-icon {
-  @apply h-4 w-4;
-}
-
-.date-nav-button:last-child {
-  @apply ml-0 mr-2;
-}
-
-.date-nav-button.disabled,
-.date-nav-button.disabled:hover {
-  @apply text-gray-300;
-}
-
 .add-node-button:hover {
   @apply border-4 border-primary;
   border-radius: 100%;
+}
+
+.date-nav-button {
+  height: 1.5rem;
+  width: 1.5rem;
 }
 
 .date-nav-button:hover {

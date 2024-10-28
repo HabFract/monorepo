@@ -445,8 +445,8 @@ export class TreeVisualization extends BaseVisualization {
 
   getLinkPathGenerator(): Link<any, DefaultLinkObject, [number, number]> {
     return link(curves.curveCustomBezier)
-    .x((d) => d.x)
-    .y((d) => d.y);
+    .x((d :any) => d.x)
+    .y((d :any) => d.y);
   }
 
   setNodeAndLinkEnterSelections(): void {
@@ -515,11 +515,11 @@ export class TreeVisualization extends BaseVisualization {
       this.eventHandlers.handleNodeZoom.call(this, e, d);
     });
 
-    const debouncedZoom = debounce(() => Promise.resolve(this.eventHandlers.memoizedhandleNodeZoom.call(this, )), 1000)
+    const debouncedZoom = debounce((nodeId) => Promise.resolve(this.eventHandlers.memoizedhandleNodeZoom.call(this, nodeId)), 1000)
     store.sub(currentOrbitIdAtom, () => {
       if (AppMachine.state.currentState !== "Vis") return;
-      // console.log("TRIGGERED ZOOM because of orbit id change")
-      debouncedZoom();
+      console.log("TRIGGERED ZOOM because of orbit id change")
+      debouncedZoom(store.get(currentOrbitIdAtom)?.id);
       (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
     })
   }
@@ -571,11 +571,11 @@ export class TreeVisualization extends BaseVisualization {
       const { scale } = this.nodeDetails[d.data.content];
       switch (scale) {
         case "Atom":
-          return "background: url(/assets/moon.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
+          return "background: url(assets/moon.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
         case "Astro":
-          return "background: url(/assets/sun.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
+          return "background: url(assets/sun.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
         case "Sub":
-          return "background: url(/assets/planet.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
+          return "background: url(assets/planet.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
       }
     });
   }

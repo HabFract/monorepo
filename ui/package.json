@@ -65,6 +65,7 @@
     "graphql.macro": "^1.4.2",
     "rc-picker": "4.0.0-alpha.9",
     "rimraf": "^3.0.2",
-    "vite": "5.4.8"
+    "vite": "5.4.8",
+    "vite-bundle-visualizer": "^1.2.1"
   }
 }

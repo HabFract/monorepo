@@ -55,7 +55,7 @@ const withLayout = (
               state={AppMachine.state.currentState}
               transition={transition}
               currentSphere={props?.currentSphereDetails}
-              isFormEditMode={params?.editMode}
+              isFormEditMode={(params as any)?.editMode}
             ></Breadcrumbs>
             {component}
           </div>

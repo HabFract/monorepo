@@ -9,22 +9,22 @@ export function getIconForPlanetValue(
     case Scale.Astro:
       return () => (
         <img
-          style={{ height: "24px", width: "auto", transform: 'scale(1.2)', marginTop: '0px', objectFit: "cover" }}
-          src="/assets/sun.svg"
+          style={{ height: "24px", width: "auto", transform: 'scale(0.9)', marginTop: '0px', objectFit: "cover" }}
+          src="/assets/icons/sun-minimal.svg"
         />
       );
     case Scale.Sub:
       return () => (
         <img
-          style={{ height: "24px", width: "auto", transform: 'scale(0.9)', marginTop: '0px', objectFit: "cover" }}
-          src="/assets/planet.svg"
+          style={{ height: "24px", width: "auto", transform: 'scale(1.1)', marginTop: '8px', objectFit: "cover" }}
+          src="assets/planet.svg"
         />
       );
     case Scale.Atom:
       return () => (
         <img
           style={{ height: "24px", width: "auto", transform: 'scale(0.8)', marginTop: '0px', objectFit: "cover" }}
-          src="/assets/moon.svg"
+          src="assets/moon.svg"
         />
       );
   }

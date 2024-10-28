@@ -49,7 +49,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
 }): ReactNode => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const [calendarHeight, setCalendarHeight] = useState(0);
-  const padding = document.body.getBoundingClientRect().width < 340 ? -30 : (document.body.getBoundingClientRect().width < 520 ? -88 : -100);
+  const padding = document.body.getBoundingClientRect().width < 340 ? -30 : (document.body.getBoundingClientRect().width < 520 ? -85 : -100);
   const calendarHeightWithPadding = useMemo(() => (calendarRef?.current?.firstElementChild as any)?.offsetHeight + padding, [calendarHeight]);
   const [wins, setWins] = useState<number | null>(null);
 
@@ -79,15 +79,15 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
 
   return (
     <section className="overlay-layout-container">
-      <SwipeUpTab verticalOffset={calendarHeightWithPadding}>
-        {({ bindDrag }) => (
-          <>
-            <div className="overlay-controls-container">
-              <span className="vis-controls-container">
+      <SwipeUpTab relativeElements={<span className="vis-controls-container">
                 <VisMovementLateral orbitSiblings={orbitSiblings} goLeftAction={actions.goLeft} goRightAction={actions.goRight}></VisMovementLateral>
                 <VisMovementVertical orbitDescendants={orbitDescendants} moveUpAction={actions.goUp} moveDownAction={actions.goDown}></VisMovementVertical>
                 <div className="center-marker"></div>
-              </span>
+              </span>} verticalOffset={calendarHeightWithPadding}>
+        {({ bindDrag }) => (
+          <>
+            <div className="overlay-controls-container">
+              
               <div className="overlay-win-streak-container" onPointerDownCapture={stopPropagation}>
                 <WinCount currentDate={currentDate} handleUpdateWorkingWins={handleUpdateWorkingWins} handleSaveWins={handleSaveWins} currentWins={wins} orbitFrequency={isLeafOrbit ? orbitFrequency : 0}></WinCount>
                 <StreakCount currentStreak={currentStreak} orbitFrequency={orbitFrequency}></StreakCount>

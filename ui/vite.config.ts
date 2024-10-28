@@ -34,7 +34,7 @@ export default ({ mode }) => {
       target: "esnext",
       rollupOptions: {
         input: {
-          main: "./src/main.tsx",
+          main: "././index.html",
           state: "./src/state/index.ts",
         },
         output: {
@@ -59,17 +59,6 @@ export default ({ mode }) => {
       },
     },
     plugins: [
-      // dts({
-      //   insertTypesEntry: true,
-      //   include: ['./**/*.ts', './**/*.tsx'],
-      //   entryRoot: './src/state', // Set the root directory for entry files
-      //   outDir: 'dist/types',
-      //   tsconfigPath: 'tsconfig.build.json', // Ensure Vite uses the correct tsconfig
-      //   compilerOptions: {
-      //     skipLibCheck: true,
-      //     skipDefaultLibCheck: true,
-      //   },
-      // }),
       react(),
       nodePolyfills(),
     ],

@@ -159,7 +159,7 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({ orbitDescenda
   }, [handleScroll]);
 
   return (
-    <div ref={containerRef} className="vis-move-vertical-container">
+    <div ref={containerRef} className="vis-move-vertical-container fade-edges-vertical clip-bottom-right">
 
       <div
         ref={columnRef}
