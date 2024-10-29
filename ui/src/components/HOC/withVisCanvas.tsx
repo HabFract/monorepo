@@ -37,13 +37,14 @@ import {
 } from "../../state/types/hierarchy";
 import { useCreateOrUpdateWinRecord } from "../../hooks/gql/useCreateOrUpdateWinRecord";
 import { useAtom, useAtomValue } from "jotai";
-import { isMoreThenDaily, toYearDotMonth } from "../vis/tree-helpers";
+import { isMoreThenDaily } from "../vis/tree-helpers";
 import { useVisCanvas } from "../../hooks/useVisCanvas";
 import { DEFAULT_MARGINS } from "../vis/constants";
 import { StoreType } from "../../state/types/store";
 import { Spinner } from "flowbite-react";
 import { useWinData } from "../../hooks/useWinData";
 import { DateTime } from "luxon";
+import { calculateCurrentStreakAtom, calculateLongestStreakAtom } from "../../state/win";
 
 /**
  * Higher-order component to enhance a visualization component with additional logic and state management.
@@ -73,6 +74,11 @@ export function withVisCanvas<T extends IVisualization>(
     // which will determine the state/visibility of the Vis OverlayLayout/controls
     const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
     const currentOrbitIsLeaf = useAtomValue(currentOrbitIsLeafAtom);
+
+    const currentOrbitStreakAtom = useMemo(() => calculateCurrentStreakAtom(currentOrbitDetails?.id as string), [currentOrbitDetails?.id])
+    const currentStreak = store.get(currentOrbitStreakAtom);
+    const currentOrbitLongestStreakAtom = useMemo(() => calculateLongestStreakAtom(currentOrbitDetails?.id as string), [currentOrbitDetails?.id])
+    const longestStreak = store.get(currentOrbitLongestStreakAtom);
     const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
       currentSphereHierarchyBounds,
     );
@@ -158,7 +164,6 @@ export function withVisCanvas<T extends IVisualization>(
         canvasWidth={canvasWidth}
         margin={DEFAULT_MARGINS}
         render={(currentVis: T) => {
-          console.log('currentOrbitDetails :>> ', currentOrbitDetails);
           if (!currentOrbitDetails?.eH) return <Spinner aria-label="Loading Vis Canvas!" className="menu-spinner" size="xl" />
 
           const {
@@ -187,7 +192,8 @@ export function withVisCanvas<T extends IVisualization>(
                 ? <OverlayLayout
                   currentDate={currentDate}
                   setNewDate={setCurrentDate}
-                  currentStreak={1}
+                  currentStreak={currentStreak}
+                  longestStreak={longestStreak}
                   workingWinDataForOrbit={workingWinDataForOrbit}
                   currentWins={workingWinDataForOrbit}
                   handleUpdateWorkingWins={handleUpdateWorkingWins}

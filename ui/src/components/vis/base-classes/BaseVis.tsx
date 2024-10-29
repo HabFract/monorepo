@@ -333,7 +333,7 @@ export abstract class BaseVisualization implements IVisualization {
       this.setNodeAndLinkEnterSelections();
       this.setNodeAndLabelGroups();
 
-      this.firstRender() && this.appendNodeVectors();
+      this.appendNodeVectors();
       this.appendLinkPath();
       this._gTooltip = this.clearAndRedrawLabels();
 
@@ -391,7 +391,7 @@ export abstract class BaseVisualization implements IVisualization {
    * @returns {boolean} True if there is new data (_nextRootData is not null and the data has a different root), false otherwise.
    */
   hasNextData(): boolean {
-    return this._nextRootData !== null && this._nextRootData.data.content !== this.rootData.data.content;
+    return this._nextRootData !== null && this._nextRootData.descendants().length !== this.rootData.descendants().length;
   }
 
   // Utility methods to do with base/canvas elements and clearing sub-elements:

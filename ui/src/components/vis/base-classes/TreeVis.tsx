@@ -534,13 +534,7 @@ export class TreeVisualization extends BaseVisualization {
 
   setNodeAndLabelGroups(): void {
     this._gCircle = this._enteringNodes!.append("g")
-      .classed("node-subgroup", true)
-      .attr("stroke-width", "0")
-      .classed("checked", (d): boolean => {
-        // if (!d?.data?.content || !this.nodeDetails[d.data.content])
-        return false;
-        // return store.get(currentOrbitIdAtom).id == d.data.content;
-      });
+      .classed("node-subgroup", true);
   }
 
   appendNodeVectors(): void {

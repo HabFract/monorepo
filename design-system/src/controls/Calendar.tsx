@@ -33,7 +33,7 @@ const Calendar: React.FC<CalendarProps> = ({
   const renderCalendarDay = (date: DateTime) => {
     const dateString = date.toLocaleString()!;
     const winDataForDay = orbitWins?.[dateString as string];
-    const isCompleted = orbitFrequency > 1 ? winDataForDay?.every(val => val) : (typeof winDataForDay == 'undefined' ? false : winDataForDay);
+    const isCompleted = orbitFrequency > 1 ? (Array.isArray(winDataForDay) && winDataForDay?.every(val => val)) : (typeof winDataForDay == 'undefined' ? false : winDataForDay);
     const isTodaySelected = date.toFormat('MM-dd-yyyy') === currentDate.toFormat('MM-dd-yyyy');
 
     return (

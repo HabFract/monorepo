@@ -304,7 +304,7 @@ const Nav: React.FC<INav> = ({
               items={menuItems}
             />
             <div className="off-screen-toggle-button">
-              <button type="button" onClick={() => { (sideMenuRef.current as any)?.classList?.toggle("off-screen")}} className="off-screen-icon-button">{getIconSvg('arrow-right')({})}</button>
+              <button type="button" onClick={() => { (sideMenuRef.current as any)?.classList?.toggle("off-screen")}} className="off-screen-icon-button p-2">{getIconSvg('arrow-right')({})}</button>
             </div>
             <div className={"main-actions-menu"}>
               <div

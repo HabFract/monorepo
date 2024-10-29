@@ -8,6 +8,7 @@ import {
   getOrbitNodeDetailsFromIdAtom,
 } from "./orbit";
 import { getDescendantLeafNodesAtom, isLeafNodeHashAtom } from "./hierarchy";
+import { DateTime } from "luxon";
 
 /**
  * Atom for setting an individual WinData point for a specific orbit.
@@ -122,6 +123,7 @@ export const calculateCompletionStatusAtom = (
     const orbit: OrbitNodeDetails | null = get(
       getOrbitNodeDetailsFromEhAtom(orbitEh)
     );
+
     if (!orbit) return null;
 
     // Check if it's a leaf node
@@ -133,12 +135,115 @@ export const calculateCompletionStatusAtom = (
     } else {
       // For non-leaf nodes, check all descendant leaf nodes
       const leafDescendants = get(getDescendantLeafNodesAtom(orbitEh));
-      if (!leafDescendants) return null;
 
+      if (!leafDescendants) return null;
       // Check completion status of all leaf descendants
       return leafDescendants.flat().every((leaf) => {
         return get(getWinCompletionForOrbitForDayAtom(leaf.content, date));
       });
     }
   });
+};
+
+
+/**
+ * Calculates the current streak for a specific orbit (either through wins - leaf nodes - or through derived win completion - nonleaf nodes)
+ * @param orbitHash The ActionHash of the orbit
+ * @returns An atom that resolves to the streak count, or null if the orbit doesn't exist
+ */
+export const calculateCurrentStreakAtom = (orbitHash: ActionHashB64) => {
+  const orbitDetailsAtom = getOrbitNodeDetailsFromIdAtom(orbitHash);
+  const calculateStreak = atom((get) => {
+    const orbit = get(orbitDetailsAtom);
+    if (!orbit) return null;
+
+    const state = get(appStateAtom);
+    const currentDate = DateTime.now().toLocaleString();
+    const winData = state.wins[orbit.eH] || {};
+
+    let streak = 0;
+    let date = DateTime.fromFormat(currentDate, "dd/MM/yyyy");
+
+    while (true) {
+      const dateString = date.toFormat("dd/MM/yyyy");
+      const winEntry = winData[dateString];
+
+      if (winEntry === undefined) break;
+
+      if (Array.isArray(winEntry)) {
+        if (winEntry.every(Boolean)) {
+          streak++;
+        } else {
+          break;
+        }
+      } else if (winEntry === true) {
+        streak++;
+      } else {
+        break;
+      }
+
+      date = date.minus({ days: 1 });
+    }
+
+    return streak;
+  });
+
+  return calculateStreak;
+};
+
+/**
+ * Calculates the longest streak for a specific orbit based on its win data.
+ * @param orbitHash The ActionHash of the orbit
+ * @returns An atom that resolves to the longest streak count, or null if the orbit doesn't exist
+ */
+export const calculateLongestStreakAtom = (orbitHash: ActionHashB64) => {
+  const calculateLongestStreak = atom<number | null>((get) => {
+    const state = get(appStateAtom);
+    const orbit = state.orbitNodes.byHash[orbitHash];
+    
+    if (!orbit) return null;
+    const winData = state.wins[orbit.eH] || {};
+    let longestStreak = 0;
+    let currentStreak = 0;
+    let previousDate: DateTime | null = null;
+
+    // Sort the dates using DateTime for correct chronological order
+    const sortedDates = Object.keys(winData).sort((a, b) => {
+      const dateA = DateTime.fromFormat(a, "dd/MM/yyyy");
+      const dateB = DateTime.fromFormat(b, "dd/MM/yyyy");
+      return dateA.toMillis() - dateB.toMillis();
+    });
+
+    for (const date of sortedDates) {
+      const winEntry = winData[date];
+      const currentDate = DateTime.fromFormat(date, "dd/MM/yyyy");
+
+      // Check if the current date is consecutive to the previous date
+      if (previousDate && currentDate.diff(previousDate, "days").days !== 1) {
+        currentStreak = 0; // Reset streak if not consecutive
+      }
+
+      if (Array.isArray(winEntry)) {
+        if (winEntry.every(Boolean)) {
+          currentStreak++;
+        } else {
+          currentStreak = 0;
+        }
+      } else if (winEntry === true) {
+        currentStreak++;
+      } else {
+        currentStreak = 0;
+      }
+
+      if (currentStreak > longestStreak) {
+        longestStreak = currentStreak;
+      }
+
+      previousDate = currentDate; // Update the previous date
+    }
+
+    return longestStreak;
+  });
+
+  return calculateLongestStreak;
 };

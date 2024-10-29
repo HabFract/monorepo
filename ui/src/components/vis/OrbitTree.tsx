@@ -38,7 +38,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // ## -- Data fetching hooks -- ##
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery({
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: "network-only",
   });
   // Get the hashes of the current Sphere's context
   const sphere: SphereHashes = store.get(currentSphereHashesAtom);
@@ -173,9 +173,8 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       currentOrbitTree._nextRootData = hierarchy(
         getJsonDerivation(json),
       ).sort(byStartTime);
-
       const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
-      const newDefaultNodeTarget = currentOrbitTree._nextRootData.data.children.sort(byStartTime)?.[0]?.content;
+      const newDefaultNodeTarget = newRenderNodeDetails?.direction == 'new' ? newRenderNodeDetails.id : currentOrbitTree._nextRootData.data.children.sort(byStartTime)?.[0]?.content;
 
       const newlySelectedNodeId = !newRenderNodeDetails?.direction ? null :
         newRenderNodeDetails?.direction === 'up'

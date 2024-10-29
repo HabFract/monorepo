@@ -121,7 +121,11 @@
 }
 
 .calendar-day-incomplete {
-  @apply bg-win-incomplete;
+  @apply bg-win-incomplete text-white;
+}
+
+.win-count-container.loading svg {
+  fill:rgba(0, 0, 0, 0.1) !important;
 }
 
 .orbit-pill-container {

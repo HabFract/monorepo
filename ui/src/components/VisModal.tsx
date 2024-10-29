@@ -32,16 +32,10 @@ export default function VisModal<T extends IVisualization>(
           childOrbitEh={currentChildOrbitEh}
           onCreateSuccess={() => {
             setIsModalOpen(false);
-            currentVis.isModalOpen = false; // TODO, let this happen on cancel by adding onCancel callback
+            currentVis.isModalOpen = false;
             currentVis.nodeDetails = store.get(
               currentSphereOrbitNodeDetailsAtom,
             ) as SphereOrbitNodeDetails;
-            currentVis.setNodeAndLinkGroups.call(currentVis);
-            currentVis.setNodeAndLinkEnterSelections.call(currentVis);
-            currentVis.setNodeAndLabelGroups.call(currentVis);
-            currentVis.appendNodeVectors.call(currentVis);
-            currentVis.appendLinkPath.call(currentVis);
-            currentVis.skipMainRender = true;
           }}
         ></CreateOrbit>
       </Modal.Body>

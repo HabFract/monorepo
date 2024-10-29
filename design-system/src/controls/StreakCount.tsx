@@ -1,20 +1,25 @@
 import React from "react";
 
 import "./common.css";
-import Progress from "antd/es/progress";
+import Progress, { ProgressProps } from "antd/es/progress";
 import { Frequency } from "@ui/src/state";
-import { SEA_GREEN } from "../../colour-palette";
+import { LAVENDER_GRAY, SEA_GREEN } from "../../colour-palette";
 
 export interface StreakCountProps {
   currentStreak: number;
-  longestStreak?: number;
+  longestStreak: number;
   orbitFrequency: Frequency.Rationals;
 }
+
+const twoColors: ProgressProps['strokeColor'] = {
+  '0%': LAVENDER_GRAY,
+  '100%': SEA_GREEN,
+};
 
 const StreakCount: React.FC<StreakCountProps> = ({
   currentStreak,
   orbitFrequency,
-  longestStreak = 100
+  longestStreak
 }) => {
 
   function getFrequencyText(orbitFrequency: number): string {
@@ -30,9 +35,8 @@ const StreakCount: React.FC<StreakCountProps> = ({
     }
   }
   const frequencyParts = getFrequencyText(orbitFrequency).split('-');
-
   return (
-    <div className={currentStreak == longestStreak ? "streak-count-container winning" : "streak-count-container"}>
+    <div className={!!longestStreak && (currentStreak == longestStreak) ? "streak-count-container winning" : "streak-count-container"}>
       <div className={"title"}>
         <span className="text-white">{frequencyParts.length > 1 ? <>{`${frequencyParts[0]}`}<sup>{frequencyParts[1]}</sup></> : frequencyParts[0]} Streak</span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
@@ -40,13 +44,13 @@ const StreakCount: React.FC<StreakCountProps> = ({
         </svg>
       </div>
       <Progress
-        type="circle"
-        percent={100}
-        steps={{ count: currentStreak, gap: 4 }}
-        strokeWidth={10}
+        type="dashboard"
+        percent={Math.ceil((currentStreak/longestStreak) * 100)}
+        // steps={{ count: longestStreak, gap: 4 }}
+        strokeWidth={16}
         format={() => <span className="streak-control-indicator">{currentStreak}</span>}
         showInfo={true}
-        strokeColor={SEA_GREEN}
+        strokeColor={twoColors}
         size={"small"}
       />
     </div>

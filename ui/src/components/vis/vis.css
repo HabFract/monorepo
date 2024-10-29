@@ -47,14 +47,17 @@ g.node-subgroup {
 
 /* Tick icon for winning node */
 .node-vector-group.winning::after {
-  @apply absolute top-2 left-2 h-full w-full;
+  @apply absolute top-0 h-full w-full;
   content: "";
+  left: 67%;
   z-index: 16;
   background: url(/assets/icons/plannit-winning-icon.svg) no-repeat;
   background-size: 1.5rem;
 }
 
-/* Outline poisitioning for specific node scales */
+
+
+/* Outline positioning for specific node scales */
 .node-vector-group.selected.astro::before {
   background-size: 87px;
 }
@@ -68,6 +71,15 @@ g.node-subgroup {
 .node-vector-group.selected.atom::before {
   background-size: 96px;
 }
+
+/* Tick positioning for specific node scales */
+.node-vector-group.winning.astro::after {
+  top: 1rem;
+}
+.node-vector-group.winning.astro::after {
+  top: .75rem;
+}
+
 
 svg path.link {
   fill: none;

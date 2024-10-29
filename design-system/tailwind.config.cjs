@@ -71,7 +71,7 @@ const tailwindConfig = {
 
         win: {
           complete: "#0bfeb8",
-          incomplete: "#ee5656",
+          incomplete: "rgba(255, 255, 255, 0.1)"
         },
 
         title: "rgba(219,228,226, 1)", // CHINESE_WHITE

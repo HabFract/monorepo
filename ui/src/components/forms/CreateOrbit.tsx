@@ -29,7 +29,7 @@ import {
 } from "habit-fract-design-system";
 import { OrbitFetcher } from "./utils";
 import { currentSphereHashesAtom } from "../../state/sphere";
-import { currentSphereHierarchyIndices } from "../../state/hierarchy";
+import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state/hierarchy";
 import { useUpdateOrbitMutation } from "../../hooks/gql/useUpdateOrbitMutation";
 
 // Define the validation schema using Yup
@@ -181,6 +181,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
 
           const payload = response.data as any;
           if (originPage == "Vis") {
+            store.set(newTraversalLevelIndexId, { id: payload.createOrbit.eH, direction: "new" });
             transition("Vis", {
               currentSphereEhB64: sphereEh,
               currentSphereAhB64: selectedSphere.actionHash,
@@ -189,11 +190,13 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
             const orbitAh = editMode
               ? payload.updateOrbit.id
               : payload.createOrbit.id;
+
             const props = inOnboarding
               ? { refiningOrbitAh: orbitAh }
               : { sphereAh: selectedSphere.actionHash };
 
             store.set(currentOrbitIdAtom, orbitAh);
+            
             transition(inOnboarding ? "Onboarding3" : "ListOrbits", props);
           }
         } catch (error) {

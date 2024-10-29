@@ -38,20 +38,21 @@ nav.side-nav ul[role="menu"]::before {
 /* Button to show/hide the nav */
 nav.side-nav.off-screen {
   left: -4.5rem;
+  top: 4rem;
 }
 nav.side-nav .off-screen-toggle-button {
   display: block;
   position: absolute;
   left: calc(50% - 20px);
-  top: 16px;
-  padding: 8px;
+  top: .7rem;
 }
+
 nav.side-nav.off-screen .off-screen-toggle-button button {
   transform: scaleX(1);
-  transition: transform .15s ease-in;
+  transition: all .25s ease-in;
 }
 nav.side-nav .off-screen-toggle-button button {
-  transition: transform .15s ease-in;
+  transition: all .25s ease-in;
   transform: scaleX(-1);
 }
 
@@ -59,9 +60,9 @@ nav.side-nav.off-screen .off-screen-toggle-button {
   transition: transform 1s ease-in;
   position: relative;
   left: 100%;
-  top: -12rem !important;
+  top: -9.25rem !important;
   display: block;
-  width: 28px;
+  width: 36px;
   height: 60px;
   border-radius: 12px;
     border-top-left-radius: 12px;
@@ -159,9 +160,14 @@ nav.side-nav+.page-container .sphere-card.list-header button.add-orbit {
   opacity: 1;
 }
 
-.side-nav.expanded>.ant-menu-root:first-child .ant-menu-item img {
+.side-nav:not(.expanded) > .ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child),
+.side-nav:not(.expanded) > .ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) img {
   max-width: 32px !important;
   height: 100% !important;
+}
+.side-nav:not(.expanded) > .ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) {
+  margin: 0 auto;
+  margin-top: .5rem;
 }
 
 .side-nav.expanded>.ant-menu-root:first-child::before,
@@ -204,19 +210,19 @@ nav.side-nav+.page-container .sphere-card.list-header button.add-orbit {
 .ant-menu-item-icon,
 .ant-menu-item-icon.selected,
 .ant-menu-submenu-title img {
-  height: 48px !important;
-  width: 48px !important;
   object-fit: cover;
   margin-left: -0.125rem;
   border-radius: 1.05rem;
 }
+.ant-menu-item-icon {
+  height: 32px !important;
+  width: 32px !important;
+  margin-top: .5rem;
+}
 
 .side-nav:not(.expanded)>.ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) {
-  height: 48px !important;
-  min-width: 48px !important;
   display: grid;
   place-content: center;
-  margin: 0 auto;
 }
 
 /* Vertical collapse button */

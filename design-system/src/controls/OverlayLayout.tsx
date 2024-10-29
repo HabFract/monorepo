@@ -16,7 +16,7 @@ export type OverlayLayoutProps = {
   currentDate: DateTime,
 
   currentStreak: number;
-  longestStreak?: number;
+  longestStreak: number;
 
   currentWins: WinData<Frequency.Rationals> | null;
   orbitFrequency: Frequency.Rationals;
@@ -39,6 +39,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   orbitDescendants,
   orbitSiblings,
   currentStreak,
+  longestStreak,
   currentWins,
   handlePersistWins,
   handleUpdateWorkingWins,
@@ -87,10 +88,9 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
         {({ bindDrag }) => (
           <>
             <div className="overlay-controls-container">
-
               <div className="overlay-win-streak-container" onPointerDownCapture={stopPropagation}>
-                <WinCount currentDate={currentDate} handleUpdateWorkingWins={handleUpdateWorkingWins} handleSaveWins={handleSaveWins} currentWins={wins} orbitFrequency={isLeafOrbit ? orbitFrequency : 0}></WinCount>
-                <StreakCount currentStreak={currentStreak} orbitFrequency={orbitFrequency}></StreakCount>
+                <WinCount currentDate={currentDate} handleUpdateWorkingWins={handleUpdateWorkingWins} handleSaveWins={handleSaveWins} currentWins={isLeafOrbit ? wins : -1} orbitFrequency={isLeafOrbit ? orbitFrequency : 0}></WinCount>
+                <StreakCount currentStreak={currentStreak} longestStreak={longestStreak} orbitFrequency={orbitFrequency}></StreakCount>
               </div>
             </div>
             <motion.nav ref={calendarRef} className="calendar-nav">
