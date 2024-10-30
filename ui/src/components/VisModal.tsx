@@ -36,6 +36,9 @@ export default function VisModal<T extends IVisualization>(
             currentVis.nodeDetails = store.get(
               currentSphereOrbitNodeDetailsAtom,
             ) as SphereOrbitNodeDetails;
+            setTimeout(() => {
+              currentVis.render()
+            }, 240);
           }}
         ></CreateOrbit>
       </Modal.Body>

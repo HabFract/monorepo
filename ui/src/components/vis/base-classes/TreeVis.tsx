@@ -77,7 +77,7 @@ import {
   newXTranslate,
   newYTranslate,
 } from "../helpers";
-import { currentOrbitIdAtom, getOrbitNodeDetailsFromIdAtom, getOrbitIdFromEh } from "../../../state/orbit";
+import { currentOrbitIdAtom, getOrbitNodeDetailsFromIdAtom, getOrbitIdFromEh, currentOrbitDetailsAtom } from "../../../state/orbit";
 import { EntryHashB64 } from "@holochain/client";
 import { getHierarchyAtom } from "../../../state/hierarchy";
 import { AppMachine } from "../../../main";
@@ -194,11 +194,12 @@ export class TreeVisualization extends BaseVisualization {
         }; // Memoization check
         this._lastOrbitId = id;
 
-        const newId = foundNode?.data.content || id || store.get(currentOrbitIdAtom)?.id;
+        const newId = foundNode?.data.content || id;
         if (!newId) return select(null);
         let node = foundNode
           || this.rootData.find(node => node.data.content == newId)
-          || this._originalRootData.find(node => node.data.content == newId);
+          || this._originalRootData.find(node => node.data.content == newId)
+          || this._nextRootData?.find(node => node.data.content == newId);
 
         // console.log('Actually zoomed to node: :>> ', node);
         if (node && (typeof node?.x !== undefined) && (typeof node?.y !== undefined)) {
@@ -216,6 +217,7 @@ export class TreeVisualization extends BaseVisualization {
           // console.log('Zoomed to focus node based on store sub to currentOrbitId... ');
           return this.eventHandlers.handleNodeZoom.call(this, e as any, node);
         } else {
+          debugger;
           console.error("Tried to zoom to node that isn't in the hierarchy")
           return null
         }
@@ -227,7 +229,7 @@ export class TreeVisualization extends BaseVisualization {
 
       handleNodeClick(e) {
         const target = e?.target as HTMLElement | undefined;
-        const currentOrbitId = store.get(currentOrbitIdAtom)?.id;
+        const currentOrbitId = store.get(currentOrbitDetailsAtom)?.eH;
 
         const isAppendNodeButtonTarget = !!(target && target.closest(".orbit-controls-container button:first-child"))
         const isEditNodeButtonTarget = !!(target && target.closest(".orbit-controls-container button:last-child"))
@@ -266,7 +268,7 @@ export class TreeVisualization extends BaseVisualization {
       this._viewConfig.dx as number,
       this._viewConfig.dy as number,
     ]);
-    this.layout(this.rootData);
+    this.layout(this.rootData as any);
   }
 
   getNextLayout(): HierarchyPointNode<unknown> | null {
@@ -302,7 +304,7 @@ export class TreeVisualization extends BaseVisualization {
   }
 
   appendLinkPath(): void {
-    const rootNodeId = this.rootData.data.content;
+    const rootNodeId = this.rootData!.data.content;
     // @ts-ignore
     const cacheItem: OrbitNodeDetails = this.nodeDetails[rootNodeId];
     if (!cacheItem || !cacheItem?.path) return;
@@ -456,7 +458,7 @@ export class TreeVisualization extends BaseVisualization {
   setNodeAndLinkEnterSelections(): void {
     const nodes = this._gNode!.selectAll("g.node").data(
       // Remove habits that weren't being tracked then
-      this.rootData.descendants().reverse().filter((d) => {
+      this.rootData!.descendants().reverse().filter((d) => {
         // const outOfBounds = outOfBoundsNode(d, this.rootData);
         // // Set new active node when this one is out of bounds
         // if (outOfBounds && this.activeNode?.data.name == d.data.name) {
@@ -477,12 +479,7 @@ export class TreeVisualization extends BaseVisualization {
     this._enteringNodes = nodes
       .enter()
       .append("g")
-      .attr("class", (d) => {
-        return this.activeNode &&
-          d.data.content === this.activeNode.data.content
-          ? "the-node solid active"
-          : "the-node solid";
-      })
+      .attr("class", "the-node")
       .attr("data-testid", (d, i) => "test-node")
       .attr("transform", (d) => {
         return this.type == VisType.Cluster
@@ -493,7 +490,7 @@ export class TreeVisualization extends BaseVisualization {
 
     // Links enter selection
     const links = this._gLink!.selectAll("line.link")
-      .data(this.rootData.links(), // .filter(
+      .data(this.rootData!.links(), // .filter(
         //   ({ source, target }) =>
         //     !outOfBoundsNode(source, this.rootData) &&
         //     !outOfBoundsNode(target, this.rootData)
@@ -510,26 +507,6 @@ export class TreeVisualization extends BaseVisualization {
       .attr("stroke-width", LINK_THICKNESS)
       .attr("stroke", LINK_COLOR)
       .attr("d", this.getLinkPathGenerator() as any);
-  }
-
-  bindEventHandlers(selection) {
-    selection.on("click", (e, d) => {
-      store.set(currentOrbitIdAtom, d.data.content);
-      this.eventHandlers.handleNodeClick!.call(this, e, d);
-      this.eventHandlers.handleNodeZoom.call(this, e, d);
-    });
-
-    const debouncedZoom = debounce((nodeId) => Promise.resolve(this.eventHandlers.memoizedhandleNodeZoom.call(this, nodeId)), 1000)
-    store.sub(currentOrbitIdAtom, () => {
-      if (AppMachine.state.currentState !== "Vis") return;
-      // console.log("TRIGGERED ZOOM because of orbit id change")
-      debouncedZoom(store.get(currentOrbitIdAtom)?.id);
-      (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
-    })
-    store.sub(currentDayAtom, () => {
-      if (AppMachine.state.currentState !== "Vis") return;
-      (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
-    })
   }
 
   setNodeAndLabelGroups(): void {

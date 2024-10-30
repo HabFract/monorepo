@@ -45,18 +45,18 @@
 }
 
 .fade-edges-vertical {
-  --fade-height: 25%;
-  /* Adjust this value to control the height of the fade effect */
+  --fade-height-from: 25%;
+  --fade-height-to: 55%;
 
   mask-image: linear-gradient(to bottom,
       transparent,
-      black var(--fade-height),
-      black calc(100% - var(--fade-height)),
+      black var(--fade-height-from),
+      black calc(100% - var(--fade-height-to)),
       transparent);
   -webkit-mask-image: linear-gradient(to bottom,
       transparent,
-      black var(--fade-height),
-      black calc(100% - var(--fade-height)),
+      black var(--fade-height-from),
+      black calc(100% - var(--fade-height-to)),
       transparent);
 }
 
@@ -297,7 +297,7 @@ div.handle span {
 
 .vis-move-lateral-container {
   width: calc(100% - 1rem);
-  bottom: 2.5rem;
+  bottom: 3.5rem;
   left: .5rem;
   height: 3rem;
 }
@@ -305,7 +305,7 @@ div.handle span {
 .vis-move-vertical-container {
   height: 12rem;
   width: 3rem;
-  bottom: 14.5rem;
+  bottom: 15.5rem;
   padding-bottom: 2.5rem;
 }
 
@@ -370,7 +370,7 @@ div.handle span {
 .center-marker {
   position: relative;
   left: 3rem;
-  bottom: 20.5em;
+  bottom: 21.25em;
   z-index: 50;
   width: 1rem;
   height: 2px;

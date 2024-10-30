@@ -21,7 +21,7 @@ export type OverlayLayoutProps = {
   currentWins: WinData<Frequency.Rationals> | null;
   orbitFrequency: Frequency.Rationals;
 
-  orbitSiblings: Array<OrbitDescendant & { handleOrbitSelect: () => void }>
+  orbitSiblings: Array<OrbitDescendant>
   orbitDescendants: Array<OrbitDescendant>
 
   handlePersistWins: () => void;
@@ -81,8 +81,8 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   return (
     <section className="overlay-layout-container">
       <SwipeUpTab relativeElements={<span className="vis-controls-container">
-        <VisMovementLateral orbitSiblings={orbitSiblings} goLeftAction={actions.goLeft} goRightAction={actions.goRight}></VisMovementLateral>
-        <VisMovementVertical orbitDescendants={orbitDescendants} moveUpAction={actions.goUp} moveDownAction={actions.goDown}></VisMovementVertical>
+        <VisMovementLateral currentOrbitDetails={currentOrbitDetails} orbitSiblings={orbitSiblings} goLeftAction={actions.goLeft} goRightAction={actions.goRight}></VisMovementLateral>
+        <VisMovementVertical currentOrbitDetails={currentOrbitDetails} orbitDescendants={orbitDescendants} moveUpAction={actions.goUp} moveDownAction={actions.goDown}></VisMovementVertical>
         <div className="center-marker"></div>
       </span>} verticalOffset={calendarHeightWithPadding}>
         {({ bindDrag }) => (

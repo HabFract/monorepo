@@ -61,6 +61,8 @@ export interface ConsolidatedActions {
 
 // Slimmed down OrbitNodeDetails for the Vis Vertical/Lateral controls on mobile
 export interface OrbitDescendant {
+  id: ActionHashB64;
+  eH: EntryHashB64;
   orbitName: string;
   orbitScale: Scale;
 }

@@ -117,7 +117,16 @@ export function withVisCanvas<T extends IVisualization>(
 
     // Store and update date in local component state to ensure re-render with VisControls, Calendar
     const [currentDate, setCurrentDate] = useAtom<DateTime>(currentDayAtom);
+    const visRef = useRef<T | null>(null);
 
+    useEffect(() => {
+      return () => {
+        if (visRef.current) {
+          visRef.current.destroy();
+          visRef.current = null;
+        }
+      };
+    }, []);
 
     // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
     const withWinData = useCallback(() => {
@@ -165,6 +174,7 @@ export function withVisCanvas<T extends IVisualization>(
         margin={DEFAULT_MARGINS}
         render={(currentVis: T) => {
           if (!currentOrbitDetails?.eH) return <Spinner aria-label="Loading Vis Canvas!" className="menu-spinner" size="xl" />
+          visRef.current = currentVis;
 
           const {
             consolidatedFlags,
@@ -345,11 +355,12 @@ export function withVisCanvas<T extends IVisualization>(
           });
         },
 
-        moveDown: () => {
-          const newId = (children![0] as any).data.content; // Always move to the start of the next level, not the middle
-          store.set(currentOrbitIdAtom, newId);
+        moveDown: (id: EntryHashB64) => {
+          // TODO: reinstate traversal down when stable
+          // const newId = (children![0] as any).data.content; // Always move to the start of the next level, not the middle
+          store.set(currentOrbitIdAtom, id);
 
-          console.log("Moving down... to", newId)
+          // console.log("Moving down... to", newId)
         },
 
         moveUp: () => {
@@ -364,15 +375,17 @@ export function withVisCanvas<T extends IVisualization>(
 
     function getActionsAndDataForControls(currentVis: T, currentId: EntryHashB64) {
       // Determine current vis render-specific data and context
-      const rootId = currentVis.rootData.data.content;
-      const children = (((currentVis.rootData?.children) as Array<HierarchyNode<NodeContent>>) || []).sort(byStartTime);
+      const rootId = currentVis.rootData!.data.content;
+
+      const children = (((currentVis.rootData!.find(node => node.data.content == currentId)?.parent?.children || currentVis.rootData?.children) as Array<HierarchyNode<NodeContent>>) || []).sort(byStartTime);
       const sphereNodeDetails = store.get(currentSphereOrbitNodeDetailsAtom);
-      const orbitSiblings: Array<OrbitDescendant & { handleOrbitSelect: () => void }> = (currentId == rootId ? [currentVis.rootData] : children).map(node => {
-        const orbitInfo = sphereNodeDetails[node.data.content];
+      const orbitSiblings: Array<OrbitDescendant> = (currentId == rootId ? [currentVis.rootData] : children).map(node => {
+        const orbitInfo = sphereNodeDetails[node!.data.content];
         return {
+          id: orbitInfo.id,
+          eH: orbitInfo.eH,
           orbitName: orbitInfo.name,
           orbitScale: orbitInfo.scale,
-          handleOrbitSelect: () => console.log("orbit selected")
         }
       })
 
@@ -410,8 +423,8 @@ export function withVisCanvas<T extends IVisualization>(
       const consolidatedActions: ConsolidatedActions = {
         goLeft: actions.moveToId as any,//actions.traverseLeft,
         goRight: actions.moveToId as any, //flags.canMoveRight ? actions.moveRight : actions.moveRight,
-        goUp: flags.canMoveUp ? actions.moveUp : actions.moveUp,// actions.traverseUp,
-        goDown: flags.canMoveDown ? actions.moveDown : actions.moveDown //actions.traverseDown,
+        goUp: flags.canMoveUp ? actions.moveDown as any : actions.moveUp,// actions.traverseUp,
+        goDown: flags.canMoveDown ? actions.moveDown as any : actions.moveDown //actions.traverseDown,
       };
 
       return {
@@ -430,6 +443,8 @@ export function withVisCanvas<T extends IVisualization>(
         while (currentNode && currentNode.parentEh) {
           const parentInfo = store.get(getOrbitNodeDetailsFromEhAtom(currentNode.parentEh));
           ancestorLineage.push({
+            id: parentInfo.id,
+            eH: parentInfo.eH,
             orbitName: parentInfo.name,
             orbitScale: parentInfo.scale,
           });
@@ -442,12 +457,14 @@ export function withVisCanvas<T extends IVisualization>(
         // Step 2: Add current orbit
         const currentOrbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(currentOrbitEh));
         orbitDescendants.push({
+          id: currentOrbitInfo.id,
+          eH: currentOrbitInfo.eH,
           orbitName: currentOrbitInfo.name,
           orbitScale: currentOrbitInfo.scale,
         });
 
         // Step 3: Add descendants following first-child path
-        const currentVisNode = currentVis.rootData.find(node => node.data.content === currentOrbitEh);
+        const currentVisNode = currentVis!.rootData!.find(node => node.data.content === currentOrbitEh);
         if (currentVisNode && currentVisNode.children && currentVisNode.children.length > 0) {
           addFirstChildLineage(currentVisNode.children[0]);
         }
@@ -456,6 +473,8 @@ export function withVisCanvas<T extends IVisualization>(
       function addFirstChildLineage(node: HierarchyNode<NodeContent>) {
         const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content));
         orbitDescendants.push({
+          id: orbitInfo.id,
+          eH: orbitInfo.eH,
           orbitName: orbitInfo.name,
           orbitScale: orbitInfo.scale,
         });

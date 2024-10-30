@@ -40,7 +40,7 @@ export interface IVisualization {
   /** ID of the SVG element */
   _svgId: string;
   /** Root data for the hierarchy */
-  rootData: HierarchyNode<{ content: ActionHashB64 }>;
+  rootData: HierarchyNode<NodeContent> | null;
   /** View configuration */
   _viewConfig: ViewConfig;
   /** Zoom configuration */
@@ -77,15 +77,18 @@ export interface IVisualization {
   setNodeAndLabelGroups: () => void;
   appendNodeVectors: () => void;
   appendLinkPath: () => void;
-
+  
   /** Apply initial transformation and zoom which may be needed when a node is already selected */
   applyInitialTransform: () => void;
   initializeZoomConfig: () => ZoomConfig;
   initializeZoomer: () => ZoomBehavior<Element, unknown> | null;
   handleZoom: (event: MouseEvent) => void;
-
+  
   /** Method to fully render the visualization */
   render: () => void;
+
+  /** Method to clean up/unbind event listeners */
+  destroy(): void;
 }
 
 /**

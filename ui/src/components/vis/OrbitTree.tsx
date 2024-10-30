@@ -1,4 +1,4 @@
-import React, { ComponentType, useEffect, useState, useCallback, useMemo } from "react";
+import React, { ComponentType, useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { VisProps } from "./types";
 import { hierarchy } from "d3-hierarchy";
 import {
@@ -28,8 +28,15 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const [_state, transition, params, client] = useStateTransition();
 
   // ## -- Component level state -- ##
+  const [currentOrbitTree, setCurrentOrbitTreeState] = useState<TreeVisualization | null>(null);
+  const currentOrbitTreeRef = useRef<TreeVisualization | null>(null);
+  // When setting currentOrbitTree, also set the ref
+  const setCurrentOrbitTree = (tree: TreeVisualization | null) => {
+    currentOrbitTreeRef.current = tree;
+    setCurrentOrbitTreeState(tree);
+  };
+  
   const [json, setJson] = useState<string | null>(null);
-  const [currentOrbitTree, setCurrentOrbitTree] = useState<TreeVisualization | null>(null);
   const [hasCachedNodes, setHasCachedNodes] = useState<boolean>(false);
   const [usedCachedHierarchy, setUsedCachedHierarchy] = useState<boolean>(false);
   const [canTriggerNextTreeVisRender, setCanTriggerNextTreeVisRender] = useState<boolean>(false);
@@ -80,8 +87,9 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
         getJsonDerivation,
         setDepthBounds,
       });
-
-      setNewCurrentOrbitId(newTree.rootData.data.content);
+      setTimeout(() => {
+        setNewCurrentOrbitId((newTree as TreeVisualization)!.rootData!.data.content);
+      }, 250);
       setCurrentOrbitTree(newTree);
       newTree._json = json
       setHierarchyInAppState(newTree as any);

@@ -1,13 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./common.css";
 import { Scale } from "../generated-types";
-import { OrbitDescendant } from "@ui/src/state";
+import { OrbitDescendant, OrbitNodeDetails } from "@ui/src/state";
 import { motion, useAnimation, PanInfo } from "framer-motion";
 import { getIconForPlanetValue } from "..";
 
 export interface VisMovementVerticalProps {
   moveUpAction: Function;
   moveDownAction: Function;
+  currentOrbitDetails: OrbitNodeDetails | null,
   orbitDescendants: Array<OrbitDescendant>;
 }
 
@@ -15,9 +16,21 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({
   orbitDescendants,
   moveUpAction,
   moveDownAction,
+  currentOrbitDetails
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const currentOrbitDetailsIndex = useMemo(() => {
+    if (!currentOrbitDetails || !currentOrbitDetails?.id) return 0;
+    const possibleCurrentOrbitIndex = orbitDescendants.findIndex(orbit => orbit.id === currentOrbitDetails.id)
+    const newIndex = !!currentOrbitDetails
+    ? possibleCurrentOrbitIndex
+    : 0;
+    
+    return newIndex
+  }, [currentOrbitDetails?.eH])
+
   const [selectedIndex, setSelectedIndex] = useState(0);
+
   const controls = useAnimation();
   const dragStartY = useRef(0);
 
@@ -34,8 +47,10 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({
 
   useEffect(() => {
     const offset = calculateOffset();
+    if(selectedIndex !== currentOrbitDetailsIndex) setSelectedIndex(currentOrbitDetailsIndex);
+
     controls.start({ y: offset - selectedIndex * (itemHeight + itemSpacing) });
-  }, [selectedIndex, controls]);
+  }, [selectedIndex, controls, currentOrbitDetailsIndex, currentOrbitDetails?.id]);
 
 
   const handleDragStart = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -64,9 +79,9 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({
     if (newIndex !== selectedIndex) {
       setSelectedIndex(newIndex);
       if (newIndex > selectedIndex) {
-        moveDownAction(newIndex);
+        moveDownAction(orbitDescendants[newIndex].eH);
       } else {
-        moveUpAction(newIndex);
+        moveUpAction(orbitDescendants[newIndex].eH);
       }
     }
 

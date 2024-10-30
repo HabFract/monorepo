@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import "./common.css";
 import { Scale } from "..//generated-types";
 import OrbitPill from "./OrbitPill";
-import { debounce } from "./utils";
-import { OrbitDescendant } from "@ui/src/state";
+import { OrbitDescendant, OrbitNodeDetails } from "@ui/src/state";
 import { motion, PanInfo, useAnimation } from "framer-motion";
 
 export interface VisMovementLateralProps {
   goLeftAction: Function;
   goRightAction: Function
+  currentOrbitDetails: OrbitNodeDetails | null,
   orbitSiblings: Array<OrbitDescendant>;
 }
 
@@ -17,6 +17,7 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({
   orbitSiblings,
   goLeftAction,
   goRightAction,
+  currentOrbitDetails
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -25,6 +26,17 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({
 
   const itemWidth = 100; // Adjust based on your pill width
   const itemSpacing = 48; // 3rem in pixels, adjust if needed
+
+  const currentOrbitDetailsIndex = useMemo(() => {
+    if (!currentOrbitDetails || !currentOrbitDetails?.id) return 0;
+    const possibleCurrentOrbitIndex = orbitSiblings.findIndex(orbit => orbit.id === currentOrbitDetails.id)
+    if(possibleCurrentOrbitIndex == -1) return null;
+
+    const newIndex = !!currentOrbitDetails
+    ? possibleCurrentOrbitIndex
+    : 0;
+    return newIndex
+  }, [currentOrbitDetails?.eH, orbitSiblings])
 
   const calculateOffset = () => {
     if (containerRef.current) {
@@ -36,8 +48,11 @@ const VisMovementLateral: React.FC<VisMovementLateralProps> = ({
 
   useEffect(() => {
     const offset = calculateOffset();
+    if(currentOrbitDetailsIndex == null) return;
+    if(selectedIndex !== currentOrbitDetailsIndex) setSelectedIndex(currentOrbitDetailsIndex);
+
     controls.start({ x: offset - selectedIndex * (itemWidth + itemSpacing) });
-  }, [selectedIndex, controls]);
+  }, [selectedIndex, controls, currentOrbitDetailsIndex, currentOrbitDetails?.id, orbitSiblings]);
 
   const handleDragStart = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     dragStartX.current = info.point.x;

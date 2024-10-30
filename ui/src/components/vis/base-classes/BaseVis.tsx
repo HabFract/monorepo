@@ -1,11 +1,10 @@
 import { select, Selection } from "d3-selection";
 import { zoom, ZoomBehavior } from "d3-zoom";
 import { HierarchyLink, HierarchyNode, tree } from "d3-hierarchy";
-import { easeCubic, easeLinear } from "d3-ease";
+import { easeLinear } from "d3-ease";
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import {
-  BASE_SCALE,
   DX_RESCALE_FACTOR_MD_LG,
   DX_RESCALE_FACTOR_SM,
   DY_RESCALE_FACTOR_MD_LG,
@@ -26,19 +25,19 @@ import {
   ZoomConfig,
 } from "../types";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { GetOrbitsDocument, Orbit, Scale } from "../../../graphql/generated";
-import { client } from "../../../graphql/client";
+import { Scale } from "../../../graphql/generated";
 import { store } from "../../../state/store";
-import { mapToCacheObject } from "../../../state/orbit";
+import { currentOrbitDetailsAtom } from "../../../state/orbit";
 import { newTraversalLevelIndexId } from "../../../state/hierarchy";
-import { OrbitNodeDetails } from "../../../state/types";
-import { extractEdges } from "../../../graphql/utils";
-import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
+import { NodeContent } from "../../../state/types";
 import { currentOrbitIdAtom } from "../../../state/orbit";
 import { SphereOrbitNodeDetails } from "../../../state/types/sphere";
 import { NODE_ENV } from "../../../constants";
-import { getLabelScale, getScaleForPlanet } from "../tree-helpers";
+import { getLabelScale } from "../tree-helpers";
 import { OrbitControls, OrbitLabel } from "habit-fract-design-system";
+import { currentDayAtom } from "../../../state";
+import { AppMachine } from "../../../main";
+import { debounce } from "../helpers";
 
 /**
  * Base class for creating D3 hierarchical visualizations.
@@ -48,17 +47,18 @@ import { OrbitControls, OrbitLabel } from "habit-fract-design-system";
 export abstract class BaseVisualization implements IVisualization {
   type: VisType;
   coverageType: VisCoverage;
-  rootData: HierarchyNode<any>;
+  rootData: HierarchyNode<NodeContent> | null;
   nodeDetails: SphereOrbitNodeDetails;
   _nextRootData: HierarchyNode<any> | null;
 
   _json?: string;
-  _originalRootData?: HierarchyNode<any>;
+  _originalRootData?: HierarchyNode<NodeContent> | null;
   _svgId: string;
-  _canvas: Selection<SVGGElement, unknown, HTMLElement, any> | undefined;
+  _canvas?: Selection<SVGGElement, unknown, HTMLElement, any> | null;
   _viewConfig: ViewConfig;
   _zoomConfig: ZoomConfig;
   _lastOrbitId!: EntryHashB64 | null;
+  _subscriptions!: Array<unknown>;
 
   // Current Vis sphere context:
   sphereEh: EntryHashB64;
@@ -73,42 +73,41 @@ export abstract class BaseVisualization implements IVisualization {
   globalStateTransition: Function;
 
   eventHandlers: EventHandlers;
-  zoomer!: ZoomBehavior<Element, unknown>;
+  zoomer?: ZoomBehavior<Element, unknown> | null;
 
   _gLink?: typeof this._canvas;
   _gNode?: typeof this._canvas;
-  _gCircle?: Selection<SVGGElement, HierarchyNode<any>, SVGGElement, unknown>;
+  _gCircle?: Selection<SVGGElement, HierarchyNode<any>, SVGGElement, unknown> | null;
   _gTooltip?: Selection<
     SVGForeignObjectElement,
     HierarchyNode<any>,
     SVGGElement,
     unknown
-  >;
+  > | null;
   _gButton?: Selection<
     SVGForeignObjectElement,
     HierarchyNode<any>,
     SVGGElement,
     unknown
-  >;
+  > | null;
   _enteringLinks?: Selection<
     SVGPathElement,
     HierarchyLink<any>,
     SVGGElement,
     unknown
-  >;
+  > | null;
   _enteringNodes?: Selection<
     SVGGElement,
     HierarchyNode<any>,
     SVGGElement,
     unknown
-  >;
+  > | null;
 
   // Methods for procedures at different parts of the vis render:
   abstract setNodeAndLinkEnterSelections(): void;
   abstract appendNodeVectors(): void;
   abstract setNodeAndLabelGroups(): void;
   abstract appendLinkPath(): void;
-  abstract bindEventHandlers(selection: any): void;
   abstract getLinkPathGenerator(): void;
 
   abstract initializeViewConfig(
@@ -122,8 +121,6 @@ export abstract class BaseVisualization implements IVisualization {
   isModalOpen: boolean = false;
   skipMainRender: boolean = false;
   startInFocusMode: boolean = false;
-  activeNode: any = null;
-  isNewActiveNode: boolean = false;
   _lastRenderParentId: EntryHashB64 | null = null;
   _hasRendered: boolean = false;
 
@@ -161,6 +158,7 @@ export abstract class BaseVisualization implements IVisualization {
     this.sphereEh = sphereEh;
     this.sphereAh = sphereAh;
     this.nodeDetails = nodeDetails;
+    this._subscriptions = [];
     this._nextRootData = null;
 
     this._viewConfig = this.initializeViewConfig(
@@ -172,50 +170,35 @@ export abstract class BaseVisualization implements IVisualization {
     this.eventHandlers = this.initializeEventHandlers();
   }
 
-  // Allow data to be re-cached after certain vis interactions:
-  /**
-   * Fetches Orbit data for a given Sphere.
-   */
-  async refetchOrbits() {
-    const variables = { sphereEntryHashB64: this.sphereEh };
-    let data;
-    try {
-      const gql: ApolloClient<NormalizedCacheObject> =
-        (await client) as ApolloClient<NormalizedCacheObject>;
-      data = await gql.query({
-        query: GetOrbitsDocument,
-        variables,
-        fetchPolicy: "network-only",
-      });
-      if (data?.data?.orbits) {
-        const orbits = extractEdges(data.data.orbits) as Orbit[];
-        const indexedOrbitData: Array<[EntryHashB64, OrbitNodeDetails]> =
-          Object.entries(orbits.map(mapToCacheObject)).map(([_idx, value]) => [
-            value.eH,
-            value,
-          ]);
-        this.cacheOrbits(indexedOrbitData);
-      }
-      console.log("refetched orbits :>> ", data);
-    } catch (error) {
-      console.error(error);
-    }
+  bindEventHandlers(selection) {
+    selection.on("click", (e, d) => {
+      store.set(currentOrbitIdAtom, d.data.content);
+      this.eventHandlers.handleNodeClick!.call(this, e, d);
+      this.eventHandlers.handleNodeZoom.call(this, e, d);
+    });
+
+    const debouncedZoom = debounce((nodeId) => Promise.resolve(this.eventHandlers.memoizedhandleNodeZoom.call(this, nodeId)), 1000)
+    const subOrbitId = store.sub(currentOrbitIdAtom, () => {
+      if (AppMachine.state.currentState !== "Vis") return;
+      const newId = store.get(currentOrbitDetailsAtom)?.eH;
+      (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
+      setTimeout(() => {
+        console.log("TRIGGERED ZOOM because of orbit id change")
+        debouncedZoom(newId);
+      }, 100); 
+    })
+    const subCurrentDay = store.sub(currentDayAtom, () => {
+      if (AppMachine.state.currentState !== "Vis") return;
+      (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
+    })
+    this._subscriptions.push(subOrbitId);
+    this._subscriptions.push(subCurrentDay);
   }
 
-  /**
-   * Caches Orbit data for a given Sphere.
-   */
-  async cacheOrbits(orbitEntries: Array<[EntryHashB64, OrbitNodeDetails]>) {
-    // try {
-    //   store.set(nodeCache.setMany, orbitEntries);
-    //   //@ts-ignore
-    //   // TODO check this form before using
-    //   this.nodeDetails = Object.entries(orbitEntries);
-    //   console.log("Sphere orbits fetched and cached!");
-    // } catch (error) {
-    //   console.error("error :>> ", error);
-    // }
+  unbindEventHandlers() {
+    this._enteringNodes!.on("click", null);
   }
+
 
   /**
    * Set up the canvas for rendering.
@@ -341,7 +324,7 @@ export abstract class BaseVisualization implements IVisualization {
         this.applyInitialTransform();
         this.eventHandlers.memoizedhandleNodeZoom.call(
           this,
-          this.rootData.data.content,
+          this.rootData!.data.content,
         )
       }
       if (!(this.coverageType == VisCoverage.Partial || this.noCanvas())) {
@@ -360,7 +343,7 @@ export abstract class BaseVisualization implements IVisualization {
         let initialZoom = this.eventHandlers.memoizedhandleNodeZoom.call(
           this,
           initialNodeZoomId,
-          this.rootData.find(node => node.data.content == initialNodeZoomId)
+          this.rootData!.find(node => node.data.content == initialNodeZoomId)
         );
         if (newRenderNodeDetails?.intermediateId) {
           (initialZoom as any)
@@ -391,7 +374,7 @@ export abstract class BaseVisualization implements IVisualization {
    * @returns {boolean} True if there is new data (_nextRootData is not null and the data has a different root), false otherwise.
    */
   hasNextData(): boolean {
-    return this._nextRootData !== null && this._nextRootData.descendants().length !== this.rootData.descendants().length;
+    return this._nextRootData !== null && this._nextRootData.descendants().length !== this.rootData!.descendants().length;
   }
 
   // Utility methods to do with base/canvas elements and clearing sub-elements:
@@ -525,6 +508,7 @@ export abstract class BaseVisualization implements IVisualization {
     this._zoomConfig.focusMode = false;
     this._zoomConfig.previousRenderZoom = {};
   }
+
   /**
    * Clears all child elements from the canvas.
    * This is typically called before re-rendering the visualization with new data.
@@ -543,4 +527,40 @@ export abstract class BaseVisualization implements IVisualization {
     const labelMarkup = renderToStaticMarkup(<OrbitLabel orbitDetails={{ name, description, frequency }} />);
     return `<div class="orbit-overlay-container">${controlsMarkup}${labelMarkup}</div>`;
   };
+
+  public destroy(): void {
+    // Remove all D3 selections
+    if (this._canvas) {
+      this._canvas.selectAll('*').remove();
+      this._canvas.remove();
+    }
+    if (this._svgId) {
+      select(`#${this._svgId}`).remove();
+    }
+    console.log('select(foreignObject :>> ', select('body').selectAll('foreignObject'));
+    select('body').selectAll('foreignObject').remove();
+    // Remove zoom behavior
+    if (this.zoomer) {
+      select(`#${this._svgId}`).on('.zoom', null);
+    }
+
+    this.unbindEventHandlers();
+
+    // Nullify large objects
+    this.rootData = null;
+    this._nextRootData = null;
+    this._originalRootData = null;
+    this._canvas = null;
+    this._gLink = null;
+    this._gNode = null;
+    this._gCircle = null;
+    this._gTooltip = null;
+    this._gButton = null;
+    this._enteringLinks = null;
+    this._enteringNodes = null;
+
+    this._subscriptions.forEach((unsubscribe: any) => unsubscribe());
+
+    console.log('BaseVisualization destroyed');
+  }
 }

@@ -33,8 +33,8 @@ g.node-subgroup {
   @apply absolute h-full w-full;
   content: "";
   z-index: 15;
-  left: -.25px;
-  top: .5px;
+  left: 0;
+  top: .75px;
   background: url(/assets/plannit-selected-outline-no-win.svg);
   background-repeat: no-repeat;
   background-position: center;
@@ -60,12 +60,14 @@ g.node-subgroup {
 /* Outline positioning for specific node scales */
 .node-vector-group.selected.astro::before {
   background-size: 87px;
+  left: .5px;
+  top: .5px;
 }
 
 .node-vector-group.selected.sub::before {
   background-size: 70px;
-  left: .5px;
-  top: -15px;
+  left: -.5px;
+  top: -14.5px;
 }
 
 .node-vector-group.selected.atom::before {
