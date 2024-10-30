@@ -171,8 +171,8 @@ export function withVisCanvas<T extends IVisualization>(
             consolidatedActions,
             orbitDescendants,
             orbitSiblings
-          } = getActionsAndDataForControls(currentVis, currentOrbitDetails.eH);
-
+          } = getActionsAndDataForControls(currentVis, currentOrbitDetails?.eH);
+          
           if (appendedSvg) {
             // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
             currentVis.modalOpen = setIsModalOpen;
@@ -375,8 +375,9 @@ export function withVisCanvas<T extends IVisualization>(
           handleOrbitSelect: () => console.log("orbit selected")
         }
       })
+
       const orbitDescendants: Array<OrbitDescendant> = [];
-      if (allFirstChildDescendantOrbits.current == null && currentOrbitDetails?.eH == rootId && currentVis.rootData) {
+      if (!!currentOrbitDetails?.eH) {
         calculateFullLineage(currentOrbitDetails.eH);
         allFirstChildDescendantOrbits.current = orbitDescendants;
       }

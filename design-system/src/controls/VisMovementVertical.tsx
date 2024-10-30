@@ -4,15 +4,12 @@ import { Scale } from "../generated-types";
 import { OrbitDescendant } from "@ui/src/state";
 import { motion, useAnimation, PanInfo } from "framer-motion";
 import { getIconForPlanetValue } from "..";
-import { debounce } from "./utils";
 
 export interface VisMovementVerticalProps {
   moveUpAction: Function;
   moveDownAction: Function;
   orbitDescendants: Array<OrbitDescendant>;
 }
-
-const SCROLL_TIMEOUT = 100; // ms to wait before snapping back
 
 const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({
   orbitDescendants,
@@ -49,7 +46,7 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({
     const offset = calculateOffset();
     const currentY = offset - selectedIndex * (itemHeight + itemSpacing);
     const dragDelta = info.point.y - dragStartY.current;
-    const resistanceFactor = 0.1; // Adjust this value to change resistance
+    const resistanceFactor = 0.5; // Adjust this value to change resistance
     const resistedDelta = dragDelta * resistanceFactor;
 
     controls.set({ y: currentY + resistedDelta });
@@ -58,7 +55,7 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({
   const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const offset = calculateOffset();
     const dragDelta = (info.point.y - dragStartY.current);
-    const resistanceFactor = 0.1; // Should match the factor in handleDrag
+    const resistanceFactor = 0.5; // Should match the factor in handleDrag
     const resistedDelta = dragDelta * resistanceFactor;
     const currentX = offset - selectedIndex * (itemHeight + itemSpacing) + resistedDelta;
     const deltaIndex = Math.round(resistedDelta / (itemHeight + itemSpacing));

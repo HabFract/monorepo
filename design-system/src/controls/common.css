@@ -296,15 +296,16 @@ div.handle span {
 }
 
 .vis-move-lateral-container {
-  width: 100%;
-  bottom: 3.5rem;
-  left: 0;
+  width: calc(100% - 1rem);
+  bottom: 2.5rem;
+  left: .5rem;
   height: 3rem;
 }
 
 .vis-move-vertical-container {
   height: 12rem;
   width: 3rem;
+  bottom: 14.5rem;
   padding-bottom: 2.5rem;
 }
 
@@ -399,7 +400,7 @@ div.handle span {
 
 .intersecting-planet-column {
   @apply flex-col;
-  padding: 2rem 0;
+  padding: 1.75rem 0;
   height: fit-content;
 }
 
@@ -450,12 +451,12 @@ div.handle span {
   --n-multiplier: 4.5;
 }
 
-.orbit-scale-icon>* {
+.orbit-scale-icon>*, .intersecting-planet img {
   pointer-events: none;
 }
 
 /* Re-enable pointer events for the OrbitPill content */
-.intersecting-pill>* {
+.intersecting-pill>*, .intersecting-planet, .intersecting-planet img {
   cursor: pointer;
   /* Optional: changes cursor to pointer when hovering over the pill content */
 }
