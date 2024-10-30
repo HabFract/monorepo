@@ -125,7 +125,7 @@
 }
 
 .win-count-container.loading svg {
-  fill:rgba(0, 0, 0, 0.1) !important;
+  fill: rgba(0, 0, 0, 0.1) !important;
 }
 
 .orbit-pill-container {
@@ -279,6 +279,10 @@ div.handle span {
 
 .vis-move-lateral-container,
 .vis-move-vertical-container {
+  overflow: hidden;
+  position: relative;
+
+  /* Hide scrollbars: */
   -ms-overflow-style: none;
   /* IE and Edge */
   scrollbar-width: none;
@@ -286,31 +290,76 @@ div.handle span {
   @apply bg-menu-bg rounded-2xl p-1;
 }
 
+.vis-move-lateral-container::-webkit-scrollbar,
+.vis-move-vertical-container::-webkit-scrollbar {
+  display: none;
+}
+
 .vis-move-lateral-container {
   width: 100%;
-  overflow: hidden;
-  position: relative;
   bottom: 3.5rem;
   left: 0;
   height: 3rem;
 }
 
 .vis-move-vertical-container {
-  overflow-x: hidden;
-  position: relative;
   height: 12rem;
-  justify-content: center;
-  text-align: center;
-  left: 0;
-  bottom: 15rem;
   width: 3rem;
+  padding-bottom: 2.5rem;
+}
+
+.intersecting-planet-column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  margin-top: -3.65rem;
 }
 
 .intersecting-planet {
-  font-size: 24px;
-  margin: 3.5rem 0;
   transition: transform 0.3s ease-in;
-  @apply flex justify-center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: calc(12px * var(--n-multiplier, 2)) 0;
+}
+
+/* Temporary fix to roughly center the snapped to planets in the column */
+.intersecting-planet:nth-child(1) {
+  --n-multiplier: 2.25;
+}
+
+.intersecting-planet:nth-child(2) {
+  --n-multiplier: 2;
+}
+
+.intersecting-planet:nth-child(3) {
+  --n-multiplier: 2;
+}
+
+.intersecting-planet:nth-child(4) {
+  --n-multiplier: 2;
+}
+
+.intersecting-planet:nth-child(5) {
+  --n-multiplier: 2.25;
+}
+
+.intersecting-planet:nth-child(6) {
+  --n-multiplier: 2;
+}
+
+.intersecting-planet:nth-child(7) {
+  --n-multiplier: 2.25;
+}
+
+.intersecting-planet:nth-child(8) {
+  --n-multiplier: 2;
+}
+
+.intersecting-planet:nth-child(9) {
+  --n-multiplier: 2.25;
 }
 
 .intersecting-planet.selected {
@@ -340,21 +389,24 @@ div.handle span {
   top: -15px;
 }
 
+.intersecting-planet-column,
+.intersecting-pill-row {
+  display: flex;
+  position: relative;
+  align-items: center;
+  cursor: grab;
+}
+
 .intersecting-planet-column {
-  @apply flex flex-col relative;
-  flex-wrap: nowrap;
-  height: fit-content;
+  @apply flex-col;
   padding: 2rem 0;
+  height: fit-content;
 }
 
 .intersecting-pill-row {
-  display: flex;
-  align-items: center;
   height: 100%;
-  cursor: grab;
   width: calc(100% + 12rem);
   left: 2.5%;
-  position: relative;
 }
 
 .intersecting-pill:first-child {
@@ -408,18 +460,6 @@ div.handle span {
   /* Optional: changes cursor to pointer when hovering over the pill content */
 }
 
-.vis-move-lateral-intersector {
-  position: absolute;
-  top: 0px;
-  left: calc(-50%);
-  height: 100%;
-  width: 1px;
-}
-
-.vis-move-lateral-container::-webkit-scrollbar,
-.vis-move-vertical-container::-webkit-scrollbar {
-  display: none;
-}
 
 .add-node-button {
   border-radius: 100%;

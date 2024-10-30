@@ -377,7 +377,7 @@ export function withVisCanvas<T extends IVisualization>(
       })
       const orbitDescendants: Array<OrbitDescendant> = [];
       if (allFirstChildDescendantOrbits.current == null && currentOrbitDetails?.eH == rootId && currentVis.rootData) {
-        getFirstDescendantLineage(currentVis.rootData);
+        calculateFullLineage(currentOrbitDetails.eH);
         allFirstChildDescendantOrbits.current = orbitDescendants;
       }
       // Generate a full range of conditions/actions that could be fed into mob/desktop vis control components
@@ -420,17 +420,47 @@ export function withVisCanvas<T extends IVisualization>(
         orbitDescendants: allFirstChildDescendantOrbits.current
       }
 
-      function getFirstDescendantLineage(node: HierarchyNode<NodeContent>) {
-        // Add the current node to the lineage
-        const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content))
+
+      function calculateFullLineage(currentOrbitEh: EntryHashB64) {
+        const ancestorLineage: Array<OrbitDescendant> = [];
+
+        // Step 1: Build ancestor chain
+        let currentNode = currentOrbitDetails;
+        while (currentNode && currentNode.parentEh) {
+          const parentInfo = store.get(getOrbitNodeDetailsFromEhAtom(currentNode.parentEh));
+          ancestorLineage.push({
+            orbitName: parentInfo.name,
+            orbitScale: parentInfo.scale,
+          });
+          currentNode = store.get(getOrbitNodeDetailsFromEhAtom(currentNode.parentEh));
+        }
+
+        // Add ancestors in reverse order (top to bottom)
+        orbitDescendants.push(...ancestorLineage.reverse());
+
+        // Step 2: Add current orbit
+        const currentOrbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(currentOrbitEh));
+        orbitDescendants.push({
+          orbitName: currentOrbitInfo.name,
+          orbitScale: currentOrbitInfo.scale,
+        });
+
+        // Step 3: Add descendants following first-child path
+        const currentVisNode = currentVis.rootData.find(node => node.data.content === currentOrbitEh);
+        if (currentVisNode && currentVisNode.children && currentVisNode.children.length > 0) {
+          addFirstChildLineage(currentVisNode.children[0]);
+        }
+      }
+
+      function addFirstChildLineage(node: HierarchyNode<NodeContent>) {
+        const orbitInfo = store.get(getOrbitNodeDetailsFromEhAtom(node.data.content));
         orbitDescendants.push({
           orbitName: orbitInfo.name,
           orbitScale: orbitInfo.scale,
-        } as OrbitDescendant);
+        });
 
-        // If this node has children, traverse to the first child
         if (node.children && node.children.length > 0) {
-          getFirstDescendantLineage(node.children[0]);
+          addFirstChildLineage(node.children[0]);
         }
       }
     }
