@@ -12,6 +12,17 @@ export const toYearDotMonth = (date: string) => date.split("/").slice(1).reverse
 
 export const isMoreThenDaily = (frequency: Frequency.Rationals): boolean => frequency > 1;
 
+// Lazy loading of the biggest d3 deps
+export const loadD3Dependencies = async () => {
+  const [d3Hierarchy, d3Selection] = await Promise.all([
+    import('d3-hierarchy'),
+    import('d3-selection')
+  ]);
+  return {
+    hierarchy: d3Hierarchy.hierarchy,
+    select: d3Selection.select
+  };
+};
 
 function CustomBezier(context) {
   this._context = context;

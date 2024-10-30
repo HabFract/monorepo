@@ -143,7 +143,7 @@ export const useDeriveAndCacheHierarchyPaths = ({
 
   const cache = !!currentTree.rootData
     ? function () {
-        cacheOrbitPaths(currentTree.rootData);
+        cacheOrbitPaths(currentTree.rootData!);
       }
     : null;
 

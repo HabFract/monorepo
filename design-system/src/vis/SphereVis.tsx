@@ -78,13 +78,13 @@ const SpherePie: React.FC<SpherePieProps> = ({ spherePercentages }) => {
       (pieChart.current as HTMLElement)!.children?.length > 0
     )
       return;
-    const chart = new ApexCharts(pieChart.current, getChartOptions());
+    // const chart = new ApexCharts(pieChart.current, getChartOptions());
     try {
-      chart.render();
+      // chart.render();
     } catch (error) {
       // console.warn(error);
     }
-    return () => chart.destroy();
+    // return () => chart.destroy();
   }, []);
 
   return (

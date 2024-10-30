@@ -52,4 +52,8 @@ export default defineConfig({
   define: {
     "process.env": {},
   },
+  optimizeDeps: {
+    include: ['antd'],
+    exclude: ['@ant-design/icons']
+  }
 });

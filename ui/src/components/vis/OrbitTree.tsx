@@ -1,6 +1,10 @@
-import React, { ComponentType, useEffect, useState, useCallback, useMemo, useRef } from "react";
+import React, { ComponentType, useEffect, useState, useCallback, useMemo, useRef, lazy, Suspense } from "react";
 import { VisProps } from "./types";
-import { hierarchy } from "d3-hierarchy";
+import { useTreeState } from "./tree/useTreeState";
+import { TreeVisCore } from "./tree/TreeVisCore";
+//@ts-expect-error
+const LazyTreeVisualization = lazy(() => import('./base-classes/TreeVis'));
+
 import {
   useGetLowestSphereHierarchyLevelQuery,
   useGetOrbitHierarchyLazyQuery,
@@ -17,6 +21,7 @@ import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVi
 import { currentSphereHashesAtom, newTraversalLevelIndexId, SphereHashes, updateHierarchyAtom } from "../../state";
 import { useSetAtom } from "jotai";
 import { NODE_ENV } from "../../constants";
+import { useD3Dependencies } from "./tree/useD3Deps";
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   canvasHeight,
@@ -26,16 +31,13 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 }) => {
   // ## -- Router level state -- ##
   const [_state, transition, params, client] = useStateTransition();
+  
+  // ## -- Lazily load bigger d3 deps -- ##
+  const { d3Modules, isLoading, error: lazyLoadError } = useD3Dependencies();
 
   // ## -- Component level state -- ##
-  const [currentOrbitTree, setCurrentOrbitTreeState] = useState<TreeVisualization | null>(null);
-  const currentOrbitTreeRef = useRef<TreeVisualization | null>(null);
-  // When setting currentOrbitTree, also set the ref
-  const setCurrentOrbitTree = (tree: TreeVisualization | null) => {
-    currentOrbitTreeRef.current = tree;
-    setCurrentOrbitTreeState(tree);
-  };
-  
+  const { currentOrbitTree, setCurrentOrbitTree } = useTreeState();
+
   const [json, setJson] = useState<string | null>(null);
   const [hasCachedNodes, setHasCachedNodes] = useState<boolean>(false);
   const [usedCachedHierarchy, setUsedCachedHierarchy] = useState<boolean>(false);
@@ -175,9 +177,10 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   }, [y, x]);
 
   useEffect(() => {
-    if (canTriggerNextTreeVisRender && !error && currentOrbitTree && json) {
+    if (canTriggerNextTreeVisRender && !error && currentOrbitTree && json && d3Modules) {
       console.log('Triggered a new hierarchy render in focus mode');
 
+      const { hierarchy } = d3Modules;
       currentOrbitTree._nextRootData = hierarchy(
         getJsonDerivation(json),
       ).sort(byStartTime);
@@ -221,15 +224,15 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   }, [cache, hasCachedNodes]);
 
   return (
-    <>
-      {loading && <span data-testid={"vis-spinner"} />}
-      {!error &&
-        json &&
-        currentOrbitTree &&
-        render(
-          currentOrbitTree,
-        )}
-    </>
+    <Suspense fallback={<span data-testid="loading-tree" />}>
+      <TreeVisCore
+        currentOrbitTree={currentOrbitTree}
+        loading={loading}
+        error={error}
+        json={json}
+        render={render}
+      />
+    </Suspense>
   );
 };
 

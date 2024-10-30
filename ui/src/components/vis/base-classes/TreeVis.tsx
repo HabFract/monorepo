@@ -458,7 +458,10 @@ export class TreeVisualization extends BaseVisualization {
   setNodeAndLinkEnterSelections(): void {
     const nodes = this._gNode!.selectAll("g.node").data(
       // Remove habits that weren't being tracked then
-      this.rootData!.descendants().reverse().filter((d) => {
+      this.rootData!
+        .descendants()
+        .reverse()
+        .filter((d) => {
         // const outOfBounds = outOfBoundsNode(d, this.rootData);
         // // Set new active node when this one is out of bounds
         // if (outOfBounds && this.activeNode?.data.name == d.data.name) {
@@ -473,7 +476,9 @@ export class TreeVisualization extends BaseVisualization {
         // return !outOfBounds;
         return true;
       }),
+      (d: any) => d.data.content
     );
+    nodes.exit().remove();
 
     // Node enter selection
     this._enteringNodes = nodes
