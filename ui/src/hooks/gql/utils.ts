@@ -16,8 +16,8 @@ import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { client } from "../../graphql/client";
 
-export const invalidateOrbitHierarchyCache = (sphereHashB64: string) => {
-  (client as Promise<ApolloClient<NormalizedCacheObject>>).then((client) => {
+export const invalidateOrbitHierarchyCache = async(sphereHashB64: string) => {
+  return (client as Promise<ApolloClient<NormalizedCacheObject>>).then((client) => {
     const normalizedId = client.cache.identify({
       __typename: "Query",
       id: "ROOT_QUERY",

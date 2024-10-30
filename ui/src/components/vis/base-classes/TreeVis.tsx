@@ -201,7 +201,7 @@ export class TreeVisualization extends BaseVisualization {
           || this._originalRootData.find(node => node.data.content == newId)
           || this._nextRootData?.find(node => node.data.content == newId);
 
-        // console.log('Actually zoomed to node: :>> ', node);
+        console.log('Actually zoomed to node: :>> ', node);
         if (node && (typeof node?.x !== undefined) && (typeof node?.y !== undefined)) {
           const e = {
             sourceEvent: {
@@ -217,7 +217,6 @@ export class TreeVisualization extends BaseVisualization {
           // console.log('Zoomed to focus node based on store sub to currentOrbitId... ');
           return this.eventHandlers.handleNodeZoom.call(this, e as any, node);
         } else {
-          debugger;
           console.error("Tried to zoom to node that isn't in the hierarchy")
           return null
         }

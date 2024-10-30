@@ -17,9 +17,13 @@ export const useCreateOrbitMutation = (opts) => {
 
   return useCreateOrbitMutationGenerated({
     ...opts,
-    update(_cache, { data }) {
+    async update(_cache, { data }) {
       if (!data?.createOrbit) return;
+      
       const newOrbit: CreateOrbitResponsePayload = data.createOrbit;
+
+      await invalidateOrbitHierarchyCache(newOrbit.sphereHash);
+
       const newOrbitHashes: OrbitHashes = {
         id: newOrbit.id,
         eH: newOrbit.eH,
@@ -45,8 +49,6 @@ export const useCreateOrbitMutation = (opts) => {
       );
       setAppState(updatedState);
       console.warn("Cache update from useCreateOrbit");
-
-      invalidateOrbitHierarchyCache(newOrbit.sphereHash);
 
       opts?.update && opts.update();
     },

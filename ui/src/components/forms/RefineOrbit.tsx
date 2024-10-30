@@ -7,6 +7,7 @@ import { OrbitSubdivisionList } from "../lists";
 import { OrbitFetcher } from "./utils";
 import { OrbitValidationSchema } from "./CreateOrbit";
 import { ActionHashB64 } from "@holochain/client";
+import { currentOrbitIdAtom, store } from "../../state";
 
 interface RefineOrbitProps {
   refiningOrbitAh: ActionHashB64;
@@ -25,6 +26,9 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({
   headerDiv,
   submitBtn,
 }: RefineOrbitProps) => {
+  // Occasionally due to some kind of race condition, this prop doesn't get set properly so here we use a fallback
+  refiningOrbitAh ||= store.get(currentOrbitIdAtom)?.id;
+
   return (
     <Formik
       style="max-width: 28rem;"

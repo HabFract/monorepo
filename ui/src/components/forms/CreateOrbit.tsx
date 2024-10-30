@@ -196,7 +196,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
               : { sphereAh: selectedSphere.actionHash };
 
             store.set(currentOrbitIdAtom, orbitAh);
-            
             transition(inOnboarding ? "Onboarding3" : "ListOrbits", props);
           }
         } catch (error) {

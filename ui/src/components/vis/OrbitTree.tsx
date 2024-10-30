@@ -47,7 +47,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   // ## -- Data fetching hooks -- ##
   const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery({
-    fetchPolicy: "network-only",
+    fetchPolicy: "cache-first",
   });
   // Get the hashes of the current Sphere's context
   const sphere: SphereHashes = store.get(currentSphereHashesAtom);
@@ -162,6 +162,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   }, [json]);
 
   useEffect(() => {
+    console.log('data,y :>> ', data,y);
     const fetchAndProcess = async () => {
       let newJson = await fetchCurrentLevel();
       console.log('newJson :>> ', newJson);
