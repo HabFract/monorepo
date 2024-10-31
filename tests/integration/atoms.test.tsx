@@ -1148,16 +1148,16 @@ describe('Win Record Atoms', () => {
     });
   });
 
-  describe.skip('AppState - calculateCurrentStreakAtom', () => {
+  describe('AppState - calculateCurrentStreakAtom', () => {
     const mockAppState = {
       orbitNodes: {
         byHash: {
           uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: { eH: 'uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' },
         },
-        currentOrbitHash: 'uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj',
+        currentOrbitHash: 'uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj',
       },
       wins: {
-        uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
+        uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
           '10/10/2024': true,
           '09/10/2024': true,
           '08/10/2024': false,
@@ -1195,7 +1195,7 @@ describe('Win Record Atoms', () => {
       const modifiedMockState = {
         ...mockAppState,
         wins: {
-          uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
+          uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
             '09/10/2024': true,
             '08/10/2024': false,
           },
@@ -1214,16 +1214,16 @@ describe('Win Record Atoms', () => {
     });
   });
 
-  describe.skip('AppState - calculateLongestStreakAtom', () => {
+  describe('AppState - calculateLongestStreakAtom', () => {
     const mockAppState = {
       orbitNodes: {
         byHash: {
           uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: { eH: 'uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' },
         },
-        currentOrbitHash: 'uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj',
+        currentOrbitHash: 'uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj',
       },
       wins: {
-        uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
+        uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
           '010/10/2024': true,
           '09/10/2024': true,
           '08/10/2024': true,
@@ -1267,10 +1267,10 @@ describe('Win Record Atoms', () => {
           byHash: {
             uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: { eH: 'uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj' },
           },
-          currentOrbitHash: 'uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj',
+          currentOrbitHash: 'uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj',
         },
         wins: {
-          uhCAkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
+          uhCEkNqU8jN3kLnq3xJhxqDO1qNmyYHnS5k0d7j3Yk9Uj: {
             '10/10/2024': false,
             '09/10/2024': false,
             '08/10/2024': true,
