@@ -145,7 +145,6 @@ export const calculateCompletionStatusAtom = (
   });
 };
 
-
 /**
  * Calculates the current streak for a specific orbit (either through wins - leaf nodes - or through derived win completion - nonleaf nodes)
  * @param orbitHash The ActionHash of the orbit
@@ -190,6 +189,7 @@ export const calculateCurrentStreakAtom = (orbitHash: ActionHashB64) => {
 
   return calculateStreak;
 };
+(calculateCurrentStreakAtom as any).testId = "calculateCurrentStreakAtom";
 
 /**
  * Calculates the longest streak for a specific orbit based on its win data.
@@ -200,7 +200,7 @@ export const calculateLongestStreakAtom = (orbitHash: ActionHashB64) => {
   const calculateLongestStreak = atom<number | null>((get) => {
     const state = get(appStateAtom);
     const orbit = state.orbitNodes.byHash[orbitHash];
-    
+
     if (!orbit) return null;
     const winData = state.wins[orbit.eH] || {};
     let longestStreak = 0;
@@ -247,3 +247,4 @@ export const calculateLongestStreakAtom = (orbitHash: ActionHashB64) => {
 
   return calculateLongestStreak;
 };
+(calculateLongestStreakAtom as any).testId = "calculateLongestStreakAtom";

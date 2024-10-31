@@ -45,6 +45,7 @@ import { Spinner } from "flowbite-react";
 import { useWinData } from "../../hooks/useWinData";
 import { DateTime } from "luxon";
 import { calculateCurrentStreakAtom, calculateLongestStreakAtom } from "../../state/win";
+import { NODE_ENV } from "../../constants";
 
 /**
  * Higher-order component to enhance a visualization component with additional logic and state management.
@@ -72,7 +73,7 @@ export function withVisCanvas<T extends IVisualization>(
   const ComponentWithVis = React.memo(() => {
     // Get the details of the current Orbit in context, and the calculated bounds for navigation of the rendered hierarchy
     // which will determine the state/visibility of the Vis OverlayLayout/controls
-    const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
+    const currentOrbitDetails: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
     const currentOrbitIsLeaf = useAtomValue(currentOrbitIsLeafAtom);
 
     const currentOrbitStreakAtom = useMemo(() => calculateCurrentStreakAtom(currentOrbitDetails?.id as string), [currentOrbitDetails?.id])
@@ -182,7 +183,7 @@ export function withVisCanvas<T extends IVisualization>(
             orbitDescendants,
             orbitSiblings
           } = getActionsAndDataForControls(currentVis, currentOrbitDetails?.eH);
-          
+
           if (appendedSvg) {
             // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
             currentVis.modalOpen = setIsModalOpen;
@@ -198,7 +199,7 @@ export function withVisCanvas<T extends IVisualization>(
                 <path fillRule="evenodd" d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z" clipRule="evenodd" />
               </svg> */}
               {/* Currently we are only supporting mobile for Navigation/Win Completion */}
-              {isSmallScreen()
+              {isSmallScreen() && NODE_ENV !== 'test'
                 ? <OverlayLayout
                   currentDate={currentDate}
                   setNewDate={setCurrentDate}
@@ -378,19 +379,28 @@ export function withVisCanvas<T extends IVisualization>(
       const rootId = currentVis.rootData!.data.content;
 
       const children = (((currentVis.rootData!.find(node => node.data.content == currentId)?.parent?.children || currentVis.rootData?.children) as Array<HierarchyNode<NodeContent>>) || []).sort(byStartTime);
-      const sphereNodeDetails = store.get(currentSphereOrbitNodeDetailsAtom);
-      const orbitSiblings: Array<OrbitDescendant> = (currentId == rootId ? [currentVis.rootData] : children).map(node => {
-        const orbitInfo = sphereNodeDetails[node!.data.content];
-        return {
-          id: orbitInfo.id,
-          eH: orbitInfo.eH,
-          orbitName: orbitInfo.name,
-          orbitScale: orbitInfo.scale,
-        }
-      })
+      const sphereNodeDetails = store.get(currentSphereOrbitNodeDetailsAtom) || {};
+
+      const orbitSiblings: Array<OrbitDescendant> =
+        (currentId && rootId && children)
+          ? (currentId == rootId ? [currentVis.rootData] : children)
+            .filter(node => node && node.data) // Ensure node exists
+            .map(node => {
+              const orbitInfo = sphereNodeDetails[node!.data.content] || {};
+              return {
+                id: orbitInfo.id,
+                eH: orbitInfo.eH,
+                orbitName: orbitInfo.name || '',
+                orbitScale: orbitInfo.scale || '',
+              }
+            })
+
+          : [];
 
       const orbitDescendants: Array<OrbitDescendant> = [];
-      if (!!currentOrbitDetails?.eH) {
+      if (allFirstChildDescendantOrbits.current == null &&
+        currentOrbitDetails?.eH == rootId &&
+        currentVis.rootData) {
         calculateFullLineage(currentOrbitDetails.eH);
         allFirstChildDescendantOrbits.current = orbitDescendants;
       }

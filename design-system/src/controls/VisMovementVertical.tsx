@@ -33,7 +33,7 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({
 
   const controls = useAnimation();
   const dragStartY = useRef(0);
-
+  debugger;
   const itemHeight = 24;
   const itemSpacing = 50;
 
