@@ -90,8 +90,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
       : "ListOrbits";
 
   const [addOrbit] = useCreateOrbitMutation({
-    awaitRefetchQueries: !inOnboarding && !!(parentOrbitEh || childOrbitEh),
-    refetchQueries: () => [
+    awaitRefetchQueries: !inOnboarding,
+    refetchQueries: () => typeof console.log("Refetching getOrbitHierarchy for level, sphere", y, sphereEh) == 'undefined' && [
       {
         query: GetOrbitHierarchyDocument,
         variables: {
@@ -352,8 +352,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                   value={values?.frequency}
                   id="frequency"
                   icon={(() => {
-                    const currentValue = values.frequency || Frequency.DailyOrMore_1d; 
-                    return currentValue; 
+                    const currentValue = values.frequency || Frequency.DailyOrMore_1d;
+                    return currentValue;
                   })()}
                   iconSide={"left"}
                   disabled={false}

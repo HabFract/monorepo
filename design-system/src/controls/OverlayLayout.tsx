@@ -62,6 +62,24 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
     return Array.isArray(winData) ? winData.filter(Boolean).length : winData ? 1 : 0;
   }, [workingWinDataForOrbit, currentDate, currentOrbitDetails?.eH]);
 
+  // Add safety check for orbitDescendants
+  const safeOrbitDescendants = useMemo(() => {
+    if (!orbitDescendants) {
+      console.warn('orbitDescendants is null or undefined');
+      return [];
+    }
+    return Array.isArray(orbitDescendants) ? orbitDescendants : [];
+  }, [orbitDescendants]);
+
+  // Add safety check for orbitSiblings
+  const safeOrbitSiblings = useMemo(() => {
+    if (!orbitSiblings) {
+      console.warn('orbitSiblings is null or undefined');
+      return [];
+    }
+    return Array.isArray(orbitSiblings) ? orbitSiblings : [];
+  }, [orbitSiblings]);
+
   const handleSaveWins = () => {
     if (currentWins == null) return;
     handlePersistWins()
@@ -81,8 +99,8 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   return (
     <section className="overlay-layout-container">
       <SwipeUpTab relativeElements={<span className="vis-controls-container">
-        <VisMovementLateral currentOrbitDetails={currentOrbitDetails} orbitSiblings={orbitSiblings} goLeftAction={actions.goLeft} goRightAction={actions.goRight}></VisMovementLateral>
-        <VisMovementVertical currentOrbitDetails={currentOrbitDetails} orbitDescendants={orbitDescendants} moveUpAction={actions.goUp} moveDownAction={actions.goDown}></VisMovementVertical>
+        <VisMovementLateral currentOrbitDetails={currentOrbitDetails} orbitSiblings={safeOrbitSiblings} goLeftAction={actions.goLeft} goRightAction={actions.goRight}></VisMovementLateral>
+        <VisMovementVertical currentOrbitDetails={currentOrbitDetails} orbitDescendants={safeOrbitDescendants} moveUpAction={actions.goUp} moveDownAction={actions.goDown}></VisMovementVertical>
         <div className="center-marker"></div>
       </span>} verticalOffset={calendarHeightWithPadding}>
         {({ bindDrag }) => (

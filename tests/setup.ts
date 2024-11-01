@@ -57,10 +57,6 @@ export function resetMocks() {
   vi.resetAllMocks();
 }
 
-vi.mock("../ui/src/hooks/useRedirect", async () => {
-  return { useRedirect: () => null };
-});
-
 // Mock vis helpers
 vi.mock("../ui/src/components/vis/helpers", async (importOriginal) => {
   const actual = (await importOriginal()) as any;

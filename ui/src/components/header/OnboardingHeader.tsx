@@ -75,7 +75,7 @@ function getLastOnboardingState(state: string) {
 }
 const getNextOnboardingState = (state: string) => {
   if (state.match(/Onboarding(\d+)/) == null) return "Home";
-  if (state == "Onboarding3") return "PreloadAndCache";
+  if (state == "Onboarding3") return "Vis";
   return `Onboarding${+state.match(/Onboarding(\d+)/)![1] + 1}`;
 };
 

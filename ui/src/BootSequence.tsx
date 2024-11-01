@@ -39,11 +39,11 @@ const useConnection = () => {
 
 const BootSequence: React.FC = () => {
   const [_, transition] = useStateTransition();
-  const [dataPreloaded, setDataPreloaded] = useState(false);
+  const dataPreloaded = useRef<boolean>(false)
   const { connected, apolloClient } = useConnection();
 
   const handleDataPreloaded = useCallback(() => {
-    setDataPreloaded(true);
+    dataPreloaded.current = true;
     transition("Home");
   }, [transition]);
 
@@ -51,7 +51,7 @@ const BootSequence: React.FC = () => {
     return <Spinner aria-label="Connecting..." size="xl" className="full-spinner" />;
   }
 
-  if (!dataPreloaded) {
+  if (!dataPreloaded.current) {
     return (
       <ApolloProvider client={apolloClient}>
         <PreloadAllData onPreloadComplete={handleDataPreloaded} />

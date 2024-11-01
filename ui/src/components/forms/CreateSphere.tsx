@@ -122,7 +122,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
             payload?.updateSphere?.actionHash;
           const props =
             state == "Onboarding1" ? { sphereEh: eH } : { sphereAh: aH };
-          console.log('props :>> ', props);
+
           transition(
             state == "Onboarding1" ? "Onboarding2" : "ListSpheres",
             props,

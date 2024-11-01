@@ -147,7 +147,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
       }
       return Promise.resolve(sleep(100))
     },
-    [sphereNodes],
+    [data],
   );
   const debouncedFetchData = debounce(fetchData, 3000);
 

@@ -20,20 +20,23 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const currentOrbitDetailsIndex = useMemo(() => {
-    if (!currentOrbitDetails || !currentOrbitDetails?.id) return 0;
-    const possibleCurrentOrbitIndex = orbitDescendants.findIndex(orbit => orbit.id === currentOrbitDetails.id)
-    const newIndex = !!currentOrbitDetails
-    ? possibleCurrentOrbitIndex
-    : 0;
-    
-    return newIndex
-  }, [currentOrbitDetails?.eH])
+    // Guard against null/undefined currentOrbitDetails
+    if (!currentOrbitDetails?.id) return 0;
+
+    const possibleCurrentOrbitIndex = orbitDescendants.findIndex(
+      orbit => orbit.id === currentOrbitDetails.id
+    );
+
+    // Return 0 if index not found (-1)
+    return possibleCurrentOrbitIndex >= 0 ? possibleCurrentOrbitIndex : 0;
+  }, [currentOrbitDetails?.id, orbitDescendants]); // Updated dependencies
+
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const controls = useAnimation();
   const dragStartY = useRef(0);
-  debugger;
+
   const itemHeight = 24;
   const itemSpacing = 50;
 
@@ -47,7 +50,7 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({
 
   useEffect(() => {
     const offset = calculateOffset();
-    if(selectedIndex !== currentOrbitDetailsIndex) setSelectedIndex(currentOrbitDetailsIndex);
+    if (selectedIndex !== currentOrbitDetailsIndex) setSelectedIndex(currentOrbitDetailsIndex);
 
     controls.start({ y: offset - selectedIndex * (itemHeight + itemSpacing) });
   }, [selectedIndex, controls, currentOrbitDetailsIndex, currentOrbitDetails?.id]);
@@ -103,10 +106,11 @@ const VisMovementVertical: React.FC<VisMovementVerticalProps> = ({
 
   const handlePlanetSelect = (index: number) => {
     setSelectedIndex(index);
+    // Use the actual orbit entity handle instead of index
     if (index > selectedIndex) {
-      moveDownAction(index);
+      moveDownAction(orbitDescendants[index]?.eH);
     } else if (index < selectedIndex) {
-      moveUpAction(index);
+      moveUpAction(orbitDescendants[index]?.eH);
     }
   };
 

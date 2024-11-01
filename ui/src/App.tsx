@@ -122,8 +122,8 @@ function App({ children: pageComponent }) {
               submitBtn: state.match("Onboarding") && (
                 <OnboardingContinue
                   onClick={() => {
-                    const nextStage = getNextOnboardingState(state);  
-                    const lastStageCompleted = nextStage == "PreloadAndCache"
+                    const nextStage = getNextOnboardingState(state);
+                    const lastStageCompleted = nextStage == "Vis"
                     transition(nextStage, lastStageCompleted ? {} : {})
                   }}
                 />
