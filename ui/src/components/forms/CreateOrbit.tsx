@@ -31,6 +31,7 @@ import { OrbitFetcher } from "./utils";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state/hierarchy";
 import { useUpdateOrbitMutation } from "../../hooks/gql/useUpdateOrbitMutation";
+import { getDisplayName, getFrequencyDisplayName } from "../vis/helpers";
 
 // Define the validation schema using Yup
 export const OrbitValidationSchema = Yup.object().shape({
@@ -438,25 +439,3 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
 };
 
 export default CreateOrbit;
-
-export function getDisplayName(scale: Scale) {
-  switch (scale) {
-    case Scale.Astro:
-      return "Astronomic";
-    case Scale.Sub:
-      return "Sub-astronomic";
-    case Scale.Atom:
-      return "Atomic";
-  }
-}
-
-export function getFrequencyDisplayName(freq: Frequency) {
-  switch (freq) {
-    case Frequency.DailyOrMore_10d:
-      return "10/day";
-    // case Scale.Sub:
-    //   return "Sub-astronomic";
-    default:
-      return freq;
-  }
-}
