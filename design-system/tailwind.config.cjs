@@ -41,6 +41,7 @@ const tailwindConfig = {
       },
       lineHeight: {
         sm: "17.76px",
+        lg: "20px",
         std: "24px",
       },
       fontSize: {
@@ -58,6 +59,12 @@ const tailwindConfig = {
           500: "rgba(69, 97, 95, 0.5)",
         },
         bg: "#242424", // RAISIN_BLACK
+
+        // NEW DESIGNER COLOURS
+        "modal-bg": "#3A4040",
+        "modal-bottom-bg": "#02b197",
+
+
         "menu-bg": "#3A3A3A",
 
         warn: {

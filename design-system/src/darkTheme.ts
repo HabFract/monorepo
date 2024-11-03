@@ -1,5 +1,59 @@
 import { CustomFlowbiteTheme } from "flowbite-react";
 
+const darkThemeModal: CustomFlowbiteTheme["modal"] = {
+"root": {
+    "base": "fixed inset-x-0 top-0 z-50 h-screen overflow-y-auto overflow-x-hidden md:inset-0 md:h-full",
+    "show": {
+      "on": "flex bg-black bg-opacity-50 dark:bg-opacity-80",
+      "off": "hidden"
+    },
+    "sizes": {
+      "sm": "max-w-sm",
+      "md": "max-w-md",
+      "lg": "max-w-lg",
+      "xl": "max-w-xl",
+      "2xl": "max-w-2xl",
+      "3xl": "max-w-3xl",
+      "4xl": "max-w-4xl",
+      "5xl": "max-w-5xl",
+      "6xl": "max-w-6xl",
+      "7xl": "max-w-7xl"
+    },
+    "positions": {
+      "top-left": "items-start justify-start",
+      "center": "items-center justify-center",
+      "top-center": "items-start justify-center",
+      "top-right": "items-start justify-end",
+      "center-left": "items-center justify-start",
+      "center-right": "items-center justify-end",
+      "bottom-right": "items-end justify-end",
+      "bottom-center": "items-end justify-center",
+      "bottom-left": "items-end justify-start"
+    }
+  },
+  "content": {
+    "base": "relative h-full w-full p-4 md:h-auto",
+    "inner": "relative bg-modal-bg flex max-h-[90dvh] flex-col rounded-2xl shadow dark:bg-gray-700"
+  },
+  "body": {
+    "base": "flex-1 overflow-auto p-4",
+    "popup": "pt-0"
+  },
+  "header": {
+    "base": "flex items-center justify-between rounded-t border-b-0 p-4 text-center dark:border-gray-600",
+    "popup": "border-b-0 p-2",
+    "title": "p-4 font-medium text-white text-opacity-70 leading-std text-std-input w-full",
+    "close": {
+      "base": "ml-auto absolute top-4 right-4 items-center rounded-xl bg-transparent p-1 text-sm text-white hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white",
+      "icon": "h-6 w-6"
+    }
+  },
+  "footer": {
+    "base": "flex items-center space-x-2 bg-modal-bottom-bg text-white font-sans font-medium text-center leading-lg rounded-2xl p-4 rounded-t-none",
+    "popup": "border-t"
+  }
+};
+
 const darkThemeTextInput: CustomFlowbiteTheme["textInput"] = {
   field: {
     icon: {
@@ -88,6 +142,7 @@ const darkThemeInputLabel: CustomFlowbiteTheme["label"] = {
 };
 
 const darkTheme = {
+  modal: darkThemeModal,
   textInput: darkThemeTextInput,
   toggleSwitch: darkThemeToggleSwitch,
   select: darkThemeSelect,
@@ -97,6 +152,7 @@ const darkTheme = {
 };
 
 export {
+  darkThemeModal,
   darkThemeButton,
   darkThemeTextInput,
   darkRadioTheme,
