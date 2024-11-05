@@ -3,14 +3,6 @@ g.node-subgroup {
   pointer-events: all;
 }
 
-/* Gridlines */
-#vis {
-  background-size: calc(100vw/12) calc(100vw/12);
-  background-image:
-    linear-gradient(to right, rgba(57, 57, 57, 1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(57, 57, 57, 1) 1px, transparent 1px);
-}
-
 /* Orbit Label and Actions container */
 .orbit-overlay-container {
   @apply absolute;
@@ -47,9 +39,9 @@ g.node-subgroup {
 
 /* Tick icon for winning node */
 .node-vector-group.winning::after {
-  @apply absolute top-0 h-full w-full;
+  @apply absolute top-1 h-full w-full;
   content: "";
-  left: 67%;
+  left: 2%;
   z-index: 16;
   background: url(/assets/icons/plannit-winning-icon.svg) no-repeat;
   background-size: 1.5rem;

@@ -18,14 +18,13 @@ import {
   Scale,
   useUpdateOrbitMutation,
 } from "../../graphql/generated";
-import { getDisplayName } from "../forms/CreateOrbit";
 import { useCreateOrbitMutation } from "../../hooks/gql/useCreateOrbitMutation";
 import { Label } from "flowbite-react";
 import { serializeAsyncActions } from "../../graphql/utils";
 import { store } from "../../state/store";
 import { Refinement } from "../forms/RefineOrbit";
 import { OrbitFetcher } from "../forms/utils";
-import { isSmallScreen } from "../vis/helpers";
+import { getDisplayName, isSmallScreen } from "../vis/helpers";
 import { currentSphereHashesAtom } from "../../state/sphere";
 
 interface OrbitSubdivisionListProps {

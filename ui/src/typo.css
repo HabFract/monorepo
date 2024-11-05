@@ -54,27 +54,6 @@ body {
   font-family: "Nunito", Arial, sans-serif;
 }
 
-p.form-description,
-*[data-testid="modal-overlay"] > div > div h3 {
-  line-height: 24px;
-  font-size: 1rem;
-  font-weight: 300;
-  @apply font-sans;
-}
-
-*[data-testid="modal-overlay"] > div > div h3 {
-  font-family: Nunito, Arial, sans-serif;
-  color: white;
-  margin: 1rem 0 0.5rem 0;
-  @apply text-2xl;
-}
-
-*[data-testid="modal-overlay"] p {
-  font-family: Nunito, Arial, sans-serif;
-  color: white;
-  @apply m-4 mb-2 text-xl;
-}
-
 p.form-description em,
 .helper-text em {
   font-weight: medium;
@@ -111,8 +90,7 @@ p.form-description em,
     line-height: 2rem;
     font-size: 1.2rem;
   }
-  p.form-description,
-  *[data-testid="modal-overlay"] > div > div h3 {
+  p.form-description {
     text-align: center;
   }
 }

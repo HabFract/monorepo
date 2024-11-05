@@ -20,23 +20,30 @@ const VisModal: React.FC<VisModalProps> = ({
   children
 }: VisModalProps) => {
   return (
-      <Modal
-        theme={darkThemeModal}
-        dismissible
-        size={size}
-        position={"center"}
-        show={isModalOpen}
-        onClose={onClose as any}
-      >
-        <Modal.Header>
-          {children}
-        </Modal.Header>
-        <Modal.Body>
-        </Modal.Body>
-        <Modal.Footer>
-          {modalAnnotation}
-        </Modal.Footer>
-      </Modal>
+    <Modal
+      dismissible
+      
+      // theme={darkThemeModal} // Due to a bug in propagating themes in React Flowbite, see common.css for class overrides
+      size={size}
+      position={"center"}
+      show={isModalOpen}
+      onClose={onClose as any}
+    >
+      <Modal.Header
+        className={!title ? "hide-title" : ""}
+        theme={darkThemeModal?.header}>
+        {title}
+      </Modal.Header>
+      <Modal.Body
+        className={!modalAnnotation ? "hide-footer" : ""}
+        theme={darkThemeModal?.body}>
+        {children}
+      </Modal.Body>
+      <Modal.Footer
+        theme={darkThemeModal?.footer}>
+        {modalAnnotation}
+      </Modal.Footer>
+    </Modal>
   )
 }
 

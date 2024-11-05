@@ -34,8 +34,6 @@ import HomeContinue from "./components/home/HomeContinueButton";
 import Toast from "./components/Toast";
 import { useToast } from "./contexts/toast";
 import { currentSphereDetailsAtom, currentSphereHashesAtom } from "./state/sphere";
-import { SphereDetails } from "./state/types/sphere";
-import { EntryHashB64 } from "@holochain/client";
 
 function App({ children: pageComponent }) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing

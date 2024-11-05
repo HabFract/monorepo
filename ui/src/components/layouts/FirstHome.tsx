@@ -1,12 +1,10 @@
-import { useRedirect } from "../../hooks/useRedirect";
-
 function FirstHomeLayout({ startBtn, firstVisit = true }: any) {
   return (
     <div className="home-layout">
       <div className="action">{firstVisit && startBtn}</div>
-      <div className="cta">
+      <div className="welcome-cta">
         <img
-          className="w-64 pl-2 mb-2"
+          className="logo"
           src="assets/logo-dark-transparent-horizontal.svg"
         />
         <img className="make-or-break-img" src="assets/make-or-break.svg" />

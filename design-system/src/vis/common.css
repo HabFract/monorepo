@@ -1,6 +1,7 @@
 /* Orbit Vis Label */
 .orbit-label-container {
-  @apply transition-opacity duration-300 shadow-sm relative z-10 bg-secondary p-4 flex gap-1 flex-col rounded-xl text-white font-sans text-sm font-medium leading-sm;
+  @apply transition-opacity duration-300 shadow-sm relative z-10 p-4 flex gap-1 flex-col rounded-xl text-white font-sans text-sm font-medium leading-sm;
+  background-color: rgb(58 64 64);
   max-width: 75vw;
   -webkit-hyphens: auto;
   -moz-hyphens: auto;
@@ -25,7 +26,8 @@
   position: absolute;
   
   border: 12px solid transparent;
-  @apply border-b-secondary;
+  /* @apply border-b-secondary; */
+  border-bottom-color: rgb(58 64 64);
   left: calc(50% - 8px);
   top: -17px;
 }
@@ -46,10 +48,6 @@
 
 .orbit-vis {
   border-radius: 1rem;
-}
-
-label {
-  @apply font-heading uppercase text-xs text-white;
 }
 
 div[role="progressbar"] {
@@ -109,19 +107,6 @@ div[role="progressbar"] > div.astro > div {
   padding-left: 1rem !important;
 }
 
-/* Flowbite modal overrides */
-/* Header */
-[data-testid="modal-overlay"] > div > div > div:first-child {
-  padding: 1rem !important;
-  display: flex;
-  align-items: center;
-}
-
-[data-testid="modal-overlay"] > div,
-[data-testid="modal-overlay"] > div > div > div:last-child {
-  padding: 0 !important;
-}
-
 @media screen and (min-width: 440px) {
   .sphere-pie svg {
     @apply -ml-2;
@@ -136,18 +121,5 @@ div[role="progressbar"] > div.astro > div {
   }
   .sphere-pie .pie {
     min-height: 18rem;
-  }
-
-  /* Flowbite modal overrides */
-  [data-testid="modal-overlay"] > div {
-    height: 90vh;
-    @apply p-4;
-  }
-  [data-testid="modal-overlay"] > div > div {
-    height: 100%;
-    overflow: hidden;
-  }
-  [data-testid="modal-overlay"] > div > div > div:last-child {
-    height: 100%;
   }
 }

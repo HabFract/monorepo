@@ -40,16 +40,16 @@ const darkThemeModal: CustomFlowbiteTheme["modal"] = {
     "popup": "pt-0"
   },
   "header": {
-    "base": "flex items-center justify-between rounded-t border-b-0 p-4 text-center dark:border-gray-600",
+    "base": "flex mr-4 items-center justify-between rounded-t border-b-0 p-4 pb-10 text-center dark:border-gray-600",
     "popup": "border-b-0 p-2",
-    "title": "p-4 font-medium text-white text-opacity-70 leading-std text-std-input w-full",
+    "title": "font-sans font-bold text-white text-lg text-opacity-70 leading-std w-full",
     "close": {
-      "base": "ml-auto absolute top-4 right-4 items-center rounded-xl bg-transparent p-1 text-sm text-white hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white",
+      "base": "ml-auto absolute top-4 right-4 items-center rounded-xl bg-transparent p-1 text-white hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white",
       "icon": "h-6 w-6"
     }
   },
   "footer": {
-    "base": "flex items-center space-x-2 bg-modal-bottom-bg text-white font-sans font-medium text-center leading-lg rounded-2xl p-4 rounded-t-none",
+    "base": "absolute bottom-0 inset-x-0 flex items-center space-x-2 bg-modal-bottom-bg text-[#ffffff] text-[14px] bg-opacity-20 justify-center font-sans font-medium text-center leading-lg rounded-2xl p-4 rounded-t-none",
     "popup": "border-t"
   }
 };
@@ -63,13 +63,13 @@ const darkThemeTextInput: CustomFlowbiteTheme["textInput"] = {
     input: {
       colors: {
         default:
-          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input",
+          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-primary focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input",
         danger:
-          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-danger",
+          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-primary focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-danger",
         success:
-          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-link",
+          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-primary focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-link",
         warning:
-          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-warn",
+          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-primary focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-warn",
       },
     },
   },
@@ -127,20 +127,6 @@ const darkThemeButton: CustomFlowbiteTheme["button"] = {
   base: "w-auto flex justify-center items-center text-center border border-gray-300",
 };
 
-const darkThemeInputLabel: CustomFlowbiteTheme["label"] = {
-  root: {
-    base: "text-std-input",
-    disabled: "opacity-50",
-    colors: {
-      // "default": "color-gray-900 dark:color-white",
-      // "info": "color-cyan-500 dark:color-cyan-600",
-      // "failure": "color-red-700 dark:color-red-500",
-      // "warning": "color-yellow-500 dark:color-yellow-600",
-      // "success": "color-green-700 dark:color-green-500"
-    },
-  },
-};
-
 const darkTheme = {
   modal: darkThemeModal,
   textInput: darkThemeTextInput,
@@ -148,7 +134,6 @@ const darkTheme = {
   select: darkThemeSelect,
   radio: darkRadioTheme,
   button: darkThemeButton,
-  label: darkThemeInputLabel,
 };
 
 export {
@@ -157,7 +142,6 @@ export {
   darkThemeTextInput,
   darkRadioTheme,
   darkThemeSelect,
-  darkThemeInputLabel,
   darkThemeToggleSwitch,
 };
 

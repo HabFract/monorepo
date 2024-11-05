@@ -1,12 +1,11 @@
-label {
-  @apply text-base font-std text-title !important;
-  margin-bottom: 6px !important;
-  text-transform: capitalize !important;
+/* Label Typo */
+.form-field label {
+  @apply text-title font-sans !important;
+  margin-bottom: 8px !important;
 
-  font-family: "Lexend", "Roboto", "Arial", sans-serif;
-  font-weight: 300 !important;
+  font-weight: 700 !important;
   font-size: 14px !important;
-  line-height: 20px !important;
+  line-height: 24px !important;
 }
 
 .textarea {
@@ -75,7 +74,7 @@ select:not([size]) {
 /* Labels */
 
 span.reqd {
-  @apply text-link text-base;
+  @apply text-danger text-base font-bold font-sans font-medium;
 }
 
 .error-label {

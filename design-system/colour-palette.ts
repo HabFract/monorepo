@@ -2,7 +2,7 @@
 export const RAISIN_BLACK = "rgba(36, 36, 36, 1)";
 
 // Primary
-export const KEPPEL = "rgba(54, 175, 152, 1)";
+export const KEPPEL = "rgba(10, 117, 87, 1)";
 
 // Secondary
 export const DEEP_SPACE = "rgba(69, 97, 95, 1)";
@@ -13,7 +13,7 @@ export const EMERALD = "rgba(95, 197 ,127, 1)";
 export const PARADISE_PINK = "rgba(232, 57, 98, 1)";
 
 // Keywords/links
-export const SEA_GREEN = "rgba(11, 254, 184, 1)";
+export const SEA_GREEN = "#12d39d";
 
 // Warn
 export const RIPE_MANGO = "rgba(251,200,43, 1)";

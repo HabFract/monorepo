@@ -51,12 +51,12 @@ const tailwindConfig = {
       },
       colors: {
         primary: {
-          DEFAULT: "rgba(54, 175, 152, 1)", // KEPPEL
-          500: "rgba(54, 175, 152, .5)",
+          DEFAULT: "rgba(10, 117, 87, 1)", // KEPPEL
+          500: "rgba(10, 117, 87, .5)",
         },
         secondary: {
-          DEFAULT: "rgba(69, 97, 95, 1)", // DEEP SPACE
-          500: "rgba(69, 97, 95, 0.5)",
+          DEFAULT: "rgba(29, 64, 76, 1)", // DEEP SPACE
+          500: "rgba(29, 64, 76, 0.5)",
         },
         bg: "#242424", // RAISIN_BLACK
 
@@ -77,11 +77,11 @@ const tailwindConfig = {
         }, // DEEP CARMINE
 
         win: {
-          complete: "#0bfeb8",
+          complete: "#12d39d",
           incomplete: "rgba(255, 255, 255, 0.1)"
         },
 
-        title: "rgba(219,228,226, 1)", // CHINESE_WHITE
+        title: "#fefefe", // CHINESE_WHITE
 
         text: "rgba(255,255,255, 1)", // WHITE
 

@@ -62,10 +62,6 @@ form {
   justify-content: center;
 }
 
-span.reqd {
-  @apply text-link font-bold;
-}
-
 /* Date pickers */
 
 .ant-picker {

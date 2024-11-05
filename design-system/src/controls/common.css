@@ -204,7 +204,7 @@ div.handle span {
 
 .win-count-container,
 .streak-count-container {
-  @apply min-h-24 w-1/2 m-0 p-2 bg-secondary rounded-2xl grid gap-3;
+  @apply min-h-24 w-1/2 m-0 p-2 bg-modal-bg rounded-2xl grid gap-3;
   row-gap: 4px;
   grid-template-rows: 1.5rem auto;
   grid-template-columns: 1fr 1fr 1fr;
@@ -220,7 +220,7 @@ div.handle span {
 }
 
 .win-count-container.winning .title, .streak-count-container.winning .title {
-  @apply text-yellow-400;
+  color: rgba(255, 218, 21,0.75);
   transition: color .5s ease-in;
 }
 

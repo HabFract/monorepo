@@ -81,7 +81,7 @@ export const SelectInputField: React.FC<{
     disabled,
     onBlur,
   } = props;
-
+console.log('options :>> ', options);
   return (
     <>
       <Select

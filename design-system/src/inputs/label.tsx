@@ -1,6 +1,8 @@
 import { Label } from "flowbite-react";
 import "./common.css";
 import { useState } from "react";
+import { getIconSvg } from "../icons/icons";
+import VisModal from "../modals/VisModal";
 
 export interface LabelProps {
   id: string;
@@ -8,7 +10,7 @@ export interface LabelProps {
   isListItem?: boolean;
   required?: boolean;
   withInfo?: boolean;
-  onClickInfo?: () => any;
+  onClickInfo?: () => { title: string, body: string };
   children: React.ReactNode;
 }
 
@@ -31,59 +33,34 @@ const withLabel: React.FC<LabelProps> = ({
       <div
         className={
           isListItem
-            ? "flex justify-end gap-2 h-6 w-6"
-            : "flex justify-between h-6"
+            ? "flex justify-end gap-2 h-6 w-6 mb-2"
+            : "flex justify-between h-6 mb-2"
         }
-      >
-        <Label
-          className={isListItem ? "pt-1" : ""}
-          htmlFor={id}
-          value={labelValue}
-        />
-        <div className="flex justify-between gap-2">
-          {withInfo && (
-            <>
-              <div
-                id="tooltip-right"
-                role="tooltip"
-                className={tooltipVisible ? "" : "invisible"}
-                onClick={(e) => {
-                  setTooltipVisible(false);
-                }}
-              >
-                <h4>(Click To Hide)</h4>
-                <h3>{onClickInfo?.()?.title}</h3>
-                <p>{onClickInfo?.()?.body}</p>
-                <div className="tooltip-arrow" data-popper-arrow></div>
-              </div>
-              <div
-                className="flex h-full items-start justify-end text-primary w-8 h-8 pr-0 mb-2 cursor-pointer"
-                onClick={(e) => {
-                  setTooltipVisible(!tooltipVisible);
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-4 h-4"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                  />
-                </svg>
-              </div>
-            </>
-          )}
-
+      ><div className="flex justify-between gap-1">
+          <Label
+            className={isListItem ? "pt-1" : ""}
+            htmlFor={id}
+            value={labelValue}
+          />
           {required ? <span className="reqd">*</span> : null}
         </div>
+
+        <div className="flex justify-between gap-2">
+          {withInfo && (
+              <div>
+                <button onClick={() => setTooltipVisible(true)}>
+                  {getIconSvg('info')({})}
+                </button>
+                <VisModal modalAnnotation="" title={onClickInfo?.()?.title as string} isModalOpen={tooltipVisible} size="lg" onClose={() => setTooltipVisible(false)}>
+                  {onClickInfo?.()?.body.split("//").map((para, idx) => <p key={idx}>{para}</p>)}
+                </VisModal>
+              </div>
+          )}
+        </div>
+
       </div>
       {children}
+
     </div>
   );
 };

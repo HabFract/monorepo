@@ -127,7 +127,7 @@ div[data-testid="flowbite-dropdown"] button {
 
 
 .btn.btn-circle-icon {
-  @apply h-6 w-6 border-0 text-white rounded-full bg-primary text-black p-4;
+  @apply h-6 w-6 border-0 text-title rounded-full bg-primary p-4;
 }
 .btn.btn-circle-icon:hover {
   @apply bg-primary-500 border-0;
