@@ -152,6 +152,13 @@ export function getIconSvg(
           <path d="M10.6667 6L1.33335 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
       );
+    case "lock":
+      return () => (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 9V7C8 4.79086 9.79086 3 12 3V3C14.2091 3 16 4.79086 16 7V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M3 11C3 9.89543 3.89543 9 5 9H19C20.1046 9 21 9.89543 21 11V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V11ZM12.75 15.1007C13.1012 14.8609 13.3318 14.4574 13.3318 14C13.3318 13.2645 12.7355 12.6682 12 12.6682C11.2645 12.6682 10.6682 13.2645 10.6682 14C10.6682 14.4574 10.8988 14.8609 11.25 15.1007V17C11.25 17.4142 11.5858 17.75 12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V15.1007Z" fill="white"/>
+        </svg>
+      );
     case "info":
       return () => (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

@@ -47,6 +47,7 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
               icon={"tag"}
               iconSide={"left"}
               withInfo={true}
+              isPassword={true}
               onClickInfo={() => ({
                 title: "Why don't I have traditional login options?",
                 body: "This is what we call a Web 3 application - congratulations on being a part of the next web! //As a consequence there is no corporate cloud login, and all you need to be secure is a safe password.//Entering it again here is how you activate your public and private keys - your digital signature in the Planitt universe.// Write it somewhere and store it securely, since there is no password retrieval: you are responsible for your own keys.",

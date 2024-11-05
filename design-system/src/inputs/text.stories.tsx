@@ -18,6 +18,7 @@ export interface TextInputProps {
   onChange?: Function;
   onBlur?: FocusEventHandler;
   onClickInfo?: () => any;
+  isPassword?: boolean;
   value?: string;
   theme?: string;
 }

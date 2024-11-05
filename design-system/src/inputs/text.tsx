@@ -15,6 +15,7 @@ const TextInput: React.FC<TextInputProps> = ({
   placeholder,
   labelValue,
   isListItem,
+  isPassword,
   onChange,
   onBlur,
   required,
@@ -59,7 +60,7 @@ const TextInput: React.FC<TextInputProps> = ({
         icon={iconSide == "left" ? getIconSvg(icon) : undefined}
         rightIcon={iconSide == "right" ? getIconSvg(icon) : undefined}
         sizing={size}
-        type="text"
+        type={isPassword ? "password" : "text"}
         placeholder={placeholder}
         disabled={disabled}
         required={required}
@@ -91,6 +92,7 @@ export const TextInputField: React.FC<{
     onClickInfo,
     disabled,
     onBlur,
+    isPassword,
     isListItem,
   } = props;
   return (
@@ -103,13 +105,14 @@ export const TextInputField: React.FC<{
         placeholder={placeholder}
         labelValue={labelValue}
         isListItem={isListItem}
+        isPassword={isPassword}
         errored={touched[field.name] && errors[field.name]}
         required={required}
         disabled={!!disabled}
         withInfo={!!withInfo}
         onClickInfo={onClickInfo}
         iconSide={iconSide || "left"}
-        icon={icon}
+        icon={!isPassword ? icon : getIconSvg("lock")}
         onBlur={onBlur}
         onChange={(e) => {
           setFieldValue(field.name, e.target.value);
