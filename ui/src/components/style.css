@@ -18,7 +18,7 @@ nav.side-nav ul[role="menu"] {
   padding-bottom: 16px;
   padding-top: 56px;
   
-  @apply bg-menu-bg text-title;
+  @apply dark:bg-surface-overlay-dark text-title;
   border-bottom-left-radius: 0px;
   border-top-left-radius: 0px;
 }
@@ -281,7 +281,7 @@ nav.side-nav+.page-container .sphere-card.list-header button.add-orbit {
 }
 
 ul[role="menu"] li:hover span {
-  @apply text-link;
+  @apply dark:text-accent-dark;
 }
 
 ul[role="menu"] .ant-menu-submenu-selected>.ant-menu-submenu-title {
@@ -394,7 +394,7 @@ button[data-testid="dark-themetheme-toggle"]:active {
 
 button[data-testid="dark-themetheme-toggle"]:active,
 .toggle-expanded-menu:active span {
-  @apply text-link;
+  @apply dark:text-accent-dark;
 }
 
 .toggle-expanded-menu:active,

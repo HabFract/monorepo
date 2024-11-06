@@ -8,7 +8,7 @@ const Toast: React.FC = () => {
 
   return (
     <div
-      className="toast left-2 flex m-2 p-2 gap-2 fixed top-2 right-2 z-100 rounded-xl bg-menu-bg"
+      className="toast left-2 flex m-2 p-2 gap-2 fixed top-2 right-2 z-100 rounded-xl dark:bg-surface-overlay-dark"
       style={{ zIndex: 200, maxWidth: "24rem" }}
     >
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-title">

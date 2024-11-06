@@ -2,7 +2,7 @@
 
 .home-layout {
   --vertical-section-spacing: 2rem;
-  @apply flex justify-around h-full w-full;
+  @apply flex justify-around w-full h-full;
 }
 
 .home-layout .logo {
@@ -10,7 +10,7 @@
 }
 
 .home-layout h3 {
-  @apply font-sans font-std leading-std text-base text-white opacity-75;
+  @apply font-std leading-std font-sans text-base text-white opacity-75;
 }
 
 .home-layout .welcome-cta {
@@ -27,7 +27,7 @@
 
 .home-layout .login-options {
   height: calc(70vh - var(--vertical-section-spacing));
-  @apply absolute w-full bottom-0 flex flex-col gap-2 px-4 py-6 bg-modal-bg rounded-3xl rounded-b-none; 
+  @apply dark:bg-surface-elevated-dark rounded-3xl absolute bottom-0 flex flex-col w-full gap-2 px-4 py-6 rounded-b-none; 
 }
 
 .home-layout .login-options .form-field {
@@ -49,7 +49,7 @@
 /* Onboarding */
 
 .onboarding-layout {
-  @apply flex justify-between flex-col gap-2 p-2 w-full;
+  @apply flex flex-col justify-between w-full gap-2 p-2;
   overflow-y: auto;
 }
 
@@ -60,6 +60,6 @@
   padding-top: 64px;
 }
 .vis-layout .header-action {
-  @apply fixed top-0 inset-x-0;
+  @apply fixed inset-x-0 top-0;
   z-index: 100;
 }

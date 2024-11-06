@@ -25,92 +25,148 @@ const tailwindConfig = {
     },
   ],
   theme: {
-    textTransform: {
-      uppercase: "uppercase",
-    },
     fontFamily: {
       sans: ["Manrope, Nunito", "Arial"],
       heading: ["Manrope", "Arial"],
     },
     extend: {
       fontWeight: {
-        std: 300,
-        medium: 400,
-        semibold: 700,
-        bold: 900,
+        // New semantic names
+        light: 300,
+        normal: 400,
+        bold: 700,
+        extrabold: 900,
+        
+        // Deprecated names - to be removed
+        std: 300,        // use 'light' instead
+        medium: 400,     // use 'normal' instead
+        semibold: 700,   // use 'bold' instead
+        'std-bold': 900, // use 'extrabold' instead
       },
       lineHeight: {
-        sm: "17.76px",
-        lg: "20px",
-        std: "24px",
+        // New semantic names
+        tight: "17.76px",
+        normal: "20px",
+        relaxed: "24px",
+        
+        // Deprecated names - to be removed
+        sm: "17.76px",   // use 'tight' instead
+        lg: "20px",      // use 'normal' instead
+        std: "24px",     // use 'relaxed' instead
       },
       fontSize: {
-        "sm": "13px",
-        "std-input": "14px",
+        // New semantic names
+        xs: "13px",
+        sm: "14px",
         base: "16px",
+        
+        // Deprecated names - to be removed
+        'std-sm': "13px",     // use 'xs' instead
+        'std-input': "14px",  // use 'sm' instead
+        'std-base': "16px",   // use 'base' instead
       },
       colors: {
+        // Base semantic tokens
+        surface: {
+          DEFAULT: '#ffffff',
+          dark: '#242424',
+          overlay: {            // for overlay controls in the Vis
+            DEFAULT: '#cecece',
+            dark: "#3A3A3A"
+          },
+          elevated: {           // for cards, modals, forms, dropdowns, etc.
+            DEFAULT: '#ffffff',
+            dark: '#3A3A3A'
+          }
+        },
         primary: {
-          DEFAULT: "rgba(10, 117, 87, 1)", // KEPPEL
-          500: "rgba(10, 117, 87, .5)",
+          DEFAULT: '#0A7557',
+          dark: 'rgba(10, 117, 87, 1)',
+          500: 'rgba(10, 117, 87, .5)',
         },
         secondary: {
-          DEFAULT: "rgba(29, 64, 76, 1)", // DEEP SPACE
-          500: "rgba(29, 64, 76, 0.5)",
+          DEFAULT: '#1d404c',
+          dark: 'rgba(29, 64, 76, 1)',
+          500: 'rgba(29, 64, 76, 0.5)',
         },
-        bg: "#242424", // RAISIN_BLACK
+        accent: {
+          DEFAULT: '#0BFEB8',
+          dark: 'rgba(11,254,184, 1)',
+        },
+        
+        // Component-specific tokens
+        modal: {
+          bg: {
+            DEFAULT: '#ffffff',
+            dark: '#3A4040',
+          },
+          footer: {
+            DEFAULT: '#f8f9fa',
+            dark: '#02b197',
+          }
+        },
+        input: {
+          bg: {
+            DEFAULT: '#ffffff',
+            dark: '#242424',
+          },
+          border: {
+            DEFAULT: '#e5e7eb',
+            dark: 'rgba(255,255,255, 1)',
+          },
+          text: {
+            DEFAULT: '#000000',
+            dark: 'rgba(255,255,255, 1)',
+          },
+          placeholder: {
+            DEFAULT: '#9ca3af',
+            dark: '#4E5454',
+          }
+        },
 
-        // NEW DESIGNER COLOURS
-        "modal-bg": "#3A4040",
-        "modal-bottom-bg": "#02b197",
-
-
-        "menu-bg": "#3A3A3A",
-
+        // Status colors
         warn: {
-          DEFAULT: "rgba(251,200,43, 1)",
-          500: "rgba(251,200,43, .5)",
-        }, // RIPE MANGO
+          DEFAULT: 'rgba(251,200,43, 1)',
+          500: 'rgba(251,200,43, .5)',
+        },
         danger: {
-          DEFAULT: "rgba(231,50,50, 1)",
-          500: "rgba(231,50,50, .5)",
-        }, // DEEP CARMINE
-
-        win: {
-          complete: "#12d39d",
-          incomplete: "rgba(255, 255, 255, 0.1)"
+          DEFAULT: 'rgba(231,50,50, 1)',
+          500: 'rgba(231,50,50, .5)',
+        },
+        success: {
+          DEFAULT: '#12d39d',
+          incomplete: 'rgba(255, 255, 255, 0.1)',
         },
 
-        title: "#fefefe", // CHINESE_WHITE
+        // Text colors
+        text: {
+          DEFAULT: '#000000',
+          dark: '#fefefe',
+          accent: {
+            DEFAULT: '#A2EAC4',
+            dark: '#A2EAC4',
+          }
+        },
+        title: {
+          DEFAULT: '#000000',
+          dark: '#ffffff',
+        },
 
-        text: "rgba(255,255,255, 1)", // WHITE
-
-        "input-placeholder": "#4E5454",
-        "input-bg": "#242424",
-        "input-text": "rgba(255,255,255, 1)",
-        "input-border": "rgba(255,255,255, 1)",
-
-        "text-prim": "#A2EAC4;",
-
-        link: "rgba(11,254,184, 1)", // SEA GREEN
-
-        line: "rgba(169,189,182, 1)", // OPAL
-
+        // Utility colors
         gray: {
-          100: "#c0c7ce", // LAVENDER_GRAY
-          200: "#909896", // SPANISH_GRAY
-          300: "#505554", // DAVYS_GRAY
-          400: "#37383a", // ONYX
-          500: "#00120f", // RICH_BLACK
+          100: '#c0c7ce',
+          200: '#909896',
+          300: '#505554',
+          400: '#37383a',
+          500: '#00120f',
         },
-
         category: {
-          1: "#688acc", // BLUE_GRAY
-          2: "#c0dea9", // MOSS_GREEN
-          3: "#9e5fcb", // AMETHYST
-          4: "#92a8d4", // CEIL
-          5: "#f16d53", // BURNT_SIENNA
-          6: "#e2b657", // SUNRAY
+          1: '#688acc',
+          2: '#c0dea9',
+          3: '#9e5fcb',
+          4: '#92a8d4',
+          5: '#f16d53',
+          6: '#e2b657',
         },
       },
     },
@@ -119,6 +175,7 @@ const tailwindConfig = {
     extend: {
       backgroundColor: ["hover", "focus"],
       textColor: ["hover", "focus"],
+      borderColor: ["hover", "focus"],
     },
   },
 };

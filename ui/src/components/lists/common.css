@@ -13,13 +13,13 @@
 }
 
 .layout {
-  @apply bg-bg p-2 flex flex-col gap-2;
+  @apply dark:bg-surface-dark p-2 flex flex-col gap-2;
   min-height: 100%;
   padding-top: 4px;
 }
 
 .layout.orbit-subdivision-list {
-  @apply bg-bg p-0 flex flex-col gap-2;
+  @apply dark:bg-surface-dark p-0 flex flex-col gap-2;
   min-height: initial;
 }
 
@@ -35,7 +35,7 @@
 }
 
 .sort-filter-icon:hover {
-  @apply text-link;
+  @apply dark:text-accent-dark;
   transform: scale(1.2);
   cursor: pointer;
 }

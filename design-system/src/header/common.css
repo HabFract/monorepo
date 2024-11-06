@@ -1,5 +1,5 @@
 .header-action-container{
-  @apply w-full flex justify-between items-center text-base bg-bg text-white;
+  @apply w-full flex justify-between items-center text-base dark:bg-surface-dark text-white;
   padding: 12px 16px;
   height: 64px;
   max-width: 440px;

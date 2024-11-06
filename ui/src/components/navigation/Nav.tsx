@@ -11,7 +11,7 @@ import Menu, { MenuProps } from "antd/es/menu/menu";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { getIconSvg, Button as DSButton } from "habit-fract-design-system";
 import { Sphere, useGetSpheresQuery } from "../../graphql/generated";
-import { Button, DarkThemeToggle, Spinner } from "flowbite-react";
+import { Button, Spinner } from "flowbite-react";
 import useSideMenuToggle from "../../hooks/useSideMenuToggle";
 import { useToast } from "../../contexts/toast";
 import { store } from "../../state/store";

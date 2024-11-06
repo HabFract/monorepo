@@ -1,10 +1,10 @@
 import { CustomFlowbiteTheme } from "flowbite-react";
 
 const darkThemeModal: CustomFlowbiteTheme["modal"] = {
-"root": {
-    "base": "fixed inset-x-0 top-0 z-50 h-screen overflow-y-auto overflow-x-hidden md:inset-0 md:h-full",
+  "root": {
+    "base": "fixed inset-x-0 top-0 z-50 h-screen w-full overflow-x-hidden overflow-y-auto md:inset-0 md:h-full",
     "show": {
-      "on": "flex bg-black bg-opacity-50 dark:bg-opacity-80",
+      "on": "flex bg-black/50 dark:bg-black/80",
       "off": "hidden"
     },
     "sizes": {
@@ -33,23 +33,23 @@ const darkThemeModal: CustomFlowbiteTheme["modal"] = {
   },
   "content": {
     "base": "relative h-full w-full p-4 md:h-auto",
-    "inner": "relative bg-modal-bg flex max-h-[90dvh] flex-col rounded-2xl shadow dark:bg-gray-700"
+    "inner": "relative flex max-h-[90dvh] flex-col rounded-2xl dark:bg-surface-elevated-dark shadow dark:dark:bg-surface-elevated-dark-dark"
   },
   "body": {
     "base": "flex-1 overflow-auto p-4",
     "popup": "pt-0"
   },
   "header": {
-    "base": "flex mr-4 items-center justify-between rounded-t border-b-0 p-4 pb-10 text-center dark:border-gray-600",
+    "base": "flex items-center justify-between rounded-t border-b-0 p-4 pb-10 text-center mr-4 dark:border-gray-600",
     "popup": "border-b-0 p-2",
-    "title": "font-sans font-bold text-white text-lg text-opacity-70 leading-std w-full",
+    "title": "w-full font-sans font-bold text-lg leading-normal text-white/70",
     "close": {
-      "base": "ml-auto absolute top-4 right-4 items-center rounded-xl bg-transparent p-1 text-white hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white",
+      "base": "absolute right-4 top-4 ml-auto rounded-xl bg-transparent p-1 text-white hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white",
       "icon": "h-6 w-6"
     }
   },
   "footer": {
-    "base": "absolute bottom-0 inset-x-0 flex items-center space-x-2 bg-modal-bottom-bg text-[#ffffff] text-[14px] bg-opacity-20 justify-center font-sans font-medium text-center leading-lg rounded-2xl p-4 rounded-t-none",
+    "base": "absolute inset-x-0 bottom-0 flex items-center justify-center space-x-2 rounded-b-2xl bg-modal-footer-dark/20 p-4 font-sans font-normal text-sm leading-normal text-white",
     "popup": "border-t"
   }
 };
@@ -62,14 +62,14 @@ const darkThemeTextInput: CustomFlowbiteTheme["textInput"] = {
     },
     input: {
       colors: {
-        default:
-          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input",
+        default: 
+          "w-full border border-input-border bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none dark:bg-input-bg-dark dark:text-input-text-dark",
         danger:
-          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-danger",
+          "w-full border border-danger bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none dark:bg-input-bg-dark dark:text-input-text-dark",
         success:
-          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-link",
+          "w-full border border-accent bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none dark:bg-input-bg-dark dark:text-input-text-dark",
         warning:
-          "font-std font-sans leading-std bg-input-bg py-[10px] px-3 hover:bg-gray-500 border-input-border hover:border-text-prim placeholder-input-placeholder border-[1px] placeholder-input-std focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 text-std-input border-warn",
+          "w-full border border-warn bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none dark:bg-input-bg-dark dark:text-input-text-dark"
       },
     },
   },
@@ -80,9 +80,9 @@ const darkThemeToggleSwitch: CustomFlowbiteTheme["toggleSwitch"] = {
     base: "rounded-full border group-focus:ring-4 group-focus:ring-0",
     checked: {
       on: "after:translate-x-full after:border-white",
-      off: "border-0 bg-text-prim",
+      off: "border-0 bg-text-primary",
       color: {
-        default: "border-0 bg-link",
+        default: "border-0 bg-accent",
         failure: "border-red-900 bg-red-700",
         success: "border-green-500 bg-green-500",
         warning: "border-yellow-600 bg-yellow-600",
@@ -102,29 +102,29 @@ const darkThemeSelect: CustomFlowbiteTheme["select"] = {
       base: "w-full rounded-full border-2 border-red-400",
       colors: {
         default:
-          "py-[10px] px-3 text-input-text font-sans text-std-input leading-std font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0",
+          "w-full border border-input-border bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal text-input-text placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none",
         danger:
-          "py-[10px] px-3 text-input-text font-sans text-std-input leading-std font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 border-danger",
+          "w-full border border-danger bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal text-input-text placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none",
         success:
-          "py-[10px] px-3 text-input-text font-sans text-std-input leading-std font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 border-link",
+          "w-full border border-accent bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal text-input-text placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none",
         warning:
-          "py-[10px] px-3 text-input-text font-sans text-std-input leading-std font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0 border-warn",
+          "w-full border border-warn bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal text-input-text placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none"
       },
     },
     icon: {
-      svg: "text-red-300 h-3 w-3 text-gray-100",
+      svg: "h-3 w-3 text-gray-100",
     },
   },
 };
 
 const darkRadioTheme: CustomFlowbiteTheme["radio"] = {
   root: {
-    base: "h-4 w-4 border border-gray-300 text-link focus:ring-2 focus:ring-primary-500 cursor-pointer",
+    base: "h-4 w-4 cursor-pointer border border-gray-300 text-accent focus:ring-2 focus:ring-primary-500",
   },
 };
 
 const darkThemeButton: CustomFlowbiteTheme["button"] = {
-  base: "w-auto flex justify-center items-center text-center border border-gray-300",
+  base: "flex w-auto items-center justify-center border border-gray-300 text-center",
 };
 
 const darkTheme = {

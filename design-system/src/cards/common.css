@@ -56,7 +56,7 @@
 }
 
 .card-header.sphere-header {
-  @apply border-t-2 border-line bg-bg;
+  @apply border-t-2 border-line dark:bg-surface-dark;
 }
 
 .sphere-card .card-body-bg {
@@ -76,11 +76,11 @@
   @apply w-full bg-gradient-to-b;
 }
 .list-header .card-header {
-  @apply border-line bg-bg;
+  @apply border-line dark:bg-surface-dark;
 }
 
 .sphere-card.list-header .card-header {
-  @apply bg-bg;
+  @apply dark:bg-surface-dark;
 }
 
 .card-copy {

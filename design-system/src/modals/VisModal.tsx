@@ -1,6 +1,6 @@
 import { Modal } from "flowbite-react";
 import "./common.css";
-import { darkThemeModal } from "../../src/darkTheme";
+import { darkThemeModal } from "../darkTheme";
 
 export interface VisModalProps {
   isModalOpen: boolean;

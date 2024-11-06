@@ -110,14 +110,14 @@ form {
 
 .ant-upload.ant-upload-select {
   border: 2px dashed rgba(255, 225, 225, 1) !important;
-  @apply bg-bg border-primary;
+  @apply dark:bg-surface-dark border-primary;
   color: #fefefe;
   border-radius: 100%;
   overflow: auto;
 }
 .ant-upload.ant-upload-select:hover {
   border: 2px solid transparent;
-  @apply bg-bg border-primary;
+  @apply dark:bg-surface-dark border-primary;
 }
 
 .ant-upload-wrapper.avatar-uploader {

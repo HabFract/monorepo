@@ -92,7 +92,7 @@
 }
 
 .calendar-nav {
-  @apply text-white bg-menu-bg;
+  @apply text-white dark:bg-surface-overlay-dark;
 }
 
 .calendar-day {
@@ -163,7 +163,7 @@
 }
 
 .swipe-up-tab-container {
-  @apply z-50 flex flex-col rounded-2xl p-2 gap-1 text-white bg-menu-bg;
+  @apply z-50 flex flex-col rounded-2xl p-2 gap-1 text-white dark:bg-surface-overlay-dark;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 
@@ -204,7 +204,7 @@ div.handle span {
 
 .win-count-container,
 .streak-count-container {
-  @apply min-h-24 w-1/2 m-0 p-2 bg-modal-bg rounded-2xl grid gap-3;
+  @apply min-h-24 w-1/2 m-0 p-2 dark:bg-surface-elevated-dark rounded-2xl grid gap-3;
   row-gap: 4px;
   grid-template-rows: 1.5rem auto;
   grid-template-columns: 1fr 1fr 1fr;
@@ -257,7 +257,7 @@ div.handle span {
 }
 
 .win-count-container .win-control {
-  @apply text-xl text-primary hover:text-link;
+  @apply text-xl text-primary hover:dark:text-accent-dark;
   cursor: pointer;
   width: fit-content;
   align-self: center;
@@ -287,7 +287,7 @@ div.handle span {
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
-  @apply bg-menu-bg rounded-2xl p-1;
+  @apply dark:bg-surface-overlay-dark rounded-2xl p-1;
 }
 
 .vis-move-lateral-container::-webkit-scrollbar,

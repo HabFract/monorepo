@@ -274,7 +274,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                             )}
                             {values!.list!.length <= 3 && (
                               <button
-                                className="flex flex-1 text-link w-8 mx-auto flex justify-center hover:text-primary"
+                                className="flex flex-1 dark:text-accent-dark w-8 mx-auto flex justify-center hover:text-primary"
                                 type="button"
                                 onClick={() => arrayHelpers.push({ name: "" })}
                                 disabled={values!.list!.length >= 4}

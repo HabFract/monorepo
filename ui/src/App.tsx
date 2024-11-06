@@ -6,7 +6,7 @@ import { useStateTransition } from "./hooks/useStateTransition";
 import withLayout from "./components/HOC/withLayout";
 
 import Nav from "./components/navigation/Nav";
-import { Flowbite, Modal, Spinner } from "flowbite-react";
+import { DarkThemeToggle, Flowbite, Modal, Spinner } from "flowbite-react";
 import { cloneElement, useRef, useState } from "react";
 
 import Settings from "./components/Settings";
@@ -62,7 +62,7 @@ function App({ children: pageComponent }) {
   const currentSphereDetails = store.get(currentSphereDetailsAtom);
 
   return (
-    <Flowbite theme={{ theme: darkTheme }}>
+    <Flowbite theme={{ theme: darkTheme, dark: true  }}>
       <Toast />
       <main ref={mainPageRef} className={mainContainerClass}>
         {/* Version and alpha status disclaimer */}
@@ -131,6 +131,8 @@ function App({ children: pageComponent }) {
           )({ currentSphereDetails, newUser: !!userHasSpheres })
         )}
       </main>
+
+      <DarkThemeToggle />
       <Modal
         dismissible
         show={isModalOpen}

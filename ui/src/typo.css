@@ -57,7 +57,7 @@ body {
 p.form-description em,
 .helper-text em {
   font-weight: medium;
-  @apply text-text-prim;
+  @apply dark:text-accent-dark;
 }
 
 .danger-zone .helper-content {
