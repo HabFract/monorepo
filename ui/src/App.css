@@ -14,20 +14,6 @@
   @apply text-input-placeholder text-std-input font-std text-base font-sans !important;
 }
 
-.input-icon {
-  @apply h-5 w-5;
-  padding: 0 2px;
-  /* 12 in total (10 for input) */
-}
-
-.input-with-icon-right input {
-  padding-right: 40px;
-}
-
-.input-with-icon input {
-  padding-left: 40px;
-}
-
 #root {
   display: grid;
   width: 100vw;
@@ -37,7 +23,7 @@
 
 .page-container {
   min-height: 8rem;
-  @apply flex gap-2 dark:bg-surface-dark overflow-auto p-0 w-full;
+  @apply dark:bg-surface-dark flex w-full gap-2 p-0 overflow-auto;
   flex-direction: column;
   height: 100vh;
   overflow-x: hidden;
@@ -79,7 +65,7 @@ nav + main.page-container .orbits-list {
   left: calc(50vw - 3rem);
   top: calc(50vh - 3rem);
   animation: spin 2s linear infinite;
-  @apply text-white fill-primary;
+  @apply fill-primary text-white;
 }
 
 .app-version-disclaimer button {
@@ -122,7 +108,7 @@ nav + main.page-container .orbits-list {
     grid-column: 2/3;
     grid-row: 2/3;
     border-radius: 1rem;
-    @apply p-6 h-full;
+    @apply h-full p-6;
   }
 }
 

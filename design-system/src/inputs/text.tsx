@@ -10,7 +10,7 @@ import ErrorLabel from "./errorlabel";
 const TextInput: React.FC<TextInputProps> = ({
   id,
   name,
-  theme,
+  theme: colorTheme,
   value,
   placeholder,
   labelValue,
@@ -38,6 +38,8 @@ const TextInput: React.FC<TextInputProps> = ({
       <FBTextInput
         id={id}
         name={name}
+        theme={darkThemeTextInput}
+        color={disabled ? "disabled" : colorTheme || "default"}
         defaultValue={value}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
@@ -50,13 +52,11 @@ const TextInput: React.FC<TextInputProps> = ({
         onBlur={onBlur}
         className={
           icon && iconSide == "left"
-            ? "input-with-icon text-input-text flex-1"
+            ? "input-with-icon flex-1"
             : icon && iconSide == "right"
-              ? "input-with-icon-right text-input-text flex-1"
-              : "text-input-text flex-1"
+              ? "input-with-icon-right flex-1"
+              : "flex-1"
         }
-        color={theme || "default"}
-        theme={darkThemeTextInput}
         icon={iconSide == "left" ? getIconSvg(icon) : undefined}
         rightIcon={iconSide == "right" ? getIconSvg(icon) : undefined}
         sizing={size}
@@ -118,13 +118,9 @@ export const TextInputField: React.FC<{
           setFieldValue(field.name, e.target.value);
           setFieldTouched(field.name);
         }}
-        theme={
-          touched[field.name] && errors[field.name]?.match("required")
-            ? "warning"
-            : touched[field.name] && errors[field.name]
-              ? "danger"
-              : "default"
-        }
+        theme={touched[field.name] && errors[field.name]
+          ? "danger"
+          : "default"}
       ></TextInput>
       <ErrorLabel
         fieldName={field.name}

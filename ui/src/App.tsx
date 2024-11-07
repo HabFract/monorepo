@@ -60,7 +60,6 @@ function App({ children: pageComponent }) {
     spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
 
   const currentSphereDetails = store.get(currentSphereDetailsAtom);
-
   return (
     <Flowbite theme={{ theme: darkTheme, dark: true  }}>
       <Toast />

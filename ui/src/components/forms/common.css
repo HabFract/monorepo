@@ -1,5 +1,5 @@
 .form-title {
-  @apply leading-loose text-lg tracking-wide my-0 h-6 mb-1 md:text-xl md:mb-2 md:h-8;
+  @apply md:text-xl md:mb-2 md:h-8 h-6 my-0 mb-1 text-lg leading-loose tracking-wide;
   text-align: left;
   font-family: "Open Sans";
   font-weight: 600;
@@ -10,6 +10,7 @@ form {
   flex-direction: column;
   gap: 0.5rem;
   align-items: center;
+  @apply dark:bg-surface-elevated-dark rounded-2xl p-2 py-4;
 }
 
 .scene {
@@ -143,7 +144,7 @@ form {
     width: 85%;
   }
   .field label {
-    @apply flex text-sm mb-6;
+    @apply flex mb-6 text-sm;
     flex-basis: 7rem;
   }
 

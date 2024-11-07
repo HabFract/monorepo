@@ -93,6 +93,7 @@ export const WithIconWithInfo: Story = {
     icon: "tag",
     disabled: false,
     withInfo: true,
+    onClickInfo: () => {}
   },
 };
 
@@ -107,6 +108,7 @@ export const WithIconWithInfoRequired: Story = {
     disabled: false,
     required: true,
     withInfo: true,
+    onClickInfo: () => {}
   },
 };
 
@@ -123,11 +125,12 @@ export const WithIconWithWarnError: Story = {
     errored: true,
     required: true,
     withInfo: false,
+    onClickInfo: () => {}
   },
 
   render: (args: any) => (
     <TextInputField
-      field={null}
+      field={{}}
       form={{
         errors: {
           example: "This is a required field.",
@@ -154,11 +157,12 @@ export const WithIconWithDangerError: Story = {
     errored: true,
     required: false,
     withInfo: false,
+    onClickInfo: () => {}
   },
 
   render: (args: any) => (
     <TextInputField
-      field={null}
+      field={{}}
       form={{
         errors: {
           example: "This is not valid!",

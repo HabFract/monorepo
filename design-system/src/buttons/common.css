@@ -1,138 +1,129 @@
-.btn-primary,
-.btn-primary.nohover:hover {
-  @apply bg-primary border-primary-500 text-white border-2;
+/* Base Button Styles
+-------------------------------------------------- */
+button.btn {
+  @apply place-content-center grid h-8 text-sm font-medium leading-tight text-center rounded-lg;
+  max-width: 30rem;
+  color: white;
 }
-.btn-primary:not(.nohover):hover {
-  @apply text-white bg-primary-500 border-primary-500 !important;
+button.btn > div {
+  @apply flex items-center transition-all duration-200;
+  padding: 0 1rem;
 }
-.btn-secondary,
-.btn-secondary.nohover:hover {
-  @apply border-primary-500 border-2;
-  background-color: #a2eac4;
-  color: #4e5454;
+
+/* Primary Button Variants
+-------------------------------------------------- */
+button.btn.btn-primary,
+button.btn.btn-primary.nohover:hover {
+  @apply bg-primary-500 border-primary-500 dark:bg-primary-500 dark:border-primary-500 border-2;
 }
-.btn-secondary:not(.nohover):hover {
-  @apply text-white border-primary !important;
-  background-color: rgba(162, 234, 196, 0.5);
+
+button.btn.btn-primary:not(.nohover):hover {
+  @apply bg-primary text-text dark:text-text-dark border-primary dark:bg-primary-dark dark:border-primary-500;
 }
+
+/* Secondary Button Variants */
+button.btn.btn-secondary,
+button.btn.btn-secondary.nohover:hover {
+  @apply bg-secondary-500 border-secondary-500 dark:bg-secondary-500 dark:border-secondary-500 border-2;
+}
+
+button.btn.btn-secondary:not(.nohover):hover {
+  @apply bg-secondary border-secondary dark:bg-secondary-dark dark:border-secondary-500 ;
+}
+
+/* Status Button Variants
+-------------------------------------------------- */
+/* Warning */
 .btn-warn,
 .btn-warn.nohover:hover {
-  @apply bg-warn-500 border-warn border-2;
+  @apply bg-warn text-text border-warn dark:bg-warn-500 dark:border-warn border-2;
 }
+
 .btn-warn:not(.nohover):hover {
-  @apply text-gray-500 bg-warn border-warn !important;
+  @apply bg-warn-500 border-warn dark:bg-warn dark:text-gray-500 dark:border-warn text-gray-500;
 }
+
+/* Danger */
 .btn-danger,
 .btn-danger.nohover:hover {
-  @apply bg-danger-500 border-danger border-2;
+  @apply bg-danger text-text border-danger dark:bg-danger-500 dark:border-danger border-2;
 }
+
 .btn-danger:not(.nohover):hover {
-  @apply text-gray-500 bg-danger border-danger !important;
+  @apply bg-danger-500 border-danger dark:bg-danger dark:text-gray-500 dark:border-danger text-gray-500;
 }
+
+/* Neutral */
 .btn-neutral,
 .btn-neutral.nohover:hover {
-  @apply text-gray-400 bg-gray-100 border-2 border-gray-200;
+  @apply dark:bg-gray-400 dark:text-text-dark dark:border-gray-300 text-gray-500 bg-gray-100 border-2 border-gray-200;
 }
+
 .btn-neutral:not(.nohover):hover {
-  @apply bg-gray-200 text-white border-gray-200 !important;
+  @apply dark:bg-gray-300 dark:text-text-dark dark:border-gray-300 text-gray-600 bg-gray-200 border-gray-200;
 }
+
+/* Button States
+-------------------------------------------------- */
+/* Disabled */
 .btn:disabled,
 .btn-disabled.nohover:hover {
-  color: #505554 !important;
-  background: #909896 !important;
-  border-width: 1px;
-  border-color: #505554 !important;
-  pointer-events: auto !important;
+  @apply dark:bg-gray-400 dark:text-gray-200 dark:border-gray-300 text-white bg-gray-500 dark:bg-gray-400 dark:text-gray-300 border-gray-200 pointer-events-none !important;
 }
-.btn:disabled:hover {
-  pointer-events: auto !important;
-  color: #505554 !important;
-  background: #909896 !important;
-  border-color: #37383a !important;
+
+.btn:disabled:hover,
+.btn:disabled:active,
+.btn:disabled:focus {
+  @apply text-white dark:text-white pointer-events-none  !important;
+  outline: none;
 }
+
+.btn .animate-spin {
+  @apply  dark:text-gray-400 fill-gray-400 dark:fill-gray-300 text-gray-200;
+}
+
+/* Focus & Active States */
 .btn:active {
-  outline: 1px solid #2d3436;
+  @apply outline outline-1 outline-gray-300 dark:outline-gray-100;
 }
+
 .btn:focus {
-  outline: 1px dashed #2d3436;
+  @apply outline outline-1 outline-dashed outline-gray-300 dark:outline-gray-100;
 }
 
-/* Override dropdown button/menu */
-button[data-testid="flowbite-dropdown-target"]:hover:enabled,
-button[data-testid="flowbite-dropdown-target"] span:hover:enabled {
-  @apply bg-primary;
-}
-button[data-testid="flowbite-dropdown-target"]:active {
-  outline: none !important;
-}
-button[data-testid="flowbite-dropdown-target"] {
-  @apply bg-primary-500 border-primary-500 border-2;
-}
-div[data-testid="flowbite-dropdown"] {
-  @apply bg-secondary border-primary-500 overflow-hidden border-2 rounded-lg;
-}
-div[data-testid="flowbite-dropdown"] button {
-  @apply text-white;
+/* Icon Button Variants
+-------------------------------------------------- */
+.btn.btn-icon, .input-with-icon-right, .input-with-icon, .btn-info {
+  @apply text-text dark:text-text-dark;
 }
 
-/* Override for delete/edit actions */
-.orbit-actions-crud div[data-testid="flowbite-dropdown"] li:first-child button {
-  @apply bg-warn-500 border-warn border-0 rounded-none;
-}
-.orbit-actions-crud
-  div[data-testid="flowbite-dropdown"]
-  li:first-child
-  button:hover {
-  @apply text-gray-500 bg-warn border-warn !important;
-}
-.orbit-actions-crud div[data-testid="flowbite-dropdown"] li:last-child button {
-  @apply bg-danger-500 border-danger border-0 rounded-none;
-}
-.orbit-actions-crud div[data-testid="flowbite-dropdown"] li:last-child:hover {
-  @apply text-gray-500 bg-danger border-danger !important;
+.btn-info {
+  @apply flex justify-between w-4 h-4 gap-2;
 }
 
-.btn span[role="img"] {
-  @apply bg-transparent border-0;
-}
-
-.sphere-actions-vis .btn {
-  height: 3rem;
-}
-
-.sphere-actions-vis .btn *[role="img"] + span {
-  min-height: 2.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Hide icon test on smaller viewports */
-.btn.responsive span[role="img"],
-.btn.responsive svg[role="img"] {
-  @apply m-0-sm justify-center;
-}
-.btn.responsive span[role="img"] + span {
-  @apply hidden-sm;
-}
-
-/* Icon only button */
 .btn.btn-icon {
-  @apply dark:bg-surface-dark w-8 h-8 border-0;
+  @apply bg-surface dark:bg-surface-dark w-8 h-8 border-0;
+}
+.btn.btn-circle-icon {
+  @apply bg-primary text-title dark:bg-primary-dark dark:text-title-dark w-8 h-8 border-0;
+}
+.btn.btn-circle-icon, .btn.btn-circle-icon > div {
+  @apply rounded-full;
+}
+.btn.btn-icon svg, .btn.btn-circle-icon svg{ 
+  @apply w-4 h-4;
 }
 
 .btn.btn-icon:hover {
-  @apply bg-gray-400 border-0;
+  @apply dark:bg-gray-300 bg-gray-200 border-0;
 }
 
-
-.btn.btn-circle-icon {
-  @apply text-title bg-primary w-6 h-6 p-4 border-0 rounded-full;
-}
 .btn.btn-circle-icon:hover {
-  @apply bg-primary-500 border-0;
+  @apply bg-primary-500 dark:bg-primary-500 border-0;
 }
 
+/* Icon Styling
+-------------------------------------------------- */
 .btn .icon {
   @apply flex justify-end w-8 h-8 mr-2;
 }
@@ -141,102 +132,57 @@ div[data-testid="flowbite-dropdown"] button {
   @apply m-0;
 }
 
-/* Upload image button */
-
-.upload-img-btn:hover {
-  @apply opacity-100;
-}
-.upload-img-btn {
-  top: 0.425rem;
-  left: -1rem;
-  position: relative;
+/* Responsive Button Styles
+-------------------------------------------------- */
+.btn.responsive span[role="img"],
+.btn.responsive svg[role="img"] {
+  @apply m-0-sm justify-center;
 }
 
-/* Onboarding submit button */
+.btn.responsive span[role="img"]+span {
+  @apply hidden-sm;
+}
 
+/* Special Button Types
+-------------------------------------------------- */
+/* Onboarding Button */
 .btn-onboarding {
-  @apply w-full mt-4 border-0 text-bg font-sans font-medium leading-std hover:text-secondary !important;
-  background: rgb(162, 234, 196);
-  background: linear-gradient(
-    90deg,
-    rgba(162, 234, 196, 1) 50%,
-    rgba(0, 177, 151, 1) 100%
-  );
-}
-.btn-onboarding:hover {
-  @apply text-gray-500 !important;
-  background: rgba(162, 234, 196, 0.8);
-  background: linear-gradient(
-    90deg,
-    rgba(162, 234, 196, 0.8) 50%,
-    rgba(0, 177, 151, 0.8) 100%
-  );
+  @apply bg-primary text-text hover:bg-primary-500 hover:text-text dark:bg-primary-dark dark:text-text-dark dark:hover:bg-primary-500 dark:hover:text-text-dark w-full mt-4 font-sans font-normal leading-normal border-0;
 }
 
-/* Breadcrumbs */
-.ant-breadcrumb {
-  @apply mb-1 ml-1;
-  height: 3rem;
-  max-width: 100vw;
-  text-overflow: ellipsis;
+/* Dropdown Button Overrides
+-------------------------------------------------- */
+button[data-testid="flowbite-dropdown-target"] {
+  @apply bg-primary border-primary dark:bg-primary-500 dark:border-primary-500 border-2;
 }
 
-.ant-breadcrumb > ol {
-  display: flex;
-  height: 3rem;
-  overflow: hidden;
-  flex-wrap: nowrap;
+button[data-testid="flowbite-dropdown-target"]:hover:enabled,
+button[data-testid="flowbite-dropdown-target"] span:hover:enabled {
+  @apply bg-primary-500 dark:bg-primary-dark;
 }
 
-.ant-breadcrumb > ol > li:last-of-type {
-  max-height: 2rem;
-}
-.ant-breadcrumb > ol > li:last-of-type span {
-  text-overflow: ellipsis;
-  text-wrap: nowrap;
+button[data-testid="flowbite-dropdown-target"]:active {
+  @apply outline-none;
 }
 
-.ant-breadcrumb-link .anticon-home {
-  font-size: 2rem;
-}
-.ant-breadcrumb-link .anticon-home:hover,
-.ant-breadcrumb li:not(li:last-child) .ant-breadcrumb-link:hover {
-  cursor: pointer;
-  font-size: 1.6rem;
-  transition: 0.25s font-size ease-in-out;
-}
-.ant-breadcrumb-link .anticon-home:hover {
-  font-size: 2.25rem;
-}
-.ant-breadcrumb .ant-breadcrumb-link,
-.ant-breadcrumb-separator {
-  line-height: 2.5rem;
-  font-size: 1.5rem;
-  font-weight: 300;
-  font-family: Manrope, Nunito, sans-serif;
-}
-.ant-breadcrumb .ant-breadcrumb-separator,
-.ant-breadcrumb .ant-breadcrumb-link {
-  @apply text-title !important;
-}
-.vis.page-container nav.ant-breadcrumb {
-  position: absolute;
+div[data-testid="flowbite-dropdown"] {
+  @apply bg-surface border-primary dark:bg-secondary-dark dark:border-primary-500 overflow-hidden border-2 rounded-lg;
 }
 
-@media screen and (min-width: 768px) {
-  .ant-breadcrumb {
-    @apply mt-2 mb-2 ml-2;
-  }
+div[data-testid="flowbite-dropdown"] button {
+  @apply text-text dark:text-text-dark;
 }
+
+/* Media Queries
+-------------------------------------------------- */
 @media screen and (min-width: 1200px) {
   .btn-icon .icon {
-    width: 3rem;
-    height: 3rem;
+    @apply w-12 h-12;
   }
 }
+
 @media screen and (min-width: 1680px) {
   .btn-icon .icon {
-    width: 4rem;
-    height: 4rem;
+    @apply w-16 h-16;
   }
 }

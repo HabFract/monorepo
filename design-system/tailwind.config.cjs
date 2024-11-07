@@ -77,17 +77,27 @@ const tailwindConfig = {
           elevated: {           // for cards, modals, forms, dropdowns, etc.
             DEFAULT: '#ffffff',
             dark: '#3A3A3A'
+          },
+          top: {
+            DEFAULT: '#ffffff',
+            dark: '#4E5454'
           }
         },
-        primary: {
-          DEFAULT: '#0A7557',
-          dark: 'rgba(10, 117, 87, 1)',
-          500: 'rgba(10, 117, 87, .5)',
-        },
         secondary: {
+          DEFAULT: '#0A7557',
+          500: 'rgba(29, 64, 76, .5)',
+          dark:  {
+            DEFAULT: 'rgb(29, 64, 76)',
+            500: 'rgba(29, 64, 76, .5)',
+          },
+        },
+        primary: {
           DEFAULT: '#1d404c',
-          dark: 'rgba(29, 64, 76, 1)',
-          500: 'rgba(29, 64, 76, 0.5)',
+          500: 'rgba(2, 177, 151, 0.5)',
+          dark:  {
+            DEFAULT: 'rgba(2, 177, 151, 0.75)',
+            500: 'rgba(2, 177, 151, 0.5)',
+          },
         },
         accent: {
           DEFAULT: '#0BFEB8',
@@ -112,7 +122,7 @@ const tailwindConfig = {
           },
           border: {
             DEFAULT: '#e5e7eb',
-            dark: 'rgba(255,255,255, 1)',
+            dark: 'transparent',
           },
           text: {
             DEFAULT: '#000000',
@@ -121,6 +131,10 @@ const tailwindConfig = {
           placeholder: {
             DEFAULT: '#9ca3af',
             dark: '#4E5454',
+          },
+          icon: {
+            DEFAULT: '#9ca3af',
+            dark: '#9ca3af',
           }
         },
 
@@ -130,8 +144,8 @@ const tailwindConfig = {
           500: 'rgba(251,200,43, .5)',
         },
         danger: {
-          DEFAULT: 'rgba(231,50,50, 1)',
-          500: 'rgba(231,50,50, .5)',
+          DEFAULT: 'rgba(191,67,66, 1)',
+          500: 'rgba(191,67,66, .5)',
         },
         success: {
           DEFAULT: '#12d39d',

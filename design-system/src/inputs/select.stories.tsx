@@ -50,7 +50,7 @@ export const Default: Story = {
 export const WithIcon: Story = {
   args: {
     labelValue: "Favorite fruit:",
-    icon: "tag",
+    icon: "plus",
     iconSide: "left",
     size: "base",
     options: ["Apples", "Oranges", "Bananas"],
@@ -62,7 +62,7 @@ export const WithIcon: Story = {
 export const Disabled: Story = {
   args: {
     labelValue: "Favorite fruit:",
-    icon: "tag",
+    icon: "plus",
     iconSide: "left",
     size: "base",
     options: ["Apples", "Oranges", "Bananas"],
@@ -74,25 +74,27 @@ export const Disabled: Story = {
 export const WithIconWithInfo: Story = {
   args: {
     labelValue: "Favorite fruit:",
-    icon: "tag",
+    icon: "more",
     iconSide: "left",
     size: "base",
     options: ["Apples", "Oranges", "Bananas"],
     disabled: false,
     withInfo: true,
+    onClickInfo: () => {}
   },
 };
 
 export const WithIconWithInfoRequired: Story = {
   args: {
     labelValue: "Favorite fruit:",
-    icon: "tag",
+    icon: "plus",
     iconSide: "left",
     size: "base",
     options: ["Apples", "Oranges", "Bananas"],
     disabled: false,
     required: true,
     withInfo: true,
+    onClickInfo: () => {}
   },
 };
 
@@ -112,7 +114,7 @@ export const WithIconWithWarnError: Story = {
 
   render: (args: any) => (
     <SelectInputField
-      field={null}
+      field={{}}
       form={{
         errors: {
           fruit: "This is a required field.",
@@ -141,7 +143,7 @@ export const WithIconWithDangerError: Story = {
 
   render: (args: any) => (
     <SelectInputField
-      field={null}
+      field={{}}
       form={{
         errors: {
           fruit: "This is not a fruit, try again!",

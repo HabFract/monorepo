@@ -46,7 +46,6 @@ export function getIconSvg(
           viewBox="0 0 24 24"
           strokeWidth="1.5"
           stroke="currentColor"
-          className="input-icon"
         >
           <path
             strokeLinecap="round"
@@ -77,11 +76,10 @@ export function getIconSvg(
           viewBox="0 0 12 9"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="input-icon"
         >
           <path
             d="M11.3337 1L4.00033 8.33333L0.666992 5"
-            stroke="white"
+            stroke="currentColor"
             strokeWidth="1.3"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -96,7 +94,6 @@ export function getIconSvg(
           viewBox="0 0 8 8"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="input-icon"
         >
           <path
             d="M7.33366 0.666016L0.666992 7.33268M0.666992 0.666016L7.33366 7.33268"
@@ -128,21 +125,21 @@ export function getIconSvg(
     case "back":
       return () => (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 5L8.43004 11.6237C8.20238 11.8229 8.20238 12.1771 8.43004 12.3763L16 19" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M16 5L8.43004 11.6237C8.20238 11.8229 8.20238 12.1771 8.43004 12.3763L16 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       );
     case "arrow-right":
       return () => (
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6.66669 4.16669L12.9033 9.62373C13.131 9.82294 13.131 10.1771 12.9033 10.3763L6.66669 15.8334" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M6.66669 4.16669L12.9033 9.62373C13.131 9.82294 13.131 10.1771 12.9033 10.3763L6.66669 15.8334" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       );
     case "more":
       return () => (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="2" fill="white" />
-          <circle cx="4" cy="12" r="2" fill="white" />
-          <circle cx="20" cy="12" r="2" fill="white" />
+          <circle cx="12" cy="12" r="2" fill="currentColor" />
+          <circle cx="4" cy="12" r="2" fill="currentColor" />
+          <circle cx="20" cy="12" r="2" fill="currentColor" />
         </svg>
       );
     case "plus":
@@ -156,12 +153,12 @@ export function getIconSvg(
       return () => (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M8 9V7C8 4.79086 9.79086 3 12 3V3C14.2091 3 16 4.79086 16 7V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M3 11C3 9.89543 3.89543 9 5 9H19C20.1046 9 21 9.89543 21 11V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V11ZM12.75 15.1007C13.1012 14.8609 13.3318 14.4574 13.3318 14C13.3318 13.2645 12.7355 12.6682 12 12.6682C11.2645 12.6682 10.6682 13.2645 10.6682 14C10.6682 14.4574 10.8988 14.8609 11.25 15.1007V17C11.25 17.4142 11.5858 17.75 12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V15.1007Z" fill="white"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M3 11C3 9.89543 3.89543 9 5 9H19C20.1046 9 21 9.89543 21 11V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V11ZM12.75 15.1007C13.1012 14.8609 13.3318 14.4574 13.3318 14C13.3318 13.2645 12.7355 12.6682 12 12.6682C11.2645 12.6682 10.6682 13.2645 10.6682 14C10.6682 14.4574 10.8988 14.8609 11.25 15.1007V17C11.25 17.4142 11.5858 17.75 12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V15.1007Z" fill="currentColor"/>
         </svg>
       );
     case "info":
       return () => (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path fillRule="evenodd" clipRule="evenodd" d="M18.3334 9.99996C18.3334 14.6023 14.6025 18.3333 10.0001 18.3333C5.39771 18.3333 1.66675 14.6023 1.66675 9.99996C1.66675 5.39759 5.39771 1.66663 10.0001 1.66663C14.6025 1.66663 18.3334 5.39759 18.3334 9.99996ZM9.16675 6.66663C9.16675 6.20639 9.53984 5.83329 10.0001 5.83329C10.4603 5.83329 10.8334 6.20639 10.8334 6.66663C10.8334 7.12686 10.4603 7.49996 10.0001 7.49996C9.53984 7.49996 9.16675 7.12686 9.16675 6.66663ZM9.25008 14.1666C9.25008 14.5808 9.58587 14.9166 10.0001 14.9166C10.4143 14.9166 10.7501 14.5808 10.7501 14.1666V9.16663C10.7501 8.75241 10.4143 8.41663 10.0001 8.41663C9.58587 8.41663 9.25008 8.75241 9.25008 9.16663L9.25008 14.1666Z" fill="currentColor" />
         </svg>
       );

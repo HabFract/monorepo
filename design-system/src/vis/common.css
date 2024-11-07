@@ -1,6 +1,6 @@
 /* Orbit Vis Label */
 .orbit-label-container {
-  @apply transition-opacity duration-300 shadow-sm relative z-10 p-4 flex gap-1 flex-col rounded-xl text-white font-sans text-sm font-medium leading-sm;
+  @apply rounded-xl leading-sm relative z-10 flex flex-col gap-1 p-4 font-sans text-sm font-medium text-white transition-opacity duration-300 shadow-sm;
   background-color: rgb(58 64 64);
   max-width: 75vw;
   -webkit-hyphens: auto;
@@ -12,7 +12,7 @@
 
 }
 .orbit-label-container h2 {
-  @apply font-semibold items-center flex gap-4 justify-between;
+  @apply flex items-center justify-between gap-4 font-semibold;
 }
 .orbit-label-container p {
   @apply pr-2;
@@ -38,7 +38,7 @@
 
 /* Orbit Vis Controls */
 .orbit-controls-container {
-  @apply flex flex-col gap-2 w-8 flex-wrap;
+  @apply flex flex-col flex-wrap w-8 gap-2;
   position: relative;
   margin-left: auto;
   top: 0;
@@ -48,63 +48,6 @@
 
 .orbit-vis {
   border-radius: 1rem;
-}
-
-div[role="progressbar"] {
-  @apply pt-2;
-}
-
-div[role="progressbar"] > div > div {
-  @apply bg-link;
-}
-div[role="progressbar"] > div.atom > div {
-  margin-left: 0;
-}
-div[role="progressbar"] > div.sub > div {
-  margin-left: 28%;
-}
-div[role="progressbar"] > div.astro > div {
-  margin-left: 65%;
-}
-
-.sphere-pie {
-  width: 100%;
-}
-.sphere-pie svg {
-  overflow: inherit;
-}
-
-.sphere-pie .pie {
-  padding-top: 1.5rem;
-}
-
-.sphere-pie-label {
-  position: relative;
-  left: calc(50% - 2rem);
-}
-.apexcharts-pie-area {
-  transform: rotate(90deg) translate(-10%, -40%) !important;
-}
-.sphere-pie .apexcharts-legend {
-  position: relative !important;
-  top: 1rem !important;
-  left: 6rem !important;
-  right: initial !important;
-  width: fit-content !important;
-  height: fit-content !important;
-  padding-top: 1rem !important;
-}
-.sphere-pie .apexcharts-legend > div {
-  gap: 0.5rem;
-  line-height: initial;
-}
-.sphere-pie .apexcharts-legend > div .apexcharts-legend-marker {
-  width: 1rem !important;
-  height: 1rem !important;
-}
-.sphere-pie .apexcharts-legend .apexcharts-legend-text {
-  @apply font-heading text-xs text-white !important;
-  padding-left: 1rem !important;
 }
 
 @media screen and (min-width: 440px) {

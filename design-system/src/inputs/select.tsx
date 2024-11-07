@@ -11,7 +11,7 @@ const Select: React.FC<SelectProps> = ({
   id,
   value,
   name,
-  theme,
+  theme: colorTheme,
   onChange,
   onBlur,
   labelValue,
@@ -41,7 +41,7 @@ const Select: React.FC<SelectProps> = ({
         sizing={size}
         name={name}
         value={value}
-        color={theme || "default"}
+        color={disabled ? "disabled" : colorTheme || "default"}
         theme={darkThemeSelect}
         disabled={disabled}
         required={required}
@@ -81,7 +81,6 @@ export const SelectInputField: React.FC<{
     disabled,
     onBlur,
   } = props;
-console.log('options :>> ', options);
   return (
     <>
       <Select

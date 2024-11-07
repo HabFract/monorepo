@@ -26,7 +26,7 @@ const VersionDisclaimer: FC<VersionDisclaimerProps> = ({
       {NODE_ENV !== "dev" && (
         <div className="version-number">v{currentVersion}</div>
       )}
-      <Button type={"secondary"} onClick={open}>
+      <Button type={"button"} variant={"secondary"} onClick={open}>
         {isSmallScreen() ? <AlertOutlined className="text-bg" /> : "Disclaimer"}
       </Button>
     </div>

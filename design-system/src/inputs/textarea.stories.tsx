@@ -13,6 +13,7 @@ export interface TextAreaProps {
   disabled: boolean;
   rows: number;
   onChange?: Function;
+  onClickInfo?: () => any;
   theme?: string;
 }
 
@@ -64,6 +65,7 @@ export const WithInfoRequired: Story = {
     placeholder: "Tell us what you think",
     rows: 5,
     withInfo: true,
+    onClickInfo: () => {},
     required: true,
   },
 };
@@ -82,7 +84,7 @@ export const WithIconWithWarnError: Story = {
 
   render: (args: any) => (
     <TextAreaField
-      field={null}
+      field={{}}
       form={{
         errors: {
           test: "This is a required field.",
@@ -110,7 +112,7 @@ export const WithIconWithDangerError: Story = {
 
   render: (args: any) => (
     <TextAreaField
-      field={null}
+      field={{}}
       form={{
         errors: {
           test: "This is not valid!",

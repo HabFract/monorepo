@@ -10,7 +10,7 @@
 }
 
 .home-layout h3 {
-  @apply font-std leading-std font-sans text-base text-white opacity-75;
+  @apply font-std leading-std text-text dark:text-text-dark font-sans text-base opacity-75;
 }
 
 .home-layout .welcome-cta {

@@ -1,41 +1,14 @@
 /* Label Typo */
 .form-field label {
-  @apply text-title font-sans !important;
+  @apply dark:text-title-dark font-sans font-bold !important;
   margin-bottom: 8px !important;
-
-  font-weight: 700 !important;
   font-size: 14px !important;
   line-height: 24px !important;
 }
 
-.textarea {
-  @apply py-[10px] px-3 text-input-text font-sans text-std-input leading-std font-std border-[1px] placeholder-input-placeholder hover:border-text-prim border-input-border leading-std bg-input-bg hover:bg-gray-500 focus:border-link focus:shadow-[0_35px_60px_-15px_rgba(0,0,0,0)] focus:ring-0;
-  resize: none;
-}
-
-.textarea.warning {
-  @apply border-warn;
-}
-
-.textarea.danger {
-  @apply border-danger;
-}
-
-.textarea::placeholder {
-  @apply py-[10px] px-3 text-input-placeholder text-std-input font-std text-base font-sans !important;
-}
-
-input:disabled,
-.textarea:disabled,
-select:disabled {
-  --tw-ring-color: #909896;
-  border-color: rgba(69, 97, 95, 1) !important;
-  @apply bg-gray-400 !important;
-}
-
-.textarea:active,
-input:active {
-  @apply border-primary;
+.input-icon {
+  top: calc(.5rem);
+  left: .5rem;
 }
 
 .toggle-switch {
@@ -74,7 +47,7 @@ select:not([size]) {
 /* Labels */
 
 span.reqd {
-  @apply text-danger text-base font-bold font-sans font-medium;
+  @apply text-danger font-sans text-base font-medium font-bold;
 }
 
 .error-label {
@@ -82,7 +55,7 @@ span.reqd {
 }
 
 .error-label span {
-  @apply mt-1 ml-0 font-std text-std-input leading-std;
+  @apply font-std text-std-input leading-std mt-1 ml-0;
 }
 .error-label span.warn {
   @apply text-warn;

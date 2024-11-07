@@ -1,5 +1,6 @@
 import { Label } from "flowbite-react";
 import "./common.css";
+import "../buttons/common.css";
 import { useState } from "react";
 import { getIconSvg } from "../icons/icons";
 import VisModal from "../modals/VisModal";
@@ -33,8 +34,8 @@ const withLabel: React.FC<LabelProps> = ({
       <div
         className={
           isListItem
-            ? "flex justify-end gap-2 h-6 w-6 mb-2"
-            : "flex justify-between h-6 mb-2"
+            ? "flex justify-end gap-2 h-8 w-4"
+            : "flex justify-between h-8"
         }
       ><div className="flex justify-between gap-1">
           <Label
@@ -45,16 +46,16 @@ const withLabel: React.FC<LabelProps> = ({
           {required ? <span className="reqd">*</span> : null}
         </div>
 
-        <div className="flex justify-between gap-2">
+        <div className="btn-info">
           {withInfo && (
-              <div>
+              <>
                 <button onClick={() => setTooltipVisible(true)}>
                   {getIconSvg('info')({})}
                 </button>
                 <VisModal modalAnnotation="" title={onClickInfo?.()?.title as string} isModalOpen={tooltipVisible} size="lg" onClose={() => setTooltipVisible(false)}>
                   {onClickInfo?.()?.body.split("//").map((para, idx) => <p key={idx}>{para}</p>)}
                 </VisModal>
-              </div>
+              </>
           )}
         </div>
 

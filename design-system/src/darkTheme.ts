@@ -54,27 +54,73 @@ const darkThemeModal: CustomFlowbiteTheme["modal"] = {
   }
 };
 
+// Base styles for inputs
+const baseInputStyles = "w-full px-3 pl-4 py-[10px] h-[48px] font-sans font-light text-sm leading-normal text-gray-900 dark:text-input-text-dark placeholder:text-gray-400 dark:placeholder:text-input-placeholder-dark bg-surface dark:bg-surface-dark hover:border-primary hover:bg-surface-elevated dark:hover:border-surface-dark dark:hover:bg-surface-dark focus:border-secondary focus:ring-0 focus:shadow-none dark:focus:border-surface-top-dark";
+const baseIconStyles = "input-icon h-8 w-8 text-input-icon dark:text-input-icon-dark pointer-events-none absolute left-0 top-1 flex items-center p-2";
+// Disabled styles
+const disabledStyles = "bg-gray-500 text-white border-gray-200 dark:bg-gray-800 opacity-50 dark:placeholder:text-gray-300 dark:border-gray-300 pointer-events-none";
+
+// Variant-specific border styles
+const variantStyles = {
+  default: "border border-gray-300 dark:border-input-border-dark",
+  danger: "border border-red-300 dark:border-danger",
+  success: "border border-green-300 dark:border-accent",
+  warning: "border border-yellow-300 dark:border-warn",
+  disabled: disabledStyles
+};
+
+// TextInput theme
 const darkThemeTextInput: CustomFlowbiteTheme["textInput"] = {
   field: {
     icon: {
-      base: "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2",
-      svg: "h-3 w-3 text-gray-100",
+      base: baseIconStyles,
+      svg: ""
     },
     input: {
       colors: {
-        default: 
-          "w-full border border-input-border bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none dark:bg-input-bg-dark dark:text-input-text-dark",
-        danger:
-          "w-full border border-danger bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none dark:bg-input-bg-dark dark:text-input-text-dark",
-        success:
-          "w-full border border-accent bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none dark:bg-input-bg-dark dark:text-input-text-dark",
-        warning:
-          "w-full border border-warn bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none dark:bg-input-bg-dark dark:text-input-text-dark"
-      },
-    },
-  },
+        default: `${baseInputStyles} ${variantStyles.default}`,
+        danger: `${baseInputStyles} ${variantStyles.danger}`,
+        success: `${baseInputStyles} ${variantStyles.success}`,
+        warning: `${baseInputStyles} ${variantStyles.warning}`,
+        disabled: `${baseInputStyles} ${variantStyles.disabled}`
+      }
+    }
+  }
 };
 
+// Select theme
+const darkThemeSelect: CustomFlowbiteTheme["select"] = {
+  field: {
+    select: {
+      base: "w-full rounded-full",
+      colors: {
+        default: `${baseInputStyles} ${variantStyles.default}`,
+        danger: `${baseInputStyles} ${variantStyles.danger}`,
+        success: `${baseInputStyles} ${variantStyles.success}`,
+        warning: `${baseInputStyles} ${variantStyles.warning}`,
+        disabled: `${baseInputStyles} ${variantStyles.disabled}`
+      }
+    },
+    icon: {
+      base: baseIconStyles,
+      svg: ""
+    }
+  }
+};
+
+// TextArea theme
+const darkThemeTextArea: CustomFlowbiteTheme["textarea"] = {
+    base: "w-full rounded-lg",
+    colors: {
+      default: `${baseInputStyles} h-24 ${variantStyles.default}`,
+      danger: `${baseInputStyles} h-24 ${variantStyles.danger}`,
+      success: `${baseInputStyles} h-24 ${variantStyles.success}`,
+      warning: `${baseInputStyles} h-24 ${variantStyles.warning}`,
+        disabled: `${baseInputStyles} ${variantStyles.disabled}`
+    }
+};
+
+// ToggleSwitch theme
 const darkThemeToggleSwitch: CustomFlowbiteTheme["toggleSwitch"] = {
   toggle: {
     base: "rounded-full border group-focus:ring-4 group-focus:ring-0",
@@ -96,50 +142,25 @@ const darkThemeToggleSwitch: CustomFlowbiteTheme["toggleSwitch"] = {
   },
 };
 
-const darkThemeSelect: CustomFlowbiteTheme["select"] = {
-  field: {
-    select: {
-      base: "w-full rounded-full border-2 border-red-400",
-      colors: {
-        default:
-          "w-full border border-input-border bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal text-input-text placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none",
-        danger:
-          "w-full border border-danger bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal text-input-text placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none",
-        success:
-          "w-full border border-accent bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal text-input-text placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none",
-        warning:
-          "w-full border border-warn bg-input-bg px-3 py-[10px] font-sans font-light text-sm leading-normal text-input-text placeholder:text-input-placeholder hover:border-accent hover:bg-gray-500 focus:border-accent focus:ring-0 focus:shadow-none"
-      },
-    },
-    icon: {
-      svg: "h-3 w-3 text-gray-100",
-    },
-  },
-};
-
 const darkRadioTheme: CustomFlowbiteTheme["radio"] = {
   root: {
     base: "h-4 w-4 cursor-pointer border border-gray-300 text-accent focus:ring-2 focus:ring-primary-500",
   },
 };
 
-const darkThemeButton: CustomFlowbiteTheme["button"] = {
-  base: "flex w-auto items-center justify-center border border-gray-300 text-center",
-};
-
 const darkTheme = {
   modal: darkThemeModal,
   textInput: darkThemeTextInput,
+  darkThemeTextArea: darkThemeTextArea,
   toggleSwitch: darkThemeToggleSwitch,
   select: darkThemeSelect,
   radio: darkRadioTheme,
-  button: darkThemeButton,
 };
 
 export {
   darkThemeModal,
-  darkThemeButton,
   darkThemeTextInput,
+  darkThemeTextArea,
   darkRadioTheme,
   darkThemeSelect,
   darkThemeToggleSwitch,

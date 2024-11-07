@@ -3,7 +3,7 @@ import './common.css'
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { useState } from 'react';
 import { string } from 'yup';
-import { TextInputField } from 'habit-fract-design-system';
+import { Button, TextInputField } from 'habit-fract-design-system';
 
 function HomeLayout({ startBtn, firstVisit = true }: any) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
@@ -19,7 +19,7 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
           alt='Plannit logo'
         />
         <h3>Let's put a plan in motion!</h3>
-        <div className="flex gap-4 items-center justify-center w-full">
+        <div className="flex items-center justify-center w-full gap-4">
           {[1, 2, 3, 4, 5].map(num => <img key={num} src={`/assets/icons/sphere-symbol-${num}.svg`}></img>)}
         </div>
       </header>
@@ -59,6 +59,7 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
           </div>
           }}
         </Formik>
+        <Button type={'button'} variant={'primary'} onClick={() => transition("Onboarding1")}>Login</Button>
       </div>
     </section>
   );

@@ -7,7 +7,7 @@ import React from "react";
 const preview = {
   decorators: [
     (Story) => (
-      <Flowbite theme={{ theme: darkTheme }}>
+      <Flowbite theme={{ theme: darkTheme, dark: true  }}>
         {/* 👇 Decorators in Storybook also accept a function. Replace <Story/> with Story() to enable it  */}
         <Story />
       </Flowbite>
@@ -15,15 +15,15 @@ const preview = {
   ],
   parameters: {
     backgrounds: {
-      default: "backdrop",
+      default: "ligher",
       values: [
         {
           name: "backdrop",
-          value: "rgba(36, 36, 36, 1)",
+          value: "#2a2a2a",
         },
         {
           name: "ligher",
-          value: "#4E5454",
+          value: "#3A3A3A",
         },
       ],
     },

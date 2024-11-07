@@ -1,5 +1,5 @@
 .vis-controls {
-  @apply gap-2 bg-gradient-to-t from-menu-bg to-transparent justify-around p-2 items-end fixed right-0;
+  @apply gap-2 bg-gradient-to-t from-surface-elevated-dark to-transparent justify-around p-2 items-end fixed right-0;
   width: 100%;
   bottom: 0;
   min-height: 8rem;
@@ -117,11 +117,11 @@
 }
 
 .calendar-day-complete {
-  @apply bg-win-complete;
+  @apply bg-success;
 }
 
 .calendar-day-incomplete {
-  @apply bg-win-incomplete text-white;
+  @apply bg-success-incomplete text-white;
 }
 
 .win-count-container.loading svg {
@@ -129,7 +129,7 @@
 }
 
 .orbit-pill-container {
-  @apply rounded-full border-line min-w-24 h-8 bg-secondary flex gap-4 text-xs text-white font-light flex gap-1 items-center justify-start px-2;
+  @apply rounded-full border-gray-100 min-w-24 h-8 bg-secondary flex gap-4 text-xs text-white font-light flex gap-1 items-center justify-start px-2;
   flex-wrap: nowrap;
   max-width: 8rem;
 }
