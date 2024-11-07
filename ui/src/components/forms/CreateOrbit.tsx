@@ -224,11 +224,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
           <div className={inModal ? "px-2 w-full" : "px-1"}>
             {!inModal ? headerDiv : null}
 
-            {!inModal && (
-              <h2 className="onboarding-subtitle hidden-sm;">
-                {editMode ? "Edit Orbit Details" : "Create an Orbit"}
-              </h2>
-            )}
             <p className="form-description">
               An orbit is a <em>specific life action</em> that your wish to
               track over time.

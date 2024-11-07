@@ -1,5 +1,5 @@
 import React from "react";
-import { StoryFn, Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import ProgressBar, { ProgressBarProps } from "./ProgressBar";
 
 const meta: Meta<ProgressBarProps> = {

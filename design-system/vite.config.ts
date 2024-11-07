@@ -53,7 +53,24 @@ export default defineConfig({
     "process.env": {},
   },
   optimizeDeps: {
-    include: ['antd'],
-    exclude: ['@ant-design/icons']
+    include: [
+      '@ant-design/cssinjs',
+      'classnames',
+      'rc-util',
+      'rc-util/lib/hooks/useState',
+      '@babel/runtime/helpers/esm/slicedToArray',
+      '@ctrl/tinycolor',
+      '@ant-design/colors',
+      '@ant-design/icons',
+      'rc-motion',
+      'rc-util/lib/hooks/useLayoutEffect',
+      'rc-util/lib/ref',
+      'rc-util/lib/Dom/addEventListener',
+      'rc-util/lib/Dom/canUseDom',
+      'rc-util/lib/hooks/useLayoutUpdateEffect',
+    ],
+    esbuildOptions: {
+      target: 'esnext'
+    }
   }
 });

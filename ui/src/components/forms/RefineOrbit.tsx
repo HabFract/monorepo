@@ -45,9 +45,6 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({
               <OrbitFetcher orbitToEditId={refiningOrbitAh} />
             )}
             {headerDiv}
-
-            <h2 className="onboarding-subtitle">Refine Your Orbit</h2>
-
             {values?.name && (
               <OrbitCard
                 displayOnly={true}

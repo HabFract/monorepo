@@ -160,10 +160,6 @@ nav + main.page-container .orbits-list {
   .page-container.vis {
     padding: 0;
   }
-  .onboarding-subtitle {
-    line-height: 2.5rem;
-    font-size: 1.25rem;
-  }
   .onboarding-layout > div {
     position: relative;
   }

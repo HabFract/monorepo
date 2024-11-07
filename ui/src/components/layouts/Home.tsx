@@ -59,7 +59,7 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
           </div>
           }}
         </Formik>
-        <Button type={'button'} variant={'primary'} onClick={() => transition("Onboarding1")}>Login</Button>
+        {startBtn}
       </div>
     </section>
   );

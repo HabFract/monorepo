@@ -1,76 +1,116 @@
+/* Base Progress Bar Layout
+-------------------------------------------------- */
 .onboarding-progress {
-  flex-direction: row !important;
-  overflow: hidden;
-  padding: 0.25rem 0;
-  min-height: 2.5rem;
-  top: 0;
-  right: 0;
-  overflow-x: auto;
+  @apply flex-row overflow-hidden py-1 min-h-[2.5rem] top-0 right-0 overflow-x-auto dark:bg-modal-bg-dark px-4 gap-4 !important;
 }
 
+/* Scrollbar Styling
+-------------------------------------------------- */
 .onboarding-progress::-webkit-scrollbar {
-  width: 24px;
+  @apply w-6;
 }
 
+/* Progress Bar Container
+-------------------------------------------------- */
 .onboarding-progress::after {
-  content: "";
-  width: 100%;
-  height: 2.5rem;
+  @apply content-[''] w-full;
 }
 
+/* Custom Properties
+-------------------------------------------------- */
 :root {
   --onboarding-translate-offset-x: -75px;
   --onboarding-translate-increment: -200px;
 }
 
-.onboarding-progress .ant-steps-item {
-  height: 2.5rem;
-  min-width: fit-content;
-}
-.onboarding-progress .ant-steps-item-subtitle,
-.ant-steps-icon {
-  @apply text-text !important;
-}
-
-.ant-steps .ant-steps-item-container {
-  height: 1rem !important;
-}
-
-.ant-steps-item-icon {
-  background-color: #00b197 !important;
-  border-color: #00b197 !important;
-  margin-inline-end: 4px !important;
-}
-.ant-steps-item-content {
-  position: relative;
-  padding-right: 2rem;
-}
-
-.ant-steps-item-title::after {
-  background-color: #00b197 !important;
-}
-
-.ant-steps-item.ant-steps-item-wait .ant-steps-item-icon,
-.ant-steps-item.ant-steps-item-wait .ant-steps-icon {
-  background-color: transparent !important;
-  border-color: #a3beb7 !important;
-  color: #a3beb7 !important;
-}
+/* Typography
+-------------------------------------------------- */
 .ant-steps-item-subtitle {
-  @apply font-sans font-std leading-std;
+  @apply ml-2 font-sans text-sm tracking-wide font-bold leading-normal !important;
 }
 
 .ant-steps-item.ant-steps-item-wait .ant-steps-item-subtitle {
-  color: #a3beb7 !important;
+  @apply text-gray-200 dark:text-white dark:opacity-50 !important;
 }
 
-.ant-steps-item.ant-steps-item-finish .ant-steps-item-icon {
-  background-color: #a3beb7;
+.ant-steps-item.ant-steps-item-wait .ant-steps-item-icon,
+.ant-steps-item.ant-steps-item-active .ant-steps-item-icon {
+  font-size: .85rem !important;
+  font-weight: 500 !important;
 }
 
+
+/* Step Item Styling
+-------------------------------------------------- */
+.onboarding-progress .ant-steps-item {
+  @apply h-[2.5rem] min-w-fit flex items-center !important;
+}
+
+.ant-steps-item-tail {
+  @apply hidden !important;
+}
+
+.ant-steps-icon {
+  @apply grid place-content-center text-primary dark:text-primary-dark h-8 w-8 !important;
+}
+
+.onboarding-progress .ant-steps-item-subtitle {
+  @apply text-gray-500 dark:text-text-dark !important;
+}
+
+.ant-steps .ant-steps-item-container {
+  @apply h-8 flex items-center !important;
+}
+
+/* Step Icons
+-------------------------------------------------- */
+.ant-steps-item-icon {
+  @apply grid place-content-center m-0 p-0 !important;
+}
+
+.ant-steps-item-icon, .ant-steps-item-icon svg {
+  @apply w-6 h-6 !important;
+}
+
+/* Step Content
+-------------------------------------------------- */
+.ant-steps-item-content {
+  @apply place-content-center relative grid h-8;
+}
+
+/* Progress Line
+-------------------------------------------------- */
+.ant-steps-item-title::after {
+  @apply hidden;
+}
+
+/* Active State
+-------------------------------------------------- */
+
+.ant-steps-item.ant-steps-item-active .ant-steps-item-icon {
+  @apply border-transparent dark:bg-success text-white !important;
+}
+.ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon {
+  @apply dark:text-black text-white !important;
+}
+
+/* Waiting State
+-------------------------------------------------- */
+.ant-steps-item.ant-steps-item-wait .ant-steps-item-icon .ant-steps-icon {
+  @apply bg-transparent border-gray-200  grid place-content-center text-gray-200 dark:border-gray-300 dark:text-transparent dark:text-gray-300 !important;
+}
+
+
+/* Completed State
+-------------------------------------------------- */
+.ant-steps-item.ant-steps-item-finish .ant-steps-item-icon .ant-steps-icon {
+  @apply dark:bg-transparent bg-gray-200 dark:text-success !important;
+}
+.ant-steps-item.ant-steps-item-finish .ant-steps-item-subtitle {
+  @apply text-black dark:text-success opacity-75 !important;
+}
+
+/* Media Queries
+-------------------------------------------------- */
 @media screen and (min-width: 440px) {
-  .onboarding-progress::after {
-    position: absolute;
-    background: linear-gradient(-90deg, transparent 80%, #242424 100%);
-  }
 }

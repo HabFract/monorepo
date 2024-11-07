@@ -11,7 +11,7 @@ import { cloneElement, useRef, useState } from "react";
 
 import Settings from "./components/Settings";
 
-import { darkTheme } from "habit-fract-design-system";
+import { Button, darkTheme } from "habit-fract-design-system";
 import { store } from "./state/store";
 import {
   Sphere,
@@ -30,7 +30,6 @@ import { useOnboardingScroll } from "./hooks/useOnboardingScroll";
 import { useMainContainerClass } from "./hooks/useMainContainerClass";
 import { useCurrentVersion } from "./hooks/useCurrentVersion";
 import OnboardingContinue from "./components/forms/buttons/OnboardingContinueButton";
-import HomeContinue from "./components/home/HomeContinueButton";
 import Toast from "./components/Toast";
 import { useToast } from "./contexts/toast";
 import { currentSphereDetailsAtom, currentSphereHashesAtom } from "./state/sphere";
@@ -103,7 +102,9 @@ function App({ children: pageComponent }) {
             cloneElement(pageComponent, {
               // Only Renders when state == "Home"
               startBtn: state.match("Home") ? (
-                <HomeContinue onClick={() => transition("Onboarding1")} />
+                <Button type={"button"} variant={"primary"} onClick={() => transition("Onboarding1")}>
+                Sign In
+              </Button>
               ) : (
                 <></>
               ),

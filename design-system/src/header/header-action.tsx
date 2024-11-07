@@ -5,10 +5,10 @@ import { ComponentProps, FC, ReactElement } from "react";
 
 export interface HeaderActionProps {
   title: String,
-  icon1: FC<ComponentProps<"svg">>
-  icon2: FC<ComponentProps<"svg">>
-  handlePrimaryAction: () => void,
-  handleSecondaryAction: () => void,
+  icon1: FC<ComponentProps<"svg">> | null
+  icon2: FC<ComponentProps<"svg">> | null
+  handlePrimaryAction?: () => void,
+  handleSecondaryAction?: () => void,
 }
 
 const HeaderAction: React.FC<HeaderActionProps> = ({
@@ -20,9 +20,9 @@ const HeaderAction: React.FC<HeaderActionProps> = ({
 }: HeaderActionProps) => {
   return (
     <div className={`header-action-container`}>
-        <Button onClick={handlePrimaryAction} type="button" variant="icon" icon={icon1({}) as ReactElement<any>}></Button>
+        {!!icon1 && <Button onClick={() => handlePrimaryAction?.()} type="button" variant="icon" icon={icon1({}) as ReactElement<any>}></Button>}
         <h1>{title}</h1>
-        <Button onClick={handleSecondaryAction} type="button" variant="icon" icon={icon2({}) as ReactElement<any>}></Button>
+        {!!icon2 && <Button onClick={() => handleSecondaryAction?.()} type="button" variant="icon" icon={icon2({}) as ReactElement<any>}></Button>}
     </div>
   );
 };

@@ -30,11 +30,6 @@
   @apply dark:bg-surface-elevated-dark rounded-3xl absolute bottom-0 flex flex-col w-full gap-2 px-4 py-6 rounded-b-none; 
 }
 
-.home-layout .login-options .form-field {
-
-}
-
-
 .disclaimer {
   white-space: pre-line;
 }
@@ -48,7 +43,12 @@
 
 /* Onboarding */
 
-.onboarding-layout {
+.onboarding-layout,
+.onboarding-layout .container {
+  width: 100%;
+}
+
+.onboarding-layout .content {
   @apply flex flex-col justify-between w-full gap-2 p-2;
   overflow-y: auto;
 }

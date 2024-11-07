@@ -22,3 +22,16 @@ If you experience any issues, the best course of action is to reload the app. If
 
 We are actively working on improvements and appreciate your patience and feedback during this phase..
 `;
+
+export const MODEL_DISPLAY_VALUES = {
+  // Model names
+  sphere: 'Constellation',
+  hierarchy: 'System',
+  orbit: 'Sphere',
+  winRecord: 'Win',
+  // Orbit scale display names and their precedents
+  astro: 'Sun', // Stood for astronomic
+  sub: 'Planitt', // Stood for sub-astronomic
+  atom: 'Moon', // Stood for atomic
+
+}

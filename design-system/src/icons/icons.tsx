@@ -68,24 +68,6 @@ export function getIconSvg(
           <path d="M3.33344 14H12.8904" stroke="currentColor" strokeLinecap="round" />
         </svg>
       );
-    case "tick":
-      return () => (
-        <svg
-          width="8"
-          height="6"
-          viewBox="0 0 12 9"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M11.3337 1L4.00033 8.33333L0.666992 5"
-            stroke="currentColor"
-            strokeWidth="1.3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      );
     case "cross":
       return () => (
         <svg
@@ -149,11 +131,17 @@ export function getIconSvg(
           <path d="M10.6667 6L1.33335 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
       );
+    case "tick":
+      return () => (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fillRule="evenodd" clipRule="evenodd" d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24ZM16.7474 9.66436C17.1143 9.25158 17.0771 8.61951 16.6644 8.25259C16.2516 7.88567 15.6195 7.92285 15.2526 8.33564L10.6667 13.4948L8.74741 11.3356C8.38049 10.9229 7.74842 10.8857 7.33564 11.2526C6.92285 11.6195 6.88567 12.2516 7.25259 12.6644L9.17185 14.8235C9.96743 15.7186 11.3659 15.7186 12.1615 14.8235L16.7474 9.66436Z" fill="currentColor" />
+        </svg>
+      );
     case "lock":
       return () => (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 9V7C8 4.79086 9.79086 3 12 3V3C14.2091 3 16 4.79086 16 7V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M3 11C3 9.89543 3.89543 9 5 9H19C20.1046 9 21 9.89543 21 11V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V11ZM12.75 15.1007C13.1012 14.8609 13.3318 14.4574 13.3318 14C13.3318 13.2645 12.7355 12.6682 12 12.6682C11.2645 12.6682 10.6682 13.2645 10.6682 14C10.6682 14.4574 10.8988 14.8609 11.25 15.1007V17C11.25 17.4142 11.5858 17.75 12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V15.1007Z" fill="currentColor"/>
+          <path d="M8 9V7C8 4.79086 9.79086 3 12 3V3C14.2091 3 16 4.79086 16 7V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+          <path fillRule="evenodd" clipRule="evenodd" d="M3 11C3 9.89543 3.89543 9 5 9H19C20.1046 9 21 9.89543 21 11V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V11ZM12.75 15.1007C13.1012 14.8609 13.3318 14.4574 13.3318 14C13.3318 13.2645 12.7355 12.6682 12 12.6682C11.2645 12.6682 10.6682 13.2645 10.6682 14C10.6682 14.4574 10.8988 14.8609 11.25 15.1007V17C11.25 17.4142 11.5858 17.75 12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V15.1007Z" fill="currentColor" />
         </svg>
       );
     case "info":

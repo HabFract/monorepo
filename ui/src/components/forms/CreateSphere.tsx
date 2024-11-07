@@ -148,10 +148,8 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
           />
         );
         return (
-          <div className="px-1">
+          <section>
             {headerDiv}
-
-            {<h2 className="onboarding-subtitle">Create a Sphere</h2>}
             <p className="form-description">
               A sphere is an <em>area of your life</em> where you want to track
               repeated actions.
@@ -197,7 +195,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
 
               {SubmitButton}
             </Form>
-          </div>
+          </section>
         );
       }}
     </Formik>
