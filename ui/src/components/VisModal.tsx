@@ -22,7 +22,7 @@ export default function VisModal<T extends IVisualization>(
         setIsModalOpen(false);
       }}
     >
-      <Modal.Header>Create Orbit</Modal.Header>
+      <Modal.Header>Add Plannit</Modal.Header>
       <Modal.Body>
         <CreateOrbit
           editMode={false}

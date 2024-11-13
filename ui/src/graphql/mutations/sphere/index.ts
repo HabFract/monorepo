@@ -69,6 +69,15 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     _,
     { sphere: { name, ...metadata } },
   ) => {
+    console.log('rawRecord :>> ', {
+      name,
+      metadata: {
+        //@ts-ignore
+        description: metadata?.description,
+        hashtag: metadata?.hashtag,
+        image: metadata?.image,
+      },
+    });
     const rawRecord = await runCreate({
       name,
       metadata: {

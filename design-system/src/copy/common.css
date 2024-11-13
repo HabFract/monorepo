@@ -1,11 +1,13 @@
 .helper-text {
-  font-size: 16px !important;
-  @apply mt-2 flex w-full justify-between font-medium leading-std text-input-text text-xs gap-4 font-sans font-semibold;
+  font-size: 14px !important;
+  @apply text-text dark:text-text-dark leading-std text-input-text flex justify-center w-full gap-4 mt-2 font-sans text-xs font-medium font-semibold;
 }
 
-.onboarding-page .helper-text {
-  margin: 1.25rem auto;
-  max-width: 32rem;
+.onboarding-layout .helper-text {
+  @apply justify-center;
+}
+.orbit-subdivision-list .helper-text {
+  @apply justify-start;
 }
 
 span.helper-content,
@@ -13,51 +15,13 @@ span.helper-content,
   line-height: 24px;
   font-size: 1em;
   font-weight: light;
-  @apply font-sans font-light mb-2;
+  @apply mb-2 font-sans font-light;
 }
 .toast-text {
-  @apply mx-8 text-xl text-white font-normal;
+  @apply mx-8 text-xl font-normal text-white;
 }
 
 .flowbite-toast {
   min-width: 25vw;
   z-index: 150;
-}
-
-#tooltip-right {
-  @apply transition-opacity duration-300 fixed z-10 inline-block px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700;
-  left: 0.5rem;
-  top: 0.5rem;
-  right: 0.5rem;
-}
-
-#tooltip-right:before {
-  content: "";
-  display: block;
-  width: 0;
-  height: 0;
-  position: absolute;
-
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-right: 8px solid rgb(17 24 39 / 1);
-  right: -8px;
-  top: 12px;
-  rotate: 180deg;
-}
-#tooltip-right.invisible:before,
-.side-nav:not(.expanded) #tooltip-right:before {
-  display: none;
-}
-
-p {
-  @apply mb-2 font-light font-sans;
-}
-h3 {
-  font-size: 1rem;
-  @apply mb-2 font-medium;
-}
-h4 {
-  font-size: 0.75rem;
-  @apply mb-2;
 }

@@ -12,11 +12,11 @@ import { select } from "d3-selection";
 export function getDisplayName(scale: Scale) {
   switch (scale) {
     case Scale.Astro:
-      return "Astronomic";
+      return "Star";
     case Scale.Sub:
-      return "Sub-astronomic";
+      return "Giant";
     case Scale.Atom:
-      return "Atomic";
+      return "Dwarf";
   }
 }
 

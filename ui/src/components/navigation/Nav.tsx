@@ -363,7 +363,7 @@ const Nav: React.FC<INav> = ({
       getItem(
         "New Sphere",
         "add-sphere",
-        <DSButton onClick={() => {}} type={"circle-icon"} icon={getIconSvg("plus")({}) as ReactElement}/>,
+        <DSButton onClick={() => {}} variant={"circle-icon"} icon={getIconSvg("plus")({}) as ReactElement}/>,
         undefined,
         undefined,
         false,

@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import "./common.css";
+import { getIconSvg } from "../icons/icons";
+import VisModal from "../modals/VisModal";
 
 export interface HelperTextProps {
   onClickInfo?: () => any;
@@ -29,44 +31,22 @@ const HelperText: React.FC<HelperTextProps> = ({
           <span className="helper-content">{children}</span>
         </div>
       ) : (
-        children
+        <span>{onClickInfo?.()?.label}</span>
       )}
       {withInfo && (
         <>
-          <div
-            id="tooltip-right"
-            role="tooltip"
-            className={tooltipVisible ? "" : "invisible"}
-            onClick={(e) => {
-              setTooltipVisible(false);
-            }}
-          >
-            <h4>(Click To Hide)</h4>
-            <h3>{onClickInfo?.()?.title}</h3>
-            <p>{onClickInfo?.()?.body}</p>
-            <div className="tooltip-arrow" data-popper-arrow></div>
-          </div>
-          <div
-            className="flex h-full items-start justify-end text-primary w-8 h-8 pr-0 mb-2 cursor-pointer"
-            onClick={(e) => {
-              setTooltipVisible(!tooltipVisible);
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-              />
-            </svg>
-          </div>
+          <div className="btn-info">
+          {withInfo && (
+              <>
+                <button onClick={() => setTooltipVisible(true)}>
+                  {getIconSvg('info')({})}
+                </button>
+                <VisModal modalAnnotation={onClickInfo?.()?.annotation as string} title={onClickInfo?.()?.title as string} isModalOpen={tooltipVisible} size="lg" onClose={() => setTooltipVisible(false)}>
+                  {getInfoBody(onClickInfo?.()?.body)}
+                </VisModal>
+              </>
+          )}
+        </div>
         </>
       )}
     </div>
@@ -74,3 +54,28 @@ const HelperText: React.FC<HelperTextProps> = ({
 };
 
 export default HelperText;
+
+function getInfoBody(infoId: string) : ReactNode {
+  switch (infoId) {
+    case 'Star':
+      return <div className="flex flex-col gap-2">
+      <img className="max-w-72 mx-auto" src="/assets/sun.svg"></img>
+      <h1 className="text-xl text-center text-white text-opacity-100">Star</h1>
+      <p>Stars are the main thrust of your plan & your guiding light in this journey. They guide your path and inspire you to reach for the stars!</p>
+    </div>
+    case 'Giant':
+      return <div className="flex flex-col gap-2">
+      <img style={{transform: "scale(1.4) translate(.25rem, .75rem)"}} className="max-w-72 mx-auto" src="/assets/planet.svg"></img>
+      <h1 className="text-xl text-center text-white text-opacity-100">Giant</h1>
+      <p>Giants are your big commitments, the stepping stones that bridge your dreams and daily actions. They remind you that making a promise to yourself is a giant leap towards success.</p>
+    </div>
+    case 'Dwarf':
+      return <div className="flex flex-col gap-2">
+      <img style={{transform: "translate(.25rem, 0)"}} className="max-w-72 mx-auto" src="/assets/moon.svg"></img>
+      <h1 className="text-xl text-center text-white text-opacity-100">Dwarf</h1>
+      <p>Dwarf plannits are your small, everyday actions. They may be tiny, but they pack a punch! These are the tasks you can tick off daily, keeping you on track and moving forward.</p>
+    </div>
+    default:
+      return <></>
+  }
+}

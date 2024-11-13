@@ -1,6 +1,6 @@
 /* Container for Vis sphere navigation */
 nav.side-nav {
-  @apply bg-gray-500 fixed left-0 z-10 h-full flex justify-between flex-col;
+  @apply fixed left-0 z-10 flex flex-col justify-between h-full bg-gray-500;
   height: auto;
   top: 5rem;
   bottom: auto;
@@ -77,21 +77,6 @@ nav.side-nav.off-screen .off-screen-toggle-button {
 
 .off-screen-toggle-button button {
   @apply w-full h-full cursor-pointer;
-}
-
-nav.side-nav+.page-container .sphere-card.list-header button.add-orbit,
-nav.side-nav+.page-container form .field:nth-child(3),
-nav.side-nav+.page-container form .field:nth-child(4),
-nav.side-nav+.page-container form .field:nth-child(5),
-nav.side-nav+.page-container form .field:nth-child(6),
-nav.side-nav+.page-container form .field:nth-child(7),
-nav.side-nav+.page-container form button[type="submit"] {
-  width: 80%;
-  align-self: end;
-}
-
-nav.side-nav+.page-container .sphere-card.list-header button.add-orbit {
-  width: calc(100% - 72px);
 }
 
 .logo-div {
@@ -227,7 +212,7 @@ nav.side-nav+.page-container .sphere-card.list-header button.add-orbit {
 
 /* Vertical collapse button */
 .toggle-expanded-menu {
-  @apply bg-transparent border-0 text-title text-sm h-10;
+  @apply text-title h-10 text-sm bg-transparent border-0;
   width: 64px;
   margin-left: 1px;
   border-radius: 2rem;
@@ -247,12 +232,12 @@ nav.side-nav+.page-container .sphere-card.list-header button.add-orbit {
 
 .toggle-expanded-menu:hover {
   border-color: rgba(80, 227, 194, 0.9) !important;
-  @apply bg-gray-400 text-title;
+  @apply text-title bg-gray-400;
   border: 1px solid rgba(80, 227, 194, 0.9);
 }
 
 .page-header {
-  @apply h-12 py-2 text-title rounded-lg flex items-center justify-around bg-gradient-to-b from-secondary to-secondary text-base text-center hidden;
+  @apply text-title bg-gradient-to-b from-secondary to-secondary flex items-center justify-around hidden h-12 py-2 text-base text-center rounded-lg;
 
   font-family: "Nunito", Arial, sans-serif;
   line-height: 2.2em;
@@ -274,7 +259,7 @@ nav.side-nav+.page-container .sphere-card.list-header button.add-orbit {
 }
 
 .sphere-context-actions {
-  @apply bg-primary-500 py-1 px-2;
+  @apply bg-primary-500 px-2 py-1;
   border-top: 1px solid rgba(219, 228, 226, 1);
   border-bottom-left-radius: 1.125rem;
   border-bottom-right-radius: 1.125rem;
@@ -471,6 +456,10 @@ button[data-testid="dark-themetheme-toggle"]:active,
   color: rgba(80, 227, 194, 0.9);
 }
 
+.anticon {
+  @apply dark:text-primary-500 !important;
+}
+
 .anticon-plus-circle.grayed svg {
   @apply text-gray-300 !important;
 }
@@ -499,7 +488,7 @@ button[data-testid="dark-themetheme-toggle"]:active,
 /* Expanded Nav */
 
 #tooltip-left {
-  @apply transition-opacity duration-300 absolute z-10 inline-block px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm tooltip dark:bg-gray-700;
+  @apply tooltip dark:bg-gray-700 absolute z-10 inline-block px-3 py-2 text-sm text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm;
   left: 105%;
   width: 12rem;
 }
@@ -551,7 +540,7 @@ ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] {
 .feedback-link,
 .cache-settings,
 .check-updates {
-  @apply flex gap-8 mb-4 justify-between items-center pr-2 pl-4 border-2;
+  @apply flex items-center justify-between gap-8 pl-4 pr-2 mb-4 border-2;
   border-radius: 1.5rem;
 }
 
@@ -572,25 +561,6 @@ ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] {
 @media screen and (min-width: 768px) {
   .page-header h1 {
     @apply text-3xl;
-  }
-
-  nav.side-nav+.page-container .sphere-card.list-header button.add-orbit,
-  nav.side-nav+.page-container form .field:nth-child(3),
-  nav.side-nav+.page-container form .field:nth-child(4),
-  nav.side-nav+.page-container form .field:nth-child(5),
-  nav.side-nav+.page-container form .field:nth-child(6),
-  nav.side-nav+.page-container form .field:nth-child(7),
-  nav.side-nav+.page-container form button[type="submit"] {
-    width: 100%;
-    align-self: initial;
-  }
-
-  .field.row.sphere-image {
-    width: 28rem;
-  }
-
-  .page-container:not(.onboarding-page) .field.row.sphere-image {
-    width: 85%;
   }
 }
 

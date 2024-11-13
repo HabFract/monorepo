@@ -10,9 +10,11 @@ interface OnboardingContinueProps {
 
 const OnboardingContinue: FC<OnboardingContinueProps> = ({ onClick, ...props }) => {
   return (
-    <Button loading={false} type={"onboarding"} onClick={onClick} {...props}>
-      Save & Continue
-    </Button>
+    <div className="onboarding-continue">
+      <Button loading={props.loading} type={"submit"} variant={"primary"} onClick={onClick} {...props}>
+        Save & Continue
+      </Button>
+    </div>
   );
 };
 

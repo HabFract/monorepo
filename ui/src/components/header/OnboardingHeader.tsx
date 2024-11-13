@@ -5,7 +5,7 @@ import { store } from "../../state/store";
 import { ForwardedRef, forwardRef, RefObject } from "react";
 import { isSmallScreen } from "../vis/helpers";
 import { currentSphereHashesAtom } from "../../state/sphere";
-import { MODEL_DISPLAY_VALUES } from "../../constants";
+import { MODEL_DISPLAY_VALUES, ONBOARDING_FORM_TITLES } from "../../constants";
 import { useStateTransition } from "../../hooks/useStateTransition";
 
 /**
@@ -19,8 +19,9 @@ import { useStateTransition } from "../../hooks/useStateTransition";
 const OnboardingHeader: React.ForwardRefExoticComponent<
   React.PropsWithoutRef<{}>
 > = forwardRef<HTMLDivElement, {}>(
-  ({}, ref: ForwardedRef<HTMLDivElement>) => {
+  ({ }, ref: ForwardedRef<HTMLDivElement>) => {
     const [state, transition, params] = useStateTransition(); // Top level state machine and routing
+    console.log('state :>> ', state);
     if (!state.match("Onboarding")) return <></>;
 
     /**
@@ -44,10 +45,12 @@ const OnboardingHeader: React.ForwardRefExoticComponent<
       });
     };
 
+    const currentStepNumber = +(state.match(/Onboarding(\d+)/)?.[1] || 0);
+
     return (
       <header>
         <HeaderAction
-          title={`Create Your First ${MODEL_DISPLAY_VALUES['sphere']}`}
+          title={`Put a Plan in Motion`}
           icon1={getIconSvg('back')}
           icon2={null}
           handlePrimaryAction={handleBackAction}
@@ -55,26 +58,17 @@ const OnboardingHeader: React.ForwardRefExoticComponent<
         <div ref={ref}>
           <ProgressBar
             stepNames={
-              isSmallScreen()
-                ? [
-                  "Welcome",
-                  "Create Sphere",
-                  "Create Orbit",
-                  "Refine Orbit",
-                  "Visualize",
-                ]
-                : [
-                  "Create Profile (N/A)",
-                  "Create Sphere",
-                  "Create Orbit",
-                  "Refine Orbit",
-                  "Visualize",
-                ]
-            }
-            currentStep={+(state.match(/Onboarding(\d+)/)?.[1] || 0)}
+              [
+                "Create Password",
+                `Create ${MODEL_DISPLAY_VALUES['sphere']}`,
+                `Create ${MODEL_DISPLAY_VALUES['orbit']}`,
+                `Break Up ${MODEL_DISPLAY_VALUES['orbit']}`,
+                "Visualize",
+              ]}
+            currentStep={currentStepNumber}
           />
         </div>
-        <h1 className={"onboarding-title"}>Create {MODEL_DISPLAY_VALUES['sphere']}</h1>
+        <h1 className={"onboarding-title"}>{ONBOARDING_FORM_TITLES[currentStepNumber - 1]}</h1>
       </header>
     );
   },

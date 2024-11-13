@@ -40,7 +40,7 @@ const darkThemeModal: CustomFlowbiteTheme["modal"] = {
     "popup": "pt-0"
   },
   "header": {
-    "base": "flex items-center justify-between rounded-t border-b-0 p-4 pb-10 text-center mr-4 dark:border-gray-600",
+    "base": "flex items-center justify-between rounded-t border-b-0 p-4 text-center mr-4 dark:border-gray-600",
     "popup": "border-b-0 p-2",
     "title": "w-full font-sans font-bold text-lg leading-normal text-white/70",
     "close": {
@@ -55,8 +55,8 @@ const darkThemeModal: CustomFlowbiteTheme["modal"] = {
 };
 
 // Base styles for inputs
-const baseInputStyles = "w-full px-3 pl-4 py-[10px] h-[48px] font-sans font-light text-sm leading-normal text-gray-900 dark:text-input-text-dark placeholder:text-gray-400 dark:placeholder:text-input-placeholder-dark bg-surface dark:bg-surface-dark hover:border-primary hover:bg-surface-elevated dark:hover:border-surface-dark dark:hover:bg-surface-dark focus:border-secondary focus:ring-0 focus:shadow-none dark:focus:border-surface-top-dark";
-const baseIconStyles = "input-icon h-8 w-8 text-input-icon dark:text-input-icon-dark pointer-events-none absolute left-0 top-1 flex items-center p-2";
+const baseInputStyles = "w-full px-3 pl-4 py-[10px] h-[48px] font-sans font-light text-sm leading-normal text-gray-900 dark:text-input-text-dark placeholder:text-gray-400 dark:placeholder:text-input-placeholder-dark bg-input-bg dark:bg-input-bg-dark border-input-border dark:input-border-dark hover:border-primary hover:bg-surface-elevated dark:hover:border-surface-dark dark:hover:bg-surface-dark focus:border-secondary focus:ring-0 focus:shadow-none dark:focus:border-surface-top-dark";
+const baseIconStyles = "input-icon ml-1 mt-1 h-8 w-8 text-input-icon dark:text-input-icon-dark pointer-events-none absolute left-0 top-1 flex items-center p-2";
 // Disabled styles
 const disabledStyles = "bg-gray-500 text-white border-gray-200 dark:bg-gray-800 opacity-50 dark:placeholder:text-gray-300 dark:border-gray-300 pointer-events-none";
 

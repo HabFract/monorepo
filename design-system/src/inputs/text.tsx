@@ -98,7 +98,8 @@ export const TextInputField: React.FC<{
   return (
     <>
       <TextInput
-        name={name}
+        {...field}
+        name={field.name} 
         id={id}
         size={size}
         value={value}

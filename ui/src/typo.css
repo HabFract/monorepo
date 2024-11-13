@@ -1,92 +1,80 @@
+/* Root Typography Settings
+-------------------------------------------------- */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  font-size: 16px;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  /* Font Family */
+  @apply font-sans;
   font-synthesis: none;
+  
+  /* Base Text Settings */
+  @apply text-base font-normal leading-normal;
+  
+  /* Color Settings */
+  color-scheme: light dark;
+  @apply text-text dark:text-text-dark bg-surface dark:bg-surface-dark;
+  
+  /* Text Rendering */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
 
+/* Paragraph
+-------------------------------------------------- */
+p {
+  @apply text-text dark:text-text-dark opacity-80 mb-2 font-sans text-sm font-light leading-relaxed;
+}
+
+/* Heading
+-------------------------------------------------- */
+h3 {
+  font-size: 1rem;
+  @apply mb-2 font-medium;
+}
+
+h4 {
+  font-size: 0.75rem;
+  @apply mb-2;
+}
+
+
+/* Link Styles
+-------------------------------------------------- */
 a {
-  font-weight: 500;
-  color: #646cff;
+  @apply text-primary dark:text-accent hover:text-primary-500 dark:hover:text-accent-dark font-bold;
   text-decoration: inherit;
 }
-a:hover {
-  color: #535bf2;
-}
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
+/* Component Typography
+-------------------------------------------------- */
+/* Onboarding Title */
 .onboarding-title {
-  display: flex;
-  flex: 1;
-  text-align: center;
-  margin: 0;
-  font-family: Manrope, Arial, sans-serif;
-  line-height: 2.2rem;
-  font-weight: 400;
-  @apply text-primary;
-  font-size: 1rem;
+  @apply mt-6 mb-2 ml-4 font-sans text-base font-bold leading-relaxed;
+  @apply text-text dark:text-text-dark;
 }
 
+/* Onboarding Content */
+.onboarding-layout .content,
+.create-form .content {
+  @apply flex flex-col gap-6 px-4;
+  overflow-y: auto;
+}
+.onboarding-layout .content p.form-description,
+.create-form .content p.form-description {
+  margin-bottom: 2px;
+}
+
+/* Accented Elements */
 p.form-description em,
+form em,
+.ant-collapse-header-text em,
 .helper-text em {
-  font-weight: medium;
-  @apply dark:text-accent-dark;
+  @apply text-primary-500 dark:text-accent-dark font-medium;
+}
+.ant-collapse-header-text em {
+  text-decoration: underline !important;
 }
 
 .danger-zone .helper-content {
   @apply p-0;
-}
-
-#tooltip-right {
-  @apply text-xl;
-}
-#tooltip-right h3 {
-  @apply text-2xl;
-}
-
-@media screen and (min-width: 440px) {
-  p.form-description,
-  .onboarding-progress {
-    max-width: 80vw;
-  }
-  .onboarding-title {
-    font-size: 1.5rem;
-  }
-  p.form-description {
-    line-height: 2rem;
-    font-size: 1.2rem;
-  }
-  p.form-description {
-    text-align: center;
-  }
-}
-
-@media screen and (min-width: 1200px) {
-  .onboarding-title {
-    font-size: 2rem;
-    line-height: 3.5rem;
-    @apply mb-4;
-  }
-}
-@media screen and (min-width: 1680px) {
-  .onboarding-title {
-    font-size: 2.5rem;
-  }
 }

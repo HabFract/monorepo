@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* Layout Base
+-------------------------------------------------- */
+body {
+  @apply m-0 flex place-items-center min-w-[320px] min-h-screen;
+}
+
 /* Gridlines */
 #vis, .page-container.home {
   background-size: calc(100vw/12) calc(100vw/12);
@@ -18,6 +25,7 @@
   display: grid;
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
   place-content: flex-start;
 }
 
@@ -153,9 +161,6 @@ nav + main.page-container .orbits-list {
   }
   .page-container:not(.home) {
     grid-column: 2/-2;
-  }
-  .page-container.create-form {
-    overflow-y: auto !important;
   }
   .page-container.vis {
     padding: 0;

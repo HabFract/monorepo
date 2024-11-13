@@ -9,7 +9,17 @@ export type ButtonVariant =
   | "neutral"
   | "onboarding"
   | "icon"
-  | "circle-icon";
+  | "circle-icon"
+  | "circle-icon-lg"
+  | "circle-icon btn-primary"
+  | "circle-icon btn-neutral"
+  | "circle-icon btn-secondary"
+  | "responsive"
+  | "primary responsive"
+  | "circle-icon-lg btn-secondary"
+  | "circle-icon-lg btn-neutral outlined"
+  | "secondary responsive"
+  ;
 
 export interface ButtonProps {
   variant?: ButtonVariant;

@@ -1,14 +1,19 @@
-import { Field, Formik } from 'formik';
+import { Field, Form, Formik } from 'formik';
 import './common.css'
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { useState } from 'react';
-import { string } from 'yup';
+import { object, string } from 'yup';
 import { Button, TextInputField } from 'habit-fract-design-system';
 
 function HomeLayout({ startBtn, firstVisit = true }: any) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
-  const [currentPassword, setCurrentPassword] = useState<String>("");
-  const passwordValidationSchema = string().min(8).max(18);
+  const validationSchema = object({
+    password: string().min(8).max(18)
+  });
+
+  const initialValues = {
+    password: ""
+  };
 
   return (
     <section className="home-layout">
@@ -25,8 +30,8 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
       </header>
       <div className="login-options">
         <Formik
-          initialValues={currentPassword}
-          validationSchema={passwordValidationSchema}
+          initialValues={initialValues}
+          validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting }) => {
             try {
               setSubmitting(false);
@@ -38,14 +43,13 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
           }}
         >
           {({ values, errors, touched, setFieldValue }) => {
-            return <div className="form-field">
+            return <Form noValidate={true}>
+            <div className="form-field">
             <Field
               component={TextInputField}
               size="base"
-              name="name"
-              id="name"
-              icon={"tag"}
-              iconSide={"left"}
+              name="password"
+              id="password"
               withInfo={true}
               isPassword={true}
               onClickInfo={() => ({
@@ -56,7 +60,8 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
               labelValue={"Password:"}
               placeholder={"Enter your password"}
             />
-          </div>
+          </div>  
+            </Form>
           }}
         </Formik>
         {startBtn}

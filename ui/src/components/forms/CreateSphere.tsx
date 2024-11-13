@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { Label } from "flowbite-react";
 import {
   SphereCreateParams,
   useGetSphereQuery,
@@ -11,8 +10,11 @@ import { ImageUpload } from "./input";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import { ActionHashB64 } from "@holochain/client";
 import DefaultSubmitBtn from "./buttons/DefaultSubmitButton";
-import { TextAreaField, TextInputField } from "habit-fract-design-system";
+import { Label, TextAreaField, TextInputField } from "habit-fract-design-system";
 import { useCreateSphereMutation } from "../../hooks/gql/useCreateSphereMutation";
+import { MODEL_DISPLAY_VALUES, ONBOARDING_FORM_DESCRIPTIONS } from "../../constants";
+import { SphereFetcher } from "./utils";
+import Collapse from "antd/es/collapse";
 
 // Define the validation schema using Yup
 const SphereValidationSchema = Yup.object().shape({
@@ -35,34 +37,6 @@ interface CreateSphereProps {
   headerDiv?: React.ReactNode;
   submitBtn?: React.ReactNode;
 }
-
-const SphereFetcher = ({ sphereToEditId, setValues }) => {
-  const {
-    data: getData,
-    error: getError,
-    loading: getLoading,
-  } = useGetSphereQuery({
-    variables: {
-      id: sphereToEditId as string,
-    },
-    skip: !sphereToEditId,
-  });
-
-  useEffect(() => {
-    if (!getData) return;
-
-    const {
-      name,
-      metadata: { description, image },
-    } = getData?.sphere as any;
-    setValues({
-      name,
-      description,
-      image,
-    });
-  }, [getData]);
-  return null;
-};
 
 const CreateSphere: React.FC<CreateSphereProps> = ({
   editMode = false,
@@ -122,7 +96,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
             payload?.updateSphere?.actionHash;
           const props =
             state == "Onboarding1" ? { sphereEh: eH } : { sphereAh: aH };
-          console.log('props :>> ', props);
+
           transition(
             state == "Onboarding1" ? "Onboarding2" : "ListSpheres",
             props,
@@ -147,54 +121,57 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
             touched={touched}
           />
         );
+
+        const descriptionParts = ONBOARDING_FORM_DESCRIPTIONS[0].split('[em]')
         return (
           <section>
             {headerDiv}
-            <p className="form-description">
-              A sphere is an <em>area of your life</em> where you want to track
-              repeated actions.
-            </p>
-            <Form noValidate={true}>
-              {editMode && (
-                <SphereFetcher
-                  sphereToEditId={sphereToEditId}
-                  setValues={setCurrentSphereValues}
+            <div className="content">
+              <p className="form-description">
+              {descriptionParts[0]}&nbsp;
+                <Collapse
+                  size="small"
+                  items={[{ key: '1', label: <em>{descriptionParts[1]}</em>, children: <p>{descriptionParts[2]}</p> }]}
                 />
-              )}
-              <div className="form-field">
-                <Field
-                  component={TextInputField}
-                  size="base"
-                  name="name"
-                  id="name"
-                  icon={"tag"}
-                  value={editMode ? values.name : undefined}
-                  iconSide={"left"}
-                  required={true}
-                  labelValue={"Name:"}
-                  placeholder={"E.g. Health and Fitness"}
-                />
-              </div>
-
-              <div className="form-field">
-                <Field
-                  component={TextAreaField}
-                  name="description"
-                  id="description"
-                  labelValue={"Description:"}
-                  placeholder={"E.g. I am aiming to run a marathon this year"}
-                />
-              </div>
-
-              <div className="field row sphere-image">
-                <Label htmlFor="image">Image:</Label>
+              </p>
+              <Form noValidate={true}>
+                {editMode && (
+                  <SphereFetcher
+                    sphereToEditId={sphereToEditId}
+                    setValues={setCurrentSphereValues}
+                  />
+                )}
                 <div className="form-field">
-                  <Field component={ImageUpload} name="image" id="image" />
+                  <Field
+                    component={TextInputField}
+                    size="base"
+                    name="name"
+                    id="name"
+                    icon={"tag"}
+                    value={editMode ? values.name : undefined}
+                    iconSide={"left"}
+                    required={true}
+                    labelValue={"Name:"}
+                    placeholder={"E.g. Health and Fitness"}
+                  />
                 </div>
-              </div>
-
-              {SubmitButton}
-            </Form>
+                <div className="form-field">
+                  <Field
+                    component={TextAreaField}
+                    name="description"
+                    id="description"
+                    labelValue={"Description:"}
+                    placeholder={"E.g. I am aiming to run a marathon this year"}
+                  />
+                </div>
+                <div className="form-field">
+                  <Label id="symbol" labelValue="Symbol: ">
+                    <Field component={ImageUpload} name="symbol" id="symbol" />
+                  </Label>
+                </div>
+                {SubmitButton}
+              </Form>
+            </div>
           </section>
         );
       }}

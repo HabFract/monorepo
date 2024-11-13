@@ -25,13 +25,19 @@ We are actively working on improvements and appreciate your patience and feedbac
 
 export const MODEL_DISPLAY_VALUES = {
   // Model names
-  sphere: 'Constellation',
+  sphere: 'Space',
   hierarchy: 'System',
-  orbit: 'Sphere',
-  winRecord: 'Win',
+  orbit: 'Plannit',
+  winRecord: 'Orbit',
   // Orbit scale display names and their precedents
-  astro: 'Sun', // Stood for astronomic
-  sub: 'Planitt', // Stood for sub-astronomic
-  atom: 'Moon', // Stood for atomic
+  astro: 'Star', // Stood for astronomic
+  sub: 'Giant', // Stood for sub-astronomic
+  atom: 'Dwarf', // Stood for atomic
 
 }
+
+export const ONBOARDING_FORM_TITLES = [`Create ${MODEL_DISPLAY_VALUES['sphere']}`, `Create ${MODEL_DISPLAY_VALUES['orbit']}`, `Break Up ${MODEL_DISPLAY_VALUES['orbit']}` ]
+export const ONBOARDING_FORM_DESCRIPTIONS = [
+  `It all starts with a ${MODEL_DISPLAY_VALUES['sphere']}. Give your goals their own little universe, dedicated to a [em]special area of your life[em] It could be health, wealth, family, or career. Give the ${MODEL_DISPLAY_VALUES['sphere']} a short name, perhaps add a description of what you want to achieve, and upload a symbol or image to remember it by.`,
+  `This is where your plans take shape: let's fill your ${MODEL_DISPLAY_VALUES['sphere']} by setting up a [em]${MODEL_DISPLAY_VALUES['hierarchy']}[em] Composed of ${MODEL_DISPLAY_VALUES['orbit']}s of different scales - representing [em]behaviour you want to track[em] Start a System with a Plannit of any scale. We'll begin with a Star (representing your most significant goal) shining brightly in your System.[em] Give it a short name, extra details if desired, and fill in [em]how frequently[em] you want to track this behaviour.`,
+  `Break Up ${MODEL_DISPLAY_VALUES['orbit']}` ]

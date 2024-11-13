@@ -63,6 +63,30 @@ button.btn.btn-secondary:not(.nohover):hover {
   @apply dark:bg-gray-300 dark:text-text-dark dark:border-gray-300 text-gray-600 bg-gray-200 border-gray-200;
 }
 
+/* Outlined */
+
+.btn.outlined {
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  background: transparent;
+}
+
+.btn-primary.outlined {
+  @apply outline-primary-500;
+}
+.btn-secondary.outlined {
+  @apply outline-secondary-500;
+}
+.btn-neutral.outlined {
+  @apply outline-gray-300;
+}
+.btn-warn.outlined {
+  @apply outline-warn-500;
+}
+.btn-danger.outlined {
+  @apply outline-danger-500;
+}
+
 /* Button States
 -------------------------------------------------- */
 /* Disabled */
@@ -105,7 +129,10 @@ button.btn.btn-secondary:not(.nohover):hover {
   @apply bg-surface dark:bg-surface-dark w-8 h-8 border-0;
 }
 .btn.btn-circle-icon {
-  @apply bg-primary text-title dark:bg-primary-dark dark:text-title-dark w-8 h-8 border-0;
+  @apply text-title dark:text-title-dark w-8 h-8 border-0;
+}
+.btn.btn-circle-icon-lg {
+  @apply text-title dark:text-title-dark w-12 h-12 border-0 rounded-full;
 }
 .btn.btn-circle-icon, .btn.btn-circle-icon > div {
   @apply rounded-full;
@@ -134,6 +161,10 @@ button.btn.btn-secondary:not(.nohover):hover {
 
 /* Responsive Button Styles
 -------------------------------------------------- */
+.btn.responsive {
+  @apply w-full h-auto text-base font-bold tracking-wide rounded-full;
+}
+
 .btn.responsive span[role="img"],
 .btn.responsive svg[role="img"] {
   @apply m-0-sm justify-center;

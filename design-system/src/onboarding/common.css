@@ -1,13 +1,15 @@
 /* Base Progress Bar Layout
 -------------------------------------------------- */
 .onboarding-progress {
-  @apply flex-row overflow-hidden py-1 min-h-[2.5rem] top-0 right-0 overflow-x-auto dark:bg-modal-bg-dark px-4 gap-4 !important;
+  @apply flex-row overflow-hidden py-2 px-4 gap-4 min-h-[2.5rem] top-0 right-0 overflow-x-auto dark:bg-surface-top-dark !important;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
 /* Scrollbar Styling
 -------------------------------------------------- */
 .onboarding-progress::-webkit-scrollbar {
-  @apply w-6;
+  @apply hidden;
 }
 
 /* Progress Bar Container
@@ -22,6 +24,46 @@
   --onboarding-translate-offset-x: -75px;
   --onboarding-translate-increment: -200px;
 }
+
+/* Figures with Plannit Scales
+-------------------------------------------------- */
+.figure-image-container {
+  @apply flex-1 w-full;
+}
+.figure-images, .figure-captions {
+  @apply flex items-center justify-around gap-2;
+}
+
+.figure-image-container:nth-child(1) img {
+  transform: scale(1) translateX(4px);
+}
+.figure-image-container:nth-child(2) img {
+  transform: scale(1.2) translate(8px, 8px);
+}
+.figure-image-container:nth-child(3) img  {
+  transform: scale(.4) translate(-4px, -10px);
+}
+
+/* Collapse
+-------------------------------------------------- */
+.ant-collapse, .ant-collapse-header {
+  @apply p-0 mb-2 border-0 inline-block relative font-sans text-sm font-light leading-relaxed !important;
+  text-decoration: none !important;
+}
+
+.ant-collapse-item .ant-collapse-content  {
+  @apply bg-transparent border-0 !important;
+}
+
+.ant-collapse-item .ant-collapse-content-box  {
+  @apply p-0 !important;
+}
+
+.ant-collapse-expand-icon {
+  @apply text-text dark:text-text-dark absolute !important;
+  right: -32px !important;
+}
+
 
 /* Typography
 -------------------------------------------------- */

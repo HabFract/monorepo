@@ -1,5 +1,5 @@
 .vis-controls {
-  @apply gap-2 bg-gradient-to-t from-surface-elevated-dark to-transparent justify-around p-2 items-end fixed right-0;
+  @apply bg-gradient-to-t from-surface-elevated-dark to-transparent fixed right-0 items-end justify-around gap-2 p-2;
   width: 100%;
   bottom: 0;
   min-height: 8rem;
@@ -83,20 +83,20 @@
   bottom: 100%;
   pointer-events: auto;
   background: transparent;
-  @apply absolute flex inset-x-0 flex-col gap-2;
+  @apply absolute inset-x-0 flex flex-col gap-2;
 }
 
 .overlay-win-streak-container {
-  @apply flex gap-2 justify-between;
+  @apply flex justify-between gap-2;
   padding: .5rem !important;
 }
 
 .calendar-nav {
-  @apply text-white dark:bg-surface-overlay-dark;
+  @apply dark:bg-surface-overlay-dark text-white;
 }
 
 .calendar-day {
-  @apply flex flex-col gap-1 w-full px-1;
+  @apply flex flex-col w-full gap-1 px-1;
   max-width: 4rem;
 }
 
@@ -113,7 +113,7 @@
 
 .calendar-day-complete,
 .calendar-day-incomplete {
-  @apply rounded-full text-base font-medium text-gray-500 w-8 h-8 grid place-content-center;
+  @apply place-content-center grid w-8 h-8 text-base font-medium text-gray-500 rounded-full;
 }
 
 .calendar-day-complete {
@@ -129,7 +129,7 @@
 }
 
 .orbit-pill-container {
-  @apply rounded-full border-gray-100 min-w-24 h-8 bg-secondary flex gap-4 text-xs text-white font-light flex gap-1 items-center justify-start px-2;
+  @apply min-w-24 flex items-center justify-start h-8 gap-1 gap-4 px-2 text-xs font-light text-white border-gray-100 rounded-full;
   flex-wrap: nowrap;
   max-width: 8rem;
 }
@@ -154,7 +154,7 @@
 }
 
 .calendar-day-container {
-  @apply flex flex-1 justify-center items-center;
+  @apply flex items-center justify-center flex-1;
 }
 
 .calendar-day-container.current .calendar-day>div:last-child {
@@ -163,7 +163,7 @@
 }
 
 .swipe-up-tab-container {
-  @apply z-50 flex flex-col rounded-2xl p-2 gap-1 text-white dark:bg-surface-overlay-dark;
+  @apply rounded-2xl dark:bg-surface-overlay-dark z-50 flex flex-col gap-1 p-2 text-white;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 
@@ -204,7 +204,7 @@ div.handle span {
 
 .win-count-container,
 .streak-count-container {
-  @apply min-h-24 w-1/2 m-0 p-2 dark:bg-surface-elevated-dark rounded-2xl grid gap-3;
+  @apply min-h-24 dark:bg-modal-bg-dark bg-surface-elevated-dark rounded-2xl grid w-1/2 gap-3 p-2 m-0;
   row-gap: 4px;
   grid-template-rows: 1.5rem auto;
   grid-template-columns: 1fr 1fr 1fr;
@@ -227,7 +227,7 @@ div.handle span {
 .win-count-container .title,
 .streak-count-container .title {
   grid-column: 1/-1;
-  @apply text-center text-white items-center justify-center flex gap-1;
+  @apply flex items-center justify-center gap-1 text-center text-white;
 }
 
 .win-count-container .title,
@@ -244,20 +244,20 @@ div.handle span {
 }
 
 .current-calendar-context-container {
-  @apply flex justify-between my-2 items-center;
+  @apply flex items-center justify-between my-2;
 }
 
 .current-date-string {
-  @apply font-light text-sm;
+  @apply text-sm font-light;
   line-height: 2rem;
 }
 
 .current-day {
-  @apply flex flex-col font-light text-xs text-gray-100 gap-1 items-center justify-center;
+  @apply flex flex-col items-center justify-center gap-1 text-xs font-light text-gray-100;
 }
 
 .win-count-container .win-control {
-  @apply text-xl text-primary hover:dark:text-accent-dark;
+  @apply text-primary hover:dark:text-accent-dark text-xl;
   cursor: pointer;
   width: fit-content;
   align-self: center;
@@ -266,7 +266,7 @@ div.handle span {
 
 .streak-count-container .streak-control-indicator,
 .win-count-container .win-control-indicator {
-  @apply text-white text-xs leading-loose tracking-widest m-0;
+  @apply m-0 text-xs leading-loose tracking-widest text-white;
 }
 
 .win-count-container .win-control:disabled {
@@ -403,6 +403,9 @@ div.handle span {
   padding: 1.75rem 0;
   height: fit-content;
 }
+.intersecting-planet-column .planet-icon {
+  transform: none !important;
+}
 
 .intersecting-pill-row {
   height: 100%;
@@ -461,30 +464,6 @@ div.handle span {
   /* Optional: changes cursor to pointer when hovering over the pill content */
 }
 
-
-.add-node-button {
-  border-radius: 100%;
-  width: 4rem;
-  height: 4rem;
-  background-size: contain;
-  border-radius: 1.125rem;
-  background-position: center;
-  background-repeat: no-repeat;
-  @apply border-4;
-  max-width: 12.5vw;
-}
-
-.add-node-button.hide {
-  pointer-events: none;
-  cursor: not-allowed;
-  opacity: 0.25;
-}
-
-.add-node-button:hover {
-  @apply border-4 border-primary;
-  border-radius: 100%;
-}
-
 .date-nav-button {
   height: 1.5rem;
   width: 1.5rem;
@@ -503,14 +482,6 @@ div.handle span {
   .vis-controls {
     @apply left-1/4 right-1/4 w-1/2;
   }
-
-  .higher-button {
-    left: 20%;
-  }
-
-  .lower-button {
-    right: 20%;
-  }
 }
 
 @media screen and (min-width: 500px) {
@@ -519,7 +490,7 @@ div.handle span {
   }
 
   .date-nav-button .date-nav-icon {
-    @apply h-6 w-6;
+    @apply w-6 h-6;
   }
 
   .current-date-string {
@@ -541,7 +512,7 @@ div.handle span {
   }
 
   .swipe-up-tab-container {
-    @apply p-4 gap-4;
+    @apply gap-4 p-4;
   }
 
   .current-calendar-context-container {

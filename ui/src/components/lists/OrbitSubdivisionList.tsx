@@ -26,6 +26,7 @@ import { Refinement } from "../forms/RefineOrbit";
 import { OrbitFetcher } from "../forms/utils";
 import { getDisplayName, isSmallScreen } from "../vis/helpers";
 import { currentSphereHashesAtom } from "../../state/sphere";
+import OnboardingContinue from "../forms/buttons/OnboardingContinueButton";
 
 interface OrbitSubdivisionListProps {
   currentOrbitValues: Orbit;
@@ -126,21 +127,17 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
         }}
       >
         {({ values, touched, errors, submitForm, isSubmitting }) => {
-          const SubmitButton = <Button type={"onboarding"}
+          const SubmitButton = <OnboardingContinue
             loading={submitRefineBtnIsLoading}
             errors={errors}
             touched={touched}
             onClick={() => submitForm()}
-          >
-            {refinementType == Refinement.Update
-              ? "Update Name"
-              : "Create Orbits"}
-          </Button>
+          />
 
           const refineTitle =
             refinementType == Refinement.Update
-              ? "Refine Atomic Orbit Name"
-              : "Break Up High Scale Orbits";
+              ? "Refine Plannit Name"
+              : "Choose Sub-Plannit Scale";
           const refineMessage =
             refinementType == Refinement.Update
               ? "Since you have chosen the Atomic scale for your Orbit, it's best to make sure it is named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable:"
@@ -188,7 +185,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                 noValidate={true}
                 style={{ gridColumn: "-2/-1", gridRow: "1/-1" }}
               >
-                <div className="flex flex-col gap-2 md:gap-4">
+                <div className="md:gap-4 flex flex-col gap-2">
                   {refinementType == Refinement.Update ? (
                     <Field
                       component={TextInputField}
@@ -223,7 +220,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                             );
                           })}
                         required={true}
-                        labelValue={"Scale for New Orbits:"}
+                        labelValue={"Scale:"}
                       />
                       {isSmallScreen() &&
                         refinementType == Refinement.Split &&
@@ -258,7 +255,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                                 />
                                 <button
                                   style={{ opacity: index > 0 ? 1 : 0 }}
-                                  className="flex flex-1 text-danger w-full flex justify-center hover:text-danger-500"
+                                  className="text-danger hover:text-danger-500 flex justify-center flex-1 w-full"
                                   type="button"
                                   onClick={() => arrayHelpers.remove(index)}
                                 >
@@ -268,13 +265,13 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                             ))}
 
                             {errors.list && (
-                              <Label className="my-1 text-warn">
+                              <Label className="text-warn my-1">
                                 All names must be a valid length
                               </Label>
                             )}
                             {values!.list!.length <= 3 && (
                               <button
-                                className="flex flex-1 dark:text-accent-dark w-8 mx-auto flex justify-center hover:text-primary"
+                                className="dark:text-accent-dark hover:text-primary flex justify-center flex-1 w-8 mx-auto"
                                 type="button"
                                 onClick={() => arrayHelpers.push({ name: "" })}
                                 disabled={values!.list!.length >= 4}
@@ -288,6 +285,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                     </>
                   )}
                 </div>
+                
                 {SubmitButton}
               </Form>
             </>
@@ -303,14 +301,14 @@ export default OrbitSubdivisionList;
 function RenamingHelperText() {
   return (
     <HelperText
-      title={"Refine Atomic Orbit Names"}
+      title={"Refine Plannit Name"}
       titleIcon={<Pencil />}
       withInfo={false}
     >
       <span>
-        Since you have chosen the Atomic scale for your new Orbits, it's best to
+        Since you have chosen the Dwarf scale for your new Plannits, it's best to
         make sure they are named in a way that is an <em>incremental action</em>{" "}
-        - one that is quantifiable and achievable.
+        - one that is easily quantifiable and achievable.
       </span>
     </HelperText>
   );

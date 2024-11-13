@@ -1,163 +1,18 @@
-.card-h1 {
-  @apply uppercase
-    text-title
-    font-heading
-    text-base
-    py-1
-    pr-1
-    pl-4
-    leading-5
-    tracking-tight
-    text-white;
+/* System Calendar Card */
+.system-calendar-card {
+  @apply text-text dark:text-text-dark dark:bg-surface-dark rounded-3xl relative p-4 pb-24 bg-gray-300;
+}
+.system-calendar-card header {
+  @apply flex items-center gap-3;
+}
+.system-calendar-card footer {
+  @apply dark:bg-modal-bg-dark rounded-3xl absolute inset-x-0 bottom-0 flex h-20 gap-2 p-4 rounded-t-none;
 }
 
-.orbit-card {
-  @apply flex flex-col rounded-2xl overflow-hidden;
+/* System Calendar Card Typo */
+.system-calendar-card h1.card-name {
+  @apply font-sans text-lg font-bold; 
 }
+.system-calendar-card img + .card-name {
 
-.orbit-title {
-  max-width: 66%;
-}
-.orbit-title h2 {
-  text-overflow: ellipsis;
-  overflow: clip;
-}
-
-.orbit-description {
-  min-height: 2.5rem;
-}
-
-.orbit-card.display-only {
-  max-height: 16rem;
-  margin: 0 auto 2rem auto;
-  max-width: 32rem;
-}
-
-.orbit-card .card-h1 {
-  text-transform: initial;
-}
-
-.card-copy {
-  @apply text-white
-    leading-normal
-    text-sm
-    max-w-xl
-    text-center
-    p-2;
-
-  line-height: 1.25rem;
-}
-
-.card-header {
-  @apply flex rounded-t-lg items-center justify-around;
-}
-.card-header.orbit-header {
-  @apply bg-secondary-500;
-}
-
-.card-header.sphere-header {
-  @apply border-t-2 border-gray-100 dark:bg-surface-dark;
-}
-
-.sphere-card .card-body-bg {
-  @apply to-transparent from-secondary;
-}
-.orbit-card .card-body-bg {
-  @apply from-secondary;
-}
-
-.card-body-bg {
-  padding: 0.25rem;
-  gap: 0.5rem;
-  justify-content: flex-start !important;
-  border-radius: 0.5rem;
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
-  @apply w-full bg-gradient-to-b;
-}
-.list-header .card-header {
-  @apply border-gray-100 dark:bg-surface-dark;
-}
-
-.sphere-card.list-header .card-header {
-  @apply dark:bg-surface-dark;
-}
-
-.card-copy {
-  @apply font-sans bg-gray-400;
-  border-radius: 0.75rem;
-  margin-bottom: 0.5rem;
-}
-
-.orbit-timeframe {
-  @apply font-sans text-white pr-4 pt-4 gap-1 tracking-wide;
-}
-.orbit-timeframe span {
-  @apply text-center;
-  line-height: 1rem;
-}
-
-/* .orbit-card, .sphere-card {
-  max-width: 540px;
-} */
-
-.sphere-card {
-  @apply flex flex-col rounded-2xl self-center rounded-xl w-full;
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
-}
-
-.mini-vis {
-  max-width: 50%;
-}
-
-.layout.spheres .card-actions {
-  @apply w-full;
-}
-.layout.spheres .card-actions > div {
-  @apply flex-row items-center justify-center;
-}
-.layout.spheres .card-actions button {
-  margin-top: 0 !important;
-}
-
-@media screen and (min-width: 440px) {
-  .card-h1 {
-    @apply py-4 text-xl;
-  }
-  .card-copy {
-    @apply text-lg;
-  }
-  .card-body-bg {
-    @apply p-4 gap-4;
-  }
-
-  .sphere-card .sphere-description {
-    min-height: 3rem;
-  }
-  .sphere-card .sphere-description + div {
-    gap: 0;
-  }
-}
-
-@media screen and (min-width: 500px) {
-  .sphere-card .sphere-description + div {
-    @apply justify-between items-start;
-  }
-  .sphere-actions-vis {
-    position: initial;
-    top: initial;
-  }
-
-  .card-header.orbit-header {
-    min-height: 5rem;
-  }
-  .orbit-timeframe {
-    gap: 0;
-  }
-}
-@media screen and (min-width: 1200px) {
-  .sphere-card .sphere-description + div {
-    padding-left: 1rem;
-  }
 }

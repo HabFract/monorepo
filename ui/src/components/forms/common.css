@@ -8,9 +8,9 @@
 form {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
   align-items: center;
-  @apply dark:bg-surface-elevated-dark rounded-2xl p-2 py-4;
+  @apply rounded-2xl;
 }
 
 .scene {
@@ -34,7 +34,6 @@ form {
 .form-field {
   flex-direction: column;
   display: flex;
-  gap: 0.5rem;
   align-items: center;
   width: 100%;
 }
@@ -63,7 +62,31 @@ form {
   justify-content: center;
 }
 
-/* Date pickers */
+/* Image Upload */
+.avatar-container {
+  @apply flex items-center w-full gap-4;
+}
+
+.avatar-container img {
+  max-width: 4rem;
+  max-height: 4rem;
+  aspect-ratio: 1/1;
+  border-radius: 100% !important;
+}
+
+.avatar-container > * {
+  @apply cursor-pointer !important; 
+}
+
+.ant-upload {
+  @apply pl-2 flex w-full justify-start items-start cursor-default !important;
+}
+
+.ant-upload.ant-upload-select {
+  border: none !important;
+  @apply w-full !important;
+}
+
 
 .ant-picker {
   background: #1e293b !important;
@@ -106,66 +129,4 @@ form {
 
 .ant-picker-suffix {
   display: none !important;
-}
-/* Image uploader */
-
-.ant-upload.ant-upload-select {
-  border: 2px dashed rgba(255, 225, 225, 1) !important;
-  @apply dark:bg-surface-dark border-primary;
-  color: #fefefe;
-  border-radius: 100%;
-  overflow: auto;
-}
-.ant-upload.ant-upload-select:hover {
-  border: 2px solid transparent;
-  @apply dark:bg-surface-dark border-primary;
-}
-
-.ant-upload-wrapper.avatar-uploader {
-  justify-content: center;
-  display: flex;
-  align-items: center;
-}
-
-.field.sphere-image label {
-  align-items: flex-start;
-}
-
-@media screen and (min-width: 440px) {
-  form {
-    gap: 1.25rem;
-    @apply py-4;
-  }
-  .field {
-    flex-wrap: nowrap;
-    @apply flex-row;
-  }
-  .form-field {
-    width: 85%;
-  }
-  .field label {
-    @apply flex mb-6 text-sm;
-    flex-basis: 7rem;
-  }
-
-  .scene {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    /* width: 80%; */
-  }
-}
-@media screen and (min-width: 768px) {
-  .scene {
-    width: 100%;
-  }
-}
-@media screen and (min-width: 768px) {
-  .scene {
-    width: 100%;
-  }
-  form {
-    min-width: 30rem;
-    max-width: 80vw;
-  }
 }

@@ -1,7 +1,7 @@
 /* Home (New User) */
 
 .home-layout {
-  --vertical-section-spacing: 2rem;
+  --vertical-section-spacing: 4rem;
   @apply flex justify-around w-full h-full;
 }
 
@@ -16,7 +16,7 @@
 .home-layout .welcome-cta {
   width: 100%;
   min-height: 12rem;
-  max-height: 30vh;
+  max-height: 40vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -26,7 +26,7 @@
 }
 
 .home-layout .login-options {
-  height: calc(70vh - var(--vertical-section-spacing));
+  height: calc(60vh - var(--vertical-section-spacing));
   @apply dark:bg-surface-elevated-dark rounded-3xl absolute bottom-0 flex flex-col w-full gap-2 px-4 py-6 rounded-b-none; 
 }
 
@@ -48,9 +48,8 @@
   width: 100%;
 }
 
-.onboarding-layout .content {
-  @apply flex flex-col justify-between w-full gap-2 p-2;
-  overflow-y: auto;
+.onboarding-continue {
+  @apply w-[100vw] dark:bg-surface-top-dark place-content-center inset-x-0 bottom-0 flex grid p-4 bg-gray-200;
 }
 
 /* Home (Returning User) */

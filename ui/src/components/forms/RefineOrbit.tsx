@@ -2,12 +2,12 @@ import React from "react";
 import { Formik } from "formik";
 
 import { Scale } from "../../graphql/generated";
-import { OrbitCard } from "habit-fract-design-system";
 import { OrbitSubdivisionList } from "../lists";
 import { OrbitFetcher } from "./utils";
 import { OrbitValidationSchema } from "./CreateOrbit";
 import { ActionHashB64 } from "@holochain/client";
 import { currentOrbitIdAtom, store } from "../../state";
+import { MODEL_DISPLAY_VALUES } from "../../constants";
 
 interface RefineOrbitProps {
   refiningOrbitAh: ActionHashB64;
@@ -40,47 +40,16 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({
     >
       {({ values, errors, touched }) => {
         return (
-          <>
+          <section>
             {refiningOrbitAh! && (
               <OrbitFetcher orbitToEditId={refiningOrbitAh} />
             )}
             {headerDiv}
-            {values?.name && (
-              <OrbitCard
-                displayOnly={true}
-                sphereEh={values.sphereHash}
-                orbit={{
-                  id: values.id,
-                  eH: values.eH,
-                  sphereHash: values.sphereHash,
-                  name: values.name,
-                  scale: values.scale,
-                  frequency: values.frequency,
-                  metadata: {
-                    description: values.description,
-                    timeframe: {
-                      startTime: values.startTime,
-                      endTime: values.endTime,
-                    },
-                  },
-                }}
-              ></OrbitCard>
-            )}
-            <p className="form-description mb-2">
-              {values.scale == Scale.Atom ? (
-                <span>
-                  Make sure that you have been thoughtful about the best name
-                  for your Atomic Orbit before you continue
-                </span>
-              ) : (
-                <span>
-                  Make sure that you have <em>sub-divided</em> your Orbit into
-                  smaller scales (as desired) before you are ready to start
-                  tracking!
-                </span>
-              )}
-            </p>
 
+            <div className="content">
+              <p className="form-description">
+                This is your chance to divide a large scale {MODEL_DISPLAY_VALUES['orbit'].toLowerCase()} into several smaller <em>agreements or actions</em> that will simplify carrying out your plan.
+              </p>
             <OrbitSubdivisionList
               submitBtn={submitBtn}
               currentOrbitValues={values}
@@ -90,7 +59,8 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({
                   : Refinement.Split
               }
             ></OrbitSubdivisionList>
-          </>
+            </div>
+          </section>
         );
       }}
     </Formik>

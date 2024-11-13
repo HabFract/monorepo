@@ -1,5 +1,6 @@
 export { default as VisControls } from "./VisControls";
-export { default as Calendar } from "./SwipeUpTab";
+export { default as Calendar } from "./Calendar";
+export { default as SwipeUpTab } from "./SwipeUpTab";
 export { default as VisMovementVertical } from "./VisMovementVertical";
 export { default as VisMovementLateral } from "./VisMovementLateral";
 export { default as StreakCount } from "./StreakCount";

@@ -1,5 +1,5 @@
 import { useFormikContext } from "formik";
-import { useGetOrbitQuery } from "../../graphql/generated";
+import { useGetOrbitQuery, useGetSphereQuery } from "../../graphql/generated";
 import { useEffect } from "react";
 
 export const OrbitFetcher = ({ orbitToEditId }) => {
@@ -38,6 +38,34 @@ export const OrbitFetcher = ({ orbitToEditId }) => {
       archival: !!endTime,
       parentHash: getData.orbit?.parentHash,
       eH: getData.orbit.eH,
+    });
+  }, [getData]);
+  return null;
+};
+
+export const SphereFetcher = ({ sphereToEditId, setValues }) => {
+  const {
+    data: getData,
+    error: getError,
+    loading: getLoading,
+  } = useGetSphereQuery({
+    variables: {
+      id: sphereToEditId as string,
+    },
+    skip: !sphereToEditId,
+  });
+
+  useEffect(() => {
+    if (!getData) return;
+
+    const {
+      name,
+      metadata: { description, image },
+    } = getData?.sphere as any;
+    setValues({
+      name,
+      description,
+      image,
     });
   }, [getData]);
   return null;

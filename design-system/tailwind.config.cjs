@@ -80,7 +80,7 @@ const tailwindConfig = {
           },
           top: {
             DEFAULT: '#ffffff',
-            dark: '#4E5454'
+            dark: '#3A4040'
           }
         },
         secondary: {
@@ -118,11 +118,11 @@ const tailwindConfig = {
         input: {
           bg: {
             DEFAULT: '#ffffff',
-            dark: '#242424',
+            dark: '#2F3232',
           },
           border: {
             DEFAULT: '#e5e7eb',
-            dark: 'transparent',
+            dark: 'rgba(255,255,255, 0.1)',
           },
           text: {
             DEFAULT: '#000000',
@@ -130,7 +130,7 @@ const tailwindConfig = {
           },
           placeholder: {
             DEFAULT: '#9ca3af',
-            dark: '#4E5454',
+            dark: 'rgba(255,255,255, 0.7)',
           },
           icon: {
             DEFAULT: '#9ca3af',

@@ -15,7 +15,7 @@ import { extractEdges } from "../../graphql/utils";
 import { useCreateOrbitMutation } from "../../hooks/gql/useCreateOrbitMutation";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { useStateTransition } from "../../hooks/useStateTransition";
-import { currentOrbitIdAtom, getOrbitNodeDetailsFromEhAtom } from "../../state/orbit";
+import { currentOrbitIdAtom, decodeFrequency, getOrbitNodeDetailsFromEhAtom } from "../../state/orbit";
 
 import { AppState } from "../../routes";
 import { store } from "../../state/store";
@@ -25,13 +25,15 @@ import {
   TextInputField,
   SelectInputField,
   getIconForPlanetValue,
-  FrequencyIndicator,
+  HelperText,
 } from "habit-fract-design-system";
 import { OrbitFetcher } from "./utils";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state/hierarchy";
 import { useUpdateOrbitMutation } from "../../hooks/gql/useUpdateOrbitMutation";
 import { getDisplayName, getFrequencyDisplayName } from "../vis/helpers";
+import { ONBOARDING_FORM_DESCRIPTIONS } from "../../constants";
+import Collapse from "antd/es/collapse";
 
 // Define the validation schema using Yup
 export const OrbitValidationSchema = Yup.object().shape({
@@ -141,6 +143,8 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
     currentOrbitValues.parentHash !== null &&
     store.get(parentNodeAtom);
 
+
+  const descriptionParts = ONBOARDING_FORM_DESCRIPTIONS[1].split('[em]')
   return (
     <Formik
       initialValues={currentOrbitValues}
@@ -221,212 +225,223 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
           setFieldValue("scale", scaleDefault);
         }
         return (
-          <div className={inModal ? "px-2 w-full" : "px-1"}>
+          <section>
             {!inModal ? headerDiv : null}
-
-            <p className="form-description">
-              An orbit is a <em>specific life action</em> that your wish to
-              track over time.
-            </p>
-            <Form noValidate={true}>
-              {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
-
-              <div className="flex form-field">
-                <Field
-                  component={TextInputField}
-                  size="base"
-                  name="name"
-                  id="name"
-                  icon={"tag"}
-                  iconSide={"left"}
-                  withInfo={true}
-                  onClickInfo={() => ({
-                    title: "The name should be scale-appropriate",
-                    body: "Try to make the name in line with the scale of the Orbit. For example, an Atomic Orbit might be called 'Meditate for 10 minutes'",
-                  })}
-                  required={true}
-                  value={editMode ? values.name : undefined}
-                  labelValue={"Name:"}
-                  placeholder={"E.g. Run for 10 minutes"}
-                />
-              </div>
-
-              <div className="flex form-field">
-                <Field
-                  component={TextAreaField}
-                  size="base"
-                  name="description"
-                  id="description"
-                  required={false}
-                  labelValue={"Description:"}
-                  placeholder={"E.g. Give some more details..."}
-                />
-              </div>
-
-              {!parentOrbitEh && !inOnboarding && (
-                <div className="flex form-field">
+            <div className="content">
+              {state.match("Onboarding") && <>
+                <p className="form-description">{descriptionParts[0]}&nbsp;
+                  <Collapse
+                    size="small"
+                    items={[{ key: '1', label: <em>{descriptionParts[1]}</em>, children: <><p>{descriptionParts[2]}<em>{descriptionParts[3]}</em>.</p><p>{descriptionParts[4]}</p></> }]}
+                  />
+                </p>
+                <figure>
+                  <div className="figure-images">
+                    {['sun', 'planet', 'moon'].map(scale => <div className="figure-image-container"><img key={scale} src={`assets/${scale}.svg`} alt={`${scale} figure`} style={{ width: "100%" }} /></div>)}
+                  </div>
+                  <figcaption className="figure-captions">
+                    {['Star', 'Giant', 'Dwarf'].map(scale => <HelperText withInfo={true} onClickInfo={() => ({ title: `Plannit Scales`, label: `${scale}`, body: scale })} key={scale}>{scale}</HelperText>)}
+                  </figcaption>
+                </figure>
+              </>
+              }
+              <Form noValidate={true}>
+                {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
+                <div className="form-field flex">
                   <Field
                     component={SelectInputField}
                     size="base"
-                    name="parentHash"
-                    id="parent-hash"
+                    name="scale"
+                    value={values?.scale || scaleDefault}
+                    id="scale"
+                    icon={(() => {
+                      const currentValue = values.scale || scaleDefault;
+                      return getIconForPlanetValue(
+                        cannotBeAstro && cannotBeSub
+                          ? Scale.Atom
+                          : currentValue == Scale.Astro && cannotBeAstro
+                            ? Scale.Sub
+                            : currentValue,
+                      );
+                    })()}
+                    iconSide={"left"}
+                    disabled={
+                      !editMode &&
+                      !parentOrbitEh &&
+                      !state.match("Onboarding") &&
+                      !(touched?.parentHash || touched?.childHash) &&
+                      parentOrbitEh !== null
+                    }
                     withInfo={true}
                     onClickInfo={() => ({
-                      title: "Good Parenting",
-                      body: "Choose the parent which describes behaviour of a bigger scope. For instance, if the name of your Orbit is 'Run a 10k', maybe the next biggest scope is 'Run a 20k'. Setting your parent to 'None' will make it the top of a new hierarchy.",
+                      title: "Scales, Explained",
+                      body: "This refers to the magnitude of your tracked behaviour. //We like to think of the three scales in terms of Plans, Agreements, and Actions. // Make an over-arching Plan (a star).// Link it to a number of Agreements - sometimes this is the biggest step - the Giant! // Then, make the whole thing easy to carry out: write down a number of small Actions (Dwarves, in our language), ready to be ticked off.",
                     })}
-                    onBlur={() => {
-                      setFieldValue("scale", scaleDefault);
-                    }}
                     options={[
-                      <option value={"root"}>{"None"}</option>,
-                      ...(childOrbitEh
-                        ? []
-                        : orbitEdges.map((orbit, i) => (
-                          <option key={i} value={orbit.eH}>
-                            {orbit.name}
+                      // values?.scale ? null : <option value={undefined}>{'Select:'}</option>,
+                      ...Object.values(Scale).map((scale) => {
+                        return (cannotBeAstro && scale == Scale.Astro) ||
+                          (cannotBeSub && scale == Scale.Sub) ? null : (
+                          <option key={scale} value={scale}>
+                            {getDisplayName(scale)}
                           </option>
-                        ))),
-                    ]}
+                        );
+                      }),
+                    ].filter((el) => el !== null)}
                     required={true}
-                    disabled={!!editMode}
-                    labelValue={"Parent Orbit:"}
+                    labelValue={"Scale:"}
                   />
                 </div>
-              )}
 
-              <div className="flex form-field">
-                <Field
-                  component={SelectInputField}
-                  size="base"
-                  name="scale"
-                  value={values?.scale || scaleDefault}
-                  id="scale"
-                  icon={(() => {
-                    const currentValue = values.scale || scaleDefault;
-                    return getIconForPlanetValue(
-                      cannotBeAstro && cannotBeSub
-                        ? Scale.Atom
-                        : currentValue == Scale.Astro && cannotBeAstro
-                          ? Scale.Sub
-                          : currentValue,
-                    );
-                  })()}
-                  iconSide={"left"}
-                  disabled={
-                    !editMode &&
-                    !parentOrbitEh &&
-                    !state.match("Onboarding") &&
-                    !(touched?.parentHash || touched?.childHash) &&
-                    parentOrbitEh !== null
-                  }
-                  withInfo={true}
-                  onClickInfo={() => ({
-                    title: "Scales, Explained",
-                    body: "This refers to the magnitude of your behaviour. Astronomic goes well with anything vast, like running a marathon. Atomic is for small, incremental actions, like putting on your running shoes. Sub-astronomic is anything inbetween!",
-                  })}
-                  options={[
-                    // values?.scale ? null : <option value={undefined}>{'Select:'}</option>,
-                    ...Object.values(Scale).map((scale) => {
-                      return (cannotBeAstro && scale == Scale.Astro) ||
-                        (cannotBeSub && scale == Scale.Sub) ? null : (
-                        <option key={scale} value={scale}>
-                          {getDisplayName(scale)}
-                        </option>
-                      );
-                    }),
-                  ].filter((el) => el !== null)}
-                  required={true}
-                  labelValue={"Scale:"}
-                />
-              </div>
-              <div className="flex form-field">
-                <Field
-                  component={SelectInputField}
-                  size="base"
-                  name="frequency"
-                  value={values?.frequency}
-                  id="frequency"
-                  icon={(() => {
-                    const currentValue = values.frequency || Frequency.DailyOrMore_1d; 
-                    return currentValue; 
-                  })()}
-                  iconSide={"left"}
-                  disabled={false}
-                  // withInfo={true}
-                  // onClickInfo={() => ({
-                  //   title: "Scales, Explained",
-                  //   body: "This refers to the magnitude of your behaviour. Astronomic goes well with anything vast, like running a marathon. Atomic is for small, incremental actions, like putting on your running shoes. Sub-astronomic is anything inbetween!",
-                  // })}
-                  options={[
-                    ...Object.values(Frequency).map((frequency) => {
-                      return (
-                        <option key={frequency} value={frequency}>
-                          {getFrequencyDisplayName(frequency)}
-                        </option>
-                      );
-                    }),
-                  ].filter((el) => el !== null)}
-                  required={true}
-                  labelValue={"Frequency:"}
-                />
-              </div>
-
-              {/* {!inOnboarding && <Flex className={"field"} vertical={true}>
-              <Flex justify='space-around'>
-                <Label htmlFor='startTime'>Start<span className="reqd">*</span><span className="hidden-sm">/</span>
-                </Label>
-                <Label htmlFor='endTime'>&nbsp; End:
-                </Label>
-              </Flex>
-              <div className="flex flex-wrap items-start">
-                <div className="flex form-field flex-1">
+                {state.match("Onboarding") && <p style={{alignSelf: 'flex-start'}}>{descriptionParts[5]}<em>{descriptionParts[6]}</em>{descriptionParts[7]}</p>}
+                <div className="form-field flex">
                   <Field
-                    name="startTime"
-                    id="startTime"
-                    type="date"
-                    placeholder={"Select:"}
-                    component={DateInput}
-                    defaultValue={values.startTime}
+                    component={TextInputField}
+                    size="base"
+                    name="name"
+                    id="name"
+                    icon={"tag"}
+                    iconSide={"left"}
+                    withInfo={true}
+                    onClickInfo={() => ({
+                      title: "The name should be scale-appropriate",
+                      body: "Try to make the name to fit with the scale of the Plannit. //For example, a Giant Plannit might be called 'Run 5km' or 'Write a business plan'. //A Dwarf Plannit would be more like 'Run for 10 minutes' or  'Read 40 pages of my book'.",
+                    })}
+                    required={true}
+                    value={editMode ? values.name : undefined}
+                    labelValue={"Name:"}
+                    placeholder={"E.g. Run for 10 minutes"}
                   />
                 </div>
-                <div className="flex flex-col md:flex-row gap-2 mb-4 justify-around flex-1">
-                  <Field
-                    name="endTime"
-                    id="endTime"
-                    type="date"
-                    placeholder={"Select:"}
-                    component={DateInput}
-                    disabled={(!values.archival)}
-                    defaultValue={values.endTime}
-                  />
-                  <Field name="archival">
-                    {({ field }) => (
-                      <Checkbox
-                        className="text-sm text-light-gray"
-                        {...field}
-                      >Archival?</Checkbox>
-                    )}
-                  </Field>
-                </div>
-              </div>
-            </Flex>} */}
 
-              {(submitBtn &&
-                React.cloneElement(submitBtn as React.ReactElement, {
-                  loading,
-                  errors,
-                  touched,
-                })) || (
-                  <DefaultSubmitBtn
-                    loading={loading}
-                    editMode={editMode}
-                    errors={errors}
-                    touched={touched}
-                  ></DefaultSubmitBtn>
+                <div className="form-field flex">
+                  <Field
+                    component={TextAreaField}
+                    size="base"
+                    name="description"
+                    id="description"
+                    required={false}
+                    labelValue={"Details:"}
+                    placeholder={"E.g. Give some more details..."}
+                  />
+                </div>
+                {!parentOrbitEh && !inOnboarding && (
+                  <div className="form-field flex">
+                    <Field
+                      component={SelectInputField}
+                      size="base"
+                      name="parentHash"
+                      id="parent-hash"
+                      withInfo={true}
+                      onClickInfo={() => ({
+                        title: "Good Parenting",
+                        body: "Choose the parent which describes behaviour of a bigger scope. //For instance, if the name of your Orbit is 'Run a 10k', maybe the next biggest scope is 'Run a 20k'. //Setting your parent to 'None' will make it the top of a new hierarchy.",
+                      })}
+                      onBlur={() => {
+                        setFieldValue("scale", scaleDefault);
+                      }}
+                      options={[
+                        <option value={"root"}>{"None"}</option>,
+                        ...(childOrbitEh
+                          ? []
+                          : orbitEdges.map((orbit, i) => (
+                            <option key={i} value={orbit.eH}>
+                              {orbit.name}
+                            </option>
+                          ))),
+                      ]}
+                      required={true}
+                      disabled={!!editMode}
+                      labelValue={"Parent Orbit:"}
+                    />
+                  </div>
                 )}
-            </Form>
-          </div>
+                <div className="form-field flex">
+                  <Field
+                    component={SelectInputField}
+                    size="base"
+                    name="frequency"
+                    value={values?.frequency}
+                    id="frequency"
+                    icon={(() => {
+                      const currentValue = values.frequency || 1;
+                      return currentValue;
+                    })()}
+                    iconSide={"left"}
+                    disabled={false}
+                    // withInfo={true}
+                    // onClickInfo={() => ({
+                    //   title: "Scales, Explained",
+                    //   body: "This refers to the magnitude of your behaviour. Astronomic goes well with anything vast, like running a marathon. Atomic is for small, incremental actions, like putting on your running shoes. Sub-astronomic is anything inbetween!",
+                    // })}
+                    options={[
+                      ...Object.values(Frequency).map((frequency) => {
+                        return (
+                          <option key={frequency} value={frequency}>
+                            {getFrequencyDisplayName(frequency)}
+                          </option>
+                        );
+                      }),
+                    ].filter((el) => el !== null)}
+                    required={true}
+                    labelValue={"Frequency:"}
+                  />
+                </div>
+                {/* {!inOnboarding && <Flex className={"field"} vertical={true}>
+                <Flex justify='space-around'>
+                  <Label htmlFor='startTime'>Start<span className="reqd">*</span><span className="hidden-sm">/</span>
+                  </Label>
+                  <Label htmlFor='endTime'>&nbsp; End:
+                  </Label>
+                </Flex>
+                <div className="flex flex-wrap items-start">
+                  <div className="form-field flex flex-1">
+                    <Field
+                      name="startTime"
+                      id="startTime"
+                      type="date"
+                      placeholder={"Select:"}
+                      component={DateInput}
+                      defaultValue={values.startTime}
+                    />
+                  </div>
+                  <div className="md:flex-row flex flex-col justify-around flex-1 gap-2 mb-4">
+                    <Field
+                      name="endTime"
+                      id="endTime"
+                      type="date"
+                      placeholder={"Select:"}
+                      component={DateInput}
+                      disabled={(!values.archival)}
+                      defaultValue={values.endTime}
+                    />
+                    <Field name="archival">
+                      {({ field }) => (
+                        <Checkbox
+                          className="text-light-gray text-sm"
+                          {...field}
+                        >Archival?</Checkbox>
+                      )}
+                    </Field>
+                  </div>
+                </div>
+              </Flex>} */}
+                {(submitBtn &&
+                  React.cloneElement(submitBtn as React.ReactElement, {
+                    loading,
+                    errors,
+                    touched,
+                  })) || (
+                    <DefaultSubmitBtn
+                      loading={loading}
+                      editMode={editMode}
+                      errors={errors}
+                      touched={touched}
+                    ></DefaultSubmitBtn>
+                  )}
+              </Form>
+            </div>
+          </section>
         );
       }}
     </Formik>
