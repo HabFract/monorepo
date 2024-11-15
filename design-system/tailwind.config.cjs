@@ -72,7 +72,10 @@ const tailwindConfig = {
           dark: '#242424',
           overlay: {            // for overlay controls in the Vis
             DEFAULT: '#cecece',
-            dark: "#3A3A3A"
+            dark: {
+              DEFAULT: "#313131",
+              500: "rgba(49, 49, 49, 0.5)"
+            }
           },
           elevated: {           // for cards, modals, forms, dropdowns, etc.
             DEFAULT: '#ffffff',
@@ -80,7 +83,10 @@ const tailwindConfig = {
           },
           top: {
             DEFAULT: '#ffffff',
-            dark: '#3A4040'
+            dark: {
+              DEFAULT: "#3A4040",
+              500: "rgba(58, 64, 64, 0.5)"
+            }
           }
         },
         secondary: {
@@ -96,7 +102,7 @@ const tailwindConfig = {
           500: 'rgba(2, 177, 151, 0.5)',
           dark:  {
             DEFAULT: 'rgba(2, 177, 151, 0.75)',
-            500: 'rgba(2, 177, 151, 0.5)',
+            500: 'rgba(29, 64, 76, .5)',
           },
         },
         accent: {

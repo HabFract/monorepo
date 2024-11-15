@@ -4,9 +4,6 @@
 @tailwind utilities;
 
 @layer utilities {
-  .placeholder-input-std::placeholder {
-    @apply text-input-placeholder leading-std text-std-input font-std !important;
-  }
   .input-icon {
     @apply h-5 w-5;
     padding: 0 2px;

@@ -9,7 +9,7 @@ export interface HelperTextProps {
   title?: string;
   withInfo?: boolean;
   titleIcon?: React.ReactNode;
-}
+} 
 
 const HelperText: React.FC<HelperTextProps> = ({
   children,
@@ -38,7 +38,7 @@ const HelperText: React.FC<HelperTextProps> = ({
           <div className="btn-info">
           {withInfo && (
               <>
-                <button onClick={() => setTooltipVisible(true)}>
+                <button type="button" onClick={() => setTooltipVisible(true)}>
                   {getIconSvg('info')({})}
                 </button>
                 <VisModal modalAnnotation={onClickInfo?.()?.annotation as string} title={onClickInfo?.()?.title as string} isModalOpen={tooltipVisible} size="lg" onClose={() => setTooltipVisible(false)}>

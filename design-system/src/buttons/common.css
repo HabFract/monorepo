@@ -183,6 +183,10 @@ button.btn.btn-secondary:not(.nohover):hover {
 
 /* Dropdown Button Overrides
 -------------------------------------------------- */
+*[data-testid="flowbite-popover-arrow"] {
+  @apply hidden !important;
+}
+
 button[data-testid="flowbite-dropdown-target"] {
   @apply bg-primary border-primary dark:bg-primary-500 dark:border-primary-500 border-2;
 }

@@ -1,4 +1,3 @@
-import { listSortFilterAtom } from "../../state/ui";
 import {
   Sphere,
   useDeleteSphereMutation,
@@ -7,13 +6,14 @@ import {
 
 import "./common.css";
 
-import PageHeader from "../header/PageHeader";
-import { SphereCard } from "habit-fract-design-system";
+import { SystemCalendarCard } from "habit-fract-design-system";
 import { extractEdges } from "../../graphql/utils";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import { useToast } from "../../contexts/toast";
-import { currentSphereHashesAtom, sphereHasCachedNodesAtom, store } from "../../state";
+import { currentDayAtom, currentSphereHashesAtom, sphereHasCachedNodesAtom, store } from "../../state";
 import { useSetAtom } from "jotai";
+import { ActionHashB64 } from "@holochain/client";
+import { useEffect, useMemo } from "react";
 
 function ListSpheres() {
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
@@ -25,43 +25,60 @@ function ListSpheres() {
   });
 
   const { loading, error, data } = useGetSpheresQuery();
+  const spheres = useMemo(() => extractEdges(data!.spheres) as Sphere[], [data])
+  const sphereOrbitsAllCached = useMemo(() => {
+    return spheres && spheres.every(sphere => store.get(sphereHasCachedNodesAtom(sphere.id)))}, [spheres])
 
   const { showToast, hideToast } = useToast();
   const setCurrentSphere = useSetAtom(currentSphereHashesAtom);
 
+  useEffect(() => {
+    if(!data?.spheres) return;
+    console.log('sphereOrbitsAllCached :>> ', sphereOrbitsAllCached, spheres.map(sphere => store.get(sphereHasCachedNodesAtom(sphere.id))));
+    
+  }, [data?.spheres]);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  const spheres = extractEdges(data!.spheres) as Sphere[];
-
   if (!spheres.length) return <></>;
+  function routeToPlannitList(sphereId: ActionHashB64) {
+    transition("ListOrbits", { sphereAh: sphereId });
+  }
+  function routeToVis(sphereHasCachedNodes: boolean) {
+    // if (!sphereHasCachedNodes) {
+    //   showToast!(
+    //     "Select a Sphere with Orbits to enable Visualisation for that Sphere",
+    //     100000,
+    //   );
+    //   return;
+    // }
+    transition?.("Vis");
+  }
+
   return (
-    <div className="layout spheres">
-      <PageHeader title="Sphere Breakdown" />
-      <div></div>
-      <div className="spheres-list">
-        {spheres.map((sphere: Sphere) => {
-          const sphereHasCachedNodes = store.get(sphereHasCachedNodesAtom(sphere.id))
-          return (
-            <SphereCard
-              key={sphere.id}
-              sphere={sphere}
-              transition={transition}
-              isHeader={false}
-              orbitScales={[]}
-              runDelete={() => runDelete({ variables: { id: sphere.id } })}
-              showToast={showToast}
-              setSphereIsCurrent={() => {
-                setCurrentSphere({
-                  entryHash: sphere.eH,
-                  actionHash: sphere.id,
-                });
-              }}
-              hasCachedNodes={sphereHasCachedNodes}
-            />
-          )
-        })}
-      </div>
+    <div className="spheres-list">
+      {spheres.map((sphere: Sphere) => {
+        const sphereHasCachedNodes = store.get(sphereHasCachedNodesAtom(sphere.id))
+
+        return (
+          <SystemCalendarCard
+            currentDate={store.get(currentDayAtom)}
+            currentWins={{}}
+            key={sphere.id}
+            sphere={sphere}
+            handleListAction={() => routeToPlannitList(sphere.id)}
+            handleVisAction={() => routeToVis(sphereHasCachedNodes)}
+            runDelete={() => runDelete({ variables: { id: sphere.id } })}
+            setSphereIsCurrent={() => {
+              setCurrentSphere({
+                entryHash: sphere.eH,
+                actionHash: sphere.id,
+              });
+            }}
+          />
+        )
+      })}
     </div>
   );
 }

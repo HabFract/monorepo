@@ -1,7 +1,7 @@
 import "./App.css";
 import React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Spinner } from "flowbite-react";
+import { Spinner, useThemeMode } from "flowbite-react";
 import { initGraphQLClient } from "./graphql/client";
 import PreloadAllData from "./components/PreloadAllData";
 import { getConnection } from "./graphql/connection";
@@ -41,14 +41,16 @@ const BootSequence: React.FC = () => {
   const [_, transition] = useStateTransition();
   const [dataPreloaded, setDataPreloaded] = useState(false);
   const { connected, apolloClient } = useConnection();
+  const {mode, setMode, toggleMode} = useThemeMode();
 
   const handleDataPreloaded = useCallback(() => {
     setDataPreloaded(true);
+    setMode('dark')
     transition("Home");
   }, [transition]);
 
   if (!connected || !apolloClient) {
-    return <Spinner aria-label="Connecting..." size="xl" className="full-spinner" />;
+    return <></>//<Spinner aria-label="Connecting..." size="xl" className="full-spinner" />;
   }
 
   if (!dataPreloaded) {

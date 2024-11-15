@@ -148,7 +148,34 @@ const darkRadioTheme: CustomFlowbiteTheme["radio"] = {
   },
 };
 
+// List Group theme
+const darkThemeListGroup: CustomFlowbiteTheme["listGroup"] = {
+  "root": {
+    "base": "list-none rounded-xl border-[.5px] border-text bg-white text-left text-base font-sans font-bold text-text dark:border-gray-100 dark:bg-surface-dark dark:text-text-dark absolute left-8 top-8 max-w-48"
+  },
+  "item": {
+    "base": "[&>*]:first:rounded-t-xl [&>*]:last:rounded-b-xl [&>*]:last:border-b-0",
+    "link": {
+      "base": "flex w-full items-center border-b border-gray-200 gap-2 px-4 py-2 dark:border-gray-400 dark:hover:bg-surface-elevated-dark",
+      "active": {
+        "off": "hover:bg-gray-100 hover:text-cyan-700 focus:text-white focus:outline-none focus:ring-1 focus:ring-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white focus:border-secondary focus:ring-0 focus:shadow-none dark:focus:text-opacity-50",
+        "on": "bg-cyan-700 text-white dark:bg-gray-800"
+      },
+      "disabled": {
+        "off": "",
+        "on": "cursor-not-allowed bg-gray-400 dark:bg-gray-300 text-gray-900 hover:bg-gray-300  dark:hover:text-gray-900 focus:text-gray-900"
+      },
+      "href": {
+        "off": "",
+        "on": ""
+      },
+      "icon": "h-4 w-4 fill-current"
+    }
+  }
+};
+
 const darkTheme = {
+  listGroup: darkThemeListGroup,
   modal: darkThemeModal,
   textInput: darkThemeTextInput,
   darkThemeTextArea: darkThemeTextArea,
@@ -163,6 +190,7 @@ export {
   darkThemeTextArea,
   darkRadioTheme,
   darkThemeSelect,
+  darkThemeListGroup,
   darkThemeToggleSwitch,
 };
 

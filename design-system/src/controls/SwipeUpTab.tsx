@@ -1,19 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './common.css';
-import { motion, useMotionValue, useTransform, useAnimation, PanInfo, useSpring, MotionValue } from 'framer-motion';
-import VisMovementLateral from './VisMovementLateral';
-import VisMovementVertical from './VisMovementVertical';
-import { Scale } from '@ui/src/graphql/generated';
+import { motion, useMotionValue, useAnimation, PanInfo } from 'framer-motion';
 
 interface BindDragProps {
   onPanStart: (event: any, info: PanInfo) => void;
   onPan: (event: any, info: PanInfo) => void;
   onPanEnd: (event: any, info: PanInfo) => void;
-
 }
 interface SwipeUpTabProps {
   verticalOffset: number;
   relativeElements: React.ReactNode;
+  useViewportHeight?: boolean;
   children: (props: { bindDrag: BindDragProps }) => React.ReactNode;
 }
 
@@ -24,12 +21,14 @@ export const stopPropagation = (event) => {
   }
 }
 
-const SwipeUpTab: React.FC<SwipeUpTabProps> = ({ verticalOffset, relativeElements, children }) => {
+const SwipeUpTab: React.FC<SwipeUpTabProps> = ({ verticalOffset, relativeElements, children, useViewportHeight = false  }) => {
   const ref = useRef<HTMLDivElement>(null);
   
   const [height, setHeight] = useState(0);
 
-  const initialY = -verticalOffset;
+  const initialY = useViewportHeight 
+  ? -(window.innerHeight * (verticalOffset / 100))
+  : -verticalOffset;
   const y = useMotionValue(initialY);
 
   const controls = useAnimation();
@@ -39,7 +38,7 @@ const SwipeUpTab: React.FC<SwipeUpTabProps> = ({ verticalOffset, relativeElement
       setHeight(ref.current.offsetHeight);
       y.set(ref.current.offsetHeight - initialY);
     }
-  }, [y]);
+  }, [y, initialY]);
 
   const handlePanStart = (event: any) => {
     controls.stop();
@@ -70,13 +69,13 @@ const SwipeUpTab: React.FC<SwipeUpTabProps> = ({ verticalOffset, relativeElement
   };
 
   return (
-    <section>
+    <div>
       <motion.div className="relative" style={{ y }}>
         <div className="relative-controls-container">{relativeElements}</div>
       </motion.div>
         <motion.div
           ref={ref}
-          dragConstraints={{ top: -height + verticalOffset, bottom: 0 }}
+          dragConstraints={{ top: -height + verticalOffset, bottom: 130 }}
           dragElastic={0.2}
           drag="y"
           style={{ y }}
@@ -87,7 +86,7 @@ const SwipeUpTab: React.FC<SwipeUpTabProps> = ({ verticalOffset, relativeElement
         >
           {children({ bindDrag })}
         </motion.div>
-    </section>
+    </div>
   );
 };
 

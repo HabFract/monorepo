@@ -2,16 +2,17 @@ import { Flowbite } from "flowbite-react";
 import "./styles.css";
 import darkTheme from "../src/darkTheme";
 import React from "react";
+import { useThemeMode } from "flowbite-react";
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
   decorators: [
-    (Story) => (
-      <Flowbite theme={{ theme: darkTheme, dark: true  }}>
+    (Story) => {
+      return <Flowbite theme={{ theme: darkTheme  }}>
         {/* 👇 Decorators in Storybook also accept a function. Replace <Story/> with Story() to enable it  */}
         <Story />
       </Flowbite>
-    ),
+    },
   ],
   parameters: {
     backgrounds: {

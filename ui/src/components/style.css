@@ -60,7 +60,7 @@ nav.side-nav.off-screen .off-screen-toggle-button {
   transition: transform 1s ease-in;
   position: relative;
   left: 100%;
-  top: -9.25rem !important;
+  top: -7.5rem !important;
   display: block;
   width: 36px;
   height: 60px;
@@ -115,11 +115,11 @@ nav.side-nav.off-screen .off-screen-toggle-button {
 }
 
 .side-nav.expanded>.ant-menu-root:first-child .ant-menu-item {
-  width: 48px;
+  width: 48px !important;
+  height: 48px !important;
   display: grid;
   place-items: center;
   place-content: center;
-  height: 48px;
 }
 
 .side-nav>.ant-menu-root:first-child .ant-menu-item-disabled:first-child {
@@ -132,12 +132,14 @@ nav.side-nav.off-screen .off-screen-toggle-button {
 }
 .ant-menu-item:first-child {
   @apply flex justify-center items-center pt-2 !important;
+  padding-inline: 0 !important;
 }
 
 .side-nav.expanded .ant-menu-item:not(.ant-menu-item:first-child) {
   padding-left: 22px !important;
   position: initial;
   opacity: 0.8;
+  padding-inline: 0 !important;
 }
 
 .side-nav.expanded .ant-menu-item:not(.ant-menu-item:first-child):hover,
@@ -340,6 +342,10 @@ nav>.ant-menu:first-child .ant-menu-item:last-child {
 .ant-menu-item {
   border-radius: 0.5rem !important;
 }
+.ant-menu-item > * {
+  height: 32px !important;
+  width: 32px !important;
+}
 
 .ant-menu-item:active {
   border-radius: 1.25rem !important;
@@ -443,7 +449,6 @@ button[data-testid="dark-themetheme-toggle"]:active,
 
 /* Menu items */
 .ant-menu-item-selected:has(> img.selected) {
-  background: rgba(80, 227, 194, 0.4) !important;
   border-radius: 2rem !important;
 }
 

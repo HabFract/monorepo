@@ -57,7 +57,7 @@
     "d3-shape": "^3.2.0",
     "d3-zoom": "^3.0.0",
     "flowbite": "^2.0.0",
-    "flowbite-react": "^0.6.4",
+    "flowbite-react": "^0.10.0",
     "formik": "^2.4.5",
     "framer-motion": "^11.3.24",
     "habit-fract-design-system": "workspace:*",

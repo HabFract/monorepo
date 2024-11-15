@@ -21,7 +21,6 @@ const OnboardingHeader: React.ForwardRefExoticComponent<
 > = forwardRef<HTMLDivElement, {}>(
   ({ }, ref: ForwardedRef<HTMLDivElement>) => {
     const [state, transition, params] = useStateTransition(); // Top level state machine and routing
-    console.log('state :>> ', state);
     if (!state.match("Onboarding")) return <></>;
 
     /**

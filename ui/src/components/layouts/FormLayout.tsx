@@ -1,17 +1,18 @@
 import { useStateTransition } from '../../hooks/useStateTransition';
+import { MODEL_DISPLAY_VALUES } from '../../constants';
 import './common.css'
 import { getIconSvg, HeaderAction } from 'habit-fract-design-system';
 
-function VisLayout({ children, currentSphereName }: any) {
+function FormLayout({ children, type }: any) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
 
   return (
-    <div className="vis-layout">
+    <div className="form-layout">
       <div className="header-action">
         <HeaderAction
-          title={currentSphereName}
+          title={`Create New ${MODEL_DISPLAY_VALUES[type.toLowerCase()]}`}
           icon1={getIconSvg('back')}
-          icon2={getIconSvg('more')}
+          icon2={null}
           handlePrimaryAction={() => transition("Home")}
           handleSecondaryAction={() => transition("LisSpheres")}
         ></HeaderAction>
@@ -21,4 +22,4 @@ function VisLayout({ children, currentSphereName }: any) {
   );
 }
 
-export default VisLayout;
+export default FormLayout;

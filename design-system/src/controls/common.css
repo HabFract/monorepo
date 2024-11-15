@@ -73,7 +73,7 @@
 .vis-controls-container {
   height: fit-content;
   position: absolute;
-  bottom: -21rem;
+  bottom: -16.5rem;
   padding: .5rem;
   width: 100%;
   background: transparent;
@@ -163,7 +163,7 @@
 }
 
 .swipe-up-tab-container {
-  @apply rounded-2xl dark:bg-surface-overlay-dark z-50 flex flex-col gap-1 p-2 text-white;
+  @apply rounded-3xl dark:bg-surface-overlay-dark z-50 flex flex-col gap-1 p-2 text-white;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 
@@ -172,8 +172,6 @@
   left: 0px;
   right: 0px;
   height: fit-content;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px -2px 10px;
   user-select: none;
   touch-action: pan-x;

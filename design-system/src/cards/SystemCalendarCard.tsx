@@ -1,43 +1,33 @@
 import React from "react";
 import "./common.css";
+import "../buttons/common.css";
 import { Sphere } from "../generated-types";
 import { Button, Calendar, getIconSvg } from "..";
 import { DateTime } from "luxon";
-// import { Popover } from "flowbite-react";
+import { ListGroup, Popover } from "flowbite-react";
+import { darkThemeListGroup } from "../darkTheme";
 
 export interface SystemCalendarProps {
   sphere: Sphere;
   runDelete?: () => void;
-  transition?: (newState: string, params?: object) => void;
-  setSphereIsCurrent?: () => void;
+  setSphereIsCurrent: () => void;
   currentDate: DateTime<true>,
   currentWins: any,
-  showToast?: (message: string, duration: number) => void;
-  hasCachedNodes?: boolean
+  handleVisAction?: () => void;
+  handleListAction?: () => void;
 };
 
 const SystemCalendar: React.FC<SystemCalendarProps> = ({
   sphere,
   runDelete,
-  transition,
-  showToast,
+  handleListAction,
+  handleVisAction,
   currentDate,
   currentWins,
   setSphereIsCurrent,
-  hasCachedNodes
 }: SystemCalendarProps) => {
   const { name, metadata, id } = sphere;
 
-  function routeToVis() {
-    if (!hasCachedNodes) {
-      showToast!(
-        "Select a Sphere with Orbits to enable Visualisation for that Sphere",
-        100000,
-      );
-      return;
-    }
-    transition?.("Vis");
-  }
   return (
     <article className={"system-calendar-card"}>
       <header>
@@ -45,11 +35,20 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
         <h1 className="card-name">{name}</h1>
       </header>
       <section>
-      <Calendar currentDate={currentDate} orbitFrequency={1} setNewDate={() => {}} orbitWins={currentWins || {}}></Calendar>
+        <Calendar currentDate={currentDate} orbitFrequency={1} setNewDate={() => { }} orbitWins={currentWins || {}}></Calendar>
       </section>
       <footer>
-          <Button variant="circle-icon-lg btn-neutral outlined" icon={getIconSvg('more')({})}></Button>
-        <Button variant="primary responsive">Visualise</Button>
+        <Popover
+          content={<ListGroup
+            theme={darkThemeListGroup}
+            className="w-48">
+            <ListGroup.Item onClick={handleListAction} icon={getIconSvg('list')}>List Plannits</ListGroup.Item>
+          </ListGroup>
+          }
+        >
+          <Button onClick={setSphereIsCurrent} variant="circle-icon-lg btn-neutral outlined" icon={getIconSvg('more')({}) as any}></Button>
+        </Popover>
+        <Button onClick={handleVisAction} variant="primary responsive">Visualise</Button>
       </footer>
     </article>
   );

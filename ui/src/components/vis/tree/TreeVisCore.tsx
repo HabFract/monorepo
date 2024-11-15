@@ -1,7 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { TreeVisualization } from "../base-classes/TreeVis";
 
-//@ts-expect-error
 const LazyTreeRenderer = lazy(() => import('./TreeRenderer'));
 
 interface TreeVisCoreProps {

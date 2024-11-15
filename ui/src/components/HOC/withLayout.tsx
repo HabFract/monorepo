@@ -7,6 +7,8 @@ import { Sphere } from "../../graphql/generated";
 import { AppMachine } from "../../main";
 import { SphereDetails } from "../../state/types/sphere";
 import VisLayout from "../layouts/VisLayout";
+import FormLayout from "../layouts/FormLayout";
+import ListLayout from "../layouts/List";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -44,20 +46,20 @@ const withLayout = (
           return <Home firstVisit={false}></Home>;
         return withPageTransition(component);
       case state == "Vis":
-        return <VisLayout transition={transition} currentSphereName={props.currentSphereDetails.name}>
+        return <VisLayout currentSphereName={props.currentSphereDetails.name}>
           {component}
         </VisLayout>
+      case ["CreateOrbit", "CreateSphere"].includes(state):
+        return <FormLayout type={state.split('Create')[1]}>
+          {component}
+        </FormLayout>
+      case ["ListOrbits"].includes(state):
+        return <ListLayout type={'orbit'}>
+          {component}
+        </ListLayout>
       default:
         return (
-          <div className="p-1 w-full">
-            <Breadcrumbs
-              state={AppMachine.state.currentState}
-              transition={transition}
-              currentSphere={props?.currentSphereDetails}
-              isFormEditMode={(params as any)?.editMode}
-            ></Breadcrumbs>
-            {component}
-          </div>
+            <>{component}</>
         );
     }
   };

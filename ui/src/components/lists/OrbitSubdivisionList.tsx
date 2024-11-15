@@ -227,7 +227,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                         values.scale == Scale.Atom &&
                         RenamingHelperText()}
                       <Label htmlFor="list">
-                        New Orbit Names: <span className="reqd">*</span>
+                        New Plannit Names: <span className="reqd">*</span>
                       </Label>
                       <FieldArray
                         name="list"

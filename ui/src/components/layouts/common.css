@@ -5,29 +5,69 @@
   @apply flex justify-around w-full h-full;
 }
 
-.home-layout .logo {
+.home-layout .welcome-cta .logo {
   @apply w-64 pl-2 mb-2;
 }
 
-.home-layout h3 {
-  @apply font-std leading-std text-text dark:text-text-dark font-sans text-base opacity-75;
+.home-layout .returning-cta .logo {
+  @apply w-auto h-12 p-0 pt-2 my-2;
+}
+.home-layout .welcome-cta,
+.home-layout .returning-cta {
+  width: 100%;
+  min-height: 12rem;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
 }
 
 .home-layout .welcome-cta {
-  width: 100%;
-  min-height: 12rem;
-  max-height: 40vh;
-  display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   gap: 1rem;
+  max-height: 35vh;
   padding-top: var(--vertical-section-spacing);
 }
 
-.home-layout .login-options {
-  height: calc(60vh - var(--vertical-section-spacing));
-  @apply dark:bg-surface-elevated-dark rounded-3xl absolute bottom-0 flex flex-col w-full gap-2 px-4 py-6 rounded-b-none; 
+.home-layout .avatar-placeholder {
+  @apply w-12 h-12;
+}
+
+.home-layout .returning-cta .logo {
+  @apply m-0;
+}
+
+.home-layout .returning-cta {
+  @apply gap-4 px-4 mt-4;
+  max-height: 25vh;
+}
+
+.home-layout .returning-cta > div {
+  @apply flex items-center justify-between;
+}
+
+.home-layout .login-options, .home-layout .spaces-tab {
+  height: calc(65vh - var(--vertical-section-spacing));
+  @apply dark:bg-surface-top-dark rounded-3xl absolute bottom-0 flex flex-col w-full gap-2 px-4 py-6 rounded-b-none; 
+}
+
+.home-layout .spaces-tab {
+  position: relative;
+  height: 100vh;
+  @apply px-1;
+}
+
+.home-layout .swipe-up-tab-container {
+  position: absolute;
+  top: 1rem;
+  padding: 0;
+  background-color: transparent;
+}
+
+.form-layout, .list-layout {
+  height: 100%;
+  width: 100%;
+  padding-top: 1rem;
 }
 
 .disclaimer {
@@ -54,11 +94,25 @@
 
 /* Home (Returning User) */
 
-/* Vis */
-.vis-layout {
-  padding-top: 64px;
+/* Header Positioning */
+.page-container:not(*.home):not(.onboarding) {
+  margin-top: 64px;
 }
-.vis-layout .header-action {
+
+.header-action,
+.header-action {
   @apply fixed inset-x-0 top-0;
   z-index: 100;
+}
+
+.list.page-container {
+  margin-top: 0 !important;
+  height: fit-content;
+  display: flex;
+  position: fixed;
+  top: 64px;
+}
+
+.home .side-nav, .list.page-container .side-nav{
+  @apply hidden;
 }

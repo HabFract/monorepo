@@ -23,8 +23,7 @@ export const useRedirect = (bypass?: boolean) => {
     if (bypass || sphereHasCachedOrbits) return;
     
     if (!sphere?.actionHash || !sphereHasCachedOrbits) {
-      console.log('sphereHasCachedOrbits :>> ', sphereHasCachedOrbits);
-      transition('PreloadAndCache');
+      transition('PreloadAndCache', {landingPage: "Home", onPreloadComplete: () => {}});
     }
   }, [bypass, sphere, sphereHasCachedOrbits, transition]);
 

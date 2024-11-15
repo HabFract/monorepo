@@ -28,6 +28,7 @@ import {
   sphereHasCachedNodesAtom,
 } from "../../state/sphere";
 import { currentSphereHierarchyIndices } from "../../state/hierarchy";
+import { useStateTransition } from "../../hooks/useStateTransition";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -42,14 +43,12 @@ enum Page {
 }
 
 export interface INav {
-  transition: (newState: string, params?: object) => void;
   setSideNavExpanded: Function;
   setSettingsOpen: Function;
   sideNavExpanded: boolean;
 }
 
 const Nav: React.FC<INav> = ({
-  transition,
   sideNavExpanded,
   setSettingsOpen,
   setSideNavExpanded,
@@ -59,6 +58,7 @@ const Nav: React.FC<INav> = ({
     error,
     data: spheres,
   } = useGetSpheresQuery();
+  const [state, transition, params] = useStateTransition(); // Top level state machine and routing
 
   const [_, setCurrentPage] = useState<Page>(Page.Home);
   const currentPage = AppMachine.state.currentState; // This is more reliable than the hook for tracking updated page state
@@ -115,7 +115,7 @@ const Nav: React.FC<INav> = ({
         console.log('reset sphere from nav :>> ');
         setCurrentPage(Page.CreateSphere);
         setSideNavExpanded(false);
-        transition("CreateSphere");
+        transition("Onboarding1");
         break;
 
       case e.key == "list-spheres":
@@ -304,7 +304,7 @@ const Nav: React.FC<INav> = ({
               items={menuItems}
             />
             <div className="off-screen-toggle-button">
-              <button type="button" onClick={() => { (sideMenuRef.current as any)?.classList?.toggle("off-screen")}} className="off-screen-icon-button p-2">{getIconSvg('arrow-right')({})}</button>
+              <button type="button" onClick={() => { (sideMenuRef.current as any)?.classList?.toggle("off-screen")}} className="off-screen-icon-button text-text dark:text-text-dark p-2">{getIconSvg('arrow-right')({})}</button>
             </div>
             <div className={"main-actions-menu"}>
               <div
@@ -363,7 +363,7 @@ const Nav: React.FC<INav> = ({
       getItem(
         "New Sphere",
         "add-sphere",
-        <DSButton onClick={() => {}} variant={"circle-icon"} icon={getIconSvg("plus")({}) as ReactElement}/>,
+        <DSButton onClick={() => {}} variant={"circle-icon btn-primary"} icon={getIconSvg("plus")({}) as ReactElement}/>,
         undefined,
         undefined,
         false,

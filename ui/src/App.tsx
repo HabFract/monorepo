@@ -6,7 +6,7 @@ import { useStateTransition } from "./hooks/useStateTransition";
 import withLayout from "./components/HOC/withLayout";
 
 import Nav from "./components/navigation/Nav";
-import { DarkThemeToggle, Flowbite, Modal, Spinner } from "flowbite-react";
+import { DarkThemeToggle, Flowbite, Modal, Spinner, useThemeMode } from "flowbite-react";
 import { cloneElement, useRef, useState } from "react";
 
 import Settings from "./components/Settings";
@@ -33,6 +33,7 @@ import OnboardingContinue from "./components/forms/buttons/OnboardingContinueBut
 import Toast from "./components/Toast";
 import { useToast } from "./contexts/toast";
 import { currentSphereDetailsAtom, currentSphereHashesAtom } from "./state/sphere";
+import { AppMachine } from "./main";
 
 function App({ children: pageComponent }) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
@@ -60,7 +61,7 @@ function App({ children: pageComponent }) {
 
   const currentSphereDetails = store.get(currentSphereDetailsAtom);
   return (
-    <Flowbite theme={{ theme: darkTheme, dark: true  }}>
+    <Flowbite theme={{ theme: darkTheme, mode: "dark"  }}>
       <Toast />
       <main ref={mainPageRef} className={mainContainerClass}>
         {/* Version and alpha status disclaimer */}
@@ -73,18 +74,9 @@ function App({ children: pageComponent }) {
         )}
         {/* Return users can see a side Nav on certain pages */}
         {userHasSpheres &&
-          !(
-            (isSmallScreen() &&
-              [
-                "CreateSphere",
-                "ListSpheres",
-                "CreateOrbit",
-                "ListOrbits",
-              ].includes(state)) ||
-            state.match("Onboarding")
-          ) && (
+          isSmallScreen() &&
+              state == "Vis" && (
             <Nav
-              transition={transition}
               sideNavExpanded={sideNavExpanded}
               setSettingsOpen={() => {
                 setIsModalOpen(true);

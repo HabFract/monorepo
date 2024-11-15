@@ -21,7 +21,7 @@
 
 /* Paragraph
 -------------------------------------------------- */
-p {
+p, span.form-description {
   @apply text-text dark:text-text-dark opacity-80 mb-2 font-sans text-sm font-light leading-relaxed;
 }
 
@@ -37,6 +37,19 @@ h4 {
   @apply mb-2;
 }
 
+.home-layout header h1,
+.home-layout header h2 {
+  @apply dark:text-text-dark text-text font-sans;
+}
+
+.home-layout header h1,
+.home-layout header h2 {
+  @apply px-2 text-xl font-bold leading-loose tracking-wide;
+}
+
+.home-layout header h2 {
+  @apply font-std leading-std text-base opacity-75;
+}
 
 /* Link Styles
 -------------------------------------------------- */
@@ -59,13 +72,13 @@ a {
   @apply flex flex-col gap-6 px-4;
   overflow-y: auto;
 }
-.onboarding-layout .content p.form-description,
-.create-form .content p.form-description {
+.onboarding-layout .content span.form-description,
+.create-form .content span.form-description {
   margin-bottom: 2px;
 }
 
 /* Accented Elements */
-p.form-description em,
+span.form-description em,
 form em,
 .ant-collapse-header-text em,
 .helper-text em {
@@ -73,6 +86,10 @@ form em,
 }
 .ant-collapse-header-text em {
   text-decoration: underline !important;
+}
+
+.home-layout header em {
+  @apply mx-2 text-xl font-bold opacity-100;
 }
 
 .danger-zone .helper-content {

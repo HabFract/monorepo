@@ -22,7 +22,7 @@ import { sleep } from "./lists/OrbitSubdivisionList";
 type PreloadAllDataProps = {
   landingSphereEh?: EntryHashB64;
   landingSphereId?: ActionHashB64;
-  // landingPage?: string;
+  landingPage?: string;
   onPreloadComplete?: () => void;
 };
 
@@ -38,6 +38,7 @@ type PreloadAllDataProps = {
 const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   landingSphereEh,
   landingSphereId,
+  landingPage,
   onPreloadComplete
 }) => {
   const [_, transition] = useStateTransition(); // Top level state machine and routing
@@ -165,7 +166,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
     }
     debouncedFetchData();
   }, [sphereNodes, onPreloadComplete, data, fetchData, landingSphereEh, landingSphereId]);
-
+console.log('landingPage :>> ', landingPage);
   useEffect(() => {
     if (!preloadCompleted) return;
     console.log('preloadCompleted :>> ', preloadCompleted);
@@ -173,7 +174,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
     if (onPreloadComplete) {
       onPreloadComplete();
     } else {
-      transition("Vis");
+      transition(landingPage || "Vis");
     }
   }, [preloadCompleted]);
 
