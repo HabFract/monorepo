@@ -99,10 +99,9 @@
   margin-top: 64px;
 }
 
-.header-action,
 .header-action {
   @apply fixed inset-x-0 top-0;
-  z-index: 100;
+  z-index: 10;
 }
 
 .list.page-container {

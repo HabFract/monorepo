@@ -32,8 +32,7 @@ import { useCurrentVersion } from "./hooks/useCurrentVersion";
 import OnboardingContinue from "./components/forms/buttons/OnboardingContinueButton";
 import Toast from "./components/Toast";
 import { useToast } from "./contexts/toast";
-import { currentSphereDetailsAtom, currentSphereHashesAtom } from "./state/sphere";
-import { AppMachine } from "./main";
+import { currentSphereDetailsAtom } from "./state/sphere";
 
 function App({ children: pageComponent }) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
@@ -117,8 +116,7 @@ function App({ children: pageComponent }) {
                 />
               ),
             }),
-            transition,
-          )({ currentSphereDetails, newUser: !!userHasSpheres })
+          )({ currentSphereDetails: pageComponent.props.currentSphereDetails || store.get(currentSphereDetailsAtom), newUser: !!userHasSpheres })
         )}
       </main>
 

@@ -45,22 +45,13 @@ function ListSpheres() {
   function routeToPlannitList(sphereId: ActionHashB64) {
     transition("ListOrbits", { sphereAh: sphereId });
   }
-  function routeToVis(sphereHasCachedNodes: boolean) {
-    // if (!sphereHasCachedNodes) {
-    //   showToast!(
-    //     "Select a Sphere with Orbits to enable Visualisation for that Sphere",
-    //     100000,
-    //   );
-    //   return;
-    // }
-    transition?.("Vis");
+  function routeToVis(sphere: Sphere) {
+    transition?.("Vis", {currentSphereDetails: sphere});
   }
 
   return (
     <div className="spheres-list">
       {spheres.map((sphere: Sphere) => {
-        const sphereHasCachedNodes = store.get(sphereHasCachedNodesAtom(sphere.id))
-
         return (
           <SystemCalendarCard
             currentDate={store.get(currentDayAtom)}
@@ -68,7 +59,7 @@ function ListSpheres() {
             key={sphere.id}
             sphere={sphere}
             handleListAction={() => routeToPlannitList(sphere.id)}
-            handleVisAction={() => routeToVis(sphereHasCachedNodes)}
+            handleVisAction={() => routeToVis(sphere)}
             runDelete={() => runDelete({ variables: { id: sphere.id } })}
             setSphereIsCurrent={() => {
               setCurrentSphere({

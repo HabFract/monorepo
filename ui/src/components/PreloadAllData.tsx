@@ -166,7 +166,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
     }
     debouncedFetchData();
   }, [sphereNodes, onPreloadComplete, data, fetchData, landingSphereEh, landingSphereId]);
-console.log('landingPage :>> ', landingPage);
+
   useEffect(() => {
     if (!preloadCompleted) return;
     console.log('preloadCompleted :>> ', preloadCompleted);
@@ -174,7 +174,7 @@ console.log('landingPage :>> ', landingPage);
     if (onPreloadComplete) {
       onPreloadComplete();
     } else {
-      transition(landingPage || "Vis");
+      transition(landingPage || "Vis", {currentSphereDetails: { id, eH }});
     }
   }, [preloadCompleted]);
 

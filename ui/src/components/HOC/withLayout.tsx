@@ -9,6 +9,7 @@ import { SphereDetails } from "../../state/types/sphere";
 import VisLayout from "../layouts/VisLayout";
 import FormLayout from "../layouts/FormLayout";
 import ListLayout from "../layouts/List";
+import { currentSphereDetailsAtom, currentSphereHashesAtom, store } from "../../state";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -27,17 +28,20 @@ function withPageTransition(page: ReactNode) {
 }
 
 interface WithLayoutProps {
-  currentSphereDetails: SphereDetails;
+  currentSphereDetails: any;
   newUser: boolean;
 }
 
 const withLayout = (
   component: ReactNode,
-  transition: Function
 ): FC<WithLayoutProps> => {
   return (props: WithLayoutProps): ReactNode => {
     const state = AppMachine.state.currentState;
-    const params = AppMachine.state.params;
+    if(props?.currentSphereDetails?.eH && props.currentSphereDetails.eH !== store.get(currentSphereHashesAtom)?.entryHash) {
+      const eH = props?.currentSphereDetails?.eH;
+      const id = props?.currentSphereDetails?.id;
+      store.set(currentSphereHashesAtom, {entryHash: eH, actionHash: id})
+    }
     switch (true) {
       case !!state.match("Onboarding"):
         return <Onboarding>{withPageTransition(component)}</Onboarding>;

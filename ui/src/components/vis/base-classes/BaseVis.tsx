@@ -204,7 +204,7 @@ export abstract class BaseVisualization implements IVisualization {
   }
 
   unbindEventHandlers() {
-    this._enteringNodes!.on(".", null);
+    this._enteringNodes?.on(".", null);
   }
 
 

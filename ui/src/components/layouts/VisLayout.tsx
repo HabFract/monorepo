@@ -4,7 +4,6 @@ import { getIconSvg, HeaderAction } from 'habit-fract-design-system';
 
 function VisLayout({ children, currentSphereName }: any) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
-
   return (
     <div className="vis-layout">
       <div className="header-action">
