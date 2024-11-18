@@ -29,7 +29,7 @@ const PlannitCard: React.FC<PlannitCardProps> = ({
   const { id, name, metadata, scale, frequency } = orbit;
 
   return (
-    <article className={"plannit-card"}>
+    <article className={"card plannit-card"}>
       <header>
         <div className="plannit-card-title">
           <div className={`${scale.toLowerCase()} plannit-scale-image`}>{getIconForPlanetValue(scale)({})}</div>

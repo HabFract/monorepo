@@ -7,6 +7,11 @@ import { Scale, Frequency } from "../generated-types";
 export default {
   title: "Components/Cards/PlannitCard",
   component: PlannitCard,
+  parameters: {
+    backgrounds: {
+      default: 'backdrop',
+    }
+  }
 } as Meta<PlannitCardProps>;
 
 const Template: StoryFn<PlannitCardProps> = (args) => <PlannitCard {...args} />;

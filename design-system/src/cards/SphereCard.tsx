@@ -76,7 +76,7 @@ const SphereCard: React.FC<SphereCardProps> = ({
     transition?.("Vis");
   }
   return (
-    <div className={isHeader ? "sphere-card list-header" : "sphere-card"}>
+    <div className={isHeader ? "card sphere-card list-header" : "card sphere-card"}>
       <header className={"sphere-header card-header"}>
         <div className="sphere-title">
           <h2 className="card-name card-h1">{name}</h2>

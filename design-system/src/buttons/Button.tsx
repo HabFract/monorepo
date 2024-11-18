@@ -25,7 +25,7 @@ export interface ButtonProps {
   variant?: ButtonVariant;
   onClick?: () => void;
   children?: React.ReactNode;
-  icon?: React.ReactElement;
+  icon?: React.ReactNode;
   isLoading?: boolean;
   isDisabled?: boolean;
   type?: "button" | "submit" | "reset";

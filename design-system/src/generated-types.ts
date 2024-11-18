@@ -383,19 +383,19 @@ export type WinDateEntryInput = {
   multiple?: InputMaybe<Array<Scalars['Boolean']['input']>>;
 };
 
-export type DeleteOrbitMutationVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type DeleteOrbitMutation = { __typename?: 'Mutation', deleteOrbit: string };
-
 export type CreateOrbitMutationVariables = Exact<{
   variables: OrbitCreateParams;
 }>;
 
 
 export type CreateOrbitMutation = { __typename?: 'Mutation', createOrbit: { __typename?: 'CreateOrbitResponsePayload', id: string, eH: string, name: string, parentHash?: string | null, sphereHash: string, scale: Scale, frequency: Frequency, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
+
+export type DeleteOrbitMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteOrbitMutation = { __typename?: 'Mutation', deleteOrbit: string };
 
 export type UpdateOrbitMutationVariables = Exact<{
   orbitFields: OrbitUpdateParams;
@@ -487,37 +487,6 @@ export type GetWinRecordForOrbitForMonthQueryVariables = Exact<{
 export type GetWinRecordForOrbitForMonthQuery = { __typename?: 'Query', getWinRecordForOrbitForMonth?: { __typename?: 'WinRecord', id: string, eH: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } | null };
 
 
-export const DeleteOrbitDocument = gql`
-    mutation deleteOrbit($id: ID!) {
-  deleteOrbit(orbitHash: $id)
-}
-    `;
-export type DeleteOrbitMutationFn = Apollo.MutationFunction<DeleteOrbitMutation, DeleteOrbitMutationVariables>;
-
-/**
- * __useDeleteOrbitMutation__
- *
- * To run a mutation, you first call `useDeleteOrbitMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteOrbitMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteOrbitMutation, { data, loading, error }] = useDeleteOrbitMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteOrbitMutation(baseOptions?: Apollo.MutationHookOptions<DeleteOrbitMutation, DeleteOrbitMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteOrbitMutation, DeleteOrbitMutationVariables>(DeleteOrbitDocument, options);
-      }
-export type DeleteOrbitMutationHookResult = ReturnType<typeof useDeleteOrbitMutation>;
-export type DeleteOrbitMutationResult = Apollo.MutationResult<DeleteOrbitMutation>;
-export type DeleteOrbitMutationOptions = Apollo.BaseMutationOptions<DeleteOrbitMutation, DeleteOrbitMutationVariables>;
 export const CreateOrbitDocument = gql`
     mutation createOrbit($variables: OrbitCreateParams!) {
   createOrbit(orbit: $variables) {
@@ -564,6 +533,37 @@ export function useCreateOrbitMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateOrbitMutationHookResult = ReturnType<typeof useCreateOrbitMutation>;
 export type CreateOrbitMutationResult = Apollo.MutationResult<CreateOrbitMutation>;
 export type CreateOrbitMutationOptions = Apollo.BaseMutationOptions<CreateOrbitMutation, CreateOrbitMutationVariables>;
+export const DeleteOrbitDocument = gql`
+    mutation deleteOrbit($id: ID!) {
+  deleteOrbit(orbitHash: $id)
+}
+    `;
+export type DeleteOrbitMutationFn = Apollo.MutationFunction<DeleteOrbitMutation, DeleteOrbitMutationVariables>;
+
+/**
+ * __useDeleteOrbitMutation__
+ *
+ * To run a mutation, you first call `useDeleteOrbitMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOrbitMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteOrbitMutation, { data, loading, error }] = useDeleteOrbitMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteOrbitMutation(baseOptions?: Apollo.MutationHookOptions<DeleteOrbitMutation, DeleteOrbitMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteOrbitMutation, DeleteOrbitMutationVariables>(DeleteOrbitDocument, options);
+      }
+export type DeleteOrbitMutationHookResult = ReturnType<typeof useDeleteOrbitMutation>;
+export type DeleteOrbitMutationResult = Apollo.MutationResult<DeleteOrbitMutation>;
+export type DeleteOrbitMutationOptions = Apollo.BaseMutationOptions<DeleteOrbitMutation, DeleteOrbitMutationVariables>;
 export const UpdateOrbitDocument = gql`
     mutation updateOrbit($orbitFields: OrbitUpdateParams!) {
   updateOrbit(orbit: $orbitFields) {

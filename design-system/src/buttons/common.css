@@ -173,6 +173,9 @@ button.btn.btn-secondary:not(.nohover):hover {
 .btn.responsive span[role="img"]+span {
   @apply hidden-sm;
 }
+.btn.responsive > div {
+  min-height: 2rem;
+}
 
 /* Special Button Types
 -------------------------------------------------- */

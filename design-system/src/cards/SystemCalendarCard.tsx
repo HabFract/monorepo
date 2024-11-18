@@ -29,7 +29,7 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
   const { name, metadata, id } = sphere;
 
   return (
-    <article className={"system-calendar-card"}>
+    <article className={"card system-calendar-card"}>
       <header>
         <img src={sphere.metadata?.image as string || ""} />
         <h1 className="card-name">{name}</h1>
