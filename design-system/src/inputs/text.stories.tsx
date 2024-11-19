@@ -83,6 +83,20 @@ export const ListItem: Story = {
   },
 };
 
+export const ListItemRounded: Story = {
+  args: {
+    id: "example",
+    placeholder: "Search",
+    labelValue: "",
+    size: "base",
+    iconSide: "left",
+    icon: "search",
+    theme: "rounded",
+    isListItem: true,
+    disabled: false,
+  },
+};
+
 export const WithIconWithInfo: Story = {
   args: {
     id: "example",

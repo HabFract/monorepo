@@ -1,101 +1,101 @@
-import React, { useState, useRef } from "react";
-import { Formik, Form, Field, FormikProps } from "formik";
+import React from "react";
 import {
   SortDescendingOutlined,
   SortAscendingOutlined,
   FilterOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
-import { Radio } from "flowbite-react";
+import { ListGroup, Popover } from "flowbite-react";
+import { Button, getIconSvg, TextInput } from "habit-fract-design-system";
 import "./common.css";
 import { SortCriteria, SortOrder, listSortFilterAtom } from "../../state/ui";
 import { store } from "../../state/store";
-import { RadioGroupField, Modal, Button } from "habit-fract-design-system";
+// import { darkThemeListGroup } from "habit-fract-design-system";
 import { useAtomValue } from "jotai";
 
-const ListSortFilter = ({ label }: { label: string }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const formikRef = useRef<FormikProps<{ sortCriteria: SortCriteria }>>(null);
-  const listSortFilter = useAtomValue(listSortFilterAtom);
+interface ListSortFilterProps {
+  label?: string;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
+  sortKey: string | null;
+  onSortKeyChange: (key: string) => void;
+  sortOrder: 'asc' | 'desc';
+  onSortOrderChange: () => void;
+}
 
-  const toggleModal = () => setIsModalOpen(!isModalOpen);
-
-  const toggleSortOrder = () => {
-    store.set(listSortFilterAtom, {
-      ...listSortFilter,
-      sortOrder:
-        listSortFilter.sortOrder === SortOrder.GreatestToLowest
-          ? SortOrder.LowestToGreatest
-          : SortOrder.GreatestToLowest,
-    });
-  };
-
-  const handleSubmit = () => {
-    if (formikRef.current) {
-      formikRef.current.handleSubmit();
-    }
-  };
-
+const ListSortFilter: React.FC<ListSortFilterProps> = ({
+  label,
+  searchTerm,
+  onSearchChange,
+  sortKey,
+  onSortKeyChange,
+  sortOrder,
+  onSortOrderChange,
+}) => {
   return (
     <div className="list-sort-filter">
-      <div className="sort-icon-container flex justify-end text-gray-500">
+      <div className="sort-icon-container flex items-center justify-between gap-4">
         {!!label && <span className="sort-filter-label">{label}</span>}
+        
+        {/* Search Input */}
+        <div className="flex-1">
+          <TextInput
+            id="search-input"
+            name="search"
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Search..."
+            icon="search"
+            labelValue={""}
+            required={false}
+            theme="rounded"
+            isListItem={true}
+            errored={false}
+            withInfo={false}
+            disabled={false}
+            size="base"
+            iconSide="left"
+          />
+        </div>
+
+        {/* Sort Controls */}
         <div className="flex gap-2 text-2xl">
-          <FilterOutlined className="sort-filter-icon" onClick={toggleModal} />
-          {listSortFilter.sortOrder === SortOrder.GreatestToLowest ? (
-            <SortDescendingOutlined
+          <Popover
+            content={
+              <ListGroup className="w-48">
+                <ListGroup.Item
+                  onClick={() => onSortKeyChange('name')}
+                  active={sortKey === 'name'}
+                >
+                  Sort by Name
+                </ListGroup.Item>
+                <ListGroup.Item
+                  onClick={() => onSortKeyChange('scale')}
+                  active={sortKey === 'scale'}
+                >
+                  Sort by Scale
+                </ListGroup.Item>
+              </ListGroup>
+            }
+          >
+            <Button
+              type="button"
+              variant="circle-icon-lg btn-neutral outlined"
+              icon={getIconSvg("filter")({})}
               className="sort-filter-icon"
-              onClick={toggleSortOrder}
             />
-          ) : (
-            <SortAscendingOutlined
-              className="sort-filter-icon"
-              onClick={toggleSortOrder}
-            />
-          )}
+          </Popover>
+          
+          {/* Sort Order Toggle */}
+          <Button
+            type="button"
+            variant="circle-icon-lg btn-neutral outlined"
+            icon={getIconSvg("swap-sort")({})}
+            className="sort-filter-icon"
+            onClick={onSortOrderChange}
+          />
         </div>
       </div>
-      {isModalOpen && (
-        <Modal
-          title="Sort Criteria"
-          isModalOpen={isModalOpen}
-          onClose={toggleModal}
-          size="lg"
-          footerElement={
-              <Button
-                type="button"
-                variant={"primary responsive"}
-                onClick={handleSubmit}
-              >
-                Set Criteria
-              </Button>
-          }
-        >
-          <Formik
-            innerRef={formikRef}
-            initialValues={listSortFilter}
-            onSubmit={(values) => {
-              store.set(listSortFilterAtom, {
-                ...listSortFilter,
-                sortCriteria:  (values.sortCriteria == 'Scale' as any ? SortCriteria.Scale : SortCriteria.Name),
-              });
-              toggleModal();
-            }}
-          >
-            {({ values }) => (
-              <Form>
-                <Field
-                  name="sortCriteria"
-                  component={RadioGroupField}
-                  id="sort-criteria"
-                  labelValue="Sort by:"
-                  options={["Name", "Scale"]}
-                  direction="vertical"
-                />
-              </Form>
-            )}
-          </Formik>
-        </Modal>
-      )}
     </div>
   );
 };

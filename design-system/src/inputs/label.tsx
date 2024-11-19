@@ -33,9 +33,10 @@ const withLabel: React.FC<LabelProps> = ({
     >
       <div
         className={
-          isListItem
-            ? "flex justify-end gap-2 h-8 w-4"
-            : "flex justify-between h-8"
+          labelValue == "" ? "hidden"
+            : isListItem
+              ? "flex justify-end gap-2 h-8 w-4"
+              : "flex justify-between h-8"
         }
       ><div className="flex justify-between gap-1">
           <Label

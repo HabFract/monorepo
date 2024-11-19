@@ -30,12 +30,23 @@
 }
 
 .list-sort-filter {
-  @apply flex-none overflow-auto bg-transparent rounded-md;
-  font-size: 2rem;
-  padding: 0.25rem 0.5rem;
-  margin: 2px;
-  min-height: 2rem;
-  outline: 2px solid rgba(107, 125, 127, 0.25);
+  @apply relative flex-none bg-transparent;
+}
+
+.sort-filter-icon {
+  outline-width: 1px !important;
+}
+
+/* Sort Criteria Popover */
+.list-sort-filter div[data-testid="flowbite-popover"] {
+  position: absolute !important;
+  left: initial !important;
+  right: 15rem !important;
+  top: -1.5rem !important;
+}
+
+.list-sort-filter ul.list-none {
+  width: 9rem;
 }
 
 /* Scrollable Content Area

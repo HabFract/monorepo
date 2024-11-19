@@ -55,6 +55,28 @@ export function getIconSvg(
           <path d="M2.5 4.99996C2.5 4.53972 2.8731 4.16663 3.33333 4.16663H16.6667C17.1269 4.16663 17.5 4.53972 17.5 4.99996C17.5 5.4602 17.1269 5.83329 16.6667 5.83329H3.33333C2.8731 5.83329 2.5 5.4602 2.5 4.99996Z" fill="currentColor"/>
         </svg>
       );
+    case "search":
+      return () => (
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.5 17.4999L15 14.9999" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+          <ellipse cx="9.16663" cy="9.99996" rx="7.5" ry="7.49996" stroke="currentColor" strokeWidth="1.5"/>
+        </svg>
+      );
+    case "filter":
+      return () => (
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.8513 2.5H4.99205C3.96346 2.5 3.37509 3.673 3.99014 4.49745L7.91367 9.75673C8.07475 9.97264 8.16176 10.2348 8.16176 10.5042V16.3793C8.16176 17.3175 9.33728 17.7393 9.9337 17.015L10.9649 15.7628C11.1492 15.539 11.25 15.2581 11.25 14.9682V10.5377C11.25 10.2478 11.3508 9.96691 11.5351 9.74311L15.8162 4.54463C16.4877 3.72917 15.9077 2.5 14.8513 2.5Z" fill="currentColor"/>
+        </svg>
+      );
+    case "swap-sort":
+      return () => (
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.16663 6.66667L6.22373 2.98804C6.02356 2.73784 5.64302 2.73784 5.44286 2.98804L2.49996 6.66667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M5.83337 15L5.83337 3.33333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M17.5 13.3333L14.5571 17.012C14.3569 17.2622 13.9764 17.2622 13.7762 17.012L10.8333 13.3333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M14.1667 5L14.1667 16.6667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
+      );
     case "tag":
       return () => (
         <svg

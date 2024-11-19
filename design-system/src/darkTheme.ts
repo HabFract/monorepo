@@ -56,17 +56,18 @@ const darkThemeModal: CustomFlowbiteTheme["modal"] = {
 };
 
 // Base styles for inputs
-const baseInputStyles = "w-full px-3 pl-4 py-[10px] h-[48px] font-sans font-light text-sm leading-normal text-gray-900 dark:text-input-text-dark placeholder:text-gray-400 dark:placeholder:text-input-placeholder-dark bg-input-bg dark:bg-input-bg-dark border-input-border dark:input-border-dark hover:border-primary hover:bg-surface-elevated dark:hover:border-surface-dark dark:hover:bg-surface-dark focus:border-secondary focus:ring-0 focus:shadow-none dark:focus:border-surface-top-dark";
+const baseInputStyles = "border w-full px-3 pl-4 py-[10px] h-[48px] font-sans font-light text-sm leading-normal text-gray-900 dark:text-input-text-dark placeholder:text-gray-400 dark:placeholder:text-input-placeholder-dark bg-input-bg dark:bg-input-bg-dark border-input-border dark:input-border-dark hover:border-primary hover:bg-surface-elevated dark:hover:border-surface-dark dark:hover:bg-surface-dark focus:border-secondary focus:ring-0 focus:shadow-none dark:focus:border-surface-top-dark";
 const baseIconStyles = "input-icon ml-1 mt-1 h-8 w-8 text-input-icon dark:text-input-icon-dark pointer-events-none absolute left-0 top-1 flex items-center p-2";
 // Disabled styles
 const disabledStyles = "bg-gray-500 text-white border-gray-200 dark:bg-gray-800 opacity-50 dark:placeholder:text-gray-300 dark:border-gray-300 pointer-events-none";
 
 // Variant-specific border styles
 const variantStyles = {
-  default: "border border-gray-300 dark:border-input-border-dark",
-  danger: "border border-red-300 dark:border-danger",
-  success: "border border-green-300 dark:border-accent",
-  warning: "border border-yellow-300 dark:border-warn",
+  default: "border-gray-300 dark:border-input-border-dark",
+  rounded: "border-gray-300 dark:border-input-border-dark rounded-input",
+  danger: "border-red-300 dark:border-danger",
+  success: "border-green-300 dark:border-accent",
+  warning: "border-yellow-300 dark:border-warn",
   disabled: disabledStyles
 };
 
@@ -83,6 +84,7 @@ const darkThemeTextInput: CustomFlowbiteTheme["textInput"] = {
         danger: `${baseInputStyles} ${variantStyles.danger}`,
         success: `${baseInputStyles} ${variantStyles.success}`,
         warning: `${baseInputStyles} ${variantStyles.warning}`,
+        rounded: `${baseInputStyles} ${variantStyles.rounded}`,
         disabled: `${baseInputStyles} ${variantStyles.disabled}`
       }
     }

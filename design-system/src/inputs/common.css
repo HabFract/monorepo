@@ -64,6 +64,9 @@ span.reqd {
   @apply text-danger;
 }
 
+.rounded-input {
+  border-radius: 2rem !important;
+}
 
 /* Image Upload */
 .avatar-container {

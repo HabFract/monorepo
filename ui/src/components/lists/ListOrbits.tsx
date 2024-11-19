@@ -1,52 +1,54 @@
-import React from "react";
+import React, { useMemo } from "react";
 import "./common.css";
 
 import ListSortFilter from "./ListSortFilter";
 
-import { getIconSvg, HeaderAction, PlannitCard } from "habit-fract-design-system";
-import { Orbit, useDeleteOrbitMutation } from "../../graphql/generated";
-import { useStateTransition } from "../../hooks/useStateTransition";
-import { useFetchAndCacheSphereOrbits } from "../../hooks/useFetchAndCacheSphereOrbits";
-import { useSortedOrbits } from "../../hooks/useSortedOrbits";
-import { ActionHashB64 } from "@holochain/client";
-import { Spinner } from "flowbite-react";
-import { useToast } from "../../contexts/toast";
-import { appStateAtom, store } from "../../state";
+import { PlannitCard } from "habit-fract-design-system";
+import { Orbit, useDeleteOrbitMutation, useGetOrbitsQuery } from "../../graphql/generated";
+import { useSearchableList } from "../../hooks/useSearchableList";
+import { extractEdges } from "../../graphql/utils";
 
-interface ListOrbitsProps {
-  sphereAh?: ActionHashB64; // Optional prop to filter orbits by sphere
-}
+interface ListOrbitsProps {}
 
-const ListOrbits: React.FC<ListOrbitsProps> = ({
-  sphereAh,
-}: ListOrbitsProps) => {
-  const [_state, transition] = useStateTransition(); // Top level state machine and routing
-
-  const { showToast, hideToast } = useToast();
-  const [
-    runDelete,
-    { loading: loadingDelete, error: errorDelete, data: dataDelete },
-  ] = useDeleteOrbitMutation({
+const ListOrbits: React.FC<ListOrbitsProps> = () => {
+  const { loading, error, data } = useGetOrbitsQuery();
+  const [runDelete] = useDeleteOrbitMutation({
     refetchQueries: ["getOrbits"],
   });
+
+  // Extract orbits after data is loaded
+  const orbits = useMemo(() => {
+    if (!data?.orbits) return [];
+    return extractEdges(data.orbits) as Orbit[];
+  }, [data]);
+
   const {
-    loading: loadingOrbits,
-    error,
-    data,
-  } = useFetchAndCacheSphereOrbits({ sphereAh });
+    filteredItems: sortedOrbits,
+    searchTerm,
+    setSearchTerm,
+    sortKey,
+    setSortKey,
+    sortOrder,
+    toggleSortOrder
+  } = useSearchableList({
+    items: orbits,
+    searchKeys: ['name', 'scale'],
+    initialSortKey: 'name'
+  });
 
-  const currentAppState = store.get(appStateAtom);
-  const listedSphere = currentAppState.spheres.byHash[sphereAh!]
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
-  const sortedOrbits: Orbit[] = useSortedOrbits(data?.orbits);
-  const loading = !sphereAh || loadingOrbits;
-  if (loading)
-    return <Spinner aria-label="Loading!" className="full-spinner" size="xl" />;
-  if (error) return <p>Error : {error.message}</p>;
   return (
-    <>
-      <section className="orbits-list">
-        <ListSortFilter label={""} />
+    <section className="orbits-list">
+      <ListSortFilter 
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        sortKey={sortKey}
+        onSortKeyChange={setSortKey}
+        sortOrder={sortOrder}
+        onSortOrderChange={toggleSortOrder}
+      />
         <div className="orbits">
           {sortedOrbits.map((orbit: Orbit) => (
             <PlannitCard
@@ -60,7 +62,6 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({
           ))}
         </div>
       </section>
-    </>
   );
 };
 
