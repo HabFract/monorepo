@@ -21,32 +21,7 @@
 
 .spheres-list {
   @apply h-auto pt-0 overflow-auto;
-}
-
-/* Header & Filter Styles
--------------------------------------------------- */
-.header-action {
-  @apply flex-none;
-}
-
-.list-sort-filter {
-  @apply relative flex-none bg-transparent;
-}
-
-.sort-filter-icon {
-  outline-width: 1px !important;
-}
-
-/* Sort Criteria Popover */
-.list-sort-filter div[data-testid="flowbite-popover"] {
-  position: absolute !important;
-  left: initial !important;
-  right: 15rem !important;
-  top: -1.5rem !important;
-}
-
-.list-sort-filter ul.list-none {
-  width: 9rem;
+  padding-bottom: 55%;
 }
 
 /* Scrollable Content Area
@@ -64,23 +39,4 @@
 .layout.orbit-subdivision-list {
   @apply dark:bg-surface-dark flex flex-col gap-2 p-0;
   min-height: initial;
-}
-
-/* Sort & Filter Components
--------------------------------------------------- */
-.sort-filter-icon {
-  @apply md:text-xl text-xl text-white;
-}
-
-.sort-filter-icon:hover {
-  @apply dark:text-accent-dark;
-  transform: scale(1.2);
-  cursor: pointer;
-}
-
-.sort-filter-label {
-  @apply md:text-sm text-title text-xs font-semibold;
-  text-align: center;
-  width: 100%;
-  padding-left: 56px;
 }

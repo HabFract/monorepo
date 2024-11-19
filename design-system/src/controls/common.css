@@ -471,6 +471,35 @@ div.handle span {
   @apply text-white;
 }
 
+
+/* Sort & Filter Components
+-------------------------------------------------- */
+.list-sort-filter {
+  @apply relative flex-none bg-transparent;
+}
+
+.sort-filter-icon {
+  outline-width: 1px !important;
+  @apply md:text-xl text-xl text-white;
+}
+
+.sort-filter-icon:hover {
+  outline-width: 2px;
+  cursor: pointer;
+}
+
+/* Sort Criteria Popover */
+.list-sort-filter div[data-testid="flowbite-popover"] {
+  position: absolute !important;
+  left: initial !important;
+  right: 16rem !important;
+  top: -.5rem !important;
+}
+
+.list-sort-filter ul.list-none {
+  width: 9rem;
+}
+
 @media screen and (min-width: 440px) {
 
   .calendar-day {

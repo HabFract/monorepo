@@ -15,7 +15,7 @@ const DefaultSubmitBtn = ({
     <Button
       type="submit"
       isLoading={loading}
-      variant={editMode ? "warn" : "primary"}
+      variant={editMode ? "warn responsive" : "primary responsive"}
       isDisabled={
         loading ||
         !!Object.values(errors).length ||

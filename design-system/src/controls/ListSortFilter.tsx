@@ -1,20 +1,10 @@
 import React from "react";
-import {
-  SortDescendingOutlined,
-  SortAscendingOutlined,
-  FilterOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
 import { ListGroup, Popover } from "flowbite-react";
-import { Button, getIconSvg, TextInput } from "habit-fract-design-system";
+import { Button, getIconSvg, TextInput } from "..";
 import "./common.css";
-import { SortCriteria, SortOrder, listSortFilterAtom } from "../../state/ui";
-import { store } from "../../state/store";
-// import { darkThemeListGroup } from "habit-fract-design-system";
-import { useAtomValue } from "jotai";
+import { darkThemeListGroup } from "../darkTheme";
 
 interface ListSortFilterProps {
-  label?: string;
   searchTerm: string;
   onSearchChange: (value: string) => void;
   sortKey: string | null;
@@ -24,7 +14,6 @@ interface ListSortFilterProps {
 }
 
 const ListSortFilter: React.FC<ListSortFilterProps> = ({
-  label,
   searchTerm,
   onSearchChange,
   sortKey,
@@ -35,8 +24,6 @@ const ListSortFilter: React.FC<ListSortFilterProps> = ({
   return (
     <div className="list-sort-filter">
       <div className="sort-icon-container flex items-center justify-between gap-4">
-        {!!label && <span className="sort-filter-label">{label}</span>}
-        
         {/* Search Input */}
         <div className="flex-1">
           <TextInput
@@ -62,7 +49,7 @@ const ListSortFilter: React.FC<ListSortFilterProps> = ({
         <div className="flex gap-2 text-2xl">
           <Popover
             content={
-              <ListGroup className="w-48">
+              <ListGroup theme={darkThemeListGroup} className="w-48">
                 <ListGroup.Item
                   onClick={() => onSortKeyChange('name')}
                   active={sortKey === 'name'}

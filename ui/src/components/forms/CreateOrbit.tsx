@@ -275,7 +275,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                     withInfo={true}
                     onClickInfo={() => ({
                       title: "Scales, Explained",
-                      body: "This refers to the magnitude of your tracked behaviour. //We like to think of the three scales in terms of Plans, Agreements, and Actions. // Make an over-arching Plan (a star).// Link it to a number of Agreements - sometimes this is the biggest step - the Giant! // Then, make the whole thing easy to carry out: write down a number of small Actions (Dwarves, in our language), ready to be ticked off.",
+                      body: "This refers to the magnitude of your tracked behaviour. //We like to think of the three scales in terms of Plans, Agreements, and Actions. // Make an over-arching Plan (a star).// Link it to a number of Agreements - sometimes these are the biggest milestones - the Giants! // Then, make the whole thing easy to carry out: write down a number of small Actions (Dwarves, in our language), ready to be ticked off.",
                     })}
                     options={[
                       // values?.scale ? null : <option value={undefined}>{'Select:'}</option>,
@@ -335,7 +335,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                       withInfo={true}
                       onClickInfo={() => ({
                         title: "Good Parenting",
-                        body: "Choose the parent which describes behaviour of a bigger scope. //For instance, if the name of your Orbit is 'Run a 10k', maybe the next biggest scope is 'Run a 20k'. //Setting your parent to 'None' will make it the top of a new hierarchy.",
+                        body: "Choose the parent which describes behaviour of a bigger scope. //For instance, if the name of your Plannit is 'Run a 10k', maybe the next biggest scale is 'Run a 20k'. //Setting your parent to 'None' will make it the top of a new hierarchy.",
                       })}
                       onBlur={() => {
                         setFieldValue("scale", scaleDefault);
@@ -352,7 +352,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                       ]}
                       required={true}
                       disabled={!!editMode}
-                      labelValue={"Parent Orbit:"}
+                      labelValue={"Parent Plannit:"}
                     />
                   </div>
                 )}

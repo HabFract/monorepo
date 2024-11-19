@@ -107,7 +107,7 @@ export const ButtonGroup: Story = {
 // Responsive Example
 export const ResponsiveButton: Story = {
   args: {
-    variant: "responsive",
-    children: <> {getIconSvg("cross")({}) as any}<span className="ml-2">Responsive Button</span></>,
+    variant: "responsive btn-primary",
+    children: <> {getIconSvg("tree-vis")({}) as any}<span className="block ml-2">Responsive Button</span></>,
   },
 };

@@ -28,6 +28,7 @@ export const useCreateSphereMutation = () => {
             },
           },
         };
+        console.log('updatedState :>> ', updatedState);
         setAppState(updatedState);
 
         console.warn("Cache update from useCreateSphere");

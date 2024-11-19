@@ -10,6 +10,7 @@ export type ButtonVariant =
   | "neutral"
   | "onboarding"
   | "icon"
+  | "icon btn-primary responsive"
   | "circle-icon"
   | "circle-icon-lg"
   | "circle-icon btn-primary"

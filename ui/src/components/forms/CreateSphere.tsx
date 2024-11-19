@@ -97,7 +97,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
             state == "Onboarding1" ? { sphereEh: eH } : { sphereAh: aH };
 
           transition(
-            state == "Onboarding1" ? "Onboarding2" : "ListSpheres",
+            state == "Onboarding1" ? "Onboarding2" : "Home",
             props,
           );
         } catch (error) {

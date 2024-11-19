@@ -20,7 +20,7 @@ import { Button } from "./buttons";
 import { HelperText } from "./copy";
 import FrequencyIndicator  from "./icons/FrequencyIndicator";
 import HeaderAction from "./header/header-action";
-import { VisControls } from "./controls";
+import { VisControls, ListSortFilter } from "./controls";
 import OrbitControls  from "./vis/OrbitControls";
 import OrbitLabel  from "./vis/OrbitLabel";
 import { default as darkTheme } from "./darkTheme";
@@ -56,6 +56,7 @@ export {
   OrbitVis,
   OrbitControls,
   OrbitLabel,
+  ListSortFilter,
   getIconForPlanetValue,
   getIconSvg,
   FrequencyIndicator,
