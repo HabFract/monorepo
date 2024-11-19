@@ -12,7 +12,7 @@ import { cloneElement, useRef, useState } from "react";
 import Settings from "./components/Settings";
 
 import { Button, darkTheme } from "habit-fract-design-system";
-import { store } from "./state/store";
+import { appStateAtom, store } from "./state/store";
 import {
   Sphere,
   SphereConnection,
@@ -58,7 +58,6 @@ function App({ children: pageComponent }) {
   const userHasSpheres =
     spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
 
-  const currentSphereDetails = store.get(currentSphereDetailsAtom);
   return (
     <Flowbite theme={{ theme: darkTheme, mode: "dark"  }}>
       <Toast />

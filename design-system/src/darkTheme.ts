@@ -1,3 +1,4 @@
+import './buttons/common.css';
 import { CustomFlowbiteTheme } from "flowbite-react";
 
 const darkThemeModal: CustomFlowbiteTheme["modal"] = {
@@ -151,14 +152,14 @@ const darkRadioTheme: CustomFlowbiteTheme["radio"] = {
 // List Group theme
 const darkThemeListGroup: CustomFlowbiteTheme["listGroup"] = {
   "root": {
-    "base": "list-none rounded-xl border-[.5px] border-text bg-white text-left text-base font-sans font-bold text-text dark:border-gray-100 dark:bg-surface-dark dark:text-text-dark absolute left-8 top-8 max-w-48"
+    "base": "list-none rounded-xl border-[.5px] border-text bg-white text-left text-base font-sans font-bold text-text dark:border-gray-100 dark:bg-surface-dark dark:text-text-dark absolute left-8 top-8 max-w-48 "
   },
   "item": {
-    "base": "[&>*]:first:rounded-t-xl [&>*]:last:rounded-b-xl [&>*]:last:border-b-0",
+    "base": "[&>*]:first:rounded-t-xl [&>*]:first:rounded-b-none [&>*]:last:rounded-b-xl [&>*]:last:rounded-t-none [*:only-child]:rounded-xl [*:only-child]:hover:rounded-xl !important",
     "link": {
-      "base": "flex w-full items-center border-b border-gray-200 gap-2 px-4 py-2 dark:border-gray-400 dark:hover:bg-surface-elevated-dark",
+      "base": "flex w-full items-center border-b border-gray-200 gap-2 px-4 py-2 dark:border-gray-400 dark:hover:bg-surface-elevated-dark dark:focus:focus-styles !important",
       "active": {
-        "off": "hover:bg-gray-100 hover:text-cyan-700 focus:text-white focus:outline-none focus:ring-1 focus:ring-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white focus:border-secondary focus:ring-0 focus:shadow-none dark:focus:text-opacity-50",
+        "off": "hover:bg-gray-100 hover:text-cyan-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white",
         "on": "bg-cyan-700 text-white dark:bg-gray-800"
       },
       "disabled": {

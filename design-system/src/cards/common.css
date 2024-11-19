@@ -131,6 +131,38 @@
   @apply dark:text-primary-dark p-0 !important;
 }
 
+.card.action-card-avatar {
+  @apply grid items-start justify-center grid-cols-1 grid-rows-1 gap-4;
+  min-height: 11rem;
+}
+.card.action-card-avatar img {
+  min-height: 6rem;
+  min-width: 6rem;
+}
+
+.action-card-avatar-content .avatar-container {
+  @apply flex-col;
+}
+.action-card-avatar-content {
+  @apply w-full h-full; 
+}
+.action-card-avatar-content div.ant-upload, .action-card-avatar-content span.ant-upload {
+  padding: 0 !important;
+  min-height: auto !important;
+}
+
+.action-card-avatar-content .custom-image div.ant-upload .avatar-container button {
+  margin-left: 3rem;
+  width: calc(100% - 3rem);
+}
+
+.action-card-avatar-content .custom-image > div {
+  /* Trash button */
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+}
+
 /* Action Card Typography */
 .action-card header {
   @apply text-sm font-bold leading-relaxed;

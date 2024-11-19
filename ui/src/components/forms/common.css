@@ -62,32 +62,6 @@ form {
   justify-content: center;
 }
 
-/* Image Upload */
-.avatar-container {
-  @apply flex items-center w-full gap-4;
-}
-
-.avatar-container img {
-  max-width: 4rem;
-  max-height: 4rem;
-  aspect-ratio: 1/1;
-  border-radius: 100% !important;
-}
-
-.avatar-container > * {
-  @apply cursor-pointer !important; 
-}
-
-.ant-upload {
-  @apply pl-2 flex w-full justify-start items-start cursor-default !important;
-}
-
-.ant-upload.ant-upload-select {
-  border: none !important;
-  @apply w-full !important;
-}
-
-
 .ant-picker {
   background: #1e293b !important;
   border: 2px solid #64748b !important;

@@ -84,7 +84,7 @@ button.btn.btn-secondary:not(.nohover):hover {
   @apply outline-warn-500;
 }
 .btn-danger.outlined {
-  @apply outline-danger-500;
+  @apply outline-danger-500 text-danger;
 }
 
 /* Button States
@@ -106,14 +106,46 @@ button.btn.btn-secondary:not(.nohover):hover {
   @apply  dark:text-gray-400 fill-gray-400 dark:fill-gray-300 text-gray-200;
 }
 
-/* Focus & Active States */
+/* Focus & Active States
+-------------------------------------------------- */
+.focus-styles {
+  @apply outline outline-1 outline-dashed outline-gray-300 dark:outline-gray-100 focus:outline focus:outline-1 focus:outline-dashed focus:outline-gray-300 dark:focus:outline-gray-100 active:outline active:outline-1 active:outline-gray-300 dark:active:outline-gray-100 focus:ring-0 focus:shadow-none  !important;
+}
+.active-styles {
+  @apply outline-gray-500 dark:outline-gray-300 active:outline active:outline-1 active:outline-gray-300 dark:active:outline-gray-100  !important;
+}
 .btn:active {
-  @apply outline outline-1 outline-gray-300 dark:outline-gray-100;
+  @apply active-styles;
+}
+.btn:focus,
+.btn:focus:hover,
+.card ul li button:focus:hover {
+  @apply focus-styles active-styles;
 }
 
-.btn:focus {
-  @apply outline outline-1 outline-dashed outline-gray-300 dark:outline-gray-100;
+.card ul li:only-child button:focus {
+  @apply rounded-xl;
 }
+
+.list-item-danger button:hover {
+  @apply text-danger dark:text-danger !important;
+}
+
+.btn.btn-danger:focus,
+.btn.btn-danger:focus,
+.list-item-danger button:hover:focus {
+  @apply text-danger dark:text-danger !important;
+}
+
+.list-group-override button:hover, .list-group-override button:hover:focus, .list-group-override button:focus  {
+  @apply focus:ring-0 focus:ring-offset-0 outline-none !important;
+}
+.list-group-override button:hover:focus, .list-group-override button:focus {
+  @apply focus-styles !important;
+}
+.list-group-override button:hover:active, .list-group-override button:active {
+  @apply active-styles !important;
+} 
 
 /* Icon Button Variants
 -------------------------------------------------- */
@@ -148,6 +180,12 @@ button.btn.btn-secondary:not(.nohover):hover {
 .btn.btn-circle-icon:hover {
   @apply bg-primary-500 dark:bg-primary-500 border-0;
 }
+
+
+button.btn.btn-danger.outlined {
+  @apply outline-1 dark:outline-gray-300 dark:text-danger bg-danger border-danger dark:bg-transparent;
+}
+
 
 /* Icon Styling
 -------------------------------------------------- */

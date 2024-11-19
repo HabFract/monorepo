@@ -7,10 +7,11 @@ import {
   TextAreaField,
   RadioGroup,
   ToggleSwitch,
+  ImageUploadInput,
   Label,
   ErrorLabel,
 } from "./inputs";
-import { SphereCard, ActionCard, PlannitCard, SystemCalendarCard } from "./cards";
+import { ActionCard, PlannitCard, SystemCalendarCard } from "./cards";
 import { SphereVis, OrbitVis } from "./vis";
 import { ProgressBar } from "./onboarding";
 import { Button } from "./buttons";
@@ -35,13 +36,13 @@ export {
   TextArea,
   TextAreaField,
   RadioGroup,
+  ImageUploadInput,
   ToggleSwitch,
   Label,
   ErrorLabel,
   HelperText,
   HeaderAction,
   VisControls,
-  SphereCard,
   ActionCard,
   PlannitCard,
   SystemCalendarCard,

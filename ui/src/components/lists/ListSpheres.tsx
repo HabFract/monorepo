@@ -32,12 +32,6 @@ function ListSpheres() {
   const { showToast, hideToast } = useToast();
   const setCurrentSphere = useSetAtom(currentSphereHashesAtom);
 
-  useEffect(() => {
-    if(!data?.spheres) return;
-    console.log('sphereOrbitsAllCached :>> ', sphereOrbitsAllCached, spheres.map(sphere => store.get(sphereHasCachedNodesAtom(sphere.id))));
-    
-  }, [data?.spheres]);
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 

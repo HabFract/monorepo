@@ -6,11 +6,10 @@ import {
   useGetSphereQuery,
   useUpdateSphereMutation,
 } from "../../graphql/generated";
-import { ImageUpload } from "./input";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import { ActionHashB64 } from "@holochain/client";
 import DefaultSubmitBtn from "./buttons/DefaultSubmitButton";
-import { Label, TextAreaField, TextInputField } from "habit-fract-design-system";
+import { ImageUploadInput, Label, TextAreaField, TextInputField } from "habit-fract-design-system";
 import { useCreateSphereMutation } from "../../hooks/gql/useCreateSphereMutation";
 import { MODEL_DISPLAY_VALUES, ONBOARDING_FORM_DESCRIPTIONS } from "../../constants";
 import { SphereFetcher } from "./utils";
@@ -166,7 +165,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                 </div>
                 <div className="form-field">
                   <Label id="symbol" labelValue="Symbol: ">
-                    <Field component={ImageUpload} name="symbol" id="symbol" />
+                    <Field component={ImageUploadInput} name="symbol" id="symbol" />
                   </Label>
                 </div>
                 {SubmitButton}

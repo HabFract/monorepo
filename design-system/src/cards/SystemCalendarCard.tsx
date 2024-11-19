@@ -41,7 +41,7 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
         <Popover
           content={<ListGroup
             theme={darkThemeListGroup}
-            className="w-48">
+            className="w-48 list-group-override">
             <ListGroup.Item onClick={handleListAction} icon={getIconSvg('list')}>List Plannits</ListGroup.Item>
           </ListGroup>
           }

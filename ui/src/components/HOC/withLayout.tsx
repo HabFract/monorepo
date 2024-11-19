@@ -1,4 +1,4 @@
-import { ReactNode, FC } from "react";
+import { ReactNode, FC, useEffect } from "react";
 import Breadcrumbs from "../navigation/Breadcrumbs";
 import Home from "../layouts/Home";
 import Onboarding from "../layouts/Onboarding";
@@ -9,7 +9,7 @@ import { SphereDetails } from "../../state/types/sphere";
 import VisLayout from "../layouts/VisLayout";
 import FormLayout from "../layouts/FormLayout";
 import ListLayout from "../layouts/List";
-import { currentSphereDetailsAtom, currentSphereHashesAtom, store } from "../../state";
+import { appStateAtom, currentSphereDetailsAtom, currentSphereHashesAtom, store } from "../../state";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -42,6 +42,17 @@ const withLayout = (
       const id = props?.currentSphereDetails?.id;
       store.set(currentSphereHashesAtom, {entryHash: eH, actionHash: id})
     }
+
+    const currentAppState = store.get(appStateAtom);
+    // Add validation logging
+    useEffect(() => {
+      console.log('Layout mounted with appState:', currentAppState);
+      return () => {
+        console.log('Layout unmounting with appState:', store.get(appStateAtom));
+      };
+    }, []);
+
+
     switch (true) {
       case !!state.match("Onboarding"):
         return <Onboarding>{withPageTransition(component)}</Onboarding>;

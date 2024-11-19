@@ -3,7 +3,7 @@ import "./common.css";
 
 import ListSortFilter from "./ListSortFilter";
 
-import { getIconSvg, HeaderAction, OrbitCard, PlannitCard, SphereCard } from "habit-fract-design-system";
+import { getIconSvg, HeaderAction, PlannitCard } from "habit-fract-design-system";
 import { Orbit, useDeleteOrbitMutation } from "../../graphql/generated";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import { useFetchAndCacheSphereOrbits } from "../../hooks/useFetchAndCacheSphereOrbits";
@@ -11,7 +11,7 @@ import { useSortedOrbits } from "../../hooks/useSortedOrbits";
 import { ActionHashB64 } from "@holochain/client";
 import { Spinner } from "flowbite-react";
 import { useToast } from "../../contexts/toast";
-import { appStateAtom, getSphereIdFromEhAtom, sphereHasCachedNodesAtom, store } from "../../state";
+import { appStateAtom, store } from "../../state";
 
 interface ListOrbitsProps {
   sphereAh?: ActionHashB64; // Optional prop to filter orbits by sphere

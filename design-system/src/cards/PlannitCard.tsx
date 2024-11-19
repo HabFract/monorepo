@@ -37,9 +37,9 @@ const PlannitCard: React.FC<PlannitCardProps> = ({
         </div>
 
         <Popover
-          content={<ListGroup theme={darkThemeListGroup} className="w-48">
+          content={<ListGroup theme={darkThemeListGroup} className="list-group-override w-48">
             <ListGroup.Item onClick={handleEditPlannit} icon={getIconSvg('pencil')}>Edit</ListGroup.Item>
-            <span className="text-danger">
+            <span className="list-item-danger text-danger">
               <ListGroup.Item onClick={runDelete} icon={getIconSvg('trash')}>Delete</ListGroup.Item>
             </span>
           </ListGroup>
