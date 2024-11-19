@@ -157,7 +157,7 @@ const darkThemeListGroup: CustomFlowbiteTheme["listGroup"] = {
   "item": {
     "base": "[&>*]:first:rounded-t-xl [&>*]:first:rounded-b-none [&>*]:last:rounded-b-xl [&>*]:last:rounded-t-none [*:only-child]:rounded-xl [*:only-child]:hover:rounded-xl !important",
     "link": {
-      "base": "flex w-full items-center border-b border-gray-200 gap-2 px-4 py-2 dark:border-gray-400 dark:hover:bg-surface-elevated-dark dark:focus:focus-styles !important",
+      "base": "flex w-full items-center border-b border-gray-200 gap-2 px-4 py-2 dark:border-gray-400 dark:hover:bg-surface-elevated-dark dark:active:focus-styles !important",
       "active": {
         "off": "hover:bg-gray-100 hover:text-cyan-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white",
         "on": "bg-cyan-700 text-white dark:bg-gray-800"

@@ -1,5 +1,5 @@
-.header-action-container{
-  @apply dark:bg-surface-dark flex items-center justify-between w-full text-base text-white;
+.header-action-container {
+  @apply dark:bg-surface-dark relative flex items-center justify-between w-full text-base text-white;
   padding: 12px 16px;
   height: 64px;
   max-width: 440px;
@@ -8,6 +8,22 @@
   @apply flex-1 font-sans text-lg font-bold text-center;
   letter-spacing: 0.02rem;
   line-height: 21.86px;
-  text-align: center;
-  
+  text-align: center; 
+}
+
+.header-action-container *[role="dialog"] {
+  left: calc(100% - 12rem) !important;
+  top: -.5rem  !important ;
+}
+
+.no-auto-focus button:focus, .no-auto-focus button:hover:focus {
+  pointer-events: auto !important;
+  &:focus-within {
+    outline: none !important;
+  }
+  & > * {
+    &:first-child:focus {
+      outline: none !important;
+    }
+  }
 }

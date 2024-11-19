@@ -14,7 +14,6 @@ function FormLayout({ children, type }: any) {
           icon1={getIconSvg('back')}
           icon2={null}
           handlePrimaryAction={() => transition("Home")}
-          handleSecondaryAction={() => transition("LisSpheres")}
         ></HeaderAction>
       </div>
       {children}

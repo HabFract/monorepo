@@ -3,7 +3,7 @@ import "./common.css";
 import "../buttons/common.css";
 import { useState } from "react";
 import { getIconSvg } from "../icons/icons";
-import VisModal from "../modals/VisModal";
+import Modal from "../modals/Modal";
 
 export interface LabelProps {
   id: string;
@@ -52,9 +52,9 @@ const withLabel: React.FC<LabelProps> = ({
                 <button onClick={() => setTooltipVisible(true)}>
                   {getIconSvg('info')({})}
                 </button>
-                <VisModal modalAnnotation="" title={onClickInfo?.()?.title as string} isModalOpen={tooltipVisible} size="lg" onClose={() => setTooltipVisible(false)}>
+                <Modal footerElement="" title={onClickInfo?.()?.title as string} isModalOpen={tooltipVisible} size="lg" onClose={() => setTooltipVisible(false)}>
                   {onClickInfo?.()?.body.split("//").map((para, idx) => <p key={idx}>{para}</p>)}
-                </VisModal>
+                </Modal>
               </>
           )}
         </div>

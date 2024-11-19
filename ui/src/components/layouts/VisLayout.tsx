@@ -12,7 +12,6 @@ function VisLayout({ children, currentSphereName }: any) {
           icon1={getIconSvg('back')}
           icon2={getIconSvg('more')}
           handlePrimaryAction={() => transition("Home")}
-          handleSecondaryAction={() => transition("LisSpheres")}
         ></HeaderAction>
       </div>
       {children}

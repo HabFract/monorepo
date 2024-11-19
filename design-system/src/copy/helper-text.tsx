@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import "./common.css";
 import { getIconSvg } from "../icons/icons";
-import VisModal from "../modals/VisModal";
+import Modal from "../modals/Modal";
 
 export interface HelperTextProps {
   onClickInfo?: () => any;
@@ -41,9 +41,9 @@ const HelperText: React.FC<HelperTextProps> = ({
                 <button type="button" onClick={() => setTooltipVisible(true)}>
                   {getIconSvg('info')({})}
                 </button>
-                <VisModal modalAnnotation={onClickInfo?.()?.annotation as string} title={onClickInfo?.()?.title as string} isModalOpen={tooltipVisible} size="lg" onClose={() => setTooltipVisible(false)}>
+                <Modal footerElement={onClickInfo?.()?.annotation as string} title={onClickInfo?.()?.title as string} isModalOpen={tooltipVisible} size="lg" onClose={() => setTooltipVisible(false)}>
                   {getInfoBody(onClickInfo?.()?.body)}
-                </VisModal>
+                </Modal>
               </>
           )}
         </div>

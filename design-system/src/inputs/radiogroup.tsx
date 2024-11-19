@@ -1,6 +1,4 @@
-import { useState } from "react";
 import { RadioGroupProps } from "./radiogroup.stories";
-
 import { Label, Radio } from "flowbite-react";
 import { darkRadioTheme } from "../darkTheme";
 import WithLabel from "./label";
@@ -9,47 +7,47 @@ import ErrorLabel from "./errorlabel";
 const RadioGroup: React.FC<RadioGroupProps> = ({
   id,
   name,
+  value,
   options,
   labelValue,
   required,
   withInfo,
+  onClickInfo,
   disabled,
   direction,
+  onChange,
+  errored,
 }: RadioGroupProps) => {
-  const [selected, setSelected] = useState<string>(options[0]);
-
   return (
     <WithLabel
       id={id}
       labelValue={labelValue}
       required={required}
       withInfo={withInfo}
+      onClickInfo={onClickInfo}
     >
       <div
         data-name={name}
         className={
-          direction == "vertical"
+          direction === "vertical"
             ? "flex max-w-md flex-col gap-2"
             : "flex max-w-md flex-row gap-6"
         }
       >
-        {options.map((optionText, idx) => {
-          return (
-            <div key={idx} className="flex items-stretch gap-2">
-              <Radio
-                id={id + idx.toString()}
-                onChange={(e) => {
-                  setSelected(e.target.value);
-                }}
-                theme={darkRadioTheme}
-                value={optionText}
-                checked={optionText == selected}
-                disabled={disabled}
-              ></Radio>
-              <Label htmlFor={id + idx.toString()}>{optionText}</Label>
-            </div>
-          );
-        })}
+        {options.map((optionText, idx) => (
+          <div key={idx} className="flex items-stretch gap-2">
+            <Radio
+              id={`${id}-${idx}`}
+              name={name}
+              onChange={onChange}
+              theme={darkRadioTheme}
+              value={optionText}
+              checked={optionText === value}
+              disabled={disabled}
+            />
+            <Label htmlFor={`${id}-${idx}`}>{optionText}</Label>
+          </div>
+        ))}
       </div>
     </WithLabel>
   );
@@ -61,37 +59,45 @@ export const RadioGroupField: React.FC<{
   props: RadioGroupProps;
 }> = ({
   field,
-  form: { touched, errors, setFieldValue: _ },
+  form: { touched, errors, setFieldValue, setFieldTouched },
   ...props
 }: any) => {
   const {
+    id,
     name,
     labelValue,
     options,
     direction,
-    value: __,
-    id,
     required,
-    onBlur: ___,
+    withInfo,
+    onClickInfo,
+    disabled,
   } = props;
+
   return (
     <>
       <RadioGroup
-        name={name}
         id={id}
+        name={name}
+        value={field.value}
         direction={direction}
         options={options}
         labelValue={labelValue}
-        errored={errors[name]}
+        errored={touched[field.name] && errors[field.name]}
         required={required}
-        disabled={false}
-        withInfo={false}
-      ></RadioGroup>
+        disabled={disabled}
+        withInfo={withInfo}
+        onClickInfo={onClickInfo}
+        onChange={(e) => {
+          setFieldValue(field.name, e.target.value);
+          setFieldTouched(field.name);
+        }}
+      />
       <ErrorLabel
-        fieldName={name}
+        fieldName={field.name}
         errors={errors}
         touched={touched}
-      ></ErrorLabel>
+      />
     </>
   );
 };

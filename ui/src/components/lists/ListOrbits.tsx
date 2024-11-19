@@ -45,15 +45,6 @@ const ListOrbits: React.FC<ListOrbitsProps> = ({
   if (error) return <p>Error : {error.message}</p>;
   return (
     <>
-      <div className="header-action">
-      <HeaderAction
-        title={listedSphere?.details?.name}
-        icon1={getIconSvg('back')}
-        icon2={null}
-        handlePrimaryAction={() => transition("Home")}
-        handleSecondaryAction={() => transition("LisSpheres")}
-      ></HeaderAction>
-        </div>
       <section className="orbits-list">
         <ListSortFilter label={""} />
         <div className="orbits">

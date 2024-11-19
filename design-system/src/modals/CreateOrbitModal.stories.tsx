@@ -1,26 +1,25 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
-import VisModal, { VisModalProps } from "./VisModal";
-import { Select, SelectInputField, TextAreaField, TextInputField } from "../inputs";
-import { WithIconWithInfoRequired } from "../inputs/select.stories";
+import Modal, { ModalProps } from "./Modal";
+import { SelectInputField, TextAreaField, TextInputField } from "../inputs";
 import { getIconForPlanetValue } from "../icons/icons";
 import { Frequency, Scale } from "../generated-types";
 import FrequencyIndicator from "../icons/FrequencyIndicator";
 import { decodeFrequency } from "@ui/src/state";
 
-const meta: Meta<VisModalProps> = {
+const meta: Meta<ModalProps> = {
   title: "Components/Modals/CreateOrbitModal",
-  component: VisModal,
+  component: Modal,
   argTypes: {},
   render: (args: any) => (
-    <VisModal {...args} isModalOpen={true}
+    <Modal {...args} isModalOpen={true}
     />
   ),
 };
 
 export default meta;
 
-type Story = StoryObj<VisModalProps>;
+type Story = StoryObj<ModalProps>;
 
 const mockForm = { field: {}, form: { touched:{}, errors:{}, setFieldValue: () => {}, setTouched: () => {} }};
 const scaleSelectInputProps = {id: "test", value: "", placeholder: "test", labelValue: "Scale", required: true, name: "test", errored: false, withInfo: false, options: ["Sun","Planet","Moon"], size: "base", icon: getIconForPlanetValue(Scale.Astro), iconSide: 'left', disabled: false};
@@ -37,6 +36,6 @@ export const CreateOrbit: Story = {
       <TextAreaField {...mockForm} props={agreementInputProps} {...agreementInputProps}></TextAreaField>
       <SelectInputField {...mockForm} props={frequencySelectInputProps} {...frequencySelectInputProps}></SelectInputField>
     </div>,
-    modalAnnotation: `Example: "Daily Workouts" in Health and Fitness sphere.`
+    footerElement: `Example: "Daily Workouts" in Health and Fitness sphere.`
   },
 };

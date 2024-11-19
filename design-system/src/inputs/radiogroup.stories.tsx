@@ -2,17 +2,22 @@ import { Meta, StoryObj } from "@storybook/react";
 import RadioGroup, { RadioGroupField } from "./radiogroup";
 
 export interface RadioGroupProps {
-  id: string;
-  name: string;
-  labelValue: string;
-  errored: boolean;
-  required: boolean;
-  withInfo: boolean;
+  id?: string;
+  name?: string;
+  value?: string;
+  labelValue?: string;
+  errored?: boolean;
+  required?: boolean;
+  withInfo?: boolean;
+  onClickInfo?: () => void;
   options: string[];
-  disabled: boolean;
-  direction: "horizontal" | "vertical";
+  disabled?: boolean;
+  direction?: "horizontal" | "vertical";
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  theme?: "default" | "warning" | "danger" | "disabled";
+  isListItem?: boolean;
 }
-
 const meta: Meta<RadioGroupProps> = {
   title: "Components/Input/RadioGroup",
   component: RadioGroup,

@@ -1,28 +1,36 @@
+/* Base Layout Styles
+-------------------------------------------------- */
+.list.page-container {
+  @apply w-full h-screen overflow-hidden;
+}
+
+.list-layout {
+  @apply flex flex-col w-full h-full overflow-hidden;
+}
+
+/* List Container Styles
+-------------------------------------------------- */
 .orbits-list,
-.spheres-list,
-.orbits-list .orbits {
-  @apply flex flex-col w-full gap-4 bg-transparent;
-}
-.spheres-list,
-.orbits-list {
-  @apply p-2;
-}
 .spheres-list {
- @apply pt-0;
+  @apply flex flex-col w-full gap-4 p-2 bg-transparent;
 }
 
-.spheres-list,
-.orbits-list .orbits {
-  @apply h-auto overflow-auto;
+.orbits-list {
+  @apply flex-1 overflow-hidden;
 }
 
-.layout.orbit-subdivision-list {
-  @apply dark:bg-surface-dark flex flex-col gap-2 p-0;
-  min-height: initial;
+.spheres-list {
+  @apply h-auto pt-0 overflow-auto;
+}
+
+/* Header & Filter Styles
+-------------------------------------------------- */
+.header-action {
+  @apply flex-none;
 }
 
 .list-sort-filter {
-  @apply overflow-auto bg-transparent rounded-md;
+  @apply flex-none overflow-auto bg-transparent rounded-md;
   font-size: 2rem;
   padding: 0.25rem 0.5rem;
   margin: 2px;
@@ -30,9 +38,33 @@
   outline: 2px solid rgba(107, 125, 127, 0.25);
 }
 
+/* Scrollable Content Area
+-------------------------------------------------- */
+.orbits {
+  @apply flex-1 pb-8 space-y-4 overflow-y-auto;
+}
 
+.orbits .card:last-child {
+  @apply mb-8;
+}
+
+/* Subdivision List Styles
+-------------------------------------------------- */
+.layout.orbit-subdivision-list {
+  @apply dark:bg-surface-dark flex flex-col gap-2 p-0;
+  min-height: initial;
+}
+
+/* Sort & Filter Components
+-------------------------------------------------- */
 .sort-filter-icon {
   @apply md:text-xl text-xl text-white;
+}
+
+.sort-filter-icon:hover {
+  @apply dark:text-accent-dark;
+  transform: scale(1.2);
+  cursor: pointer;
 }
 
 .sort-filter-label {
@@ -40,10 +72,4 @@
   text-align: center;
   width: 100%;
   padding-left: 56px;
-}
-
-.sort-filter-icon:hover {
-  @apply dark:text-accent-dark;
-  transform: scale(1.2);
-  cursor: pointer;
 }
