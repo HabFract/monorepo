@@ -98,7 +98,7 @@ export class TreeVisualization extends BaseVisualization {
   ): ViewConfig {
     return {
       scale: customScale || BASE_SCALE,
-      margin: { ...margin },
+      margin: { ...margin, top: -200 },
       canvasHeight,
       canvasWidth,
       defaultView: "",

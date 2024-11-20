@@ -106,6 +106,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
       }}
     >
       {({ values, errors, touched, isSubmitting }) => {
+        console.log('values :>> ', values);
         const SubmitButton = submitBtn ? (
           React.cloneElement(submitBtn as React.ReactElement, {
             loading: (loading || isSubmitting),
@@ -165,7 +166,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                 </div>
                 <div className="form-field">
                   <Label id="symbol" labelValue="Symbol: ">
-                    <Field component={ImageUploadInput} name="symbol" id="symbol" />
+                    <Field component={ImageUploadInput} noDefaultImage={true} name="symbol" id="symbol" />
                   </Label>
                 </div>
                 {SubmitButton}

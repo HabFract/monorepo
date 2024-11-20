@@ -5,7 +5,7 @@ import {
   BindDragProps,
   stopPropagation,
   calculateInitialY,
-  springConfig,
+  springConfigSnappy,
   shouldTabOpen,
   constrainY
 } from './swipe-tab-utils';
@@ -98,7 +98,7 @@ const SwipeUpScreenTab: React.FC<SwipeUpScreenTabProps> = ({
     controls.start({
       y: willOpen ? finalY : initialY,
       transition: {
-        ...springConfig,
+        ...springConfigSnappy,
         velocity: info.velocity.y
       }
     });
@@ -123,7 +123,7 @@ const SwipeUpScreenTab: React.FC<SwipeUpScreenTabProps> = ({
           top: finalY,
           bottom: initialY
         }}
-        dragElastic={0.2}
+        dragElastic={0.05}
         onPointerDownCapture={stopPropagation}
       >
         {children({ bindDrag })}

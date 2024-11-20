@@ -120,6 +120,6 @@
   top: 64px;
 }
 
-.home .side-nav, .list.page-container .side-nav{
+.home .side-nav, .list.page-container .side-nav, .create-form.page-container .side-nav{
   @apply hidden;
 }

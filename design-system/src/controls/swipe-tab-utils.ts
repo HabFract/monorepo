@@ -59,6 +59,16 @@ export const springConfig = {
 };
 
 /**
+ * Spring animation configuration for consistent transitions
+ */
+export const springConfigSnappy = {
+  type: 'spring' as const,
+  stiffness: 10000, // Increased from 400
+  damping: 190,    // Increased from 30
+  restDelta: 0.25, // Added to make it settle faster
+  restSpeed: 0.25  // Added to make it settle faster
+};
+/**
  * Determines if the tab should open based on velocity and position
  * @param velocity - The vertical velocity of the motion
  * @param currentY - Current Y position

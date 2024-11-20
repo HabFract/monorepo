@@ -4,6 +4,8 @@ import type { UploadChangeParam } from "antd/es/upload";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import '../common.css'
 import { Button } from "../buttons";
+import { SwipeUpScreenTab } from "../controls";
+import { motion } from "framer-motion";
 
 /**
  * Converts a file to base64 string
@@ -50,6 +52,10 @@ interface ImageUploadProps {
   uploadButton?: React.ReactNode;
   clearButton?: React.ReactNode;
   noDefaultImage?: boolean;
+  defaultOptions?: Array<{
+    src: string;
+    alt: string;
+  }>;
 }
 
 /**
@@ -69,11 +75,19 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   form: { touched, errors, setFieldValue, initialValues },
   uploadButton,
   clearButton,
+  defaultOptions =  [
+    { src: '/assets/icons/sphere-symbol-1.svg', alt: 'Symbol 1' },
+    { src: '/assets/icons/sphere-symbol-2.svg', alt: 'Symbol 2' },
+    { src: '/assets/icons/sphere-symbol-3.svg', alt: 'Symbol 3' },
+    { src: '/assets/icons/sphere-symbol-4.svg', alt: 'Symbol 4' },
+    { src: '/assets/icons/sphere-symbol-5.svg', alt: 'Symbol 5' },
+  ],
   noDefaultImage = false
 }) => {
   const [loading, setLoading] = useState(false);
   const [custom, setCustom] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
   // Check if the form has been modified from initial values
   const isFormUnchanged = imageUrl === initialValues[field.name];
@@ -86,6 +100,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       setImageUrl(DEFAULT_IMAGE);
       setCustom(false);
       setFieldValue(field.name, DEFAULT_IMAGE);
+    } else {
+      setImageUrl("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMgN0MzIDQuMjM4NTggNS4yMzg1OCAyIDggMkgxNC41ODRDMTQuODUwMyAyIDE1LjEwNTYgMi4xMDYyIDE1LjI5MzMgMi4yOTUwN0wyMC43MDkzIDcuNzQ0NDlDMjAuODk1NSA3LjkzMTg0IDIxIDguMTg1MjYgMjEgOC40NDk0MlYxN0MyMSAxOS43NjE0IDE4Ljc2MTQgMjIgMTYgMjJIOEM1LjIzODU4IDIyIDMgMTkuNzYxNCAzIDE3VjdaIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNSIvPgo8cGF0aCBkPSJNMTAgMTJMMTEuODk2IDkuMTU2MDFDMTEuOTQ1NSA5LjA4MTc5IDEyLjA1NDUgOS4wODE3OSAxMi4xMDQgOS4xNTYwMUwxNCAxMiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTIgMTBWMTUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTE1IDIuMjQxNDJDMTUgMi4xNTIzMyAxNS4xMDc3IDIuMTA3NzEgMTUuMTcwNyAyLjE3MDcxTDIwLjgyOTMgNy44MjkyOUMyMC44OTIzIDcuODkyMjkgMjAuODQ3NyA4IDIwLjc1ODYgOEgxOEMxNi4zNDMxIDggMTUgNi42NTY4NSAxNSA1VjIuMjQxNDJaIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNSIvPgo8L3N2Zz4K");
     }
   }, [field?.value, noDefaultImage]);
 
@@ -112,12 +128,20 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     }
   };
 
+  const handleOptionSelect = (selectedImage: string) => {
+    setImageUrl(selectedImage);
+    setCustom(true);
+    setFieldValue(field.name, selectedImage);
+    setIsOptionsOpen(false);
+  };
+
   const defaultUploadButton = (
     <Button 
       isLoading={loading} 
       type="button" 
       variant="neutral"
       isDisabled={isFormUnchanged}
+      onClick={() => setIsOptionsOpen(true)}
     >
       Choose Symbol
     </Button>
@@ -129,7 +153,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     }, 0);
   };
   const changedFromDefault = imageUrl && custom && imageUrl !== DEFAULT_IMAGE;
-console.log('isFormUnchanged :>> ', isFormUnchanged);
+
   return (
     <div className={!changedFromDefault ? "default-image" : "custom-image"}>
       <Upload
@@ -145,22 +169,70 @@ console.log('isFormUnchanged :>> ', isFormUnchanged);
           <div className="avatar-container">
             <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
             {React.cloneElement(uploadButton as React.ReactElement || defaultUploadButton, {
-              isDisabled: isFormUnchanged
+              isDisabled: isFormUnchanged,
+              onClick: (e: React.MouseEvent) => {
+                e.stopPropagation();
+                setIsOptionsOpen(true);
+              }
             })}
           </div>
         ) : (
           <div className="relative w-full h-full">
             {React.cloneElement(uploadButton as React.ReactElement || defaultUploadButton, {
-              isDisabled: isFormUnchanged
+              isDisabled: isFormUnchanged,
+              onClick: (e: React.MouseEvent) => {
+                e.stopPropagation();
+                setIsOptionsOpen(true);
+              }
             })}
           </div>
         )}
       </Upload>
-      {changedFromDefault ? (
+      
+      {changedFromDefault && (
         <div onClick={handleClear}>
           {clearButton}
         </div>
-      ) : <span></span>}
+      )}
+
+      {isOptionsOpen && (
+        <SwipeUpScreenTab 
+          verticalOffset={50} // This means it starts 50vh from the top
+          useViewportHeight={true}
+          onExpansionChange={(expanded) => {
+            if (!expanded) setIsOptionsOpen(false);
+          }}
+        >
+          {({ bindDrag }) => (
+            <div className="bg-surface dark:bg-surface-top-dark p-4 rounded-t-3xl min-h-[50vh]"> {/* Added min-height */}
+              <div className="handle" {...bindDrag}>
+                <span></span>
+              </div>
+              
+              <div className="flex flex-col w-full h-screen gap-2">
+                <h3 className="text-text dark:text-text-dark mt-2 text-base font-bold text-center">Choose Symbol</h3>
+                <div className="grid w-full grid-cols-3 gap-4 px-2">
+                  {defaultOptions.map((option, index) => (
+                    <button
+                      key={index}
+                      className="aspect-square hover:bg-surface-elevated-dark flex items-center justify-center w-full p-2 transition-colors rounded-lg"
+                      onClick={() => handleOptionSelect(option.src)}
+                    >
+                      <div className="aspect-square relative w-full">
+                        <img 
+                          src={option.src} 
+                          alt={option.alt}
+                          className="absolute inset-0 object-contain w-full h-full" 
+                        />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </SwipeUpScreenTab>
+      )}
     </div>
   );
 };

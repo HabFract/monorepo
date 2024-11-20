@@ -206,6 +206,10 @@
   overflow: hidden;
 }
 
+.ant-upload-wrapper + .swipe-up-screen-container {
+  height: auto !important;
+  position: static !important;
+}
 
 div.handle {
   display: flex;
