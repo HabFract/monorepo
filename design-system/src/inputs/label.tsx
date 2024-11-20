@@ -50,7 +50,7 @@ const withLabel: React.FC<LabelProps> = ({
         <div className="btn-info">
           {withInfo && (
               <>
-                <button onClick={() => setTooltipVisible(true)}>
+                <button onClick={() => setTooltipVisible(true)} type="button">
                   {getIconSvg('info')({})}
                 </button>
                 <Modal footerElement="" title={onClickInfo?.()?.title as string} isModalOpen={tooltipVisible} size="lg" onClose={() => setTooltipVisible(false)}>

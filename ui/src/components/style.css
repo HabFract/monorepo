@@ -2,7 +2,7 @@
 nav.side-nav {
   @apply fixed left-0 z-10 flex flex-col justify-between h-full bg-gray-500;
   height: auto;
-  top: 5rem;
+  top: 4.25rem;
   bottom: auto;
   gap: 0.5rem;
   background: transparent;
@@ -60,7 +60,7 @@ nav.side-nav.off-screen .off-screen-toggle-button {
   transition: transform 1s ease-in;
   position: relative;
   left: 100%;
-  top: -7.5rem !important;
+  top: -15rem !important;
   display: block;
   width: 36px;
   height: 60px;
@@ -151,6 +151,7 @@ nav.side-nav.off-screen .off-screen-toggle-button {
 .side-nav:not(.expanded) > .ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) img {
   max-width: 32px !important;
   height: 100% !important;
+  aspect-ratio: 1/1;
 }
 .side-nav:not(.expanded) > .ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) {
   margin: 0 auto;
@@ -322,7 +323,7 @@ ul[role="menu"] .ant-menu-submenu-selected>.ant-menu-submenu-title {
 .ant-menu span[role="img"] {
   /* icon */
   font-size: 1.25rem !important;
-  max-height: 40px;
+  max-height: 32px;
   color: rgba(80, 227, 194, 0.8) !important;
   margin-left: -0.25rem !important;
 }

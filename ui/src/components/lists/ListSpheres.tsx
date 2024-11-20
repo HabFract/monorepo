@@ -12,8 +12,9 @@ import { useStateTransition } from "../../hooks/useStateTransition";
 import { useToast } from "../../contexts/toast";
 import { currentDayAtom, currentSphereHashesAtom, sphereHasCachedNodesAtom, store } from "../../state";
 import { useSetAtom } from "jotai";
-import { ActionHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { useEffect, useMemo } from "react";
+import { AppMachine } from "../../main";
 
 function ListSpheres() {
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
@@ -36,11 +37,16 @@ function ListSpheres() {
   if (error) return <p>Error : {error.message}</p>;
 
   if (!spheres.length) return <></>;
+
+  function routeToCreatePlannit(sphereEh: EntryHashB64) {
+    transition("CreateOrbit", { sphereEh });
+  }
   function routeToPlannitList(sphereId: ActionHashB64) {
     transition("ListOrbits", { sphereAh: sphereId });
   }
   function routeToVis(sphere: Sphere) {
-    transition?.("Vis", {currentSphereDetails: sphere});
+    AppMachine.state.currentState == "Vis";
+    transition("Vis", {currentSphereDetails: sphere});
   }
 
   return (
@@ -52,6 +58,7 @@ function ListSpheres() {
             currentWins={{}}
             key={sphere.id}
             sphere={sphere}
+            handleCreateAction={() => routeToCreatePlannit(sphere.eH)}
             handleListAction={() => routeToPlannitList(sphere.id)}
             handleVisAction={() => routeToVis(sphere)}
             runDelete={() => runDelete({ variables: { id: sphere.id } })}

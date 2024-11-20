@@ -133,6 +133,7 @@ export const aSphere = (overrides?: Partial<Sphere>): Sphere => {
         id: overrides && overrides.hasOwnProperty('id') ? overrides.id! : '14830037-c822-4498-8463-d3354c2fce66',
         eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'libero',
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'est',
+        spin: overrides && overrides.hasOwnProperty('spin') ? overrides.spin! : 'minus',
         metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : aSphereMetaData(),
     };
 };
@@ -151,6 +152,7 @@ export const aSphereCreateParams = (overrides?: Partial<SphereCreateParams>): Sp
         description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'nihil',
         hashtag: overrides && overrides.hasOwnProperty('hashtag') ? overrides.hashtag! : 'perspiciatis',
         image: overrides && overrides.hasOwnProperty('image') ? overrides.image! : 'officiis',
+        spin: overrides && overrides.hasOwnProperty('spin') ? overrides.spin! : 'est',
     };
 };
 
@@ -161,6 +163,7 @@ export const aSphereUpdateParams = (overrides?: Partial<SphereUpdateParams>): Sp
         description: overrides && overrides.hasOwnProperty('description') ? overrides.description! : 'quod',
         hashtag: overrides && overrides.hasOwnProperty('hashtag') ? overrides.hashtag! : 'aut',
         image: overrides && overrides.hasOwnProperty('image') ? overrides.image! : 'voluptates',
+        spin: overrides && overrides.hasOwnProperty('spin') ? overrides.spin! : 'recusandae',
     };
 };
 

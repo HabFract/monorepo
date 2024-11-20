@@ -73,7 +73,7 @@ const tailwindConfig = {
           overlay: {            // for overlay controls in the Vis
             DEFAULT: '#cecece',
             dark: {
-              DEFAULT: "#313131",
+              DEFAULT: "#2F3232",
               500: "rgba(49, 49, 49, 0.5)"
             }
           },

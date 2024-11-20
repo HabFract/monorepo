@@ -226,12 +226,6 @@ div.handle {
   @apply bg-gradient-to-b dark:to-transparent dark:from-surface-top-dark-500;
 }
 
-.swipe-up-screen-tab-container .handle {
-  padding: 8px 33%;
-  height: 32px;
-  @apply dark:from-surface-top-dark rounded-t-3xl from-50%;
-}
-
 .swipe-up-tab-container .handle {
   padding: 0px 40%;
   height: 18px;
@@ -250,9 +244,20 @@ div.handle span {
   height: 4px;
 }
 
+
+.swipe-up-screen-tab-container .handle {
+  padding: 8px 33%;
+  height: 100%;
+  @apply z-10 dark:from-surface-top-dark rounded-t-3xl from-50%;
+}
+
+.swipe-up-screen-tab-container .handle span {
+  margin: 10px auto auto auto;
+}
+
 .win-count-container,
 .streak-count-container {
-  @apply min-h-24 dark:bg-modal-bg-dark bg-surface-elevated-dark rounded-2xl grid w-1/2 gap-3 p-2 m-0;
+  @apply min-h-24 dark:bg-surface-top-dark bg-surface-elevated-dark rounded-2xl grid w-1/2 gap-3 p-2 m-0;
   row-gap: 4px;
   grid-template-rows: 1.5rem auto;
   grid-template-columns: 1fr 1fr 1fr;

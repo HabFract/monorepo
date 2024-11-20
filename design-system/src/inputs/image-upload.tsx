@@ -52,6 +52,7 @@ interface ImageUploadProps {
   uploadButton?: React.ReactNode;
   clearButton?: React.ReactNode;
   noDefaultImage?: boolean;
+  defaultImage?: string;
   defaultOptions?: Array<{
     src: string;
     alt: string;
@@ -69,19 +70,15 @@ interface ImageUploadProps {
  * @param {ReactNode} uploadButton - Custom upload button component
  * @param {ReactNode} clearButton - Custom clear button component
  * @param {boolean} noDefaultImage - Whether to show default image when no image is uploaded
+ * @param {string} defaultImage - Provide a base64 default image
  */
 const ImageUpload: React.FC<ImageUploadProps> = ({
   field,
   form: { touched, errors, setFieldValue, initialValues },
   uploadButton,
   clearButton,
-  defaultOptions =  [
-    { src: '/assets/icons/sphere-symbol-1.svg', alt: 'Symbol 1' },
-    { src: '/assets/icons/sphere-symbol-2.svg', alt: 'Symbol 2' },
-    { src: '/assets/icons/sphere-symbol-3.svg', alt: 'Symbol 3' },
-    { src: '/assets/icons/sphere-symbol-4.svg', alt: 'Symbol 4' },
-    { src: '/assets/icons/sphere-symbol-5.svg', alt: 'Symbol 5' },
-  ],
+  defaultOptions,
+  defaultImage = DEFAULT_IMAGE,
   noDefaultImage = false
 }) => {
   const [loading, setLoading] = useState(false);
@@ -89,26 +86,79 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   const [imageUrl, setImageUrl] = useState<string>("");
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
+  const convertImageToBase64 = async (imageUrl: string): Promise<string> => {
+    try {
+      // Fetch the image
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      
+      // Convert to base64
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error('Error converting image to base64:', error);
+      return imageUrl;
+    }
+  };
+
+  useEffect(() => {
+    const initializeImage = async () => {
+      // If there's no field value or it's the same as defaultImage
+      if (!field?.value || field.value === defaultImage) {
+        try {
+          setLoading(true);
+          // Convert default image to base64 if it's not already a data URI
+          if (!defaultImage.startsWith('data:')) {
+            const base64Image = await convertImageToBase64(defaultImage);
+            setImageUrl(base64Image);
+            setCustom(false);
+            setFieldValue(field.name, base64Image);
+          } else {
+            setImageUrl(defaultImage);
+            setCustom(false);
+            setFieldValue(field.name, defaultImage);
+          }
+        } catch (error) {
+          console.error('Error initializing default image:', error);
+        } finally {
+          setLoading(false);
+        }
+      } 
+      // If there's a different value
+      else {
+        setImageUrl(field.value);
+        setCustom(true);
+      }
+    };
+
+    initializeImage();
+  }, [field?.value, defaultImage, setFieldValue]);
+
   // Check if the form has been modified from initial values
   const isFormUnchanged = imageUrl === initialValues[field.name];
 
   useEffect(() => {
-    if (field?.value && field.value !== DEFAULT_IMAGE) {
+    // If there's no field value or it's the same as defaultImage
+    if (!field?.value || field.value === defaultImage) {
+      setImageUrl(defaultImage);
+      setCustom(false);
+      setFieldValue(field.name, defaultImage); // Ensure the form field is set
+    } 
+    // If there's a different value
+    else {
       setImageUrl(field.value);
       setCustom(true);
-    } else if (!noDefaultImage) {
-      setImageUrl(DEFAULT_IMAGE);
-      setCustom(false);
-      setFieldValue(field.name, DEFAULT_IMAGE);
-    } else {
-      setImageUrl("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMgN0MzIDQuMjM4NTggNS4yMzg1OCAyIDggMkgxNC41ODRDMTQuODUwMyAyIDE1LjEwNTYgMi4xMDYyIDE1LjI5MzMgMi4yOTUwN0wyMC43MDkzIDcuNzQ0NDlDMjAuODk1NSA3LjkzMTg0IDIxIDguMTg1MjYgMjEgOC40NDk0MlYxN0MyMSAxOS43NjE0IDE4Ljc2MTQgMjIgMTYgMjJIOEM1LjIzODU4IDIyIDMgMTkuNzYxNCAzIDE3VjdaIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNSIvPgo8cGF0aCBkPSJNMTAgMTJMMTEuODk2IDkuMTU2MDFDMTEuOTQ1NSA5LjA4MTc5IDEyLjA1NDUgOS4wODE3OSAxMi4xMDQgOS4xNTYwMUwxNCAxMiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTIgMTBWMTUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTE1IDIuMjQxNDJDMTUgMi4xNTIzMyAxNS4xMDc3IDIuMTA3NzEgMTUuMTcwNyAyLjE3MDcxTDIwLjgyOTMgNy44MjkyOUMyMC44OTIzIDcuODkyMjkgMjAuODQ3NyA4IDIwLjc1ODYgOEgxOEMxNi4zNDMxIDggMTUgNi42NTY4NSAxNSA1VjIuMjQxNDJaIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNSIvPgo8L3N2Zz4K");
     }
-  }, [field?.value, noDefaultImage]);
+  }, [field?.value, defaultImage, setFieldValue]);
 
   const handleClear = () => {
-    setImageUrl(noDefaultImage ? "" : DEFAULT_IMAGE);
+    setImageUrl(noDefaultImage ? "" : defaultImage);
     setCustom(false);
-    setFieldValue(field.name, noDefaultImage ? "" : DEFAULT_IMAGE);
+    setFieldValue(field.name, noDefaultImage ? "" : defaultImage);
   };
 
   const handleChange: UploadProps["onChange"] = (
@@ -128,12 +178,22 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     }
   };
 
-  const handleOptionSelect = (selectedImage: string) => {
-    setImageUrl(selectedImage);
-    setCustom(true);
-    setFieldValue(field.name, selectedImage);
-    setIsOptionsOpen(false);
+  const handleOptionSelect = async (selectedImage: string) => {
+    setLoading(true);
+    try {
+      const base64Image = await convertImageToBase64(selectedImage);
+      setImageUrl(base64Image);
+      setCustom(true);
+      setFieldValue(field.name, base64Image);
+    } catch (error) {
+      console.error('Error handling image selection:', error);
+      message.error('Failed to process image');
+    } finally {
+      setLoading(false);
+      setIsOptionsOpen(false);
+    }
   };
+
 
   const defaultUploadButton = (
     <Button 
@@ -152,7 +212,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       onSuccess("ok");
     }, 0);
   };
-  const changedFromDefault = imageUrl && custom && imageUrl !== DEFAULT_IMAGE;
+
+  const changedFromDefault = imageUrl && custom && imageUrl !== defaultImage;
 
   return (
     <div className={!changedFromDefault ? "default-image" : "custom-image"}>
@@ -205,16 +266,17 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         >
           {({ bindDrag }) => (
             <div className="bg-surface dark:bg-surface-top-dark p-4 rounded-t-3xl min-h-[50vh]"> {/* Added min-height */}
-              <div className="handle" {...bindDrag}>
+              <motion.div className="handle" {...bindDrag}>
                 <span></span>
-              </div>
+              </motion.div>
               
-              <div className="flex flex-col w-full h-screen gap-2">
-                <h3 className="text-text dark:text-text-dark mt-2 text-base font-bold text-center">Choose Symbol</h3>
-                <div className="grid w-full grid-cols-3 gap-4 px-2">
-                  {defaultOptions.map((option, index) => (
+              <div className="flex flex-col w-full h-screen gap-2 pt-4">
+                <h3 className="text-text dark:text-text-dark z-20 mt-2 text-base font-bold text-center">Choose Symbol</h3>
+                <div className="z-20 grid w-full grid-cols-3 gap-4 px-2">
+                  {defaultOptions?.map((option, index) => (
                     <button
                       key={index}
+                      type="button"
                       className="aspect-square hover:bg-surface-elevated-dark flex items-center justify-center w-full p-2 transition-colors rounded-lg"
                       onClick={() => handleOptionSelect(option.src)}
                     >

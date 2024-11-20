@@ -85,7 +85,7 @@ const Nav: React.FC<INav> = ({
       setMenuItems(createSphereMenuItems({ spheres: spheresArray }));
   });
   const sphereOrbitsCached = useAtomValue(currentSphereOrbitNodesAtom);
-  const tooltipMsg = `You need to ${spheresArray.length == 0 ? "create" : spheresArray.length == 4 ? "delete" : "select"} a Sphere `;
+  const tooltipMsg = `You need to ${spheresArray.length == 0 ? "create" : spheresArray.length >= 4 ? "delete" : "select"} a Space `;
 
   const sphere = (sphereAh?: EntryHashB64) =>
     spheresArray.find(
@@ -105,17 +105,17 @@ const Nav: React.FC<INav> = ({
         if (spheresArray.length >= 4) {
           showToast(
             tooltipMsg +
-            "before you can add another Sphere. These are the 4 burners of your habit life!",
+            "before you can add another Space. These are the 4 burners of your habit life!",
           );
-          setSideNavExpanded(true);
+          // setSideNavExpanded(true);
           return;
         }
         setCurrentSphere({});
 
         console.log('reset sphere from nav :>> ');
-        setCurrentPage(Page.CreateSphere);
+        // setCurrentPage(Page.CreateSphere);
         setSideNavExpanded(false);
-        transition("Onboarding1");
+        transition("CreateSphere", {spin: "positive"});
         break;
 
       case e.key == "list-spheres":
@@ -123,7 +123,7 @@ const Nav: React.FC<INav> = ({
           // If there is a problem, just show a toast
 
           showToast(tooltipMsg + "before you can view the Spheres list");
-          setSideNavExpanded(true);
+          // setSideNavExpanded(true);
           return;
         }
         setCurrentPage(Page.ListSpheres);
@@ -137,7 +137,7 @@ const Nav: React.FC<INav> = ({
         // Check conditions where the current page would cause errors for the new Sphere selection
         if ([Page.Vis].includes(currentPage as Page)) {
           if (e.key == store.get(currentSphereHashesAtom).actionHash) {
-            setSideNavExpanded(true);
+            // setSideNavExpanded(true);
           } else {
             const checkCachedOrbits = store.get(sphereHasCachedNodesAtom(e.key));
             if (checkCachedOrbits) {
@@ -151,7 +151,7 @@ const Nav: React.FC<INav> = ({
             }
             if (!checkCachedOrbits) {
               showToast(
-                "Select a Sphere with Orbits to enable Visualisation for that Sphere",
+                "Select a Space with Plannits, or create new Plannits before Visualisation.",
                 100000,
               );
               return;
@@ -171,11 +171,11 @@ const Nav: React.FC<INav> = ({
               actionHash: e.key,
             });
           }
-          setSideNavExpanded(true);
+          // setSideNavExpanded(true);
         } else {
           hideToast();
           if (store.get(currentSphereHashesAtom)?.actionHash == e.key)
-            setSideNavExpanded(true);
+            // setSideNavExpanded(true);
           // Set current sphere from action hash of sphere clicked
           console.log('set sphere from nav :>> ');
           setCurrentSphere({
@@ -242,7 +242,7 @@ const Nav: React.FC<INav> = ({
         case "primary":
           if (!store.get(currentSphereHasCachedNodesAtom)) {
             showToast(
-              "Select a Sphere with existing Orbits to enable Visualisation",
+              "Select a Space with existing Plannits to enable Visualisation",
               100000,
             );
             return;
@@ -360,14 +360,14 @@ const Nav: React.FC<INav> = ({
   }
   function createSphereMenuItems({ spheres }: { spheres: Sphere[] }) {
     return [
-      getItem(
+      spheresArray.length < 4 ? getItem(
         "New Sphere",
         "add-sphere",
         <DSButton onClick={() => {}} variant={"circle-icon btn-primary"} icon={getIconSvg("plus")({}) as ReactElement}/>,
         undefined,
         undefined,
         false,
-      ),
+      ) : null,
       ...spheres!.map((sphere: Sphere, _idx: number) => {
         return getItem(
           `${sphere.name}`,

@@ -13,14 +13,16 @@ export interface SystemCalendarProps {
   setSphereIsCurrent: () => void;
   currentDate: DateTime<true>,
   currentWins: any,
-  handleVisAction?: () => void;
-  handleListAction?: () => void;
+  handleVisAction: () => void;
+  handleCreateAction: () => void;
+  handleListAction: () => void;
 };
 
 const SystemCalendar: React.FC<SystemCalendarProps> = ({
   sphere,
   runDelete,
   handleListAction,
+  handleCreateAction,
   handleVisAction,
   currentDate,
   currentWins,
@@ -41,14 +43,15 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
         <Popover
           content={<ListGroup
             theme={darkThemeListGroup}
-            className="w-48 list-group-override">
-            <ListGroup.Item onClick={handleListAction} icon={getIconSvg('list')}>List Plannits</ListGroup.Item>
+            className="list-group-override w-48">
+            <ListGroup.Item onClick={() => handleListAction()} icon={getIconSvg('list')}>List Plannits</ListGroup.Item>
+            <ListGroup.Item onClick={() => handleCreateAction()} icon={getIconSvg('plus')}>Add Plannit</ListGroup.Item>
           </ListGroup>
           }
         >
-          <Button onClick={setSphereIsCurrent} variant="circle-icon-lg btn-neutral outlined" icon={getIconSvg('more')({}) as any}></Button>
+          <Button onClick={() => setSphereIsCurrent()} variant="circle-icon-lg btn-neutral outlined" icon={getIconSvg('more')({}) as any}></Button>
         </Popover>
-        <Button onClick={handleVisAction} variant="primary responsive">Visualise</Button>
+        <Button onClick={() => handleVisAction()} variant="primary responsive">Visualise</Button>
       </footer>
     </article>
   );

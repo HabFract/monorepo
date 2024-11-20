@@ -8,12 +8,9 @@ body {
   @apply m-0 flex place-items-center min-w-[320px] min-h-screen;
 }
 
-html, body, #root {
-  overflow: hidden;
-}
-
 #root {
-  height: fit-content;
+  height: 100vh;
+  overflow: hidden;
 }
 
 html, body {
@@ -21,7 +18,7 @@ html, body {
 }
 
 /* Gridlines */
-body, #vis, .page-container.home, .form-layout {
+#vis, .page-container.home {
   background-size: calc(100vw/12) calc(100vw/12);
   background-image:
     linear-gradient(to right, rgba(57, 57, 57, 0.5) 1px, transparent 1px),

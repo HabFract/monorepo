@@ -32,27 +32,39 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
           </div>
         </header>
         : <header className="returning-cta">
-            <div>
-              <img
-                className="logo"
-                src="assets/new-logo.png"
-                alt='Plannit logo'
-              />
-              <img
-                className="avatar-placeholder"
-                src="assets/icons/avatar-placeholder.svg"
-                alt='Avatar Placeholder'
-              />
-            </div>
-            <span>
-              <h1>Welcome back! 👋</h1>
-              <h2>Let's put a plan in motion! <em>I plan...</em></h2>
-            </span>
-            <div className="text-text dark:text-text-dark flex justify-around h-12 gap-4">
-              <Button onClick={() => { transition("CreateSphere")}} type="button" variant="primary responsive"><img src="assets/icons/positive-spin.svg" className='w-8 h-8 my-1 mr-2 opacity-75'/>To Do</Button>
-              <Button onClick={() => { transition("CreateSphere")}} type="button" variant="primary responsive"><img src="assets/icons/negative-spin.svg" className='w-8 h-8 my-1 mr-2 opacity-75'/>Not To Do</Button>
-            </div>
-          </header>
+          <div>
+            <img
+              className="logo"
+              src="assets/new-logo.png"
+              alt='Plannit logo'
+            />
+            <img
+              className="avatar-placeholder"
+              src="assets/icons/avatar-placeholder.svg"
+              alt='Avatar Placeholder'
+            />
+          </div>
+          <span>
+            <h1>Welcome back! 👋</h1>
+            <h2>Let's put a plan in motion! <em>I plan...</em></h2>
+          </span>
+          <div className="text-text dark:text-text-dark flex justify-around h-12 gap-4">
+            <Button onClick={() => { transition("CreateSphere", { spin: 'positive' }) }} type="button" variant="primary responsive">
+              <span className="text-success-500 dark:text-success-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  stroke="currentColor"
+                  viewBox="144 144 512 512"
+                  className="w-8 h-8 my-1 mr-2 opacity-75"
+                >
+                  <path d="M400 287a113 113 0 1 0 0 226 113 113 0 0 0 0-226zm59 128h-44v44a15 15 0 1 1-30 0v-44h-44a15 15 0 1 1 0-30h44v-44a15 15 0 1 1 30 0v44h44a15 15 0 1 1 0 30z" />
+                  <path d="M578 222a252 252 0 0 0-356 356 252 252 0 0 0 356-356zM400 543a143 143 0 1 1 0-286 143 143 0 0 1 0 286z" />
+                </svg>
+            </span>To Do</Button>
+            <Button onClick={() => { transition("CreateSphere", { spin: 'negative' }) }} type="button" variant="primary responsive"><span className="text-success-500"><img src="assets/icons/negative-spin.svg" className='w-8 h-8 my-1 mr-2 opacity-75' /></span>Not To Do</Button>
+          </div>
+        </header>
       }
       {firstVisit
         ? <div className="login-options">
@@ -96,7 +108,7 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
         :
         <SwipeUpScreenTab verticalOffset={(12 * 16) + 8} useViewportHeight={false}>
           {({ bindDrag }) => (
-            <motion.div className="spaces-tab">
+            <motion.div {...bindDrag} className="spaces-tab">
               <motion.div className="handle" {...bindDrag} style={{ touchAction: 'none', cursor: 'grab' }}>
                 <span></span>
               </motion.div>

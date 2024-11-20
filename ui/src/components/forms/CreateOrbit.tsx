@@ -246,6 +246,38 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
               </>
               }
               <Form noValidate={true}>
+
+              {!parentOrbitEh && !inOnboarding && (
+                  <div className="form-field flex">
+                    <Field
+                      component={SelectInputField}
+                      size="base"
+                      name="parentHash"
+                      id="parent-hash"
+                      withInfo={true}
+                      onClickInfo={() => ({
+                        title: "Good Parenting",
+                        body: "Choose the parent which describes behaviour of a bigger scope. //For instance, if the name of your Plannit is 'Run a 10k', maybe the parent is the Plannet with the scope 'Run a 20k'. //Setting your parent to 'None' will make it the top of a new hierarchy.",
+                      })}
+                      onBlur={() => {
+                        setFieldValue("scale", scaleDefault);
+                      }}
+                      options={[
+                        <option value={"root"}>{"None"}</option>,
+                        ...(childOrbitEh
+                          ? []
+                          : orbitEdges.map((orbit, i) => (
+                            <option key={i} value={orbit.eH}>
+                              {orbit.name}
+                            </option>
+                          ))),
+                      ]}
+                      required={true}
+                      disabled={!!editMode}
+                      labelValue={"Parent Plannit:"}
+                    />
+                  </div>
+                )}
                 {editMode && <OrbitFetcher orbitToEditId={orbitToEditId} />}
                 <div className="form-field flex">
                   <Field
@@ -325,37 +357,6 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                     placeholder={"E.g. Give some more details..."}
                   />
                 </div>
-                {!parentOrbitEh && !inOnboarding && (
-                  <div className="form-field flex">
-                    <Field
-                      component={SelectInputField}
-                      size="base"
-                      name="parentHash"
-                      id="parent-hash"
-                      withInfo={true}
-                      onClickInfo={() => ({
-                        title: "Good Parenting",
-                        body: "Choose the parent which describes behaviour of a bigger scope. //For instance, if the name of your Plannit is 'Run a 10k', maybe the next biggest scale is 'Run a 20k'. //Setting your parent to 'None' will make it the top of a new hierarchy.",
-                      })}
-                      onBlur={() => {
-                        setFieldValue("scale", scaleDefault);
-                      }}
-                      options={[
-                        <option value={"root"}>{"None"}</option>,
-                        ...(childOrbitEh
-                          ? []
-                          : orbitEdges.map((orbit, i) => (
-                            <option key={i} value={orbit.eH}>
-                              {orbit.name}
-                            </option>
-                          ))),
-                      ]}
-                      required={true}
-                      disabled={!!editMode}
-                      labelValue={"Parent Plannit:"}
-                    />
-                  </div>
-                )}
                 <div className="form-field flex">
                   <Field
                     component={SelectInputField}

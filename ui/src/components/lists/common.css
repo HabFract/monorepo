@@ -12,7 +12,7 @@
 -------------------------------------------------- */
 .orbits-list,
 .spheres-list {
-  @apply flex flex-col w-full gap-4 p-2 bg-transparent;
+  @apply flex flex-col w-full gap-4 p-2 overflow-auto bg-transparent;
 }
 
 .orbits-list {
@@ -20,12 +20,10 @@
 }
 
 .spheres-list {
-  @apply h-auto pt-8 overflow-hidden;
-  padding-bottom: 55%;
+  @apply z-20 h-auto p-0 px-2 mt-10;
 }
 
 .swipe-up-screen-tab-container.fully-expanded .spheres-list {
-  overflow-y: auto; /* Enable scrolling when fully expanded */
   padding-bottom: 1rem;
 }
 

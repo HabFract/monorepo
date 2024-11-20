@@ -43,13 +43,14 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
   headerDiv,
   submitBtn,
 }) => {
-  const [state, transition] = useStateTransition(); // Top level state machine and routing
+  const [state, transition, params] = useStateTransition(); // Top level state machine and routing
 
   const [currentSphereValues, setCurrentSphereValues] =
     useState<SphereCreateParams>({
       name: "",
       description: "",
       image: "",
+      spin: params?.spin || "positive"
     });
 
   const [addSphere, { loading }] = useCreateSphereMutation();
@@ -72,6 +73,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                   name: values.name,
                   description: values.description,
                   image: values.image,
+                  // spin: values.spin,
                 },
               },
             })
@@ -81,6 +83,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                   name: values.name,
                   description: values.description,
                   image: values.image,
+                  // spin: values.spin,
                 },
               },
             });
@@ -106,7 +109,6 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
       }}
     >
       {({ values, errors, touched, isSubmitting }) => {
-        console.log('values :>> ', values);
         const SubmitButton = submitBtn ? (
           React.cloneElement(submitBtn as React.ReactElement, {
             loading: (loading || isSubmitting),
@@ -128,7 +130,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
             {headerDiv}
             <div className="content">
               <span className="form-description">
-              {descriptionParts[0]}&nbsp;
+                {descriptionParts[0]}&nbsp;
                 <Collapse
                   size="small"
                   items={[{ key: '1', label: <em>{descriptionParts[1]}</em>, children: <p>{descriptionParts[2]}</p> }]}
@@ -166,7 +168,13 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                 </div>
                 <div className="form-field">
                   <Label id="symbol" labelValue="Symbol: ">
-                    <Field component={ImageUploadInput} noDefaultImage={true} name="symbol" id="symbol" />
+                    <Field defaultImage={params?.spin == 'negative' ? '/assets/icons/negative-spin.svg' : '/assets/icons/positive-spin.svg' } component={ImageUploadInput} defaultOptions={[
+                      { src: '/assets/icons/sphere-symbol-1.svg', alt: 'Symbol 1' },
+                      { src: '/assets/icons/sphere-symbol-2.svg', alt: 'Symbol 2' },
+                      { src: '/assets/icons/sphere-symbol-3.svg', alt: 'Symbol 3' },
+                      { src: '/assets/icons/sphere-symbol-4.svg', alt: 'Symbol 4' },
+                      { src: '/assets/icons/sphere-symbol-5.svg', alt: 'Symbol 5' },
+                    ]} noDefaultImage={false} name="image" id="image" />
                   </Label>
                 </div>
                 {SubmitButton}

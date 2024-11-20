@@ -22,6 +22,19 @@
   @apply dark:bg-surface-top-dark-500 rounded-3xl h-20 p-4 rounded-t-none;
 }
 
+.system-calendar-card header img {
+  max-width: 3rem;
+  border-radius: 100%;
+  aspect-ratio: 1/1;
+}
+
+/* System Card Popover */
+.system-calendar-card div[data-testid="flowbite-popover"] {
+  position: absolute !important;
+  left: 0 !important;
+  top: -4rem !important;
+}
+
 /* System Calendar Typography */
 .system-calendar-card h1.card-name {
   @apply font-sans text-lg font-bold;

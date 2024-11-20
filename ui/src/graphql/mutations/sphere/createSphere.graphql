@@ -3,5 +3,6 @@ mutation createSphere($variables: SphereCreateParams!) {
     actionHash
     entryHash
     name
+    spin
   }
 }

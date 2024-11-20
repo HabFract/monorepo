@@ -75,7 +75,7 @@
 }
 
 .create-form .form-layout .content {
-  @apply bg-surface-elevated dark:bg-surface-elevated-dark rounded-2xl m-4 py-4
+  @apply bg-surface-elevated dark:bg-gradient-to-tl dark:to-surface-overlay-dark dark:from-surface-elevated-dark rounded-2xl mx-4 py-4
 }
 
 .disclaimer {

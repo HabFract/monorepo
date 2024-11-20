@@ -33,10 +33,12 @@ import OnboardingContinue from "./components/forms/buttons/OnboardingContinueBut
 import Toast from "./components/Toast";
 import { useToast } from "./contexts/toast";
 import { currentSphereDetailsAtom } from "./state/sphere";
+import { AppMachine } from "./main";
 
 function App({ children: pageComponent }) {
-  const [state, transition, params] = useStateTransition(); // Top level state machine and routing
-
+  const [_, transition, params] = useStateTransition(); // Top level state machine and routing
+  const state = AppMachine.state.currentState;
+  
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
 
   const { showToast, isToastVisible } = useToast();
@@ -118,8 +120,6 @@ function App({ children: pageComponent }) {
           )({ currentSphereDetails: pageComponent.props.currentSphereDetails || store.get(currentSphereDetailsAtom), newUser: !!userHasSpheres })
         )}
       </main>
-
-      <DarkThemeToggle />
       <Modal
         dismissible
         show={isModalOpen}

@@ -115,6 +115,7 @@ type Sphere implements Node {
   id: ID!
   eH: String!
   name: String!
+  spin: String!
   metadata: SphereMetaData
 }
 
@@ -130,6 +131,7 @@ input SphereCreateParams {
   description: String
   hashtag: String
   image: String
+  spin: String
 }
 input SphereUpdateParams {
   id: ID!
@@ -137,6 +139,7 @@ input SphereUpdateParams {
   description: String
   hashtag: String
   image: String
+  spin: String
 }
 
 # ---- Orbit ----- #
