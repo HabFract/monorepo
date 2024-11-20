@@ -20,8 +20,13 @@
 }
 
 .spheres-list {
-  @apply h-auto pt-0 overflow-auto;
+  @apply h-auto pt-8 overflow-hidden;
   padding-bottom: 55%;
+}
+
+.swipe-up-screen-tab-container.fully-expanded .spheres-list {
+  overflow-y: auto; /* Enable scrolling when fully expanded */
+  padding-bottom: 1rem;
 }
 
 /* Scrollable Content Area

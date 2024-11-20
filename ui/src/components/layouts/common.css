@@ -25,7 +25,7 @@
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  max-height: 35vh;
+  height: 35vh;
   padding-top: var(--vertical-section-spacing);
 }
 
@@ -39,7 +39,7 @@
 
 .home-layout .returning-cta {
   @apply gap-4 px-4 mt-4;
-  max-height: 25vh;
+  height: 12rem;
 }
 
 .home-layout .returning-cta > div {
@@ -47,8 +47,13 @@
 }
 
 .home-layout .login-options, .home-layout .spaces-tab {
-  height: calc(65vh - var(--vertical-section-spacing));
-  @apply dark:bg-surface-top-dark rounded-3xl absolute bottom-0 flex flex-col w-full gap-2 px-4 py-6 rounded-b-none; 
+  height: calc(100vh - 16rem - var(--vertical-section-spacing));
+  border-radius: 1.5rem;
+  @apply dark:bg-surface-top-dark absolute bottom-0 flex flex-col w-full gap-2 px-4 py-6 rounded-b-none; 
+}
+
+.home-layout .spaces-tab {
+  @apply pt-0;
 }
 
 .home-layout .spaces-tab {

@@ -4,7 +4,8 @@ import VisMovementLateral from "./VisMovementLateral";
 import WinCount from "./WinCount";
 import StreakCount from "./StreakCount";
 import VisMovementVertical from "./VisMovementVertical";
-import SwipeUpTab, { stopPropagation } from "./SwipeUpTab";
+import SwipeUpTab from "./SwipeUpTab";
+import { stopPropagation } from "./swipe-tab-utils";
 import Calendar from "./Calendar";
 import { DateTime } from "luxon";
 import { motion } from "framer-motion";
@@ -50,8 +51,6 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
 }): ReactNode => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const [calendarHeight, setCalendarHeight] = useState(0);
-  const padding = document.body.getBoundingClientRect().width < 340 ? -30 : (document.body.getBoundingClientRect().width < 520 ? -85 : -100);
-  const calendarHeightWithPadding = useMemo(() => (calendarRef?.current?.firstElementChild as any)?.offsetHeight + padding, [calendarHeight]);
   const [wins, setWins] = useState<number | null>(null);
 
   const currentDateWins = useMemo(() => {
@@ -84,7 +83,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
         <VisMovementLateral currentOrbitDetails={currentOrbitDetails} orbitSiblings={orbitSiblings} goLeftAction={actions.goLeft} goRightAction={actions.goRight}></VisMovementLateral>
         <VisMovementVertical currentOrbitDetails={currentOrbitDetails} orbitDescendants={orbitDescendants} moveUpAction={actions.goUp} moveDownAction={actions.goDown}></VisMovementVertical>
         <div className="center-marker"></div>
-      </span>} verticalOffset={calendarHeightWithPadding}>
+      </span>} verticalOffset={48}>
         {({ bindDrag }) => (
           <>
             <div className="overlay-controls-container">

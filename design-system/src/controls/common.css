@@ -179,25 +179,71 @@
 
 }
 
+
+.swipe-up-screen-tab-container {
+  @apply rounded-3xl dark:bg-transparent z-50 flex flex-col p-0 text-white;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  position: fixed;
+  bottom: -16px;
+  left: 0px;
+  right: 0px;
+  height: calc(100vh - 16px);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px -2px 10px;
+  user-select: none;
+  touch-action: none;
+  will-change: auto;
+  overflow: hidden;
+}
+
+.swipe-up-screen-tab-container.fully-expanded {
+  overflow: hidden;
+}
+
+.swipe-up-screen-container {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+
 div.handle {
   display: flex;
-  padding: 8px;
   align-items: center;
-  height: 12px;
+  height: 26px;
   position: absolute;
   top: 0;
-  margin-left: 31.5%;
+  margin-left: 0;
   margin-right: auto;
-  width: 33%;
-  padding-bottom: 2rem;
+  width: 100%;
+  padding-bottom: 1rem;
+  z-index: 20;
+  left: 0;
+  @apply bg-gradient-to-b dark:to-transparent dark:from-surface-top-dark-500;
+}
+
+.swipe-up-screen-tab-container .handle {
+  padding: 8px 33%;
+  height: 32px;
+  @apply dark:from-surface-top-dark rounded-t-3xl from-50%;
+}
+
+.swipe-up-tab-container .handle {
+  padding: 0px 40%;
+  height: 18px;
+  @apply dark:from-surface-dark rounded-t-3xl opacity-50;
 }
 
 div.handle span {
   margin: 0 auto;
-  background-color: #fff;
+  background-color: rgba(255,255,255, 0.75);
   border-radius: 100px;
   height: 6px;
   width: 100%;
+}
+
+.swipe-up-tab-container .handle span {
+  height: 4px;
 }
 
 .win-count-container,
@@ -218,7 +264,7 @@ div.handle span {
 }
 
 .win-count-container.winning .title, .streak-count-container.winning .title {
-  color: rgba(255, 218, 21,0.75);
+  color: rgba(255, 218, 21, 0.75);
   transition: color .5s ease-in;
 }
 
@@ -401,6 +447,7 @@ div.handle span {
   padding: 1.75rem 0;
   height: fit-content;
 }
+
 .intersecting-planet-column .planet-icon {
   transform: none !important;
 }
@@ -452,12 +499,15 @@ div.handle span {
   --n-multiplier: 4.5;
 }
 
-.orbit-scale-icon>*, .intersecting-planet img {
+.orbit-scale-icon>*,
+.intersecting-planet img {
   pointer-events: none;
 }
 
 /* Re-enable pointer events for the OrbitPill content */
-.intersecting-pill>*, .intersecting-planet, .intersecting-planet img {
+.intersecting-pill>*,
+.intersecting-planet,
+.intersecting-planet img {
   cursor: pointer;
   /* Optional: changes cursor to pointer when hovering over the pill content */
 }

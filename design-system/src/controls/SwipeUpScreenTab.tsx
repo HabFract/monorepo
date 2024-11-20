@@ -12,77 +12,91 @@ import {
 import './common.css';
 
 /**
- * Props for the SwipeUpTab component
+ * Props for the SwipeUpScreenTab component
  * @extends BaseSwipeTabProps
  */
-interface SwipeUpTabProps extends BaseSwipeTabProps {
-  /** Elements to be rendered relative to the tab position */
-  relativeElements: React.ReactNode;
+interface SwipeUpScreenTabProps extends BaseSwipeTabProps {
+  /** Optional callback when tab expansion state changes */
+  onExpansionChange?: (isExpanded: boolean) => void;
 }
 
 /**
- * A swipeable tab component that maintains relative positioning with other elements
+ * A swipeable tab component that can expand to fill the screen
  * @component
  * 
  * @example
  * ```tsx
- * <SwipeUpTab
+ * <SwipeUpScreenTab
  *   verticalOffset={-35}
  *   useViewportHeight={true}
- *   relativeElements={<div>Relative content</div>}
+ *   onExpansionChange={(isExpanded) => console.log('Tab expanded:', isExpanded)}
  * >
  *   {({ bindDrag }) => (
  *     <div>
  *       <div className="handle"><span /></div>
- *       <div>Tab content goes here</div>
+ *       <div>Content goes here</div>
  *     </div>
  *   )}
- * </SwipeUpTab>
+ * </SwipeUpScreenTab>
  * ```
  */
-const SwipeUpTab: React.FC<SwipeUpTabProps> = ({
+const SwipeUpScreenTab: React.FC<SwipeUpScreenTabProps> = ({
   verticalOffset,
-  relativeElements,
   children,
-  useViewportHeight = false
+  useViewportHeight = false,
+  onExpansionChange
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isFullyExpanded, setIsFullyExpanded] = useState(false);
 
-  // Calculate initial position
+  // Calculate positions
   const initialY = calculateInitialY(verticalOffset, useViewportHeight);
+  const finalY = -16; // 16px padding from top
+
   const y = useMotionValue(initialY);
   const controls = useAnimation();
 
   useEffect(() => {
     if (ref.current) {
-      const newHeight = ref.current.offsetHeight;
-      setHeight(newHeight);
-      // Set initial position relative to content height
-      y.set(newHeight - initialY);
+      setHeight(ref.current.offsetHeight);
     }
-  }, [y, initialY]);
+
+    // Monitor motion value for expansion state
+    const unsubscribe = y.onChange(latest => {
+      const newIsExpanded = Math.abs(latest - finalY) < 1;
+      if (newIsExpanded !== isFullyExpanded) {
+        setIsFullyExpanded(newIsExpanded);
+        onExpansionChange?.(newIsExpanded);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [finalY, y, isFullyExpanded, onExpansionChange]);
 
   const handlePanStart = (event: any) => {
+    setIsDragging(true);
     controls.stop();
   };
 
   const handlePan = (event: any, info: PanInfo) => {
     const newY = constrainY(
       initialY + info.offset.y,
-      0,
+      finalY,
       initialY
     );
     y.set(newY);
   };
 
   const handlePanEnd = (event: any, info: PanInfo) => {
+    setIsDragging(false);
     const currentY = y.get();
     const threshold = initialY / 2;
     const willOpen = shouldTabOpen(info.velocity.y, currentY, threshold);
 
     controls.start({
-      y: willOpen ? 0 : height - initialY,
+      y: willOpen ? finalY : initialY,
       transition: {
         ...springConfig,
         velocity: info.velocity.y
@@ -97,22 +111,17 @@ const SwipeUpTab: React.FC<SwipeUpTabProps> = ({
   };
 
   return (
-    <div className="swipe-up-container">
-      <motion.div className="relative" style={{ y }}>
-        <div className="relative-controls-container">
-          {relativeElements}
-        </div>
-      </motion.div>
+    <div className="swipe-up-screen-container">
       <motion.div
         ref={ref}
         style={{ y }}
-        className="swipe-up-tab-container"
+        className={`swipe-up-screen-tab-container ${isFullyExpanded ? 'fully-expanded' : ''}`}
         initial={{ y: initialY }}
         animate={controls}
         drag="y"
         dragConstraints={{
-          top: -height + verticalOffset,
-          bottom: 130
+          top: finalY,
+          bottom: initialY
         }}
         dragElastic={0.2}
         onPointerDownCapture={stopPropagation}
@@ -123,4 +132,4 @@ const SwipeUpTab: React.FC<SwipeUpTabProps> = ({
   );
 };
 
-export default SwipeUpTab;
+export default SwipeUpScreenTab;

@@ -3,7 +3,7 @@ import './common.css'
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { useState } from 'react';
 import { object, string } from 'yup';
-import { Button, SwipeUpTab, TextInputField } from 'habit-fract-design-system';
+import { Button, SwipeUpScreenTab, TextInputField } from 'habit-fract-design-system';
 import { ListSpheres } from '../lists';
 import { motion } from 'framer-motion';
 
@@ -94,7 +94,7 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
           {startBtn}
         </div>
         :
-        <SwipeUpTab relativeElements={<></>} verticalOffset={-75} useViewportHeight={true}>
+        <SwipeUpScreenTab verticalOffset={(12 * 16) + 8} useViewportHeight={false}>
           {({ bindDrag }) => (
             <motion.div className="spaces-tab">
               <motion.div className="handle" {...bindDrag} style={{ touchAction: 'none', cursor: 'grab' }}>
@@ -104,7 +104,7 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
               <ListSpheres></ListSpheres>
             </motion.div>
           )}
-        </SwipeUpTab>
+        </SwipeUpScreenTab>
       }
     </section>
   );
