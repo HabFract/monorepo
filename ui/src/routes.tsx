@@ -69,10 +69,10 @@ const lists = ["ListSpheres", "ListOrbits"];
 
 export const AppTransitions: StateTransitions<AppState> = {
   PreloadAndCache: ["Vis", "CreateSphere", "CreateOrbit"],
-  Home: ["Welcome","Home", ...lists, ...forms, "Vis", "Onboarding1", "PreloadAndCache"],
+  Home: ["Home", ...lists, ...forms, "Vis", "Onboarding1", "PreloadAndCache"],
   Onboarding1: ["Home", "Onboarding2"],
   Onboarding2: ["Onboarding1", "Onboarding2", "Onboarding3"],
-  Onboarding3: ["Onboarding2", "Onboarding3", "PreloadAndCache"],
+  Onboarding3: ["Onboarding2", "Onboarding3", "Vis"],
   Vis: ["Home", ...forms, ...lists, "Vis", "PreloadAndCache"],
   CreateSphere: ["Home", ...lists, ...forms, "Vis"],
   ListSpheres: ["Home", ...lists, ...forms, "Vis", "PreloadAndCache"],

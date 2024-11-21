@@ -1,16 +1,16 @@
 import { useCreateSphereMutation as useCreateSphereMutationGenerated } from "../../graphql/generated";
-import { appStateAtom } from "../../state/store";
+import { appStateAtom, store } from "../../state/store";
 import { useAtom, useSetAtom } from "jotai";
 
 export const useCreateSphereMutation = () => {
-  const [prevState, setAppState] = useAtom(appStateAtom);
+  const setAppState = useSetAtom(appStateAtom);
 
   return useCreateSphereMutationGenerated({
     refetchQueries: ["getSpheres"],
     update(_cache, { data }) {
       if (data?.createSphere) {
         const newSphere = data.createSphere;
-
+        const prevState = store.get(appStateAtom);
         const updatedState = {
           ...prevState,
           spheres: {
@@ -28,7 +28,6 @@ export const useCreateSphereMutation = () => {
             },
           },
         };
-        console.log('updatedState :>> ', updatedState);
         setAppState(updatedState);
 
         console.warn("Cache update from useCreateSphere");

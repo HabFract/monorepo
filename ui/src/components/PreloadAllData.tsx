@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo, useRef } from "react";
 import { useStateTransition } from "../hooks/useStateTransition";
 import {
   GetOrbitsDocument,
@@ -71,6 +71,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
 }) => {
   const [_, transition] = useStateTransition();
   const [preloadCompleted, setPreloadCompleted] = useState(false);
+  const transitionInitiatedRef = useRef(false);
 
   const setAppState = useSetAtom(appStateAtom);
   const setNodeCache = useSetAtom(nodeCache.set);
@@ -88,8 +89,13 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
 
   const dataLoadingQueue = useMemo(() => new DataLoadingQueue(), []);
 
+  const fetchDataRef = useRef(false);
+
   const fetchData = useCallback(
     async () => {
+      if (fetchDataRef.current) return;
+      fetchDataRef.current = true;
+
       if (sphereNodes.length === 0) {
         console.log('No spheres to fetch data for');
         setPreloadCompleted(true);
@@ -107,7 +113,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
               fetchPolicy: "network-only",
             }));
 
-            if (data?.data?.orbits) {
+            if (data && data?.data?.orbits) {
               console.log(`Received orbits data for sphere: ${name}`, data.data.orbits);
               const orbits = extractEdges(data.data.orbits) as Orbit[];
               const indexedOrbitNodeDetails = Object.entries(
@@ -178,7 +184,9 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
         });
       } catch (error) {
         console.error("Error in fetchData:", error);
+      } finally {
         setPreloadCompleted(true);
+        fetchDataRef.current = false;
       }
     },
     [sphereNodes, dataLoadingQueue, setAppState, setNodeCache, setCurentSphere, landingSphereEh, landingSphereId],
@@ -201,12 +209,15 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
       setPreloadCompleted(true);
       return;
     }
-    console.log('Starting fetchData');
-    fetchData();
+    if (!fetchDataRef.current) {
+      console.log('Starting fetchData');
+      fetchData();
+    }
   }, [data, sphereNodes, loadingSpheres, error, fetchData]);
 
+
   useEffect(() => {
-    if (!preloadCompleted) return;
+    if (!preloadCompleted || transitionInitiatedRef.current) return;
     console.log('preloadCompleted :>> ', preloadCompleted);
 
     if (onPreloadComplete) {
@@ -214,13 +225,13 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
       onPreloadComplete();
     } else {
       console.log('Routing to landing page');
+      transitionInitiatedRef.current = true;
       dataLoadingQueue.enqueue(async () => {
         console.log('Transitioning to:', landingPage || "Vis");
         transition(landingPage || "Vis", { currentSphereDetails: sphereNodes[0] || undefined });
       });
     }
   }, [preloadCompleted, dataLoadingQueue, transition, landingPage, sphereNodes, onPreloadComplete]);
-
   if (loadingSpheres) {
     return <Spinner aria-label="Loading spheres!" />;
   }
@@ -236,4 +247,8 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   return <Spinner aria-label="Loading!" />;
 };
 
-export default React.memo(PreloadAllData);
+export default React.memo(PreloadAllData, (prevProps, nextProps) => {
+  return prevProps.landingSphereEh === nextProps.landingSphereEh &&
+    prevProps.landingSphereId === nextProps.landingSphereId &&
+    prevProps.landingPage === nextProps.landingPage;
+});

@@ -27,6 +27,7 @@ import OnboardingContinue from "./components/forms/buttons/OnboardingContinueBut
 import Toast from "./components/Toast";
 import { useModal } from "./contexts/modal";
 import { AppMachine } from "./main";
+import { extractEdges } from "./graphql/utils";
 
 function App({ children: pageComponent }) {
   const [_, transition, params] = useStateTransition(); // Top level state machine and routing
@@ -60,8 +61,8 @@ function App({ children: pageComponent }) {
     error,
     data: spheres,
   } = useGetSpheresQuery();
-  const userHasSpheres =
-    spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
+  const spheresArray = spheres?.spheres?.edges && extractEdges(spheres.spheres);
+  const userHasSpheres = spheresArray && spheresArray.length > 0;
 
   return (
     <Flowbite theme={{ theme: darkTheme, mode: "dark" }}>
@@ -110,8 +111,8 @@ function App({ children: pageComponent }) {
                 <OnboardingContinue
                   onClick={() => {
                     const nextStage = getNextOnboardingState(state);
-                    const lastStageCompleted = nextStage == "PreloadAndCache"
-                    transition(nextStage, lastStageCompleted ? {} : {})
+                    const lastStageCompleted = nextStage == "Vis"
+                    transition(nextStage, lastStageCompleted ? { currentSphereDetails: { ...spheresArray![0] } } : {})
                   }}
                 />
               ),
