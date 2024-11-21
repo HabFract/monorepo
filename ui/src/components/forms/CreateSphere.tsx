@@ -129,13 +129,13 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
           <section>
             {headerDiv}
             <div className="content">
-              <span className="form-description">
+              <div className="form-description">
                 {descriptionParts[0]}&nbsp;
                 <Collapse
                   size="small"
                   items={[{ key: '1', label: <em>{descriptionParts[1]}</em>, children: <p>{descriptionParts[2]}</p> }]}
                 />
-              </span>
+              </div>
               <Form noValidate={true}>
                 {editMode && (
                   <SphereFetcher

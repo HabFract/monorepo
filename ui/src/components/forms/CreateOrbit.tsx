@@ -26,12 +26,13 @@ import {
   SelectInputField,
   getIconForPlanetValue,
   HelperText,
+  getFrequencyDisplayNameLong,
 } from "habit-fract-design-system";
 import { OrbitFetcher } from "./utils";
-import { currentSphereHashesAtom } from "../../state/sphere";
+import { currentSphereDetailsAtom, currentSphereHashesAtom } from "../../state/sphere";
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state/hierarchy";
 import { useUpdateOrbitMutation } from "../../hooks/gql/useUpdateOrbitMutation";
-import { getDisplayName, getFrequencyDisplayName } from "../vis/helpers";
+import { getScaleDisplayName } from "../vis/helpers";
 import { ONBOARDING_FORM_DESCRIPTIONS } from "../../constants";
 import Collapse from "antd/es/collapse";
 
@@ -83,6 +84,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
 }: CreateOrbitProps) => {
   const [state, transition] = useStateTransition(); // Top level state machine and routing
   const selectedSphere = store.get(currentSphereHashesAtom);
+  const selectedSphereDetails = store.get(currentSphereDetailsAtom);
   const { _x, y } = store.get(currentSphereHierarchyIndices);
   const inOnboarding = state.match("Onboarding");
   // Used to dictate onward routing
@@ -185,11 +187,12 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
           if (!response.data) return;
 
           const payload = response.data as any;
-          if (originPage == "Vis") {
+          if (originPage == "Vis" && !editMode) {
             store.set(newTraversalLevelIndexId, { id: payload.createOrbit.eH, direction: "new" });
             transition("Vis", {
               currentSphereEhB64: sphereEh,
               currentSphereAhB64: selectedSphere.actionHash,
+              currentSphereDetails: selectedSphereDetails
             });
           } else {
             const orbitAh = editMode
@@ -198,7 +201,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
 
             const props = inOnboarding
               ? { refiningOrbitAh: orbitAh }
-              : { sphereAh: selectedSphere.actionHash };
+              : { sphereAh: selectedSphere.actionHash, currentSphereDetails: selectedSphereDetails };
 
             store.set(currentOrbitIdAtom, orbitAh);
             transition(inOnboarding ? "Onboarding3" : "ListOrbits", props);
@@ -209,6 +212,20 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
       }}
     >
       {({ values, errors, touched, setFieldValue }) => {
+          const submitButton = (submitBtn &&
+            React.cloneElement(submitBtn as React.ReactElement, {
+              loading,
+              errors,
+              touched,
+            })) || (
+              <DefaultSubmitBtn
+                loading={loading}
+                editMode={editMode}
+                errors={errors}
+                touched={touched}
+              ></DefaultSubmitBtn>
+            );
+
         const cannotBeAstro =
           !(editMode && state.match("Onboarding")) &&
           values.parentHash !== null &&
@@ -229,18 +246,18 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
             {!inModal ? headerDiv : null}
             <div className="content">
               {state.match("Onboarding") && <>
-                <p className="form-description">{descriptionParts[0]}&nbsp;
+                <div className="form-description">{descriptionParts[0]}&nbsp;
                   <Collapse
                     size="small"
                     items={[{ key: '1', label: <em>{descriptionParts[1]}</em>, children: <><p>{descriptionParts[2]}<em>{descriptionParts[3]}</em>.</p><p>{descriptionParts[4]}</p></> }]}
                   />
-                </p>
+                </div>
                 <figure>
                   <div className="figure-images">
-                    {['sun', 'planet', 'moon'].map(scale => <div className="figure-image-container"><img key={scale} src={`assets/${scale}.svg`} alt={`${scale} figure`} style={{ width: "100%" }} /></div>)}
+                    {['sun', 'planet', 'moon'].map(scale => <div className="figure-image-container" key={scale}><img key={scale} src={`assets/${scale}.svg`} alt={`${scale} figure`} style={{ width: "100%" }} /></div>)}
                   </div>
                   <figcaption className="figure-captions">
-                    {['Star', 'Giant', 'Dwarf'].map(scale => <HelperText withInfo={true} onClickInfo={() => ({ title: `Plannit Scales`, label: `${scale}`, body: scale })} key={scale}>{scale}</HelperText>)}
+                    {['Star', 'Giant', 'Dwarf'].map(scale => <HelperText key={scale} withInfo={true} onClickInfo={() => ({ title: `Plannit Scales`, label: `${scale}`, body: scale })}>{scale}</HelperText>)}
                   </figcaption>
                 </figure>
               </>
@@ -315,7 +332,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                         return (cannotBeAstro && scale == Scale.Astro) ||
                           (cannotBeSub && scale == Scale.Sub) ? null : (
                           <option key={scale} value={scale}>
-                            {getDisplayName(scale)}
+                            {getScaleDisplayName(scale)}
                           </option>
                         );
                       }),
@@ -379,7 +396,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                       ...Object.values(Frequency).map((frequency) => {
                         return (
                           <option key={frequency} value={frequency}>
-                            {getFrequencyDisplayName(frequency)}
+                            {getFrequencyDisplayNameLong(decodeFrequency(frequency))}
                           </option>
                         );
                       }),
@@ -427,19 +444,13 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                   </div>
                 </div>
               </Flex>} */}
-                {(submitBtn &&
-                  React.cloneElement(submitBtn as React.ReactElement, {
-                    loading,
-                    errors,
-                    touched,
-                  })) || (
-                    <DefaultSubmitBtn
-                      loading={loading}
-                      editMode={editMode}
-                      errors={errors}
-                      touched={touched}
-                    ></DefaultSubmitBtn>
-                  )}
+              {inModal
+                ? <div className="modal-submit-btn bottom-4 absolute">
+                  {submitButton}
+                </div>
+                : <>{submitButton}</>
+              }
+                
               </Form>
             </div>
           </section>

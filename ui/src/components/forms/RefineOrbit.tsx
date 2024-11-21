@@ -47,9 +47,9 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({
             {headerDiv}
 
             <div className="content">
-              <p className="form-description">
+              <div className="form-description">
                 This is your chance to divide a large scale {MODEL_DISPLAY_VALUES['orbit'].toLowerCase()} into several smaller <em>agreements or actions</em> that will simplify carrying out your plan.
-              </p>
+              </div>
             <OrbitSubdivisionList
               submitBtn={submitBtn}
               currentOrbitValues={values}

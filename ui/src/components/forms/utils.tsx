@@ -16,7 +16,6 @@ export const OrbitFetcher = ({ orbitToEditId }) => {
     },
   });
   useEffect(() => {
-    console.log('getData for OrbitFetcher :>> ', getData);
     if (typeof getData == "undefined") return;
     const {
       name,

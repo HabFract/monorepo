@@ -9,7 +9,7 @@ import { HierarchyNode } from "d3-hierarchy";
 import { Frequency, Scale } from "../..//graphql/generated";
 import { select } from "d3-selection";
 
-export function getDisplayName(scale: Scale) {
+export function getScaleDisplayName(scale: Scale) {
   switch (scale) {
     case Scale.Astro:
       return "Star";
@@ -17,41 +17,6 @@ export function getDisplayName(scale: Scale) {
       return "Giant";
     case Scale.Atom:
       return "Dwarf";
-  }
-}
-
-export function getFrequencyDisplayName(freq: Frequency) {
-  switch (freq) {
-    case Frequency.OneShot:
-      return "Once";
-    case Frequency.DailyOrMore_1d:
-      return "Daily";
-    case Frequency.DailyOrMore_2d:
-      return "2/day";
-    case Frequency.DailyOrMore_3d:
-      return "3/day";
-    case Frequency.DailyOrMore_4d:
-      return "4/day";
-    case Frequency.DailyOrMore_5d:
-      return "5/day";
-    case Frequency.DailyOrMore_6d:
-      return "6/day";
-    case Frequency.DailyOrMore_7d:
-      return "7/day";
-    case Frequency.DailyOrMore_8d:
-      return "8/day";
-    case Frequency.DailyOrMore_9d:
-      return "9/day";
-    case Frequency.DailyOrMore_10d:
-      return "10/day";
-    case Frequency.LessThanDaily_1w:
-      return "Weekly";
-    case Frequency.LessThanDaily_1m:
-      return "Monthly";
-    case Frequency.LessThanDaily_1q:
-      return "Quarterly";
-    default:
-      return freq;
   }
 }
 

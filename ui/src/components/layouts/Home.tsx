@@ -62,7 +62,7 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
                   <path d="M578 222a252 252 0 0 0-356 356 252 252 0 0 0 356-356zM400 543a143 143 0 1 1 0-286 143 143 0 0 1 0 286z" />
                 </svg>
             </span>To Do</Button>
-            <Button onClick={() => { transition("CreateSphere", { spin: 'negative' }) }} type="button" variant="primary responsive"><span className="text-success-500"><img src="assets/icons/negative-spin.svg" className='w-8 h-8 my-1 mr-2 opacity-75' /></span>Not To Do</Button>
+            <Button isDisabled={true} onClick={() => { transition("CreateSphere", { spin: 'negative' }) }} type="button" variant="primary responsive"><span className="text-success-500"><img src="assets/icons/negative-spin.svg" className='w-8 h-8 my-1 mr-2 opacity-75' /></span>Not To Do</Button>
           </div>
         </header>
       }

@@ -1,11 +1,10 @@
 import React from "react";
 import "./common.css";
 import "../buttons/common.css";
-import { Orbit } from "../generated-types";
-import { Button, Calendar, getIconForPlanetValue, getIconSvg } from "..";
-import { DateTime } from "luxon";
-import { ListGroup, Popover, Table } from "flowbite-react";
-import { getFrequencyDisplayName } from "../icons/FrequencyIndicator";
+import { Orbit, Scale } from "../generated-types";
+import { Button, getIconForPlanetValue, getIconSvg } from "..";
+import { ListGroup, Popover } from "flowbite-react";
+import FrequencyIndicator, { getFrequencyDisplayNameLong } from "../icons/FrequencyIndicator";
 import { decodeFrequency } from "@ui/src/state";
 import { darkThemeListGroup } from "../darkTheme";
 
@@ -18,6 +17,17 @@ export interface PlannitCardProps {
   lastTrackedWinDate: string
 };
 
+export function getScaleDisplayName(scale: Scale) {
+  switch (scale) {
+    case Scale.Astro:
+      return "Star";
+    case Scale.Sub:
+      return "Giant";
+    case Scale.Atom:
+      return "Dwarf";
+  }
+}
+
 const PlannitCard: React.FC<PlannitCardProps> = ({
   orbit,
   runDelete,
@@ -27,7 +37,7 @@ const PlannitCard: React.FC<PlannitCardProps> = ({
   lastTrackedWinDate
 }: PlannitCardProps) => {
   const { id, name, metadata, scale, frequency } = orbit;
-
+  const spin = 'positive';
   return (
     <article className={"card plannit-card"}>
       <header>
@@ -50,12 +60,18 @@ const PlannitCard: React.FC<PlannitCardProps> = ({
       </header>
       <section className="stats">
         <div>
-          <div>Scale</div>
-          <div>{scale}</div>
+          <div>Spin</div>
+          <div><img className="w-6 h-6 text-red-200" alt ="Plannit Spin" src={`/assets/icons/${spin}-spin.svg`} /></div>
         </div>
         <div>
-          <div>Frequency</div>
-          <div>{getFrequencyDisplayName(decodeFrequency(frequency))}</div>
+          <div>Scale</div>
+          <div>{getScaleDisplayName(scale)}</div>
+        </div>
+        <div>
+          <div className="flex items-center gap-2"><FrequencyIndicator size="sm" frequency={decodeFrequency(frequency)} /> Frequency</div>
+          <div>
+            {getFrequencyDisplayNameLong(decodeFrequency(frequency))}
+          </div>
         </div>
         <div>
           <div className="flex items-center gap-2"><span>{getIconSvg('fire')({})}</span><span>Current Streak</span></div>

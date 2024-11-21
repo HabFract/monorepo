@@ -114,6 +114,10 @@ export function withVisCanvas<T extends IVisualization>(
       useState<EntryHashB64>();
     const [currentChildOrbitEh, setCurrentChildOrbitEh] =
       useState<EntryHashB64>();
+    const resetModalParentChildStates = () => {
+      setCurrentParentOrbitEh(undefined)
+      setCurrentChildOrbitEh(undefined)
+    }
 
     // Store and update date in local component state to ensure re-render with VisControls, Calendar
     const [currentDate, setCurrentDate] = useAtom<DateTime>(currentDayAtom);
@@ -134,7 +138,7 @@ export function withVisCanvas<T extends IVisualization>(
     },
       [currentOrbitDetails, currentDate]);
     const { workingWinDataForOrbit, handleUpdateWorkingWins } = withWinData();
-console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
+// console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
     const skipFlag = !currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit || typeof workingWinDataForOrbit !== 'object';
     const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
       variables: {
@@ -225,6 +229,7 @@ console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
                 selectedSphere,
                 currentParentOrbitEh,
                 currentChildOrbitEh,
+                resetModalParentChildStates,
                 currentVis,
               )}
             </>

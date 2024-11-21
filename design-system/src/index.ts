@@ -16,9 +16,10 @@ import { ActionCard, PlannitCard, SystemCalendarCard } from "./cards";
 import { SphereVis, OrbitVis } from "./vis";
 import { ProgressBar } from "./onboarding";
 import Modal from "./modals/Modal";
+import FormModal from "./modals/FormModal";
 import { Button } from "./buttons";
 import { HelperText } from "./copy";
-import FrequencyIndicator  from "./icons/FrequencyIndicator";
+import FrequencyIndicator, { getFrequencyDisplayNameLong }  from "./icons/FrequencyIndicator";
 import HeaderAction from "./header/header-action";
 import { VisControls, ListSortFilter } from "./controls";
 import OrbitControls  from "./vis/OrbitControls";
@@ -51,12 +52,14 @@ export {
   SystemCalendarCard,
   Button,
   Modal,
+  FormModal,
   ProgressBar,
   SphereVis,
   OrbitVis,
   OrbitControls,
   OrbitLabel,
   ListSortFilter,
+  getFrequencyDisplayNameLong,
   getIconForPlanetValue,
   getIconSvg,
   FrequencyIndicator,

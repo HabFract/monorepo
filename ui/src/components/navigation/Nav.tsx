@@ -44,13 +44,11 @@ enum Page {
 
 export interface INav {
   setSideNavExpanded: Function;
-  setSettingsOpen: Function;
   sideNavExpanded: boolean;
 }
 
 const Nav: React.FC<INav> = ({
   sideNavExpanded,
-  setSettingsOpen,
   setSideNavExpanded,
 }: INav) => {
   const {
@@ -70,7 +68,7 @@ const Nav: React.FC<INav> = ({
   const { showToast, hideToast } = useToast();
   let loading = loadingSpheres || !spheres;
 
-  const spheresArray = loading ? [] : extractEdges(spheres!.spheres);
+  const spheresArray = loading ? [] : extractEdges(spheres!.spheres) as any;
   const [menuItems, setMenuItems] = useState<ItemType[]>(
     createSphereMenuItems({ spheres: spheresArray }),
   );
@@ -97,10 +95,6 @@ const Nav: React.FC<INav> = ({
   // Main routing logic for menus
   const onClick: MenuProps["onClick"] = (e) => {
     switch (true) {
-      case e.key == "settings":
-        setSettingsOpen(true);
-        break;
-
       case e.key == "add-sphere":
         if (spheresArray.length >= 4) {
           showToast(

@@ -1,15 +1,15 @@
 import { ReactNode, FC, useEffect } from "react";
-import Breadcrumbs from "../navigation/Breadcrumbs";
 import Home from "../layouts/Home";
 import Onboarding from "../layouts/Onboarding";
 import { AnimatePresence, motion } from "framer-motion";
-import { Sphere } from "../../graphql/generated";
-import { AppMachine } from "../../main";
-import { SphereDetails } from "../../state/types/sphere";
+import { useDeleteSphereMutation } from "../../graphql/generated";
 import VisLayout from "../layouts/VisLayout";
 import FormLayout from "../layouts/FormLayout";
 import ListLayout from "../layouts/List";
-import { appStateAtom, currentSphereDetailsAtom, currentSphereHashesAtom, store } from "../../state";
+import { currentSphereHashesAtom, store } from "../../state";
+import { useModal } from "../../contexts/modal";
+import { AppMachine } from "../../main";
+import { useStateTransition } from "../../hooks/useStateTransition";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -35,24 +35,44 @@ interface WithLayoutProps {
 const withLayout = (
   component: ReactNode,
 ): FC<WithLayoutProps> => {
+  const state = AppMachine.state.currentState; // Top level state machine and routing
+  const { showModal } = useModal();
+  const [_, transition, params] = useStateTransition(); // Top level state machine and routing
+
+  const [
+    runDeleteSphere,
+    { loading: loadingDelete, error: errorDelete, data: dataDelete },
+  ] = useDeleteSphereMutation({
+    refetchQueries: ["getSpheres"],
+  });
+
   return (props: WithLayoutProps): ReactNode => {
-    const state = AppMachine.state.currentState;
     if(props?.currentSphereDetails?.eH && props.currentSphereDetails.eH !== store.get(currentSphereHashesAtom)?.entryHash) {
       const eH = props?.currentSphereDetails?.eH;
       const id = props?.currentSphereDetails?.id;
+      console.log('set current Sphere to :>> ',  {entryHash: eH, actionHash: id});
       store.set(currentSphereHashesAtom, {entryHash: eH, actionHash: id})
     }
 
-    const currentAppState = store.get(appStateAtom);
-    // Add validation logging
-    useEffect(() => {
-      console.log('Layout mounted with appState:', currentAppState);
-      return () => {
-        console.log('Layout unmounting with appState:', store.get(appStateAtom));
-      };
-    }, []);
+    const handleDeleteSphere = () => {
+      const id = store.get(currentSphereHashesAtom)?.actionHash;
+      if(!id) return;
+      showModal({
+        title: "Are you sure?",
+        message: "This action cannot be undone! This will not only delete your Space's details, but all Plannits linked to that Space, and the Win history of those Plannits!",
+        onConfirm: () => {
+          runDeleteSphere({ variables: { id } })
+          transition("Home")
+        },
+        withCancel: true,
+        withConfirm: true,
+        destructive: true,
+        confirmText: "Yes, do it",
+        cancelText: "Cancel"
+      });
+    }
 
-
+    console.log('Layout props', props)
     switch (true) {
       case !!state.match("Onboarding"):
         return <Onboarding>{withPageTransition(component)}</Onboarding>;
@@ -61,7 +81,7 @@ const withLayout = (
           return <Home firstVisit={false}></Home>;
         return withPageTransition(component);
       case state == "Vis":
-        return <VisLayout currentSphereName={props.currentSphereDetails.name}>
+        return <VisLayout title={props.currentSphereDetails?.name}>
           {component}
         </VisLayout>
       case ["CreateOrbit", "CreateSphere"].includes(state):
@@ -69,7 +89,7 @@ const withLayout = (
           {component}
         </FormLayout>
       case ["ListOrbits"].includes(state):
-        return <ListLayout type={'orbit'}>
+        return <ListLayout type={'orbit'} title={props.currentSphereDetails?.name} primaryMenuAction={() => {}} secondaryMenuAction={() => {handleDeleteSphere()}}>
           {component}
         </ListLayout>
       default:

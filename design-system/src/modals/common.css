@@ -15,7 +15,7 @@
 
 /* Modal Inner Container */
 [data-testid="modal-overlay"] > div > div {
-  @apply relative dark:bg-surface-elevated-dark flex max-h-[80dvh] flex-col rounded-2xl;
+  @apply relative dark:bg-surface-elevated-dark flex max-h-[95dvh] min-h-[80dvh] flex-col rounded-2xl;
   overflow: hidden;
 }
 

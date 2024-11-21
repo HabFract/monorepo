@@ -144,6 +144,14 @@ export class TreeVisualization extends BaseVisualization {
 
   initializeEventHandlers(): EventHandlers {
     return {
+      handleEditNode: function ({ orbitEh }) {
+        this.modalChildOrbitEh('edit');
+        const orbitId = store.get(getOrbitIdFromEh(orbitEh));
+        if(!orbitId) return;
+        this.modalParentOrbitEh(orbitId);
+        this.modalOpen(true);
+        this.modalIsOpen = true;
+      },
       handlePrependNode: function ({ childOrbitEh }) {
         this.modalChildOrbitEh(childOrbitEh);
         this.modalOpen(true);
@@ -251,8 +259,7 @@ export class TreeVisualization extends BaseVisualization {
         }
         if (isEditNodeButtonTarget) {
           const nodeEh = (target.closest(".orbit-controls-container") as HTMLElement).dataset?.nodeEntryHash;
-          this.eventHandlers.handlePrependNode.call(this, { childOrbitEh: nodeEh })
-
+          this.eventHandlers.handleEditNode.call(this, { orbitEh: nodeEh })
         }
       },
     };

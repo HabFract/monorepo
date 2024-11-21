@@ -16,6 +16,7 @@ import { ToastProvider } from "./contexts/toast";
 import { StateMachineContext } from "./contexts/state-machine";
 import BootSequence from "./BootSequence";
 import { ApolloProvider } from "@apollo/client";
+import { ModalProvider } from "./contexts/modal";
 
 /*
 Application State Management (Courtesy of Ada Burrows for hREA playspace)
@@ -47,9 +48,11 @@ export async function renderPage(page: React.ReactNode, client) {
     <React.StrictMode>
       <ApolloProvider client={client}>
         <StateMachineContext.Provider value={AppMachine as any}>
-          <ToastProvider>
-            {withJotaiStore(<App>{page}</App>)}
-          </ToastProvider>
+          <ModalProvider>
+            <ToastProvider>
+              {withJotaiStore(<App>{page}</App>)}
+            </ToastProvider>
+          </ModalProvider>
         </StateMachineContext.Provider>
       </ApolloProvider>
     </React.StrictMode>

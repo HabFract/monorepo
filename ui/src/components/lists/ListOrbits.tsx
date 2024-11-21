@@ -6,14 +6,17 @@ import { Orbit, useDeleteOrbitMutation, useGetOrbitsQuery } from "../../graphql/
 import { useSearchableList } from "../../hooks/useSearchableList";
 import { extractEdges } from "../../graphql/utils";
 import { useStateTransition } from "../../hooks/useStateTransition";
-import { appStateAtom, store } from "../../state";
+import { currentSphereDetailsAtom, store } from "../../state";
+import { useModal } from "../../contexts/modal";
+import { calculateCurrentStreakAtom, calculateLongestStreakAtom } from "../../state/win";
 
 interface ListOrbitsProps { }
 
 const ListOrbits: React.FC<ListOrbitsProps> = () => {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
+  const { showModal } = useModal();
 
-  const currentSphereDetails = store.get(appStateAtom)?.spheres.byHash[params?.sphereAh]?.details;
+  const currentSphereDetails = store.get(currentSphereDetailsAtom);
 
   const { loading, error, data } = useGetOrbitsQuery({
     fetchPolicy: "network-only",
@@ -23,6 +26,25 @@ const ListOrbits: React.FC<ListOrbitsProps> = () => {
   const [runDelete] = useDeleteOrbitMutation({
     refetchQueries: ["getOrbits"],
   });
+
+  const handleEditPlannit = (orbit: Orbit) => {
+    transition("CreateOrbit", { sphereEh: orbit.eH, orbitToEditId: orbit?.id, editMode: true });
+  }
+
+  const handleDeletePlannit = (orbit: Orbit) => {
+    showModal({
+      title: "Are you sure?",
+      message: "This action cannot be undone! This will also delete your Win history for this Plannit",
+      onConfirm: () => {
+        runDelete({ variables: { id: orbit.id } })
+      },
+      withCancel: true,
+      withConfirm: true,
+      destructive: true,
+      confirmText: "Yes, do it",
+      cancelText: "Cancel"
+    });
+  }
 
   // Extract orbits after data is loaded
   const orbits = useMemo(() => {
@@ -77,11 +99,12 @@ const ListOrbits: React.FC<ListOrbitsProps> = () => {
           {sortedOrbits.map((orbit: Orbit) => (
             <PlannitCard
               key={orbit.id}
-              currentStreak={1}
-              longestStreak={2}
+              currentStreak={store.get(calculateCurrentStreakAtom(orbit.id))}
+              longestStreak={store.get(calculateLongestStreakAtom(orbit.id))}
               lastTrackedWinDate="12/21/2023"
               orbit={orbit}
-              runDelete={() => runDelete({ variables: { id: orbit.id } })}
+              handleEditPlannit={() => handleEditPlannit(orbit)}
+              runDelete={() => handleDeletePlannit(orbit)}
             />
           ))}
         </div>

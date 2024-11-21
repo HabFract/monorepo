@@ -24,7 +24,7 @@ import { serializeAsyncActions } from "../../graphql/utils";
 import { store } from "../../state/store";
 import { Refinement } from "../forms/RefineOrbit";
 import { OrbitFetcher } from "../forms/utils";
-import { getDisplayName, isSmallScreen } from "../vis/helpers";
+import { getScaleDisplayName, isSmallScreen } from "../vis/helpers";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import OnboardingContinue from "../forms/buttons/OnboardingContinueButton";
 
@@ -215,7 +215,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                           .map((scale) => {
                             return (
                               <option key={scale} value={scale}>
-                                {getDisplayName(scale)}
+                                {getScaleDisplayName(scale)}
                               </option>
                             );
                           })}

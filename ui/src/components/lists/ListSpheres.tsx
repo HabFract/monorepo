@@ -18,12 +18,6 @@ import { AppMachine } from "../../main";
 
 function ListSpheres() {
   const [_state, transition] = useStateTransition(); // Top level state machine and routing
-  const [
-    runDelete,
-    { loading: loadingDelete, error: errorDelete, data: dataDelete },
-  ] = useDeleteSphereMutation({
-    refetchQueries: ["getSpheres"],
-  });
 
   const { loading, error, data } = useGetSpheresQuery();
   const spheres = useMemo(() => extractEdges(data!.spheres) as Sphere[], [data])
@@ -42,11 +36,12 @@ function ListSpheres() {
     transition("CreateOrbit", { sphereEh });
   }
   function routeToPlannitList(sphereId: ActionHashB64) {
-    transition("ListOrbits", { sphereAh: sphereId });
+    transition("ListOrbits", { sphereAh: sphereId, currentSphereDetails: spheres.find(sphere => sphere.id == sphereId) });
   }
   function routeToVis(sphere: Sphere) {
     AppMachine.state.currentState == "Vis";
-    transition("Vis", {currentSphereDetails: sphere});
+    console.log('{currentSphereDetails: {...sphere, ...sphere.metadata}} :>> ', {currentSphereDetails: {...sphere, ...sphere.metadata}});
+    transition("Vis", {currentSphereDetails: {...sphere, ...sphere.metadata}});
   }
 
   return (
@@ -61,7 +56,6 @@ function ListSpheres() {
             handleCreateAction={() => routeToCreatePlannit(sphere.eH)}
             handleListAction={() => routeToPlannitList(sphere.id)}
             handleVisAction={() => routeToVis(sphere)}
-            runDelete={() => runDelete({ variables: { id: sphere.id } })}
             setSphereIsCurrent={() => {
               setCurrentSphere({
                 entryHash: sphere.eH,

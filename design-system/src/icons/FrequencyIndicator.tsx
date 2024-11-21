@@ -20,6 +20,41 @@ const FrequencyIndicator: React.FC<FrequencyIndicatorProps> = ({
 
 export default FrequencyIndicator;
 
+export function getFrequencyDisplayNameLong(freq: Frequency.Rationals): String {
+  switch (freq) {
+    case Frequency.ONE_SHOT:
+      return 'Once';
+    case Frequency.DAILY_OR_MORE.DAILY:
+      return 'Daily';
+    case Frequency.DAILY_OR_MORE.TWO:
+      return 'Twice Daily';
+    case Frequency.DAILY_OR_MORE.THREE:
+      return 'Thrice Daily';
+    case Frequency.DAILY_OR_MORE.FOUR:
+      return '4/day';
+    case Frequency.DAILY_OR_MORE.FIVE:
+      return '5/day';
+    case Frequency.DAILY_OR_MORE.SIX:
+      return '6/day';
+    case Frequency.DAILY_OR_MORE.SEVEN:
+      return '7/day';
+    case Frequency.DAILY_OR_MORE.EIGHT:
+      return '8/day';
+    case Frequency.DAILY_OR_MORE.NINE:
+      return '9/day';
+    case Frequency.DAILY_OR_MORE.TEN:
+      return '10/day';
+    case Frequency.LESS_THAN_DAILY.WEEKLY:
+      return 'Weekly';
+    case Frequency.LESS_THAN_DAILY.MONTHLY:
+      return 'Monthly';
+    case Frequency.LESS_THAN_DAILY.QUARTERLY:
+      return 'Quarterly';
+    default:
+      return '-';
+  }
+}
+
 export function getFrequencyDisplayName(freq: Frequency.Rationals): String {
   switch (freq) {
     case Frequency.ONE_SHOT:

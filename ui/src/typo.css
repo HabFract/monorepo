@@ -21,7 +21,7 @@
 
 /* Paragraph
 -------------------------------------------------- */
-p, span.form-description {
+p, .form-description {
   @apply text-text dark:text-text-dark opacity-80 mb-2 font-sans text-sm font-light leading-relaxed;
 }
 
@@ -72,13 +72,13 @@ a {
   @apply flex flex-col gap-4 px-4;
   overflow-y: auto;
 }
-.onboarding-layout .content span.form-description,
-.create-form .content span.form-description {
+.onboarding-layout .content .form-description,
+.create-form .content .form-description {
   margin-bottom: 2px;
 }
 
 /* Accented Elements */
-span.form-description em,
+.form-description em,
 form em,
 .ant-collapse-header-text em,
 .helper-text em {

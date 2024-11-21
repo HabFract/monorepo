@@ -114,6 +114,7 @@ export type VisProps<T extends IVisualization> = {
  * Interface for event handlers used in the visualization.
  */
 export interface EventHandlers {
+  handleEditNode: ({ orbitEh }: { orbitEh: EntryHashB64 }) => void;
   handlePrependNode: ({ childOrbitEh }: { childOrbitEh: EntryHashB64 }) => void;
   handleAppendNode: ({
     parentOrbitEh,

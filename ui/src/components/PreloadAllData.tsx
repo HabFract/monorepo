@@ -14,7 +14,6 @@ import { client } from "../graphql/client";
 import { currentSphereHashesAtom } from "../state/sphere";
 import { Spinner } from "flowbite-react";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { debounce } from "./vis/helpers";
 import { useAtom, useSetAtom } from "jotai";
 import { updateAppStateWithOrbit } from "../hooks/gql/utils";
 import { sleep } from "./lists/OrbitSubdivisionList";
@@ -44,7 +43,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   const [_, transition] = useStateTransition(); // Top level state machine and routing
   const [preloadCompleted, setPreloadCompleted] = useState(false);
 
-  const [prevState, setAppState] = useAtom(appStateAtom);
+  const setAppState = useSetAtom(appStateAtom);
   const setNodeCache = useSetAtom(nodeCache.set);
   const setCurentSphere = useSetAtom(currentSphereHashesAtom);
   // Fetch spheres (which are the beginning of any graph of data in the app)
@@ -55,10 +54,6 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   } = useGetSpheresQuery();
 
   const sphereNodes = data ? extractEdges(data.spheres) as Sphere[] : [];
-
-  // Fall back to the first Sphere as redirect context after effects
-  const id = sphereNodes?.[0]?.id;
-  const eH = sphereNodes?.[0]?.eH;
 
   const fetchData = useCallback(
     () => {
@@ -95,7 +90,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                   id,
                   Object.fromEntries(indexedOrbitNodeDetails),
                 );
-                let updatedState = prevState;
+                let updatedState = store.get(appStateAtom);
                 // Update app state for each orbit
                 orbitHashes.sort((hashesA, hashesB) => {
                   // Process the root hash last which will set it as current Orbit
@@ -108,49 +103,56 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                   ...updatedState.spheres,
                   currentSphereHash: id,
                   byHash: {
-                    ...prevState.spheres.byHash,
+                    ...updatedState.spheres.byHash,
                     [id]: {
+                      ...updatedState.spheres.byHash[id], // Preserve existing sphere data
                       details: {
+                        ...updatedState.spheres.byHash[id]?.details, // Preserve existing details
                         entryHash: eH,
-                        name
+                        name: name
                       },
-                      hierarchyRootOrbitEntryHashes: orbitHashes.filter(hashes => typeof hashes.parentEh == 'undefined').reduce((acc, hashes) => { !acc.includes(hashes.eH) && acc.push(hashes.eH); return acc }, [] as any),
+                      hierarchyRootOrbitEntryHashes: orbitHashes
+                        .filter(hashes => typeof hashes.parentEh == 'undefined')
+                        .reduce((acc, hashes) => { 
+                          !acc.includes(hashes.eH) && acc.push(hashes.eH); 
+                          return acc 
+                        }, [] as any),
                     },
                   },
                 };
                 setAppState(updatedState);
-                sleep(100);
-
                 setCurentSphere({
                   actionHash: landingSphereId || id,
                   entryHash: landingSphereEh || eH,
                 });
+                console.log('updatedState preload', updatedState)
               }
+              
+              await sleep(250);
             } catch (error) {
               console.error(error);
               return Promise.reject()
             }
           }),
           async () => {
-            await sleep(100);
+            await sleep(500);
             await setPreloadCompleted(true);
-            return Promise.resolve(
-              console.log(
-                "Current cache: :>> ",
-                store.get(nodeCache.entries),
-              ),
-            )
+            // return Promise.resolve(
+            //   console.log(
+            //     "Current cache: :>> ",
+            //     store.get(nodeCache.entries),
+            //   ),
+            // )
           },
         ]);
       } catch (error) {
         console.error(error);
         return Promise.reject()
       }
-      return Promise.resolve(sleep(100))
+      return Promise.resolve(sleep(200))
     },
     [sphereNodes],
   );
-  const debouncedFetchData = debounce(fetchData, 3000);
 
   useEffect(() => {
     if (!data) return;
@@ -164,7 +166,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
       }
       return;
     }
-    debouncedFetchData();
+    fetchData();
   }, [sphereNodes, onPreloadComplete, data, fetchData, landingSphereEh, landingSphereId]);
 
   useEffect(() => {
@@ -174,7 +176,8 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
     if (onPreloadComplete) {
       onPreloadComplete();
     } else {
-      transition(landingPage || "Vis", {currentSphereDetails: { id, eH }});
+      console.log('routing to landingpage :>> ');
+      transition(landingPage || "Vis", {currentSphereDetails: { ...sphereNodes[0] }});
     }
   }, [preloadCompleted]);
 
