@@ -1,7 +1,7 @@
 import "./App.css";
 import React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Spinner, useThemeMode } from "flowbite-react";
+import { useThemeMode } from "flowbite-react";
 import { initGraphQLClient } from "./graphql/client";
 import PreloadAllData from "./components/PreloadAllData";
 import { getConnection } from "./graphql/connection";
@@ -9,6 +9,7 @@ import { ApolloProvider } from "@apollo/client";
 import { useStateTransition } from "./hooks/useStateTransition";
 import { AppMachine } from "./main";
 import { debounce } from "./components/vis/helpers";
+import { Spinner } from "habit-fract-design-system";
 
 const useConnection = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -41,7 +42,7 @@ const BootSequence: React.FC = () => {
   const [_, transition] = useStateTransition();
   const dataPreloaded = useRef<boolean>(false)
   const { connected, apolloClient } = useConnection();
-  const {mode, setMode, toggleMode} = useThemeMode();
+  const { mode, setMode, toggleMode } = useThemeMode();
 
   const handleDataPreloaded = useCallback(() => {
     dataPreloaded.current = true;
@@ -50,7 +51,7 @@ const BootSequence: React.FC = () => {
   }, [transition]);
 
   if (!connected || !apolloClient) {
-    return <></>//<Spinner aria-label="Connecting..." size="xl" className="full-spinner" />;
+    return <Spinner />
   }
 
   if (!dataPreloaded.current) {

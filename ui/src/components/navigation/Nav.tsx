@@ -9,9 +9,9 @@ import {
 } from "@ant-design/icons";
 import Menu, { MenuProps } from "antd/es/menu/menu";
 import { ReactElement, useEffect, useRef, useState } from "react";
-import { getIconSvg, Button as DSButton } from "habit-fract-design-system";
+import { getIconSvg, Button as DSButton, Spinner } from "habit-fract-design-system";
 import { Sphere, useGetSpheresQuery } from "../../graphql/generated";
-import { Button, Spinner } from "flowbite-react";
+import { Button } from "flowbite-react";
 import useSideMenuToggle from "../../hooks/useSideMenuToggle";
 import { useToast } from "../../contexts/toast";
 import { store } from "../../state/store";
@@ -109,7 +109,7 @@ const Nav: React.FC<INav> = ({
         console.log('reset sphere from nav :>> ');
         // setCurrentPage(Page.CreateSphere);
         setSideNavExpanded(false);
-        transition("CreateSphere", {spin: "positive"});
+        transition("CreateSphere", { spin: "positive" });
         break;
 
       case e.key == "list-spheres":
@@ -170,8 +170,8 @@ const Nav: React.FC<INav> = ({
           hideToast();
           if (store.get(currentSphereHashesAtom)?.actionHash == e.key)
             // setSideNavExpanded(true);
-          // Set current sphere from action hash of sphere clicked
-          console.log('set sphere from nav :>> ');
+            // Set current sphere from action hash of sphere clicked
+            console.log('set sphere from nav :>> ');
           setCurrentSphere({
             entryHash: sphere(e.key)?.eH,
             actionHash: e.key,
@@ -287,7 +287,7 @@ const Nav: React.FC<INav> = ({
         className={sideNavExpanded ? "side-nav expanded" : "side-nav off-screen"}
       >
         {loading ? (
-          <Spinner aria-label="Loading!" className="menu-spinner" size="xl" />
+          <Spinner />
         ) : (
           <>
             <Menu
@@ -298,7 +298,7 @@ const Nav: React.FC<INav> = ({
               items={menuItems}
             />
             <div className="off-screen-toggle-button">
-              <button type="button" onClick={() => { (sideMenuRef.current as any)?.classList?.toggle("off-screen")}} className="off-screen-icon-button text-text dark:text-text-dark p-2">{getIconSvg('arrow-right')({})}</button>
+              <button type="button" onClick={() => { (sideMenuRef.current as any)?.classList?.toggle("off-screen") }} className="off-screen-icon-button text-text dark:text-text-dark p-2">{getIconSvg('arrow-right')({})}</button>
             </div>
             <div className={"main-actions-menu"}>
               <div
@@ -357,7 +357,7 @@ const Nav: React.FC<INav> = ({
       spheresArray.length < 4 ? getItem(
         "New Sphere",
         "add-sphere",
-        <DSButton onClick={() => {}} variant={"circle-icon btn-primary"} icon={getIconSvg("plus")({}) as ReactElement}/>,
+        <DSButton onClick={() => { }} variant={"circle-icon btn-primary"} icon={getIconSvg("plus")({}) as ReactElement} />,
         undefined,
         undefined,
         false,

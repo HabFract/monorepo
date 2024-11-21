@@ -11,46 +11,51 @@ import {
   updateNodeCache,
 } from "./utils";
 import { OrbitHashes, OrbitNodeDetails } from "../../state";
+import { useMemo } from "react";
+import { DataLoadingQueue } from "../../components/PreloadAllData";
 
 export const useCreateOrbitMutation = (opts) => {
   const [prevState, setAppState] = useAtom(appStateAtom);
+  const dataLoadingQueue = useMemo(() => new DataLoadingQueue(), []);
 
   return useCreateOrbitMutationGenerated({
     ...opts,
     async update(_cache, { data }) {
       if (!data?.createOrbit) return;
-      
-      const newOrbit: CreateOrbitResponsePayload = data.createOrbit;
 
-      await invalidateOrbitHierarchyCache(newOrbit.sphereHash);
+      await dataLoadingQueue.enqueue(async () => {
+        const newOrbit: CreateOrbitResponsePayload = data.createOrbit;
 
-      const newOrbitHashes: OrbitHashes = {
-        id: newOrbit.id,
-        eH: newOrbit.eH,
-        sphereHash: newOrbit.sphereHash,
-        parentEh: newOrbit?.parentHash as string | undefined,
-      };
-      const newOrbitDetails: OrbitNodeDetails = {
-        ...newOrbitHashes,
-        name: newOrbit.name,
-        scale: newOrbit.scale,
-        frequency: decodeFrequency(newOrbit.frequency),
-        startTime: newOrbit.metadata!.timeframe.startTime,
-        endTime: newOrbit.metadata!.timeframe.endTime as number | undefined,
-        description: newOrbit.metadata!.description as string | undefined,
-      };
+        await invalidateOrbitHierarchyCache(newOrbit.sphereHash);
 
-      updateNodeCache(newOrbitDetails);
+        const newOrbitHashes: OrbitHashes = {
+          id: newOrbit.id,
+          eH: newOrbit.eH,
+          sphereHash: newOrbit.sphereHash,
+          parentEh: newOrbit?.parentHash as string | undefined,
+        };
+        const newOrbitDetails: OrbitNodeDetails = {
+          ...newOrbitHashes,
+          name: newOrbit.name,
+          scale: newOrbit.scale,
+          frequency: decodeFrequency(newOrbit.frequency),
+          startTime: newOrbit.metadata!.timeframe.startTime,
+          endTime: newOrbit.metadata!.timeframe.endTime as number | undefined,
+          description: newOrbit.metadata!.description as string | undefined,
+        };
 
-      const updatedState = updateAppStateWithOrbit(
-        prevState,
-        newOrbitHashes,
-        true
-      );
-      setAppState(updatedState);
-      console.warn("Cache update from useCreateOrbit");
+        updateNodeCache(newOrbitDetails);
 
-      opts?.update && opts.update();
+        const updatedState = updateAppStateWithOrbit(
+          prevState,
+          newOrbitHashes,
+          true
+        );
+        setAppState(updatedState);
+        console.warn("Cache update from useCreateOrbit");
+
+        opts?.update && opts.update();
+      });
     },
   });
 };

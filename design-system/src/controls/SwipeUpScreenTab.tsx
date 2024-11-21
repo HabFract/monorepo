@@ -63,8 +63,7 @@ const SwipeUpScreenTab: React.FC<SwipeUpScreenTabProps> = ({
       setHeight(ref.current.offsetHeight);
     }
 
-    // Monitor motion value for expansion state
-    const unsubscribe = y.onChange(latest => {
+    const unsubscribe = y.on("change", (latest) => {
       const newIsExpanded = Math.abs(latest - finalY) < 1;
       if (newIsExpanded !== isFullyExpanded) {
         setIsFullyExpanded(newIsExpanded);

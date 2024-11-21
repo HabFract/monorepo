@@ -13,12 +13,14 @@ body {
   overflow: hidden;
 }
 
-html, body {
+html,
+body {
   @apply dark:bg-surface-dark;
 }
 
 /* Gridlines */
-#vis, .page-container.home {
+#vis,
+.page-container.home {
   background-size: calc(100vw/12) calc(100vw/12);
   background-image:
     linear-gradient(to right, rgba(57, 57, 57, 0.5) 1px, transparent 1px),
@@ -35,16 +37,6 @@ html, body {
   width: 100vw;
   z-index: 5;
   align-items: center;
-}
-
-.full-spinner {
-  position: fixed;
-  height: 6rem;
-  width: 6rem;
-  left: calc(50vw - 3rem);
-  top: calc(50vh - 3rem);
-  animation: spin 2s linear infinite;
-  @apply fill-primary dark:fill-primary-dark text-text dark:text-text-dark;
 }
 
 .app-version-disclaimer button {
@@ -70,6 +62,6 @@ html, body {
 }
 
 .page-container.vis,
-.page-container.vis > div:last-child {
+.page-container.vis>div:last-child {
   overflow: hidden;
 }

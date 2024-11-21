@@ -21,7 +21,7 @@ import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { store } from "../../state/store";
 import { OrbitNodeDetails, SphereHashes } from "../../state/types";
 import VisModal from "../VisModal";
-import { OverlayLayout } from "habit-fract-design-system";
+import { OverlayLayout, Spinner } from "habit-fract-design-system";
 import { currentDayAtom } from "../../state/date";
 import { byStartTime, getCanvasDimensions, isSmallScreen } from "../vis/helpers";
 import { currentSphereHashesAtom } from "../../state/sphere";
@@ -41,7 +41,6 @@ import { isMoreThenDaily } from "../vis/tree-helpers";
 import { useVisCanvas } from "../../hooks/useVisCanvas";
 import { DEFAULT_MARGINS } from "../vis/constants";
 import { StoreType } from "../../state/types/store";
-import { Spinner } from "flowbite-react";
 import { useWinData } from "../../hooks/useWinData";
 import { DateTime } from "luxon";
 import { calculateCurrentStreakAtom, calculateLongestStreakAtom } from "../../state/win";
@@ -138,7 +137,7 @@ export function withVisCanvas<T extends IVisualization>(
     },
       [currentOrbitDetails, currentDate]);
     const { workingWinDataForOrbit, handleUpdateWorkingWins } = withWinData();
-// console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
+    // console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
     const skipFlag = !currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit || typeof workingWinDataForOrbit !== 'object';
     const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
       variables: {
@@ -177,7 +176,7 @@ export function withVisCanvas<T extends IVisualization>(
         canvasWidth={canvasWidth}
         margin={DEFAULT_MARGINS}
         render={(currentVis: T) => {
-          if (!currentOrbitDetails?.eH) return <Spinner aria-label="Loading Vis Canvas!" className="menu-spinner" size="xl" />
+          if (!currentOrbitDetails?.eH) return <Spinner />
           visRef.current = currentVis;
 
           const {
@@ -186,7 +185,7 @@ export function withVisCanvas<T extends IVisualization>(
             orbitDescendants,
             orbitSiblings
           } = getActionsAndDataForControls(currentVis, currentOrbitDetails?.eH);
-          
+
           if (appendedSvg) {
             // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
             currentVis.modalOpen = setIsModalOpen;

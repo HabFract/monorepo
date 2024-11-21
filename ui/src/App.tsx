@@ -6,10 +6,10 @@ import { useStateTransition } from "./hooks/useStateTransition";
 import withLayout from "./components/HOC/withLayout";
 
 import Nav from "./components/navigation/Nav";
-import { Flowbite, Spinner } from "flowbite-react";
+import { Flowbite } from "flowbite-react";
 import { cloneElement, useRef, useState } from "react";
 
-import { Button, darkTheme } from "habit-fract-design-system";
+import { Button, darkTheme, Spinner } from "habit-fract-design-system";
 import {
   useGetSpheresQuery,
 } from "./graphql/generated";
@@ -31,7 +31,7 @@ import { AppMachine } from "./main";
 function App({ children: pageComponent }) {
   const [_, transition, params] = useStateTransition(); // Top level state machine and routing
   const state = AppMachine.state.currentState;
-  
+
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
 
   const { showModal } = useModal();
@@ -42,7 +42,7 @@ function App({ children: pageComponent }) {
   const progressBarRef = useRef<HTMLDivElement>(null);
   const mainPageRef = useRef<HTMLDivElement>(null);
   useOnboardingScroll(state, progressBarRef, mainPageRef);
-  
+
   const showDisclaimer = () => {
     showModal({
       title: "Disclaimer",
@@ -64,7 +64,7 @@ function App({ children: pageComponent }) {
     spheres?.spheres?.edges && spheres.spheres.edges.length > 0;
 
   return (
-    <Flowbite theme={{ theme: darkTheme, mode: "dark"  }}>
+    <Flowbite theme={{ theme: darkTheme, mode: "dark" }}>
       <Toast />
       <main ref={mainPageRef} className={mainContainerClass}>
         {/* Version and alpha status disclaimer */}
@@ -78,7 +78,7 @@ function App({ children: pageComponent }) {
         {/* Return users can see a side Nav on certain pages */}
         {userHasSpheres &&
           isSmallScreen() &&
-              state == "Vis" && (
+          state == "Vis" && (
             <Nav
               sideNavExpanded={sideNavExpanded}
               setSideNavExpanded={setSideNavExpanded}
@@ -86,7 +86,7 @@ function App({ children: pageComponent }) {
           )}
 
         {loadingSpheres ? (
-          <Spinner aria-label="Loading!" size="xl" className="full-spinner" />
+          <Spinner />
         ) : (
           pageComponent &&
           withLayout(
@@ -94,8 +94,8 @@ function App({ children: pageComponent }) {
               // Only Renders when state == "Home"
               startBtn: state.match("Home") ? (
                 <Button type={"button"} variant={"primary"} onClick={() => transition("Onboarding1")}>
-                Sign In
-              </Button>
+                  Sign In
+                </Button>
               ) : (
                 <></>
               ),
@@ -109,7 +109,7 @@ function App({ children: pageComponent }) {
               submitBtn: state.match("Onboarding") && (
                 <OnboardingContinue
                   onClick={() => {
-                    const nextStage = getNextOnboardingState(state);  
+                    const nextStage = getNextOnboardingState(state);
                     const lastStageCompleted = nextStage == "PreloadAndCache"
                     transition(nextStage, lastStageCompleted ? {} : {})
                   }}

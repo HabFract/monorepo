@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { TreeVisualization } from "../base-classes/TreeVis";
+import { Spinner } from 'habit-fract-design-system';
 
 const LazyTreeRenderer = lazy(() => import('./TreeRenderer'));
 
@@ -20,9 +21,9 @@ export const TreeVisCore: React.FC<TreeVisCoreProps> = ({
 }) => {
   return (
     <>
-      {loading && <span data-testid="vis-spinner" />}
+      {loading && <Spinner />}
       {!error && json && currentOrbitTree && (
-        <Suspense fallback={<span data-testid="tree-spinner" />}>
+        <Suspense fallback={<Spinner />}>
           <LazyTreeRenderer
             tree={currentOrbitTree}
             render={render}

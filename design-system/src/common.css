@@ -3,6 +3,17 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.full-spinner {
+  position: fixed;
+  height: 6rem;
+  width: 6rem;
+  left: calc(50vw - 3rem);
+  top: calc(50vh - 3rem);
+  animation: spin 2s linear infinite;
+  @apply fill-primary dark:fill-primary-dark text-text dark:text-text-dark;
+}
+
 .col-c {
   @apply flex flex-col items-center justify-center gap-2;
 }

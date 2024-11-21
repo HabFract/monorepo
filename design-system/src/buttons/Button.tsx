@@ -1,7 +1,7 @@
 import React from "react";
 import "./common.css";
 
-export type ButtonVariant = 
+export type ButtonVariant =
   | "primary"
   | "secondary"
   | "warn"
@@ -59,7 +59,7 @@ const LoadingSpinner = () => (
   </div>
 );
 
-const Button: React.FC<ButtonProps> = ({
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
   children,
   variant = "primary",
   icon,
@@ -68,11 +68,12 @@ const Button: React.FC<ButtonProps> = ({
   type = "button",
   className = "",
   onClick,
-}) => {
+}, ref) => {
   const buttonClass = `btn btn-${variant} ${className}`;
 
   return (
     <button
+      ref={ref}
       disabled={isLoading || isDisabled}
       type={type}
       className={buttonClass}
@@ -83,6 +84,6 @@ const Button: React.FC<ButtonProps> = ({
       </div>
     </button>
   );
-};
+});
 
 export default Button;

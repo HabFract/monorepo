@@ -20,17 +20,11 @@ import {
 
 export type createArgs = { sphere: SphereCreateParams };
 export type updateArgs = { sphere: SphereUpdateParams };
-export type createHandler = (
-  root: any,
-  args: createArgs,
-) => Promise<object>; // TODO: swap this type out for correct response type
-export type updateHandler = (
-  root: any,
-  args: updateArgs,
-) => Promise<object>;
+export type createHandler = (root: any, args: createArgs) => Promise<object>; // TODO: swap this type out for correct response type
+export type updateHandler = (root: any, args: updateArgs) => Promise<object>;
 export type deleteHandler = (
   root: any,
-  args: { sphereHash: ActionHashB64 },
+  args: { sphereHash: ActionHashB64 }
 ) => Promise<ActionHashB64>;
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
@@ -42,7 +36,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "create_my_sphere",
+    "create_my_sphere"
   );
   const runUpdate = mapZomeFn<
     {
@@ -55,29 +49,20 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "update_sphere",
+    "update_sphere"
   );
   const runDelete = mapZomeFn<ActionHashB64, ActionHash>(
     dnaConfig,
     conductorUri,
     HAPP_DNA_NAME,
     HAPP_ZOME_NAME_PERSONAL_HABITS,
-    "delete_sphere",
+    "delete_sphere"
   );
 
   const createSphere: createHandler = async (
     _,
-    { sphere: { name, ...metadata } },
+    { sphere: { name, ...metadata } }
   ) => {
-    console.log('rawRecord :>> ', {
-      name,
-      metadata: {
-        //@ts-ignore
-        description: metadata?.description,
-        hashtag: metadata?.hashtag,
-        image: metadata?.image,
-      },
-    });
     const rawRecord = await runCreate({
       name,
       metadata: {
@@ -92,13 +77,13 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
     return {
       actionHash: entryRecord.actionHash as any,
       entryHash: encodeHashToBase64(entryRecord.entryHash),
-      name
+      name,
     };
   };
 
   const updateSphere: updateHandler = async (
     _,
-    { sphere: { id, name, image, hashtag, description } },
+    { sphere: { id, name, image, hashtag, description } }
   ) => {
     const rawRecord = await runUpdate({
       originalSphereHash: id as ActionHashB64,
