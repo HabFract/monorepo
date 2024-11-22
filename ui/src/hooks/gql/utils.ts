@@ -41,11 +41,10 @@ export const updateNodeCache = (
   orbitDetails: OrbitNodeDetails,
   oldOrbitEh?: EntryHashB64
 ) => {
-  if (store.get(currentSphereHasCachedNodesAtom)) {
     const sphere = store.get(currentSphereHashesAtom) as SphereHashes;
     const existingNodes = store.get(
       nodeCache.item(sphere.actionHash as string)
-    ) as SphereOrbitNodeDetails;
+    ) || {} as SphereOrbitNodeDetails;
 
     const newSphereOrbitNodeDetails: SphereOrbitNodeDetails = {
       ...existingNodes,
@@ -60,7 +59,6 @@ export const updateNodeCache = (
       sphere.actionHash as ActionHashB64,
       newSphereOrbitNodeDetails
     );
-  }
 };
 
 export const updateAppStateWithOrbit = (

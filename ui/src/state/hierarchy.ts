@@ -126,12 +126,12 @@ export const updateHierarchyAtom = atom(
       rootData: HierarchyNode<
         NodeContent & { children?: HierarchyNode<NodeContent> }
       >;
+      sphereAh: ActionHashB64;
       each: Function;
       _json: string;
     }
   ) => {
     if (!newHierarchy?.rootData) return null;
-
     const currentAppState = get(appStateAtom);
     const rootNode = newHierarchy.rootData.data.content;
     const nodeHashes: ActionHashB64[] = [];
@@ -162,9 +162,21 @@ export const updateHierarchyAtom = atom(
       nodeHashes,
       leafNodeHashes,
     };
-
-    set(appStateAtom, {
+    const newState = {
       ...currentAppState,
+      spheres: {
+        ...currentAppState.spheres,
+        byHash: {
+          ...currentAppState.spheres.byHash,
+          [newHierarchy.sphereAh]: {
+            ...currentAppState.spheres.byHash[newHierarchy.sphereAh],
+            hierarchyRootOrbitEntryHashes: [
+              ...currentAppState.spheres.byHash[newHierarchy.sphereAh]?.hierarchyRootOrbitEntryHashes || [],
+              rootNode,
+            ],
+          },
+        },
+      },
       hierarchies: {
         ...currentAppState.hierarchies,
         byRootOrbitEntryHash: {
@@ -172,7 +184,9 @@ export const updateHierarchyAtom = atom(
           [rootNode]: updatedHierarchy,
         },
       },
-    });
+    };
+
+    set(appStateAtom, newState);
   }
 );
 
@@ -231,7 +245,9 @@ export const getDescendantLeafNodesAtom = (orbitEh: EntryHashB64) => {
     // Parse the hierarchy JSON
     const hierarchyData = JSON.parse(hierarchyJson);
     const hierarchyD3 = hierarchy(hierarchyData[0]);
-    const leaves = hierarchyD3.find(node => node.data.content === orbit.eH)?.leaves() || [];
+    const leaves =
+      hierarchyD3.find((node) => node.data.content === orbit.eH)?.leaves() ||
+      [];
 
     return leaves.map((node) => node.data);
   });

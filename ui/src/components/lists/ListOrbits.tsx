@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import "./common.css";
 
-import { PlannitCard, ListSortFilter, Button, getIconSvg } from "habit-fract-design-system";
+import { PlannitCard, ListSortFilter, Button, getIconSvg, Spinner } from "habit-fract-design-system";
 import { Orbit, useDeleteOrbitMutation, useGetOrbitsQuery } from "../../graphql/generated";
 import { useSearchableList } from "../../hooks/useSearchableList";
 import { extractEdges } from "../../graphql/utils";
@@ -66,7 +66,7 @@ const ListOrbits: React.FC<ListOrbitsProps> = () => {
     initialSortKey: 'name'
   });
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Spinner />;
   if (error) return <p>Error: {error.message}</p>;
 
   function routeToCreateOrbit() {

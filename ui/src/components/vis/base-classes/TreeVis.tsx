@@ -165,13 +165,12 @@ export class TreeVisualization extends BaseVisualization {
       //@ts-ignore
       handleNodeZoom: (event: any, node: HierarchyNode<NodeContent>) => {
         if (typeof node == undefined || Number.isNaN(node.x) || Number.isNaN(node.y)) return null;
-        const id = store.get(getOrbitIdFromEh(node.data.content));
-        const orbit = store.get(getOrbitNodeDetailsFromIdAtom(id));
-        const isRootNode = orbit.eH == this._originalRootData?.data.content;
+        const orbit = Object.values(this.nodeDetails).find(orbit => orbit.eH == node.data.content);
+        const isRootNode = node.data.content == this._originalRootData?.data.content;
 
         const zoomOffsetY = -(this._viewConfig.isSmallScreen() ? (isRootNode ? NEGATIVE_ZOOM_Y_OFFSET_SM_ROOT : NEGATIVE_ZOOM_Y_OFFSET_SM_NONROOT) : NEGATIVE_ZOOM_Y_OFFSET_MD_LG)
-        const scale = (this._viewConfig.isSmallScreen() ? NODE_RESCALE_FACTOR_SM : NODE_RESCALE_FACTOR_MD_LG) * chooseZoomScaleForOrbit(orbit);
-        const x = -(node as any).x * scale + this._viewConfig.canvasWidth / 2;
+        const scale = (this._viewConfig.isSmallScreen() ? NODE_RESCALE_FACTOR_SM : NODE_RESCALE_FACTOR_MD_LG) * (orbit && orbit.scale ? chooseZoomScaleForOrbit(orbit) : 1);
+           const x = -(node as any).x * scale + this._viewConfig.canvasWidth / 2;
         const y = -(node as any).y * scale + this._viewConfig.canvasHeight / 2 + zoomOffsetY;
 
         this._zoomConfig.globalZoomScale = scale;

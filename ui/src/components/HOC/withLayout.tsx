@@ -10,6 +10,7 @@ import { currentSphereHashesAtom, store } from "../../state";
 import { useModal } from "../../contexts/modal";
 import { AppMachine } from "../../main";
 import { useStateTransition } from "../../hooks/useStateTransition";
+import React from "react";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -72,13 +73,13 @@ const withLayout = (
       });
     }
 
-    console.log('Layout props', props)
+    // console.log('Layout props', props)
     switch (true) {
       case !!state.match("Onboarding"):
-        return <Onboarding>{withPageTransition(component)}</Onboarding>;
+        return <Onboarding>{withPageTransition(React.cloneElement(component as any, {props}))}</Onboarding>;
       case ["Home", "PreloadAndCache"].includes(state):
-        if (state == "Home" && props?.newUser)
-          return <Home firstVisit={false}></Home>;
+        if (state == "Home")
+          return <Home firstVisit={props?.newUser}></Home>;
         return withPageTransition(component);
       case state == "Vis":
         return <VisLayout title={props.currentSphereDetails?.name}>

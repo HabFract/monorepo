@@ -11,7 +11,7 @@ import {
 import Split from "../icons/Split";
 import Pencil from "../icons/Pencil";
 import { MinusCircleFilled, PlusCircleFilled } from "@ant-design/icons";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Frequency,
   Orbit,
@@ -27,6 +27,7 @@ import { OrbitFetcher } from "../forms/utils";
 import { getScaleDisplayName, isSmallScreen } from "../vis/helpers";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import OnboardingContinue from "../forms/buttons/OnboardingContinueButton";
+import { DataLoadingQueue } from "../PreloadAllData";
 
 interface OrbitSubdivisionListProps {
   currentOrbitValues: Orbit;
@@ -57,8 +58,9 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
 
   const [addOrbit] = useCreateOrbitMutation({});
   const [updateOrbit] = useUpdateOrbitMutation({});
-  const [submitRefineBtnIsLoading, setSubmitRefineBtnIsLoading] =
-    useState<boolean>(false);
+  const [submitRefineBtnIsLoading, setSubmitRefineBtnIsLoading] = useState<boolean>(false);
+  const dataLoadingQueue = useMemo(() => new DataLoadingQueue(), []);
+
   return (
     <div className="layout orbit-subdivision-list">
       <Formik
@@ -72,11 +74,11 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
           setSubmitting(false);
           delete values.childHash;
           const sphere = store.get(currentSphereHashesAtom);
-          if (!sphere?.entryHash || !currentHash)
-            throw new Error(
-              "No sphere set or parent hash, cannot refine orbits",
-            );
+          if (!sphere?.entryHash || !currentHash) {
+            throw new Error("No sphere set or parent hash, cannot refine orbits");
+          }
           setSubmitRefineBtnIsLoading(true);
+  
           try {
             if (refinementType == Refinement.Update) {
               await updateOrbit({
@@ -93,13 +95,14 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                   },
                 },
               });
-
               (submitBtn as any).props.onClick.call(null);
             } else {
               const { list, scale } = values;
-              serializeAsyncActions<any>([
-                ...list!.map((orbit) => async () => {
-                  addOrbit({
+              
+              // Queue up all orbit creation tasks
+              for (const orbit of list!) {
+                await dataLoadingQueue.enqueue(async () => {
+                  await addOrbit({
                     variables: {
                       variables: {
                         name: orbit.name,
@@ -112,13 +115,14 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                     },
                   });
                   await sleep(500);
-                }),
-                async () =>
-                  Promise.resolve(
-                    console.log("New orbit subdivisions created! :>> "),
-                  ),
-                async () => (submitBtn as any).props.onClick.call(null), // Complete the onboarding transition
-              ]);
+                });
+              }
+  
+              // Queue final completion tasks
+              await dataLoadingQueue.enqueue(async () => {
+                console.log("New orbit subdivisions created! :>> ");
+                (submitBtn as any).props.onClick.call(null);
+              });
             }
           } catch (error) {
             setSubmitRefineBtnIsLoading(false);

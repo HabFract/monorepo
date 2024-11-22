@@ -6,7 +6,7 @@ import {
 
 import "./common.css";
 
-import { SystemCalendarCard } from "habit-fract-design-system";
+import { Spinner, SystemCalendarCard } from "habit-fract-design-system";
 import { extractEdges } from "../../graphql/utils";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import { useToast } from "../../contexts/toast";
@@ -27,7 +27,7 @@ function ListSpheres() {
   const { showToast, hideToast } = useToast();
   const setCurrentSphere = useSetAtom(currentSphereHashesAtom);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Spinner />;
   if (error) return <p>Error : {error.message}</p>;
 
   if (!spheres.length) return <></>;

@@ -104,12 +104,12 @@ const Nav: React.FC<INav> = ({
           // setSideNavExpanded(true);
           return;
         }
-        setCurrentSphere({});
+        // setCurrentSphere({});
 
-        console.log('reset sphere from nav :>> ');
+        // console.log('reset sphere from nav :>> ');
         // setCurrentPage(Page.CreateSphere);
         setSideNavExpanded(false);
-        transition("CreateSphere", { spin: "positive" });
+        transition("Onboarding1", { spin: "positive" });
         break;
 
       case e.key == "list-spheres":
@@ -143,14 +143,15 @@ const Nav: React.FC<INav> = ({
               });
               setSideNavExpanded(false);
             }
-            if (!checkCachedOrbits) {
-              showToast(
-                "Select a Space with Plannits, or create new Plannits before Visualisation.",
-                100000,
-              );
-              return;
-            }
+            // if (!checkCachedOrbits) {
+            //   showToast(
+            //     "Select a Space with Plannits, or create new Plannits before Visualisation.",
+            //     100000,
+            //   );
+            //   return;
+            // }
             const transitionParams = {
+              currentSphereDetails: sphere(e.key),
               currentSphereEhB64: sphere(e.key)?.eH,
               currentSphereAhB64: e.key,
             };

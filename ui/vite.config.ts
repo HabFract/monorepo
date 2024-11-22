@@ -25,6 +25,7 @@ export default ({ mode }) => {
         : undefined,
     },
     build: {
+      sourcemap: process.env.NODE_ENV === 'development', // Only generate source maps in development
       lib: {
         entry: "./src/state/index.ts",
         name: "HabitFractState",

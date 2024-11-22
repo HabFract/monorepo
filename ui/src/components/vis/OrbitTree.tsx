@@ -76,7 +76,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   const instantiateVisObject = () => {
     if (!error && json && !currentOrbitTree && sphereNodeDetails) {
-      console.log("Instantiating tree...");
+      // console.log("Instantiating tree...");
       const newTree = createTreeVisualization({
         json,
         visCoverage,
@@ -84,7 +84,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
         canvasWidth,
         margin,
         transition,
-        params,
+        params: {...params, currentSphereEhB64: sphere.entryHash, currentSphereAhB64: sphere.actionHash },
         sphereNodeDetails,
         getJsonDerivation,
         setDepthBounds,
@@ -127,7 +127,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       ? JSON.parse(json!)
       : parseOrbitHierarchyData(data.getOrbitHierarchy);
 
-    !(NODE_ENV == 'test') && console.log('Processing with result... :>> ', sortedTrees);
+    // !(NODE_ENV == 'test') && console.log('Processing with result... :>> ', sortedTrees);
     setJson(JSON.stringify(sortedTrees));
 
     calculateAndSetBreadthBounds(setBreadthBounds, params, visCoverage, sortedTrees.length);
@@ -147,7 +147,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     if (!currentOrbitTree?.rootData?.children || currentOrbitTree?.rootData && currentOrbitTree.rootData?.children && currentOrbitTree.rootData.children?.length === 0) return;
 
     const nextLevelQuery = getQueryParams(y + 1);
-    console.log("Prefetching next level with query: ", nextLevelQuery);
+    // console.log("Prefetching next level with query: ", nextLevelQuery);
     usePrefetchNextLevel(nextLevelQuery!, client, true);
   };
 
@@ -162,10 +162,10 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   }, [json]);
 
   useEffect(() => {
-    console.log('data,y :>> ', data,y);
+    // console.log('data,y :>> ', data,y);
     const fetchAndProcess = async () => {
       let newJson = await fetchCurrentLevel();
-      console.log('newJson :>> ', newJson);
+      // console.log('newJson :>> ', newJson);
       if (!newJson) return;
       await processHierarchyLevelAndFetchNext(newJson);
       setCanTriggerNextTreeVisRender(true);
@@ -179,7 +179,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   useEffect(() => {
     if (canTriggerNextTreeVisRender && !error && currentOrbitTree && json && d3Modules) {
-      console.log('Triggered a new hierarchy render in focus mode');
+      // console.log('Triggered a new hierarchy render in focus mode');
 
       const { hierarchy } = d3Modules;
       currentOrbitTree._nextRootData = hierarchy(
@@ -202,7 +202,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       }
 
       const intermediateId = newRenderNodeDetails?.direction === 'up' ? currentOrbitTree._lastRenderParentId : (noNewFocusNode ? currentOrbitTree._nextRootData.data.content : null);
-      console.log("Setting new render traversal details");
+      // console.log("Setting new render traversal details");
       setNewRenderTraversalDetails((prev) => ({ ...prev, id: newlySelectedNodeId, intermediateId }));
 
       currentOrbitTree.startInFocusMode = true;
@@ -215,7 +215,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   useEffect(() => {
     if (!hasCachedNodes && cache !== null) {
       try {
-        console.log('Caching hierarchy link paths for visual continuity...');
+        // console.log('Caching hierarchy link paths for visual continuity...');
         cache();
         setHasCachedNodes(true);
       } catch (error) {

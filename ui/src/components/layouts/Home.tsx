@@ -49,7 +49,7 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
             <h2>Let's put a plan in motion! <em>I plan...</em></h2>
           </span>
           <div className="text-text dark:text-text-dark flex justify-around h-12 gap-4">
-            <Button onClick={() => { transition("CreateSphere", { spin: 'positive' }) }} type="button" variant="primary responsive">
+            <Button onClick={() => { transition("Onboarding1", { spin: 'positive' }) }} type="button" variant="primary responsive">
               <span className="text-success-500 dark:text-success-500">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

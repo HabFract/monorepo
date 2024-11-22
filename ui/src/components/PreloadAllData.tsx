@@ -48,17 +48,17 @@ export class DataLoadingQueue {
     if (this.isProcessing) return;
     this.isProcessing = true;
 
-    console.log('Start processing queue');
+    // console.log('Start processing queue');
     while (this.queue.length > 0) {
       const task = this.queue.shift();
       if (task) {
-        console.log('Executing task');
+        // console.log('Executing task');
         await task();
-        console.log('Task completed');
+        // console.log('Task completed');
       }
     }
 
-    console.log('Queue processing completed');
+    // console.log('Queue processing completed');
     this.isProcessing = false;
   }
 }
@@ -97,14 +97,14 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
       fetchDataRef.current = true;
 
       if (sphereNodes.length === 0) {
-        console.log('No spheres to fetch data for');
+        // console.log('No spheres to fetch data for');
         setPreloadCompleted(true);
         return;
       }
       try {
         for (const { id, eH, name } of sphereNodes) {
           await dataLoadingQueue.enqueue(async () => {
-            console.log(`Fetching data for sphere: ${name}`);
+            // console.log(`Fetching data for sphere: ${name}`);
             const variables = { sphereEntryHashB64: eH };
             const gql = await client;
             const data = gql && (await gql.query({
@@ -114,7 +114,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
             }));
 
             if (data && data?.data?.orbits) {
-              console.log(`Received orbits data for sphere: ${name}`, data.data.orbits);
+              // console.log(`Received orbits data for sphere: ${name}`, data.data.orbits);
               const orbits = extractEdges(data.data.orbits) as Orbit[];
               const indexedOrbitNodeDetails = Object.entries(
                 orbits.map(mapToCacheObject),
@@ -133,44 +133,43 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                 id,
                 Object.fromEntries(indexedOrbitNodeDetails),
               );
-              setAppState((prevState) => {
-                console.log('Previous app state:', prevState);
-                let updatedState = { ...prevState };
-                orbitHashes.sort((hashesA, hashesB) => {
-                  return +((!!hashesB?.parentEh)) - (+(!!hashesA?.parentEh))
-                }).forEach(orbitHashes => {
-                  updatedState = updateAppStateWithOrbit(updatedState, orbitHashes, true);
-                });
-
-                updatedState.spheres = {
-                  ...updatedState.spheres,
-                  currentSphereHash: id,
-                  byHash: {
-                    ...updatedState.spheres.byHash,
-                    [id]: {
-                      ...updatedState.spheres.byHash[id],
-                      details: {
-                        ...updatedState.spheres.byHash[id]?.details,
-                        entryHash: eH,
-                        name: name
-                      },
-                      hierarchyRootOrbitEntryHashes: orbitHashes
-                        .filter(hashes => typeof hashes.parentEh == 'undefined')
-                        .reduce((acc, hashes) => {
-                          !acc.includes(hashes.eH) && acc.push(hashes.eH);
-                          return acc
-                        }, [] as any),
-                    },
-                  },
-                };
-                console.log('New app state:', updatedState);
-                return updatedState;
+              const prevState = store.get(appStateAtom);
+              // console.log('Previous app state:', prevState);
+              let updatedState = { ...prevState };
+              orbitHashes.sort((hashesA, hashesB) => {
+                return +((!!hashesB?.parentEh)) - (+(!!hashesA?.parentEh))
+              }).forEach(orbitHashes => {
+                updatedState = updateAppStateWithOrbit(updatedState, orbitHashes, true);
               });
+
+              updatedState.spheres = {
+                ...updatedState.spheres,
+                currentSphereHash: id,
+                byHash: {
+                  ...updatedState.spheres.byHash,
+                  [id]: {
+                    ...updatedState.spheres.byHash[id],
+                    details: {
+                      ...updatedState.spheres.byHash[id]?.details,
+                      entryHash: eH,
+                      name: name
+                    },
+                    hierarchyRootOrbitEntryHashes: orbitHashes
+                      .filter(hashes => typeof hashes.parentEh == 'undefined')
+                      .reduce((acc, hashes) => {
+                        !acc.includes(hashes.eH) && acc.push(hashes.eH);
+                        return acc
+                      }, [] as any),
+                  },
+                },
+              };
+              console.log('New app state:', updatedState);
+              setAppState(updatedState);
               setCurentSphere({
                 actionHash: landingSphereId || id,
                 entryHash: landingSphereEh || eH,
               });
-              console.log(`Updated app state for sphere: ${name}`);
+              // console.log(`Updated app state for sphere: ${name}`);
             }
 
             await sleep(250);
@@ -179,7 +178,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
 
         await dataLoadingQueue.enqueue(async () => {
           await sleep(500);
-          console.log('All data loaded, setting preloadCompleted');
+          // console.log('All data loaded, setting preloadCompleted');
           setPreloadCompleted(true);
         });
       } catch (error) {
@@ -193,10 +192,10 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   );
 
   useEffect(() => {
-    console.log('Data:', data);
-    console.log('Sphere nodes:', sphereNodes);
+    // console.log('Data:', data);
+    // console.log('Sphere nodes:', sphereNodes);
     if (loadingSpheres) {
-      console.log('Loading spheres...');
+      // console.log('Loading spheres...');
       return;
     }
     if (error) {
@@ -205,12 +204,12 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
       return;
     }
     if (!data || sphereNodes.length === 0) {
-      console.log('No spheres available');
+      // console.log('No spheres available');
       setPreloadCompleted(true);
       return;
     }
     if (!fetchDataRef.current) {
-      console.log('Starting fetchData');
+      // console.log('Starting fetchData');
       fetchData();
     }
   }, [data, sphereNodes, loadingSpheres, error, fetchData]);
@@ -218,16 +217,16 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
 
   useEffect(() => {
     if (!preloadCompleted || transitionInitiatedRef.current) return;
-    console.log('preloadCompleted :>> ', preloadCompleted);
+    // console.log('preloadCompleted :>> ', preloadCompleted);
 
     if (onPreloadComplete) {
-      console.log('Calling onPreloadComplete');
+      // console.log('Calling onPreloadComplete');
       onPreloadComplete();
     } else {
-      console.log('Routing to landing page');
+      // console.log('Routing to landing page');
       transitionInitiatedRef.current = true;
       dataLoadingQueue.enqueue(async () => {
-        console.log('Transitioning to:', landingPage || "Vis");
+        // console.log('Transitioning to:', landingPage || "Vis");
         transition(landingPage || "Vis", { currentSphereDetails: sphereNodes[0] || undefined });
       });
     }

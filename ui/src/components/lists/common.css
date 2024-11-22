@@ -27,6 +27,10 @@
   padding-bottom: 1rem;
 }
 
+.swipe-up-screen-tab-container:not(.fully-expanded) .spheres-list {
+  padding-bottom: 14rem;
+}
+
 /* Scrollable Content Area
 -------------------------------------------------- */
 .orbits {

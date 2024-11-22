@@ -59,12 +59,7 @@ const SwipeUpTab: React.FC<SwipeUpTabProps> = ({
       const newHeight = ref.current.offsetHeight;
       setHeight(newHeight);
 
-      const unsubscribe = y.on("change", (value) => {
-        y.set(newHeight - initialY);
-      });
-
-      // Cleanup subscription
-      return () => unsubscribe();
+      y.set(newHeight - initialY);
     }
   }, [y, initialY]);
 

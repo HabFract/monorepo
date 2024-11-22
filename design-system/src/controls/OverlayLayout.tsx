@@ -19,7 +19,6 @@ export type OverlayLayoutProps = {
   currentStreak: number;
   longestStreak: number;
 
-  currentWins: WinData<Frequency.Rationals> | null;
   orbitFrequency: Frequency.Rationals;
 
   orbitSiblings: Array<OrbitDescendant>
@@ -41,7 +40,6 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   orbitSiblings,
   currentStreak,
   longestStreak,
-  currentWins,
   handlePersistWins,
   handleUpdateWorkingWins,
   workingWinDataForOrbit,
@@ -57,19 +55,23 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
     if (!workingWinDataForOrbit || !currentDate) return null;
     const dateString = currentDate.toLocaleString();
     const winData = workingWinDataForOrbit[dateString];
-    if (typeof winData == 'undefined') return 0;
-    return Array.isArray(winData) ? winData.filter(Boolean).length : winData ? 1 : 0;
-  }, [workingWinDataForOrbit, currentDate, currentOrbitDetails?.eH]);
+    setWins(winData == null ? 0 : 
+      Array.isArray(winData) ? winData.filter(Boolean).length : 
+      winData ? 1 : 0);
+    return winData == null ? 0 : 
+           Array.isArray(winData) ? winData.filter(Boolean).length : 
+           winData ? 1 : 0;
+
+  }, [workingWinDataForOrbit, currentDate]);
 
   const handleSaveWins = () => {
-    if (currentWins == null) return;
+    if (workingWinDataForOrbit == null) return;
     handlePersistWins()
   }
 
   useEffect(() => {
-    if (currentDateWins == null) return;
     setWins(currentDateWins);
-  }, [currentDateWins]);
+  }, [currentDateWins, workingWinDataForOrbit]);
 
   useEffect(() => {
     if (calendarRef.current) {
@@ -97,7 +99,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
                 <span></span>
               </motion.div>
               <span onPointerDownCapture={stopPropagation}>
-                <Calendar currentDate={currentDate} orbitFrequency={orbitFrequency} setNewDate={setNewDate} orbitWins={currentWins || {}}></Calendar>
+                <Calendar currentDate={currentDate} orbitFrequency={orbitFrequency} setNewDate={setNewDate} orbitWins={workingWinDataForOrbit || {}}></Calendar>
               </span>
             </motion.nav>
           </>

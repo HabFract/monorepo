@@ -117,7 +117,7 @@ function App({ children: pageComponent }) {
                 />
               ),
             }),
-          )({ currentSphereDetails: pageComponent.props.currentSphereDetails, newUser: !!userHasSpheres })
+          )({ ...pageComponent.props, newUser: !userHasSpheres })
         )}
       </main>
     </Flowbite>

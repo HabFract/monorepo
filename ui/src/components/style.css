@@ -537,6 +537,10 @@ ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"]:active {
   @apply bg-secondary;
 }
 
+.ant-menu-inline-collapsed-tooltip {
+  display: none !important;
+}
+
 ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] {
   overflow: initial;
   width: initial;
