@@ -116,7 +116,7 @@
 /* Action Card Variants
 -------------------------------------------------- */
 .action-card {
-  @apply rounded-xl dark:bg-surface-elevated-dark flex gap-2 px-4 py-3;
+  @apply rounded-xl dark:bg-surface-overlay-dark flex gap-2 px-4 py-3;
 }
 
 .action-card-icon {

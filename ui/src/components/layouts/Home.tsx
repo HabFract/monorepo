@@ -3,9 +3,10 @@ import './common.css'
 import { useStateTransition } from '../../hooks/useStateTransition';
 import { useState } from 'react';
 import { object, string } from 'yup';
-import { Button, SwipeUpScreenTab, TextInputField } from 'habit-fract-design-system';
+import { Button, getIconSvg, SwipeUpScreenTab, TextInputField } from 'habit-fract-design-system';
 import { ListSpheres } from '../lists';
 import { motion } from 'framer-motion';
+import { Popover, ListGroup } from 'flowbite-react';
 
 function HomeLayout({ startBtn, firstVisit = true }: any) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
@@ -16,6 +17,8 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
   const initialValues = {
     password: ""
   };
+
+  const routeToSettings = () => transition("Settings");
 
   return (
     <section className="home-layout">
@@ -38,11 +41,23 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
               src="assets/new-logo.png"
               alt='Plannit logo'
             />
-            <img
-              className="avatar-placeholder"
-              src="assets/icons/avatar-placeholder.svg"
-              alt='Avatar Placeholder'
-            />
+            <div className="avatar-menu mt-2">
+              <Popover
+                content={<ListGroup
+                  className="list-group-override w-32">
+                  <ListGroup.Item onClick={() => { }} icon={getIconSvg('user')}>Profile</ListGroup.Item>
+                  <ListGroup.Item onClick={routeToSettings} icon={getIconSvg('settings')}>Settings</ListGroup.Item>
+                </ListGroup>
+                }
+              >
+                <Button type='button' variant='circle-icon-lg'>
+                  <img
+                    src="assets/icons/avatar-placeholder.svg"
+                    alt='Avatar Placeholder'
+                  />
+                </Button>
+              </Popover>
+            </div>
           </div>
           <span>
             <h1>Welcome back! 👋</h1>
@@ -61,7 +76,7 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
                   <path d="M400 287a113 113 0 1 0 0 226 113 113 0 0 0 0-226zm59 128h-44v44a15 15 0 1 1-30 0v-44h-44a15 15 0 1 1 0-30h44v-44a15 15 0 1 1 30 0v44h44a15 15 0 1 1 0 30z" />
                   <path d="M578 222a252 252 0 0 0-356 356 252 252 0 0 0 356-356zM400 543a143 143 0 1 1 0-286 143 143 0 0 1 0 286z" />
                 </svg>
-            </span>To Do</Button>
+              </span>To Do</Button>
             <Button isDisabled={true} onClick={() => { transition("CreateSphere", { spin: 'negative' }) }} type="button" variant="primary responsive"><span className="text-success-500"><img src="assets/icons/negative-spin.svg" className='w-8 h-8 my-1 mr-2 opacity-75' /></span>Not To Do</Button>
           </div>
         </header>

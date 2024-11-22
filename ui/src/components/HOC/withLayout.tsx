@@ -10,7 +10,7 @@ import { currentSphereHashesAtom, store } from "../../state";
 import { useModal } from "../../contexts/modal";
 import { AppMachine } from "../../main";
 import { useStateTransition } from "../../hooks/useStateTransition";
-import React from "react";
+import SettingsLayout from "../layouts/SettingsLayout";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -81,6 +81,10 @@ const withLayout = (
         if (state == "Home")
           return <Home firstVisit={props?.newUser}></Home>;
         return withPageTransition(component);
+      case state == "Settings":
+        return <SettingsLayout>
+          {component}
+        </SettingsLayout>
       case state == "Vis":
         return <VisLayout title={props.currentSphereDetails?.name}>
           {component}

@@ -7,9 +7,11 @@ import OrbitTree from "./components/vis/OrbitTree";
 import { renderVis } from "./components/vis/helpers";
 
 import { StateTransitions } from "./state/types/stateMachine";
+import Settings from "./components/Settings";
 
 export type AppState = // Currently just for routing in the state machine
   | "Home"
+  | "Settings"
   | "PreloadAndCache"
   | "Onboarding1"
   | "Onboarding2"
@@ -39,6 +41,7 @@ export const initialState: AppStateStore = {
 
 export const routes: Routes = {
   Home: <Home />,
+  Settings: <Settings version="" spheres={{} as any} />,
   PreloadAndCache: <PreloadAndCache />,
   Vis: (() => renderVis(OrbitTree))(),
   Onboarding1: <CreateSphere editMode={false} />,
@@ -69,7 +72,8 @@ const lists = ["ListSpheres", "ListOrbits"];
 
 export const AppTransitions: StateTransitions<AppState> = {
   PreloadAndCache: ["Vis", "CreateSphere", "CreateOrbit"],
-  Home: ["Home", ...lists, ...forms, "Vis", "Onboarding1", "PreloadAndCache"],
+  Home: ["Settings", "Home", ...lists, ...forms, "Vis", "Onboarding1", "PreloadAndCache"],
+  Settings: ["Home"],
   Onboarding1: ["Home", "Onboarding2"],
   Onboarding2: ["Onboarding1", "Onboarding2", "Onboarding3"],
   Onboarding3: ["Onboarding2", "Onboarding3", "Vis"],

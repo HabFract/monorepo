@@ -546,18 +546,6 @@ ul.ant-menu-inline .ant-menu-submenu-title[role="menuitem"] {
   width: initial;
 }
 
-.danger-zone,
-.feedback-link,
-.cache-settings,
-.check-updates {
-  @apply flex items-center justify-between gap-8 pl-4 pr-2 mb-4 border-2;
-  border-radius: 1.5rem;
-}
-
-.danger-zone {
-  @apply border-danger;
-}
-
 @media screen and (min-width: 440px) {
   .page-header h1 {
     @apply text-2xl;

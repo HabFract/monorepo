@@ -29,12 +29,21 @@
   padding-top: var(--vertical-section-spacing);
 }
 
-.home-layout .avatar-placeholder {
-  @apply w-12 h-12;
+.home-layout .avatar-menu button {
+  @apply w-full h-12 cursor-pointer;
+}
+.home-layout .avatar-menu button div {
+  @apply p-0;
 }
 
 .home-layout .returning-cta .logo {
   @apply m-0;
+}
+
+.home-layout header div[data-testid="flowbite-popover"] {
+  left: initial !important;
+  right: 12rem !important;
+  top: 1rem !important;
 }
 
 .home-layout .returning-cta {
@@ -69,9 +78,17 @@
   background-color: transparent;
 }
 
-.form-layout, .list-layout {
+.form-layout, .list-layout, .settings-layout {
   height: 100%;
   width: 100%;
+}
+
+.settings-layout, .settings-layout section {
+  @apply flex flex-col w-full gap-4 p-2 bg-transparent;
+}
+
+.settings-layout {
+  @apply gap-0 pb-20 overflow-auto;
 }
 
 .create-form .form-layout .content {
