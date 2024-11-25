@@ -553,6 +553,7 @@ div.handle span {
   left: initial !important;
   right: 16rem !important;
   top: -.5rem !important;
+  transform: none !important;
 }
 
 .list-sort-filter ul.list-none {

@@ -128,9 +128,7 @@ export const updateAppStateWithOrbit = (
         leafNodeHashes: [], // TODO: see if this needs to be derived now
       };
 
-      updatedState.hierarchies.byRootOrbitEntryHash = {
-        [orbitDetails.eH]: newHierarchy,
-      };
+      updatedState.hierarchies.byRootOrbitEntryHash[orbitDetails.eH] = newHierarchy;
 
       // Remove old hierarchy if it exists and is different from the new one
       if (oldOrbitId && oldOrbitId !== orbitDetails.eH) {

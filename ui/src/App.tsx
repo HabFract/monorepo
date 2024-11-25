@@ -92,14 +92,6 @@ function App({ children: pageComponent }) {
           pageComponent &&
           withLayout(
             cloneElement(pageComponent, {
-              // Only Renders when state == "Home"
-              startBtn: state.match("Home") ? (
-                <Button type={"button"} variant={"primary"} onClick={() => transition("Onboarding1")}>
-                  Sign In
-                </Button>
-              ) : (
-                <></>
-              ),
               // Only Renders when state includes "Onboarding"
               headerDiv: state.match("Onboarding") && (
                 <OnboardingHeader

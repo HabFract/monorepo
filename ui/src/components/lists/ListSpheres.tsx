@@ -9,11 +9,10 @@ import "./common.css";
 import { Spinner, SystemCalendarCard } from "habit-fract-design-system";
 import { extractEdges } from "../../graphql/utils";
 import { useStateTransition } from "../../hooks/useStateTransition";
-import { useToast } from "../../contexts/toast";
-import { currentDayAtom, currentSphereHashesAtom, sphereHasCachedNodesAtom, store } from "../../state";
+import { appStateChangeAtom, currentDayAtom, currentSphereHashesAtom, sphereHasCachedNodesAtom, store } from "../../state";
 import { useSetAtom } from "jotai";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { AppMachine } from "../../main";
 
 function ListSpheres() {
@@ -21,11 +20,6 @@ function ListSpheres() {
 
   const { loading, error, data } = useGetSpheresQuery();
   const spheres = useMemo(() => extractEdges(data!.spheres) as Sphere[], [data])
-  const sphereOrbitsAllCached = useMemo(() => {
-    return spheres && spheres.every(sphere => store.get(sphereHasCachedNodesAtom(sphere.id)))}, [spheres])
-
-  const { showToast, hideToast } = useToast();
-  const setCurrentSphere = useSetAtom(currentSphereHashesAtom);
 
   if (loading) return <Spinner />;
   if (error) return <p>Error : {error.message}</p>;
@@ -40,9 +34,14 @@ function ListSpheres() {
   }
   function routeToVis(sphere: Sphere) {
     AppMachine.state.currentState == "Vis";
-    console.log('{currentSphereDetails: {...sphere, ...sphere.metadata}} :>> ', {currentSphereDetails: {...sphere, ...sphere.metadata}});
-    transition("Vis", {currentSphereDetails: {...sphere, ...sphere.metadata}});
+    transition("Vis", { currentSphereDetails: { ...sphere, ...sphere.metadata } });
   }
+
+  const handleSetCurrentSphere = (sphereId: ActionHashB64) => {
+    const state = store.get(appStateChangeAtom);
+    state.spheres.currentSphereHash = sphereId;
+    store.set(appStateChangeAtom, state);
+  };
 
   return (
     <div className="spheres-list">
@@ -56,12 +55,7 @@ function ListSpheres() {
             handleCreateAction={() => routeToCreatePlannit(sphere.eH)}
             handleListAction={() => routeToPlannitList(sphere.id)}
             handleVisAction={() => routeToVis(sphere)}
-            setSphereIsCurrent={() => {
-              setCurrentSphere({
-                entryHash: sphere.eH,
-                actionHash: sphere.id,
-              });
-            }}
+            setSphereIsCurrent={() => handleSetCurrentSphere(sphere.id)}
           />
         )
       })}

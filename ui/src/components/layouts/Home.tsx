@@ -8,7 +8,7 @@ import { ListSpheres } from '../lists';
 import { motion } from 'framer-motion';
 import { Popover, ListGroup } from 'flowbite-react';
 
-function HomeLayout({ startBtn, firstVisit = true }: any) {
+function HomeLayout({ firstVisit = true }: any) {
   const [state, transition, params] = useStateTransition(); // Top level state machine and routing
   const validationSchema = object({
     password: string().min(8).max(18)
@@ -45,7 +45,7 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
               <Popover
                 content={<ListGroup
                   className="list-group-override w-32">
-                  <ListGroup.Item onClick={() => { }} icon={getIconSvg('user')}>Profile</ListGroup.Item>
+                  <ListGroup.Item disabled={true} onClick={() => { }} icon={getIconSvg('user')}>Profile</ListGroup.Item>
                   <ListGroup.Item onClick={routeToSettings} icon={getIconSvg('settings')}>Settings</ListGroup.Item>
                 </ListGroup>
                 }
@@ -118,7 +118,9 @@ function HomeLayout({ startBtn, firstVisit = true }: any) {
               </Form>
             }}
           </Formik>
-          {startBtn}
+          <Button type={"button"} variant={"primary"} onClick={() => transition("Onboarding1")}>
+            Sign In
+          </Button>
         </div>
         :
         <SwipeUpScreenTab verticalOffset={(12 * 16) + 8} useViewportHeight={false}>

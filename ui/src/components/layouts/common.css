@@ -9,9 +9,6 @@
   @apply w-64 pl-2 mb-2;
 }
 
-.home-layout .returning-cta .logo {
-  @apply w-auto h-12 p-0 pt-2 my-2;
-}
 .home-layout .welcome-cta,
 .home-layout .returning-cta {
   width: 100%;
@@ -34,25 +31,6 @@
 }
 .home-layout .avatar-menu button div {
   @apply p-0;
-}
-
-.home-layout .returning-cta .logo {
-  @apply m-0;
-}
-
-.home-layout header div[data-testid="flowbite-popover"] {
-  left: initial !important;
-  right: 12rem !important;
-  top: 1rem !important;
-}
-
-.home-layout .returning-cta {
-  @apply gap-4 px-4 mt-4;
-  height: 12rem;
-}
-
-.home-layout .returning-cta > div {
-  @apply flex items-center justify-between;
 }
 
 .home-layout .login-options, .home-layout .spaces-tab {
@@ -83,6 +61,28 @@
   width: 100%;
 }
 
+
+/* Home (Returning User) */
+.home-layout .returning-cta .logo {
+  @apply w-auto h-12 p-0 pt-2 my-2;
+}
+
+.home-layout .returning-cta .logo {
+  @apply m-0;
+}
+
+.home-layout .returning-cta {
+  @apply gap-4 px-4 mt-4;
+  height: 12rem;
+}
+
+.home-layout .returning-cta > div {
+  @apply flex items-center justify-between;
+}
+
+
+/* Settings */
+
 .settings-layout, .settings-layout section {
   @apply flex flex-col w-full gap-4 p-2 bg-transparent;
 }
@@ -106,6 +106,17 @@
 }
 
 
+/* List */
+
+.list.page-container {
+  margin-top: 0 !important;
+  height: fit-content;
+  display: flex;
+  position: fixed;
+  top: 64px;
+}
+
+
 /* Onboarding */
 
 .onboarding-layout,
@@ -114,10 +125,25 @@
 }
 
 .onboarding-continue {
-  @apply w-[100vw] dark:bg-surface-top-dark place-content-center inset-x-0 bottom-0 flex grid p-4 bg-gray-200;
+  @apply w-[100vw] p-4 dark:bg-surface-top-dark inset-x-0 bottom-0 flex bg-gray-200;
+  height: 5rem;
 }
 
-/* Home (Returning User) */
+
+/* Header Popover Positioning */
+/* -- Home */
+.home-layout header div[data-testid="flowbite-popover"] {
+  left: initial !important;
+  right: 12rem !important;
+  top: 1rem !important;
+  transform: none !important;
+}
+/* -- Vis */
+.vis-layout .header-action-container div[role="dialog"] {
+  left: calc(100% - 15.25rem) !important;
+  top: 0 !important;
+  transform: none !important;
+}
 
 /* Header Positioning */
 .page-container:not(*.home):not(.onboarding) {
@@ -127,14 +153,6 @@
 .header-action {
   @apply fixed inset-x-0 top-0;
   z-index: 10;
-}
-
-.list.page-container {
-  margin-top: 0 !important;
-  height: fit-content;
-  display: flex;
-  position: fixed;
-  top: 64px;
 }
 
 .home .side-nav, .list.page-container .side-nav, .create-form.page-container .side-nav{

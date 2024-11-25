@@ -53,34 +53,34 @@ const Settings: React.FC<SettingsProps> = ({
       },
     ]);
   }
-  
+
   return (<>
     <section>
       {!isSmallScreen() && (
-        <ActionCard 
-          title="Check/Download" 
-          runAction={() => checkForAppUpdates(true)} 
+        <ActionCard
+          title="Check/Download"
           body="Check for Updates"
           variant="button"
           button={
             <Button
+              onClick={() => checkForAppUpdates(true)}
               variant={"primary responsive"}
               type="button"
             >Check</Button>
           }
         />
       )}
-      
+
       <ActionCard
         title="Clear Cache"
-        runAction={() => {
-          clear();
-          transition("Home");
-        }}
-        body="Some data is stored in your application runtime (currently not encrypted) to make the experience smoother. Click here to get rid of it all."
+        body="Clear cache to reset tracked data, improve app speed, and free storage."
         variant="button"
         button={
           <Button
+            onClick={() => {
+              clear();
+              transition("Home");
+            }}
             variant={"primary responsive"}
             type="button"
           >Clear</Button>
@@ -89,34 +89,36 @@ const Settings: React.FC<SettingsProps> = ({
 
       <ActionCard
         title="Bugs/Feedback"
-        runAction={() => {
-          window.open("https://habitfract.net/feedback/", "_blank");
-        }}
-        body={`Click this link to open a window to a feedback form (requires an internet connection) so that you can report comments, feedback or bug reports. If you are reporting a bug, please let me know which operating system you are using and any other relevant information. You will need to ${isSmallScreen() ? "" : "right click and "}press back (or restart) to come back to the app. Thanks!`}
+        body={`Report bugs or send feedback to help enhance your app experience and performance.`}
         variant="button"
         button={
           <Button
             variant={"primary responsive"}
             type="button"
-          >Submit</Button>
+            onClick={((e) => {
+              e.currentTarget.querySelector("a")?.click();
+            }) as any}
+          ><a href="https://habitfract.net/feedback/" className="text-white">Open Feedback Form
+          </a>
+          </Button>
         }
       />
     </section>
-    
+
     <section className="danger-zone">
       <ActionCard
         title="Delete All Data"
         runAction={() => {
-          ask(`Delete all data and restart?`, {
-            title: "Delete All Data",
+          ask(`Reset data?`, {
+            title: "Confirm Resetting Data",
             kind: "info",
-            okLabel: "Delete and Restart",
+            okLabel: "Reset",
             cancelLabel: "Cancel",
           }).then((confirm) => {
             if (confirm) deleteAllData();
           });
         }}
-        body="Your data is persisted in an encrypted personal ledger. Click 'Reset Data' to reset that ledger and start again."
+        body="Reset your all data, removing all tracked progress and settings."
         variant="button"
         button={
           <Button

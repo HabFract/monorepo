@@ -15,7 +15,7 @@
     "dev": "dotenv -- concurrently \"npm run start:backend-services\" \"npm run start:backend-dev\" \"VITE_NODE_ENV=dev npm run start:frontend\" \"cd ui && npm run generate:watch\" \"npm run open-browser\"",
     "test": "npm run test:zomes; npm run test:ui",
     "test:ui": "pnpm run --dir tests test:ui",
-    "build:frontend": "cd ui && npm run generate && npm run build",
+    "build:frontend": "cd ui && npm run build",
     "start:frontend": "cd ui && npm run start",
     "open-browser": "sleep 15 && open-cli http://localhost:${VITE_UI_PORT}",
     "start:backend-services": "cd crates && npm run start:precheck ",

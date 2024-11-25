@@ -154,7 +154,7 @@ button.btn.btn-secondary:not(.nohover):hover {
 }
 
 .btn-info {
-  @apply flex justify-between w-4 h-4 gap-2;
+  @apply flex justify-between w-4 h-4 gap-2 mr-1;
 }
 
 .btn.btn-icon {
@@ -171,6 +171,9 @@ button.btn.btn-secondary:not(.nohover):hover {
 }
 .btn.btn-icon svg, .btn.btn-circle-icon svg{ 
   @apply w-4 h-4;
+}
+.header-action-container .btn.btn-icon svg, .header-action-container .btn.btn-circle-icon svg{ 
+  @apply w-6 h-6;
 }
 
 .btn.btn-icon:hover {
@@ -220,6 +223,10 @@ button.btn.btn-danger.outlined {
 /* Onboarding Button */
 .btn-onboarding {
   @apply bg-primary text-text hover:bg-primary-500 hover:text-text dark:bg-primary-dark dark:text-text-dark dark:hover:bg-primary-500 dark:hover:text-text-dark w-full mt-4 font-sans font-normal leading-normal border-0;
+}
+/* Popover Button */
+div[data-testid="flowbite-popover"] button {
+  justify-content: space-between !important;
 }
 
 /* Dropdown Button Overrides

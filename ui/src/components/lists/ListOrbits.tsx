@@ -93,7 +93,7 @@ const ListOrbits: React.FC<ListOrbitsProps> = () => {
           <><span className="w-6 h-6 mt-2">{getIconSvg("tree-vis")({})}</span><span className="block ml-4">Visualise</span></>
         </Button>
         <Button onClick={routeToCreateOrbit} type="button" variant="primary responsive">
-        <><span className="w-3 h-3">{getIconSvg("plus")({})}</span><span className="block ml-4">Add Plannit</span></>
+        <><span className="w-auto h-auto">{getIconSvg("plus")({})}</span><span className="block ml-4">Add Plannit</span></>
         </Button>
         <div className="orbits">
           {sortedOrbits.map((orbit: Orbit) => (

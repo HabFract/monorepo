@@ -22,7 +22,8 @@ const OnboardingHeader: React.ForwardRefExoticComponent<
   ({ }, ref: ForwardedRef<HTMLDivElement>) => {
     const [state, transition, params] = useStateTransition(); // Top level state machine and routing
     if (!state.match("Onboarding")) return <></>;
-
+    const returningUser = !!params.spin; // Indicates if the onboarding flow has previously been gone through
+console.log('params :>> ', params);
     /**
      * Handles the back action in the onboarding flow
      * Determines the previous state and required props based on current state
@@ -47,7 +48,7 @@ const OnboardingHeader: React.ForwardRefExoticComponent<
     const currentStepNumber = +(state.match(/Onboarding(\d+)/)?.[1] || 0);
 
     return (
-      <header>
+      <header className={returningUser ? "returning-user" : "new-user"}>
         <HeaderAction
           title={`Put a Plan in Motion`}
           icon1={getIconSvg('back')}
@@ -57,9 +58,13 @@ const OnboardingHeader: React.ForwardRefExoticComponent<
         <div ref={ref}>
           <ProgressBar
             stepNames={
-              [
+              !returningUser ? [
                 "Create Password",
                 `Create ${MODEL_DISPLAY_VALUES['sphere']}`,
+                `Create ${MODEL_DISPLAY_VALUES['orbit']}`,
+                `Break Up ${MODEL_DISPLAY_VALUES['orbit']}`,
+                "Visualize",
+              ] : [`Create ${MODEL_DISPLAY_VALUES['sphere']}`,
                 `Create ${MODEL_DISPLAY_VALUES['orbit']}`,
                 `Break Up ${MODEL_DISPLAY_VALUES['orbit']}`,
                 "Visualize",

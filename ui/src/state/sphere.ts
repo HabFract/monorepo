@@ -1,13 +1,14 @@
 import { atom } from "jotai";
 import { appStateAtom } from "./store";
-import { SphereDetails, SphereHashes } from "./types/sphere";
+import { SphereDetails } from "./types/sphere";
 import { nodeCache } from "./store";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { getOrbitNodeDetailsFromEhAtom } from "./orbit";
 import { AppState } from "./types/store";
 
 /**
- * Read-write atom for the current sphere's hashes or null if the current hash doesn't resolve to a sphere's details
+ * Read-write atom for the current sphere's hashes. Returns current SphereHashes or null if the current hash doesn't resolve to a sphere's details.
+ * The setter takes an ActionHashB64 and updates it in the AppState.
  * @returns {SphereHashes | null}
  */
 export const currentSphereHashesAtom = atom(
@@ -23,24 +24,14 @@ export const currentSphereHashesAtom = atom(
         }
       : null;
   },
-  (_get, set, newSphereHashes: SphereHashes) => {
-    const prevState = _get(appStateAtom);
-    const newCurrentSphereHash = newSphereHashes.actionHash || "";
+  (get, set, newSphereActionHash: ActionHashB64) => {
+    const prevState = get(appStateAtom);
+    if(!newSphereActionHash) return;
     const newState = {
       ...prevState,
       spheres: {
         ...prevState.spheres,
-        currentSphereHash: newCurrentSphereHash,
-        byHash: {
-          ...prevState.spheres.byHash,
-          [newCurrentSphereHash]: {
-            ...prevState.spheres.byHash[newCurrentSphereHash],
-            details: {
-              ...prevState.spheres.byHash[newCurrentSphereHash]?.details,
-              entryHash: newSphereHashes.entryHash,
-            },
-          },
-        },
+        currentSphereHash: newSphereActionHash
       },
     } as AppState;
     set(appStateAtom, newState);

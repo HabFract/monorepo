@@ -11,6 +11,7 @@ import { useModal } from "../../contexts/modal";
 import { AppMachine } from "../../main";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import SettingsLayout from "../layouts/SettingsLayout";
+import React from "react";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -36,23 +37,22 @@ interface WithLayoutProps {
 const withLayout = (
   component: ReactNode,
 ): FC<WithLayoutProps> => {
-  const state = AppMachine.state.currentState; // Top level state machine and routing
-  const { showModal } = useModal();
-  const [_, transition, params] = useStateTransition(); // Top level state machine and routing
-
-  const [
-    runDeleteSphere,
-    { loading: loadingDelete, error: errorDelete, data: dataDelete },
-  ] = useDeleteSphereMutation({
-    refetchQueries: ["getSpheres"],
-  });
-
-  return (props: WithLayoutProps): ReactNode => {
+    return ((props: WithLayoutProps): ReactNode => {
+    const state = AppMachine.state.currentState; // Top level state machine and routing
+    const { showModal } = useModal();
+    const [_, transition, params] = useStateTransition(); // Top level state machine and routing
+  
+    const [
+      runDeleteSphere,
+      { loading: loadingDelete, error: errorDelete, data: dataDelete },
+    ] = useDeleteSphereMutation({
+      refetchQueries: ["getSpheres"],
+    });
     if(props?.currentSphereDetails?.eH && props.currentSphereDetails.eH !== store.get(currentSphereHashesAtom)?.entryHash) {
       const eH = props?.currentSphereDetails?.eH;
       const id = props?.currentSphereDetails?.id;
       console.log('set current Sphere to :>> ',  {entryHash: eH, actionHash: id});
-      store.set(currentSphereHashesAtom, {entryHash: eH, actionHash: id})
+      store.set(currentSphereHashesAtom, id)
     }
 
     const handleDeleteSphere = () => {
@@ -76,7 +76,7 @@ const withLayout = (
     // console.log('Layout props', props)
     switch (true) {
       case !!state.match("Onboarding"):
-        return <Onboarding>{withPageTransition(React.cloneElement(component as any, {props}))}</Onboarding>;
+        return <Onboarding>{withPageTransition(component)}</Onboarding>;
       case ["Home", "PreloadAndCache"].includes(state):
         if (state == "Home")
           return <Home firstVisit={props?.newUser}></Home>;
@@ -86,7 +86,10 @@ const withLayout = (
           {component}
         </SettingsLayout>
       case state == "Vis":
-        return <VisLayout title={props.currentSphereDetails?.name}>
+        return <VisLayout
+          title={props.currentSphereDetails?.name}
+          handleDeleteSphere={handleDeleteSphere}
+        >
           {component}
         </VisLayout>
       case ["CreateOrbit", "CreateSphere"].includes(state):
@@ -102,7 +105,7 @@ const withLayout = (
             <>{component}</>
         );
     }
-  };
+  });
 };
 
 export default withLayout;

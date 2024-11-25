@@ -15,6 +15,8 @@ export type ButtonVariant =
   | "circle-icon-lg"
   | "circle-icon btn-primary"
   | "circle-icon btn-neutral"
+  | "circle-icon-lg btn-primary"
+  | "circle-icon-lg btn-neutral"
   | "circle-icon btn-secondary"
   | "responsive"
   | "primary responsive"

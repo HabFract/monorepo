@@ -15,8 +15,25 @@
 
 /* Modal Inner Container */
 [data-testid="modal-overlay"] > div > div {
-  @apply relative dark:bg-surface-elevated-dark flex max-h-[95dvh] min-h-[80dvh] flex-col rounded-2xl;
+  @apply relative dark:bg-surface-elevated-dark flex max-h-[90dvh] min-h-[70dvh] flex-col rounded-2xl;
   overflow: hidden;
+}
+
+
+/* Small Modal Content Container */
+[data-testid="modal-overlay"] > div:has(div > div.sm.flex-1) {
+  margin-top: -4rem;
+  place-content: center;
+  display: grid;
+}
+/* Small Modal Inner Container */
+[data-testid="modal-overlay"] > div > div:has(div.sm.flex-1) {
+  min-height: 33vh;
+  max-height: 50vh;
+}
+/* Small Modal Content */
+[data-testid="modal-overlay"] > div > div > div.sm.flex-1 {
+  @apply mb-0;
 }
 
 /* Modal Inner Container Paragraph */

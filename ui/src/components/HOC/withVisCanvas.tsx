@@ -137,7 +137,7 @@ export function withVisCanvas<T extends IVisualization>(
     },
       [currentOrbitDetails, currentDate]);
     const { workingWinDataForOrbit, handleUpdateWorkingWins } = withWinData();
-    console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
+    // console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
     const skipFlag = !currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit || typeof workingWinDataForOrbit !== 'object';
     const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
       variables: {

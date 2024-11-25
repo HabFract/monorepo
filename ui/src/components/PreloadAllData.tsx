@@ -17,6 +17,24 @@ import { updateAppStateWithOrbit } from "../hooks/gql/utils";
 import { sleep } from "./lists/OrbitSubdivisionList";
 import { Spinner } from "habit-fract-design-system";
 
+/** Flag to enable/disable verbose logging */
+const VERBOSE_LOGGING = false;
+
+/**
+ * Conditional logging function
+ * @param {string} message - The message to log
+ * @param {any} [data] - Optional data to log
+ */
+const log = (message: string, data?: any) => {
+  if (VERBOSE_LOGGING) {
+    if (data) {
+      console.log(message, data);
+    } else {
+      console.log(message);
+    }
+  }
+};
+
 interface PreloadAllDataProps {
   landingSphereEh?: EntryHashB64;
   landingSphereId?: ActionHashB64;
@@ -24,18 +42,35 @@ interface PreloadAllDataProps {
   onPreloadComplete?: () => void;
 }
 
+/**
+ * DataLoadingQueue class for managing asynchronous tasks
+ */
 export class DataLoadingQueue {
-  private queue: (() => Promise<void>)[] = [];
+  private queue: { id: number; task: () => Promise<void> }[] = [];
   private isProcessing: boolean = false;
+  private taskId = 0;
 
+  /**
+   * Enqueue a new task
+   * @param {() => Promise<void>} task - The task to enqueue
+   * @returns {Promise<void>}
+   */
   enqueue(task: () => Promise<void>) {
+    const id = this.taskId++;
+    log(`Enqueueing task ${id}`);
     return new Promise<void>((resolve, reject) => {
-      this.queue.push(async () => {
-        try {
-          await task();
-          resolve();
-        } catch (error) {
-          reject(error);
+      this.queue.push({
+        id,
+        task: async () => {
+          try {
+            log(`Starting task ${id}`);
+            await task();
+            log(`Completed task ${id}`);
+            resolve();
+          } catch (error) {
+            console.error(`Error in task ${id}:`, error);
+            reject(error);
+          }
         }
       });
       if (!this.isProcessing) {
@@ -44,25 +79,30 @@ export class DataLoadingQueue {
     });
   }
 
+  /**
+   * Process the queue of tasks
+   */
   private async processQueue() {
     if (this.isProcessing) return;
     this.isProcessing = true;
 
-    // console.log('Start processing queue');
+    log('Start processing queue', { queueLength: this.queue.length });
     while (this.queue.length > 0) {
-      const task = this.queue.shift();
-      if (task) {
-        // console.log('Executing task');
-        await task();
-        // console.log('Task completed');
-      }
+      const { id, task } = this.queue.shift()!;
+      log(`Executing task ${id}`);
+      await task();
+      log(`Task ${id} completed`);
     }
 
-    // console.log('Queue processing completed');
+    log('Queue processing completed');
     this.isProcessing = false;
   }
 }
 
+/**
+ * PreloadAllData component for preloading and managing application state
+ * @param {PreloadAllDataProps} props - Component props
+ */
 const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   landingSphereEh,
   landingSphereId,
@@ -73,7 +113,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   const [preloadCompleted, setPreloadCompleted] = useState(false);
   const transitionInitiatedRef = useRef(false);
 
-  const setAppState = useSetAtom(appStateAtom);
+  const [appState, setAppState] = useAtom(appStateAtom);
   const setNodeCache = useSetAtom(nodeCache.set);
   const setCurentSphere = useSetAtom(currentSphereHashesAtom);
 
@@ -90,21 +130,27 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   const dataLoadingQueue = useMemo(() => new DataLoadingQueue(), []);
 
   const fetchDataRef = useRef(false);
+  const prevAppStateRef = useRef(appState);
 
+  /**
+   * Fetch data for all spheres
+   */
   const fetchData = useCallback(
     async () => {
       if (fetchDataRef.current) return;
       fetchDataRef.current = true;
 
+      log('fetchData started', { sphereNodes });
+
       if (sphereNodes.length === 0) {
-        // console.log('No spheres to fetch data for');
+        log('No spheres to fetch data for');
         setPreloadCompleted(true);
         return;
       }
       try {
         for (const { id, eH, name } of sphereNodes) {
           await dataLoadingQueue.enqueue(async () => {
-            // console.log(`Fetching data for sphere: ${name}`);
+            log(`Starting to fetch data for sphere: ${name}`);
             const variables = { sphereEntryHashB64: eH };
             const gql = await client;
             const data = gql && (await gql.query({
@@ -114,7 +160,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
             }));
 
             if (data && data?.data?.orbits) {
-              // console.log(`Received orbits data for sphere: ${name}`, data.data.orbits);
+              log(`Received orbits data for sphere: ${name}`, data.data.orbits);
               const orbits = extractEdges(data.data.orbits) as Orbit[];
               const indexedOrbitNodeDetails = Object.entries(
                 orbits.map(mapToCacheObject),
@@ -133,8 +179,9 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                 id,
                 Object.fromEntries(indexedOrbitNodeDetails),
               );
+              
               const prevState = store.get(appStateAtom);
-              // console.log('Previous app state:', prevState);
+              log(`Updating state for sphere: ${name}`, { prevState });
               let updatedState = { ...prevState };
               orbitHashes.sort((hashesA, hashesB) => {
                 return +((!!hashesB?.parentEh)) - (+(!!hashesA?.parentEh))
@@ -163,13 +210,11 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                   },
                 },
               };
-              console.log('New app state:', updatedState);
+              log(`Updated state for sphere: ${name}`, { updatedState });
               setAppState(updatedState);
-              setCurentSphere({
-                actionHash: landingSphereId || id,
-                entryHash: landingSphereEh || eH,
-              });
-              // console.log(`Updated app state for sphere: ${name}`);
+              
+              setCurentSphere(landingSphereId || id);
+              log(`Finished processing sphere: ${name}`);
             }
 
             await sleep(250);
@@ -177,14 +222,18 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
         }
 
         await dataLoadingQueue.enqueue(async () => {
+          log('Before final sleep');
           await sleep(500);
-          // console.log('All data loaded, setting preloadCompleted');
+          log('After final sleep, before setting preloadCompleted');
+          const finalState = store.get(appStateAtom);
+          log('Final state before setting preloadCompleted:', finalState);
           setPreloadCompleted(true);
+          log('After setting preloadCompleted');
         });
       } catch (error) {
         console.error("Error in fetchData:", error);
       } finally {
-        setPreloadCompleted(true);
+        log('fetchData completed');
         fetchDataRef.current = false;
       }
     },
@@ -192,10 +241,10 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   );
 
   useEffect(() => {
-    // console.log('Data:', data);
-    // console.log('Sphere nodes:', sphereNodes);
+    log('Data:', data);
+    log('Sphere nodes:', sphereNodes);
     if (loadingSpheres) {
-      // console.log('Loading spheres...');
+      log('Loading spheres...');
       return;
     }
     if (error) {
@@ -204,33 +253,56 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
       return;
     }
     if (!data || sphereNodes.length === 0) {
-      // console.log('No spheres available');
+      log('No spheres available');
       setPreloadCompleted(true);
       return;
     }
     if (!fetchDataRef.current) {
-      // console.log('Starting fetchData');
+      log('Starting fetchData');
       fetchData();
     }
   }, [data, sphereNodes, loadingSpheres, error, fetchData]);
 
-
   useEffect(() => {
+    log('useEffect triggered', { preloadCompleted, transitionInitiatedRef: transitionInitiatedRef.current });
     if (!preloadCompleted || transitionInitiatedRef.current) return;
-    // console.log('preloadCompleted :>> ', preloadCompleted);
+    log('preloadCompleted :>> ', preloadCompleted);
 
     if (onPreloadComplete) {
-      // console.log('Calling onPreloadComplete');
+      log('Calling onPreloadComplete');
       onPreloadComplete();
     } else {
-      // console.log('Routing to landing page');
+      log('Routing to landing page');
       transitionInitiatedRef.current = true;
       dataLoadingQueue.enqueue(async () => {
-        // console.log('Transitioning to:', landingPage || "Vis");
+        log('Before transitioning');
+        const finalState = store.get(appStateAtom);
+        log('Final state before transition:', finalState);
+        log('Transitioning to:', landingPage || "Vis");
         transition(landingPage || "Vis", { currentSphereDetails: sphereNodes[0] || undefined });
+        log('After transitioning');
       });
     }
   }, [preloadCompleted, dataLoadingQueue, transition, landingPage, sphereNodes, onPreloadComplete]);
+
+  useEffect(() => {
+    const currentAppState = store.get(appStateAtom);
+    log('AppState changed:', { 
+      prev: prevAppStateRef.current, 
+      current: currentAppState 
+    });
+    prevAppStateRef.current = currentAppState;
+  }, [appState]);
+
+  useEffect(() => {
+    const unsubscribe = store.sub(appStateAtom, () => {
+      const currentState = store.get(appStateAtom);
+      log('AppState changed outside component:', currentState);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   if (loadingSpheres) {
     return <Spinner aria-label="Loading spheres!" />;
   }
@@ -247,7 +319,9 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
 };
 
 export default React.memo(PreloadAllData, (prevProps, nextProps) => {
+  log('PreloadAllData memo check', { prevProps, nextProps });
   return prevProps.landingSphereEh === nextProps.landingSphereEh &&
     prevProps.landingSphereId === nextProps.landingSphereId &&
-    prevProps.landingPage === nextProps.landingPage;
+    prevProps.landingPage === nextProps.landingPage &&
+    prevProps.onPreloadComplete === nextProps.onPreloadComplete;
 });

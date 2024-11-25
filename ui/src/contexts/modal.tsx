@@ -50,15 +50,16 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <ModalContext.Provider value={{ showModal, hideModal, isModalVisible }}>
+      <div className={!!(modalConfig?.confirmText) ? "with-confirm-dialog hidden" : "with-dialog hidden"}></div>
       {children}
       {modalConfig && (
         <Modal
           isModalOpen={isModalVisible}
           onClose={handleCancel}
           title={modalConfig.title || "Confirmation"}
-          size={modalConfig.size || "md"}
+          size={!!modalConfig.confirmText ? 'sm' : modalConfig.size || "md"}
           footerElement={
-            <div className="flex justify-end w-full gap-2">
+            <div className={"flex justify-end w-full gap-2"}>
               {modalConfig?.withCancel && <Button
                 type="button"
                 variant={modalConfig?.destructive ? "neutral" : "danger"}

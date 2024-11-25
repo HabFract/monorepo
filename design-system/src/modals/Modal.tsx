@@ -31,7 +31,7 @@ const Modal: React.FC<ModalProps> = ({
         {title}
       </FBModal.Header>
       <FBModal.Body
-        className={!footerElement ? "hide-footer" : ""}>
+        className={`${size} ${!footerElement ? "hide-footer" : ""}`}>
         {children}
       </FBModal.Body>
       <FBModal.Footer>

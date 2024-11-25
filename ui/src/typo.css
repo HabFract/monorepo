@@ -54,7 +54,7 @@ h4 {
 /* Link Styles
 -------------------------------------------------- */
 a {
-  @apply text-primary dark:text-accent hover:text-primary-500 dark:hover:text-accent-dark font-bold;
+  @apply text-text dark:text-text-dark hover:text-primary-500 dark:hover:text-accent-dark font-bold;
   text-decoration: inherit;
 }
 

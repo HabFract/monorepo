@@ -14,6 +14,7 @@
 .header-action-container *[role="dialog"] {
   left: calc(100% - 12rem) !important;
   top: -.5rem  !important ;
+  transform: none !important;
 }
 
 .no-auto-focus button:focus, .no-auto-focus button:hover:focus {

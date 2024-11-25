@@ -34,7 +34,7 @@ const darkThemeModal: CustomFlowbiteTheme["modal"] = {
   },
   "content": {
     "base": "relative h-full w-full p-4 md:h-auto",
-    "inner": "relative flex max-h-[90dvh] flex-col rounded-2xl dark:bg-surface-elevated-dark shadow dark:dark:bg-surface-elevated-dark-dark"
+    "inner": "relative flex max-h-[80dvh] flex-col rounded-2xl dark:bg-surface-elevated-dark shadow dark:dark:bg-surface-elevated-dark-dark"
   },
   "body": {
     "base": "flex-1 overflow-auto p-4",

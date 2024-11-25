@@ -162,6 +162,7 @@ export const updateHierarchyAtom = atom(
       nodeHashes,
       leafNodeHashes,
     };
+    const currentSphereHierarchyRootNodes = currentAppState.spheres.byHash[newHierarchy.sphereAh]?.hierarchyRootOrbitEntryHashes || [];
     const newState = {
       ...currentAppState,
       spheres: {
@@ -170,10 +171,10 @@ export const updateHierarchyAtom = atom(
           ...currentAppState.spheres.byHash,
           [newHierarchy.sphereAh]: {
             ...currentAppState.spheres.byHash[newHierarchy.sphereAh],
-            hierarchyRootOrbitEntryHashes: [
-              ...currentAppState.spheres.byHash[newHierarchy.sphereAh]?.hierarchyRootOrbitEntryHashes || [],
+            hierarchyRootOrbitEntryHashes: (currentSphereHierarchyRootNodes.includes(rootNode) ? currentSphereHierarchyRootNodes : [
+              ...currentSphereHierarchyRootNodes,
               rootNode,
-            ],
+            ]),
           },
         },
       },
