@@ -3,7 +3,14 @@ import './common.css'
 import { getIconSvg, HeaderAction } from 'habit-fract-design-system';
 
 function SettingsLayout({ children }: any) {
-  const [state, transition, params] = useStateTransition(); // Top level state machine and routing
+  const [_, transition, params, __, goBack] = useStateTransition();
+    
+  const routeBack = () => {
+    if (!goBack()) {
+      transition("Home");
+    }
+  };
+
   return (
     <div className="settings-layout">
       <div className="header-action">
@@ -11,7 +18,7 @@ function SettingsLayout({ children }: any) {
           title={"Settings"}
           icon1={getIconSvg('back')}
           icon2={null}
-          handlePrimaryAction={() => transition("Home")}
+          handlePrimaryAction={routeBack}
         ></HeaderAction>
       </div>
       {children}

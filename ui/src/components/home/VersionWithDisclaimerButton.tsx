@@ -7,27 +7,21 @@ import { isSmallScreen } from "../vis/helpers";
 interface VersionDisclaimerProps {
   currentVersion: string | undefined;
   open: () => void;
-  isFrontPage?: boolean;
 }
 
 const VersionDisclaimer: FC<VersionDisclaimerProps> = ({
   currentVersion,
-  open,
-  isFrontPage,
+  open
 }) => {
   return (
     <div
-      className={
-        isFrontPage
-          ? "app-version-disclaimer z-50 flex gap-2 fixed right-1 top-1"
-          : "app-version-disclaimer z-60 flex gap-2 fixed right-1 bottom-1"
-      }
+      className={"app-version-disclaimer"}
     >
       {NODE_ENV !== "dev" && (
         <div className="version-number">v{currentVersion}</div>
       )}
       <Button type={"button"} variant={"secondary"} onClick={open}>
-        {isSmallScreen() ? <AlertOutlined className="text-bg" /> : "Disclaimer"}
+        {isSmallScreen() ? <AlertOutlined className="text-text dark:text-text-dark" /> : "Disclaimer"}
       </Button>
     </div>
   );

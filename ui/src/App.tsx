@@ -75,7 +75,6 @@ function App({ children: pageComponent }) {
           <VersionWithDisclaimerButton
             currentVersion={currentVersion}
             open={showDisclaimer}
-            isFrontPage={true}
           />
         )}
         {/* Return users can see a side Nav on certain pages */}

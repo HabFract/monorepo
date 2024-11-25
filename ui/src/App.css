@@ -18,15 +18,6 @@ body {
   @apply dark:bg-surface-dark;
 }
 
-/* Gridlines */
-#vis,
-.page-container.home {
-  background-size: calc(100vw/12) calc(100vw/12);
-  background-image:
-    linear-gradient(to right, rgba(57, 57, 57, 0.5) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(57, 57, 57, 0.5) 1px, transparent 1px);
-}
-
 .page-container {
   @apply dark:bg-surface-dark flex w-full gap-2 overflow-auto;
   height: fit-content;
@@ -39,29 +30,35 @@ body {
   align-items: center;
 }
 
+/* Gridlines */
+#vis,
+.page-container.home {
+  background-size: calc(100vw/12) calc(100vw/12);
+  background-image:
+    linear-gradient(to right, rgba(57, 57, 57, 0.5) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(57, 57, 57, 0.5) 1px, transparent 1px);
+}
+
+
+/* Disclaimer, Version Number */
+.app-version-disclaimer {
+  @apply z-50 flex gap-2 fixed right-1 top-1;
+}
+
+.app-version-disclaimer .version-number {
+  @apply text-text dark:text-text-dark;
+}
+
 .app-version-disclaimer button {
   height: 1.5rem;
   max-width: 2rem !important;
   text-overflow: ellipsis;
 }
 
+
+/* Framer Motion Container */
 .framer-motion {
   width: 100% !important;
   height: 100% !important;
   position: relative;
-}
-
-.back-to-orbit-list {
-  position: absolute;
-  left: 0.5rem;
-  top: 0.5rem;
-}
-
-#vis-root {
-  width: 100%;
-}
-
-.page-container.vis,
-.page-container.vis>div:last-child {
-  overflow: hidden;
 }

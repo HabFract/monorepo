@@ -1,7 +1,6 @@
 import { Field, Form, Formik } from 'formik';
 import './common.css'
 import { useStateTransition } from '../../hooks/useStateTransition';
-import { useState } from 'react';
 import { object, string } from 'yup';
 import { Button, getIconSvg, SwipeUpScreenTab, TextInputField } from 'habit-fract-design-system';
 import { ListSpheres } from '../lists';
@@ -9,7 +8,7 @@ import { motion } from 'framer-motion';
 import { Popover, ListGroup } from 'flowbite-react';
 
 function HomeLayout({ firstVisit = true }: any) {
-  const [state, transition, params] = useStateTransition(); // Top level state machine and routing
+  const [_, transition] = useStateTransition(); // Top level state machine and routing
   const validationSchema = object({
     password: string().min(8).max(18)
   });

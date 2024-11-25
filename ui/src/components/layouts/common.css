@@ -63,6 +63,7 @@
 
 
 /* Home (Returning User) */
+
 .home-layout .returning-cta .logo {
   @apply w-auto h-12 p-0 pt-2 my-2;
 }
@@ -116,6 +117,17 @@
   top: 64px;
 }
 
+/* Vis */
+
+#vis-root {
+  width: 100%;
+}
+
+.page-container.vis,
+.page-container.vis>div:last-child {
+  overflow: hidden;
+}
+
 
 /* Onboarding */
 
@@ -155,6 +167,7 @@
   z-index: 10;
 }
 
+/* Nav Visibility (fallback) */
 .home .side-nav, .list.page-container .side-nav, .create-form.page-container .side-nav{
   @apply hidden;
 }

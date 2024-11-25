@@ -6,7 +6,7 @@ import Home from "./components/layouts/Home";
 import OrbitTree from "./components/vis/OrbitTree";
 import { renderVis } from "./components/vis/helpers";
 
-import { StateTransitions } from "./state/types/stateMachine";
+import { StateStore, StateTransitions } from "./state/types/stateMachine";
 import Settings from "./components/Settings";
 
 export type AppState = // Currently just for routing in the state machine
@@ -26,17 +26,10 @@ export type Routes = {
   [key in AppState]: React.ReactNode;
 };
 
-export type AppStateStore = {
-  currentState: AppState;
-  params?: object;
-  connection: any;
-};
-
-export const initialState: AppStateStore = {
-  // Home route
+export const initialState: StateStore<AppState> = {
   currentState: "Vis",
   params: {},
-  connection: null,
+  history: []
 };
 
 export const routes: Routes = {

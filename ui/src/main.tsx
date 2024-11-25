@@ -5,7 +5,6 @@ import App from "./App";
 import { StateMachine, StateStore } from "./state/types/stateMachine";
 import {
   AppState,
-  AppStateStore,
   AppTransitions,
   initialState,
   routes,
@@ -22,7 +21,7 @@ import { ModalProvider } from "./contexts/modal";
 Application State Management (Courtesy of Ada Burrows for hREA playspace)
 ============================
 */
-export const AppMachine = new StateMachine<AppState, AppStateStore>(
+export const AppMachine = new StateMachine<AppState, StateStore<AppState>>(
   initialState,
   AppTransitions,
 );
@@ -33,7 +32,7 @@ Object.entries(routes).forEach(([routeName, component]) => {
       ...state.params,
       key: JSON.stringify(state.params),
     });
-    renderPage(PageComponentWithProps, AppMachine.state.connection.apolloClient);
+    renderPage(PageComponentWithProps, AppMachine.state.connection!.apolloClient);
   });
 });
 

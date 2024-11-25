@@ -5,7 +5,13 @@ import { getIconSvg, HeaderAction } from 'habit-fract-design-system';
 import { ListGroup } from 'flowbite-react';
 
 function ListLayout({ children, type, title, primaryMenuAction, secondaryMenuAction }: any) {
-  const [_, transition, params] = useStateTransition(); // Top level state machine and routing
+  const [_, transition, params, __, goBack] = useStateTransition(); // Top level state machine and routing
+
+  const routeBack = () => {
+    if (!goBack()) {
+      transition("Home");
+    }
+  };
 
   return (
     <div className="list-layout">
@@ -14,7 +20,7 @@ function ListLayout({ children, type, title, primaryMenuAction, secondaryMenuAct
           title={title || `${MODEL_DISPLAY_VALUES[type]}s`}
           icon1={getIconSvg('back')}
           icon2={getIconSvg('more')}
-          handlePrimaryAction={() => transition("Home")}
+          handlePrimaryAction={routeBack}
           secondaryActionPopoverElement={<ListGroup className="no-auto-focus list-group-override w-32">
             <ListGroup.Item disabled onClick={() => primaryMenuAction()} icon={getIconSvg('pencil')}>Edit</ListGroup.Item>
             <span className="list-item-danger text-danger">

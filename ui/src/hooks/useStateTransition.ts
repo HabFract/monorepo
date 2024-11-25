@@ -11,14 +11,25 @@ export function useStateTransition() {
   }
 
   const [state, setState] = useState(stateMachine.state.currentState);
+
   const transition = (newState: string, params: object) => {
     stateMachine.to(newState, params);
     setState(newState);
   };
+
+  const goBack = () => {
+    if (stateMachine.back()) {
+      setState(stateMachine.state.currentState);
+      return true;
+    }
+    return false;
+  };
+
   return [
     state,
     transition,
     stateMachine.state.params,
     stateMachine.state?.connection?.apolloClient,
+    goBack
   ];
 }

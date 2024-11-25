@@ -2,10 +2,12 @@ export type State = string | number | symbol;
 
 export type StateTransitions<S extends State> = Record<S, Array<S>>;
 
-export type StateStore<S extends State> = {
+export interface StateStore<S extends State> {
   currentState: S;
-  params?: object;
-};
+  params: any;
+  connection: any;
+  history: Array<{state: S, params: any}>;
+}
 
 export type StateTransitionCallback<S extends State> = (
   _: StateStore<S>,
@@ -16,44 +18,53 @@ export type Callbacks<S extends State> = Record<S, StateTransitionCallback<S>>;
 /**
  * The main mechanism for maintaining app loading state
  */
-export class StateMachine<S extends State, T extends StateStore<S>> {
-  state: T;
-  transitions: StateTransitions<S>;
-  callbacks?: Callbacks<S>;
 
-  constructor(init: T, transitions: StateTransitions<S>) {
-    this.state = init;
+export class StateMachine<T, S extends StateStore<T>> {
+  state: S;
+  transitions: StateTransitions<T>;
+  private handlers: Map<T, (state: S) => void> = new Map();
+
+  constructor(initialState: S, transitions: StateTransitions<T>) {
+    this.state = initialState;
     this.transitions = transitions;
   }
 
-  public to(state: S, params: object) {
-    if (  
-      this.transitions[this.state.currentState].findIndex(
-        (nState) => state == nState,
-      ) >= 0
-    ) {
-      this.state.currentState = state;
-      this.state.params = params;
-      this.go();
-    } else {
-      const currState = this.state.currentState;
-      console.warn(
-        `Could not set state to ${String(state)} while at current state ${String(currState)}.`,
-      );
+  on(state: T, handler: (state: S) => void) {
+    this.handlers.set(state, handler);
+    return this;
+  }
+
+  to(newState: T, params: any = {}) {
+    if (this.state.currentState) {
+      this.state.history = [
+        { state: this.state.currentState, params: this.state.params },
+        ...(this.state.history || [])
+      ].slice(0, 3);
+    }
+
+    this.state.currentState = newState;
+    this.state.params = params;
+    
+    const handler = this.handlers.get(newState);
+    if (handler) {
+      handler(this.state);
     }
   }
 
-  public on(state: S, callback: StateTransitionCallback<S>): void {
-    if (!this.callbacks) {
-      this.callbacks = {} as Callbacks<S>;
+  back() {
+    if (this.state.history?.length > 0) {
+      const [previousState, ...remainingHistory] = this.state.history;
+      
+      this.state.currentState = previousState.state;
+      this.state.params = previousState.params;
+      this.state.history = remainingHistory;
+      
+      const handler = this.handlers.get(previousState.state);
+      if (handler) {
+        handler(this.state);
+      }
+      return true;
     }
-    this.callbacks[state] = callback;
-  }
-
-  public go() {
-    setTimeout(() => {
-      const currState = this.state.currentState;
-      this.callbacks![currState](this.state);
-    });
+    return false;
   }
 }

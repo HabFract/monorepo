@@ -6,7 +6,7 @@ import { EntryHashB64 } from '@holochain/client';
 import { Sphere } from '../../graphql/generated';
 
 function VisLayout({ children, title, handleDeleteSphere }: any) {
-  const [_, transition, params] = useStateTransition(); // Top level state machine and routing
+  const [_, transition, params, __, goBack] = useStateTransition();
 
   function routeToCreatePlannit(sphereEh: EntryHashB64) {
     transition("CreateOrbit", { sphereEh });
@@ -14,7 +14,11 @@ function VisLayout({ children, title, handleDeleteSphere }: any) {
   function routeToPlannitList(currentSphereDetails: Sphere) {
     transition("ListOrbits", { sphereAh: currentSphereDetails.id, currentSphereDetails });
   }
-
+  const routeBack = () => {
+    if (!goBack()) {
+      transition("Home");
+    }
+  };
   return (
     <div className="vis-layout">
       <div className="header-action">
@@ -22,7 +26,7 @@ function VisLayout({ children, title, handleDeleteSphere }: any) {
           title={title}
           icon1={getIconSvg('back')}
           icon2={getIconSvg('more')}
-          handlePrimaryAction={() => transition("Home")}
+          handlePrimaryAction={routeBack}
           secondaryActionPopoverElement={<ListGroup className="no-auto-focus list-group-override w-48">
             <ListGroup.Item onClick={() => routeToPlannitList(params.currentSphereDetails)} icon={getIconSvg('list')}>List Plannits</ListGroup.Item>
             <ListGroup.Item onClick={() => routeToCreatePlannit(params.currentSphereDetails.eH)} icon={getIconSvg('plus')}>Add Plannit</ListGroup.Item>
