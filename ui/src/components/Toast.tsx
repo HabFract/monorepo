@@ -3,7 +3,8 @@ import { useToast } from "../contexts/toast";
 import { WarningOutlined } from "@ant-design/icons";
 
 const Toast: React.FC = () => {
-  const { toastText, isToastVisible, hideToast } = useToast();
+  const { toastText, isToastVisible, hideToast, actionButton } = useToast();
+  
   if (!isToastVisible) return null;
 
   return (
@@ -15,12 +16,15 @@ const Toast: React.FC = () => {
         <WarningOutlined className="place-content-center grid w-6 h-6" />
       </div>
       <div className="toast-text">{toastText}</div>
-      <button
-        onClick={hideToast}
-        className="toast-close hover:text-primary text-text dark:text-text-dark flex mr-4 text-3xl"
-      >
-        &times;
-      </button>
+      <div className="flex items-center gap-2 ml-auto">
+        {actionButton}
+        <button
+          onClick={hideToast}
+          className="toast-close hover:text-primary text-text dark:text-text-dark flex text-3xl"
+        >
+          &times;
+        </button>
+      </div>
     </div>
   );
 };

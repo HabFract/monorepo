@@ -6,12 +6,13 @@ import { useDeleteSphereMutation } from "../../graphql/generated";
 import VisLayout from "../layouts/VisLayout";
 import FormLayout from "../layouts/FormLayout";
 import ListLayout from "../layouts/List";
-import { currentSphereHashesAtom, store } from "../../state";
+import { currentSphereHasCachedNodesAtom, currentSphereHashesAtom, store } from "../../state";
 import { useModal } from "../../contexts/modal";
 import { AppMachine } from "../../main";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import SettingsLayout from "../layouts/SettingsLayout";
-import React from "react";
+import { useToast } from "../../contexts/toast";
+import { Button } from "habit-fract-design-system";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -37,27 +38,40 @@ interface WithLayoutProps {
 const withLayout = (
   component: ReactNode,
 ): FC<WithLayoutProps> => {
-    return ((props: WithLayoutProps): ReactNode => {
+  return ((props: WithLayoutProps): ReactNode => {
     const state = AppMachine.state.currentState; // Top level state machine and routing
     const { showModal } = useModal();
     const [_, transition, params] = useStateTransition(); // Top level state machine and routing
-  
+
     const [
       runDeleteSphere,
       { loading: loadingDelete, error: errorDelete, data: dataDelete },
     ] = useDeleteSphereMutation({
       refetchQueries: ["getSpheres"],
     });
-    if(props?.currentSphereDetails?.eH && props.currentSphereDetails.eH !== store.get(currentSphereHashesAtom)?.entryHash) {
+
+    if (props?.currentSphereDetails?.eH && props.currentSphereDetails.eH !== store.get(currentSphereHashesAtom)?.entryHash) {
       const eH = props?.currentSphereDetails?.eH;
       const id = props?.currentSphereDetails?.id;
-      console.log('set current Sphere to :>> ',  {entryHash: eH, actionHash: id});
+      console.log('set current Sphere to :>> ', { entryHash: eH, actionHash: id });
       store.set(currentSphereHashesAtom, id)
     }
+    const canVisualize = !!store.get(currentSphereHasCachedNodesAtom);
 
+    const { showToast, hideToast } = useToast();
+  
+    useEffect(() => {
+      if (state !== "Vis" || canVisualize) return;
+        showToast("There are no Plannits in this System.", {
+          actionButton: <Button onClick={() => { hideToast() }}>
+              HIde
+            </Button>
+        })
+    }, [canVisualize])
+    
     const handleDeleteSphere = () => {
       const id = store.get(currentSphereHashesAtom)?.actionHash;
-      if(!id) return;
+      if (!id) return;
       showModal({
         title: "Are you sure?",
         message: "This action cannot be undone! This will not only delete your Space's details, but all Plannits linked to that Space, and the Win history of those Plannits!",
@@ -73,7 +87,6 @@ const withLayout = (
       });
     }
 
-    // console.log('Layout props', props)
     switch (true) {
       case !!state.match("Onboarding"):
         return <Onboarding>{withPageTransition(component)}</Onboarding>;
@@ -97,12 +110,12 @@ const withLayout = (
           {component}
         </FormLayout>
       case ["ListOrbits"].includes(state):
-        return <ListLayout type={'orbit'} title={props.currentSphereDetails?.name} primaryMenuAction={() => {}} secondaryMenuAction={() => {handleDeleteSphere()}}>
+        return <ListLayout type={'orbit'} title={props.currentSphereDetails?.name} primaryMenuAction={() => { }} secondaryMenuAction={() => { handleDeleteSphere() }}>
           {component}
         </ListLayout>
       default:
         return (
-            <>{component}</>
+          <>{component}</>
         );
     }
   });

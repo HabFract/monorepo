@@ -3,10 +3,15 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 const TOOLTIP_TIMEOUT = 4500;
 
 interface ToastContextProps {
-  showToast: (text: string, timeout?: number, bypass?: boolean) => void;
+  showToast: (text: string, options?: { 
+    timeout?: number;
+    bypass?: boolean;
+    actionButton?: ReactNode;
+  }) => void;
   hideToast: () => void;
   toastText: string;
   isToastVisible: boolean;
+  actionButton?: ReactNode;
 }
 
 const ToastContext = createContext<ToastContextProps | undefined>(undefined);
@@ -16,28 +21,36 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [toastText, setToastText] = useState<string>("");
   const [isToastVisible, setIsToastVisible] = useState<boolean>(false);
+  const [actionButton, setActionButton] = useState<ReactNode>();
 
   const showToast = (
     text: string,
-    timeout: number = TOOLTIP_TIMEOUT,
-    bypass?: boolean,
+    options?: {
+      timeout?: number;
+      bypass?: boolean;
+      actionButton?: ReactNode;
+    }
   ) => {
-    if (bypass) return;
+    if (options?.bypass) return;
 
     setToastText(text);
     setIsToastVisible(true);
+    setActionButton(options?.actionButton);
+
     setTimeout(() => {
       setIsToastVisible(false);
-    }, timeout);
+      setActionButton(undefined);
+    }, options?.timeout ?? TOOLTIP_TIMEOUT);
   };
 
   const hideToast = () => {
     setIsToastVisible(false);
+    setActionButton(undefined);
   };
 
   return (
     <ToastContext.Provider
-      value={{ showToast, hideToast, toastText, isToastVisible }}
+      value={{ showToast, hideToast, toastText, isToastVisible, actionButton }}
     >
       {children}
     </ToastContext.Provider>
