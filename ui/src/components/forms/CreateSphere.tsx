@@ -101,7 +101,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
 
           transition(
             state == "Onboarding1" ? "Onboarding2" : "Home",
-            props,
+            {... props, spin: params?.spin},
           );
         } catch (error) {
           console.error(error);

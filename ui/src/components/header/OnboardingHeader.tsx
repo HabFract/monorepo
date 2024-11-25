@@ -19,7 +19,7 @@ import { useStateTransition } from "../../hooks/useStateTransition";
 const OnboardingHeader: React.ForwardRefExoticComponent<
   React.PropsWithoutRef<{}>
 > = forwardRef<HTMLDivElement, {}>(
-  ({ }, ref: ForwardedRef<HTMLDivElement>) => {
+  ({}, ref: ForwardedRef<HTMLDivElement>) => {
     const [state, transition, params] = useStateTransition(); // Top level state machine and routing
     if (!state.match("Onboarding")) return <></>;
     const returningUser = !!params?.spin; // Indicates if the onboarding flow has previously been gone through
@@ -42,6 +42,7 @@ const OnboardingHeader: React.ForwardRefExoticComponent<
       return transition(getLastOnboardingState(state), {
         editMode: true,
         ...props,
+        ...params
       });
     };
 
@@ -69,7 +70,7 @@ const OnboardingHeader: React.ForwardRefExoticComponent<
                 `Break Up ${MODEL_DISPLAY_VALUES['orbit']}`,
                 "Visualize",
               ]}
-            currentStep={currentStepNumber}
+            currentStep={returningUser ? currentStepNumber - 1 : currentStepNumber}
           />
         </div>
         <h1 className={"onboarding-title"}>{ONBOARDING_FORM_TITLES[currentStepNumber - 1]}</h1>

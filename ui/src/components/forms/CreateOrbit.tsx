@@ -82,7 +82,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
   headerDiv,
   submitBtn,
 }: CreateOrbitProps) => {
-  const [state, transition] = useStateTransition(); // Top level state machine and routing
+  const [state, transition, params] = useStateTransition(); // Top level state machine and routing
   const selectedSphere = store.get(currentSphereHashesAtom);
   const selectedSphereDetails = store.get(currentSphereDetailsAtom);
   const { _x, y } = store.get(currentSphereHierarchyIndices);
@@ -200,7 +200,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
               : payload.createOrbit.id;
 
             const props = inOnboarding
-              ? { refiningOrbitAh: orbitAh }
+              ? { refiningOrbitAh: orbitAh, spin: params?.spin }
               : { sphereAh: selectedSphere.actionHash, currentSphereDetails: selectedSphereDetails };
 
             store.set(currentOrbitIdAtom, orbitAh);

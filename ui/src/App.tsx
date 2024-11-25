@@ -35,7 +35,6 @@ function App({ children: pageComponent }) {
 
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
 
-
   const { showModal } = useModal();
   const mainContainerClass = useMainContainerClass();
   const currentVersion = useCurrentVersion();
@@ -43,7 +42,8 @@ function App({ children: pageComponent }) {
   // Allow auto scrolling back to top of onboarding stages/to relevant progress step
   const progressBarRef = useRef<HTMLDivElement>(null);
   const mainPageRef = useRef<HTMLDivElement>(null);
-  useOnboardingScroll(state, progressBarRef, mainPageRef);
+  const returningUser = !!params?.spin; // Assume that the first time we do not pass this param
+  useOnboardingScroll(state, progressBarRef, mainPageRef, returningUser);
 
   const showDisclaimer = () => {
     showModal({
@@ -103,7 +103,7 @@ function App({ children: pageComponent }) {
                   onClick={() => {
                     const nextStage = getNextOnboardingState(state);
                     const lastStageCompleted = nextStage == "Vis"
-                    transition(nextStage, lastStageCompleted ? { currentSphereDetails: { ...spheresArray![spheresArray!.length -1] } } : {})
+                    transition(nextStage, lastStageCompleted ? { currentSphereDetails: { ...spheresArray![spheresArray!.length -1] }, ...(params||{}) } : (params||{}))
                   }}
                 />
               ),

@@ -4,14 +4,16 @@ export function useOnboardingScroll(
   state: string,
   progressBarRef: RefObject<HTMLDivElement>,
   mainPageRef: RefObject<HTMLDivElement>,
+  returningUser?: boolean
 ) {
   useEffect(() => {
     const stage = +(state.match(/Onboarding(\d+)/)?.[1] || 0);
+    console.log('returningUser :>> ',stage, returningUser);
     if (!stage || progressBarRef.current == null) return;
     setTimeout(() => {
       (progressBarRef.current as any)
         .querySelector(".onboarding-progress")
-        .scrollTo((stage + 2) * 60, 0);
+        .scrollTo(((stage - 1) + (returningUser ? 0 : 1)) * 90, 0);
     }, 500);
   }, [state, progressBarRef]);
 
