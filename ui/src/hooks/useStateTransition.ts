@@ -30,6 +30,7 @@ export function useStateTransition() {
     transition,
     stateMachine.state.params,
     stateMachine.state?.connection?.apolloClient,
-    goBack
+    goBack,
+    stateMachine.state.history
   ];
 }

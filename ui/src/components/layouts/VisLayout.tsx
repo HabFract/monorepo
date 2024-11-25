@@ -6,7 +6,7 @@ import { EntryHashB64 } from '@holochain/client';
 import { Sphere } from '../../graphql/generated';
 
 function VisLayout({ children, title, handleDeleteSphere }: any) {
-  const [_, transition, params, __, goBack] = useStateTransition();
+  const [_, transition, params, __, goBack, history] = useStateTransition();
 
   function routeToCreatePlannit(sphereEh: EntryHashB64) {
     transition("CreateOrbit", { sphereEh });
@@ -15,7 +15,7 @@ function VisLayout({ children, title, handleDeleteSphere }: any) {
     transition("ListOrbits", { sphereAh: currentSphereDetails.id, currentSphereDetails });
   }
   const routeBack = () => {
-    if (params?.returningUser == false || !goBack()) {
+    if ((history[0]?.state).match("Onboarding") || !goBack()) {
       transition("Home");
     }
   };
