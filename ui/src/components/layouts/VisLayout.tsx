@@ -15,7 +15,7 @@ function VisLayout({ children, title, handleDeleteSphere }: any) {
     transition("ListOrbits", { sphereAh: currentSphereDetails.id, currentSphereDetails });
   }
   const routeBack = () => {
-    if (!goBack()) {
+    if (params?.returningUser == false || !goBack()) {
       transition("Home");
     }
   };

@@ -103,7 +103,7 @@ function App({ children: pageComponent }) {
                   onClick={() => {
                     const nextStage = getNextOnboardingState(state);
                     const lastStageCompleted = nextStage == "Vis"
-                    transition(nextStage, lastStageCompleted ? { currentSphereDetails: { ...spheresArray![spheresArray!.length -1] }, ...(params||{}) } : (params||{}))
+                    transition(nextStage, lastStageCompleted ? { returningUser,  currentSphereDetails: { ...spheresArray![spheresArray!.length -1] }, ...(params||{}) } : (params||{}))
                   }}
                 />
               ),
