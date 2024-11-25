@@ -22,8 +22,8 @@ const OnboardingHeader: React.ForwardRefExoticComponent<
   ({ }, ref: ForwardedRef<HTMLDivElement>) => {
     const [state, transition, params] = useStateTransition(); // Top level state machine and routing
     if (!state.match("Onboarding")) return <></>;
-    const returningUser = !!params.spin; // Indicates if the onboarding flow has previously been gone through
-console.log('params :>> ', params);
+    const returningUser = !!params?.spin; // Indicates if the onboarding flow has previously been gone through
+
     /**
      * Handles the back action in the onboarding flow
      * Determines the previous state and required props based on current state

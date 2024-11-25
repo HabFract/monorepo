@@ -79,7 +79,7 @@ const Settings: React.FC<SettingsProps> = ({
           <Button
             onClick={() => {
               clear();
-              transition("Home");
+              transition("PreloadAndCache");
             }}
             variant={"primary responsive"}
             type="button"
@@ -108,20 +108,20 @@ const Settings: React.FC<SettingsProps> = ({
     <section className="danger-zone">
       <ActionCard
         title="Delete All Data"
-        runAction={() => {
-          ask(`Reset data?`, {
-            title: "Confirm Resetting Data",
-            kind: "info",
-            okLabel: "Reset",
-            cancelLabel: "Cancel",
-          }).then((confirm) => {
-            if (confirm) deleteAllData();
-          });
-        }}
         body="Reset your all data, removing all tracked progress and settings."
         variant="button"
         button={
           <Button
+            onClick={() => {
+              ask(`Reset data?`, {
+                title: "Confirm Resetting Data",
+                kind: "info",
+                okLabel: "Reset",
+                cancelLabel: "Cancel",
+              }).then((confirm) => {
+                if (confirm) deleteAllData();
+              });
+            }}
             variant={"danger responsive outlined"}
             type="button"
           >Delete</Button>

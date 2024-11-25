@@ -162,7 +162,7 @@ const darkThemeListGroup: CustomFlowbiteTheme["listGroup"] = {
       "base": "flex w-full items-center border-b border-gray-200 gap-2 px-4 py-2 dark:border-gray-400 dark:hover:bg-surface-elevated-dark dark:active:focus-styles !important",
       "active": {
         "off": "hover:bg-surface-elevated dark:hover:bg-surface-elevated-dark hover:text-accent dark:hover:text-accent-dark transition-colors duration-200",
-        "on": "bg-surface-elevated dark:bg-surface-elevated-dark text-accent dark:text-accent-dark"
+        "on": "bg-surface-elevated rounded-xl dark:bg-surface-elevated-dark text-accent dark:text-accent-dark"
       },
       "disabled": {
         "off": "",

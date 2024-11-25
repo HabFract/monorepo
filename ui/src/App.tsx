@@ -7,7 +7,7 @@ import withLayout from "./components/HOC/withLayout";
 
 import Nav from "./components/navigation/Nav";
 import { Flowbite } from "flowbite-react";
-import { cloneElement, useRef, useState } from "react";
+import { cloneElement, useMemo, useRef, useState } from "react";
 
 import { Button, darkTheme, Spinner } from "habit-fract-design-system";
 import {
@@ -35,6 +35,7 @@ function App({ children: pageComponent }) {
 
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
 
+
   const { showModal } = useModal();
   const mainContainerClass = useMainContainerClass();
   const currentVersion = useCurrentVersion();
@@ -48,8 +49,6 @@ function App({ children: pageComponent }) {
     showModal({
       title: "Disclaimer",
       message: ALPHA_RELEASE_DISCLAIMER,
-      confirmText: "I Understand",
-      cancelText: "Close",
       withConfirm: true,
       withCancel: false,
       size: "md"
@@ -63,6 +62,9 @@ function App({ children: pageComponent }) {
   } = useGetSpheresQuery();
   const spheresArray = spheres?.spheres?.edges && extractEdges(spheres.spheres);
   const userHasSpheres = spheresArray && spheresArray.length > 0;
+  const showNav = useMemo(() => {
+    return userHasSpheres && isSmallScreen() && state === "Vis";
+  }, [userHasSpheres, state]);
 
   return (
     <Flowbite theme={{ theme: darkTheme, mode: "dark" }}>
@@ -77,14 +79,12 @@ function App({ children: pageComponent }) {
           />
         )}
         {/* Return users can see a side Nav on certain pages */}
-        {userHasSpheres &&
-          isSmallScreen() &&
-          state == "Vis" && (
-            <Nav
-              sideNavExpanded={sideNavExpanded}
-              setSideNavExpanded={setSideNavExpanded}
-            ></Nav>
-          )}
+        {showNav && (
+          <Nav
+            sideNavExpanded={sideNavExpanded}
+            setSideNavExpanded={setSideNavExpanded}
+          ></Nav>
+        )}
 
         {loadingSpheres ? (
           <Spinner />
@@ -104,7 +104,7 @@ function App({ children: pageComponent }) {
                   onClick={() => {
                     const nextStage = getNextOnboardingState(state);
                     const lastStageCompleted = nextStage == "Vis"
-                    transition(nextStage, lastStageCompleted ? { currentSphereDetails: { ...spheresArray![0] } } : {})
+                    transition(nextStage, lastStageCompleted ? { currentSphereDetails: { ...spheresArray![spheresArray!.length -1] } } : {})
                   }}
                 />
               ),
