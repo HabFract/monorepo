@@ -4,7 +4,7 @@
 }
 
 .onboarding-layout .helper-text {
-  @apply justify-center;
+  @apply justify-end;
 }
 .orbit-subdivision-list .helper-text {
   @apply justify-start;
@@ -18,7 +18,7 @@ span.helper-content,
   @apply mb-2 font-sans font-light;
 }
 .toast-text {
-  @apply mx-8 text-xl font-normal text-white;
+  @apply mx-8 font-normal text-white;
 }
 
 .flowbite-toast {

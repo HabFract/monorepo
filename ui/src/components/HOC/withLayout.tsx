@@ -59,12 +59,16 @@ const withLayout = (
     const canVisualize = !!store.get(currentSphereHasCachedNodesAtom);
 
     const { showToast, hideToast } = useToast();
-  
+    
     useEffect(() => {
+      hideToast()
       if (state !== "Vis" || canVisualize) return;
         showToast("There are no Plannits in this System.", {
-          actionButton: <Button onClick={() => { hideToast() }}>
-              HIde
+          actionButton: <Button onClick={() => {
+            transition("CreateOrbit", { sphereEh: props?.currentSphereDetails?.eH});
+            hideToast()
+          }}>
+              Create One
             </Button>
         })
     }, [canVisualize])

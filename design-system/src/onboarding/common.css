@@ -31,7 +31,7 @@
   @apply flex-1 w-full;
 }
 .figure-images, .figure-captions {
-  @apply flex items-center justify-around gap-2;
+  @apply flex items-center justify-around gap-8;
 }
 
 .figure-image-container:nth-child(1) img {

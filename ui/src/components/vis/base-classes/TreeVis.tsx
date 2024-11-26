@@ -238,7 +238,7 @@ export class TreeVisualization extends BaseVisualization {
         const currentOrbitId = store.get(currentOrbitDetailsAtom)?.eH;
 
         const isAppendNodeButtonTarget = !!(target && target.closest(".orbit-controls-container button:first-child"))
-        const isEditNodeButtonTarget = !!(target && target.closest(".orbit-controls-container button:last-child"))
+        // const isEditNodeButtonTarget = !!(target && target.closest(".orbit-controls-container button:last-child"))
 
         this._enteringNodes.select(".tooltip foreignObject").html(this.appendLabelHtml);
         this._enteringNodes.select(".node-vector-group").attr("class", (d: any) => {
@@ -256,10 +256,10 @@ export class TreeVisualization extends BaseVisualization {
           const nodeEh = (target.closest(".orbit-controls-container") as HTMLElement).dataset?.nodeEntryHash;
           this.eventHandlers.handleAppendNode.call(this, { parentOrbitEh: nodeEh })
         }
-        if (isEditNodeButtonTarget) {
-          const nodeEh = (target.closest(".orbit-controls-container") as HTMLElement).dataset?.nodeEntryHash;
-          this.eventHandlers.handleEditNode.call(this, { orbitEh: nodeEh })
-        }
+        // if (isEditNodeButtonTarget) {
+        //   const nodeEh = (target.closest(".orbit-controls-container") as HTMLElement).dataset?.nodeEntryHash;
+        //   this.eventHandlers.handleEditNode.call(this, { orbitEh: nodeEh })
+        // }
       },
     };
   }

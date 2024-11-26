@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-const TOOLTIP_TIMEOUT = 4500;
+const TOOLTIP_TIMEOUT = 1000000;
 
 interface ToastContextProps {
   showToast: (text: string, options?: { 
