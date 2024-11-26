@@ -29,6 +29,7 @@ export type Routes = {
 export const initialState: StateStore<AppState> = {
   currentState: "Vis",
   params: {},
+  connection: null,
   history: []
 };
 

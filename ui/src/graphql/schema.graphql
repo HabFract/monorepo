@@ -42,6 +42,7 @@ type CreateSphereResponsePayload {
   actionHash: String!
   entryHash: String!
   eH: String!
+  spin: String!
   name: String!
   metadata: SphereMetaData
 }

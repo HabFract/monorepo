@@ -50,6 +50,7 @@ export const aCreateSphereResponsePayload = (overrides?: Partial<CreateSphereRes
         actionHash: overrides && overrides.hasOwnProperty('actionHash') ? overrides.actionHash! : 'dicta',
         entryHash: overrides && overrides.hasOwnProperty('entryHash') ? overrides.entryHash! : 'dolores',
         eH: overrides && overrides.hasOwnProperty('eH') ? overrides.eH! : 'nemo',
+        spin: overrides && overrides.hasOwnProperty('spin') ? overrides.spin! : 'est',
         name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'id',
         metadata: overrides && overrides.hasOwnProperty('metadata') ? overrides.metadata! : aSphereMetaData(),
     };

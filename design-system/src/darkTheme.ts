@@ -154,7 +154,7 @@ const darkRadioTheme: CustomFlowbiteTheme["radio"] = {
 // List Group theme
 const darkThemeListGroup: CustomFlowbiteTheme["listGroup"] = {
   "root": {
-    "base": "list-none rounded-xl border-[.5px] border-text bg-white text-left text-base font-sans font-bold text-text dark:border-gray-100 dark:bg-surface-dark dark:text-text-dark absolute left-8 top-8 max-w-48 "
+    "base": "list-none rounded-lg border-[.5px] border-text bg-white text-left text-base font-sans font-bold text-text dark:border-gray-100 dark:bg-surface-dark dark:text-text-dark absolute left-8 top-8 max-w-48 "
   },
   "item": {
     "base": "[&>*]:first:rounded-t-xl [&>*]:first:rounded-b-none [&>*]:last:rounded-b-xl [&>*]:last:rounded-t-none [*:only-child]:rounded-xl [*:only-child]:hover:rounded-xl !important",

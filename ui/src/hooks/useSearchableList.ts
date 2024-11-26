@@ -2,6 +2,11 @@ import { useMemo, useState } from 'react';
 import { Orbit } from '../graphql/generated';
 
 type SortableKeys = keyof Pick<Orbit, 'name' | 'scale'>;
+const SCALE_ORDER = [
+  'Astro',
+  'Sub',
+  'Atom'
+] as const;
 
 /**
  * Props for initializing the useSearchableList hook
@@ -73,7 +78,7 @@ export function useSearchableList<T extends Orbit>({
   const filteredItems = useMemo(() => {
     let result = [...items];
 
-    // Apply search filter
+    // Apply search filter (unchanged)
     if (searchTerm) {
       result = result.filter(item =>
         searchKeys.some(key =>
@@ -84,11 +89,19 @@ export function useSearchableList<T extends Orbit>({
       );
     }
 
-    // Apply sorting
+    // Apply sorting with custom scale handling
     if (sortKey) {
       result.sort((a, b) => {
-        const aVal = a[sortKey];
-        const bVal = b[sortKey];
+        if (sortKey === 'scale') {
+          // Custom scale sorting
+          const indexA = SCALE_ORDER.indexOf(a[sortKey] as any);
+          const indexB = SCALE_ORDER.indexOf(b[sortKey] as any);
+          return sortOrder === 'asc' ? indexA - indexB : indexB - indexA;
+        }
+        
+        // Default string sorting for other keys
+        const aVal = String(a[sortKey]).toLowerCase();
+        const bVal = String(b[sortKey]).toLowerCase();
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         return sortOrder === 'asc' ? comparison : -comparison;
       });

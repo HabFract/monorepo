@@ -8,7 +8,7 @@ interface ListSortFilterProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
   sortKey: string | null;
-  onSortKeyChange: (key: string) => void;
+  onSortKeyChange: (key: string, customSort?: boolean) => void;
   sortOrder: 'asc' | 'desc';
   onSortOrderChange: () => void;
 }
@@ -51,13 +51,13 @@ const ListSortFilter: React.FC<ListSortFilterProps> = ({
             content={
               <ListGroup theme={darkThemeListGroup} className="w-48">
                 <ListGroup.Item
-                  onClick={() => onSortKeyChange('name')}
+                  onClick={() => onSortKeyChange('name', false)}
                   active={sortKey === 'name'}
                 >
                   Sort by Name
                 </ListGroup.Item>
                 <ListGroup.Item
-                  onClick={() => onSortKeyChange('scale')}
+                  onClick={() => onSortKeyChange('scale', true)}
                   active={sortKey === 'scale'}
                 >
                   Sort by Scale

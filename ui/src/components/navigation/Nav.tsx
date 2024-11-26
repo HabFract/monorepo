@@ -229,7 +229,6 @@ const Nav: React.FC<INav> = ({
           if (!store.get(currentSphereHasCachedNodesAtom)) {
             showToast(
               "Select a Space with existing Plannits to enable Visualisation",
-              100000,
             );
             return;
           }

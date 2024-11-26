@@ -1,8 +1,8 @@
 import React from "react";
-import { StateMachine } from "../state/types/stateMachine";
-import { AppState, AppStateStore } from "../routes";
+import { StateMachine, StateStore } from "../state/types/stateMachine";
+import { AppState } from "../routes";
 
 export const StateMachineContext = React.createContext<StateMachine<
   AppState,
-  AppStateStore
+  StateStore<AppState>
 > | null>(null);

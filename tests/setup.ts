@@ -57,10 +57,6 @@ export function resetMocks() {
   vi.resetAllMocks();
 }
 
-vi.mock("../ui/src/hooks/useRedirect", async () => {
-  return { useRedirect: () => null };
-});
-
 // Mock vis helpers
 vi.mock("../ui/src/components/vis/helpers", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -180,14 +176,6 @@ vi.mock("antd", () => ({
 vi.mock("antd/es/menu/menu", () => ({
   default: vi.fn(() => null),
   MenuProps: vi.fn(() => null),
-}));
-
-vi.mock("@dicebear/core", () => ({
-  createAvatar: vi.fn(() => null),
-}));
-
-vi.mock("@dicebear/collection", () => ({
-  icons: null,
 }));
 
 vi.mock("d3-ease", async (importOriginal) => {

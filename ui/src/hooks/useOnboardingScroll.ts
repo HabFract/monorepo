@@ -8,7 +8,6 @@ export function useOnboardingScroll(
 ) {
   useEffect(() => {
     const stage = +(state.match(/Onboarding(\d+)/)?.[1] || 0);
-    console.log('returningUser :>> ',stage, returningUser);
     if (!stage || progressBarRef.current == null) return;
     setTimeout(() => {
       (progressBarRef.current as any)

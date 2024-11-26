@@ -72,7 +72,7 @@
 }
 
 .plannit-card-title .plannit-scale-image.sub img {
-  transform: scale(2) translate(0px, 3px) !important;
+  transform: scale(2) translate(-2px, 4px) !important;
 }
 
 .plannit-card-title .plannit-scale-image.atom img {

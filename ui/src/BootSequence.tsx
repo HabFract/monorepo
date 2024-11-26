@@ -18,12 +18,18 @@ const useConnection = () => {
   useEffect(() => {
     if (!AppMachine.state.connection) {
       debouncedGetConnection().then((connection: any) => {
-        AppMachine.state.connection = {
-          ...connection,
+        // Create the connection object with required properties
+        const newConnection = {
+          dnaConfig: connection.dnaConfig,
           conductorUri: connection.client.client.url!.href,
         };
-        initGraphQLClient(AppMachine.state.connection).then((client) => {
-          AppMachine.state.connection.apolloClient = client;
+        // Initialize GraphQL client with the connection
+        initGraphQLClient(newConnection).then((client) => {
+          // Update the connection with the Apollo client
+          AppMachine.state.connection = {
+            ...newConnection,
+            apolloClient: client
+          };
           setIsConnected(true);
         });
       });

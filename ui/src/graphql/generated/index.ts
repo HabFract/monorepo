@@ -144,6 +144,7 @@ export type CreateSphereResponsePayload = {
   actionHash: Scalars['String']['output'];
   entryHash: Scalars['String']['output'];
   eH: Scalars['String']['output'];
+  spin: Scalars['String']['output'];
   name: Scalars['String']['output'];
   metadata?: Maybe<SphereMetaData>;
 };
@@ -386,13 +387,6 @@ export type WinDateEntryInput = {
   multiple?: InputMaybe<Array<Scalars['Boolean']['input']>>;
 };
 
-export type CreateOrbitMutationVariables = Exact<{
-  variables: OrbitCreateParams;
-}>;
-
-
-export type CreateOrbitMutation = { __typename?: 'Mutation', createOrbit: { __typename?: 'CreateOrbitResponsePayload', id: string, eH: string, name: string, parentHash?: string | null, sphereHash: string, scale: Scale, frequency: Frequency, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
-
 export type DeleteOrbitMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -412,7 +406,14 @@ export type CreateSphereMutationVariables = Exact<{
 }>;
 
 
-export type CreateSphereMutation = { __typename?: 'Mutation', createSphere: { __typename?: 'CreateSphereResponsePayload', actionHash: string, entryHash: string, name: string } };
+export type CreateSphereMutation = { __typename?: 'Mutation', createSphere: { __typename?: 'CreateSphereResponsePayload', actionHash: string, entryHash: string, name: string, spin: string } };
+
+export type CreateOrbitMutationVariables = Exact<{
+  variables: OrbitCreateParams;
+}>;
+
+
+export type CreateOrbitMutation = { __typename?: 'Mutation', createOrbit: { __typename?: 'CreateOrbitResponsePayload', id: string, eH: string, name: string, parentHash?: string | null, sphereHash: string, scale: Scale, frequency: Frequency, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } };
 
 export type DeleteSphereMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -463,13 +464,6 @@ export type GetOrbitsQueryVariables = Exact<{
 
 export type GetOrbitsQuery = { __typename?: 'Query', orbits: { __typename?: 'OrbitConnection', edges: Array<{ __typename?: 'OrbitEdge', node: { __typename?: 'Orbit', id: string, eH: string, name: string, sphereHash: string, parentHash?: string | null, frequency: Frequency, scale: Scale, metadata?: { __typename?: 'OrbitMetaData', description?: string | null, timeframe: { __typename?: 'TimeFrame', startTime: number, endTime?: number | null } } | null } }> } };
 
-export type GetWinRecordForOrbitForMonthQueryVariables = Exact<{
-  params: OrbitWinRecordQueryParams;
-}>;
-
-
-export type GetWinRecordForOrbitForMonthQuery = { __typename?: 'Query', getWinRecordForOrbitForMonth?: { __typename?: 'WinRecord', id: string, eH: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } | null };
-
 export type GetLowestSphereHierarchyLevelQueryVariables = Exact<{
   sphereEntryHashB64: Scalars['String']['input'];
 }>;
@@ -489,53 +483,14 @@ export type GetSpheresQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetSpheresQuery = { __typename?: 'Query', spheres: { __typename?: 'SphereConnection', edges: Array<{ __typename?: 'SphereEdge', node: { __typename?: 'Sphere', id: string, eH: string, name: string, metadata?: { __typename?: 'SphereMetaData', description: string, image?: string | null } | null } }> } };
 
+export type GetWinRecordForOrbitForMonthQueryVariables = Exact<{
+  params: OrbitWinRecordQueryParams;
+}>;
 
-export const CreateOrbitDocument = gql`
-    mutation createOrbit($variables: OrbitCreateParams!) {
-  createOrbit(orbit: $variables) {
-    id
-    eH
-    name
-    parentHash
-    sphereHash
-    scale
-    frequency
-    metadata {
-      description
-      timeframe {
-        startTime
-        endTime
-      }
-    }
-  }
-}
-    `;
-export type CreateOrbitMutationFn = Apollo.MutationFunction<CreateOrbitMutation, CreateOrbitMutationVariables>;
 
-/**
- * __useCreateOrbitMutation__
- *
- * To run a mutation, you first call `useCreateOrbitMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateOrbitMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createOrbitMutation, { data, loading, error }] = useCreateOrbitMutation({
- *   variables: {
- *      variables: // value for 'variables'
- *   },
- * });
- */
-export function useCreateOrbitMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrbitMutation, CreateOrbitMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateOrbitMutation, CreateOrbitMutationVariables>(CreateOrbitDocument, options);
-      }
-export type CreateOrbitMutationHookResult = ReturnType<typeof useCreateOrbitMutation>;
-export type CreateOrbitMutationResult = Apollo.MutationResult<CreateOrbitMutation>;
-export type CreateOrbitMutationOptions = Apollo.BaseMutationOptions<CreateOrbitMutation, CreateOrbitMutationVariables>;
+export type GetWinRecordForOrbitForMonthQuery = { __typename?: 'Query', getWinRecordForOrbitForMonth?: { __typename?: 'WinRecord', id: string, eH: string, winData: Array<{ __typename?: 'WinDateEntry', date: string, value: { __typename?: 'SingleWin', single: boolean } | { __typename?: 'MultipleWins', multiple: Array<boolean> } }> } | null };
+
+
 export const DeleteOrbitDocument = gql`
     mutation deleteOrbit($id: ID!) {
   deleteOrbit(orbitHash: $id)
@@ -619,6 +574,7 @@ export const CreateSphereDocument = gql`
     actionHash
     entryHash
     name
+    spin
   }
 }
     `;
@@ -648,6 +604,52 @@ export function useCreateSphereMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateSphereMutationHookResult = ReturnType<typeof useCreateSphereMutation>;
 export type CreateSphereMutationResult = Apollo.MutationResult<CreateSphereMutation>;
 export type CreateSphereMutationOptions = Apollo.BaseMutationOptions<CreateSphereMutation, CreateSphereMutationVariables>;
+export const CreateOrbitDocument = gql`
+    mutation createOrbit($variables: OrbitCreateParams!) {
+  createOrbit(orbit: $variables) {
+    id
+    eH
+    name
+    parentHash
+    sphereHash
+    scale
+    frequency
+    metadata {
+      description
+      timeframe {
+        startTime
+        endTime
+      }
+    }
+  }
+}
+    `;
+export type CreateOrbitMutationFn = Apollo.MutationFunction<CreateOrbitMutation, CreateOrbitMutationVariables>;
+
+/**
+ * __useCreateOrbitMutation__
+ *
+ * To run a mutation, you first call `useCreateOrbitMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrbitMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrbitMutation, { data, loading, error }] = useCreateOrbitMutation({
+ *   variables: {
+ *      variables: // value for 'variables'
+ *   },
+ * });
+ */
+export function useCreateOrbitMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrbitMutation, CreateOrbitMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrbitMutation, CreateOrbitMutationVariables>(CreateOrbitDocument, options);
+      }
+export type CreateOrbitMutationHookResult = ReturnType<typeof useCreateOrbitMutation>;
+export type CreateOrbitMutationResult = Apollo.MutationResult<CreateOrbitMutation>;
+export type CreateOrbitMutationOptions = Apollo.BaseMutationOptions<CreateOrbitMutation, CreateOrbitMutationVariables>;
 export const DeleteSphereDocument = gql`
     mutation deleteSphere($id: ID!) {
   deleteSphere(sphereHash: $id)
@@ -952,58 +954,6 @@ export type GetOrbitsQueryHookResult = ReturnType<typeof useGetOrbitsQuery>;
 export type GetOrbitsLazyQueryHookResult = ReturnType<typeof useGetOrbitsLazyQuery>;
 export type GetOrbitsSuspenseQueryHookResult = ReturnType<typeof useGetOrbitsSuspenseQuery>;
 export type GetOrbitsQueryResult = Apollo.QueryResult<GetOrbitsQuery, GetOrbitsQueryVariables>;
-export const GetWinRecordForOrbitForMonthDocument = gql`
-    query getWinRecordForOrbitForMonth($params: OrbitWinRecordQueryParams!) {
-  getWinRecordForOrbitForMonth(params: $params) {
-    id
-    eH
-    winData {
-      date
-      value {
-        ... on SingleWin {
-          single
-        }
-        ... on MultipleWins {
-          multiple
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetWinRecordForOrbitForMonthQuery__
- *
- * To run a query within a React component, call `useGetWinRecordForOrbitForMonthQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetWinRecordForOrbitForMonthQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetWinRecordForOrbitForMonthQuery({
- *   variables: {
- *      params: // value for 'params'
- *   },
- * });
- */
-export function useGetWinRecordForOrbitForMonthQuery(baseOptions: Apollo.QueryHookOptions<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables> & ({ variables: GetWinRecordForOrbitForMonthQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>(GetWinRecordForOrbitForMonthDocument, options);
-      }
-export function useGetWinRecordForOrbitForMonthLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>(GetWinRecordForOrbitForMonthDocument, options);
-        }
-export function useGetWinRecordForOrbitForMonthSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>(GetWinRecordForOrbitForMonthDocument, options);
-        }
-export type GetWinRecordForOrbitForMonthQueryHookResult = ReturnType<typeof useGetWinRecordForOrbitForMonthQuery>;
-export type GetWinRecordForOrbitForMonthLazyQueryHookResult = ReturnType<typeof useGetWinRecordForOrbitForMonthLazyQuery>;
-export type GetWinRecordForOrbitForMonthSuspenseQueryHookResult = ReturnType<typeof useGetWinRecordForOrbitForMonthSuspenseQuery>;
-export type GetWinRecordForOrbitForMonthQueryResult = Apollo.QueryResult<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>;
 export const GetLowestSphereHierarchyLevelDocument = gql`
     query getLowestSphereHierarchyLevel($sphereEntryHashB64: String!) {
   getLowestSphereHierarchyLevel(sphereEntryHashB64: $sphereEntryHashB64)
@@ -1137,3 +1087,55 @@ export type GetSpheresQueryHookResult = ReturnType<typeof useGetSpheresQuery>;
 export type GetSpheresLazyQueryHookResult = ReturnType<typeof useGetSpheresLazyQuery>;
 export type GetSpheresSuspenseQueryHookResult = ReturnType<typeof useGetSpheresSuspenseQuery>;
 export type GetSpheresQueryResult = Apollo.QueryResult<GetSpheresQuery, GetSpheresQueryVariables>;
+export const GetWinRecordForOrbitForMonthDocument = gql`
+    query getWinRecordForOrbitForMonth($params: OrbitWinRecordQueryParams!) {
+  getWinRecordForOrbitForMonth(params: $params) {
+    id
+    eH
+    winData {
+      date
+      value {
+        ... on SingleWin {
+          single
+        }
+        ... on MultipleWins {
+          multiple
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetWinRecordForOrbitForMonthQuery__
+ *
+ * To run a query within a React component, call `useGetWinRecordForOrbitForMonthQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWinRecordForOrbitForMonthQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWinRecordForOrbitForMonthQuery({
+ *   variables: {
+ *      params: // value for 'params'
+ *   },
+ * });
+ */
+export function useGetWinRecordForOrbitForMonthQuery(baseOptions: Apollo.QueryHookOptions<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables> & ({ variables: GetWinRecordForOrbitForMonthQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>(GetWinRecordForOrbitForMonthDocument, options);
+      }
+export function useGetWinRecordForOrbitForMonthLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>(GetWinRecordForOrbitForMonthDocument, options);
+        }
+export function useGetWinRecordForOrbitForMonthSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>(GetWinRecordForOrbitForMonthDocument, options);
+        }
+export type GetWinRecordForOrbitForMonthQueryHookResult = ReturnType<typeof useGetWinRecordForOrbitForMonthQuery>;
+export type GetWinRecordForOrbitForMonthLazyQueryHookResult = ReturnType<typeof useGetWinRecordForOrbitForMonthLazyQuery>;
+export type GetWinRecordForOrbitForMonthSuspenseQueryHookResult = ReturnType<typeof useGetWinRecordForOrbitForMonthSuspenseQuery>;
+export type GetWinRecordForOrbitForMonthQueryResult = Apollo.QueryResult<GetWinRecordForOrbitForMonthQuery, GetWinRecordForOrbitForMonthQueryVariables>;

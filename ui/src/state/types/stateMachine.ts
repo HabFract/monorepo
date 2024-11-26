@@ -1,25 +1,26 @@
-export type State = string | number | symbol;
 
-export type StateTransitions<S extends State> = Record<S, Array<S>>;
-
-export interface StateStore<S extends State> {
-  currentState: S;
+export interface StateStore<T extends string | number | symbol> {
+  currentState: T;
   params: any;
-  connection: any;
-  history: Array<{state: S, params: any}>;
+  connection: Connection | null;
+  history: Array<{state: T, params: any}>;
 }
 
-export type StateTransitionCallback<S extends State> = (
-  _: StateStore<S>,
-) => Promise<void>;
+export type StateTransitions<T extends string | number | symbol> = {
+  [K in T]?: T[];
+};
 
-export type Callbacks<S extends State> = Record<S, StateTransitionCallback<S>>;
+export interface Connection {
+  apolloClient?: any;
+  dnaConfig: any;
+  conductorUri: any;
+}
 
 /**
  * The main mechanism for maintaining app loading state
  */
 
-export class StateMachine<T, S extends StateStore<T>> {
+export class StateMachine<T extends string | number | symbol, S extends StateStore<T>> {
   state: S;
   transitions: StateTransitions<T>;
   private handlers: Map<T, (state: S) => void> = new Map();
