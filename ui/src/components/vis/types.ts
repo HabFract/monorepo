@@ -27,7 +27,7 @@ export enum VisCoverage {
  * Props for the higher order component that wraps all vis types with a canvas and navigation controls,
  * depending on the coverage type.
  */
-export type WithVisCanvasProps = { orbitEh: EntryHashB64 }; // Entry hash of the root node used for partial VisCoverage.
+export type WithVisCanvasProps = { };
 
 /**
  * Interface for the base visualization class.
