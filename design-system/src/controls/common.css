@@ -244,11 +244,16 @@ div.handle span {
   height: 4px;
 }
 
+.swipe-up-screen-tab-container .handle::before {
+  content: '';
+  @apply bg-gradient-to-b dark:to-transparent dark:from-surface-top-dark rounded-t-3xl absolute inset-x-0 top-0 h-12;
+  z-index: -1;
+}
 
 .swipe-up-screen-tab-container .handle {
   padding: 8px 33%;
   height: 100%;
-  @apply z-10 dark:from-surface-top-dark rounded-t-3xl from-50%;
+  @apply z-10 fixed dark:from-surface-top-dark rounded-t-3xl from-50%;
 }
 
 .swipe-up-screen-tab-container .handle span {
@@ -463,7 +468,8 @@ div.handle span {
 
 .intersecting-pill-row {
   height: 100%;
-  width: calc(100% + 12rem);
+  min-width: 100%;
+  width: max-content;
   left: 2.5%;
 }
 
@@ -485,9 +491,9 @@ div.handle span {
 }
 
 .intersecting-pill-row .intersecting-pill {
-  margin-right: calc(3% * var(--n-multiplier, 1));
+  margin-right: 2rem;
 }
-
+/* 
 .intersecting-pill-row .intersecting-pill:nth-child(1) {
   --n-multiplier: 2.5;
 }
@@ -506,7 +512,7 @@ div.handle span {
 
 .intersecting-pill-row .intersecting-pill:nth-child(5) {
   --n-multiplier: 4.5;
-}
+} */
 
 .orbit-scale-icon>*,
 .intersecting-planet img {

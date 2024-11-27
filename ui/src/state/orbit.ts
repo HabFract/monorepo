@@ -33,20 +33,20 @@ export const decodeFrequency = (
       return Frequency.DAILY_OR_MORE.TWO;
     case GraphQLFrequency.DailyOrMore_3d:
       return Frequency.DAILY_OR_MORE.THREE;
-    case GraphQLFrequency.DailyOrMore_4d:
-      return Frequency.DAILY_OR_MORE.FOUR;
-    case GraphQLFrequency.DailyOrMore_5d:
-      return Frequency.DAILY_OR_MORE.FIVE;
-    case GraphQLFrequency.DailyOrMore_6d:
-      return Frequency.DAILY_OR_MORE.SIX;
-    case GraphQLFrequency.DailyOrMore_7d:
-      return Frequency.DAILY_OR_MORE.SEVEN;
-    case GraphQLFrequency.DailyOrMore_8d:
-      return Frequency.DAILY_OR_MORE.EIGHT;
-    case GraphQLFrequency.DailyOrMore_9d:
-      return Frequency.DAILY_OR_MORE.NINE;
-    case GraphQLFrequency.DailyOrMore_10d:
-      return Frequency.DAILY_OR_MORE.TEN;
+    // case GraphQLFrequency.DailyOrMore_4d:
+    //   return Frequency.DAILY_OR_MORE.FOUR;
+    // case GraphQLFrequency.DailyOrMore_5d:
+    //   return Frequency.DAILY_OR_MORE.FIVE;
+    // case GraphQLFrequency.DailyOrMore_6d:
+    //   return Frequency.DAILY_OR_MORE.SIX;
+    // case GraphQLFrequency.DailyOrMore_7d:
+    //   return Frequency.DAILY_OR_MORE.SEVEN;
+    // case GraphQLFrequency.DailyOrMore_8d:
+    //   return Frequency.DAILY_OR_MORE.EIGHT;
+    // case GraphQLFrequency.DailyOrMore_9d:
+    //   return Frequency.DAILY_OR_MORE.NINE;
+    // case GraphQLFrequency.DailyOrMore_10d:
+    //   return Frequency.DAILY_OR_MORE.TEN;
     case GraphQLFrequency.LessThanDaily_1w:
       return Frequency.LESS_THAN_DAILY.WEEKLY;
     case GraphQLFrequency.LessThanDaily_1m:

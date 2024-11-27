@@ -78,6 +78,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       actionHash: entryRecord.actionHash as any,
       entryHash: encodeHashToBase64(entryRecord.entryHash),
       name,
+      spin: "positive"
     };
   };
 
