@@ -182,10 +182,8 @@ export abstract class BaseVisualization implements IVisualization {
       if (AppMachine.state.currentState !== "Vis") return;
       const newId = store.get(currentOrbitDetailsAtom)?.eH;
       (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
-      if(store.get(newTraversalLevelIndexId)?.direction == 'new') return;
 
       setTimeout(() => {
-        // console.log("TRIGGERED ZOOM because of orbit id change")
         debouncedZoom(newId);
       }, 100); 
     })
@@ -193,14 +191,8 @@ export abstract class BaseVisualization implements IVisualization {
       if (AppMachine.state.currentState !== "Vis") return;
       (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
     })
-    const subNewNode = store.sub(newTraversalLevelIndexId, () => {
-      if (AppMachine.state.currentState !== "Vis") return;
-      console.log('store.get(newTraversalLevelIndexId) :>> ', store.get(newTraversalLevelIndexId));
-    })
-
     this._subscriptions.push(subOrbitId);
     this._subscriptions.push(subCurrentDay);
-    this._subscriptions.push(subNewNode);
   }
 
   unbindEventHandlers() {
@@ -308,7 +300,6 @@ export abstract class BaseVisualization implements IVisualization {
       this.setdXdY();
       this._originalRootData = this.rootData;
     }
-
     if (this.firstRender() || this.hasNextData()) {
       this.clearCanvas();
 
@@ -404,7 +395,7 @@ export abstract class BaseVisualization implements IVisualization {
    */
   noCanvas(): boolean {
     return (
-      typeof this._canvas === "undefined" ||
+      !this._canvas ||
       (select(`#${this._svgId} .canvas`) as any)._groups.length === 0
     );
   }
