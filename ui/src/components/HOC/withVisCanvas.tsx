@@ -44,6 +44,7 @@ import { StoreType } from "../../state/types/store";
 import { useWinData } from "../../hooks/useWinData";
 import { DateTime } from "luxon";
 import { calculateCurrentStreakAtom, calculateLongestStreakAtom } from "../../state/win";
+import { useVisContext } from "../../contexts/vis";
 
 /**
  * Higher-order component to enhance a visualization component with additional logic and state management.
@@ -104,6 +105,9 @@ export function withVisCanvas<T extends IVisualization>(
       selectedSphere!.entryHash as keyof SphereHierarchyBounds
       ] as HierarchyBounds,
     );
+
+    // ## -- Vis Layout level state -- ##
+    const { isAppendingNode, setIsAppendingNode } = useVisContext();
 
     // ## -- Component level state -- ##
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -228,6 +232,7 @@ export function withVisCanvas<T extends IVisualization>(
                 currentParentOrbitEh,
                 currentChildOrbitEh,
                 resetModalParentChildStates,
+                setIsAppendingNode,
                 currentVis,
               )}
             </>
