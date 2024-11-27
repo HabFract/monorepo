@@ -95,7 +95,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
       : "ListOrbits";
 
   const [addOrbit] = useCreateOrbitMutation({
-    awaitRefetchQueries: !inOnboarding && !!(parentOrbitEh || childOrbitEh),
+    awaitRefetchQueries: !inOnboarding,
     refetchQueries: () => [
       {
         query: GetOrbitHierarchyDocument,

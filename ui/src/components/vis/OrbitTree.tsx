@@ -22,6 +22,7 @@ import { currentSphereHashesAtom, newTraversalLevelIndexId, SphereHashes, update
 import { useSetAtom } from "jotai";
 import { NODE_ENV } from "../../constants";
 import { useD3Dependencies } from "./tree/useD3Deps";
+import { useVisContext } from "../../contexts/vis";
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   canvasHeight,
@@ -31,6 +32,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 }) => {
   // ## -- Router level state -- ##
   const [_state, transition, params, client] = useStateTransition();
+  const { isAppendingNode, setIsAppendingNode } = useVisContext();
   
   // ## -- Lazily load bigger d3 deps -- ##
   const { d3Modules, isLoading, error: lazyLoadError } = useD3Dependencies();
@@ -175,7 +177,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   useEffect(() => {
     setTimeout(() => setCanTriggerNextTreeVisRender(true), 0);
-  }, [y, x]);
+  }, [y, x, isAppendingNode]);
 
   useEffect(() => {
     if (canTriggerNextTreeVisRender && !error && currentOrbitTree && json && d3Modules) {
@@ -208,6 +210,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       currentOrbitTree.startInFocusMode = true;
       currentOrbitTree.render();
 
+      setIsAppendingNode(false)
       setCanTriggerNextTreeVisRender(false);
     }
   }, [canTriggerNextTreeVisRender, json, x]);

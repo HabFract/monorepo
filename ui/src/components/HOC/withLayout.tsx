@@ -13,6 +13,7 @@ import { useStateTransition } from "../../hooks/useStateTransition";
 import SettingsLayout from "../layouts/SettingsLayout";
 import { useToast } from "../../contexts/toast";
 import { Button } from "habit-fract-design-system";
+import { VisProvider } from "../../contexts/vis";
 
 function withPageTransition(page: ReactNode) {
   return (
@@ -103,12 +104,12 @@ const withLayout = (
           {component}
         </SettingsLayout>
       case state == "Vis":
-        return <VisLayout
+        return <VisProvider><VisLayout
           title={props.currentSphereDetails?.name}
           handleDeleteSphere={handleDeleteSphere}
         >
           {component}
-        </VisLayout>
+        </VisLayout></VisProvider>
       case ["CreateOrbit", "CreateSphere"].includes(state):
         return <FormLayout type={state.split('Create')[1]}>
           {component}

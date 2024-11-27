@@ -15,6 +15,7 @@ export default function VisModal<T extends IVisualization>(
   currentParentOrbitEh: string | undefined,
   currentChildOrbitEh: string | undefined,
   resetModalParentChildStates: () => void,
+  setIsAppendingNode: any,
   currentVis: T,
 ) {
   const [_, transition, params] = useStateTransition(); // Top level state machine and routing
@@ -44,6 +45,7 @@ export default function VisModal<T extends IVisualization>(
             currentVis.nodeDetails = store.get(
               currentSphereOrbitNodeDetailsAtom,
             ) as SphereOrbitNodeDetails;
+            setIsAppendingNode(true)
           }}
         ></CreateOrbit>
       </Modal.Body>
