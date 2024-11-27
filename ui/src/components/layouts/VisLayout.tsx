@@ -1,12 +1,9 @@
 import { ListGroup } from 'flowbite-react';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import './common.css'
-import { Button, getIconSvg, HeaderAction } from 'habit-fract-design-system';
+import { getIconSvg, HeaderAction } from 'habit-fract-design-system';
 import { EntryHashB64 } from '@holochain/client';
 import { Sphere } from '../../graphql/generated';
-import { currentSphereHasCachedNodesAtom, store } from '../../state';
-import { useToast } from '../../contexts/toast';
-import { useEffect } from 'react';
 
 function VisLayout({ children, title, handleDeleteSphere }: any) {
   const [_, transition, params, __, goBack, history] = useStateTransition();
@@ -18,7 +15,7 @@ function VisLayout({ children, title, handleDeleteSphere }: any) {
     transition("ListOrbits", { sphereAh: currentSphereDetails.id, currentSphereDetails });
   }
   const routeBack = () => {
-    if ((history[0]?.state).match("Onboarding") || !goBack()) {
+    if ((history[0]?.state).match("Onboarding") || (history[0]?.state == 'Vis') || !goBack()) {
       transition("Home");
     }
   };
