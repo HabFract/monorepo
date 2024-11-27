@@ -20,9 +20,9 @@ import { byStartTime, determineNewLevelIndex, parseAndSortTrees } from "./helper
 import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
 import { currentSphereHashesAtom, newTraversalLevelIndexId, SphereHashes, updateHierarchyAtom } from "../../state";
 import { useSetAtom } from "jotai";
-import { NODE_ENV } from "../../constants";
 import { useD3Dependencies } from "./tree/useD3Deps";
 import { useVisContext } from "../../contexts/vis";
+import { NODE_ENV } from "../../constants";
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   canvasHeight,
@@ -58,7 +58,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   });
 
   // ## -- State for a specific TreeVis render -- ##
-  const useVisState = useCallback(() => useOrbitTreeData(sphere), [sphere.actionHash]);
+  const useVisState = useCallback(() => useOrbitTreeData(sphere), [sphere.actionHash, isAppendingNode]);
   const {
     setBreadthBounds,
     depthBounds,
@@ -93,7 +93,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       });
       setTimeout(() => {
         setNewCurrentOrbitId((newTree as TreeVisualization)!.rootData!.data.content);
-      }, 250);
+      }, 350);
       setCurrentOrbitTree(newTree);
       newTree._json = json
       setHierarchyInAppState(newTree as any);
@@ -163,17 +163,18 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     instantiateVisObject();
   }, [json]);
 
+  const fetchAndProcess = useCallback(async () => {
+    let newJson = await fetchCurrentLevel();
+    // console.log('newJson :>> ', newJson);
+    if (!newJson) return;
+    await processHierarchyLevelAndFetchNext(newJson);
+    setCanTriggerNextTreeVisRender(true);
+  }, []);
+
   useEffect(() => {
-    // console.log('data,y :>> ', data,y);
-    const fetchAndProcess = async () => {
-      let newJson = await fetchCurrentLevel();
-      // console.log('newJson :>> ', newJson);
-      if (!newJson) return;
-      await processHierarchyLevelAndFetchNext(newJson);
-      setCanTriggerNextTreeVisRender(true);
-    };
+    // console.log('isAppendingNode :>> ', isAppendingNode);
     fetchAndProcess();
-  }, [data, y]);
+  }, [data, y, isAppendingNode]);
 
   useEffect(() => {
     setTimeout(() => setCanTriggerNextTreeVisRender(true), 0);
@@ -210,7 +211,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       currentOrbitTree.startInFocusMode = true;
       currentOrbitTree.render();
 
-      setIsAppendingNode(false)
       setCanTriggerNextTreeVisRender(false);
     }
   }, [canTriggerNextTreeVisRender, json, x]);

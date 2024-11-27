@@ -128,9 +128,11 @@ export function withVisCanvas<T extends IVisualization>(
 
     useEffect(() => {
       return () => {
-        if (visRef.current) {
+        if (visRef.current && !isAppendingNode) {
           visRef.current.destroy();
           visRef.current = null;
+        } else {
+          setIsAppendingNode(false)
         }
       };
     }, []);

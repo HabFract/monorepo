@@ -470,7 +470,7 @@ div.handle span {
   height: 100%;
   min-width: 100%;
   width: max-content;
-  left: 2.5%;
+  left: 2rem;
 }
 
 .intersecting-pill:first-child {
