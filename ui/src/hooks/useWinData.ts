@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import {
   WinData,
   Frequency,
   OrbitNodeDetails,
   FixedLengthArray,
+  WinDataPerOrbitNode,
 } from "../state/types";
 import {
   useGetWinRecordForOrbitForMonthLazyQuery,
@@ -13,8 +14,12 @@ import { EntryHashB64 } from "@holochain/client";
 import { toYearDotMonth } from "habit-fract-design-system";
 import { isMoreThenDaily } from "../components/vis/tree-helpers";
 import { DateTime } from "luxon";
-import { useAtom } from "jotai";
-import { winDataPerOrbitNodeAtom } from "../state/win";
+import { useAtom, useAtomValue, WritableAtom } from "jotai";
+import {
+  calculateWinDataForNonLeafNodeAtom,
+  winDataPerOrbitNodeAtom,
+} from "../state/win";
+import { isLeafNodeHashAtom } from "../state";
 
 export const winDataArrayToWinRecord = (
   acc: any,
@@ -25,20 +30,23 @@ export const winDataArrayToWinRecord = (
 };
 
 /**
- * Custom hook to manage win data fetchin and caching for a specific orbit and date.
+ * Custom hook to manage win data fetching and caching for both leaf and non-leaf orbit nodes.
  *
- * @param {OrbitNodeDetails | null} currentOrbitDetails - The details of the current orbit.
- * @param {DateTime} currentDate - The current date for which win data is being managed.
+ * @param {OrbitNodeDetails | null} currentOrbitDetails - The details of the current orbit
+ * @param {DateTime} currentDate - The current date for which win data is being managed
  * @returns {Object} An object containing:
- *   - `workingWinDataForOrbit`: The current win data for the orbit.
- *   - `handleUpdateWorkingWins`: A function to update the win count for the current date.
+ *   - `workingWinDataForOrbit`: The current win data for the orbit (actual for leaf nodes, calculated for non-leaf nodes)
+ *   - `handleUpdateWorkingWins`: A function to update the win count for the current date (only for leaf nodes)
+ *   - `isLeaf`: Boolean indicating whether the current orbit is a leaf node
  *
  * @example
- * const { workingWinDataForOrbit, handleUpdateWorkingWins } = useWinData(currentOrbitDetails, currentDate);
+ * const { workingWinDataForOrbit, handleUpdateWorkingWins, isLeaf } = useWinData(currentOrbitDetails, currentDate);
  *
  * @description
- * This hook handles the fetching, updating, and resetting of win data for a given orbit and date.
- * It ensures that the win data is correctly initialized and updated based on the orbit's frequency.
+ * This hook handles different behaviors for leaf and non-leaf nodes:
+ * - Leaf nodes: Manages actual win data with fetching, updating, and persistence
+ * - Non-leaf nodes: Provides calculated win data based on descendant completion status
+ * The hook ensures that win data is correctly initialized and updated based on the orbit's type and frequency.
  */
 export function useWinData(
   currentOrbitDetails: OrbitNodeDetails | null,
@@ -48,30 +56,51 @@ export function useWinData(
   const skipFlag = !currentOrbitDetails || !currentOrbitDetails.eH;
   const orbitHash = currentOrbitDetails?.eH as EntryHashB64;
 
-  const [workingWinDataForOrbit, setWorkingWinDataForOrbit] = useAtom(
-    useMemo(() => winDataPerOrbitNodeAtom(orbitHash), [orbitHash])
+  const isLeaf = useAtomValue(
+    useMemo(
+      () => isLeafNodeHashAtom(currentOrbitDetails?.id || ""),
+      [currentOrbitDetails?.id]
+    )
   );
+
+  const winDataAtom = useMemo(() => {
+    if (!orbitHash) return winDataPerOrbitNodeAtom('');
+    return isLeaf 
+      ? winDataPerOrbitNodeAtom(orbitHash)
+      : calculateWinDataForNonLeafNodeAtom(orbitHash);
+  }, [orbitHash, isLeaf]) as WritableAtom<
+    WinDataPerOrbitNode | null,
+    [SetStateAction<WinDataPerOrbitNode | null>],
+    void
+  >;
+
+  const [workingWinDataForOrbit, setWorkingWinDataForOrbit] =
+    useAtom(winDataAtom);
 
   const [getWinRecord, { data, loading, error }] =
     useGetWinRecordForOrbitForMonthLazyQuery();
 
   useEffect(() => {
-    if (!orbitHash) return;
+    if (!orbitHash || skipFlag || !isLeaf || workingWinDataForOrbit) return;
 
-    if (!skipFlag && !workingWinDataForOrbit) {
-      getWinRecord({
-        variables: {
-          params: {
-            yearDotMonth: currentYearDotMonth,
-            orbitEh: currentOrbitDetails?.eH as EntryHashB64,
-          },
+    getWinRecord({
+      variables: {
+        params: {
+          yearDotMonth: currentYearDotMonth,
+          orbitEh: orbitHash,
         },
-      });
-    }
-  }, [currentOrbitDetails?.eH, workingWinDataForOrbit]);
+      },
+    });
+  }, [
+    orbitHash,
+    skipFlag,
+    isLeaf,
+    workingWinDataForOrbit,
+    currentYearDotMonth,
+  ]);
 
   useEffect(() => {
-    if (currentOrbitDetails == null || !data?.getWinRecordForOrbitForMonth)
+    if (!currentOrbitDetails || !data?.getWinRecordForOrbitForMonth || !isLeaf)
       return;
 
     const newWinData = data.getWinRecordForOrbitForMonth.winData.reduce(
@@ -79,43 +108,34 @@ export function useWinData(
       {}
     );
     setWorkingWinDataForOrbit(newWinData);
-  }, [data, orbitHash]);
+  }, [data, isLeaf, currentOrbitDetails]);
 
   useEffect(() => {
     if (
       loading ||
-      currentOrbitDetails == null ||
+      !currentOrbitDetails ||
       !currentDate ||
       (!data && !error) ||
-      (data?.getWinRecordForOrbitForMonth &&
-        data.getWinRecordForOrbitForMonth.winData.length > 0)
+      (data?.getWinRecordForOrbitForMonth?.winData?.length && data?.getWinRecordForOrbitForMonth?.winData.length > 0) ||
+      !isLeaf ||
+      workingWinDataForOrbit?.[currentDate.toLocaleString()]
     )
       return;
 
-    if (
-      !workingWinDataForOrbit ||
-      !(currentDate.toLocaleString() in workingWinDataForOrbit)
-    ) {
-      const newData = {
-        ...workingWinDataForOrbit,
-        [currentDate.toLocaleString()]: isMoreThenDaily(
-          currentOrbitDetails.frequency
-        )
-          ? (new Array(currentOrbitDetails.frequency).fill(
-              false
-            ) as FixedLengthArray<
-              boolean,
-              typeof currentOrbitDetails.frequency
-            >)
-          : false,
-      } as any;
-      setWorkingWinDataForOrbit(newData);
-    }
-  }, [data, currentDate, orbitHash]);
+    const newData = {
+      ...workingWinDataForOrbit,
+      [currentDate.toLocaleString()]: isMoreThenDaily(
+        currentOrbitDetails.frequency
+      )
+        ? new Array(currentOrbitDetails.frequency).fill(false)
+        : false,
+    } as WinDataPerOrbitNode;
 
+    setWorkingWinDataForOrbit(newData);
+  }, [data, currentDate, loading, error, isLeaf, currentOrbitDetails]);
   const handleUpdateWorkingWins = useCallback(
     (newWinCount: number) => {
-      if (workingWinDataForOrbit == null || currentOrbitDetails == null) return;
+      if (!workingWinDataForOrbit || !currentOrbitDetails || !isLeaf) return;
 
       const updatedData = {
         ...workingWinDataForOrbit,
@@ -125,16 +145,15 @@ export function useWinData(
                 .fill(false)
                 .map((_, i) => i < newWinCount)
             : !!newWinCount,
-      } as any;
+      } as WinDataPerOrbitNode;
       setWorkingWinDataForOrbit(updatedData);
     },
-    [
-      workingWinDataForOrbit,
-      currentOrbitDetails,
-      currentDate,
-      setWorkingWinDataForOrbit,
-    ]
+    [workingWinDataForOrbit, currentOrbitDetails, currentDate, isLeaf]
   );
 
-  return { workingWinDataForOrbit, handleUpdateWorkingWins };
+  return {
+    workingWinDataForOrbit,
+    handleUpdateWorkingWins,
+    isLeaf,
+  };
 }

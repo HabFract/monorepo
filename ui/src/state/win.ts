@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import { appStateAtom } from "./store";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
-import { OrbitNodeDetails, WinDataPerOrbitNode } from "./types";
+import { FixedLengthArray, OrbitNodeDetails, WinDataPerOrbitNode } from "./types";
 import {
   getOrbitEhFromId,
   getOrbitNodeDetailsFromEhAtom,
@@ -141,6 +141,84 @@ export const calculateCompletionStatusAtom = (
       return leafDescendants.flat().every((leaf) => {
         return get(getWinCompletionForOrbitForDayAtom(leaf.content, date));
       });
+    }
+  });
+};
+
+/**
+ * Calculates win data for non-leaf nodes based on their descendants' completion status.
+ * 
+ * @param {EntryHashB64} orbitEh - The entry hash of the orbit node
+ * @returns {Atom<WinDataPerOrbitNode | null>} An atom containing the calculated win data or null if orbit doesn't exist
+ * 
+ * @description
+ * This atom calculates win data for non-leaf nodes by checking the completion status
+ * of all leaf descendants for each day in the current month. A day is considered complete
+ * only if all leaf descendants are complete for that day.
+ */
+export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
+  return atom((get) => {
+    const orbit = get(getOrbitNodeDetailsFromEhAtom(orbitEh));
+    if (!orbit) return null;
+
+    // Memoize leaf descendants to prevent recalculation
+    const leafDescendants = get(getDescendantLeafNodesAtom(orbitEh));
+    if (!leafDescendants) return null;
+
+    const today = DateTime.now();
+    const startOfMonth = today.startOf('month');
+    const endOfMonth = today.endOf('month');
+    
+    const winData = {};
+    
+    // Calculate once for the entire month
+    let currentDate = startOfMonth;
+    while (currentDate <= endOfMonth) {
+      const dateString = currentDate.toLocaleString();
+      
+      // Use a stable reference for completion check
+      const isComplete = leafDescendants.every((leaf) => {
+        return get(calculateCompletionStatusAtom(leaf.content, dateString));
+      });
+
+      if (orbit.frequency > 1) {
+        // For multi-frequency orbits, create an array of the same completion status
+        winData[dateString] = Array(orbit.frequency).fill(isComplete) as FixedLengthArray<boolean, typeof orbit.frequency>;
+      } else {
+        // For single-frequency orbits, use the boolean directly
+        (winData as { [key: string]: boolean })[dateString] = isComplete;
+      }
+      currentDate = currentDate.plus({ days: 1 });
+    }
+
+    return winData;
+  });
+};
+
+/**
+ * Gets the appropriate win data for an orbit based on whether it's a leaf or non-leaf node.
+ * 
+ * @param {EntryHashB64} orbitEh - The entry hash of the orbit node
+ * @returns {Atom<WinDataPerOrbitNode | null>} An atom containing either actual win data for leaf nodes
+ * or calculated win data for non-leaf nodes
+ * 
+ * @description
+ * This utility atom determines whether an orbit is a leaf node and returns the appropriate
+ * win data. For leaf nodes, it returns the actual stored win data. For non-leaf nodes,
+ * it returns calculated win data based on the completion status of all descendants.
+ */
+export const getWinDataForOrbitAtom = (orbitEh: EntryHashB64) => {
+  return atom((get) => {
+    const orbit = get(getOrbitNodeDetailsFromEhAtom(orbitEh));
+    if (!orbit) return null;
+
+    const isLeaf = get(isLeafNodeHashAtom(orbit.id));
+    
+    if (isLeaf) {
+      const state = get(appStateAtom);
+      return state.wins[orbit.id] || null;
+    } else {
+      return get(calculateWinDataForNonLeafNodeAtom(orbitEh));
     }
   });
 };

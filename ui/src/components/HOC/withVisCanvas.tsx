@@ -142,7 +142,11 @@ export function withVisCanvas<T extends IVisualization>(
       return useWinData(currentOrbitDetails, currentDate)
     },
       [currentOrbitDetails, currentDate]);
-    const { workingWinDataForOrbit, handleUpdateWorkingWins } = withWinData();
+      
+    const { workingWinDataForOrbit, handleUpdateWorkingWins, isLeaf } = useWinData(
+      currentOrbitDetails, 
+      currentDate
+    );
     // console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
     const skipFlag = !currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit || typeof workingWinDataForOrbit !== 'object';
     const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
@@ -213,6 +217,7 @@ export function withVisCanvas<T extends IVisualization>(
                   setNewDate={setCurrentDate}
                   currentStreak={currentStreak}
                   longestStreak={longestStreak}
+                  //@ts-expect-error TODO: resolve type inequalities here
                   workingWinDataForOrbit={workingWinDataForOrbit}
                   handleUpdateWorkingWins={handleUpdateWorkingWins}
                   handlePersistWins={handlePersistWins}
