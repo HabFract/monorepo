@@ -10,13 +10,15 @@ export interface CalendarProps {
   currentDate: DateTime;
   setNewDate: Function;
   orbitFrequency: Frequency.Rationals;
+  disabled?: boolean;
 }
 
 const Calendar: React.FC<CalendarProps> = ({
   orbitWins,
   currentDate,
   setNewDate,
-  orbitFrequency
+  orbitFrequency,
+  disabled
 }) => {
   // Get a reference for the actual current date
   const nowDate = DateTime.local();
@@ -53,7 +55,7 @@ const Calendar: React.FC<CalendarProps> = ({
   const spacerDays = 3 - daysAfterCurrent;
   return (
     <>
-      <div className="current-calendar-context-container">
+      <div className={disabled ? "current-calendar-context-container" : "disabled current-calendar-context-container"}>
         <button className="date-nav-button" onClick={handlePreviousDay}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={4} stroke="white" className="date-nav-icon">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />

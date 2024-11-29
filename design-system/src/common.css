@@ -4,12 +4,24 @@
 @tailwind utilities;
 
 
-.full-spinner {
-  position: fixed;
+.full-spinner, .card-spinner {
+  display: grid;
+  place-content: center;
   height: 6rem;
   width: 6rem;
+}
+
+.full-spinner {
+  position: fixed;
   left: calc(50vw - 3rem);
   top: calc(50vh - 3rem);
+  animation: spin 2s linear infinite;
+  @apply fill-primary dark:fill-primary-dark text-text dark:text-text-dark;
+}
+.card-spinner {
+  position: absolute;
+  left: calc(50% - 3rem);
+  top: calc(50% - 3rem);
   animation: spin 2s linear infinite;
   @apply fill-primary dark:fill-primary-dark text-text dark:text-text-dark;
 }

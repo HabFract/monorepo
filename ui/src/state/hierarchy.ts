@@ -12,13 +12,14 @@ import {
   SphereHierarchyBounds,
 } from "./types/hierarchy";
 import { EntryHashB64 } from "@holochain/client";
-import { appStateAtom } from "./store";
+import { appStateAtom, nodeCache } from "./store";
 import { OrbitNodeDetails, RootOrbitEntryHash } from "./types/orbit";
 import { Hierarchy } from "./types/hierarchy";
 import { getSphereIdFromEhAtom } from "./sphere";
 import { HierarchyNode } from "d3-hierarchy";
-import { WinData } from "./types";
+import { WinData, WinDataPerOrbitNode } from "./types";
 import { DateTime } from "luxon";
+import { calculateWinDataForNonLeafNodeAtom } from "./win";
 
 /** PRIMITIVE (not currently in AppState or IndexDB) */
 
@@ -190,6 +191,69 @@ export const updateHierarchyAtom = atom(
     set(appStateAtom, newState);
   }
 );
+
+export const allSpheresDataAtom = atom((get) => {
+  const state = get(appStateAtom);
+  const cache = get(nodeCache.entries);
+  
+  if (!state || !cache) return {};
+
+  const spheres = Object.values(state.spheres.byHash);
+  const result: Record<string, {
+    rootOrbitOrbitDetails: OrbitNodeDetails | null,
+    rootOrbitWinData: WinDataPerOrbitNode | null
+  }> = {};
+
+  for (const sphere of spheres) {
+    const rootOrbitEh = sphere.hierarchyRootOrbitEntryHashes?.[0];
+    if (!rootOrbitEh && sphere?.details?.entryHash) {
+      result[sphere.details.entryHash] = {
+        rootOrbitOrbitDetails: null,
+        rootOrbitWinData: null
+      };
+      continue;
+    }
+
+    const rootOrbitDetails = cache[rootOrbitEh] || null;
+    result[sphere.details.entryHash] = {
+      rootOrbitOrbitDetails: rootOrbitDetails,
+      rootOrbitWinData: rootOrbitDetails 
+        ? get(calculateWinDataForNonLeafNodeAtom(rootOrbitEh))
+        : null
+    };
+  }
+
+  return result;
+});
+
+/**
+ * Gets the first root orbit entry hash for a given sphere.
+ */
+export const getSphereFirstRootOrbitEhAtom = (sphereEh: EntryHashB64) => 
+  atom((get) => {
+    const state = get(appStateAtom);
+    const sphere = Object.values(state.spheres.byHash).find(
+      sphere => sphere?.details?.entryHash === sphereEh
+    );
+    
+    if (!sphere || !sphere.hierarchyRootOrbitEntryHashes.length) return null;
+    return sphere.hierarchyRootOrbitEntryHashes[0];
+  });
+
+
+/**
+ * Gets win data for a sphere's root orbit
+ */
+export const getSphereRootOrbitWinDataAtom = (sphereEh: EntryHashB64) => 
+  atom((get) => {
+    const rootOrbitEh = get(getSphereFirstRootOrbitEhAtom(sphereEh));
+    if (!rootOrbitEh) return null;
+
+    const orbit = get(getOrbitNodeDetailsFromEhAtom(rootOrbitEh));
+    if (!orbit) return null;
+
+    return get(calculateWinDataForNonLeafNodeAtom(rootOrbitEh));
+  });
 
 /**
  * Atom to check if a Action Hash exists in the leafNodeHashes of any hierarchy in appState.
