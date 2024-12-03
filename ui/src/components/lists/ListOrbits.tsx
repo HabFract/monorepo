@@ -89,24 +89,29 @@ const ListOrbits: React.FC<ListOrbitsProps> = () => {
       />
 
       <>
-        <Button onClick={routeToVis} type="button" variant="primary responsive">
+        <Button onClick={routeToVis} isDisabled={sortedOrbits?.length == 0} type="button" variant="primary responsive">
           <><span className="w-6 h-6 mt-2">{getIconSvg("tree-vis")({})}</span><span className="block ml-4">Visualise</span></>
         </Button>
         <Button onClick={routeToCreateOrbit} type="button" variant="primary responsive">
         <><span className="w-auto h-auto">{getIconSvg("plus")({})}</span><span className="block ml-4">Add Plannit</span></>
         </Button>
         <div className="orbits">
-          {sortedOrbits.map((orbit: Orbit) => (
-            <PlannitCard
-              key={orbit.id}
-              currentStreak={store.get(calculateCurrentStreakAtom(orbit.id))}
-              longestStreak={store.get(calculateLongestStreakAtom(orbit.id))}
-              lastTrackedWinDate="12/21/2023"
-              orbit={orbit}
-              handleEditPlannit={() => handleEditPlannit(orbit)}
-              runDelete={() => handleDeletePlannit(orbit)}
-            />
-          ))}
+          {sortedOrbits?.length > 0 ? 
+            sortedOrbits.map((orbit: Orbit) => (
+              <PlannitCard
+                key={orbit.id}
+                currentStreak={store.get(calculateCurrentStreakAtom(orbit.id))}
+                longestStreak={store.get(calculateLongestStreakAtom(orbit.id))}
+                lastTrackedWinDate="12/21/2023"
+                orbit={orbit}
+                handleEditPlannit={() => handleEditPlannit(orbit)}
+                runDelete={() => handleDeletePlannit(orbit)}
+              />
+            )) : <div className="warning-message flex flex-col items-center justify-center w-full h-full gap-4 pb-48">
+              <img className="mb-2" src="assets/icons/warning.svg" alt="warning icon" />
+              <h1>There are no Planitts<br /> in this System</h1>
+              <h2>Add a Planitt to start tracking your behaviour</h2>
+            </div> }
         </div>
       </>
     </section>

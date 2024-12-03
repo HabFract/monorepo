@@ -48,7 +48,21 @@ h4 {
 }
 
 .home-layout header h2 {
-  @apply font-std leading-std text-base opacity-75;
+  @apply leading-std opacity-80 mb-4 text-base font-medium;
+}
+
+/* Warning Message
+-------------------------------------------------- */
+.warning-message h1,
+.warning-message h2 {
+  @apply dark:text-text-dark text-text font-sans leading-loose text-center;
+}
+
+.warning-message h1 {
+  @apply mb-2 text-lg font-bold tracking-wide;
+}
+.warning-message h2 {
+  @apply leading-std opacity-80 text-base font-medium;
 }
 
 /* Link Styles
