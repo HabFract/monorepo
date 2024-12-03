@@ -61,14 +61,14 @@ const OnboardingHeader: React.ForwardRefExoticComponent<
             stepNames={
               !returningUser ? [
                 "Create Password",
-                `Create ${MODEL_DISPLAY_VALUES['sphere']}`,
-                `Create ${MODEL_DISPLAY_VALUES['orbit']}`,
+                `Create a ${MODEL_DISPLAY_VALUES['sphere']}`,
+                `Create a ${MODEL_DISPLAY_VALUES['orbit']}`,
                 `Break Up ${MODEL_DISPLAY_VALUES['orbit']}`,
-                "Visualize",
-              ] : [`Create ${MODEL_DISPLAY_VALUES['sphere']}`,
-                `Create ${MODEL_DISPLAY_VALUES['orbit']}`,
+                "Visualise",
+              ] : [`Create a ${MODEL_DISPLAY_VALUES['sphere']}`,
+                `Create a ${MODEL_DISPLAY_VALUES['orbit']}`,
                 `Break Up ${MODEL_DISPLAY_VALUES['orbit']}`,
-                "Visualize",
+                "Visualise",
               ]}
             currentStep={returningUser ? currentStepNumber - 1 : currentStepNumber}
           />
