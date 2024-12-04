@@ -217,7 +217,7 @@ export function withVisCanvas<T extends IVisualization>(
                   setNewDate={setCurrentDate}
                   currentStreak={currentStreak}
                   longestStreak={longestStreak}
-                  //@ts-expect-error TODO: resolve type inequalities here
+                  //@ts-ignore-error TODO: resolve type inequalities here
                   workingWinDataForOrbit={workingWinDataForOrbit}
                   handleUpdateWorkingWins={handleUpdateWorkingWins}
                   handlePersistWins={handlePersistWins}

@@ -94,7 +94,7 @@ function App({ children: pageComponent }) {
               // Only Renders when state includes "Onboarding"
               headerDiv: state.match("Onboarding") && (
                 <OnboardingHeader
-                  //@ts-ignore
+                  // @ts-ignore
                   ref={progressBarRef}
                 />
               ),

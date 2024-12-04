@@ -6,13 +6,13 @@ import { Button, Calendar, getIconForPlanetValue, getIconSvg, Spinner } from "..
 import { DateTime } from "luxon";
 import { ListGroup, Popover } from "flowbite-react";
 import { darkThemeListGroup } from "../darkTheme";
-import { decodeFrequency, WinDataPerOrbitNode } from "@ui/src/state";
+import { OrbitNodeDetails, WinDataPerOrbitNode } from "@ui/src/state";
 
 export interface SystemCalendarProps {
   sphere: Sphere;
   loading: boolean;
   rootOrbitWinData: WinDataPerOrbitNode | null;
-  rootOrbitOrbitDetails: Orbit | null;
+  rootOrbitOrbitDetails: OrbitNodeDetails | null;
   runDelete?: () => void;
   setSphereIsCurrent: () => void;
   handleVisAction: () => void;

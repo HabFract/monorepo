@@ -73,7 +73,7 @@
 }
 
 .home-layout .returning-cta {
-  @apply gap-4 px-4 mt-4;
+  @apply gap-1 px-4 mt-4;
   height: 12rem;
 }
 
