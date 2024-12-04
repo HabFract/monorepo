@@ -140,8 +140,8 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
 
           const refineTitle =
             refinementType == Refinement.Update
-              ? "Refine Plannit Name"
-              : "Choose Sub-Plannit Scale";
+              ? "Refine Planitt Name"
+              : "Choose Sub-Planitt Scale";
           const refineMessage =
             refinementType == Refinement.Update
               ? "Since you have chosen the Atomic scale for your Orbit, it's best to make sure it is named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable:"
@@ -231,7 +231,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                         values.scale == Scale.Atom &&
                         RenamingHelperText()}
                       <Label htmlFor="list">
-                        New Plannit Names: <span className="reqd">*</span>
+                        New Planitt Names: <span className="reqd">*</span>
                       </Label>
                       <FieldArray
                         name="list"
@@ -305,12 +305,12 @@ export default OrbitSubdivisionList;
 function RenamingHelperText() {
   return (
     <HelperText
-      title={"Refine Plannit Name"}
+      title={"Refine Planitt Name"}
       titleIcon={<Pencil />}
       withInfo={false}
     >
       <span>
-        Since you have chosen the Dwarf scale for your new Plannits, it's best to
+        Since you have chosen the Dwarf scale for your new Planitts, it's best to
         make sure they are named in a way that is an <em>incremental action</em>{" "}
         - one that is easily quantifiable and achievable.
       </span>

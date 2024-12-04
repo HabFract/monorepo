@@ -65,8 +65,8 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
             content={<ListGroup
               theme={darkThemeListGroup}
               className="list-group-override w-48">
-              <ListGroup.Item onClick={() => handleListAction()} icon={getIconSvg('list')}>List Plannits</ListGroup.Item>
-              <ListGroup.Item onClick={() => handleCreateAction()} icon={getIconSvg('plus')}>Add Plannit</ListGroup.Item>
+              <ListGroup.Item onClick={() => handleListAction()} icon={getIconSvg('list')}>List Planitts</ListGroup.Item>
+              <ListGroup.Item onClick={() => handleCreateAction()} icon={getIconSvg('plus')}>Add Planitt</ListGroup.Item>
             </ListGroup>
             }
           >

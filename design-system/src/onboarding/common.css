@@ -25,7 +25,7 @@
   --onboarding-translate-increment: -200px;
 }
 
-/* Figures with Plannit Scales
+/* Figures with Planitt Scales
 -------------------------------------------------- */
 .figure-image-container {
   @apply flex-1 w-full;

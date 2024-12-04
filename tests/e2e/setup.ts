@@ -19,7 +19,7 @@ export const MODEL_DISPLAY_VALUES = {
   // Model names
   sphere: 'Space',
   hierarchy: 'System',
-  orbit: 'Plannit',
+  orbit: 'Planitt',
   winRecord: 'Orbit',
   // Orbit scale display names and their precedents
   astro: 'Star', // Stood for astronomic

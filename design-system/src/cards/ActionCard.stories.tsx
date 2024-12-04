@@ -74,5 +74,5 @@ ButtonDangerOutlined.args = {
   variant: "button",
   button: <Button variant="danger responsive outlined" type="button">Delete</Button>,
   runAction: () => { console.log("Action performed!") },
-  title: "Delete Plannit",
+  title: "Delete Planitt",
 };

@@ -30,7 +30,7 @@ export default function VisModal<T extends IVisualization>(
         resetModalParentChildStates()
       }}
     >
-      <Modal.Header>{editingParent ? "Update" : "Add"} Plannit</Modal.Header>
+      <Modal.Header>{editingParent ? "Update" : "Add"} Planitt</Modal.Header>
       <Modal.Body>
         <CreateOrbit
           editMode={editingParent}

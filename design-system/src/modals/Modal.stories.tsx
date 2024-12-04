@@ -28,7 +28,7 @@ export const Sun: Story = {
   },
 };
 
-export const Plannit: Story = {
+export const Planitt: Story = {
   args: {
     size: "lg",
     children: <div className="flex flex-col gap-2">

@@ -73,7 +73,7 @@ function getInfoBody(infoId: string) : ReactNode {
       return <div className="flex flex-col gap-2">
       <img style={{transform: "translate(.25rem, 0)"}} className="max-w-72 mx-auto" src="/assets/moon.svg"></img>
       <h1 className="text-xl text-center text-white text-opacity-100">Dwarf</h1>
-      <p>Dwarf plannits are your small, everyday actions. They may be tiny, but they pack a punch! These are the tasks you can tick off daily, keeping you on track and moving forward.</p>
+      <p>Dwarf planitts are your small, everyday actions. They may be tiny, but they pack a punch! These are the tasks you can tick off daily, keeping you on track and moving forward.</p>
     </div>
     default:
       return <></>

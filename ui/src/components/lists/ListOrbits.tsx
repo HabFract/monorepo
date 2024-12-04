@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import "./common.css";
 
-import { PlannitCard, ListSortFilter, Button, getIconSvg, Spinner } from "habit-fract-design-system";
+import { PlanittCard, ListSortFilter, Button, getIconSvg, Spinner } from "habit-fract-design-system";
 import { Orbit, useDeleteOrbitMutation, useGetOrbitsQuery } from "../../graphql/generated";
 import { useSearchableList } from "../../hooks/useSearchableList";
 import { extractEdges } from "../../graphql/utils";
@@ -27,14 +27,14 @@ const ListOrbits: React.FC<ListOrbitsProps> = () => {
     refetchQueries: ["getOrbits"],
   });
 
-  const handleEditPlannit = (orbit: Orbit) => {
+  const handleEditPlanitt = (orbit: Orbit) => {
     transition("CreateOrbit", { sphereEh: orbit.eH, orbitToEditId: orbit?.id, editMode: true });
   }
 
-  const handleDeletePlannit = (orbit: Orbit) => {
+  const handleDeletePlanitt = (orbit: Orbit) => {
     showModal({
       title: "Are you sure?",
-      message: "This action cannot be undone! This will also delete your Win history for this Plannit",
+      message: "This action cannot be undone! This will also delete your Win history for this Planitt",
       onConfirm: () => {
         runDelete({ variables: { id: orbit.id } })
       },
@@ -93,19 +93,19 @@ const ListOrbits: React.FC<ListOrbitsProps> = () => {
           <><span className="w-6 h-6 mt-2">{getIconSvg("tree-vis")({})}</span><span className="block ml-4">Visualise</span></>
         </Button>
         <Button onClick={routeToCreateOrbit} type="button" variant="primary responsive">
-        <><span className="w-auto h-auto">{getIconSvg("plus")({})}</span><span className="block ml-4">Add Plannit</span></>
+        <><span className="w-auto h-auto">{getIconSvg("plus")({})}</span><span className="block ml-4">Add Planitt</span></>
         </Button>
         <div className="orbits">
           {sortedOrbits?.length > 0 ? 
             sortedOrbits.map((orbit: Orbit) => (
-              <PlannitCard
+              <PlanittCard
                 key={orbit.id}
                 currentStreak={store.get(calculateCurrentStreakAtom(orbit.id))}
                 longestStreak={store.get(calculateLongestStreakAtom(orbit.id))}
                 lastTrackedWinDate="12/21/2023"
                 orbit={orbit}
-                handleEditPlannit={() => handleEditPlannit(orbit)}
-                runDelete={() => handleDeletePlannit(orbit)}
+                handleEditPlanitt={() => handleEditPlanitt(orbit)}
+                runDelete={() => handleDeletePlanitt(orbit)}
               />
             )) : <div className="warning-message flex flex-col items-center justify-center w-full h-full gap-4 pb-48">
               <img className="mb-2" src="assets/icons/warning.svg" alt="warning icon" />

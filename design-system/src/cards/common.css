@@ -40,63 +40,63 @@
   @apply font-sans text-lg font-bold;
 }
 
-/* Plannit Card Variant
+/* Planitt Card Variant
 -------------------------------------------------- */
-.plannit-card {
+.planitt-card {
   @apply dark:bg-surface-overlay-dark rounded-xl flex flex-col gap-2 p-4 pb-12 bg-gray-300;
 }
 
-/* Plannit Card Header & Title */
-.plannit-card-title {
+/* Planitt Card Header & Title */
+.planitt-card-title {
   @apply flex items-center justify-start w-full gap-2;
 }
 
-.plannit-card-title .plannit-scale-image {
+.planitt-card-title .planitt-scale-image {
   @apply flex flex-1;
 }
 
-.plannit-card-title .card-name {
+.planitt-card-title .card-name {
   @apply flex;
   flex: 4;
 }
 
-/* Plannit Card Images */
-.plannit-card header img {
+/* Planitt Card Images */
+.planitt-card header img {
   @apply w-full h-auto !important;
   max-width: initial !important;
   transform: initial !important;
 }
 
-.plannit-card-title .plannit-scale-image.sub {
+.planitt-card-title .planitt-scale-image.sub {
   @apply m-1 my-2;
 }
 
-.plannit-card-title .plannit-scale-image.sub img {
+.planitt-card-title .planitt-scale-image.sub img {
   transform: scale(2) translate(-2px, 4px) !important;
 }
 
-.plannit-card-title .plannit-scale-image.atom img {
+.planitt-card-title .planitt-scale-image.atom img {
   transform: scale(0.8) !important;
 }
 
-/* Plannit Card Stats Section */
-.plannit-card section.stats {
+/* Planitt Card Stats Section */
+.planitt-card section.stats {
   @apply dark:text-text-dark flex flex-col font-sans text-base font-bold;
 }
 
-.plannit-card section.stats > div {
+.planitt-card section.stats > div {
   @apply flex items-center justify-between;
   border-top: 1px solid rgba(255,255,255,0.1);
   padding: .5rem 0;
 }
 
-/* Plannit Card Footer */
-.plannit-card footer {
+/* Planitt Card Footer */
+.planitt-card footer {
   @apply dark:bg-surface-elevated-dark rounded-xl h-10 px-4 py-3 text-sm rounded-t-none;
 }
 
-/* Plannit Card Popover */
-.plannit-card div[data-testid="flowbite-popover"] {
+/* Planitt Card Popover */
+.planitt-card div[data-testid="flowbite-popover"] {
   position: absolute !important;
   right: 9rem !important;
   top: -.5rem !important;
@@ -104,13 +104,13 @@
   transform: none !important;
 }
 
-.plannit-card ul.list-none {
+.planitt-card ul.list-none {
   width: 6rem;
 }
 
 /* Interaction States
 -------------------------------------------------- */
-.plannit-card *:not(button) {
+.planitt-card *:not(button) {
   cursor: default;
 }
 

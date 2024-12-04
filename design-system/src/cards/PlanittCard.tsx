@@ -8,10 +8,10 @@ import FrequencyIndicator, { getFrequencyDisplayNameLong } from "../icons/Freque
 import { decodeFrequency } from "@ui/src/state";
 import { darkThemeListGroup } from "../darkTheme";
 
-export interface PlannitCardProps {
+export interface PlanittCardProps {
   orbit: Orbit;
   runDelete?: () => void;
-  handleEditPlannit?: () => void;
+  handleEditPlanitt?: () => void;
   currentStreak: number;
   longestStreak: number;
   lastTrackedWinDate: string
@@ -28,27 +28,27 @@ export function getScaleDisplayName(scale: Scale) {
   }
 }
 
-const PlannitCard: React.FC<PlannitCardProps> = ({
+const PlanittCard: React.FC<PlanittCardProps> = ({
   orbit,
   runDelete,
-  handleEditPlannit,
+  handleEditPlanitt,
   currentStreak,
   longestStreak,
   lastTrackedWinDate
-}: PlannitCardProps) => {
+}: PlanittCardProps) => {
   const { id, name, metadata, scale, frequency } = orbit;
   const spin = 'positive';
   return (
-    <article className={"card plannit-card"}>
+    <article className={"card planitt-card"}>
       <header>
-        <div className="plannit-card-title">
-          <div className={`${scale.toLowerCase()} plannit-scale-image`}>{getIconForPlanetValue(scale)({})}</div>
+        <div className="planitt-card-title">
+          <div className={`${scale.toLowerCase()} planitt-scale-image`}>{getIconForPlanetValue(scale)({})}</div>
           <h1 className="card-name">{name}</h1>
         </div>
 
         <Popover
           content={<ListGroup theme={darkThemeListGroup} className="list-group-override w-48">
-            <ListGroup.Item onClick={handleEditPlannit} icon={getIconSvg('pencil')}>Edit</ListGroup.Item>
+            <ListGroup.Item onClick={handleEditPlanitt} icon={getIconSvg('pencil')}>Edit</ListGroup.Item>
             <span className="list-item-danger text-danger">
               <ListGroup.Item onClick={runDelete} icon={getIconSvg('trash')}>Delete</ListGroup.Item>
             </span>
@@ -61,7 +61,7 @@ const PlannitCard: React.FC<PlannitCardProps> = ({
       <section className="stats">
         <div>
           <div>Spin</div>
-          <div><img className="w-6 h-6 text-red-200" alt ="Plannit Spin" src={`/assets/icons/${spin}-spin.svg`} /></div>
+          <div><img className="w-6 h-6 text-red-200" alt ="Planitt Spin" src={`/assets/icons/${spin}-spin.svg`} /></div>
         </div>
         <div>
           <div>Scale</div>
@@ -89,4 +89,4 @@ const PlannitCard: React.FC<PlannitCardProps> = ({
   );
 };
 
-export default PlannitCard;
+export default PlanittCard;

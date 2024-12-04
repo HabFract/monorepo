@@ -78,10 +78,10 @@ function ListSpheres() {
 
   if (!spheres.length) return <></>;
 
-  function routeToCreatePlannit(sphereEh: EntryHashB64) {
+  function routeToCreatePlanitt(sphereEh: EntryHashB64) {
     transition("CreateOrbit", { sphereEh });
   }
-  function routeToPlannitList(sphereId: ActionHashB64) {
+  function routeToPlanittList(sphereId: ActionHashB64) {
     transition("ListOrbits", { sphereAh: sphereId, currentSphereDetails: spheres.find(sphere => sphere.id == sphereId) });
   }
   function routeToVis(sphere: Sphere) {

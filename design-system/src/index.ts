@@ -12,7 +12,7 @@ import {
   Label,
   ErrorLabel,
 } from "./inputs";
-import { ActionCard, PlannitCard, SystemCalendarCard } from "./cards";
+import { ActionCard, PlanittCard, SystemCalendarCard } from "./cards";
 import { SphereVis, OrbitVis } from "./vis";
 import { ProgressBar } from "./onboarding";
 import Modal from "./modals/Modal";
@@ -52,7 +52,7 @@ export {
   HeaderAction,
   VisControls,
   ActionCard,
-  PlannitCard,
+  PlanittCard,
   SystemCalendarCard,
   Button,
   Modal,

@@ -1,22 +1,22 @@
 import React from "react";
 import { StoryFn, Meta, StoryObj } from "@storybook/react";
-import PlannitCard, { PlannitCardProps } from "./PlannitCard";
+import PlanittCard, { PlanittCardProps } from "./PlanittCard";
 import { DateTime } from "luxon";
 import { Scale, Frequency } from "../generated-types";
 
 export default {
-  title: "Components/Cards/PlannitCard",
-  component: PlannitCard,
+  title: "Components/Cards/PlanittCard",
+  component: PlanittCard,
   parameters: {
     backgrounds: {
       default: 'backdrop',
     }
   }
-} as Meta<PlannitCardProps>;
+} as Meta<PlanittCardProps>;
 
-const Template: StoryFn<PlannitCardProps> = (args) => <PlannitCard {...args} />;
+const Template: StoryFn<PlanittCardProps> = (args) => <PlanittCard {...args} />;
 
-type Story = StoryObj<PlannitCardProps>;
+type Story = StoryObj<PlanittCardProps>;
 
 export const Default: Story = Template.bind({});
 Default.args = {

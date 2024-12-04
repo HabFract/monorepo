@@ -64,7 +64,7 @@ const withLayout = (
     useEffect(() => {
       hideToast()
       if (state !== "Vis" || canVisualize) return;
-        showToast("There are no Plannits in this System.", {
+        showToast("There are no Planitts in this System.", {
           actionButton: <Button onClick={() => {
             transition("CreateOrbit", { sphereEh: props?.currentSphereDetails?.eH});
             hideToast()
@@ -79,7 +79,7 @@ const withLayout = (
       if (!id) return;
       showModal({
         title: "Are you sure?",
-        message: "This action cannot be undone! This will not only delete your Space's details, but all Plannits linked to that Space, and the Win history of those Plannits!",
+        message: "This action cannot be undone! This will not only delete your Space's details, but all Planitts linked to that Space, and the Win history of those Planitts!",
         onConfirm: () => {
           runDeleteSphere({ variables: { id } })
           transition("Home")

@@ -257,7 +257,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                     {['sun', 'planet', 'moon'].map(scale => <div className="figure-image-container" key={scale}><img key={scale} src={`assets/${scale}.svg`} alt={`${scale} figure`} style={{ width: "100%" }} /></div>)}
                   </div>
                   <figcaption className="figure-captions">
-                    {['Star', 'Giant', 'Dwarf'].map(scale => <HelperText key={scale} withInfo={true} onClickInfo={() => ({ title: `Plannit Scales`, label: `${scale}`, body: scale })}>{scale}</HelperText>)}
+                    {['Star', 'Giant', 'Dwarf'].map(scale => <HelperText key={scale} withInfo={true} onClickInfo={() => ({ title: `Planitt Scales`, label: `${scale}`, body: scale })}>{scale}</HelperText>)}
                   </figcaption>
                 </figure>
               </>
@@ -274,7 +274,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                       withInfo={true}
                       onClickInfo={() => ({
                         title: "Good Parenting",
-                        body: "Choose the parent which describes behaviour of a bigger scope. //For instance, if the name of your Plannit is 'Run a 10k', maybe the parent is the Plannet with the scope 'Run a 20k'. //Setting your parent to 'None' will make it the top of a new hierarchy.",
+                        body: "Choose the parent which describes behaviour of a bigger scope. //For instance, if the name of your Planitt is 'Run a 10k', maybe the parent is the Plannet with the scope 'Run a 20k'. //Setting your parent to 'None' will make it the top of a new hierarchy.",
                       })}
                       onBlur={() => {
                         setFieldValue("scale", scaleDefault);
@@ -291,7 +291,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                       ]}
                       required={true}
                       disabled={!!editMode}
-                      labelValue={"Parent Plannit:"}
+                      labelValue={"Parent Planitt:"}
                     />
                   </div>
                 )}
@@ -354,7 +354,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                     withInfo={true}
                     onClickInfo={() => ({
                       title: "The name should be scale-appropriate",
-                      body: "Try to make the name to fit with the scale of the Plannit. //For example, a Giant Plannit might be called 'Run 5km' or 'Write a business plan'. //A Dwarf Plannit would be more like 'Run for 10 minutes' or  'Read 40 pages of my book'.",
+                      body: "Try to make the name to fit with the scale of the Planitt. //For example, a Giant Planitt might be called 'Run 5km' or 'Write a business plan'. //A Dwarf Planitt would be more like 'Run for 10 minutes' or  'Read 40 pages of my book'.",
                     })}
                     required={true}
                     value={editMode ? values.name : undefined}

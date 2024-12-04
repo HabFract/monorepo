@@ -21,7 +21,7 @@ export type SphereOrbitNodes = {
 /**
  * Full OrbitNodeDetails including hierarchy link path for appendage in the vis.
  * This form and storage method allows easy async access to potentially large files that may
- * be attached as details of a plannit hierarchy node later down the line.
+ * be attached as details of a planitt hierarchy node later down the line.
  */
 export type SphereOrbitNodeDetails = {
   [key: EntryHashB64]: OrbitNodeDetails;

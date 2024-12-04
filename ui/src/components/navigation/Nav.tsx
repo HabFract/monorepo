@@ -142,7 +142,7 @@ const Nav: React.FC<INav> = ({
             }
             // if (!checkCachedOrbits) {
             //   showToast(
-            //     "Select a Space with Plannits, or create new Plannits before Visualisation.",
+            //     "Select a Space with Planitts, or create new Planitts before Visualisation.",
             //     100000,
             //   );
             //   return;
@@ -228,7 +228,7 @@ const Nav: React.FC<INav> = ({
         case "primary":
           if (!store.get(currentSphereHasCachedNodesAtom)) {
             showToast(
-              "Select a Space with existing Plannits to enable Visualisation",
+              "Select a Space with existing Planitts to enable Visualisation",
             );
             return;
           }

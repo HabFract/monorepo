@@ -8,10 +8,10 @@ import { Sphere } from '../../graphql/generated';
 function VisLayout({ children, title, handleDeleteSphere }: any) {
   const [_, transition, params, __, goBack, history] = useStateTransition();
 
-  function routeToCreatePlannit(sphereEh: EntryHashB64) {
+  function routeToCreatePlanitt(sphereEh: EntryHashB64) {
     transition("CreateOrbit", { sphereEh });
   }
-  function routeToPlannitList(currentSphereDetails: Sphere) {
+  function routeToPlanittList(currentSphereDetails: Sphere) {
     transition("ListOrbits", { sphereAh: currentSphereDetails.id, currentSphereDetails });
   }
   const routeBack = () => {
@@ -29,8 +29,8 @@ function VisLayout({ children, title, handleDeleteSphere }: any) {
           icon2={getIconSvg('more')}
           handlePrimaryAction={routeBack}
           secondaryActionPopoverElement={<ListGroup className="no-auto-focus list-group-override w-48">
-            <ListGroup.Item onClick={() => routeToPlannitList(params.currentSphereDetails)} icon={getIconSvg('list')}>List Plannits</ListGroup.Item>
-            <ListGroup.Item onClick={() => routeToCreatePlannit(params.currentSphereDetails.eH)} icon={getIconSvg('plus')}>Add Plannit</ListGroup.Item>
+            <ListGroup.Item onClick={() => routeToPlanittList(params.currentSphereDetails)} icon={getIconSvg('list')}>List Planitts</ListGroup.Item>
+            <ListGroup.Item onClick={() => routeToCreatePlanitt(params.currentSphereDetails.eH)} icon={getIconSvg('plus')}>Add Planitt</ListGroup.Item>
             <span className="list-item-danger text-danger">
               <ListGroup.Item onClick={handleDeleteSphere} icon={getIconSvg('trash')}>Delete Space</ListGroup.Item>
             </span>
