@@ -75,61 +75,64 @@ export const TextInputField: React.FC<{
   props: TextInputProps;
 }> = ({
   field,
-  form: { touched, errors, setFieldValue, setFieldTouched },
+  form: { touched, errors, setFieldValue, setFieldTouched, submitCount },
   ...props
 }: any) => {
-  const {
-    name,
-    labelValue,
-    value,
-    icon,
-    iconSide,
-    size,
-    id,
-    placeholder,
-    required,
-    withInfo,
-    onClickInfo,
-    disabled,
-    onBlur,
-    isPassword,
-    isListItem,
-  } = props;
-  return (
-    <>
-      <TextInput
-        {...field}
-        name={field.name} 
-        id={id}
-        size={size}
-        value={value}
-        placeholder={placeholder}
-        labelValue={labelValue}
-        isListItem={isListItem}
-        isPassword={isPassword}
-        errored={touched[field.name] && errors[field.name]}
-        required={required}
-        disabled={!!disabled}
-        withInfo={!!withInfo}
-        onClickInfo={onClickInfo}
-        iconSide={iconSide || "left"}
-        icon={!isPassword ? icon : getIconSvg("lock")}
-        onBlur={onBlur}
-        onChange={(e) => {
-          setFieldValue(field.name, e.target.value);
-          setFieldTouched(field.name);
-        }}
-        theme={touched[field.name] && errors[field.name]
-          ? "danger"
-          : "default"}
-      ></TextInput>
-      <ErrorLabel
-        fieldName={field.name}
-        errors={errors}
-        touched={touched}
-      ></ErrorLabel>
-    </>
-  );
-};
+    const {
+      name,
+      labelValue,
+      value,
+      icon,
+      iconSide,
+      size,
+      id,
+      placeholder,
+      required,
+      withInfo,
+      onClickInfo,
+      disabled,
+      onBlur,
+      isPassword,
+      isListItem,
+    } = props;
+
+    const showError = submitCount > 0 && touched[field.name] && errors[field.name];
+    return (
+      <>
+        <TextInput
+          {...field}
+          name={field.name}
+          id={id}
+          size={size}
+          value={value}
+          placeholder={placeholder}
+          labelValue={labelValue}
+          isListItem={isListItem}
+          isPassword={isPassword}
+          errored={showError}
+          required={required}
+          disabled={!!disabled}
+          withInfo={!!withInfo}
+          onClickInfo={onClickInfo}
+          iconSide={iconSide || "left"}
+          icon={!isPassword ? icon : getIconSvg("lock")}
+          onBlur={onBlur}
+          onChange={(e) => {
+            setFieldValue(field.name, e.target.value);
+            setFieldTouched(field.name);
+          }}
+          theme={showError
+            ? (errors[field.name].match(/required/) ? "warn" : "danger")
+            : "default"}
+        ></TextInput>
+        {showError &&
+          <ErrorLabel
+            fieldName={field.name}
+            errors={errors}
+            touched={touched}
+          ></ErrorLabel>}
+      </>
+    );
+  };
 
 export default TextInput;

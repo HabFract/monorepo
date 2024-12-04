@@ -6,16 +6,16 @@ import { Button, getIconSvg, SwipeUpScreenTab, TextInputField } from 'habit-frac
 import { ListSpheres } from '../lists';
 import { motion } from 'framer-motion';
 import { Popover, ListGroup } from 'flowbite-react';
+import { ERROR_MESSAGES, PAGE_COPY } from '../../constants';
 
 function HomeLayout({ firstVisit = true }: any) {
   const [_, transition] = useStateTransition(); // Top level state machine and routing
   const validationSchema = object({
-    password: string().min(8).max(18)
+    password: string()
+      .min(8, ERROR_MESSAGES['password-short'])
+      .max(18, ERROR_MESSAGES['password-long'])
+      .required(ERROR_MESSAGES['password-empty'])
   });
-
-  const initialValues = {
-    password: ""
-  };
 
   const routeToSettings = () => transition("Settings");
 
@@ -25,10 +25,10 @@ function HomeLayout({ firstVisit = true }: any) {
         ? <header className="welcome-cta">
           <img
             className="logo"
-            src="assets/new-logo.png"
-            alt='Plannit logo'
+            src="assets/logo.svg"
+            alt='Planitt logo'
           />
-          <h2>Let's put a plan in motion!</h2>
+          <h2>{PAGE_COPY['slogan']}</h2>
           <div className="flex items-center justify-center w-full gap-4">
             {[1, 2, 3, 4, 5].map(num => <img key={num} src={`/assets/icons/sphere-symbol-${num}.svg`}></img>)}
           </div>
@@ -37,8 +37,8 @@ function HomeLayout({ firstVisit = true }: any) {
           <div>
             <img
               className="logo"
-              src="assets/new-logo.png"
-              alt='Plannit logo'
+              src="assets/logo.svg"
+              alt='Planitt logo'
             />
             <div className="avatar-menu mt-2">
               <Popover
@@ -60,7 +60,7 @@ function HomeLayout({ firstVisit = true }: any) {
           </div>
           <span>
             <h1>Welcome back! 👋</h1>
-            <h2>Let's put a plan in motion! <em>I plan...</em></h2>
+            <h2>{PAGE_COPY['slogan']} <em>I plan...</em></h2>
           </span>
           <div className="text-text dark:text-text-dark flex justify-around h-12 gap-4">
             <Button onClick={() => { transition("Onboarding1", { spin: 'positive' }) }} type="button" variant="primary responsive">
@@ -83,22 +83,25 @@ function HomeLayout({ firstVisit = true }: any) {
       {firstVisit
         ? <div className="login-options">
           <Formik
-            initialValues={initialValues}
+            initialValues={{ password: "password" }}
             validationSchema={validationSchema}
-            onSubmit={async (values, { setSubmitting }) => {
+            onSubmit={(values, { setSubmitting }) => {
               try {
-                setSubmitting(false);
-                if (!values.password) return;
-                transition("Onboarding1");
+                if (values.password) {
+                  transition("Onboarding1");
+                }
               } catch (error) {
                 console.error(error);
+              } finally {
+                setSubmitting(false);
               }
             }}
           >
-            {({ values, errors, touched, setFieldValue }) => {
-              return <Form noValidate={true}>
-                <div className="form-field">
+            {({ isSubmitting, submitForm }) => {
+              return <Form noValidate>
+                <div className="form-field gap-8">
                   <Field
+                    disabled
                     component={TextInputField}
                     size="base"
                     name="password"
@@ -113,13 +116,26 @@ function HomeLayout({ firstVisit = true }: any) {
                     labelValue={"Password:"}
                     placeholder={"Enter your password"}
                   />
+                <Button type={"button"} isDisabled={isSubmitting} variant={"primary"} onClick={() => submitForm()}>
+                  Sign In
+                </Button>
+
+                </div>
+
+                <div className="text-text dark:text-text-dark opacity-80 flex items-center justify-center gap-8 mt-2 text-base text-center">
+                  <div>
+                    <h3>Powered by</h3>
+                    <img
+                      className="w-80"
+                      src="assets/holochain-logo.png"
+                      alt='Holochain logo'
+                    />
+                  </div>
+                  <p>{PAGE_COPY['password-notice']}</p>
                 </div>
               </Form>
             }}
           </Formik>
-          <Button type={"button"} variant={"primary"} onClick={() => transition("Onboarding1")}>
-            Sign In
-          </Button>
         </div>
         :
         <SwipeUpScreenTab verticalOffset={(12 * 16) + 8} useViewportHeight={false}>

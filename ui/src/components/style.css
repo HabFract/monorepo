@@ -463,7 +463,7 @@ button[data-testid="dark-themetheme-toggle"]:active,
 }
 
 .anticon {
-  @apply dark:text-primary-500 !important;
+  @apply dark:text-text-dark text-text !important;
 }
 
 .anticon-plus-circle.grayed svg {

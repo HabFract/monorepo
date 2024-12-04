@@ -59,7 +59,7 @@ const darkThemeModal: CustomFlowbiteTheme["modal"] = {
 const baseInputStyles = "border w-full px-3 pl-4 py-[10px] h-[48px] font-sans font-light text-sm leading-normal text-gray-900 dark:text-input-text-dark placeholder:text-gray-400 dark:placeholder:text-input-placeholder-dark bg-input-bg dark:bg-input-bg-dark border-input-border dark:input-border-dark hover:border-primary hover:bg-surface-elevated dark:hover:border-surface-dark dark:hover:bg-surface-dark focus:border-secondary focus:ring-0 focus:shadow-none dark:focus:border-surface-top-dark";
 const baseIconStyles = "input-icon ml-1 mt-1 h-8 w-8 text-input-icon dark:text-input-icon-dark pointer-events-none absolute left-0 top-1 flex items-center p-2";
 // Disabled styles
-const disabledStyles = "bg-gray-500 text-white border-gray-200 dark:bg-gray-800 opacity-50 dark:placeholder:text-gray-300 dark:border-gray-300 pointer-events-none";
+const disabledStyles = "text-white border-gray-200 opacity-50 dark:placeholder:text-gray-300 dark:border-gray-300 pointer-events-none";
 
 // Variant-specific border styles
 const variantStyles = {

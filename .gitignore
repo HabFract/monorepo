@@ -30,3 +30,5 @@ dist-ssr
 target/
 workdir/*.yaml
 !habit_fract.happ
+tests/playwright-report/index.html
+tests/test-results/.last-run.json

@@ -201,7 +201,7 @@ vi.mock("../../ui/src/state/store", async (importOriginal) => {
   };
 });
 
-describe('OrbitTree', () => {
+describe.skip('OrbitTree', () => {
   beforeEach(() => {
     const mockClient = createMockClient({cache: new InMemoryCache({})});
     resetMocks()

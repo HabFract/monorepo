@@ -12,7 +12,6 @@
 .home-layout .welcome-cta,
 .home-layout .returning-cta {
   width: 100%;
-  min-height: 12rem;
   display: flex;
   gap: 1rem;
   flex-direction: column;
@@ -74,13 +73,19 @@
 
 .home-layout .returning-cta {
   @apply gap-1 px-4 mt-4;
-  height: 12rem;
+  height: 45vh;
 }
 
 .home-layout .returning-cta > div {
   @apply flex items-center justify-between;
 }
 
+.home-layout form {
+  justify-content: space-around;
+  height: 100%;
+  padding: 0 1rem;
+  display: flex;
+}
 
 /* Settings */
 
