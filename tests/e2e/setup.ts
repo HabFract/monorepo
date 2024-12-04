@@ -3,6 +3,11 @@ export const TEST_ERROR_MESSAGES = {
   'password-empty': 'Password is a required field',
   'password-short': 'Password must be at least 8 characters',
   'password-long': 'Password must be at most 18 characters',
+
+  'sphere-name-empty' : 'Give your Space a name',
+  'sphere-description-short' : 'Your intention needs to be at least 8 characters',
+
+  'orbit-name-empty' : 'Make sure to name your Planitt',
 } as const;
 
 export const TEST_PAGE_COPY = {

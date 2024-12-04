@@ -49,7 +49,7 @@ export const TextAreaField: React.FC<{
   props: TextAreaProps;
 }> = ({
   field,
-  form: { touched, errors, setFieldValue, setFieldTouched },
+  form: { touched, errors, setFieldValue, setFieldTouched, submitCount },
   ...props
 }: any) => {
   const {
@@ -63,6 +63,8 @@ export const TextAreaField: React.FC<{
     withInfo,
     onBlur: ___,
   } = props;
+
+  const showError = submitCount > 0 && touched[field.name] && errors[field.name];
   return (
     <>
       <TextArea
@@ -72,7 +74,7 @@ export const TextAreaField: React.FC<{
         rows={5}
         placeholder={placeholder}
         labelValue={labelValue}
-        errored={touched[field.name] && errors[field.name]}
+        errored={showError}
         required={required}
         disabled={!!disabled}
         withInfo={!!withInfo}
@@ -80,15 +82,15 @@ export const TextAreaField: React.FC<{
           setFieldValue(field.name, e.target.value);
           setFieldTouched(field.name);
         }}
-        theme={touched[field.name] && errors[field.name]
+        theme={showError
           ? "danger"
           : "default"}
       ></TextArea>
-      <ErrorLabel
+      {showError && <ErrorLabel
         fieldName={field.name}
         errors={errors}
         touched={touched}
-      ></ErrorLabel>
+      ></ErrorLabel>}
     </>
   );
 };

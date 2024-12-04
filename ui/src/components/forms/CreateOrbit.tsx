@@ -33,7 +33,7 @@ import { currentSphereDetailsAtom, currentSphereHashesAtom } from "../../state/s
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state/hierarchy";
 import { useUpdateOrbitMutation } from "../../hooks/gql/useUpdateOrbitMutation";
 import { getScaleDisplayName } from "../vis/helpers";
-import { ONBOARDING_FORM_DESCRIPTIONS } from "../../constants";
+import { ERROR_MESSAGES, ONBOARDING_FORM_DESCRIPTIONS } from "../../constants";
 import Collapse from "antd/es/collapse";
 
 // Define the validation schema using Yup
@@ -42,7 +42,7 @@ export const OrbitValidationSchema = Yup.object().shape({
     .min(3, "Must be 4 characters or more")
     .max(55, "Must be 55 characters or less")
     .matches(/(?!^\d+$)^.+$/, "Name must contain letters.")
-    .required("Name is required"),
+    .required(ERROR_MESSAGES['orbit-name-empty']),
   description: Yup.string().matches(
     /(?!^\d+$)^.+$/,
     "Description must contain letters.",

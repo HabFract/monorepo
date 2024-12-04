@@ -2,11 +2,10 @@ import { test, expect } from './test-fixtures';
 import { MODEL_DISPLAY_VALUES, TEST_ERROR_MESSAGES, TEST_ONBOARDING_FORM_TITLES, TEST_PAGE_COPY } from './setup';
 import { verifyStepState } from './helpers';
 
-test.describe('Home Page Password Validation', () => {
+test.describe('Home Page Password Validation and Transition to Onboarding1', () => {
   test.beforeEach(async ({ page }) => {
     await page.resetToHome();
   });
-
 
   test('temp password field and login flow', async ({ page }) => {
     // First verify we're on the right page
@@ -107,4 +106,46 @@ test.describe('Home Page Password Validation', () => {
     await signInButton.click();
     await expect(page.getByText(TEST_ERROR_MESSAGES['password-long'])).toBeVisible();
   });
+});
+
+test.describe('Sphere Creation Form Validation', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.resetToHome();
+    // Get to the sphere creation form
+    const signInButton = page.getByRole('button', { name: /sign in/i });
+    await signInButton.click();
+  });
+
+  test('shows validation errors for empty required fields', async ({ page }) => {
+    // Try to submit empty form
+    const submitButton = page.getByRole('button', { name: /continue/i });
+    await submitButton.click();
+
+    // Check for validation messages using centralized error messages
+    await expect(
+      page.getByText(TEST_ERROR_MESSAGES['sphere-name-empty'])
+    ).toBeVisible();
+  });
+
+  test('validates description field constraints', async ({ page }) => {
+    const descInput = page.getByLabel('Description:');
+    const submitButton = page.getByRole('button', { name: /continue/i });
+
+    await expect(descInput).toBeVisible();
+    await expect(descInput).toBeEnabled();
+
+    await descInput.click();
+    await descInput.fill('short');
+    await descInput.blur();
+    await submitButton.click();
+  
+    // Verify the value was entered
+    await expect(descInput).toHaveValue('short');
+    
+    // Verify error message
+    await expect(
+      page.getByText(TEST_ERROR_MESSAGES['sphere-description-short'])
+    ).toBeVisible();
+  });
+
 });

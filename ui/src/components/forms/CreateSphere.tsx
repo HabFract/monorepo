@@ -11,16 +11,16 @@ import { ActionHashB64 } from "@holochain/client";
 import DefaultSubmitBtn from "./buttons/DefaultSubmitButton";
 import { ImageUploadInput, Label, TextAreaField, TextInputField } from "habit-fract-design-system";
 import { useCreateSphereMutation } from "../../hooks/gql/useCreateSphereMutation";
-import { MODEL_DISPLAY_VALUES, ONBOARDING_FORM_DESCRIPTIONS } from "../../constants";
+import { ERROR_MESSAGES, MODEL_DISPLAY_VALUES, ONBOARDING_FORM_DESCRIPTIONS } from "../../constants";
 import { SphereFetcher } from "./utils";
 import Collapse from "antd/es/collapse";
 
 // Define the validation schema using Yup
 const SphereValidationSchema = Yup.object().shape({
-  name: Yup.string().required("Name is a required field"),
+  name: Yup.string().required(ERROR_MESSAGES['sphere-name-empty']),
   description: Yup.string().min(
-    5,
-    "A description needs to be at least 5 characters",
+    8,
+    ERROR_MESSAGES['sphere-description-short'],
   ),
   image: Yup.string()
     .trim()
@@ -87,7 +87,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                 },
               },
             });
-          setSubmitting(false);
+
           if (!response.data) return;
           const payload = response.data as any;
           const eH =
@@ -105,15 +105,25 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
           );
         } catch (error) {
           console.error(error);
+        } finally {
+          setSubmitting(false);
         }
       }}
     >
-      {({ values, errors, touched, isSubmitting }) => {
+      {({ values, errors, touched, isSubmitting, validateForm, submitForm }) => {
         const SubmitButton = submitBtn ? (
           React.cloneElement(submitBtn as React.ReactElement, {
             loading: (loading || isSubmitting),
             errors,
             touched,
+            onClick: () => {
+              try {
+                submitForm();
+                Object.values(errors).length == 0 && (submitBtn as any).props.onClick.call(null);
+              } catch (error) {
+                console.log('error :>> ', error);
+              }
+            }
           })
         ) : (
           <DefaultSubmitBtn
@@ -136,7 +146,16 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                   items={[{ key: '1', label: <em>{descriptionParts[1]}</em>, children: <p>{descriptionParts[2]}</p> }]}
                 />
               </div>
-              <Form noValidate={true}>
+              <Form noValidate onSubmit={async (e) => {
+                  e.preventDefault();
+                  // Validate before submitting
+                  const errors = await validateForm();
+                  if (Object.keys(errors).length === 0) {
+                    // Form is valid, allow submission
+                    
+                    e.currentTarget.submit();
+                  }
+                }}>
                 {editMode && (
                   <SphereFetcher
                     sphereToEditId={sphereToEditId}
