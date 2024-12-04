@@ -30,6 +30,7 @@ export type ButtonVariant =
 
 export interface ButtonProps {
   variant?: ButtonVariant;
+  ariaLabel?: string;
   onClick?: () => void;
   children?: React.ReactNode;
   icon?: React.ReactNode;
@@ -64,6 +65,7 @@ const LoadingSpinner = () => (
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
   children,
   variant = "primary",
+  ariaLabel,
   icon,
   isLoading = false,
   isDisabled = false,
@@ -75,6 +77,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
 
   return (
     <button
+      aria-label={ariaLabel}
       ref={ref}
       disabled={isLoading || isDisabled}
       type={type}

@@ -1,10 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { TEST_ERROR_MESSAGES, TEST_PAGE_COPY } from './setup';
+import { test, expect } from './test-fixtures';
+import { MODEL_DISPLAY_VALUES, TEST_ERROR_MESSAGES, TEST_ONBOARDING_FORM_TITLES, TEST_PAGE_COPY } from './setup';
+import { verifyStepState } from './helpers';
 
 test.describe('Home Page Password Validation', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:8888');
-    await page.waitForLoadState('networkidle');
+    await page.resetToHome();
   });
 
 
@@ -23,8 +23,34 @@ test.describe('Home Page Password Validation', () => {
     const signInButton = page.getByRole('button', { name: /sign in/i });
     await signInButton.click();
     
-    // Verify we've left the home page
-    await expect(page.getByText(TEST_PAGE_COPY['slogan'])).not.toBeVisible();
+    // Verify onboarding header appears with specific selectors
+    await expect(
+      page.getByRole('heading', { level: 1, name: TEST_ONBOARDING_FORM_TITLES[0] })
+    ).toBeVisible();
+
+    // Look for the back button SVG
+    await expect(
+      page.getByRole('button', { name: 'Go back' })
+    ).toBeVisible();
+
+    // Verify CreateSphere form fields with specific selectors
+    await expect(
+      page.getByRole('textbox', { name: /name/i })
+    ).toBeVisible();
+    
+    await expect(
+      page.getByRole('textbox', { name: /description/i })
+    ).toBeVisible();
+    
+    // Verify symbol/image selector is present
+    await expect(page.locator('label[for="image"]')).toBeVisible();
+
+    await verifyStepState(page, 'Create Password', 'finish');
+    await verifyStepState(
+      page, 
+      TEST_ONBOARDING_FORM_TITLES[0], 
+      'process'
+    );
   });
 
   test.skip('password field validation', async ({ page }) => {
@@ -70,9 +96,6 @@ test.describe('Home Page Password Validation', () => {
         });
   });
 
-
-  // If you need to test longer passwords, create a separate test
-  // that starts fresh for each case
   test.skip('long password validation', async ({ page }) => {
     await expect(page.getByText(TEST_PAGE_COPY['slogan'])).toBeVisible();
     

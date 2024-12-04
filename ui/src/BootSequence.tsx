@@ -10,11 +10,20 @@ import { useStateTransition } from "./hooks/useStateTransition";
 import { AppMachine } from "./main";
 import { debounce } from "./components/vis/helpers";
 import { Spinner } from "habit-fract-design-system";
+import { NODE_ENV } from "./constants";
 
 const useConnection = () => {
   const [isConnected, setIsConnected] = useState(false);
   const debouncedGetConnection = debounce(getConnection, 30000);
 
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      (window as any).__stateMachine = AppMachine;
+      // Signal that state machine is ready
+      (window as any).__stateMachineReady = true;
+    }
+  }, []);
+  
   useEffect(() => {
     if (!AppMachine.state.connection) {
       debouncedGetConnection().then((connection: any) => {

@@ -140,9 +140,12 @@
 .onboarding-layout .container {
   width: 100%;
 }
+.onboarding-layout form {
+  margin-bottom: 4rem;
+}
 
 .onboarding-continue {
-  @apply w-[100vw] p-4 dark:bg-surface-top-dark inset-x-0 bottom-0 flex bg-gray-200;
+  @apply w-[100vw] p-4 dark:bg-surface-top-dark-500 fixed inset-x-0 bottom-0 flex bg-gray-200;
   height: 5rem;
 }
 

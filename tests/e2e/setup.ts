@@ -10,6 +10,21 @@ export const TEST_PAGE_COPY = {
   'password-notice': "Holochain uses public-private key pairs for encryption. We are still working on key management! For now, you can proceed without a password. Don't store anything too sensitive!",
 } as const;
 
+export const MODEL_DISPLAY_VALUES = {
+  // Model names
+  sphere: 'Space',
+  hierarchy: 'System',
+  orbit: 'Plannit',
+  winRecord: 'Orbit',
+  // Orbit scale display names and their precedents
+  astro: 'Star', // Stood for astronomic
+  sub: 'Giant', // Stood for sub-astronomic
+  atom: 'Dwarf', // Stood for atomic
+
+}
+
+export const TEST_ONBOARDING_FORM_TITLES = [`Create a ${MODEL_DISPLAY_VALUES['sphere']}`, `Create a ${MODEL_DISPLAY_VALUES['orbit']}`, `Break Up ${MODEL_DISPLAY_VALUES['orbit']}` ]
+
 // Re-export other constants you might need in E2E tests
 export const TEST_ENV = {
   APP_WS_PORT: '8888',

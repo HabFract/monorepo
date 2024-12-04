@@ -167,7 +167,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                   />
                 </div>
                 <div className="form-field">
-                  <Label id="symbol" labelValue="Symbol: ">
+                  <Label id="image" labelValue="Symbol: ">
                     <Field defaultImage={params?.spin == 'negative' ? '/assets/icons/negative-spin.svg' : '/assets/icons/positive-spin.svg' } component={ImageUploadInput} defaultOptions={[
                       { src: '/assets/icons/sphere-symbol-1.svg', alt: 'Symbol 1' },
                       { src: '/assets/icons/sphere-symbol-2.svg', alt: 'Symbol 2' },

@@ -20,7 +20,7 @@ const HeaderAction: React.FC<HeaderActionProps> = ({
 }: HeaderActionProps) => {
   return (
     <div className={`header-action-container`}>
-        {!!icon1 && <Button onClick={() => handlePrimaryAction?.()} type="button" variant="icon" icon={icon1({}) as ReactElement<any>}></Button>}
+        {!!icon1 && <Button ariaLabel="Go back" onClick={() => handlePrimaryAction?.()} type="button" variant="icon" icon={icon1({}) as ReactElement<any>}></Button>}
         <h1>{title}</h1>
         {!!icon2 && <Popover
           content={secondaryActionPopoverElement}
