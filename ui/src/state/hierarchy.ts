@@ -192,40 +192,6 @@ export const updateHierarchyAtom = atom(
   }
 );
 
-export const allSpheresDataAtom = atom((get) => {
-  const state = get(appStateAtom);
-  const cache = get(nodeCache.entries);
-  
-  if (!state || !cache) return {};
-
-  const spheres = Object.values(state.spheres.byHash);
-  const result: Record<string, {
-    rootOrbitOrbitDetails: OrbitNodeDetails | null,
-    rootOrbitWinData: WinDataPerOrbitNode | null
-  }> = {};
-
-  for (const sphere of spheres) {
-    const rootOrbitEh = sphere.hierarchyRootOrbitEntryHashes?.[0];
-    if (!rootOrbitEh && sphere?.details?.entryHash) {
-      result[sphere.details.entryHash] = {
-        rootOrbitOrbitDetails: null,
-        rootOrbitWinData: null
-      };
-      continue;
-    }
-
-    const rootOrbitDetails = cache[rootOrbitEh] || null;
-    result[sphere.details.entryHash] = {
-      rootOrbitOrbitDetails: rootOrbitDetails,
-      rootOrbitWinData: rootOrbitDetails 
-        ? get(calculateWinDataForNonLeafNodeAtom(rootOrbitEh))
-        : null
-    };
-  }
-
-  return result;
-});
-
 /**
  * Gets the first root orbit entry hash for a given sphere.
  */
