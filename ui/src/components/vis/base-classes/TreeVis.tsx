@@ -495,8 +495,8 @@ export class TreeVisualization extends BaseVisualization {
         return this.type == VisType.Cluster
           ? `translate(${d.y},${d.x})`
           : `translate(${d.x},${d.y})`;
-      })
-      .call(this.bindEventHandlers.bind(this));
+      });
+    this._enteringNodes!.call(this.bindEventHandlers.bind(this));
 
     // Links enter selection
     const links = this._gLink!.selectAll("line.link")

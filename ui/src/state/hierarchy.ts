@@ -264,13 +264,12 @@ export const getDescendantLeafNodesAtom = (orbitEh: EntryHashB64) => {
     for (const [root, h] of Object.entries(
       state.hierarchies.byRootOrbitEntryHash
     )) {
-      if (h.nodeHashes.includes(orbitHash)) {
+      if (h.nodeHashes.includes(orbitEh)) {
         hierarchyJson = h.json;
         hierarchyRoot = root;
         break;
       }
     }
-
     if (!hierarchyJson || !hierarchyRoot) return null;
 
     // Parse the hierarchy JSON

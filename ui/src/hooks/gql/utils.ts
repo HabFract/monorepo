@@ -114,7 +114,7 @@ export const updateAppStateWithOrbit = (
 
       // Update the byRootOrbitEntryHash dictionary
       const newHierarchy: Hierarchy = {
-        rootNode: orbitDetails.eH,
+        rootNode: orbitDetails.id,
         json: "",
         bounds: {
           minBreadth: 0,
@@ -123,9 +123,9 @@ export const updateAppStateWithOrbit = (
           maxDepth: 0,
         },
         indices: { x: 0, y: 0 },
-        currentNode: orbitDetails.eH,
-        nodeHashes: [orbitDetails.eH],
-        leafNodeHashes: [], // TODO: see if this needs to be derived now
+        currentNode: orbitDetails.id,
+        nodeHashes: [orbitDetails.id],
+        leafNodeHashes: [],
       };
 
       updatedState.hierarchies.byRootOrbitEntryHash[orbitDetails.eH] = newHierarchy;

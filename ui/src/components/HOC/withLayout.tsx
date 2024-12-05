@@ -6,7 +6,7 @@ import { useDeleteSphereMutation } from "../../graphql/generated";
 import VisLayout from "../layouts/VisLayout";
 import FormLayout from "../layouts/FormLayout";
 import ListLayout from "../layouts/List";
-import { currentSphereHasCachedNodesAtom, currentSphereHashesAtom, store } from "../../state";
+import { currentSphereHashesAtom, store } from "../../state";
 import { useModal } from "../../contexts/modal";
 import { AppMachine } from "../../main";
 import { useStateTransition } from "../../hooks/useStateTransition";

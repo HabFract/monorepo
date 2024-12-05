@@ -11,62 +11,43 @@ import { useStateTransition } from "../../hooks/useStateTransition";
 import { 
   appStateAtom, 
   appStateChangeAtom, 
+  getOrbitNodeDetailsFromEhAtom, 
   nodeCache, 
   OrbitNodeDetails, 
   SphereEntry, 
   store, 
   WinDataPerOrbitNode 
 } from "../../state";
-import { useSetAtom } from "jotai";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AppMachine } from "../../main";
 import { calculateWinDataForNonLeafNodeAtom } from "../../state/win";
 import { DataLoadingQueue } from "../PreloadAllData";
-import { updateHierarchyAtom } from "../../state/hierarchy";
 import { sleep } from "./OrbitSubdivisionList";
 import { byStartTime, parseAndSortTrees } from "../vis/helpers";
 import { hierarchy } from "d3-hierarchy";
 import { VisCoverage } from "../vis/types";
-import { generateQueryParams } from "../vis/tree-helpers";
+import { determineVisCoverage, generateQueryParams } from "../vis/tree-helpers";
 
-/**
- * ListSpheres Component
- * Displays a list of spheres with their hierarchy and win data
- */
 function ListSpheres() {
-  // State management
   const [_state, transition] = useStateTransition();
-  const setHierarchyInAppState = useSetAtom(updateHierarchyAtom);
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
   const loadingInitiatedRef = useRef(false);
+  const dataLoadingQueue = useMemo(() => new DataLoadingQueue(), []);
 
-  // GraphQL queries
   const { loading, error, data } = useGetSpheresQuery();
   const [getHierarchy] = useGetOrbitHierarchyLazyQuery({
     fetchPolicy: "cache-first",
   });
 
-  // Derived data
-  const spheres = useMemo(() => extractEdges(data!.spheres) as Sphere[], [data]);
-  const dataLoadingQueue = useMemo(() => new DataLoadingQueue(), []);
-
   // Sphere data state
+  const spheres = useMemo(() => extractEdges(data!.spheres) as Sphere[], [data]);
   const [spheresData, setSpheresData] = useState<Record<string, {
     rootOrbitOrbitDetails: OrbitNodeDetails | null,
     rootOrbitWinData: WinDataPerOrbitNode | null
   }>>({});
 
-  /**
-   * Loads hierarchy data for a single sphere and updates app state
-   * @param sphere - The sphere to load hierarchy data for
-   */
   const loadSphereHierarchyData = useCallback(async (sphere: Sphere) => {
-    // console.log('Starting hierarchy load for sphere:', {
-    //   sphereEh: sphere.eH,
-    //   sphereId: sphere.id
-    // });
-    
     setLoadingStates(prev => ({ ...prev, [sphere.eH]: true }));
 
     try {
@@ -77,9 +58,8 @@ function ListSpheres() {
 
       // If sphere entry doesn't exist, create it
       if (!sphereEntry) {
-        // console.log('Creating sphere entry for:', sphere.eH);
+        console.log('Creating sphere entry for:', sphere.eH);
         
-        // Update app state with new sphere entry
         const newState = {
           ...state,
           spheres: {
@@ -97,20 +77,14 @@ function ListSpheres() {
             }
           }
         };
-        
         store.set(appStateAtom, newState);
-        
-        // Get updated sphere entry
         sphereEntry = newState.spheres.byHash[sphere.id];
-        // console.log('Created sphere entry:', sphereEntry);
       }
 
       // Fetch hierarchy data
       const visCoverage = VisCoverage.CompleteSphere;
       const getQueryParams = generateQueryParams(visCoverage, sphere.eH);
       const queryParams = getQueryParams(0);
-
-      // console.log('Query params:', queryParams);
 
       if (!queryParams) {
         console.warn('Failed to generate query params for sphere:', sphere.eH);
@@ -121,27 +95,19 @@ function ListSpheres() {
         variables: { params: queryParams } 
       });
 
-      // console.log('Received hierarchy data:', hierarchyData);
-
       if (hierarchyData?.getOrbitHierarchy) {
         const trees = JSON.parse(hierarchyData.getOrbitHierarchy);
-        // console.log('Parsed hierarchy trees:', trees);
-        
         if (!trees) {
           console.warn('Failed to parse hierarchy trees for sphere:', sphere.eH);
           return;
         }
 
         const parsedTrees = parseAndSortTrees(trees);
-        // console.log('Sorted trees:', parsedTrees);
-        
         const json = JSON.stringify(parsedTrees[0]); // Use first tree
         const d3Hierarchy = hierarchy(JSON.parse(json)).sort(byStartTime);
-        // console.log('D3 Hierarchy created:', d3Hierarchy);
 
         // Get root orbit EH from the first tree
         const rootOrbitEh = parsedTrees[0].content;
-        // console.log('Root orbit EH from hierarchy:', rootOrbitEh);
 
         // Update sphere entry with root orbit EH
         const updatedState = {
@@ -151,7 +117,11 @@ function ListSpheres() {
             byHash: {
               ...state.spheres.byHash,
               [sphere.id]: {
-                ...state.spheres.byHash[sphere.id],
+                ...state.spheres.byHash[sphere.id], // Preserve existing sphere data
+                details: {
+                  entryHash: sphere.eH,
+                  name: sphere.name
+                },
                 hierarchyRootOrbitEntryHashes: [rootOrbitEh]
               }
             }
@@ -164,16 +134,8 @@ function ListSpheres() {
         const leafNodeHashes: string[] = [];
         
         d3Hierarchy.each(node => {
-          // console.log('Processing node:', node);
-          if (!node.data) {
-            console.warn('Node missing data:', node);
-            return;
-          }
-          if (!node.data.content) {
-            console.warn('Node missing content:', {
-              node,
-              data: node.data
-            });
+          if (!node.data?.content) {
+            console.warn('Node missing content:', node);
             return;
           }
           nodeHashes.push(node.data.content);
@@ -182,18 +144,10 @@ function ListSpheres() {
           }
         });
 
-        // console.log('Extracted hashes:', {
-        //   nodeHashesCount: nodeHashes.length,
-        //   nodeHashes,
-        //   leafNodeHashesCount: leafNodeHashes.length,
-        //   leafNodeHashes,
-        //   rootOrbitEh
-        // });
-
         // Create hierarchy object
         const fullHierarchy = {
           rootNode: rootOrbitEh,
-          json,
+          json: JSON.stringify(parsedTrees),
           nodeHashes,
           leafNodeHashes,
           bounds: undefined,
@@ -212,18 +166,16 @@ function ListSpheres() {
             }
           }
         });
-
-        // Update local component state
+        // Update sphere data
+        const winData = store.get(calculateWinDataForNonLeafNodeAtom(rootOrbitEh));
         setSpheresData(prev => ({
           ...prev,
           [sphere.eH]: {
-            rootOrbitOrbitDetails: store.get(nodeCache.entries)[rootOrbitEh] || null,
-            rootOrbitWinData: store.get(calculateWinDataForNonLeafNodeAtom(rootOrbitEh))
+            rootOrbitOrbitDetails: store.get(getOrbitNodeDetailsFromEhAtom(rootOrbitEh)),
+            rootOrbitWinData: winData
           }
         }));
       }
-
-      await sleep(250);
     } catch (error) {
       console.error(`Error loading hierarchy data for sphere ${sphere.eH}:`, error);
     } finally {
@@ -231,73 +183,22 @@ function ListSpheres() {
     }
   }, [getHierarchy]);
 
-  /**
-   * Initialize sphere data and queue hierarchy loading
-   */
+  // Queue up loading of hierarchy data for each sphere
   useEffect(() => {
     if (!spheres.length || loadingInitiatedRef.current) return;
 
-    const loadSphereData = async () => {
-      loadingInitiatedRef.current = true;
-      
-      const newData: Record<string, any> = {};
-      spheres.forEach(sphere => {
-        const state = store.get(appStateAtom);
-        const sphereEntry = Object.values(state.spheres.byHash).find(
-          (s: any) => s?.details?.entryHash === sphere.eH
-        );
-
-        if (!sphereEntry) {
-          newData[sphere.eH] = {
-            rootOrbitOrbitDetails: null,
-            rootOrbitWinData: null
-          };
-          return;
-        }
-
-        const rootOrbitEh = (sphereEntry as SphereEntry).hierarchyRootOrbitEntryHashes[0];
-        if (!rootOrbitEh) {
-          newData[sphere.eH] = {
-            rootOrbitOrbitDetails: null,
-            rootOrbitWinData: null
-          };
-          return;
-        }
-
-        const cache = store.get(nodeCache.entries);
-        const rootOrbitDetails = cache[rootOrbitEh];
-
-        let winData = null;
-        if (rootOrbitDetails) {
-          winData = store.get(calculateWinDataForNonLeafNodeAtom(rootOrbitEh));
-        }
-
-        newData[sphere.eH] = {
-          rootOrbitOrbitDetails: rootOrbitDetails || null,
-          rootOrbitWinData: winData
-        };
+    loadingInitiatedRef.current = true;
+    spheres.forEach(sphere => {
+      dataLoadingQueue.enqueue(async () => {
+        await loadSphereHierarchyData(sphere);
       });
-
-      setSpheresData(newData);
-
-      // Queue hierarchy loading for each sphere
-      spheres.forEach(sphere => {
-        dataLoadingQueue.enqueue(async () => {
-          await loadSphereHierarchyData(sphere);
-        });
-      });
-    };
-
-    loadSphereData();
+    });
 
     return () => {
       loadingInitiatedRef.current = false;
     };
   }, [spheres, loadSphereHierarchyData, dataLoadingQueue]);
 
-  /**
-   * Navigation handlers
-   */
   const routeToCreatePlanitt = (sphereEh: EntryHashB64) => {
     transition("CreateOrbit", { sphereEh });
   };
@@ -327,19 +228,15 @@ function ListSpheres() {
   return (
     <div className="spheres-list">
       {spheres.map((sphere: Sphere) => {
-        const sphereData = spheresData[sphere.eH] || {
-          rootOrbitOrbitDetails: null,
-          rootOrbitWinData: null
-        };
         const isLoading = loadingStates[sphere.eH];
-console.log('sphereData :>> ', sphereData);
+        const sphereData = spheresData[sphere.eH] || {};
         return (
           <SystemCalendarCard
             key={sphere.id}
             sphere={sphere}
             loading={isLoading}
-            rootOrbitWinData={sphereData.rootOrbitWinData}
-            rootOrbitOrbitDetails={sphereData.rootOrbitOrbitDetails}
+            rootOrbitWinData={sphereData?.rootOrbitWinData}
+            rootOrbitOrbitDetails={sphereData?.rootOrbitOrbitDetails}
             setSphereIsCurrent={() => handleSetCurrentSphere(sphere.id)}
             handleVisAction={() => routeToVis(sphere)}
             handleCreateAction={() => routeToCreatePlanitt(sphere.eH)}

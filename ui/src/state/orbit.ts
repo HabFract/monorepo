@@ -319,7 +319,7 @@ export const currentOrbitIdAtom = atom(
       },
     } as AppState;
 
-    NODE_ENV !== "test" && console.log("Setting orbit id :>> ", newState);
+    // NODE_ENV !== "test" && console.log("Setting orbit id :>> ", newState);
 
     set(appStateAtom, newState);
   }

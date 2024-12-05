@@ -36,45 +36,52 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
   const hasData = rootOrbitWinData && rootOrbitOrbitDetails;
   const [currentDate, setCurrentDate] = useState(DateTime.now());
   return (
-    loading ? <article className={"card system-calendar-card"}>
-      <Spinner type="card"></Spinner>
+    <article className={"card system-calendar-card"}>
+      {loading
+        ? (<div style={{height: '204px'}}>
+          <header>
+          </header>
+          <section>
+            <Spinner type="card"></Spinner>
+          </section>
+        </div>)
+        : (<>
+          <header>
+            <img src={sphere.metadata?.image as string || ""} />
+            <h1 className="card-name">{name}</h1>
+          </header>
+          <section>
+            <Calendar
+              currentDate={currentDate}
+              orbitFrequency={1}
+              setNewDate={setCurrentDate}
+              orbitWins={rootOrbitWinData || {}}
+              disabled={!hasData}
+            />
+            <div className="dark:bg-surface-elevated-dark rounded-2xl flex justify-between gap-2 py-2 pl-2 pr-4 mt-4">
+              {rootOrbitOrbitDetails?.scale && <h1 className="root-orbit-label opacity-75">{getIconForPlanetValue(rootOrbitOrbitDetails.scale)({})}</h1>}<h2 className="root-orbit-name w-full text-center">
+                {hasData
+                  ? rootOrbitOrbitDetails.name
+                  : "No Planitt data for this Space"}
+              </h2>
+            </div>
+          </section>
+        </>)}
+      <footer>
+        <Popover
+          content={<ListGroup
+            theme={darkThemeListGroup}
+            className="list-group-override w-48">
+            <ListGroup.Item onClick={() => handleListAction()} icon={getIconSvg('list')}>List Planitts</ListGroup.Item>
+            <ListGroup.Item onClick={() => handleCreateAction()} icon={getIconSvg('plus')}>Add Planitt</ListGroup.Item>
+          </ListGroup>
+          }
+        >
+          <Button onClick={() => setSphereIsCurrent()} variant="circle-icon-lg btn-neutral outlined" icon={getIconSvg('more')({}) as any}></Button>
+        </Popover>
+        <Button onClick={() => handleVisAction()} variant="primary responsive">Visualise</Button>
+      </footer>
     </article>
-      : <article className={"card system-calendar-card"}>
-        <header>
-          <img src={sphere.metadata?.image as string || ""} />
-          <h1 className="card-name">{name}</h1>
-        </header>
-        <section>
-          <Calendar
-            currentDate={currentDate}
-            orbitFrequency={1}
-            setNewDate={setCurrentDate}
-            orbitWins={rootOrbitWinData || {}}
-            disabled={!hasData}
-          />
-          <div className="dark:bg-surface-elevated-dark rounded-2xl flex justify-between gap-2 py-2 pl-2 pr-4 mt-4">
-              {rootOrbitOrbitDetails?.scale && <h1 className="root-orbit-label opacity-75">{getIconForPlanetValue(rootOrbitOrbitDetails.scale)({})}</h1> }<h2 className="root-orbit-name w-full text-center">
-              {hasData
-                ? rootOrbitOrbitDetails.name
-                : "No Planitt data for this Space"}
-            </h2>
-          </div>
-        </section>
-        <footer>
-          <Popover
-            content={<ListGroup
-              theme={darkThemeListGroup}
-              className="list-group-override w-48">
-              <ListGroup.Item onClick={() => handleListAction()} icon={getIconSvg('list')}>List Planitts</ListGroup.Item>
-              <ListGroup.Item onClick={() => handleCreateAction()} icon={getIconSvg('plus')}>Add Planitt</ListGroup.Item>
-            </ListGroup>
-            }
-          >
-            <Button onClick={() => setSphereIsCurrent()} variant="circle-icon-lg btn-neutral outlined" icon={getIconSvg('more')({}) as any}></Button>
-          </Popover>
-          <Button onClick={() => handleVisAction()} variant="primary responsive">Visualise</Button>
-        </footer>
-      </article>
   );
 };
 

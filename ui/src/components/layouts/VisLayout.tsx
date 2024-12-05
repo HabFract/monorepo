@@ -15,7 +15,7 @@ function VisLayout({ children, title, handleDeleteSphere }: any) {
     transition("ListOrbits", { sphereAh: currentSphereDetails.id, currentSphereDetails });
   }
   const routeBack = () => {
-    if ((history[0]?.state).match("Onboarding") || (history[0]?.state == 'Vis') || !goBack()) {
+    if ((history[0]?.state).match("PreloadAndCache") ||(history[0]?.state).match("Onboarding") || (history[0]?.state == 'Vis') || !goBack()) {
       transition("Home");
     }
   };

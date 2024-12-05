@@ -438,7 +438,7 @@ export function withVisCanvas<T extends IVisualization>(
       const consolidatedActions: ConsolidatedActions = {
         goLeft: actions.moveToId as any,//actions.traverseLeft,
         goRight: actions.moveToId as any, //flags.canMoveRight ? actions.moveRight : actions.moveRight,
-        goUp: flags.canMoveUp ? actions.moveDown as any : actions.moveUp,// actions.traverseUp,
+        goUp: flags.canMoveUp ? actions.moveUp as any : actions.moveUp,// actions.traverseUp,
         goDown: flags.canMoveDown ? actions.moveDown as any : actions.moveDown //actions.traverseDown,
       };
 

@@ -34,5 +34,5 @@
 .card-spinner {
   position: absolute;
   left: calc(50% - 2rem);
-  top: calc(50% - 2rem);
+  top: calc(40% - 2rem);
 }
