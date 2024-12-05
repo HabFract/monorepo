@@ -70,12 +70,12 @@ span.reqd {
 
 /* Image Upload */
 .avatar-container {
-  @apply flex items-center w-full gap-4;
+  @apply flex items-start w-full gap-4;
 }
 
-.avatar-container img {
-  max-width: 4rem;
-  max-height: 4rem;
+.ant-upload-select .ant-image-img, .avatar-container img {
+  width: 4rem;
+  height: 4rem;
   aspect-ratio: 1/1;
   object-fit: cover;
   border-radius: 100% !important;

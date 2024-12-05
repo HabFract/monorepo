@@ -27,6 +27,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@cherrypulp/image-upload": "^1.0.9",
     "luxon": "^3.4.4"
   },
   "devDependencies": {

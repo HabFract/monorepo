@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { message, Upload } from "antd";
+import { message } from "antd";
 import type { UploadChangeParam } from "antd/es/upload";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
+import { ImageUpload as Upload } from "@cherrypulp/image-upload";
 import '../common.css'
 import { Button } from "../buttons";
 import { SwipeUpScreenTab } from "../controls";
@@ -27,12 +28,17 @@ const beforeUpload = (file: RcFile) => {
   const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
   if (!isJpgOrPng) {
     message.error("You can only upload JPG/PNG file!");
+    return false;
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error("Image must smaller than 2MB!");
+  
+  // 512KB = 512 * 1024 bytes
+  const isLt512KB = file.size / 1024 < 512;
+  if (!isLt512KB) {
+    message.error("Image must be smaller than 512KB!");
+    return false;
   }
-  return isJpgOrPng && isLt2M;
+  
+  return isJpgOrPng && isLt512KB;
 };
 
 /** Default avatar image in base64 format */
@@ -58,7 +64,13 @@ interface ImageUploadProps {
     alt: string;
   }>;
 }
-
+interface UploadChangeInfo {
+  file: {
+    originFileObj?: File;
+    status?: string;
+  };
+  fileList: any[];
+}
 /**
  * ImageUpload Component
  * 
@@ -91,7 +103,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       // Fetch the image
       const response = await fetch(imageUrl);
       const blob = await response.blob();
-      
+
       // Convert to base64
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -107,8 +119,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
   useEffect(() => {
     const initializeImage = async () => {
-      // If there's no field value or it's the same as defaultImage
-      if (!field?.value || field.value === defaultImage) {
+      // If there's no field value, use the default image
+      if (!field?.value) {
         try {
           setLoading(true);
           // Convert default image to base64 if it's not already a data URI
@@ -127,14 +139,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         } finally {
           setLoading(false);
         }
-      } 
-      // If there's a different value
+      }
+      // If there's an existing value
       else {
         setImageUrl(field.value);
         setCustom(true);
       }
     };
-
     initializeImage();
   }, [field?.value, defaultImage, setFieldValue]);
 
@@ -147,7 +158,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       setImageUrl(defaultImage);
       setCustom(false);
       setFieldValue(field.name, defaultImage); // Ensure the form field is set
-    } 
+    }
     // If there's a different value
     else {
       setImageUrl(field.value);
@@ -159,23 +170,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     setImageUrl(noDefaultImage ? "" : defaultImage);
     setCustom(false);
     setFieldValue(field.name, noDefaultImage ? "" : defaultImage);
-  };
-
-  const handleChange: UploadProps["onChange"] = (
-    info: UploadChangeParam<UploadFile>,
-  ) => {
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === "done") {
-      getBase64(info.file.originFileObj as RcFile, (url) => {
-        setLoading(false);
-        setCustom(true);
-        setImageUrl(url);
-        setFieldValue(field.name, url);
-      });
-    }
   };
 
   const handleOptionSelect = async (selectedImage: string) => {
@@ -196,9 +190,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
 
   const defaultUploadButton = (
-    <Button 
-      isLoading={loading} 
-      type="button" 
+    <Button
+      isLoading={loading}
+      className="mt-4 ml-4"
+      type="button"
       variant="neutral"
       isDisabled={isFormUnchanged}
       onClick={() => setIsOptionsOpen(true)}
@@ -215,41 +210,68 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
   const changedFromDefault = imageUrl && custom && imageUrl !== defaultImage;
 
+  const handleFileChange = (file: File | Blob) => {
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      const url = reader.result as string;
+      setLoading(false);
+      setCustom(true);
+      setImageUrl(url);
+      setFieldValue(field.name, url);
+    });
+    reader.readAsDataURL(file);
+  };
+
+
   return (
     <div className={!changedFromDefault ? "default-image" : "custom-image"}>
-      <Upload
-        name="avatar"
-        listType="picture-circle"
-        className="avatar-uploader"
-        showUploadList={false}
-        beforeUpload={beforeUpload}
-        onChange={handleChange}
-        customRequest={dummyRequest as any}
-      >
-        {imageUrl ? (
-          <div className="avatar-container">
-            <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-            {React.cloneElement(uploadButton as React.ReactElement || defaultUploadButton, {
-              isDisabled: isFormUnchanged,
-              onClick: (e: React.MouseEvent) => {
-                e.stopPropagation();
-                setIsOptionsOpen(true);
-              }
-            })}
-          </div>
-        ) : (
-          <div className="relative w-full h-full">
-            {React.cloneElement(uploadButton as React.ReactElement || defaultUploadButton, {
-              isDisabled: isFormUnchanged,
-              onClick: (e: React.MouseEvent) => {
-                e.stopPropagation();
-                setIsOptionsOpen(true);
-              }
-            })}
-          </div>
-        )}
-      </Upload>
-      
+      <div className="avatar-container">
+        <Upload
+          src={imageUrl}
+          aspect={1}
+          onChange={(info: UploadChangeInfo) => {
+            if (info.file.status === "uploading") {
+              setLoading(true);
+              return;
+            }
+            // If the file was rejected due to size/type
+            if (info.file.status === "error") {
+              setLoading(false);
+              return;
+            }
+          
+            // Double-check size here as well
+            if (info.file.originFileObj && info.file.originFileObj.size / 1024 > 512) {
+              setLoading(false);
+              message.error("Image must be smaller than 512KB!");
+              return;
+            }
+            
+            if (info.file.status === "done" && info.file.originFileObj) {
+              handleFileChange(info.file.originFileObj);
+            }
+          }}
+          maxSize={1}
+          uploadOptions={{
+            listType: "picture-circle",
+            showUploadList: false,
+            beforeUpload,
+            customRequest: dummyRequest
+          }}
+          cropOptions={{ rotate: false }}
+        >
+        </Upload>
+        {React.cloneElement(uploadButton as React.ReactElement || defaultUploadButton, {
+          isDisabled: isFormUnchanged,
+          onClick: (e: React.MouseEvent) => {
+            e.stopPropagation();
+            setIsOptionsOpen(true);
+          }
+        })}
+      </div>
+
       {changedFromDefault && (
         <div onClick={handleClear}>
           {clearButton}
@@ -257,7 +279,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       )}
 
       {isOptionsOpen && (
-        <SwipeUpScreenTab 
+        <SwipeUpScreenTab
           verticalOffset={50} // This means it starts 50vh from the top
           useViewportHeight={true}
           onExpansionChange={(expanded) => {
@@ -269,7 +291,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               <motion.div className="handle" {...bindDrag}>
                 <span></span>
               </motion.div>
-              
+
               <div className="flex flex-col w-full h-screen gap-2 pt-4">
                 <h3 className="text-text dark:text-text-dark z-20 mt-2 text-base font-bold text-center">Choose Symbol</h3>
                 <div className="z-20 grid w-full grid-cols-3 gap-4 px-2">
@@ -281,10 +303,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                       onClick={() => handleOptionSelect(option.src)}
                     >
                       <div className="aspect-square relative w-full">
-                        <img 
-                          src={option.src} 
+                        <img
+                          src={option.src}
                           alt={option.alt}
-                          className="absolute inset-0 object-contain w-full h-full" 
+                          className="absolute inset-0 object-contain w-full h-full"
                         />
                       </div>
                     </button>
