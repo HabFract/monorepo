@@ -18,6 +18,7 @@ export const test = base.extend({
     page.waitForState = commands.waitForState.bind(commands, page);
     page.getCurrentState = commands.getCurrentState.bind(commands, page);
     page.resetToHome = commands.resetToHome.bind(commands, page);
+    page.resetToOnboardingState = commands.resetToOnboardingState.bind(commands, page);
     
     await use(page);
   },
@@ -28,6 +29,7 @@ declare module '@playwright/test' {
     waitForState(state: string): Promise<void>;
     getCurrentState(): Promise<string>;
     resetToHome(): Promise<void>;
+    resetToOnboardingState(step?: 1 | 2 | 3): Promise<void>;
   }
 }
 

@@ -39,9 +39,19 @@ export const ERROR_MESSAGES = {
   'sphere-name-empty' : 'Give your Space a name',
   'sphere-description-short' : 'Your intention needs to be at least 8 characters',
   'orbit-name-empty' : 'Make sure to name your Planitt',
+  'orbit-name-short': 'Name must be at least 4 characters',
+  'orbit-name-long': 'Must be at most 55 characters',
+  'orbit-name-letters': 'Name must contain letters',
+  'orbit-description-letters': 'Description must contain letters',
+  'orbit-start-required': 'Start date/time is required',
 }
 
 export const PAGE_COPY = {
   'slogan' : 'Let\'s put a plan in motion!',
   'password-notice': "Holochain uses public-private key pairs for encryption. We are still working on key management! For now, you can proceed without a password. Don't store anything too sensitive!",
+}
+
+export const BUTTON_ACTION_TEXT = {
+  'positive-spin-cta': "To Do",
+  'negative-spin-cta': "Not To Do",
 }

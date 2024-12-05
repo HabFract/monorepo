@@ -6,7 +6,7 @@ import { Button, getIconSvg, SwipeUpScreenTab, TextInputField } from 'habit-frac
 import { ListSpheres } from '../lists';
 import { motion } from 'framer-motion';
 import { Popover, ListGroup } from 'flowbite-react';
-import { ERROR_MESSAGES, PAGE_COPY } from '../../constants';
+import { BUTTON_ACTION_TEXT, ERROR_MESSAGES, PAGE_COPY } from '../../constants';
 
 function HomeLayout({ firstVisit = true }: any) {
   const [_, transition] = useStateTransition(); // Top level state machine and routing
@@ -75,8 +75,8 @@ function HomeLayout({ firstVisit = true }: any) {
                   <path d="M400 287a113 113 0 1 0 0 226 113 113 0 0 0 0-226zm59 128h-44v44a15 15 0 1 1-30 0v-44h-44a15 15 0 1 1 0-30h44v-44a15 15 0 1 1 30 0v44h44a15 15 0 1 1 0 30z" />
                   <path d="M578 222a252 252 0 0 0-356 356 252 252 0 0 0 356-356zM400 543a143 143 0 1 1 0-286 143 143 0 0 1 0 286z" />
                 </svg>
-              </span>To Do</Button>
-            <Button isDisabled={true} onClick={() => { transition("CreateSphere", { spin: 'negative' }) }} type="button" variant="primary responsive"><span className="text-success-500"><img src="assets/icons/negative-spin.svg" className='w-8 h-8 my-1 mr-2 opacity-75' /></span>Not To Do</Button>
+              </span>{BUTTON_ACTION_TEXT['positive-spin-cta']}</Button>
+            <Button isDisabled={true} onClick={() => { transition("CreateSphere", { spin: 'negative' }) }} type="button" variant="primary responsive"><span className="text-success-500"><img src="assets/icons/negative-spin.svg" className='w-8 h-8 my-1 mr-2 opacity-75' /></span>{BUTTON_ACTION_TEXT['negative-spin-cta']}</Button>
           </div>
         </header>
       }

@@ -8,6 +8,11 @@ export const TEST_ERROR_MESSAGES = {
   'sphere-description-short' : 'Your intention needs to be at least 8 characters',
 
   'orbit-name-empty' : 'Make sure to name your Planitt',
+  'orbit-name-short': 'Name must be at least 4 characters',
+  'orbit-name-long': 'Must be at most 55 characters',
+  'orbit-name-letters': 'Name must contain letters',
+  'orbit-description-letters': 'Description must contain letters',
+  'orbit-start-required': 'Start date/time is required',
 } as const;
 
 export const TEST_PAGE_COPY = {
@@ -27,6 +32,12 @@ export const MODEL_DISPLAY_VALUES = {
   atom: 'Dwarf', // Stood for atomic
 
 }
+
+
+export const TEST_BUTTON_ACTION_TEXT = {
+  'positive-spin-cta': "To Do",
+  'negative-spin-cta': "Not To Do"
+} as const
 
 export const TEST_ONBOARDING_FORM_TITLES = [`Create a ${MODEL_DISPLAY_VALUES['sphere']}`, `Create a ${MODEL_DISPLAY_VALUES['orbit']}`, `Break Up ${MODEL_DISPLAY_VALUES['orbit']}` ]
 

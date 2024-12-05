@@ -2,12 +2,29 @@ import { test, expect } from './test-fixtures';
 import { MODEL_DISPLAY_VALUES, TEST_ERROR_MESSAGES, TEST_ONBOARDING_FORM_TITLES, TEST_PAGE_COPY } from './setup';
 import { verifyStepState } from './helpers';
 
+enum Frequency {
+  OneShot = 'ONE_SHOT',
+  DailyOrMore_1d = 'DAILY_OR_MORE_1d',
+  DailyOrMore_2d = 'DAILY_OR_MORE_2d',
+  DailyOrMore_3d = 'DAILY_OR_MORE_3d',
+  LessThanDaily_1w = 'LESS_THAN_DAILY_1w',
+  LessThanDaily_1m = 'LESS_THAN_DAILY_1m',
+  LessThanDaily_1q = 'LESS_THAN_DAILY_1q'
+}
+
+enum Scale {
+  Astro = 'Astro',
+  Sub = 'Sub',
+  Atom = 'Atom'
+}
+
 test.describe('Home Page Password Validation and Transition to Onboarding1', () => {
   test.beforeEach(async ({ page }) => {
     await page.resetToHome();
   });
 
-  test('temp password field and login flow', async ({ page }) => {
+  // Current test setup is not indempotent w.r.t graphql responses, so skip this or run it in isolation with a fresh app backend process
+  test.skip('temp password field and login flow', async ({ page }) => {
     // First verify we're on the right page
     await expect(page.getByText(TEST_PAGE_COPY['slogan'])).toBeVisible();
     
@@ -110,10 +127,7 @@ test.describe('Home Page Password Validation and Transition to Onboarding1', () 
 
 test.describe('Sphere Creation Form Validation', () => {
   test.beforeEach(async ({ page }) => {
-    await page.resetToHome();
-    // Get to the sphere creation form
-    const signInButton = page.getByRole('button', { name: /sign in/i });
-    await signInButton.click();
+    await page.resetToOnboardingState(1);
   });
 
   test('shows validation errors for empty required fields', async ({ page }) => {
@@ -148,4 +162,90 @@ test.describe('Sphere Creation Form Validation', () => {
     ).toBeVisible();
   });
 
+});
+
+test.describe('Orbit Creation Form Validation', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.resetToOnboardingState(2);
+  });
+
+  test('shows validation errors for empty required fields', async ({ page }) => {
+    // Try to submit empty form
+    const submitButton = page.getByRole('button', { name: /continue/i });
+    await submitButton.click();
+
+    // Check for validation messages
+    await expect(
+      page.getByText(TEST_ERROR_MESSAGES['orbit-name-empty'])
+    ).toBeVisible();
+  });
+
+  test('validates name field constraints', async ({ page }) => {
+    const nameInput = page.getByRole('textbox', { name: /name/i });
+    const submitButton = page.getByRole('button', { name: /continue/i });
+
+    // Test too short
+    await nameInput.fill('ab');
+    await nameInput.blur();
+    await submitButton.click();
+
+    await expect(
+      page.getByText(TEST_ERROR_MESSAGES['orbit-name-short'])
+    ).toBeVisible();
+
+    // Test too long
+    await nameInput.fill('a'.repeat(56));
+    await nameInput.blur();
+    await submitButton.click();
+    await expect(
+      page.getByText(TEST_ERROR_MESSAGES['orbit-name-long'])
+    ).toBeVisible();
+
+    // Test numbers only
+    await nameInput.fill('12345');
+    await nameInput.blur();
+    await submitButton.click();
+    await expect(
+      page.getByText(TEST_ERROR_MESSAGES['orbit-name-letters'])
+    ).toBeVisible();
+  });
+
+  test('validates description field constraints', async ({ page }) => {
+    const descInput = page.locator('#description');
+    const submitButton = page.getByRole('button', { name: /continue/i });
+
+    // Test numbers only
+    await descInput.fill('12345');
+    await descInput.blur();
+    await submitButton.click();
+    await expect(
+      page.getByText(TEST_ERROR_MESSAGES['orbit-description-letters'])
+    ).toBeVisible();
+  });
+
+  test('successful form submission transitions to next step', async ({ page }) => {
+    // Fill form with valid data
+    await page.getByRole('textbox', { name: /name/i })
+      .fill('Valid Orbit Name');
+    await page.locator('#description')
+      .fill('Valid description with letters');
+    
+    // Select scale
+    await page.locator('select#scale').selectOption(Scale.Astro);
+    
+    // Select frequency
+    await page.locator('select#frequency')
+      .selectOption(Frequency.DailyOrMore_1d);
+
+    // Submit form
+    const submitButton = page.getByRole('button', { name: /continue/i });
+    await submitButton.click();
+
+    // Verify transition to next step
+    await verifyStepState(
+      page,
+      TEST_ONBOARDING_FORM_TITLES[2],
+      'process'
+    );
+  });
 });

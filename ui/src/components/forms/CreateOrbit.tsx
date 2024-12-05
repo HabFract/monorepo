@@ -39,20 +39,22 @@ import Collapse from "antd/es/collapse";
 // Define the validation schema using Yup
 export const OrbitValidationSchema = Yup.object().shape({
   name: Yup.string()
-    .min(3, "Must be 4 characters or more")
-    .max(55, "Must be 55 characters or less")
-    .matches(/(?!^\d+$)^.+$/, "Name must contain letters.")
+    .min(4, ERROR_MESSAGES['orbit-name-short'])
+    .max(55, ERROR_MESSAGES['orbit-name-long'])
+    .matches(/(?!^\d+$)^.+$/, ERROR_MESSAGES['orbit-name-letters'])
     .required(ERROR_MESSAGES['orbit-name-empty']),
-  description: Yup.string().matches(
-    /(?!^\d+$)^.+$/,
-    "Description must contain letters.",
-  ),
-  startTime: Yup.number().min(0).required("Start date/time is required"),
+  description: Yup.string()
+    .matches(/(?!^\d+$)^.+$/, ERROR_MESSAGES['orbit-description-letters']),
+  startTime: Yup.number()
+    .min(0)
+    .required(ERROR_MESSAGES['orbit-start-required']),
   endTime: Yup.number(),
   frequency: Yup.mixed()
     .oneOf(Object.values(Frequency))
-    .required("Choose a frequency"),
-  scale: Yup.mixed().oneOf(Object.values(Scale)).required("Choose a scale"),
+    .required(ERROR_MESSAGES['orbit-frequency-required']),
+  scale: Yup.mixed()
+    .oneOf(Object.values(Scale))
+    .required(ERROR_MESSAGES['orbit-scale-required']),
   parentHash: Yup.string().nullable("Can be null"),
   childHash: Yup.string().nullable("Can be null"),
   archival: Yup.boolean(),
@@ -151,80 +153,95 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
     <Formik
       initialValues={currentOrbitValues}
       validationSchema={OrbitValidationSchema}
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting, validateForm }) => {
         try {
-          if (!values.archival) delete values.endTime;
-          delete (values as any).archival;
-          delete (values as any).eH;
-          if (editMode) delete (values as any).childHash;
+          const errors = await validateForm();
+          if (Object.keys(errors).length === 0) {
+            if (!values.archival) delete values.endTime;
+            delete (values as any).archival;
+            delete (values as any).eH;
+            if (editMode) delete (values as any).childHash;
 
-          let response = editMode
-            ? await updateOrbit({
-              variables: {
-                orbitFields: {
-                  id: orbitToEditId as string,
-                  ...values,
-                  sphereHash: sphereEh,
-                  parentHash: parentOrbitEh
-                    ? parentOrbitEh
-                    : values.parentHash || undefined,
-                } as OrbitUpdateParams,
-              },
-            })
-            : await addOrbit({
-              variables: {
+            let response = editMode
+              ? await updateOrbit({
                 variables: {
-                  ...values,
-                  sphereHash: sphereEh,
-                  parentHash: parentOrbitEh
-                    ? parentOrbitEh
-                    : values.parentHash || undefined,
-                  childHash: values.childHash || undefined,
-                } as OrbitCreateParams,
-              },
-            });
-          setSubmitting(false);
-          if (!response.data) return;
+                  orbitFields: {
+                    id: orbitToEditId as string,
+                    ...values,
+                    sphereHash: sphereEh,
+                    parentHash: parentOrbitEh
+                      ? parentOrbitEh
+                      : values.parentHash || undefined,
+                  } as OrbitUpdateParams,
+                },
+              })
+              : await addOrbit({
+                variables: {
+                  variables: {
+                    ...values,
+                    sphereHash: sphereEh,
+                    parentHash: parentOrbitEh
+                      ? parentOrbitEh
+                      : values.parentHash || undefined,
+                    childHash: values.childHash || undefined,
+                  } as OrbitCreateParams,
+                },
+              });
+            setSubmitting(false);
+            if (!response.data) return;
 
-          const payload = response.data as any;
-          if (originPage == "Vis" && !editMode) {
-            store.set(newTraversalLevelIndexId, { id: payload.createOrbit.eH, direction: "new" });
-            transition("Vis", {
-              currentSphereEhB64: sphereEh,
-              currentSphereAhB64: selectedSphere.actionHash,
-              currentSphereDetails: selectedSphereDetails
-            });
-          } else {
-            const orbitAh = editMode
-              ? payload.updateOrbit.id
-              : payload.createOrbit.id;
+            const payload = response.data as any;
+            if (originPage == "Vis" && !editMode) {
+              store.set(newTraversalLevelIndexId, { id: payload.createOrbit.eH, direction: "new" });
+              transition("Vis", {
+                currentSphereEhB64: sphereEh,
+                currentSphereAhB64: selectedSphere.actionHash,
+                currentSphereDetails: selectedSphereDetails
+              });
+            } else {
+              const orbitAh = editMode
+                ? payload.updateOrbit.id
+                : payload.createOrbit.id;
 
-            const props = inOnboarding
-              ? { refiningOrbitAh: orbitAh, spin: params?.spin }
-              : { sphereAh: selectedSphere.actionHash, currentSphereDetails: selectedSphereDetails };
+              const props = inOnboarding
+                ? { refiningOrbitAh: orbitAh, spin: params?.spin }
+                : { sphereAh: selectedSphere.actionHash, currentSphereDetails: selectedSphereDetails };
 
-            store.set(currentOrbitIdAtom, orbitAh);
-            transition(inOnboarding ? "Onboarding3" : "ListOrbits", props);
+              store.set(currentOrbitIdAtom, orbitAh);
+              transition(inOnboarding ? "Onboarding3" : "ListOrbits", props);
+            }
           }
         } catch (error) {
           console.error(error);
         }
       }}
     >
-      {({ values, errors, touched, setFieldValue }) => {
-          const submitButton = (submitBtn &&
-            React.cloneElement(submitBtn as React.ReactElement, {
-              loading,
-              errors,
-              touched,
-            })) || (
-              <DefaultSubmitBtn
-                loading={loading}
-                editMode={editMode}
-                errors={errors}
-                touched={touched}
-              ></DefaultSubmitBtn>
-            );
+      {({ values, errors, touched, setFieldValue, validateForm, submitForm }) => {
+        const handleSubmit = () => {
+          try {
+            submitForm();
+            Object.values(errors).length == 0 && (submitBtn as any).props.onClick.call(null);
+          } catch (error) {
+            console.log('error :>> ', error);
+          }
+        };
+        const submitButton = submitBtn ? (
+          React.cloneElement(submitBtn as React.ReactElement, {
+            loading,
+            errors,
+            touched,
+            disabled: Object.keys(errors).length > 0 && Object.keys(touched).length > 0,
+            onClick: handleSubmit
+          })
+        ) : (
+          <DefaultSubmitBtn
+            loading={loading}
+            editMode={editMode}
+            errors={errors}
+            touched={touched}
+            onClick={handleSubmit}
+          />
+        );
 
         const cannotBeAstro =
           !(editMode && state.match("Onboarding")) &&
@@ -262,7 +279,15 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                 </figure>
               </>
               }
-              <Form noValidate={true}>
+              <Form noValidate={true}           onSubmit={async (e) => {
+                e.preventDefault();
+                // Validate before submitting
+                const errors = await validateForm();
+                if (Object.keys(errors).length === 0) {
+                  // Form is valid, allow submission
+                  e.currentTarget.submit();
+                }
+              }}>
 
               {!parentOrbitEh && !inOnboarding && (
                   <div className="form-field flex">
