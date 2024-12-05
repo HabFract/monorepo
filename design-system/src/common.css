@@ -3,45 +3,36 @@
 @tailwind components;
 @tailwind utilities;
 
-
+/* Spinners */
 .full-spinner, .card-spinner {
   display: grid;
   place-content: center;
-  height: 6rem;
+}
+.full-spinner img, .card-spinner img {
+  animation: rotateY 2.5s infinite linear;
+  opacity: 0.8;
+}
+.full-spinner, .full-spinner img {
   width: 6rem;
+  height: 6rem;
+}
+.card-spinner, .card-spinner img {
+  width: 4rem;
+  height: 4rem;
+}
+
+@keyframes rotateY {
+  to { transform: rotateY(360deg) }
 }
 
 .full-spinner {
   position: fixed;
   left: calc(50vw - 3rem);
   top: calc(50vh - 3rem);
-  animation: spin 2s linear infinite;
-  @apply fill-primary dark:fill-primary-dark text-text dark:text-text-dark;
 }
+
 .card-spinner {
   position: absolute;
-  left: calc(50% - 3rem);
-  top: calc(50% - 3rem);
-  animation: spin 2s linear infinite;
-  @apply fill-primary dark:fill-primary-dark text-text dark:text-text-dark;
-}
-
-.col-c {
-  @apply flex flex-col items-center justify-center gap-2;
-}
-
-.row-c-around,
-.row-c {
-  @apply flex items-center gap-2;
-}
-
-.row-c-around {
-  @apply justify-around;
-}
-
-@media screen and (max-width: 420px) {
-  .big-gap-sm {
-    @apply gap-12;
-    min-width: 85%;
-  }
+  left: calc(50% - 2rem);
+  top: calc(50% - 2rem);
 }

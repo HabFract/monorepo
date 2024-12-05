@@ -32,7 +32,7 @@ function VisLayout({ children, title, handleDeleteSphere }: any) {
             <ListGroup.Item onClick={() => routeToPlanittList(params.currentSphereDetails)} icon={getIconSvg('list')}>List Planitts</ListGroup.Item>
             <ListGroup.Item onClick={() => routeToCreatePlanitt(params.currentSphereDetails.eH)} icon={getIconSvg('plus')}>Add Planitt</ListGroup.Item>
             <span className="list-item-danger text-danger">
-              <ListGroup.Item onClick={handleDeleteSphere} icon={getIconSvg('trash')}>Delete Space</ListGroup.Item>
+              <ListGroup.Item onClick={handleDeleteSphere} color={"danger"} icon={getIconSvg('trash')}>Delete Space</ListGroup.Item>
             </span>
           </ListGroup>}
         ></HeaderAction>

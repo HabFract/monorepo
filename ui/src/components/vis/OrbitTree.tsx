@@ -48,12 +48,12 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const setHierarchyInAppState = useSetAtom(updateHierarchyAtom);
 
   // ## -- Data fetching hooks -- ##
-  const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery({
+  const [getHierarchy, { data, loading: dataLoading, error }] = useGetOrbitHierarchyLazyQuery({
     fetchPolicy: "cache-first",
   });
   // Get the hashes of the current Sphere's context
   const sphere: SphereHashes = store.get(currentSphereHashesAtom);
-  const { data: dataLevel } = useGetLowestSphereHierarchyLevelQuery({
+  const { data: dataLevel, loading: levelLoading } = useGetLowestSphereHierarchyLevelQuery({
     variables: { sphereEntryHashB64: sphere.entryHash as string },
   });
 
@@ -227,6 +227,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     }
   }, [cache, hasCachedNodes]);
 
+  const loading = dataLoading || levelLoading
   return (
     <Suspense fallback={<span data-testid="loading-tree" />}>
       <TreeVisCore

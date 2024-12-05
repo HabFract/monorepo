@@ -108,7 +108,7 @@ const ListOrbits: React.FC<ListOrbitsProps> = () => {
                 runDelete={() => handleDeletePlanitt(orbit)}
               />
             )) : <div className="warning-message flex flex-col items-center justify-center w-full h-full gap-4 pb-48">
-              <img className="mb-2" src="assets/icons/warning.svg" alt="warning icon" />
+              <img className="mb-2" src="assets/icons/warning-icon.svg" alt="warning icon" />
               <h1>There are no Planitts<br /> in this System</h1>
               <h2>Add a Planitt to start tracking your behaviour</h2>
             </div> }

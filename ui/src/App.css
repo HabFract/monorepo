@@ -16,6 +16,7 @@ body {
 html,
 body {
   @apply dark:bg-surface-dark;
+  background: radial-gradient(#2F3232, #242424);
 }
 
 .page-container {
@@ -42,7 +43,7 @@ body {
 
 /* Disclaimer, Version Number */
 .app-version-disclaimer {
-  @apply z-50 flex gap-2 fixed right-1 top-1;
+  @apply right-1 top-1 fixed z-50 flex gap-2;
 }
 
 .app-version-disclaimer .version-number {

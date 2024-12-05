@@ -98,14 +98,14 @@
 /* Planitt Card Popover */
 .planitt-card div[data-testid="flowbite-popover"] {
   position: absolute !important;
-  right: 9rem !important;
+  right: 10rem !important;
   top: -.5rem !important;
   left: initial !important;
   transform: none !important;
 }
 
 .planitt-card ul.list-none {
-  width: 6rem;
+  width: 7rem;
 }
 
 /* Interaction States

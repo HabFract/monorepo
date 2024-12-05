@@ -153,26 +153,26 @@ const darkRadioTheme: CustomFlowbiteTheme["radio"] = {
 
 // List Group theme
 const darkThemeListGroup: CustomFlowbiteTheme["listGroup"] = {
-  "root": {
-    "base": "list-none rounded-lg border-[.5px] border-text bg-white text-left text-base font-sans font-bold text-text dark:border-gray-100 dark:bg-surface-dark dark:text-text-dark absolute left-8 top-8 max-w-48 "
+  root: {
+    base: "list-none rounded-lg border-[.5px] border-text bg-surface-dark text-left text-base font-sans font-bold text-text-dark dark:border-gray-100 dark:bg-surface-dark dark:text-text-dark absolute left-8 top-8 max-w-48"  // Added positioning classes
   },
-  "item": {
-    "base": "[&>*]:first:rounded-t-xl [&>*]:first:rounded-b-none [&>*]:last:rounded-b-xl [&>*]:last:rounded-t-none [*:only-child]:rounded-xl [*:only-child]:hover:rounded-xl !important",
-    "link": {
-      "base": "flex w-full items-center border-b border-gray-200 gap-2 px-4 py-2 dark:border-gray-400 dark:hover:bg-surface-elevated-dark dark:active:focus-styles !important",
-      "active": {
-        "off": "hover:bg-surface-elevated dark:hover:bg-surface-elevated-dark hover:text-accent dark:hover:text-accent-dark transition-colors duration-200",
-        "on": "bg-surface-elevated rounded-xl dark:bg-surface-elevated-dark text-accent dark:text-accent-dark"
+  item: {
+    base: "[&>*]:first:rounded-t-lg [&>*]:last:rounded-b-lg [&>*]:last:border-b-0",
+    link: {
+      base: "flex w-full items-center border-b border-gray-600 px-4 py-2",
+      active: {
+        off: "bg-surface-dark text-text-dark hover:bg-gray-600 focus:outline-none",
+        on: "bg-surface-dark text-text-dark hover:bg-gray-600 focus:outline-none"
       },
-      "disabled": {
-        "off": "",
-        "on": "cursor-not-allowed bg-gray-400 dark:bg-gray-300 text-gray-900 hover:bg-gray-300  dark:hover:text-gray-900 focus:text-gray-900"
+      disabled: {
+        off: "",
+        on: "cursor-not-allowed opacity-50"
       },
-      "href": {
-        "off": "",
-        "on": ""
+      href: {
+        off: "",
+        on: ""
       },
-      "icon": "h-4 w-4 fill-current"
+      icon: "mr-2 h-6 w-6 fill-current",
     }
   }
 };

@@ -50,7 +50,7 @@ const PlanittCard: React.FC<PlanittCardProps> = ({
           content={<ListGroup theme={darkThemeListGroup} className="list-group-override w-48">
             <ListGroup.Item onClick={handleEditPlanitt} icon={getIconSvg('pencil')}>Edit</ListGroup.Item>
             <span className="list-item-danger text-danger">
-              <ListGroup.Item onClick={runDelete} icon={getIconSvg('trash')}>Delete</ListGroup.Item>
+              <ListGroup.Item onClick={runDelete} color={"danger"} icon={getIconSvg('trash')}>Delete</ListGroup.Item>
             </span>
           </ListGroup>
           }
@@ -59,10 +59,6 @@ const PlanittCard: React.FC<PlanittCardProps> = ({
         </Popover>
       </header>
       <section className="stats">
-        <div>
-          <div>Spin</div>
-          <div><img className="w-6 h-6 text-red-200" alt ="Planitt Spin" src={`/assets/icons/${spin}-spin.svg`} /></div>
-        </div>
         <div>
           <div>Scale</div>
           <div>{getScaleDisplayName(scale)}</div>

@@ -57,22 +57,11 @@ const withLayout = (
       console.log('set current Sphere to :>> ', { entryHash: eH, actionHash: id });
       store.set(currentSphereHashesAtom, id)
     }
-    const canVisualize = !!store.get(currentSphereHasCachedNodesAtom);
-
-    const { showToast, hideToast } = useToast();
+    const { hideToast } = useToast();
     
     useEffect(() => {
       hideToast()
-      if (state !== "Vis" || canVisualize) return;
-        showToast("There are no Planitts in this System.", {
-          actionButton: <Button onClick={() => {
-            transition("CreateOrbit", { sphereEh: props?.currentSphereDetails?.eH});
-            hideToast()
-          }}>
-              Create One
-            </Button>
-        })
-    }, [canVisualize])
+    }, [])
     
     const handleDeleteSphere = () => {
       const id = store.get(currentSphereHashesAtom)?.actionHash;

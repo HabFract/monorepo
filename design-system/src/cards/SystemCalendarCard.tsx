@@ -53,10 +53,10 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
             disabled={!hasData}
           />
           <div className="dark:bg-surface-elevated-dark rounded-2xl flex justify-between gap-2 py-2 pl-2 pr-4 mt-4">
-              {rootOrbitOrbitDetails?.scale && <h1 className="root-orbit-label opacity-75">{getIconForPlanetValue(rootOrbitOrbitDetails.scale)({})}</h1> }<h2 className="root-orbit-name">
+              {rootOrbitOrbitDetails?.scale && <h1 className="root-orbit-label opacity-75">{getIconForPlanetValue(rootOrbitOrbitDetails.scale)({})}</h1> }<h2 className="root-orbit-name w-full text-center">
               {hasData
                 ? rootOrbitOrbitDetails.name
-                : "No root orbit data available"}
+                : "No Planitt data for this Space"}
             </h2>
           </div>
         </section>

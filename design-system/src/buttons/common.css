@@ -109,8 +109,18 @@ button.btn.btn-secondary:not(.nohover):hover {
 /* Focus & Active States
 -------------------------------------------------- */
 .focus-styles {
-  @apply outline outline-1 outline-dashed outline-gray-300 dark:outline-gray-100 focus:outline focus:outline-1 focus:outline-dashed focus:outline-gray-300 dark:focus:outline-gray-100 active:outline active:outline-1 active:outline-gray-300 dark:active:outline-gray-100 focus:ring-0 focus:shadow-none  !important;
+  @apply relative
+    focus:ring-0 focus:shadow-none
+    before:content-[''] before:absolute before:inset-0 before:bg-white before:opacity-0
+    focus:before:opacity-10
+    active:before:opacity-10
+    !important;
 }
+.btn.btn-circle-icon:focus:focus::before, .btn.btn-circle-icon:focus:hover:focus::before,
+.btn.btn-circle-icon-lg:focus:focus::before, .btn.btn-circle-icon-lg:focus:hover:focus::before {
+  border-radius: 100%;
+}
+
 .active-styles {
   @apply outline-gray-500 dark:outline-gray-300 active:outline active:outline-1 active:outline-gray-300 dark:active:outline-gray-100  !important;
 }
@@ -127,7 +137,7 @@ button.btn.btn-secondary:not(.nohover):hover {
   @apply rounded-xl;
 }
 
-.list-item-danger button:hover {
+.list-item-danger button, .list-item-danger button:hover {
   @apply text-danger dark:text-danger !important;
 }
 
@@ -166,6 +176,7 @@ button.btn.btn-secondary:not(.nohover):hover {
 .btn.btn-circle-icon-lg {
   @apply text-title dark:text-title-dark w-12 h-12 border-0 rounded-full;
 }
+
 .btn.btn-circle-icon, .btn.btn-circle-icon > div {
   @apply rounded-full;
 }
@@ -204,6 +215,7 @@ button.btn.btn-danger.outlined {
 -------------------------------------------------- */
 .btn.responsive {
   @apply w-full h-auto text-base font-bold tracking-wide rounded-full;
+  min-height: 3rem;
 }
 
 .btn.responsive span[role="img"],
