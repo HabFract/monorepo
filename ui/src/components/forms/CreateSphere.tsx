@@ -111,19 +111,20 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
       }}
     >
       {({ values, errors, touched, isSubmitting, validateForm, submitForm }) => {
+        const handleClick = () => {
+          try {
+            submitForm();
+            Object.values(errors).length == 0 && (submitBtn as any).props.onClick.call(null);
+          } catch (error) {
+            console.log('error :>> ', error);
+          }
+        };
         const SubmitButton = submitBtn ? (
           React.cloneElement(submitBtn as React.ReactElement, {
             loading: (loading || isSubmitting),
             errors,
             touched,
-            onClick: () => {
-              try {
-                submitForm();
-                Object.values(errors).length == 0 && (submitBtn as any).props.onClick.call(null);
-              } catch (error) {
-                console.log('error :>> ', error);
-              }
-            }
+            onClick: handleClick
           })
         ) : (
           <DefaultSubmitBtn
@@ -131,6 +132,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
             editMode={editMode}
             errors={errors}
             touched={touched}
+            onClick={handleClick}
           />
         );
 
