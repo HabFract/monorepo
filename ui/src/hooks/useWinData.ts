@@ -147,7 +147,7 @@ export function useWinData(
         return;
   
       const newData = {
-        ...workingWinDataForOrbit,
+        ...(workingWinDataForOrbit || {}),
         [currentDate.toLocaleString()]: isMoreThenDaily(
           currentOrbitDetails.frequency
         )

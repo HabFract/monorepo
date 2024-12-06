@@ -157,6 +157,7 @@ const Settings: React.FC<{}> = ({}) => {
                 cancelLabel: "Cancel",
               }).then((confirm) => {
                 if (confirm) deleteAllData();
+                transition("Home")
               });
             }}
             variant={"danger responsive outlined"}
