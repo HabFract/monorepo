@@ -215,7 +215,7 @@ button.btn.btn-danger.outlined {
 -------------------------------------------------- */
 .btn.responsive {
   @apply w-full h-auto text-base font-bold tracking-wide rounded-full;
-  min-height: 3rem;
+  min-height: 2.5rem;
 }
 
 .btn.responsive span[role="img"],

@@ -228,8 +228,11 @@ div.handle {
 
 .swipe-up-tab-container .handle {
   padding: 0px 40%;
-  height: 18px;
-  @apply dark:from-surface-dark rounded-t-3xl opacity-50;
+  height: 3rem;
+  margin-left: 2.5rem;
+  margin-right: 2.5rem;
+  width: calc(100% - 5rem);
+  @apply rounded-t-3xl opacity-50;
 }
 
 div.handle span {
