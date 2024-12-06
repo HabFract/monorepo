@@ -35,7 +35,7 @@ export const initialState: StateStore<AppState> = {
 
 export const routes: Routes = {
   Home: <Home />,
-  Settings: <Settings version="" spheres={{} as any} />,
+  Settings: <Settings />,
   PreloadAndCache: <PreloadAndCache />,
   Vis: (() => renderVis(OrbitTree))(),
   Onboarding1: <CreateSphere editMode={false} />,

@@ -7,53 +7,90 @@ import { nodeCache } from "../state/store";
 import { useStateTransition } from "../hooks/useStateTransition";
 import {
   Sphere,
-  SphereConnection,
   useDeleteSphereMutation,
+  useGetSpheresQuery,
 } from "../graphql/generated";
-import { extractEdges, serializeAsyncActions } from "../graphql/utils";
+import { extractEdges } from "../graphql/utils";
 import { sleep } from "./lists/OrbitSubdivisionList";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { ask } from "@tauri-apps/plugin-dialog";
 import { checkForAppUpdates } from "../update";
 import { isSmallScreen } from "./vis/helpers";
+import { DataLoadingQueue } from "./PreloadAllData";
 
-type SettingsProps = {
-  spheres: SphereConnection;
-  version: string;
-};
-
-const Settings: React.FC<SettingsProps> = ({
-  version,
-  spheres,
-}) => {
-  const [_, transition] = useStateTransition(); // Top level state machine and routing
+const Settings: React.FC<{}> = ({}) => {
+  const [_, transition] = useStateTransition();
   const clear = useSetAtom(nodeCache.clear);
-  const [isDisclaimer, setIsDisclaimer] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const {
+    loading: loadingSpheres,
+    error,
+    data: spheresData,
+  } = useGetSpheresQuery();
+  const sphereNodes = spheresData?.spheres?.edges && extractEdges(spheresData.spheres) as Sphere[];
 
   const [
     runDelete,
     { loading: loadingDelete, error: errorDelete, data: dataDelete },
   ] = useDeleteSphereMutation({
-    refetchQueries: ["getSpheres"],
+    refetchQueries: ["getSpheres"]
   });
 
-  function deleteAllData() {
-    serializeAsyncActions<any>([
-      ...(extractEdges(spheres) as Sphere[]).map((sphereNode) => async () => {
-        try {
-          runDelete({ variables: { id: sphereNode.id } });
-          await sleep(500);
-        } catch (error) {
-          console.error(error);
-        }
-      }),
-      async () => Promise.resolve(console.log("Deleted all! :>> ")),
-      async () => {
-        return relaunch();
-      },
-    ]);
-  }
+  const deleteAllData = async () => {
+    try {
+      if(!sphereNodes || sphereNodes.length == 0) return;
+      const deletionQueue = new DataLoadingQueue();
+      setIsDeleting(true);
+      clear()
 
+      // Queue up deletion of each sphere
+      for (const sphere of sphereNodes) {
+        await deletionQueue.enqueue(async () => {
+          console.log(`Deleting sphere: ${sphere.name}`);
+          const result = await runDelete({ 
+            variables: { id: sphere.id }
+          });
+          
+          console.log('Delete mutation result:', {
+            sphere: sphere.name,
+            result,
+            error: errorDelete
+          });
+          
+          await sleep(500);
+        });
+      }
+
+      // Final cleanup task
+      await deletionQueue.enqueue(async () => {
+        console.log('All spheres deleted, cleaning up...');
+        clear();
+        await sleep(500);
+        // Uncomment when ready to re-enable relaunch
+        // await relaunch();
+      });
+
+    } catch (error) {
+      console.error('Error during deletion:', error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Update the delete button to show loading state
+  const handleDeleteClick = async () => {
+    const confirmed = await ask(`Reset data?`, {
+      title: "Confirm Resetting Data",
+      kind: "info",
+      okLabel: "Reset",
+      cancelLabel: "Cancel",
+    });
+    
+    if (confirmed) {
+      await deleteAllData();
+    }
+  };
   return (<>
     <section>
       {!isSmallScreen() && (
