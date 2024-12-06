@@ -48,19 +48,18 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   actions,
 }): ReactNode => {
   const calendarRef = useRef<HTMLDivElement>(null);
-  const [calendarHeight, setCalendarHeight] = useState(0);
   const [wins, setWins] = useState<number | null>(null);
 
   const currentDateWins = useMemo(() => {
     if (!workingWinDataForOrbit || !currentDate) return null;
     const dateString = currentDate.toLocaleString();
     const winData = workingWinDataForOrbit[dateString];
-    setWins(winData == null ? 0 : 
-      Array.isArray(winData) ? winData.filter(Boolean).length : 
-      winData ? 1 : 0);
-    return winData == null ? 0 : 
-           Array.isArray(winData) ? winData.filter(Boolean).length : 
-           winData ? 1 : 0;
+    setWins(winData == null ? 0 :
+      Array.isArray(winData) ? winData.filter(Boolean).length :
+        winData ? 1 : 0);
+    return winData == null ? 0 :
+      Array.isArray(winData) ? winData.filter(Boolean).length :
+        winData ? 1 : 0;
 
   }, [workingWinDataForOrbit, currentDate]);
 
@@ -72,12 +71,6 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   useEffect(() => {
     setWins(currentDateWins);
   }, [currentDateWins, workingWinDataForOrbit]);
-
-  useEffect(() => {
-    if (calendarRef.current) {
-      setCalendarHeight(calendarRef.current.offsetHeight);
-    }
-  }, []);
 
   return (
     <section className="overlay-layout-container">

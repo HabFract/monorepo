@@ -158,38 +158,65 @@ export const calculateCompletionStatusAtom = (
  */
 export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
   return atom((get) => {
+    console.log('Starting calculation for:', orbitEh);
+    
     const orbit = get(getOrbitNodeDetailsFromEhAtom(orbitEh));
-    if (!orbit) return null;
+    console.log('Got orbit details:', {
+      orbitEh,
+      orbit,
+      exists: !!orbit
+    });
+    
+    if (!orbit) {
+      console.warn('No orbit found for:', orbitEh);
+      return null;
+    }
 
-    // Memoize leaf descendants to prevent recalculation
     const leafDescendants = get(getDescendantLeafNodesAtom(orbitEh));
-    if (!leafDescendants) return null;
+    console.log('Got leaf descendants:', {
+      orbitEh,
+      leafDescendants,
+      count: leafDescendants?.length,
+      exists: !!leafDescendants
+    });
+    
+    if (!leafDescendants) {
+      console.warn('No leaf descendants found for:', orbitEh);
+      return null;
+    }
 
     const today = DateTime.now();
     const startOfMonth = today.startOf('month');
     const endOfMonth = today.endOf('month');
     
     const winData = {};
-    
-    // Calculate once for the entire month
     let currentDate = startOfMonth;
+    
+    console.log('Calculating for date range:', {
+      start: startOfMonth.toLocaleString(),
+      end: endOfMonth.toLocaleString()
+    });
+
     while (currentDate <= endOfMonth) {
       const dateString = currentDate.toLocaleString();
-      
-      // Use a stable reference for completion check
+
       const isComplete = leafDescendants.every((leaf) => {
         return get(calculateCompletionStatusAtom(leaf.content, dateString));
       });
 
       if (orbit.frequency > 1) {
-        // For multi-frequency orbits, create an array of the same completion status
-        winData[dateString] = Array(orbit.frequency).fill(isComplete) as FixedLengthArray<boolean, typeof orbit.frequency>;
+        winData[dateString] = Array(orbit.frequency).fill(isComplete);
       } else {
-        // For single-frequency orbits, use the boolean directly
-        (winData as { [key: string]: boolean })[dateString] = isComplete;
+        winData[dateString] = isComplete;
       }
+      
       currentDate = currentDate.plus({ days: 1 });
     }
+
+    console.log('Final calculated win data:', {
+      orbitEh,
+      winData
+    });
 
     return winData;
   });
