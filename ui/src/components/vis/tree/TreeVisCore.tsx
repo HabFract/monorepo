@@ -30,7 +30,7 @@ export const TreeVisCore: React.FC<TreeVisCoreProps> = ({
   return (
     <>
       {!error && json && currentOrbitTree && (
-        <Suspense fallback={<Spinner />}>
+        <Suspense fallback={<></>}>
           <LazyTreeRenderer
             tree={currentOrbitTree}
             render={render}
