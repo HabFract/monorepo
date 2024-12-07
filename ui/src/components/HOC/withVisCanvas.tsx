@@ -43,7 +43,7 @@ import { DEFAULT_MARGINS } from "../vis/constants";
 import { StoreType } from "../../state/types/store";
 import { useWinData } from "../../hooks/useWinData";
 import { DateTime } from "luxon";
-import { calculateCurrentStreakAtom, calculateLongestStreakAtom } from "../../state/win";
+import { calculateCurrentStreakAtom, calculateLongestStreakAtom, setWinDataAtom } from "../../state/win";
 import { useVisContext } from "../../contexts/vis";
 
 /**
@@ -138,16 +138,10 @@ export function withVisCanvas<T extends IVisualization>(
     }, []);
 
     // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
-    const withWinData = useCallback(() => {
-      return useWinData(currentOrbitDetails, currentDate)
-    },
-      [currentOrbitDetails, currentDate]);
-      
-    const { workingWinDataForOrbit, handleUpdateWorkingWins, isLeaf } = useWinData(
+    const { workingWinDataForOrbit, handleUpdateWorkingWins, numberOfLeafOrbitDescendants } = useWinData(
       currentOrbitDetails, 
       currentDate
     );
-    console.log('workingWinDataForOrbit :>> ', workingWinDataForOrbit);
     const skipFlag = !currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit || typeof workingWinDataForOrbit !== 'object';
     const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
       variables: {
@@ -224,6 +218,7 @@ export function withVisCanvas<T extends IVisualization>(
                   orbitFrequency={currentOrbitDetails?.frequency || 1.0}
                   orbitSiblings={orbitSiblings}
                   orbitDescendants={orbitDescendants}
+                  numberOfLeafOrbitDescendants={numberOfLeafOrbitDescendants}
                   isLeafOrbit={!!currentOrbitIsLeaf}
                   currentOrbitDetails={currentOrbitDetails}
                   actions={consolidatedActions}

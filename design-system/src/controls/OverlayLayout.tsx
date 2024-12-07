@@ -28,6 +28,7 @@ export type OverlayLayoutProps = {
   handleUpdateWorkingWins: (newWinCount: number) => void;
   isLeafOrbit: boolean;
   workingWinDataForOrbit: WinData<Frequency.Rationals> | null,
+  numberOfLeafOrbitDescendants: number | null
   currentOrbitDetails: OrbitNodeDetails | null,
   actions: ConsolidatedActions,
 };
@@ -43,6 +44,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
   handlePersistWins,
   handleUpdateWorkingWins,
   workingWinDataForOrbit,
+  numberOfLeafOrbitDescendants,
   isLeafOrbit,
   currentOrbitDetails,
   actions,
@@ -83,7 +85,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
           <>
             <div className="overlay-controls-container">
               <div className="overlay-win-streak-container" onPointerDownCapture={stopPropagation}>
-                <WinCount currentDate={currentDate} handleUpdateWorkingWins={handleUpdateWorkingWins} handleSaveWins={handleSaveWins} currentWins={isLeafOrbit ? wins : -1} orbitFrequency={isLeafOrbit ? orbitFrequency : 0}></WinCount>
+                <WinCount isLeafOrbit={isLeafOrbit} currentDate={currentDate} handleUpdateWorkingWins={handleUpdateWorkingWins} handleSaveWins={handleSaveWins} currentWins={wins} orbitFrequency={isLeafOrbit ? orbitFrequency : numberOfLeafOrbitDescendants}></WinCount>
                 <StreakCount currentStreak={currentStreak} longestStreak={longestStreak} orbitFrequency={orbitFrequency}></StreakCount>
               </div>
             </div>
