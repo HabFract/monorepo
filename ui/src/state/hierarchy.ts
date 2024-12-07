@@ -229,6 +229,7 @@ export const getSphereRootOrbitWinDataAtom = (sphereEh: EntryHashB64) =>
 export const isLeafNodeHashAtom = (nodeId: ActionHashB64) => {
   return atom<boolean>((get) => {
     const state = get(appStateAtom);
+
     const hierarchies = state.hierarchies.byRootOrbitEntryHash;
 
     for (const hierarchyKey in hierarchies) {

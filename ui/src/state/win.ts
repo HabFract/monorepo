@@ -9,6 +9,7 @@ import {
 } from "./orbit";
 import { getDescendantLeafNodesAtom, isLeafNodeHashAtom } from "./hierarchy";
 import { DateTime } from "luxon";
+import { hierarchy } from "d3-hierarchy";
 
 /**
  * Atom for setting an individual WinData point for a specific orbit.
@@ -161,27 +162,47 @@ export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
     console.log('Starting calculation for:', orbitEh);
     
     const orbit = get(getOrbitNodeDetailsFromEhAtom(orbitEh));
-    console.log('Got orbit details:', {
-      orbitEh,
-      orbit,
-      exists: !!orbit
-    });
-    
     if (!orbit) {
       console.warn('No orbit found for:', orbitEh);
       return null;
     }
+    const orbitHash = orbit.id;
+    // Get hierarchy data
+    const hierarchies = get(appStateAtom).hierarchies.byRootOrbitEntryHash;
+    const hierarchyJson = Object.values(hierarchies).find(h => 
+      h.nodeHashes.includes(orbitHash) || h.nodeHashes.includes(orbitEh) 
+    );
+    
+    if (!hierarchyJson) {
+      console.warn('No hierarchy found for:', orbitEh);
+      return null;
+    }
+    // Parse hierarchy and find descendants below this node
+    const tree = hierarchyJson.json && JSON.parse(hierarchyJson.json)?.[0];
+    console.log('tree :>> ', tree);
+    if(!tree) return null
+    const d3Hierarchy = hierarchy(tree);
+    
+    // Find the current node in the hierarchy
+    const currentNode = d3Hierarchy.find(node => node.data.content === orbitEh);
+    if (!currentNode) {
+      console.warn('Current node not found in hierarchy:', orbitEh);
+      return null;
+    }
 
-    const leafDescendants = get(getDescendantLeafNodesAtom(orbitEh));
-    console.log('Got leaf descendants:', {
+    // Get leaf descendants for just this branch
+    const leafDescendants = currentNode.leaves().map(node => ({
+      content: node.data.content
+    }));
+
+    console.log('Got leaf descendants for branch:', {
       orbitEh,
-      leafDescendants,
-      count: leafDescendants?.length,
-      exists: !!leafDescendants
+      leafCount: leafDescendants.length,
+      descendants: leafDescendants
     });
     
-    if (!leafDescendants) {
-      console.warn('No leaf descendants found for:', orbitEh);
+    if (!leafDescendants.length) {
+      console.warn('No leaf descendants found for branch:', orbitEh);
       return null;
     }
 
@@ -191,33 +212,22 @@ export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
     
     const winData = {};
     let currentDate = startOfMonth;
-    
-    console.log('Calculating for date range:', {
-      start: startOfMonth.toLocaleString(),
-      end: endOfMonth.toLocaleString()
-    });
 
     while (currentDate <= endOfMonth) {
       const dateString = currentDate.toLocaleString();
-
-      const isComplete = leafDescendants.every((leaf) => {
-        return get(calculateCompletionStatusAtom(leaf.content, dateString));
-      });
-
-      if (orbit.frequency > 1) {
-        winData[dateString] = Array(orbit.frequency).fill(isComplete);
-      } else {
-        winData[dateString] = isComplete;
-      }
       
+      // Count completed leaf nodes for this date
+      const completedLeafNodes = leafDescendants.filter(leaf => 
+        get(getWinCompletionForOrbitForDayAtom(leaf.content, dateString))
+      );
+      
+      // Create array with true values for completed nodes
+      const completionArray = Array(leafDescendants.length).fill(false)
+        .map((_, index) => index < completedLeafNodes.length);
+
+      winData[dateString] = completionArray;
       currentDate = currentDate.plus({ days: 1 });
     }
-
-    console.log('Final calculated win data:', {
-      orbitEh,
-      winData
-    });
-
     return winData;
   });
 };

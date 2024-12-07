@@ -45,7 +45,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const [usedCachedHierarchy, setUsedCachedHierarchy] = useState<boolean>(false);
   const [canTriggerNextTreeVisRender, setCanTriggerNextTreeVisRender] = useState<boolean>(false);
   const setNewCurrentOrbitId = useSetAtom(currentOrbitIdAtom);
-  const setHierarchyInAppState = useSetAtom(updateHierarchyAtom);
 
   // ## -- Data fetching hooks -- ##
   const [getHierarchy, { data, loading: dataLoading, error }] = useGetOrbitHierarchyLazyQuery({
@@ -96,7 +95,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       }, 350);
       setCurrentOrbitTree(newTree);
       newTree._json = json
-      setHierarchyInAppState(newTree as any);
     }
   };
 

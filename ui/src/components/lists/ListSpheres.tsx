@@ -11,10 +11,9 @@ import { useStateTransition } from "../../hooks/useStateTransition";
 import { 
   appStateAtom, 
   appStateChangeAtom, 
+  getOrbitIdFromEh, 
   getOrbitNodeDetailsFromEhAtom, 
-  nodeCache, 
   OrbitNodeDetails, 
-  SphereEntry, 
   store, 
   WinDataPerOrbitNode 
 } from "../../state";
@@ -51,7 +50,7 @@ function ListSpheres() {
     setLoadingStates(prev => ({ ...prev, [sphere.eH]: true }));
 
     try {
-      const state = store.get(appStateAtom);
+      let state = store.get(appStateAtom);
       let sphereEntry = Object.values(state.spheres.byHash).find(
         (s: any) => s?.details?.entryHash === sphere.eH
       );
@@ -110,6 +109,8 @@ function ListSpheres() {
         const rootOrbitEh = parsedTrees[0].content;
 
         // Update sphere entry with root orbit EH
+
+        state = store.get(appStateAtom);
         const updatedState = {
           ...store.get(appStateAtom),
           spheres: {
@@ -138,9 +139,10 @@ function ListSpheres() {
             console.warn('Node missing content:', node);
             return;
           }
-          nodeHashes.push(node.data.content);
+          const actionHash = store.get(getOrbitIdFromEh(node.data.content))
+          nodeHashes.push(actionHash);
           if (!node.children || node.children.length === 0) {
-            leafNodeHashes.push(node.data.content);
+            leafNodeHashes.push(actionHash);
           }
         });
 
@@ -156,16 +158,22 @@ function ListSpheres() {
         };
 
         // Update app state with hierarchy
-        store.set(appStateAtom, {
-          ...updatedState,
+        state = store.get(appStateAtom);
+        const updatedState2 = {
+          ...state,
           hierarchies: {
-            ...updatedState.hierarchies,
+            ...state.hierarchies,
             byRootOrbitEntryHash: {
-              ...updatedState.hierarchies.byRootOrbitEntryHash,
-              [rootOrbitEh]: fullHierarchy
+              ...state.hierarchies.byRootOrbitEntryHash,
+              [rootOrbitEh]: {
+                ...state.hierarchies.byRootOrbitEntryHash[rootOrbitEh],  // Preserve any existing data
+                ...fullHierarchy  // Spread new data
+              }
             }
           }
-        });
+        };
+console.log('updatedState2 :>> ', updatedState2);
+        store.set(appStateAtom, updatedState2);
         // Update sphere data
         const winData = store.get(calculateWinDataForNonLeafNodeAtom(rootOrbitEh));
         setSpheresData(prev => ({

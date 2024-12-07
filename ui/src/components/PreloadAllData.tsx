@@ -13,7 +13,6 @@ import { client } from "../graphql/client";
 import { currentSphereHashesAtom } from "../state/sphere";
 import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { useAtom, useSetAtom } from "jotai";
-import { updateAppStateWithOrbit } from "../hooks/gql/utils";
 import { sleep } from "./lists/OrbitSubdivisionList";
 import { Spinner } from "habit-fract-design-system";
 
@@ -79,9 +78,6 @@ export class DataLoadingQueue {
     });
   }
 
-  /**
-   * Process the queue of tasks
-   */
   private async processQueue() {
     if (this.isProcessing) return;
     this.isProcessing = true;
@@ -112,8 +108,9 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   const [_, transition] = useStateTransition();
   const [preloadCompleted, setPreloadCompleted] = useState(false);
   const transitionInitiatedRef = useRef(false);
+  const initialStateRef = useRef<any>(null);
 
-  const [appState, setAppState] = useAtom(appStateAtom);
+  const [__, setAppState] = useAtom(appStateAtom);
   const setNodeCache = useSetAtom(nodeCache.set);
   const setCurentSphere = useSetAtom(currentSphereHashesAtom);
 
@@ -123,30 +120,46 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
     data,
   } = useGetSpheresQuery({
     fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: false,
   });
 
   const sphereNodes = useMemo(() => data ? extractEdges(data.spheres) as Sphere[] : [], [data]);
-
   const dataLoadingQueue = useMemo(() => new DataLoadingQueue(), []);
-
   const fetchDataRef = useRef(false);
-  const prevAppStateRef = useRef(appState);
 
-  /**
-   * Fetch data for all spheres
-   */
+  const verifyAndRestoreState = useCallback(() => {
+    if (!initialStateRef.current) return;
+    
+    const currentState = store.get(appStateAtom);
+    const currentOrbitCount = Object.keys(currentState.orbitNodes.byHash).length;
+    const initialOrbitCount = Object.keys(initialStateRef.current.orbitNodes.byHash).length;
+    
+    if (currentOrbitCount < initialOrbitCount) {
+      log('State reset detected, restoring state', {
+        currentCount: currentOrbitCount,
+        initialCount: initialOrbitCount
+      });
+      store.set(appStateAtom, initialStateRef.current);
+      return true;
+    }
+    return false;
+  }, []);
+
   const fetchData = useCallback(
     async () => {
       if (fetchDataRef.current) return;
       fetchDataRef.current = true;
 
       log('fetchData started', { sphereNodes });
+      
+      // Save initial state after first sphere is processed
+      const saveInitialState = (state: any) => {
+        if (!initialStateRef.current) {
+          initialStateRef.current = JSON.parse(JSON.stringify(state));
+          log('Initial state saved', initialStateRef.current);
+        }
+      };
 
-      if (sphereNodes.length === 0) {
-        log('No spheres to fetch data for');
-        setPreloadCompleted(true);
-        return;
-      }
       try {
         for (const { id, eH, name } of sphereNodes) {
           await dataLoadingQueue.enqueue(async () => {
@@ -160,7 +173,6 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
             }));
 
             if (data && data?.data?.orbits) {
-              log(`Received orbits data for sphere: ${name}`, data.data.orbits);
               const orbits = extractEdges(data.data.orbits) as Orbit[];
               const indexedOrbitNodeDetails = Object.entries(
                 orbits.map(mapToCacheObject),
@@ -175,46 +187,73 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                 childEh: value?.childEh,
                 parentEh: value?.parentEh,
               }));
+
               setNodeCache(
                 id,
                 Object.fromEntries(indexedOrbitNodeDetails),
               );
               
               const prevState = store.get(appStateAtom);
-              log(`Updating state for sphere: ${name}`, { prevState });
               let updatedState = { ...prevState };
-              orbitHashes.sort((hashesA, hashesB) => {
-                return +((!!hashesB?.parentEh)) - (+(!!hashesA?.parentEh))
-              }).forEach(orbitHashes => {
-                updatedState = updateAppStateWithOrbit(updatedState, orbitHashes, true);
+              
+              // Create a map of all orbit nodes
+              const orbitNodesMap = { ...prevState.orbitNodes.byHash };
+              
+              // Update the map with new orbits
+              orbitHashes.forEach(orbitHash => {
+                orbitNodesMap[orbitHash.id] = {
+                  id: orbitHash.id,
+                  eH: orbitHash.eH,
+                  sphereHash: orbitHash.sphereHash,
+                  childEh: orbitHash.childEh,
+                  parentEh: orbitHash.parentEh,
+                };
               });
 
-              updatedState.spheres = {
-                ...updatedState.spheres,
-                currentSphereHash: id,
-                byHash: {
-                  ...updatedState.spheres.byHash,
-                  [id]: {
-                    ...updatedState.spheres.byHash[id],
-                    details: {
-                      ...updatedState.spheres.byHash[id]?.details,
-                      entryHash: eH,
-                      name: name
-                    },
-                    hierarchyRootOrbitEntryHashes: orbitHashes
-                      .filter(hashes => typeof hashes.parentEh == 'undefined')
-                      .reduce((acc, hashes) => {
-                        !acc.includes(hashes.eH) && acc.push(hashes.eH);
-                        return acc
-                      }, [] as any),
-                  },
+              // Update state with preserved orbit nodes
+              updatedState = {
+                ...updatedState,
+                orbitNodes: {
+                  ...updatedState.orbitNodes,
+                  byHash: orbitNodesMap,
+                  currentOrbitHash: orbitHashes[0]?.eH || updatedState.orbitNodes.currentOrbitHash,
                 },
+                spheres: {
+                  ...updatedState.spheres,
+                  currentSphereHash: id,
+                  byHash: {
+                    ...updatedState.spheres.byHash,
+                    [id]: {
+                      ...updatedState.spheres.byHash[id],
+                      details: {
+                        ...updatedState.spheres.byHash[id]?.details,
+                        entryHash: eH,
+                        name: name
+                      },
+                      hierarchyRootOrbitEntryHashes: orbitHashes
+                        .filter(hashes => typeof hashes.parentEh == 'undefined')
+                        .reduce((acc, hashes) => {
+                          !acc.includes(hashes.eH) && acc.push(hashes.eH);
+                          return acc
+                        }, [] as any),
+                    },
+                  },
+                }
               };
-              log(`Updated state for sphere: ${name}`, { updatedState });
+
+              log(`Updated state for sphere: ${name}`, { 
+                updatedState,
+                orbitNodesCount: Object.keys(updatedState.orbitNodes.byHash).length 
+              });
+              
               setAppState(updatedState);
+              saveInitialState(updatedState);
               
               setCurentSphere(landingSphereId || id);
               log(`Finished processing sphere: ${name}`);
+              
+              // Verify state wasn't reset
+              verifyAndRestoreState();
             }
 
             await sleep(250);
@@ -222,13 +261,18 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
         }
 
         await dataLoadingQueue.enqueue(async () => {
-          log('Before final sleep');
-          await sleep(500);
-          log('After final sleep, before setting preloadCompleted');
+          log('Final task - Starting');
+          
+          // Verify state one last time before completing
+          verifyAndRestoreState();
+          
           const finalState = store.get(appStateAtom);
-          log('Final state before setting preloadCompleted:', finalState);
+          log('Final state before completing:', {
+            orbitNodesCount: Object.keys(finalState.orbitNodes.byHash).length,
+            state: finalState
+          });
+          
           setPreloadCompleted(true);
-          log('After setting preloadCompleted');
         });
       } catch (error) {
         console.error("Error in fetchData:", error);
@@ -237,71 +281,50 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
         fetchDataRef.current = false;
       }
     },
-    [sphereNodes, dataLoadingQueue, setAppState, setNodeCache, setCurentSphere, landingSphereEh, landingSphereId],
+    [sphereNodes, dataLoadingQueue, setAppState, setNodeCache, setCurentSphere, landingSphereId, verifyAndRestoreState],
   );
 
   useEffect(() => {
-    log('Data:', data);
-    log('Sphere nodes:', sphereNodes);
-    if (loadingSpheres) {
-      log('Loading spheres...');
-      return;
-    }
+    log('[Effect 1 - Data Loading]', {
+      loading: loadingSpheres,
+      error,
+      data,
+      fetchDataRef: fetchDataRef.current
+    });
+    
+    if (loadingSpheres) return;
     if (error) {
       console.error('Error loading spheres:', error);
       setPreloadCompleted(true);
       return;
     }
     if (!data || sphereNodes.length === 0) {
-      log('No spheres available');
       setPreloadCompleted(true);
       return;
     }
     if (!fetchDataRef.current) {
-      log('Starting fetchData');
       fetchData();
     }
   }, [data, sphereNodes, loadingSpheres, error, fetchData]);
 
   useEffect(() => {
-    log('useEffect triggered', { preloadCompleted, transitionInitiatedRef: transitionInitiatedRef.current });
+    log('[Effect 2 - Preload Complete]', {
+      preloadCompleted,
+      transitionInitiated: transitionInitiatedRef.current
+    });
+    
     if (!preloadCompleted || transitionInitiatedRef.current) return;
-    log('preloadCompleted :>> ', preloadCompleted);
 
     if (onPreloadComplete) {
-      log('Calling onPreloadComplete');
       onPreloadComplete();
     } else {
-      log('Routing to landing page');
       transitionInitiatedRef.current = true;
       dataLoadingQueue.enqueue(async () => {
-        log('Before transitioning');
-        const finalState = store.get(appStateAtom);
-        log('Final state before transition:', finalState);
-        log('Transitioning to:', landingPage || "Vis");
+        verifyAndRestoreState();
         transition(landingPage || "Vis", { currentSphereDetails: sphereNodes[0] || undefined });
-        log('After transitioning');
       });
     }
-  }, [preloadCompleted, dataLoadingQueue, transition, landingPage, sphereNodes, onPreloadComplete]);
-
-  useEffect(() => {
-    const currentAppState = store.get(appStateAtom);
-    log('AppState changed:', { 
-      prev: prevAppStateRef.current, 
-      current: currentAppState 
-    });
-    prevAppStateRef.current = currentAppState;
-  }, [appState]);
-
-  useEffect(() => {
-    const unsubscribe = store.sub(appStateAtom, () => {
-      const currentState = store.get(appStateAtom);
-      log('AppState changed outside component:', currentState);
-    });
-
-    return () => unsubscribe();
-  }, []);
+  }, [preloadCompleted, dataLoadingQueue, transition, landingPage, sphereNodes, onPreloadComplete, verifyAndRestoreState]);
 
   if (loadingSpheres) {
     return <Spinner aria-label="Loading spheres!" />;
@@ -318,10 +341,4 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   return <Spinner aria-label="Loading!" />;
 };
 
-export default React.memo(PreloadAllData, (prevProps, nextProps) => {
-  log('PreloadAllData memo check', { prevProps, nextProps });
-  return prevProps.landingSphereEh === nextProps.landingSphereEh &&
-    prevProps.landingSphereId === nextProps.landingSphereId &&
-    prevProps.landingPage === nextProps.landingPage &&
-    prevProps.onPreloadComplete === nextProps.onPreloadComplete;
-});
+export default React.memo(PreloadAllData);

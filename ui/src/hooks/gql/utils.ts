@@ -111,29 +111,6 @@ export const updateAppStateWithOrbit = (
           ] = orbitDetails.eH;
         }
       }
-
-      // Update the byRootOrbitEntryHash dictionary
-      const newHierarchy: Hierarchy = {
-        rootNode: orbitDetails.id,
-        json: "",
-        bounds: {
-          minBreadth: 0,
-          maxBreadth: 0,
-          minDepth: 0,
-          maxDepth: 0,
-        },
-        indices: { x: 0, y: 0 },
-        currentNode: orbitDetails.id,
-        nodeHashes: [orbitDetails.id],
-        leafNodeHashes: [],
-      };
-
-      updatedState.hierarchies.byRootOrbitEntryHash[orbitDetails.eH] = newHierarchy;
-
-      // Remove old hierarchy if it exists and is different from the new one
-      if (oldOrbitId && oldOrbitId !== orbitDetails.eH) {
-        delete updatedState.hierarchies.byRootOrbitEntryHash[oldOrbitId];
-      }
     }
   } else {
     // If this is not a root orbit, ensure it's not in the byRootOrbitEntryHash
