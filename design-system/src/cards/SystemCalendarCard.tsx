@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import "./common.css";
 import "../buttons/common.css";
-import { Frequency, Orbit, Sphere } from "../generated-types";
+import { Sphere } from "../generated-types";
 import { Button, Calendar, getIconForPlanetValue, getIconSvg, Spinner } from "..";
 import { DateTime } from "luxon";
 import { ListGroup, Popover } from "flowbite-react";
 import { darkThemeListGroup } from "../darkTheme";
-import { OrbitNodeDetails, WinDataPerOrbitNode } from "@ui/src/state";
+import { Frequency, OrbitNodeDetails, WinDataPerOrbitNode } from "@ui/src/state";
 
 export interface SystemCalendarProps {
   sphere: Sphere;
   loading: boolean;
-  rootOrbitWinData: WinDataPerOrbitNode | null;
+  rootOrbitWinData: (WinDataPerOrbitNode & { useRootFrequency?: boolean, leafDescendants?: number }) | null;
   rootOrbitOrbitDetails: OrbitNodeDetails | null;
   runDelete?: () => void;
   setSphereIsCurrent: () => void;
@@ -34,6 +34,9 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
   const { name } = sphere;
   // Local date state for this calendar
   const hasData = rootOrbitWinData && rootOrbitOrbitDetails;
+  const useOriginalFrequency = !!rootOrbitWinData?.useRootFrequency;
+  const calculatedFrequency = (useOriginalFrequency ? rootOrbitOrbitDetails?.frequency : rootOrbitWinData?.leafDescendants as Frequency.Rationals) || Frequency.DAILY_OR_MORE.DAILY;
+
   const [currentDate, setCurrentDate] = useState(DateTime.now());
   return (
     <article className={"card system-calendar-card"}>
@@ -53,7 +56,7 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
           <section>
             <Calendar
               currentDate={currentDate}
-              orbitFrequency={1}
+              orbitFrequency={calculatedFrequency}
               setNewDate={setCurrentDate}
               orbitWins={rootOrbitWinData || {}}
               disabled={!hasData}

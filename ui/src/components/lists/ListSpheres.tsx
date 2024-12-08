@@ -5,8 +5,8 @@ import {
   useGetSpheresQuery,
 } from "../../graphql/generated";
 import "./common.css";
-import { Spinner, SystemCalendarCard } from "habit-fract-design-system";
-import { extractEdges } from "../../graphql/utils";
+import { Spinner, SystemCalendarCard, toYearDotMonth } from "habit-fract-design-system";
+import { extractEdges, fetchWinDataForOrbit } from "../../graphql/utils";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import { 
   appStateAtom, 
@@ -22,21 +22,22 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AppMachine } from "../../main";
 import { calculateWinDataForNonLeafNodeAtom } from "../../state/win";
 import { DataLoadingQueue } from "../PreloadAllData";
-import { sleep } from "./OrbitSubdivisionList";
 import { byStartTime, parseAndSortTrees } from "../vis/helpers";
 import { hierarchy } from "d3-hierarchy";
 import { VisCoverage } from "../vis/types";
-import { determineVisCoverage, generateQueryParams } from "../vis/tree-helpers";
+import { generateQueryParams } from "../vis/tree-helpers";
+import { DateTime } from "luxon";
 
 function ListSpheres() {
-  const [_state, transition] = useStateTransition();
+  const [_state, transition, params, client] = useStateTransition();
+
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
   const loadingInitiatedRef = useRef(false);
   const dataLoadingQueue = useMemo(() => new DataLoadingQueue(), []);
 
   const { loading, error, data } = useGetSpheresQuery();
   const [getHierarchy] = useGetOrbitHierarchyLazyQuery({
-    fetchPolicy: "cache-first",
+    fetchPolicy: "network-only",
   });
 
   // Sphere data state
@@ -45,6 +46,18 @@ function ListSpheres() {
     rootOrbitOrbitDetails: OrbitNodeDetails | null,
     rootOrbitWinData: WinDataPerOrbitNode | null
   }>>({});
+
+  // Debug effect to track state updates
+  useEffect(() => {
+    const state = store.get(appStateAtom);
+    console.log('state.spheres :>> ', state.spheres);
+    console.log("Current app state:", {
+      spheresCount: Object.keys(state.spheres.byHash).length,
+      hierarchiesCount: Object.keys(state.hierarchies.byRootOrbitEntryHash).length,
+      hierarchyData: state.hierarchies.byRootOrbitEntryHash,
+      sphereData: state.spheres.byHash
+    });
+  }, [spheres]);
 
   const loadSphereHierarchyData = useCallback(async (sphere: Sphere) => {
     setLoadingStates(prev => ({ ...prev, [sphere.eH]: true }));
@@ -55,7 +68,6 @@ function ListSpheres() {
         (s: any) => s?.details?.entryHash === sphere.eH
       );
 
-      // If sphere entry doesn't exist, create it
       if (!sphereEntry) {
         console.log('Creating sphere entry for:', sphere.eH);
         
@@ -71,7 +83,7 @@ function ListSpheres() {
                   actionHash: sphere.id,
                   name: sphere.name
                 },
-                hierarchyRootOrbitEntryHashes: [] // Start with empty array
+                hierarchyRootOrbitEntryHashes: []
               }
             }
           }
@@ -80,7 +92,6 @@ function ListSpheres() {
         sphereEntry = newState.spheres.byHash[sphere.id];
       }
 
-      // Fetch hierarchy data
       const visCoverage = VisCoverage.CompleteSphere;
       const getQueryParams = generateQueryParams(visCoverage, sphere.eH);
       const queryParams = getQueryParams(0);
@@ -91,7 +102,7 @@ function ListSpheres() {
       }
 
       const { data: hierarchyData } = await getHierarchy({ 
-        variables: { params: queryParams } 
+        variables: { params: queryParams }
       });
 
       if (hierarchyData?.getOrbitHierarchy) {
@@ -102,80 +113,120 @@ function ListSpheres() {
         }
 
         const parsedTrees = parseAndSortTrees(trees);
-        const json = JSON.stringify(parsedTrees[0]); // Use first tree
+        const json = JSON.stringify(parsedTrees[0]);
         const d3Hierarchy = hierarchy(JSON.parse(json)).sort(byStartTime);
-
-        // Get root orbit EH from the first tree
         const rootOrbitEh = parsedTrees[0].content;
 
-        // Update sphere entry with root orbit EH
-
-        state = store.get(appStateAtom);
-        const updatedState = {
-          ...store.get(appStateAtom),
-          spheres: {
-            ...state.spheres,
-            byHash: {
-              ...state.spheres.byHash,
-              [sphere.id]: {
-                ...state.spheres.byHash[sphere.id], // Preserve existing sphere data
-                details: {
-                  entryHash: sphere.eH,
-                  name: sphere.name
-                },
-                hierarchyRootOrbitEntryHashes: [rootOrbitEh]
+        // Update all state atomically
+        await Promise.all([
+          // Update sphere entry
+          new Promise<void>(resolve => {
+            const updatedState = {
+              ...store.get(appStateAtom),
+              spheres: {
+                ...state.spheres,
+                byHash: {
+                  ...state.spheres.byHash,
+                  [sphere.id]: {
+                    ...state.spheres.byHash[sphere.id],
+                    details: {
+                      entryHash: sphere.eH,
+                      name: sphere.name
+                    },
+                    hierarchyRootOrbitEntryHashes: [rootOrbitEh]
+                  }
+                }
               }
-            }
-          }
-        };
-        store.set(appStateAtom, updatedState);
+            };
+            store.set(appStateAtom, updatedState);
+            resolve();
+          }),
 
-        // Extract node hashes
-        const nodeHashes: string[] = [];
-        const leafNodeHashes: string[] = [];
+          // Process nodes and load win data
+          new Promise<void>(async resolve => {
+            const nodeHashes: string[] = [];
+            const leafNodeHashes: string[] = [];
+            const winDataPromises: Promise<void>[] = [];
+
+            d3Hierarchy.each(node => {
+              if (!node.data?.content) {
+                console.warn('Node missing content:', node);
+                return;
+              }
+              const actionHash = store.get(getOrbitIdFromEh(node.data.content));
+              nodeHashes.push(actionHash);
+              
+              if (node.data.children && node.data.children.length === 0) {
+                console.log('actionHash is leaf node:', actionHash);
+                leafNodeHashes.push(actionHash);
+
+                const today = DateTime.now();
+                winDataPromises.push(
+                  fetchWinDataForOrbit(client, node.data.content, today).then(winData => {
+                    if (winData) {
+                      const state = store.get(appStateAtom);
+                      store.set(appStateAtom, {
+                        ...state,
+                        wins: {
+                          ...state.wins,
+                          [actionHash]: winData
+                        }
+                      });
+                    }
+                  })
+                );
+              }
+            });
+
+            await Promise.all(winDataPromises);
+            resolve();
+          }),
+
+          // Update hierarchy data
+          new Promise<void>(resolve => {
+            const state = store.get(appStateAtom);
+            const fullHierarchy = {
+              rootNode: rootOrbitEh,
+              json: JSON.stringify(parsedTrees),
+              nodeHashes: d3Hierarchy.descendants().map(n => store.get(getOrbitIdFromEh(n.data.content))),
+              leafNodeHashes: d3Hierarchy.leaves().map(n => store.get(getOrbitIdFromEh(n.data.content))),
+              bounds: undefined,
+              indices: { x: 0, y: 0 },
+              currentNode: rootOrbitEh
+            };
+
+            const updatedState = {
+              ...state,
+              hierarchies: {
+                ...state.hierarchies,
+                byRootOrbitEntryHash: {
+                  ...state.hierarchies.byRootOrbitEntryHash,
+                  [rootOrbitEh]: fullHierarchy
+                }
+              }
+            };
+            store.set(appStateAtom, updatedState);
+            resolve();
+          })
+        ]);
+
+        // Verify hierarchy data was properly loaded
+        const finalState = store.get(appStateAtom);
+        const hierarchyLoaded = finalState.hierarchies.byRootOrbitEntryHash[rootOrbitEh]?.json;
         
-        d3Hierarchy.each(node => {
-          if (!node.data?.content) {
-            console.warn('Node missing content:', node);
-            return;
-          }
-          const actionHash = store.get(getOrbitIdFromEh(node.data.content))
-          nodeHashes.push(actionHash);
-          if (!node.children || node.children.length === 0) {
-            leafNodeHashes.push(actionHash);
-          }
-        });
+        if (!hierarchyLoaded) {
+          throw new Error(`Failed to load hierarchy data for sphere ${sphere.eH}`);
+        }
 
-        // Create hierarchy object
-        const fullHierarchy = {
-          rootNode: rootOrbitEh,
-          json: JSON.stringify(parsedTrees),
-          nodeHashes,
-          leafNodeHashes,
-          bounds: undefined,
-          indices: { x: 0, y: 0 },
-          currentNode: rootOrbitEh
-        };
-
-        // Update app state with hierarchy
-        state = store.get(appStateAtom);
-        const updatedState2 = {
-          ...state,
-          hierarchies: {
-            ...state.hierarchies,
-            byRootOrbitEntryHash: {
-              ...state.hierarchies.byRootOrbitEntryHash,
-              [rootOrbitEh]: {
-                ...state.hierarchies.byRootOrbitEntryHash[rootOrbitEh],  // Preserve any existing data
-                ...fullHierarchy  // Spread new data
-              }
-            }
-          }
-        };
-console.log('updatedState2 :>> ', updatedState2);
-        store.set(appStateAtom, updatedState2);
-        // Update sphere data
         const winData = store.get(calculateWinDataForNonLeafNodeAtom(rootOrbitEh));
+        if(d3Hierarchy.height == 0) {
+          console.log("Root is only child, don't calculate cumulative completion")
+          winData.useRootFrequency = true; // Pass flag for outlier case were there is only one node and we don't calculate accumulated completion
+        } else {
+          winData.leafDescendants = d3Hierarchy.leaves().length; // Pass number of leaf descendants to use instead
+        }
+        console.log('winData?.leafDescendants :>> ', winData?.leafDescendants);
+        // Update sphere data
         setSpheresData(prev => ({
           ...prev,
           [sphere.eH]: {
@@ -189,23 +240,37 @@ console.log('updatedState2 :>> ', updatedState2);
     } finally {
       setLoadingStates(prev => ({ ...prev, [sphere.eH]: false }));
     }
-  }, [getHierarchy]);
+  }, [getHierarchy, client]);
 
-  // Queue up loading of hierarchy data for each sphere
   useEffect(() => {
     if (!spheres.length || loadingInitiatedRef.current) return;
 
     loadingInitiatedRef.current = true;
-    spheres.forEach(sphere => {
-      dataLoadingQueue.enqueue(async () => {
+    
+    const processQueue = async () => {
+      for (const sphere of spheres) {
         await loadSphereHierarchyData(sphere);
-      });
+        
+        // Verify data was loaded correctly
+        const state = store.get(appStateAtom);
+        const sphereEntry = state.spheres.byHash[sphere.id];
+        const rootOrbitEh = sphereEntry?.hierarchyRootOrbitEntryHashes?.[0];
+        
+        if (!rootOrbitEh || !state.hierarchies.byRootOrbitEntryHash[rootOrbitEh]) {
+          console.error(`Failed to verify data loading for sphere ${sphere.eH}`);
+          continue;
+        }
+      }
+    };
+
+    processQueue().finally(() => {
+      loadingInitiatedRef.current = false;
     });
 
     return () => {
       loadingInitiatedRef.current = false;
     };
-  }, [spheres, loadSphereHierarchyData, dataLoadingQueue]);
+  }, [spheres, loadSphereHierarchyData]);
 
   const routeToCreatePlanitt = (sphereEh: EntryHashB64) => {
     transition("CreateOrbit", { sphereEh });
