@@ -38,6 +38,7 @@ import { OrbitControls, OrbitLabel } from "habit-fract-design-system";
 import { currentDayAtom } from "../../../state";
 import { AppMachine } from "../../../main";
 import { debounce } from "../helpers";
+import memoizeOne from "memoize-one";
 
 /**
  * Base class for creating D3 hierarchical visualizations.
@@ -170,33 +171,57 @@ export abstract class BaseVisualization implements IVisualization {
     this.eventHandlers = this.initializeEventHandlers();
   }
 
-  bindEventHandlers(selection) {
-    selection.on("click", (e, d) => {
-      store.set(currentOrbitIdAtom, d.data.content);
-      this.eventHandlers.handleNodeClick!.call(this, e, d);
-      this.eventHandlers.handleNodeZoom.call(this, e, d);
-    });
+  bindEventHandlers() {
+      /* Create memoized handlers */
+      const memoizedHandleClick = memoizeOne((e, d) => {
+        store.set(currentOrbitIdAtom, d.data.content);
+        this.eventHandlers.handleNodeClick!.call(this, e, d);
+      });
 
-    const debouncedZoom = debounce((nodeId) => Promise.resolve(this.eventHandlers.memoizedhandleNodeZoom.call(this, nodeId)), 1000)
-    const subOrbitId = store.sub(currentOrbitIdAtom, () => {
-      if (AppMachine.state.currentState !== "Vis") return;
-      const newId = store.get(currentOrbitDetailsAtom)?.eH;
-      (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
+      const debouncedZoom = debounce((nodeId) =>
+        Promise.resolve(this.eventHandlers.memoizedhandleNodeZoom.call(this, nodeId))
+        , 1000);
 
-      setTimeout(() => {
+      const handleOrbitIdChange = memoizeOne((newId) => {
+        console.log('newId :>> ', newId);
+        if (AppMachine.state.currentState !== "Vis") return;
+        this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
         debouncedZoom(newId);
-      }, 100); 
-    })
-    const subCurrentDay = store.sub(currentDayAtom, () => {
-      if (AppMachine.state.currentState !== "Vis") return;
-      (this.eventHandlers as any).handleNodeClick.call(this, {} as any, {} as any);
-    })
-    this._subscriptions.push(subOrbitId);
-    this._subscriptions.push(subCurrentDay);
+      });
+
+      const handleNodeEvent = (event: Event) => {
+        const target = event.target as HTMLElement;
+        const nodeGroup = target.closest('.the-node');
+        if (!nodeGroup) return;
+
+        const d = (nodeGroup as any).__data__;
+        if (event.type === 'click') {
+          memoizedHandleClick(event, d);
+        }
+      };
+
+      /* Bind to parent node group */
+      const nodeContainer = this._canvas!.select('g.nodes');
+      nodeContainer.on('click', handleNodeEvent);
+
+      const handleCurrentDayChange = memoizeOne(() => {
+        if (AppMachine.state.currentState !== "Vis") return;
+        this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
+      });
+
+      const subOrbitId = store.sub(currentOrbitIdAtom, () => {
+        const newId = store.get(currentOrbitDetailsAtom)?.eH;
+        handleOrbitIdChange(newId);
+      });
+      const subCurrentDay = store.sub(currentDayAtom, handleCurrentDayChange);
+      this._subscriptions.push(subOrbitId, subCurrentDay);
   }
 
   unbindEventHandlers() {
+    console.log('unbound :>> ');
     this._enteringNodes?.on(".", null);
+    this._subscriptions.forEach((unsub: any) => unsub());
+    this._subscriptions = [];
   }
 
 
@@ -313,6 +338,7 @@ export abstract class BaseVisualization implements IVisualization {
       this.setupLayout();
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
+      this.bindEventHandlers();
       this.setNodeAndLabelGroups();
 
       this.appendNodeVectors();

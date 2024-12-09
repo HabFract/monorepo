@@ -496,7 +496,6 @@ export class TreeVisualization extends BaseVisualization {
           ? `translate(${d.y},${d.x})`
           : `translate(${d.x},${d.y})`;
       });
-    this._enteringNodes!.call(this.bindEventHandlers.bind(this));
 
     // Links enter selection
     const links = this._gLink!.selectAll("line.link")

@@ -44,7 +44,6 @@ export const withJotaiStore = (component: React.ReactNode) => {
 
 export async function renderPage(page: React.ReactNode, client) {
   root.render(
-    <React.StrictMode>
       <ApolloProvider client={client}>
         <StateMachineContext.Provider value={AppMachine as any}>
           <ModalProvider>
@@ -54,7 +53,6 @@ export async function renderPage(page: React.ReactNode, client) {
           </ModalProvider>
         </StateMachineContext.Provider>
       </ApolloProvider>
-    </React.StrictMode>
   );
 }
 const Main = () => {
@@ -66,7 +64,5 @@ const Main = () => {
 };
 
 root.render(
-  <React.StrictMode>
     <Main />
-  </React.StrictMode>
 );

@@ -36,6 +36,14 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   
   // ## -- Lazily load bigger d3 deps -- ##
   const { d3Modules, isLoading, error: lazyLoadError } = useD3Dependencies();
+  // Add ref to track initial render
+  const hasInitializedRef = useRef(false);
+  const renderCountRef = useRef(0);
+  const renderDebugRef = useRef({
+    lastRenderSource: '',
+    lastRenderTime: Date.now(),
+    renderCount: 0
+  });
 
   // ## -- Component level state -- ##
   const { currentOrbitTree, setCurrentOrbitTree } = useTreeState();
@@ -45,7 +53,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const [usedCachedHierarchy, setUsedCachedHierarchy] = useState<boolean>(false);
   const [canTriggerNextTreeVisRender, setCanTriggerNextTreeVisRender] = useState<boolean>(false);
   const setNewCurrentOrbitId = useSetAtom(currentOrbitIdAtom);
-  const setHierarchyInAppState = useSetAtom(updateHierarchyAtom);
+  // const setHierarchyInAppState = useSetAtom(updateHierarchyAtom);
 
   // ## -- Data fetching hooks -- ##
   const [getHierarchy, { data, loading: dataLoading, error }] = useGetOrbitHierarchyLazyQuery({
@@ -96,7 +104,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       }, 350);
       setCurrentOrbitTree(newTree);
       newTree._json = json
-      setHierarchyInAppState(newTree as any);
+      // setHierarchyInAppState(newTree as any);
 
     }
   };
@@ -161,7 +169,14 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   });
 
   useEffect(() => {
-    instantiateVisObject();
+    // if (hasInitializedRef.current || !json || !d3Modules || error) return;
+    
+    try {
+      instantiateVisObject();
+      hasInitializedRef.current = true;
+    } catch (err) {
+      console.error('Failed to initialize tree:', err);
+    }
   }, [json]);
 
   const fetchAndProcess = useCallback(async () => {
@@ -173,8 +188,9 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   }, []);
 
   useEffect(() => {
-    // console.log('isAppendingNode :>> ', isAppendingNode);
-    fetchAndProcess();
+    if (!isAppendingNode && !data) {
+      fetchAndProcess();
+    }
   }, [data, y, isAppendingNode]);
 
   useEffect(() => {
@@ -185,6 +201,9 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     if (canTriggerNextTreeVisRender && !error && currentOrbitTree && json && d3Modules) {
       // console.log('Triggered a new hierarchy render in focus mode');
 
+      renderCountRef.current += 1;
+      console.log('Render count:', renderCountRef.current);
+  
       const { hierarchy } = d3Modules;
       currentOrbitTree._nextRootData = hierarchy(
         getJsonDerivation(json),

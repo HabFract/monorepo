@@ -123,7 +123,8 @@ export function withVisCanvas<T extends IVisualization>(
     // Store and update date in local component state to ensure re-render with VisControls, Calendar
     const [currentDate, setCurrentDate] = useAtom<DateTime>(currentDayAtom);
     const visRef = useRef<T | null>(null);
-
+    const memoizedOrbitDetails = useMemo(() => currentOrbitDetails, [currentOrbitDetails?.id]);
+    const memoizedDate = useMemo(() => currentDate, [currentDate.toISO()]);
     useEffect(() => {
       return () => {
         if (visRef.current && !isAppendingNode) {
@@ -136,10 +137,13 @@ export function withVisCanvas<T extends IVisualization>(
     }, []);
 
     // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
-    const { workingWinDataForOrbit, handleUpdateWorkingWins, handlePersistWins, numberOfLeafOrbitDescendants } = useWinData(
-      currentOrbitDetails, 
-      currentDate
-    );
+    const {
+      workingWinDataForOrbit,
+      handleUpdateWorkingWins,
+      handlePersistWins,
+      numberOfLeafOrbitDescendants
+    } = useWinData(memoizedOrbitDetails, memoizedDate);
+
     // TODO: handle derived error/loading states
     // const loading = useGetWinRecordForOrbitForMonthQueryLoading || createOrUpdateWinRecordLoading;
     // const error = useGetWinRecordForOrbitForMonthQueryError || createOrUpdateWinRecordError;
@@ -152,8 +156,8 @@ export function withVisCanvas<T extends IVisualization>(
         margin={DEFAULT_MARGINS}
         render={(currentVis: T) => {
           if (!currentOrbitDetails?.eH) return <Spinner />
-          visRef.current = currentVis;
 
+          
           const {
             consolidatedFlags,
             consolidatedActions,
@@ -161,14 +165,50 @@ export function withVisCanvas<T extends IVisualization>(
             orbitSiblings
           } = getActionsAndDataForControls(currentVis, currentOrbitDetails?.eH);
 
-          if (appendedSvg) {
-            // Pass through setState handlers for the current append/prepend Node parent/child entry hashes
-            currentVis.modalOpen = setIsModalOpen;
-            currentVis.modalParentOrbitEh = (val) => { console.log('Set parent id for new orbit in modal :>> ', val); setCurrentParentOrbitEh(val) };
-            currentVis.modalChildOrbitEh = setCurrentChildOrbitEh;
-            // Trigger the Vis object render function ONLY once the SVG is appended to the DOM
-            currentVis?.render();
+          
+          if (!visRef.current) {
+            visRef.current = currentVis;
           }
+          useEffect(() => {
+            if (appendedSvg && visRef.current) {
+              visRef.current.modalOpen = setIsModalOpen;
+              visRef.current.modalParentOrbitEh = (val) => {
+                console.log('Set parent id for new orbit in modal :>> ', val);
+                setCurrentParentOrbitEh(val);
+              };
+              visRef.current.modalChildOrbitEh = setCurrentChildOrbitEh;
+              visRef.current.render();
+            }
+          }, [appendedSvg]);
+
+          const overlayProps = useMemo(() => ({
+            currentDate,
+            setNewDate: setCurrentDate,
+            currentStreak,
+            longestStreak,
+            workingWinDataForOrbit,
+            handleUpdateWorkingWins,
+            handlePersistWins,
+            orbitFrequency: currentOrbitDetails?.frequency || 1.0,
+            orbitSiblings,
+            orbitDescendants,
+            numberOfLeafOrbitDescendants,
+            isLeafOrbit: !!currentOrbitIsLeaf,
+            currentOrbitDetails,
+            actions: consolidatedActions
+          }), [
+            currentDate,
+            currentStreak,
+            longestStreak,
+            workingWinDataForOrbit,
+            orbitSiblings,
+            orbitDescendants,
+            numberOfLeafOrbitDescendants,
+            currentOrbitIsLeaf,
+            currentOrbitDetails?.id,
+            consolidatedActions
+          ]);
+          console.log('Render from withVisCanvas HOC render prop :>> ');
           return (
             <>
               {/* Magnification Icon for indicating when full zoom capability is present */}
@@ -177,23 +217,7 @@ export function withVisCanvas<T extends IVisualization>(
               </svg> */}
               {/* Currently we are only supporting mobile for Navigation/Win Completion */}
               {isSmallScreen()
-                ? <OverlayLayout
-                  currentDate={currentDate}
-                  setNewDate={setCurrentDate}
-                  currentStreak={currentStreak}
-                  longestStreak={longestStreak}
-                  //@ts-ignore-error TODO: resolve type inequalities here
-                  workingWinDataForOrbit={workingWinDataForOrbit}
-                  handleUpdateWorkingWins={handleUpdateWorkingWins}
-                  handlePersistWins={handlePersistWins}
-                  orbitFrequency={currentOrbitDetails?.frequency || 1.0}
-                  orbitSiblings={orbitSiblings}
-                  orbitDescendants={orbitDescendants}
-                  numberOfLeafOrbitDescendants={numberOfLeafOrbitDescendants}
-                  isLeafOrbit={!!currentOrbitIsLeaf}
-                  currentOrbitDetails={currentOrbitDetails}
-                  actions={consolidatedActions}
-                ></OverlayLayout>
+                ? <OverlayLayout {...overlayProps} ></OverlayLayout>
                 : null
               }
 
