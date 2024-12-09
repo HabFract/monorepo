@@ -35,9 +35,7 @@ import {
   ConsolidatedFlags,
   OrbitDescendant,
 } from "../../state/types/hierarchy";
-import { useCreateOrUpdateWinRecord } from "../../hooks/gql/useCreateOrUpdateWinRecord";
 import { useAtom, useAtomValue } from "jotai";
-import { isMoreThenDaily } from "../vis/tree-helpers";
 import { useVisCanvas } from "../../hooks/useVisCanvas";
 import { DEFAULT_MARGINS } from "../vis/constants";
 import { StoreType } from "../../state/types/store";
@@ -138,41 +136,14 @@ export function withVisCanvas<T extends IVisualization>(
     }, []);
 
     // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
-    const { workingWinDataForOrbit, handleUpdateWorkingWins, numberOfLeafOrbitDescendants } = useWinData(
+    const { workingWinDataForOrbit, handleUpdateWorkingWins, handlePersistWins, numberOfLeafOrbitDescendants } = useWinData(
       currentOrbitDetails, 
       currentDate
     );
-    const skipFlag = !currentOrbitDetails?.eH || !currentOrbitDetails?.frequency || !workingWinDataForOrbit || typeof workingWinDataForOrbit !== 'object';
-    const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
-      variables: {
-        winRecord: {
-          orbitEh: currentOrbitDetails?.eH,
-          winData: workingWinDataForOrbit !== null && Object.entries(workingWinDataForOrbit!).map(([date, value]) => ({
-            date,
-            ...(isMoreThenDaily(currentOrbitDetails?.frequency || 0)
-              ? { multiple: value }
-              : { single: value })
-          }))
-        }
-      },
-      skip: skipFlag
-    });
-
     // TODO: handle derived error/loading states
     // const loading = useGetWinRecordForOrbitForMonthQueryLoading || createOrUpdateWinRecordLoading;
     // const error = useGetWinRecordForOrbitForMonthQueryError || createOrUpdateWinRecordError;
 
-    const handlePersistWins = useCallback(() => {
-      if (typeof createOrUpdateWinRecord !== 'function') return
-      if (skipFlag) { console.error("Not enough details to persist."); return }
-
-      console.log("Persisting new win data...");
-      if (currentOrbitIsLeaf) {
-        createOrUpdateWinRecord();
-      } else {
-        console.log("Current orbit is not a leaf. Wins will be calculated from child nodes.");
-      }
-    }, [currentOrbitDetails, workingWinDataForOrbit, createOrUpdateWinRecord]);
 
     return (
       <Component

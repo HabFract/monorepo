@@ -31,7 +31,6 @@ const Calendar: React.FC<CalendarProps> = ({
       setNewDate(currentDate.plus({ days: 1 }));
     }
   };
-
   const renderCalendarDay = (date: DateTime) => {
     const dateString = date.toLocaleString()!;
     const winDataForDay = orbitWins?.[dateString as string];

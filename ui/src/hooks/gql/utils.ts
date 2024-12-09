@@ -111,6 +111,7 @@ export const updateAppStateWithOrbit = (
           ] = orbitDetails.eH;
         }
       }
+      
     }
   } else {
     // If this is not a root orbit, ensure it's not in the byRootOrbitEntryHash

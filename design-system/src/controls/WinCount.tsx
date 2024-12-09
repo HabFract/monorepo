@@ -1,7 +1,6 @@
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import "./common.css";
-import { SAVE_WINS_FREQUENCY } from "@ui/src/components/vis/constants";
 import Progress, { ProgressProps } from "antd/es/progress";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Spinner } from "flowbite-react";
@@ -55,8 +54,8 @@ const WinCount: React.FC<WinCountProps> = ({
   const updateWins = useCallback((newWinCount: number) => {
     setWinCount(newWinCount);
     handleUpdateWorkingWins(newWinCount);
-    setHasUnsavedChanges(true);
-  }, [handleUpdateWorkingWins]);
+    handleSaveWins();
+  }, [handleUpdateWorkingWins, handleSaveWins]);
 
   const incrementWins = () => {
     if (upperLimitMet) return;
@@ -68,18 +67,6 @@ const WinCount: React.FC<WinCountProps> = ({
     updateWins(winCount - 1);
   };
 
-  useEffect(() => {
-    let saveInterval: NodeJS.Timeout;
-    if (hasUnsavedChanges) {
-      saveInterval = setInterval(() => {
-        handleSaveWins();
-        setHasUnsavedChanges(false);
-      }, SAVE_WINS_FREQUENCY);
-    }
-    return () => {
-      if (saveInterval) clearInterval(saveInterval);
-    };
-  }, [hasUnsavedChanges, handleSaveWins]);
   if (currentDateWins === null || !orbitFrequency) {
     return <div className="win-count-container loading"><Spinner aria-label="Loading!" className="menu-spinner" size="xl" /></div>;
   }

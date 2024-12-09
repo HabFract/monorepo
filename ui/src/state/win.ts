@@ -4,6 +4,7 @@ import { ActionHashB64, EntryHashB64 } from "@holochain/client";
 import { FixedLengthArray, OrbitNodeDetails, WinDataPerOrbitNode } from "./types";
 import {
   getOrbitEhFromId,
+  getOrbitIdFromEh,
   getOrbitNodeDetailsFromEhAtom,
   getOrbitNodeDetailsFromIdAtom,
 } from "./orbit";
@@ -83,14 +84,14 @@ export const getWinCompletionForOrbitForDayAtom = (
   return atom((get) => {
     const state = get(appStateAtom);
     let hash = orbitEh;
-    // Failsafe in case action hash was stored instead of entry hash
-    if (!hash.startsWith("uhCE")) {
-      const eH = get(getOrbitEhFromId(orbitEh));
-      if (!eH) return null;
-      hash = eH;
+    // Conver to action hash
+    if (hash.startsWith("uhCE")) {
+      const id = get(getOrbitIdFromEh(orbitEh));
+      if (!id) return null;
+      hash = id;
     }
     const orbit: OrbitNodeDetails | null = get(
-      getOrbitNodeDetailsFromEhAtom(hash)
+      getOrbitNodeDetailsFromEhAtom(orbitEh)
     );
     const winData = state.wins[hash] || {};
 
@@ -98,7 +99,6 @@ export const getWinCompletionForOrbitForDayAtom = (
 
     const winDataForDay = winData[date];
     const orbitFrequency = orbit.frequency;
-
     const isCompleted =
       orbitFrequency > 1
         ? (winDataForDay as Array<boolean>)?.every((val: boolean) => val)
@@ -159,8 +159,6 @@ export const calculateCompletionStatusAtom = (
  */
 export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
   return atom((get) => {
-    console.log('Starting calculation for:', orbitEh);
-    
     const orbit = get(getOrbitNodeDetailsFromEhAtom(orbitEh));
     if (!orbit) {
       console.warn('No orbit found for:', orbitEh);
@@ -179,7 +177,6 @@ export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
     }
     // Parse hierarchy and find descendants below this node
     const tree = hierarchyJson.json && JSON.parse(hierarchyJson.json)?.[0];
-    console.log('tree :>> ', tree);
     if(!tree) return null
     const d3Hierarchy = hierarchy(tree);
     
@@ -191,16 +188,7 @@ export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
     }
 
     // Get leaf descendants for just this branch
-    const leafDescendants = currentNode.leaves().map(node => ({
-      content: node.data.content
-    }));
-
-    console.log('Got leaf descendants for branch:', {
-      orbitEh,
-      leafCount: leafDescendants.length,
-      descendants: leafDescendants
-    });
-    
+    const leafDescendants: EntryHashB64[] = currentNode.leaves().map(node => node.data.content);
     if (!leafDescendants.length) {
       console.warn('No leaf descendants found for branch:', orbitEh);
       return null;
@@ -218,9 +206,8 @@ export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
       
       // Count completed leaf nodes for this date
       const completedLeafNodes = leafDescendants.filter(leaf => 
-        get(getWinCompletionForOrbitForDayAtom(leaf.content, dateString))
+        get(getWinCompletionForOrbitForDayAtom(leaf, dateString))
       );
-      
       // Create array with true values for completed nodes
       const completionArray = Array(leafDescendants.length).fill(false)
         .map((_, index) => index < completedLeafNodes.length);
@@ -231,6 +218,9 @@ export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
     return winData;
   });
 };
+
+
+export const globalWinDataAtom = atom<Record<string, WinDataPerOrbitNode>>({});
 
 /**
  * Gets the appropriate win data for an orbit based on whether it's a leaf or non-leaf node.
@@ -244,21 +234,13 @@ export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
  * win data. For leaf nodes, it returns the actual stored win data. For non-leaf nodes,
  * it returns calculated win data based on the completion status of all descendants.
  */
-export const getWinDataForOrbitAtom = (orbitEh: EntryHashB64) => {
-  return atom((get) => {
-    const orbit = get(getOrbitNodeDetailsFromEhAtom(orbitEh));
-    if (!orbit) return null;
-
-    const isLeaf = get(isLeafNodeHashAtom(orbit.id));
-    
-    if (isLeaf) {
-      const state = get(appStateAtom);
-      return state.wins[orbit.id] || null;
-    } else {
-      return get(calculateWinDataForNonLeafNodeAtom(orbitEh));
-    }
-  });
-};
+export const getWinDataForOrbitAtom = (orbitEh: EntryHashB64) => atom(
+  (get) => get(globalWinDataAtom)[orbitEh] || null,
+  (get, set, newWinData: WinDataPerOrbitNode) => {
+    const currentWinData = get(globalWinDataAtom);
+    set(globalWinDataAtom, { ...currentWinData, [orbitEh]: newWinData });
+  }
+);
 
 /**
  * Calculates the current streak for a specific orbit (either through wins - leaf nodes - or through derived win completion - nonleaf nodes)

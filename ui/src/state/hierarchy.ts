@@ -193,35 +193,6 @@ export const updateHierarchyAtom = atom(
 );
 
 /**
- * Gets the first root orbit entry hash for a given sphere.
- */
-export const getSphereFirstRootOrbitEhAtom = (sphereEh: EntryHashB64) => 
-  atom((get) => {
-    const state = get(appStateAtom);
-    const sphere = Object.values(state.spheres.byHash).find(
-      sphere => sphere?.details?.entryHash === sphereEh
-    );
-    
-    if (!sphere || !sphere.hierarchyRootOrbitEntryHashes.length) return null;
-    return sphere.hierarchyRootOrbitEntryHashes[0];
-  });
-
-
-/**
- * Gets win data for a sphere's root orbit
- */
-export const getSphereRootOrbitWinDataAtom = (sphereEh: EntryHashB64) => 
-  atom((get) => {
-    const rootOrbitEh = get(getSphereFirstRootOrbitEhAtom(sphereEh));
-    if (!rootOrbitEh) return null;
-
-    const orbit = get(getOrbitNodeDetailsFromEhAtom(rootOrbitEh));
-    if (!orbit) return null;
-
-    return get(calculateWinDataForNonLeafNodeAtom(rootOrbitEh));
-  });
-
-/**
  * Atom to check if a Action Hash exists in the leafNodeHashes of any hierarchy in appState.
  * @param nodeId The Action Hash to check
  * @returns An atom that resolves to a boolean indicating existence, or lack of

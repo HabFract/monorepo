@@ -1,33 +1,40 @@
-import React, {
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  WinData,
-  Frequency,
-  OrbitNodeDetails,
-  FixedLengthArray,
-  WinDataPerOrbitNode,
-} from "../state/types";
-import {
-  useGetWinRecordForOrbitForMonthLazyQuery,
-  useGetWinRecordForOrbitForMonthQuery,
-} from "../graphql/generated";
-import { EntryHashB64 } from "@holochain/client";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { OrbitNodeDetails, WinDataPerOrbitNode } from "../state/types";
+import { useGetWinRecordForOrbitForMonthLazyQuery } from "../graphql/generated";
 import { toYearDotMonth } from "habit-fract-design-system";
-import { isMoreThenDaily } from "../components/vis/tree-helpers";
 import { DateTime } from "luxon";
-import { atom, useAtom, useAtomValue, WritableAtom } from "jotai";
+import { Atom, atom, useAtomValue, WritableAtom } from "jotai";
 import {
   calculateWinDataForNonLeafNodeAtom,
   winDataPerOrbitNodeAtom,
 } from "../state/win";
 import { appStateAtom, isLeafNodeHashAtom, store } from "../state";
+import { hierarchy } from "d3-hierarchy";
+import { isMoreThenDaily } from "../components/vis/tree-helpers";
+import { useCreateOrUpdateWinRecord } from "./gql/useCreateOrUpdateWinRecord";
 
+/* Helper to remember which read atom to use for leaf/non leaf nodes' win records */
+export function useMemoizedAtom<T, W = T>(
+  key: string,
+  createAtom: () => WritableAtom<T, [T], void> | Atom<T>,
+  deps: any[]
+): WritableAtom<T, [T], void> | Atom<T> {
+  return useMemo(() => {
+    const cachedAtom = (window as any).__ATOM_CACHE__?.[key];
+    if (cachedAtom) {
+      return cachedAtom;
+    }
+
+    const newAtom = createAtom();
+    if (!(window as any).__ATOM_CACHE__) {
+      (window as any).__ATOM_CACHE__ = {};
+    }
+    (window as any).__ATOM_CACHE__[key] = newAtom;
+    return newAtom;
+  }, deps);
+}
+
+/* Helper to transform fetched winData to a win records */
 export const winDataArrayToWinRecord = (
   acc: any,
   { date, value: val }: any
@@ -44,7 +51,9 @@ export const winDataArrayToWinRecord = (
  * @returns {Object} An object containing:
  *   - `workingWinDataForOrbit`: The current win data for the orbit (actual for leaf nodes, calculated for non-leaf nodes)
  *   - `handleUpdateWorkingWins`: A function to update the win count for the current date (only for leaf nodes)
+ *   - `handlePersistWins`: A function to persist the win record on the source chain
  *   - `isLeaf`: Boolean indicating whether the current orbit is a leaf node
+ *   - `numberOfLeafOrbitDescendants`: Number indicating how many potential leaf node descendants could be completed
  *
  * @example
  * const { workingWinDataForOrbit, handleUpdateWorkingWins, isLeaf } = useWinData(currentOrbitDetails, currentDate);
@@ -61,14 +70,16 @@ export function useWinData(
 ) {
   const currentYearDotMonth = toYearDotMonth(currentDate.toLocaleString());
   const skipFlag = !currentOrbitDetails || !currentOrbitDetails.eH;
-  const orbitHash = currentOrbitDetails?.id as EntryHashB64;
+  const orbitHash = currentOrbitDetails?.id;
 
   // Get the hierarchy state
   const appState = useAtomValue(appStateAtom);
+
   const hierarchyData = useMemo(() => {
     const hierarchy = Object.values(
       appState.hierarchies.byRootOrbitEntryHash
-    ).find((h) => h.nodeHashes.includes(orbitHash));
+    ).find((h) => h.nodeHashes.includes(orbitHash!));
+
     return hierarchy;
   }, [appState.hierarchies.byRootOrbitEntryHash, orbitHash]);
 
@@ -88,39 +99,40 @@ export function useWinData(
     )
   );
 
-  const winDataAtom = useMemo(() => {
-    if (!orbitHash || !isHierarchyLoaded) {
-      console.log("No orbit hash or hierarchy not loaded, returning null atom");
-      return atom<WinDataPerOrbitNode | null>(null);
-    }
+  const numberOfLeafOrbitDescendants: number | null = useMemo(() => {
+    if (!isHierarchyLoaded) return null;
+    const tree = JSON.parse(hierarchyData!.json)[0];
+    const d3Hierarchy = hierarchy(tree);
+    const currentNode = d3Hierarchy.find(
+      (node) => node.data.content == currentOrbitDetails?.eH
+    );
+    if (!currentNode) return null;
 
-    if (!isLeaf) {
-      // Non-leaf nodes always use arrays for partial completion
-      const calculatedAtom = calculateWinDataForNonLeafNodeAtom(
-        currentOrbitDetails?.eH
-      );
-      return calculatedAtom as WritableAtom<
-        WinDataPerOrbitNode | null,
-        [SetStateAction<WinDataPerOrbitNode | null>],
-        void
-      >;
-    }
+    return currentNode.leaves().length;
+  }, [isHierarchyLoaded, currentOrbitDetails, currentDate]);
 
-    // Leaf nodes use regular win data atom
-    return winDataPerOrbitNodeAtom(orbitHash);
-  }, [orbitHash, isLeaf, isHierarchyLoaded, currentOrbitDetails]);
+  // Used to read windata conditionally for leaf/non leaf conditions
+  const winDataAtom = useMemoizedAtom(
+    `winData-${orbitHash}-${isLeaf}`,
+    () => {
+      if (!orbitHash || !isHierarchyLoaded) {
+        return atom<WinDataPerOrbitNode | null>(null);
+      }
+      if (!isLeaf) {
+        return calculateWinDataForNonLeafNodeAtom(currentOrbitDetails?.eH);
+      }
 
-  // Explicitly type the atom and its setter
-  const [workingWinDataForOrbit, setWorkingWinDataForOrbit] = useAtom<
-    WinDataPerOrbitNode | null,
-    [SetStateAction<WinDataPerOrbitNode | null>],
-    void
-  >(winDataAtom as any);
+      return winDataPerOrbitNodeAtom(orbitHash);
+    },
+    [currentOrbitDetails, isLeaf, isHierarchyLoaded]
+  );
+  const workingWinDataForOrbit = store.get(winDataAtom);
 
   // Only fetch and process win records for leaf nodes
   const [getWinRecord, { data, loading, error }] =
     useGetWinRecordForOrbitForMonthLazyQuery();
 
+  /* Handles fetching windata query result for current orbit */
   useEffect(() => {
     if (
       !orbitHash ||
@@ -135,7 +147,7 @@ export function useWinData(
       variables: {
         params: {
           yearDotMonth: currentYearDotMonth,
-          orbitEh: orbitHash,
+          orbitEh: currentOrbitDetails?.eH,
         },
       },
     });
@@ -146,8 +158,10 @@ export function useWinData(
     isHierarchyLoaded,
     workingWinDataForOrbit,
     currentYearDotMonth,
+    getWinRecord,
   ]);
 
+  /* Handles updating appState with graphql query result for orbit's winrecord */
   useEffect(() => {
     if (!currentOrbitDetails || !data?.getWinRecordForOrbitForMonth || !isLeaf)
       return;
@@ -156,9 +170,10 @@ export function useWinData(
       winDataArrayToWinRecord,
       {}
     );
-    setWorkingWinDataForOrbit(newWinData);
-  }, [data, isLeaf, currentOrbitDetails]);
+    store.set(winDataPerOrbitNodeAtom(currentOrbitDetails?.id), newWinData);
+  }, [data, isLeaf, currentOrbitDetails, orbitHash]);
 
+  /* Handles initializing appState for orbits without persisted winrecord */
   useEffect(() => {
     if (
       loading ||
@@ -171,13 +186,12 @@ export function useWinData(
       workingWinDataForOrbit?.[currentDate.toLocaleString()]
     )
       return;
-
-    console.log("Initializing win data for leaf:", {
-      orbitHash,
-      date: currentDate.toLocaleString(),
-      frequency: currentOrbitDetails.frequency,
-      isArray: currentOrbitDetails.frequency > 1,
-    });
+    // console.log("Initializing win data for leaf:", {
+    //   orbitHash,
+    //   date: currentDate.toLocaleString(),
+    //   frequency: currentOrbitDetails.frequency,
+    //   isArray: currentOrbitDetails.frequency > 1,
+    // });
 
     const newData = {
       ...((workingWinDataForOrbit as any) || {}),
@@ -187,21 +201,13 @@ export function useWinData(
           : false, // Boolean for frequency <= 1
     } as WinDataPerOrbitNode;
 
-    setWorkingWinDataForOrbit(newData);
+    store.set(winDataPerOrbitNodeAtom(currentOrbitDetails?.id), newData);
   }, [data, currentDate, loading, error, isLeaf, currentOrbitDetails]);
 
+  /* Callback which can be passed to UI components to trigger updating AppState*/
   const handleUpdateWorkingWins = useCallback(
     (newWinCount: number) => {
       if (!workingWinDataForOrbit || !currentOrbitDetails || !isLeaf) return;
-
-      console.log("Updating wins for leaf:", {
-        orbitHash,
-        date: currentDate.toLocaleString(),
-        newWinCount,
-        frequency: currentOrbitDetails.frequency,
-        isArray: currentOrbitDetails.frequency > 1,
-      });
-
       const updatedData = {
         ...workingWinDataForOrbit,
         [currentDate.toLocaleString()]:
@@ -209,17 +215,67 @@ export function useWinData(
             ? Array(currentOrbitDetails.frequency)
                 .fill(false)
                 .map((_, i) => i < newWinCount)
-            : !!newWinCount, // Boolean for frequency <= 1
+            : !!newWinCount,
       } as WinDataPerOrbitNode;
-
-      setWorkingWinDataForOrbit(updatedData);
+      store.set(winDataPerOrbitNodeAtom(currentOrbitDetails?.id), updatedData);
     },
-    [workingWinDataForOrbit, currentOrbitDetails, currentDate, isLeaf]
+    [
+      workingWinDataForOrbit,
+      currentOrbitDetails,
+      currentDate,
+      isLeaf,
+      orbitHash,
+    ]
   );
+
+  /* Graphql mutation for persisting wins */
+  const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
+    variables: { winRecord: { orbitEh: currentOrbitDetails?.eH } },
+  });
+
+  /* Callback which can be passed to UI components to trigger above mutation */
+  const handlePersistWins = useCallback(() => {
+    if (typeof createOrUpdateWinRecord !== "function") return;
+    if (skipFlag) {
+      console.error("Not enough details to persist.");
+      return;
+    }
+
+    console.log("Persisting new win data...");
+    if (isLeaf) {
+      createOrUpdateWinRecord({
+        variables: {
+          winRecord: {
+            orbitEh: currentOrbitDetails?.eH,
+            winData:
+              store.get(winDataAtom) !== null &&
+              Object.entries(store.get(winDataAtom)!).map(([date, value]) => ({
+                date,
+                ...(isMoreThenDaily(currentOrbitDetails?.frequency || 0)
+                  ? { multiple: value }
+                  : { single: value }),
+              })),
+          },
+        },
+        skip: skipFlag,
+      });
+      // console.log("updated win appstate for orbit :>> ", {
+      //   orbitHash: currentOrbitDetails?.eH,
+      //   date: currentDate,
+      //   winData: store.get(winDataAtom),
+      // });
+    } else {
+      console.log(
+        "Current orbit is not a leaf. Wins will be calculated from child nodes."
+      );
+    }
+  }, [currentOrbitDetails, workingWinDataForOrbit, createOrUpdateWinRecord]);
 
   return {
     workingWinDataForOrbit,
     handleUpdateWorkingWins,
+    handlePersistWins,
     isLeaf,
+    numberOfLeafOrbitDescendants,
   };
 }

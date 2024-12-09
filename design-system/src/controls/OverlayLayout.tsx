@@ -85,7 +85,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
           <>
             <div className="overlay-controls-container">
               <div className="overlay-win-streak-container" onPointerDownCapture={stopPropagation}>
-                <WinCount isLeafOrbit={isLeafOrbit} currentDate={currentDate} handleUpdateWorkingWins={handleUpdateWorkingWins} handleSaveWins={handleSaveWins} currentWins={wins} orbitFrequency={isLeafOrbit ? orbitFrequency : numberOfLeafOrbitDescendants}></WinCount>
+                <WinCount isLeafOrbit={isLeafOrbit} currentDate={currentDate} handleUpdateWorkingWins={handleUpdateWorkingWins} handleSaveWins={handleSaveWins} currentWins={wins} orbitFrequency={(isLeafOrbit ? orbitFrequency : numberOfLeafOrbitDescendants) as any}></WinCount>
                 <StreakCount currentStreak={currentStreak} longestStreak={longestStreak} orbitFrequency={orbitFrequency}></StreakCount>
               </div>
             </div>

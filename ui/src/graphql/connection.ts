@@ -108,7 +108,7 @@ export const openConnection = (token?: AppAuthenticationToken) => {
   });
 };
 
-export const getConnection = debounce(autoConnect, 300);
+export const getConnection = autoConnect;
 
 /**
  * Introspect an active Holochain connection's app cells to determine cell IDs

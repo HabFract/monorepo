@@ -3,15 +3,19 @@ import { useCreateWinRecordMutation as useCreateOrUpdateWinRecordMutationGenerat
 import { winDataArrayToWinRecord } from "../useWinData";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
+import { getOrbitIdFromEh, store } from "../../state";
 
 export const useCreateOrUpdateWinRecord = (opts?) => {
   const orbitEh = opts?.variables?.winRecord?.orbitEh;
   const [_, setWinRecord] = useAtom(
-    useMemo(() => winDataPerOrbitNodeAtom(orbitEh), [orbitEh])
+    useMemo(() => winDataPerOrbitNodeAtom(store.get(getOrbitIdFromEh(orbitEh))), [orbitEh])
   );
 
   const [createOrUpdateWinRecordMutation] =
-    useCreateOrUpdateWinRecordMutationGenerated({
+    useCreateOrUpdateWinRecordMutationGenerated();
+
+  const executeMutation = useCallback((opts) => {
+    createOrUpdateWinRecordMutation({
       ...opts,
       update(_cache, { data }, { variables }) {
         const orbitHash = variables?.winRecord.orbitEh;
@@ -24,13 +28,6 @@ export const useCreateOrUpdateWinRecord = (opts?) => {
         opts?.update && opts.update();
       },
     });
-
-  const executeMutation = useCallback(() => {
-    if (!orbitEh) {
-      console.error("Insufficient variables for hook");
-      return;
-    }
-    createOrUpdateWinRecordMutation();
   }, [orbitEh, createOrUpdateWinRecordMutation]);
 
   return executeMutation;

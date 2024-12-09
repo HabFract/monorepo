@@ -32,6 +32,7 @@ export async function fetchWinDataForOrbit(
 ) {
   const yearDotMonth = toYearDotMonth(date.toLocaleString());
   const { data } = await client.query({
+    fetchPolicy: 'network-only',
     query: GetWinRecordForOrbitForMonthDocument,
     variables: {
       params: {
