@@ -2,7 +2,10 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "./",
-    "outDir": "./dist/"
+    "outDir": "./dist/",
+    "paths": {
+      "@ui/*": ["../ui/*"]
+    },
   },
   "include": ["./src/**/*", "./src/stories", "./colour-palette.ts"],
   "references": [{ "path": "../ui" }],

@@ -1,4 +1,4 @@
-import './buttons/common.css';
+import './components/buttons/common.css';
 import { CustomFlowbiteTheme } from "flowbite-react";
 
 const darkThemeModal: CustomFlowbiteTheme["modal"] = {

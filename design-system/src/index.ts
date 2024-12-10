@@ -11,28 +11,28 @@ import {
   ImageUploadInput,
   Label,
   ErrorLabel,
-} from "./inputs";
-import { ActionCard, PlanittCard, SystemCalendarCard } from "./cards";
-import { SphereVis, OrbitVis } from "./vis";
-import { ProgressBar } from "./onboarding";
-import Modal from "./modals/Modal";
-import FormModal from "./modals/FormModal";
-import { Button } from "./buttons";
-import { HelperText } from "./copy";
+} from "./components/inputs";
+import { ActionCard, PlanittCard, SystemCalendarCard } from "./components/cards";
+import { SphereVis, OrbitVis } from "./components/vis";
+import { ProgressBar } from "./components/onboarding";
+import Modal from "./components/modals/Modal";
+import FormModal from "./components/modals/FormModal";
+import { Button } from "./components/buttons";
+import { HelperText } from "./components/copy";
 import FrequencyIndicator, {
   getFrequencyDisplayNameLong,
-} from "./icons/FrequencyIndicator";
-import HeaderAction from "./header/header-action";
-import { VisControls, ListSortFilter } from "./controls";
-import OrbitControls from "./vis/OrbitControls";
-import OrbitLabel from "./vis/OrbitLabel";
+} from "./components/icons/FrequencyIndicator";
+import HeaderAction from "./components/header/header-action";
+import { VisControls, ListSortFilter } from "./components/controls";
+import OrbitControls from "./components/vis/OrbitControls";
+import OrbitLabel from "./components/vis/OrbitLabel";
 import { default as darkTheme } from "./darkTheme";
-import Spinner from "./Spinner";
+import Spinner from "./components/Spinner";
 
-import "./inputs/common.css";
-import "./onboarding/common.css";
-import { getIconForPlanetValue, getIconSvg } from "./icons/icons";
-export * from "./controls";
+import "./components/inputs/common.css";
+import "./components/onboarding/common.css";
+import { getIconForPlanetValue, getIconSvg } from "./components/icons/icons";
+export * from "./components/controls";
 
 export {
   Spinner,
