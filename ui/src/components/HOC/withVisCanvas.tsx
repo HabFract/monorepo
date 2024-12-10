@@ -205,7 +205,7 @@ export function withVisCanvas<T extends IVisualization>(
             currentOrbitDetails?.id,
             consolidatedActions
           ]);
-          // console.log('Render from withVisCanvas HOC render prop :>> ');
+          // console.log('Render from withVisCanvas HOC render prop :>> ', winDataHook);
           return (
             <>
               {/* Magnification Icon for indicating when full zoom capability is present */}

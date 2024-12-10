@@ -231,7 +231,7 @@ export function useWinData(
   }, [isHierarchyLoaded, hierarchyData, currentOrbitDetails?.eH]);
 
   return {
-    workingWinDataForOrbit: isLeaf ? workingWinDataForOrbit : nonLeafWinData,
+    workingWinDataForOrbit: isLeaf ? workingWinDataForOrbit : {...nonLeafWinData, leafDescendants: numberOfLeafOrbitDescendants, useRootFrequency: false} ,
     handleUpdateWorkingWins: currentOrbitDetails?.id
       ? handleUpdateWorkingWins
       : undefined,

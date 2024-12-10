@@ -26,6 +26,7 @@ import { hierarchy, HierarchyNode } from "d3-hierarchy";
 import { VisCoverage } from "../vis/types";
 import { generateQueryParams } from "../vis/tree-helpers";
 import { DateTime } from "luxon";
+import { useWinData } from "../../hooks/useWinData";
 
 export type nonLeafCompletionCalculationContext = {
   useRootFrequency: boolean; // Tell UI components further down to use the orbit's frequency to determine completion, rather than number of winnable descendant leaves
@@ -280,23 +281,14 @@ function ListSpheres() {
         const isLoading = loadingStates[sphere.eH];
         const sphereData = spheresData[sphere.eH] || {};
 
-        const workingWinDataForOrbit = sphereData.rootOrbitOrbitDetails ? {
-          ...sphereData.winData,
-        } : null;
+        const winDataHook = useWinData(sphereData?.rootOrbitOrbitDetails, DateTime.now());
 
-        // Provide extra context to our calendar component for non-leaf (calculated completion) nodes,
-        // which use the number of winnable descendant leaf nodes instead of their actual frequency
-        const opts = sphereData?.calculateOptions;
-        if(workingWinDataForOrbit !== null) {
-          workingWinDataForOrbit.useRootFrequency = !!workingWinDataForOrbit.useRootFrequency;
-          workingWinDataForOrbit.leafDescendants = opts?.leafDescendants;
-        }
         return (
           <SystemCalendarCard
             key={sphere.id}
             sphere={sphere}
             loading={isLoading}
-            rootOrbitWinData={workingWinDataForOrbit}
+            rootOrbitWinData={winDataHook.workingWinDataForOrbit}
             rootOrbitOrbitDetails={sphereData?.rootOrbitOrbitDetails}
             setSphereIsCurrent={() => handleSetCurrentSphere(sphere.id)}
             handleVisAction={() => routeToVis(sphere)}

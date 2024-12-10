@@ -306,14 +306,15 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                         setFieldValue("scale", scaleDefault);
                       }}
                       options={[
-                        // <option value={"root"}>{"None"}</option>,
-                        ...(childOrbitEh
+                        ...(orbitEdges.length == 0
+                        ? [<option value={"root"}>{"None"}</option>]
+                        : (childOrbitEh
                           ? []
                           : orbitEdges.map((orbit, i) => (
                             <option key={i} value={orbit.eH}>
                               {orbit.name}
                             </option>
-                          ))),
+                          )))),
                       ]}
                       required={true}
                       disabled={!!editMode}

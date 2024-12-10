@@ -2,8 +2,6 @@ import React, { ComponentType, useEffect, useState, useCallback, useMemo, useRef
 import { VisProps } from "./types";
 import { useTreeState } from "./tree/useTreeState";
 import { TreeVisCore } from "./tree/TreeVisCore";
-//@ts-expect-error
-const LazyTreeVisualization = lazy(() => import('./base-classes/TreeVis'));
 
 import {
   useGetLowestSphereHierarchyLevelQuery,
@@ -32,7 +30,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 }) => {
   // ## -- Router level state -- ##
   const [_state, transition, params, client] = useStateTransition();
-  const { isAppendingNode, setIsAppendingNode } = useVisContext();
+  const { isAppendingNode, setIsAppendingNode: _ } = useVisContext();
   
   // ## -- Lazily load bigger d3 deps -- ##
   const { d3Modules, isLoading, error: lazyLoadError } = useD3Dependencies();
@@ -47,7 +45,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const [usedCachedHierarchy, setUsedCachedHierarchy] = useState<boolean>(false);
   const [canTriggerNextTreeVisRender, setCanTriggerNextTreeVisRender] = useState<boolean>(false);
   const setNewCurrentOrbitId = useSetAtom(currentOrbitIdAtom);
-  // const setHierarchyInAppState = useSetAtom(updateHierarchyAtom);
+  const setHierarchyInAppState = useSetAtom(updateHierarchyAtom);
 
   // ## -- Data fetching hooks -- ##
   const [getHierarchy, { data, loading: dataLoading, error }] = useGetOrbitHierarchyLazyQuery({
@@ -98,8 +96,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       }, 350);
       setCurrentOrbitTree(newTree);
       newTree._json = json
-      // setHierarchyInAppState(newTree as any);
-
+      setHierarchyInAppState(newTree as any);
     }
   };
 

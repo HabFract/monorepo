@@ -10,6 +10,17 @@
   top: calc(.5rem);
   left: .5rem;
 }
+.input-icon {
+  @apply w-5 h-5;
+  padding: 0 2px;
+  /* 12 in total (10 for input) */
+}
+.input-with-icon-right input, .input-with-icon-right select {
+  padding-right: 40px;
+}
+.input-with-icon input, .input-with-icon select {
+  padding-left: 40px;
+}
 
 .toggle-switch {
   align-items: center;

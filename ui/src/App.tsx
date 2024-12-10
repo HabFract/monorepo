@@ -70,6 +70,17 @@ function App({ children: pageComponent }) {
       mainPageRef.current = null;
     };
   }, []);
+  useEffect(() => {
+    const cleanup = setInterval(() => {
+      if (global.gc) {
+        global.gc();
+      }
+    }, 30000); // Run every 30 seconds
+  
+    return () => {
+      clearInterval(cleanup);
+    };
+  }, []);
 
   const {
     loading: loadingSpheres,
@@ -125,7 +136,6 @@ function App({ children: pageComponent }) {
   const WrappedComponent = useMemo(() => {
     if (!enhancedPageComponent) return null;
     const LayoutComponent = withLayout(enhancedPageComponent);
-    console.log('layoutProps :>> ', layoutProps);
     return <LayoutComponent {...layoutProps} />;
   }, [enhancedPageComponent, layoutProps]);
 
