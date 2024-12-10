@@ -219,29 +219,6 @@ export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
   });
 };
 
-
-export const globalWinDataAtom = atom<Record<string, WinDataPerOrbitNode>>({});
-
-/**
- * Gets the appropriate win data for an orbit based on whether it's a leaf or non-leaf node.
- * 
- * @param {EntryHashB64} orbitEh - The entry hash of the orbit node
- * @returns {Atom<WinDataPerOrbitNode | null>} An atom containing either actual win data for leaf nodes
- * or calculated win data for non-leaf nodes
- * 
- * @description
- * This utility atom determines whether an orbit is a leaf node and returns the appropriate
- * win data. For leaf nodes, it returns the actual stored win data. For non-leaf nodes,
- * it returns calculated win data based on the completion status of all descendants.
- */
-export const getWinDataForOrbitAtom = (orbitEh: EntryHashB64) => atom(
-  (get) => get(globalWinDataAtom)[orbitEh] || null,
-  (get, set, newWinData: WinDataPerOrbitNode) => {
-    const currentWinData = get(globalWinDataAtom);
-    set(globalWinDataAtom, { ...currentWinData, [orbitEh]: newWinData });
-  }
-);
-
 /**
  * Calculates the current streak for a specific orbit (either through wins - leaf nodes - or through derived win completion - nonleaf nodes)
  * @param orbitHash The ActionHash of the orbit
