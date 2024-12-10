@@ -1,6 +1,12 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@state/*": ["./src/state/*"],
+        "habit-fract-design-system": ["../design-system/dist"],
+        "habit-fract-design-system/*": ["../design-system/dist/*"]
+    },
     "target": "ESNext",
     "module": "ESNext",
     "rootDir": "./src",
@@ -16,9 +22,6 @@
     "emitDeclarationOnly": false,
     "allowSyntheticDefaultImports": true,
     "composite": true,
-    "paths": {
-      "@state/*": ["./src/state/*"]
-    }
   },
   "include": ["./src", "../ui/src/graphql/generated/**/*"],
   "references": [{ "path": "../design-system" }],
