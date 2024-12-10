@@ -27,7 +27,7 @@
     "antd": "^5.0.0"
   },
   "scripts": {
-    "build": "vite build",
+    "build": "rm -rf dist && tsc --emitDeclarationOnly --outDir dist/types; vite build",
     "clean": "rm -rf ./dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "storybook dev -p 6006",

@@ -3,15 +3,39 @@ import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import postcss from "rollup-plugin-postcss";
 import path from "path";
+import { rm } from 'fs/promises';
 
 export default defineConfig({
   plugins: [
     react(),
+    {
+      // Add a custom plugin to clean dist before build
+      name: 'clean-dist',
+      buildStart: async () => {
+        try {
+          await rm(path.resolve(__dirname, 'dist'), { recursive: true, force: true });
+        } catch (e) {
+          console.warn('No dist folder to clean');
+        }
+      },
+    },
     dts({
       insertTypesEntry: true,
       outDir: 'dist/types',
-      // Skip node_modules
       exclude: ['node_modules/**'],
+      // Add these options to fix the overwrite issue
+      beforeWriteFile: (filePath, content) => {
+        return {
+          filePath: filePath.replace('.js.d.ts', '.d.ts'),
+          content,
+        };
+      },
+      compilerOptions: {
+        baseUrl: '.',
+        paths: {
+          "@ui/*": ["../ui/src/*"]
+        }
+      },
     }),
 
     // Custom plugin to handle @ui imports
@@ -54,7 +78,8 @@ export default defineConfig({
         preserveModules: true,
         preserveModulesRoot: 'src',
         entryFileNames: '[name].js',
-      },
+        dir: 'dist',
+      }
     },
     // Ensure we're not processing node_modules
     modulePreload: {
