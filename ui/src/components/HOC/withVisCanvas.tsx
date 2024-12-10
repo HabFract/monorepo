@@ -35,15 +35,16 @@ import {
   ConsolidatedFlags,
   OrbitDescendant,
 } from "../../state/types/hierarchy";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { useVisCanvas } from "../../hooks/useVisCanvas";
 import { DEFAULT_MARGINS } from "../vis/constants";
 import { StoreType } from "../../state/types/store";
-import { useWinData } from "../../hooks/useWinData";
+import {useWinData} from "../../hooks/useWinData";
 import { DateTime } from "luxon";
 import { calculateCurrentStreakAtom, calculateLongestStreakAtom, setWinDataAtom } from "../../state/win";
 import { useVisContext } from "../../contexts/vis";
 import memoizeOne from "memoize-one";
+import { useStateTransition } from "../../hooks/useStateTransition";
 
 /**
  * Higher-order component to enhance a visualization component with additional logic and state management.
@@ -69,10 +70,10 @@ export function withVisCanvas<T extends IVisualization>(
   Component: ComponentType<VisProps<T>>,
 ): ReactNode {
   const ComponentWithVis = React.memo(() => {
-    // Get the details of the current Orbit in context, and the calculated bounds for navigation of the rendered hierarchy
+    // Get the details of the cu  rrent Orbit in context, and the calculated bounds for navigation of the rendered hierarchy
     // which will determine the state/visibility of the Vis OverlayLayout/controls
-    const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
-    const currentOrbitIsLeaf = useAtomValue(currentOrbitIsLeafAtom);
+    const currentOrbitDetails: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
+    const currentOrbitIsLeaf = store.get(currentOrbitIsLeafAtom);
 
     const currentOrbitStreakAtom = useMemo(() => calculateCurrentStreakAtom(currentOrbitDetails?.id as string), [currentOrbitDetails?.id])
     const currentStreak = store.get(currentOrbitStreakAtom);
@@ -144,21 +145,10 @@ export function withVisCanvas<T extends IVisualization>(
   }, [appendedSvg, currentOrbitDetails?.id]);
 
     // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
-    // const {
-    //   workingWinDataForOrbit,
-    //   handleUpdateWorkingWins,
-    //   handlePersistWins,
-    //   numberOfLeafOrbitDescendants
-    // } = useWinData(memoizedOrbitDetails, memoizedDate);
-const handleUpdateWorkingWins = () => {};
-const handlePersistWins = () => {};
-const numberOfLeafOrbitDescendants = 100;
-const workingWinDataForOrbit = {}
-    // TODO: handle derived error/loading states
+    const winDataHook = useWinData(memoizedOrbitDetails, memoizedDate);
+
     // const loading = useGetWinRecordForOrbitForMonthQueryLoading || createOrUpdateWinRecordLoading;
     // const error = useGetWinRecordForOrbitForMonthQueryError || createOrUpdateWinRecordError;
-
-
     return (
       <Component
         canvasHeight={canvasHeight}
@@ -196,25 +186,22 @@ const workingWinDataForOrbit = {}
             setNewDate: setCurrentDate,
             currentStreak,
             longestStreak,
-            workingWinDataForOrbit,
-            handleUpdateWorkingWins,
-            handlePersistWins,
+            ...winDataHook,
+            numberOfLeafOrbitDescendants: winDataHook.numberOfLeafOrbitDescendants || 0,
             orbitFrequency: currentOrbitDetails?.frequency || 1.0,
             orbitSiblings,
             orbitDescendants,
-            numberOfLeafOrbitDescendants,
             isLeafOrbit: !!currentOrbitIsLeaf,
             currentOrbitDetails,
             actions: consolidatedActions
           }), [
-            currentDate,
+            currentDate.toISO(),
             currentStreak,
             longestStreak,
-            workingWinDataForOrbit,
+            currentOrbitDetails?.frequency,
             orbitSiblings,
             orbitDescendants,
-            numberOfLeafOrbitDescendants,
-            currentOrbitIsLeaf,
+            winDataHook,
             currentOrbitDetails?.id,
             consolidatedActions
           ]);

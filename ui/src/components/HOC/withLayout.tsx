@@ -139,7 +139,6 @@ const withLayout = (component: ReactNode): FC<WithLayoutProps> => {
           return wrappedContent(
             <FormLayout 
               type={state.split('Create')[1]}
-              params={memoizedParams}
             >
               {component}
             </FormLayout>
@@ -152,7 +151,6 @@ const withLayout = (component: ReactNode): FC<WithLayoutProps> => {
               title={currentSphereDetails?.name}
               primaryMenuAction={() => {}}
               secondaryMenuAction={handleDeleteSphere}
-              params={memoizedParams}
             >
               {component}
             </ListLayout>
