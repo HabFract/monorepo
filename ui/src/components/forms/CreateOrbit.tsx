@@ -120,6 +120,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
     loading: getAllLoading,
     error,
   } = useGetOrbitsQuery({
+    skip: !sphereEh,
     fetchPolicy: "network-only",
     variables: { sphereEntryHashB64: sphereEh },
   });
@@ -305,7 +306,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                         setFieldValue("scale", scaleDefault);
                       }}
                       options={[
-                        <option value={"root"}>{"None"}</option>,
+                        // <option value={"root"}>{"None"}</option>,
                         ...(childOrbitEh
                           ? []
                           : orbitEdges.map((orbit, i) => (

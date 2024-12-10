@@ -43,6 +43,7 @@ import { useWinData } from "../../hooks/useWinData";
 import { DateTime } from "luxon";
 import { calculateCurrentStreakAtom, calculateLongestStreakAtom, setWinDataAtom } from "../../state/win";
 import { useVisContext } from "../../contexts/vis";
+import memoizeOne from "memoize-one";
 
 /**
  * Higher-order component to enhance a visualization component with additional logic and state management.
@@ -125,25 +126,34 @@ export function withVisCanvas<T extends IVisualization>(
     const visRef = useRef<T | null>(null);
     const memoizedOrbitDetails = useMemo(() => currentOrbitDetails, [currentOrbitDetails?.id]);
     const memoizedDate = useMemo(() => currentDate, [currentDate.toISO()]);
+
     useEffect(() => {
       return () => {
         if (visRef.current && !isAppendingNode) {
           visRef.current.destroy();
           visRef.current = null;
-        } else {
-          setIsAppendingNode(false)
         }
       };
     }, []);
 
-    // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
-    const {
-      workingWinDataForOrbit,
-      handleUpdateWorkingWins,
-      handlePersistWins,
-      numberOfLeafOrbitDescendants
-    } = useWinData(memoizedOrbitDetails, memoizedDate);
+  useEffect(() => {
+    if (appendedSvg && visRef.current) {
+      visRef.current.unbindEventHandlers();
+      visRef.current.bindEventHandlers();
+    }
+  }, [appendedSvg, currentOrbitDetails?.id]);
 
+    // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
+    // const {
+    //   workingWinDataForOrbit,
+    //   handleUpdateWorkingWins,
+    //   handlePersistWins,
+    //   numberOfLeafOrbitDescendants
+    // } = useWinData(memoizedOrbitDetails, memoizedDate);
+const handleUpdateWorkingWins = () => {};
+const handlePersistWins = () => {};
+const numberOfLeafOrbitDescendants = 100;
+const workingWinDataForOrbit = {}
     // TODO: handle derived error/loading states
     // const loading = useGetWinRecordForOrbitForMonthQueryLoading || createOrUpdateWinRecordLoading;
     // const error = useGetWinRecordForOrbitForMonthQueryError || createOrUpdateWinRecordError;
@@ -157,13 +167,13 @@ export function withVisCanvas<T extends IVisualization>(
         render={(currentVis: T) => {
           if (!currentOrbitDetails?.eH) return <Spinner />
 
-          
+          const memoisedActionsAndData = memoizeOne(getActionsAndDataForControls)
           const {
             consolidatedFlags,
             consolidatedActions,
             orbitDescendants,
             orbitSiblings
-          } = getActionsAndDataForControls(currentVis, currentOrbitDetails?.eH);
+          } = memoisedActionsAndData(currentVis, currentOrbitDetails?.eH);
 
           
           if (!visRef.current) {
@@ -208,7 +218,7 @@ export function withVisCanvas<T extends IVisualization>(
             currentOrbitDetails?.id,
             consolidatedActions
           ]);
-          console.log('Render from withVisCanvas HOC render prop :>> ');
+          // console.log('Render from withVisCanvas HOC render prop :>> ');
           return (
             <>
               {/* Magnification Icon for indicating when full zoom capability is present */}
@@ -314,15 +324,15 @@ export function withVisCanvas<T extends IVisualization>(
           store.set(currentOrbitIdAtom, newId);
         },
         traverseRight: () => {
-          console.log('Traversing right...')
+          // console.log('Traversing right...')
           incrementBreadth();
         },
         traverseLeft: () => {
-          console.log('Traversing left...')
+          // console.log('Traversing left...')
           decrementBreadth();
         },
         traverseDown: () => {
-          console.log('Traversing down...')
+          // console.log('Traversing down...')
           const grandChildren = children?.find(child => child.data.content == currentId)?.children;
           const currentRenderSiblingIndex = children?.findIndex(child => child.data.content == currentId);
 
@@ -352,7 +362,7 @@ export function withVisCanvas<T extends IVisualization>(
 
         traverseUp: () => {
           decrementDepth();
-          console.log('Traversing up... :>> ');
+          // console.log('Traversing up... :>> ');
           store.set(newTraversalLevelIndexId, {
             id: currentDetails?.parentEh,
             intermediateId: currentDetails?.id,
@@ -373,7 +383,7 @@ export function withVisCanvas<T extends IVisualization>(
           const newId = (!!orbit && orbit?.parentEh !== rootId) ? orbit?.parentEh : rootId;
           store.set(currentOrbitIdAtom, newId);
           (currentVis as any)._lastRenderParentId = newId;
-          console.log("Moving up... to", newId)
+          // console.log("Moving up... to", newId)
         }
       };
     }

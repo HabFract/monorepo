@@ -77,6 +77,8 @@ export interface IVisualization {
   setNodeAndLabelGroups: () => void;
   appendNodeVectors: () => void;
   appendLinkPath: () => void;
+  bindEventHandlers: () => void;
+  unbindEventHandlers: () => void;
   
   /** Apply initial transformation and zoom which may be needed when a node is already selected */
   applyInitialTransform: () => void;

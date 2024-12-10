@@ -189,9 +189,9 @@ export class TreeVisualization extends BaseVisualization {
           .duration(this.startInFocusMode ? 0 : PLANNIT_ZOOM_TRANSITION_DURATION)
           .ease(easeCubicOut)
           .attr("transform", `translate(${x},${y}) scale(${scale})`)
-          .on("end", () => {
-            this._zoomConfig.focusMode = true;
-          }) as any;
+          // .on("end", () => {
+          //   this._zoomConfig.focusMode = true;
+          // }) as any;
       },
 
       memoizedhandleNodeZoom(id: EntryHashB64, foundNode?: HierarchyNode<NodeContent>) {

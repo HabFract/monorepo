@@ -172,58 +172,63 @@ export abstract class BaseVisualization implements IVisualization {
   }
 
   bindEventHandlers() {
-      /* Create memoized handlers */
-      const memoizedHandleClick = memoizeOne((e, d) => {
-        store.set(currentOrbitIdAtom, d.data.content);
-        this.eventHandlers.handleNodeClick!.call(this, e, d);
-      });
+    this.unbindEventHandlers();
+  
+    /* Create memoized handlers */
+    const memoizedHandleClick = memoizeOne((e, d) => {
+      store.set(currentOrbitIdAtom, d.data.content);
+      this.eventHandlers.handleNodeClick!.call(this, e, d);
+    });
 
-      const debouncedZoom = debounce((nodeId) =>
-        Promise.resolve(this.eventHandlers.memoizedhandleNodeZoom.call(this, nodeId))
-        , 1000);
+    const debouncedZoom = debounce((nodeId) =>
+      Promise.resolve(this.eventHandlers.memoizedhandleNodeZoom.call(this, nodeId))
+      , 1000);
 
-      const handleOrbitIdChange = memoizeOne((newId) => {
-        console.log('newId :>> ', newId);
-        if (AppMachine.state.currentState !== "Vis") return;
-        this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
-        debouncedZoom(newId);
-      });
+    const handleOrbitIdChange = memoizeOne((newId) => {
+      if (AppMachine.state.currentState !== "Vis") return;
+      this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
+      debouncedZoom(newId);
+    });
 
-      const handleNodeEvent = (event: Event) => {
-        const target = event.target as HTMLElement;
-        const nodeGroup = target.closest('.the-node');
-        if (!nodeGroup) return;
+    const handleNodeEvent = (event: Event) => {
+      const target = event.target as HTMLElement;
+      const nodeGroup = target.closest('.the-node');
+      if (!nodeGroup) return;
 
-        const d = (nodeGroup as any).__data__;
-        if (event.type === 'click') {
-          memoizedHandleClick(event, d);
-        }
-      };
+      const d = (nodeGroup as any).__data__;
+      if (event.type === 'click') {
+        memoizedHandleClick(event, d);
+      }
+    };
 
-      /* Bind to parent node group */
-      const nodeContainer = this._canvas!.select('g.nodes');
-      nodeContainer.on('click', handleNodeEvent);
+    /* Bind to parent node group */
+    const nodeContainer = this._canvas!.select('g.nodes');
+    nodeContainer.on('click', handleNodeEvent);
 
-      const handleCurrentDayChange = memoizeOne(() => {
-        if (AppMachine.state.currentState !== "Vis") return;
-        this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
-      });
+    const handleCurrentDayChange = memoizeOne(() => {
+      if (AppMachine.state.currentState !== "Vis") return;
+      this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
+    });
 
-      const subOrbitId = store.sub(currentOrbitIdAtom, () => {
-        const newId = store.get(currentOrbitDetailsAtom)?.eH;
-        handleOrbitIdChange(newId);
-      });
-      const subCurrentDay = store.sub(currentDayAtom, handleCurrentDayChange);
-      this._subscriptions.push(subOrbitId, subCurrentDay);
+    const subOrbitId = store.sub(currentOrbitIdAtom, () => {
+      const newId = store.get(currentOrbitDetailsAtom)?.eH;
+      handleOrbitIdChange(newId);
+    });
+    const subCurrentDay = store.sub(currentDayAtom, handleCurrentDayChange);
+    this._subscriptions.push(subOrbitId, subCurrentDay);
   }
 
   unbindEventHandlers() {
-    console.log('unbound :>> ');
-    this._enteringNodes?.on(".", null);
-    this._subscriptions.forEach((unsub: any) => unsub());
-    this._subscriptions = [];
+    if (this._canvas) {
+      this._canvas.selectAll('*').on('.', null);
+    }
+      
+    // Clear subscriptions
+    if (this._subscriptions) {
+      this._subscriptions.forEach((unsub:any) => unsub());
+      this._subscriptions = [];
+    }
   }
-
 
   /**
    * Set up the canvas for rendering.
@@ -314,6 +319,10 @@ export abstract class BaseVisualization implements IVisualization {
       this.skipMainRender = false;
       return;
     }
+    if (!this.firstRender()) {
+      this.unbindEventHandlers();
+    }
+    
     if (this.noCanvas()) {
       this.setupCanvas();
     }
@@ -327,24 +336,23 @@ export abstract class BaseVisualization implements IVisualization {
     }
     if (this.firstRender() || this.hasNextData()) {
       this.clearCanvas();
-
+      
       let hasUpdated;
       if (this.hasNextData()) {
         this.rootData = this._nextRootData!;
         this._nextRootData = null;
         hasUpdated = true;
       }
-
+      
       this.setupLayout();
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
-      this.bindEventHandlers();
       this.setNodeAndLabelGroups();
-
+      
       this.appendNodeVectors();
       this.appendLinkPath();
       this._gTooltip = this.clearAndRedrawLabels();
-
+      
       if (!hasUpdated) {
         this.applyInitialTransform();
         this.eventHandlers.memoizedhandleNodeZoom.call(
@@ -352,19 +360,20 @@ export abstract class BaseVisualization implements IVisualization {
           this.rootData!.data.content,
         )
       }
+      if (this.firstRender()) this.bindEventHandlers();
       if (!(this.coverageType == VisCoverage.Partial || this.noCanvas())) {
         this.initializeZoomer();
       }
-
+      
       const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
       const finalNodeToFocus = newRenderNodeDetails?.id;
       if (this.startInFocusMode && hasUpdated) {
         // console.log('Actual new focus node :>> ', finalNodeToFocus);
-
+        
         this._lastOrbitId = null;
         const initialNodeZoomId =
-          newRenderNodeDetails?.intermediateId || finalNodeToFocus || this._lastRenderParentId;
-
+        newRenderNodeDetails?.intermediateId || finalNodeToFocus || this._lastRenderParentId;
+        
         let initialZoom = this.eventHandlers.memoizedhandleNodeZoom.call(
           this,
           initialNodeZoomId,
@@ -554,6 +563,12 @@ export abstract class BaseVisualization implements IVisualization {
   };
 
   public destroy(): void {
+    this.unbindEventHandlers();
+
+    // Remove zoom behavior
+    if (this.zoomer) {
+      select("#vis").on('.zoom', null);
+    }
     // Remove all D3 selections
     if (this._canvas) {
       this._canvas.selectAll('*').remove();
@@ -562,14 +577,8 @@ export abstract class BaseVisualization implements IVisualization {
     if (this._svgId) {
       select(`#${this._svgId}`).remove();
     }
-    console.log('select(foreignObject :>> ', select('body').selectAll('foreignObject'));
-    select('body').selectAll('foreignObject').remove();
-    // Remove zoom behavior
-    if (this.zoomer) {
-      select(`#${this._svgId}`).on('.zoom', null);
-    }
 
-    this.unbindEventHandlers();
+    select('body').selectAll('foreignObject').remove();
 
     // Nullify large objects
     this.rootData = null;
@@ -583,8 +592,6 @@ export abstract class BaseVisualization implements IVisualization {
     this._gButton = null;
     this._enteringLinks = null;
     this._enteringNodes = null;
-
-    this._subscriptions.forEach((unsubscribe: any) => unsubscribe());
 
     console.log('BaseVisualization destroyed');
   }

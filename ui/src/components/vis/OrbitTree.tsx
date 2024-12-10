@@ -37,13 +37,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   // ## -- Lazily load bigger d3 deps -- ##
   const { d3Modules, isLoading, error: lazyLoadError } = useD3Dependencies();
   // Add ref to track initial render
-  const hasInitializedRef = useRef(false);
   const renderCountRef = useRef(0);
-  const renderDebugRef = useRef({
-    lastRenderSource: '',
-    lastRenderTime: Date.now(),
-    renderCount: 0
-  });
 
   // ## -- Component level state -- ##
   const { currentOrbitTree, setCurrentOrbitTree } = useTreeState();
@@ -149,7 +143,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       setNewHierarchyIndices({ x: newLevelXIndex, y });
     }
     setBreadthIndex(isNewLevelXIndexValid ? newLevelXIndex : breadthIndex);
-
     handleZoomerInitialization(currentOrbitTree, visCoverage);
   };
 
@@ -169,14 +162,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   });
 
   useEffect(() => {
-    // if (hasInitializedRef.current || !json || !d3Modules || error) return;
-    
-    try {
-      instantiateVisObject();
-      hasInitializedRef.current = true;
-    } catch (err) {
-      console.error('Failed to initialize tree:', err);
-    }
+    instantiateVisObject();
   }, [json]);
 
   const fetchAndProcess = useCallback(async () => {
@@ -188,9 +174,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   }, []);
 
   useEffect(() => {
-    if (!isAppendingNode && !data) {
-      fetchAndProcess();
-    }
+    fetchAndProcess();
   }, [data, y, isAppendingNode]);
 
   useEffect(() => {

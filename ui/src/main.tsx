@@ -43,6 +43,10 @@ export const withJotaiStore = (component: React.ReactNode) => {
 };
 
 export async function renderPage(page: React.ReactNode, client) {
+  // Cleanup previous render
+  const cleanup = () => {
+    root.unmount();
+  };
   root.render(
       <ApolloProvider client={client}>
         <StateMachineContext.Provider value={AppMachine as any}>
@@ -54,7 +58,10 @@ export async function renderPage(page: React.ReactNode, client) {
         </StateMachineContext.Provider>
       </ApolloProvider>
   );
+
+  return cleanup;
 }
+
 const Main = () => {
   return (
     <StateMachineContext.Provider value={AppMachine}>
@@ -63,6 +70,4 @@ const Main = () => {
   );
 };
 
-root.render(
-    <Main />
-);
+root.render(<Main />);

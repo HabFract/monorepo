@@ -1,4 +1,4 @@
-import { ReactNode, FC, useEffect } from "react";
+import { ReactNode, FC, useEffect, memo, useCallback, useMemo } from "react";
 import Home from "../layouts/Home";
 import Onboarding from "../layouts/Onboarding";
 import { AnimatePresence, motion } from "framer-motion";
@@ -12,66 +12,87 @@ import { AppMachine } from "../../main";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import SettingsLayout from "../layouts/SettingsLayout";
 import { useToast } from "../../contexts/toast";
-import { Button } from "habit-fract-design-system";
 import { VisProvider } from "../../contexts/vis";
 
-function withPageTransition(page: ReactNode) {
+const pageVariants = {
+  initial: { 
+    opacity: 0,
+    scale: 1
+  },
+  animate: { 
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.3,
+      ease: "easeOut"
+    }
+  },
+  exit: { 
+    opacity: 0,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+      ease: "easeIn"
+    }
+  }
+};
+
+function withPageTransition(page: ReactNode, state: string) {
   return (
     <AnimatePresence mode="wait">
       <motion.div
         className="framer-motion"
-        key={+new Date()}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        key={state}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={{ duration: 0.4 }}
       >
         {page}
       </motion.div>
     </AnimatePresence>
   );
 }
-
 interface WithLayoutProps {
   currentSphereDetails: any;
   newUser: boolean;
 }
 
-const withLayout = (
-  component: ReactNode,
-): FC<WithLayoutProps> => {
-  return ((props: WithLayoutProps): ReactNode => {
-    const state = AppMachine.state.currentState; // Top level state machine and routing
+const withLayout = (component: ReactNode): FC<WithLayoutProps> => {
+  return memo(({ currentSphereDetails, newUser }: WithLayoutProps): ReactNode => {
+    const state = AppMachine.state.currentState;
     const { showModal } = useModal();
-    const [_, transition, params] = useStateTransition(); // Top level state machine and routing
+    const [_, transition, params] = useStateTransition();
+    const { hideToast } = useToast();
 
-    const [
-      runDeleteSphere,
-      { loading: loadingDelete, error: errorDelete, data: dataDelete },
-    ] = useDeleteSphereMutation({
-      refetchQueries: ["getSpheres"],
-    });
-
-    if (props?.currentSphereDetails?.eH && props.currentSphereDetails.eH !== store.get(currentSphereHashesAtom)?.entryHash) {
-      const eH = props?.currentSphereDetails?.eH;
-      const id = props?.currentSphereDetails?.id;
+    const memoizedParams = useMemo(() => params, [JSON.stringify(params)]);
+    if (currentSphereDetails?.eH && currentSphereDetails.eH !== store.get(currentSphereHashesAtom)?.entryHash) {
+      const eH = currentSphereDetails?.eH;
+      const id = currentSphereDetails?.id;
       console.log('set current Sphere to :>> ', { entryHash: eH, actionHash: id });
       store.set(currentSphereHashesAtom, id)
     }
-    const { hideToast } = useToast();
-    
+
+    const [runDeleteSphere] = useDeleteSphereMutation({
+      refetchQueries: ["getSpheres"],
+    });
+
     useEffect(() => {
-      hideToast()
-    }, [])
-    
-    const handleDeleteSphere = () => {
+      hideToast();
+      return () => hideToast();
+    }, [hideToast]);
+
+    const handleDeleteSphere = useCallback(() => {
       const id = store.get(currentSphereHashesAtom)?.actionHash;
       if (!id) return;
+      
       showModal({
         title: "Are you sure?",
-        message: "This action cannot be undone! This will not only delete your Space's details, but all Planitts linked to that Space, and the Win history of those Planitts!",
+        message: "This action cannot be undone...",
         onConfirm: () => {
-          runDeleteSphere({ variables: { id } })
-          transition("Home")
+          runDeleteSphere({ variables: { id } });
+          transition("Home");
         },
         withCancel: true,
         withConfirm: true,
@@ -79,39 +100,76 @@ const withLayout = (
         confirmText: "Yes, do it",
         cancelText: "Cancel"
       });
-    }
+    }, [showModal, runDeleteSphere, transition]);
 
-    switch (true) {
-      case !!state.match("Onboarding"):
-        return <Onboarding>{withPageTransition(component)}</Onboarding>;
-      case ["Home", "PreloadAndCache"].includes(state):
-        if (state == "Home")
-          return <Home firstVisit={props?.newUser}></Home>;
-        return withPageTransition(component);
-      case state == "Settings":
-        return <SettingsLayout>
-          {component}
-        </SettingsLayout>
-      case state == "Vis":
-        return <VisProvider><VisLayout
-          title={props.currentSphereDetails?.name}
-          handleDeleteSphere={handleDeleteSphere}
-        >
-          {component}
-        </VisLayout></VisProvider>
-      case ["CreateOrbit", "CreateSphere"].includes(state):
-        return <FormLayout type={state.split('Create')[1]}>
-          {component}
-        </FormLayout>
-      case ["ListOrbits"].includes(state):
-        return <ListLayout type={'orbit'} title={props.currentSphereDetails?.name} primaryMenuAction={() => { }} secondaryMenuAction={() => { handleDeleteSphere() }}>
-          {component}
-        </ListLayout>
-      default:
-        return (
-          <>{component}</>
-        );
-    }
+    // Wrap the content based on state
+    const getLayoutContent = useCallback(() => {
+      const wrappedContent = (layoutComponent: ReactNode) => 
+        withPageTransition(layoutComponent, state);
+
+      switch (true) {
+        case !!state.match("Onboarding"):
+          return <Onboarding>{component}</Onboarding>;
+        
+        case ["Home", "PreloadAndCache"].includes(state):
+          if (state === "Home") {
+            return wrappedContent(<Home firstVisit={newUser} />);
+          }
+          return wrappedContent(component);
+        
+        case state === "Settings":
+          return wrappedContent(
+            <SettingsLayout>{component}</SettingsLayout>
+          );
+        
+        case state === "Vis":
+          return wrappedContent(
+            <VisProvider>
+              <VisLayout
+                title={currentSphereDetails?.name}
+                handleDeleteSphere={handleDeleteSphere}
+                params={memoizedParams}
+              >
+                {component}
+              </VisLayout>
+            </VisProvider>
+          );
+
+        case ["CreateOrbit", "CreateSphere"].includes(state):
+          return wrappedContent(
+            <FormLayout 
+              type={state.split('Create')[1]}
+              params={memoizedParams}
+            >
+              {component}
+            </FormLayout>
+          );
+
+        case ["ListOrbits"].includes(state):
+          return wrappedContent(
+            <ListLayout 
+              type="orbit"
+              title={currentSphereDetails?.name}
+              primaryMenuAction={() => {}}
+              secondaryMenuAction={handleDeleteSphere}
+              params={memoizedParams}
+            >
+              {component}
+            </ListLayout>
+          );
+        
+        default:
+          return wrappedContent(component);
+      }
+    }, [
+      state, 
+      component, 
+      currentSphereDetails, 
+      handleDeleteSphere, 
+      newUser, 
+      memoizedParams
+    ]);
+    return getLayoutContent();
   });
 };
 
