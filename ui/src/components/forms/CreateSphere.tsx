@@ -154,8 +154,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                   const errors = await validateForm();
                   if (Object.keys(errors).length === 0) {
                     // Form is valid, allow submission
-                    
-                    e.currentTarget.submit();
+                    submitForm()
                   }
                 }}>
                 {editMode && (

@@ -464,14 +464,14 @@ export abstract class BaseVisualization implements IVisualization {
         const { scale, parentEh } = cachedNode;
 
         return scale == Scale.Astro
-          ? (!parentEh ? "-30" : "-50")
+          ? (!parentEh ? "-80" : "-100")
           : scale == Scale.Sub
             ? (!parentEh ? "12" : "10")
             : (!parentEh ? "12" : "66");
       })
       .attr("x", "-110")
       .attr("width", "220")
-      .attr("height", "250")
+      .attr("height", "350")
       .html(this.appendLabelHtml);
   }
 

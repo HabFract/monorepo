@@ -271,22 +271,22 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                   />
                 </div>
                 <figure>
-                  <div className="figure-images">
-                    {['sun', 'planet', 'moon'].map(scale => <div className="figure-image-container" key={scale}><img key={scale} src={`assets/${scale}.svg`} alt={`${scale} figure`} style={{ width: "100%" }} /></div>)}
-                  </div>
                   <figcaption className="figure-captions">
                     {['Star', 'Giant', 'Dwarf'].map(scale => <HelperText key={scale} withInfo={true} onClickInfo={() => ({ title: `Planitt Scales`, label: `${scale}`, body: scale })}>{scale}</HelperText>)}
                   </figcaption>
+                  <div className="figure-images">
+                    {['sun', 'planet', 'moon'].map(scale => <div className="figure-image-container" key={scale}><img key={scale} src={`assets/${scale}.svg`} alt={`${scale} figure`} style={{ width: "100%" }} /></div>)}
+                  </div>
                 </figure>
               </>
               }
-              <Form noValidate={true}           onSubmit={async (e) => {
+              <Form noValidate={true} onSubmit={async (e) => {
                 e.preventDefault();
                 // Validate before submitting
                 const errors = await validateForm();
                 if (Object.keys(errors).length === 0) {
                   // Form is valid, allow submission
-                  e.currentTarget.submit();
+                  submitForm()
                 }
               }}>
 

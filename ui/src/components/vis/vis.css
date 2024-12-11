@@ -7,7 +7,7 @@ g.node-subgroup {
 .orbit-overlay-container {
   @apply absolute;
   width: 100%;
-  bottom: 0;
+  top: 50%;
 }
 
 /* Vectors manually appended for each hierarchy node */
@@ -22,7 +22,7 @@ g.node-subgroup {
 
 /* Outline for selected node (not-winning) */
 .node-vector-group.selected::before {
-  @apply absolute h-full w-full;
+  @apply absolute w-full h-full;
   content: "";
   z-index: 15;
   left: 0;
@@ -39,7 +39,7 @@ g.node-subgroup {
 
 /* Tick icon for winning node */
 .node-vector-group.winning::after {
-  @apply absolute top-1 h-full w-full;
+  @apply top-1 absolute w-full h-full;
   content: "";
   left: 2%;
   z-index: 16;
@@ -52,14 +52,16 @@ g.node-subgroup {
 /* Outline positioning for specific node scales */
 .node-vector-group.selected.astro::before {
   background-size: 87px;
-  left: .5px;
+  left: -1px;
   top: .5px;
 }
 
+.node-vector-group.sub::before {
+}
 .node-vector-group.selected.sub::before {
   background-size: 70px;
   left: -.5px;
-  top: -14.5px;
+  top: -5px;
 }
 
 .node-vector-group.selected.atom::before {

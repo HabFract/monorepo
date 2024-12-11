@@ -163,7 +163,7 @@ const tailwindConfig = {
           500: 'rgba(191,67,66, .5)',
         },
         success: {
-          DEFAULT: '#rgba(11, 254, 184, 0.8)',
+          DEFAULT: '#3A6E6A',
           incomplete: 'rgba(255, 255, 255, 0.1)',
         },
 

@@ -78,7 +78,7 @@ import {
   newYTranslate,
 } from "../helpers";
 import { currentOrbitIdAtom, getOrbitNodeDetailsFromIdAtom, getOrbitIdFromEh, currentOrbitDetailsAtom } from "../../../state/orbit";
-import { EntryHashB64 } from "@state/types";
+import { EntryHashB64 } from "@holochain/client/lib/types";
 import { getHierarchyAtom } from "../../../state/hierarchy";
 import { AppMachine } from "../../../main";
 import { NODE_ENV } from "../../../constants";
@@ -545,7 +545,7 @@ export class TreeVisualization extends BaseVisualization {
           case "Sub":
             return "30";
           case "Atom":
-            return "100";
+            return "120";
         }
       })
       .append("xhtml:div")

@@ -32,7 +32,7 @@ import { generateQueryParams } from "../vis/tree-helpers";
 import { DateTime } from "luxon";
 
 /** Debug flag for development logging */
-const DEBUG = true;
+const DEBUG = false;
 
 /**
  * Helper function for debug logging
