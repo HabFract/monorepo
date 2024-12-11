@@ -12,7 +12,7 @@ import {
   currentSphereHasCachedNodesAtom,
 } from "../../state/sphere";
 import { SphereHashes, SphereOrbitNodeDetails } from "../../state/types/sphere";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { client } from "../../graphql/client";
 

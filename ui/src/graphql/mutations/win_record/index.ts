@@ -9,11 +9,7 @@ import {
   WinRecordCreateParams,
   WinRecordUpdateParams,
 } from "../../generated";
-import { EntryRecord } from "@holochain-open-dev/utils";
-import {
-  encodeHashToBase64,
-  Record as HolochainRecord,
-} from "@holochain/client";
+import { EntryRecord, encodeHashToBase64, HolochainRecord } from "../../utils";
 
 export type createHandler = (
   root: any,

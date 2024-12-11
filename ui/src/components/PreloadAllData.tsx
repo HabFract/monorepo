@@ -7,11 +7,12 @@ import {
   useGetSpheresQuery,
 } from "../graphql/generated";
 import { extractEdges } from "../graphql/utils";
-import { appStateAtom, nodeCache, store } from "../state/store";
+import { appStateChangeAtom, nodeCache, store } from "../state/store";
 import { mapToCacheObject } from "../state/orbit";
 import { client } from "../graphql/client";
 import { currentSphereHashesAtom } from "../state/sphere";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
+
 import { useAtom, useSetAtom } from "jotai";
 import { sleep } from "./lists/OrbitSubdivisionList";
 import { Spinner } from "habit-fract-design-system";
@@ -110,7 +111,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   const transitionInitiatedRef = useRef(false);
   const initialStateRef = useRef<any>(null);
 
-  const [__, setAppState] = useAtom(appStateAtom);
+  const [__, setAppState] = useAtom(appStateChangeAtom);
   const setNodeCache = useSetAtom(nodeCache.set);
   const setCurentSphere = useSetAtom(currentSphereHashesAtom);
 
@@ -130,7 +131,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
   const verifyAndRestoreState = useCallback(() => {
     if (!initialStateRef.current) return;
     
-    const currentState = store.get(appStateAtom);
+    const currentState = store.get(appStateChangeAtom);
     const currentOrbitCount = Object.keys(currentState.orbitNodes.byHash).length;
     const initialOrbitCount = Object.keys(initialStateRef.current.orbitNodes.byHash).length;
     
@@ -139,7 +140,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
         currentCount: currentOrbitCount,
         initialCount: initialOrbitCount
       });
-      store.set(appStateAtom, initialStateRef.current);
+      store.set(appStateChangeAtom, initialStateRef.current);
       return true;
     }
     return false;
@@ -193,7 +194,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
                 Object.fromEntries(indexedOrbitNodeDetails),
               );
               
-              const prevState = store.get(appStateAtom);
+              const prevState = store.get(appStateChangeAtom);
               let updatedState = { ...prevState };
               
               // Create a map of all orbit nodes
@@ -266,7 +267,7 @@ const PreloadAllData: React.FC<PreloadAllDataProps> = ({
           // Verify state one last time before completing
           verifyAndRestoreState();
           
-          const finalState = store.get(appStateAtom);
+          const finalState = store.get(appStateChangeAtom);
           log('Final state before completing:', {
             orbitNodesCount: Object.keys(finalState.orbitNodes.byHash).length,
             state: finalState

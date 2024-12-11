@@ -1,5 +1,5 @@
 import { useAtom, useSetAtom } from "jotai";
-import { appStateAtom } from "../../state/store";
+import { appStateChangeAtom } from "../../state/store";
 import {
   useGetOrbitsQuery as useGetOrbitsQueryGenerated,
   useGetOrbitsLazyQuery as useGetOrbitsLazyQueryGenerated,
@@ -11,7 +11,7 @@ import { extractEdges } from "../../graphql/utils";
 import { OrbitHashes, OrbitNodeDetails } from "../../state";
 
 export const useGetOrbitsQuery = (opts) => {
-  const [prevState, setAppState] = useAtom(appStateAtom);
+  const [prevState, setAppState] = useAtom(appStateChangeAtom);
 
   const result = useGetOrbitsQueryGenerated({
     ...opts,
@@ -60,7 +60,7 @@ export const useGetOrbitsQuery = (opts) => {
 };
 
 export const useGetOrbitsLazyQuery = (opts?) => {
-  const [prevState, setAppState] = useAtom(appStateAtom);
+  const [prevState, setAppState] = useAtom(appStateChangeAtom);
 
   const [getOrbits, result] = useGetOrbitsLazyQueryGenerated({
     ...opts,

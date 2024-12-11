@@ -2,9 +2,9 @@ import { ListGroup } from 'flowbite-react';
 import { useStateTransition } from '../../hooks/useStateTransition';
 import './common.css'
 import { getIconSvg, HeaderAction } from 'habit-fract-design-system';
-import { EntryHashB64 } from '@holochain/client';
 import { Sphere } from '../../graphql/generated';
 import { useCallback, useMemo } from 'react';
+import { EntryHashB64 } from '@state/types';
 
 function VisLayout({ children, title, handleDeleteSphere }: any) {
   const [_, transition, params, __, goBack, history] = useStateTransition();

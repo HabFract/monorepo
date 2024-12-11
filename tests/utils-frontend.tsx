@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { Provider } from "jotai/react";
 import { useHydrateAtoms } from "jotai/utils";
 import { createStore } from "jotai";
-import { appStateAtom } from "../ui/src/state/store";
+import { appStateChangeAtom } from "../ui/src/state/store";
 import mockAppState from "./integration/mocks/mockAppState";
 import { render, RenderResult } from "@testing-library/react";
 import { AppState } from "../ui/src/state/types/store";
@@ -23,7 +23,7 @@ export const renderVis = (
 export const createTestStore = (initialState: Partial<AppState> = {}) => {
   const testState = { ...mockAppState, ...initialState };
   const store = createStore();
-  store.set(appStateAtom, testState);
+  store.set(appStateChangeAtom, testState);
   return store;
 };
 
@@ -36,7 +36,7 @@ export const renderWithJotai = (
   return render(
     <Provider store={testStore}>
       <TestProvider initialHierarchy={initialHierarchy} initialValues={[
-        [appStateAtom, initialState],
+        [appStateChangeAtom, initialState],
         [currentSphereHierarchyIndices, { x: 0, y: 0 }],
       ]}>
         {React.cloneElement(element)}

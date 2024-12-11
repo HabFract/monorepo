@@ -11,13 +11,9 @@ import {
   OrbitUpdateParams,
   UpdateOrbitResponsePayload,
 } from "../../generated";
-import {
-  ActionHash,
-  ActionHashB64,
-  Record as HolochainRecord,
-  encodeHashToBase64,
-} from "@holochain/client";
-import { EntryRecord } from "@holochain-open-dev/utils";
+
+import { EntryRecord, encodeHashToBase64, HolochainRecord } from "../../utils";
+import { ActionHashB64, ActionHash } from "@state/types";
 
 export type createArgs = { orbit: OrbitCreateParams };
 export type updateArgs = { orbit: OrbitUpdateParams };

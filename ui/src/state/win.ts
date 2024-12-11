@@ -1,6 +1,6 @@
-import { atom } from "jotai";
-import { appStateAtom } from "./store";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { Atom, atom } from "jotai";
+import { appStateChangeAtom } from "./store";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { FixedLengthArray, OrbitNodeDetails, WinDataPerOrbitNode } from "./types";
 import {
   getOrbitEhFromId,
@@ -11,6 +11,40 @@ import {
 import { getDescendantLeafNodesAtom, isLeafNodeHashAtom } from "./hierarchy";
 import { DateTime } from "luxon";
 import { hierarchy } from "d3-hierarchy";
+
+/* Helpers */
+/* Helper to transform fetched winData to a win records */
+export const winDataArrayToWinRecord = (
+  acc: any,
+  { date, value: val }: any
+) => {
+  acc[date] = "single" in val ? val.single : val.multiple;
+  return acc;
+};
+const nonLeafNodeAtomCache = new Map<EntryHashB64, Atom<WinDataPerOrbitNode | null>>();
+const nonLeafNodeSubscriptionCache = new Map<EntryHashB64, number>();
+
+/**
+ * Cleans up cached atoms and their subscriptions for a given orbit entry hash
+ * @param orbitEh The entry hash of the orbit to cleanup
+ */
+export const cleanupNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
+  nonLeafNodeAtomCache.delete(orbitEh);
+  nonLeafNodeSubscriptionCache.delete(orbitEh);
+};
+/**
+ * Decrements the reference count for a non-leaf node atom and cleans it up if no longer needed
+ */
+export const decrementNonLeafNodeAtomRef = (orbitEh: EntryHashB64) => {
+  const currentCount = nonLeafNodeSubscriptionCache.get(orbitEh) || 0;
+  if (currentCount <= 1) {
+    cleanupNonLeafNodeAtom(orbitEh);
+  } else {
+    nonLeafNodeSubscriptionCache.set(orbitEh, currentCount - 1);
+  }
+};
+
+
 
 /**
  * Atom for setting an individual WinData point for a specific orbit.
@@ -29,10 +63,10 @@ export const setWinDataAtom = atom(
       winData,
     }: { orbitHash: ActionHashB64; date: string; winData: boolean | boolean[] }
   ) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const currentWinData = state.wins[orbitHash] || {};
 
-    set(appStateAtom, {
+    set(appStateChangeAtom, {
       ...state,
       wins: {
         ...state.wins,
@@ -55,12 +89,12 @@ export const setWinDataAtom = atom(
 export const winDataPerOrbitNodeAtom = (orbitHash: ActionHashB64) => {
   return atom(
     (get) => {
-      const state = get(appStateAtom);
+      const state = get(appStateChangeAtom);
       return state.wins[orbitHash] || null;
     },
     (get, set, winRecord: WinDataPerOrbitNode) => {
-      const state = get(appStateAtom);
-      set(appStateAtom, {
+      const state = get(appStateChangeAtom);
+      set(appStateChangeAtom, {
         ...state,
         wins: {
           ...state.wins,
@@ -82,7 +116,7 @@ export const getWinCompletionForOrbitForDayAtom = (
   date: string
 ) => {
   return atom((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     let hash = orbitEh;
     // Conver to action hash
     if (hash.startsWith("uhCE")) {
@@ -158,7 +192,17 @@ export const calculateCompletionStatusAtom = (
  * only if all leaf descendants are complete for that day.
  */
 export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
-  return atom((get) => {
+    // Reuse existing atom if available
+    if (nonLeafNodeAtomCache.has(orbitEh)) {
+      // Increment reference count
+      nonLeafNodeSubscriptionCache.set(
+        orbitEh, 
+        (nonLeafNodeSubscriptionCache.get(orbitEh) || 0) + 1
+      );
+      return nonLeafNodeAtomCache.get(orbitEh)!;
+    }
+
+  const newAtom = atom<WinDataPerOrbitNode | null>((get) => {
     const orbit = get(getOrbitNodeDetailsFromEhAtom(orbitEh));
     if (!orbit) {
       console.warn('No orbit found for:', orbitEh);
@@ -166,7 +210,7 @@ export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
     }
     const orbitHash = orbit.id;
     // Get hierarchy data
-    const hierarchies = get(appStateAtom).hierarchies.byRootOrbitEntryHash;
+    const hierarchies = get(appStateChangeAtom).hierarchies.byRootOrbitEntryHash;
     const hierarchyJson = Object.values(hierarchies).find(h => 
       h.nodeHashes.includes(orbitHash) || h.nodeHashes.includes(orbitEh) 
     );
@@ -217,6 +261,10 @@ export const calculateWinDataForNonLeafNodeAtom = (orbitEh: EntryHashB64) => {
     }
     return winData;
   });
+  nonLeafNodeAtomCache.set(orbitEh, newAtom);
+  nonLeafNodeSubscriptionCache.set(orbitEh, 1);
+
+  return newAtom;
 };
 
 /**
@@ -230,7 +278,7 @@ export const calculateCurrentStreakAtom = (orbitHash: ActionHashB64) => {
     const orbit = get(orbitDetailsAtom);
     if (!orbit) return null;
 
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const currentDate = DateTime.now().toLocaleString();
     const winData = state.wins[orbit.eH] || {};
 
@@ -272,7 +320,7 @@ export const calculateCurrentStreakAtom = (orbitHash: ActionHashB64) => {
  */
 export const calculateLongestStreakAtom = (orbitHash: ActionHashB64) => {
   const calculateLongestStreak = atom<number | null>((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const orbit = state.orbitNodes.byHash[orbitHash];
 
     if (!orbit) return null;

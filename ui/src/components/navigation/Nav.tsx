@@ -17,7 +17,7 @@ import { useToast } from "../../contexts/toast";
 import { store } from "../../state/store";
 import { currentSphereOrbitNodesAtom } from "../../state/orbit";
 import { extractEdges } from "../../graphql/utils";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 //@ts-ignore
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { AppMachine } from "../../main";

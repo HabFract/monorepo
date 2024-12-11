@@ -5,7 +5,7 @@ import { Scale } from "../../graphql/generated";
 import { OrbitSubdivisionList } from "../lists";
 import { OrbitFetcher } from "./utils";
 import { OrbitValidationSchema } from "./CreateOrbit";
-import { ActionHashB64 } from "@holochain/client";
+import { ActionHashB64 } from "@state/types";;
 import { currentOrbitIdAtom, store } from "../../state";
 import { MODEL_DISPLAY_VALUES } from "../../constants";
 

@@ -1,9 +1,5 @@
-import {
-  ActionHashB64,
-  EntryHashB64,
-  encodeHashToBase64,
-  Record as HolochainRecord,
-} from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
+
 import { mapZomeFn } from "../../connection";
 import { DNAIdMappings, ById } from "../../types";
 import {
@@ -11,8 +7,7 @@ import {
   HAPP_ZOME_NAME_PERSONAL_HABITS,
 } from "../../../constants";
 import { Orbit, OrbitConnection } from "../../generated";
-import { EntryRecord } from "@holochain-open-dev/utils";
-import { createEdges } from "../../utils";
+import { EntryRecord, createEdges, encodeHashToBase64, HolochainRecord } from "../../utils";
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   const read = mapZomeFn<ById, HolochainRecord>(

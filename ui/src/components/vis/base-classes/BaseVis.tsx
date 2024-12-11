@@ -24,7 +24,7 @@ import {
   VisType,
   ZoomConfig,
 } from "../types";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { Scale } from "../../../graphql/generated";
 import { store } from "../../../state/store";
 import { currentOrbitDetailsAtom } from "../../../state/orbit";

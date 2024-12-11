@@ -1,5 +1,5 @@
 import { useAtom, useSetAtom } from "jotai";
-import { appStateAtom } from "../../state/store";
+import { appStateChangeAtom } from "../../state/store";
 import {
   CreateOrbitResponsePayload,
   useCreateOrbitMutation as useCreateOrbitMutationGenerated,
@@ -15,7 +15,7 @@ import { useMemo } from "react";
 import { DataLoadingQueue } from "../../components/PreloadAllData";
 
 export const useCreateOrbitMutation = (opts) => {
-  const [prevState, setAppState] = useAtom(appStateAtom);
+  const [prevState, setAppState] = useAtom(appStateChangeAtom);
   const dataLoadingQueue = useMemo(() => new DataLoadingQueue(), []);
 
   return useCreateOrbitMutationGenerated({

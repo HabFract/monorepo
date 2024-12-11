@@ -17,7 +17,7 @@ import {
   currentSphereOrbitNodeDetailsAtom,
   getOrbitNodeDetailsFromEhAtom,
 } from "../../state/orbit";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { store } from "../../state/store";
 import { OrbitNodeDetails, SphereHashes } from "../../state/types";
 import VisModal from "../VisModal";

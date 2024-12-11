@@ -1,5 +1,5 @@
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
-import { EntryHashB64, ActionHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { hierarchy } from "d3-hierarchy";
 import { OrbitHierarchyQueryParams, GetOrbitHierarchyDocument, Scale } from "../../graphql/generated";
 import { SphereOrbitNodeDetails, store, currentSphereHierarchyIndices, Frequency } from "../../state";

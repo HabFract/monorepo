@@ -1,9 +1,51 @@
 import { ApolloClient } from "@apollo/client";
-import { EntryHashB64 } from "@holochain/client";
+import { EntryHashB64 } from "@state/types";
 import { toYearDotMonth } from "habit-fract-design-system";
 import { DateTime } from "luxon";
 import { GetWinRecordForOrbitForMonthDocument } from "./generated";
-import { winDataArrayToWinRecord } from "../hooks/useWinData";
+import { winDataArrayToWinRecord } from "@state/win";
+import { decode } from "@msgpack/msgpack";
+import { Base64 } from "js-base64";
+
+export function decodeEntry(record) {
+  const entry = record.entry?.Present?.entry;
+  return decode(entry);
+}
+export function timestampToMillis(timestamp) {
+  return Math.floor(timestamp / 1000);
+}
+
+export function encodeHashToBase64(hash) {
+  return `u${Base64.fromUint8Array(hash, true)}`;
+}
+
+export type HolochainRecord = {
+  signed_action: any;
+  entry: any;
+};
+
+export class EntryRecord<T> {
+  record: { signed_action: any, entry: any };
+  constructor(record) {
+      this.record = record;
+  }
+  get actionHash() {
+      return this.record.signed_action.hashed.hash;
+  }
+  get action() {
+      const action = this.record.signed_action.hashed.content;
+      return {
+          ...action,
+          timestamp: timestampToMillis(action.timestamp),
+      };
+  }
+  get entry() {
+      return decodeEntry(this.record);
+  }
+  get entryHash() {
+      return this.record.signed_action.hashed.content.entry_hash;
+  }
+}
 
 export const extractEdges = <T>(withEdges: { edges: { node: T }[] }): T[] => {
   if (!withEdges?.edges || !withEdges.edges.length) {

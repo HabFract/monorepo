@@ -7,7 +7,7 @@ import pkg from "tape-promise/tape";
 import { setUpAliceandBob } from "../../../../utils-backend";
 import { anOrbit, setupSphere } from '../../personal/orbits/utils';
 import { Orbit, WinRecord } from "../../../../../ui/src/graphql/generated";
-import { EntryRecord } from "@holochain-open-dev/utils";
+import { EntryRecord } from '@holochain-open-dev/utils/dist/entry-record';;
 import { sortWinRecordEntryArrayByWinRecordDateIndex } from './utils';
 
 const { test } = pkg;

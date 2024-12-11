@@ -5,13 +5,9 @@ import {
   HAPP_ZOME_NAME_PERSONAL_HABITS,
 } from "../../../constants";
 import { Maybe, WinDateEntry, WinRecord } from "../../generated";
-import { EntryRecord } from "@holochain-open-dev/utils";
-import {
-  ActionHashB64,
-  encodeHashToBase64,
-  EntryHashB64,
-  Record as HolochainRecord,
-} from "@holochain/client";
+
+import { EntryRecord, encodeHashToBase64, HolochainRecord } from "../../utils";
+import { EntryHashB64 } from "@state/types";
 
 type QueryParams = {
   orbitEh: EntryHashB64;

@@ -118,7 +118,7 @@ const OverlayLayout: React.FC<OverlayLayoutProps> = ({
               <span onPointerDownCapture={stopPropagation}>
                 <Calendar 
                   currentDate={currentDate}
-                  orbitFrequency={!workingWinDataForOrbit.useRootFrequency ? numberOfLeafOrbitDescendants : orbitFrequency}
+                  orbitFrequency={!workingWinDataForOrbit?.useRootFrequency ? numberOfLeafOrbitDescendants : orbitFrequency}
                   setNewDate={setNewDate}
                   orbitWins={workingWinDataForOrbit || {}}
                 />

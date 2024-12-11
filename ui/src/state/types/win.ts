@@ -1,4 +1,4 @@
-import { ActionHashB64 } from "@holochain/client";
+import { ActionHashB64 } from "@state/types";
 import { Frequency, OrbitNodeDetails } from "./orbit";
 
 // Helper type to create a fixed-length array type

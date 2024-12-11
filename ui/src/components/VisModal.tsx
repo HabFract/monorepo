@@ -1,4 +1,4 @@
-import { EntryHashB64 } from "@holochain/client";
+import { EntryHashB64 } from "@state/types";
 import { Modal } from "flowbite-react";
 
 import { currentSphereOrbitNodeDetailsAtom } from "../state/orbit";

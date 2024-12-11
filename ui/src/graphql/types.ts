@@ -1,9 +1,9 @@
 /**
  * base types for GraphQL query layer
  */
-import { AppSignalCb, CellId } from "@holochain/client";
-import { HAPP_DNA_NAME } from "../constants";
+import { CellId } from "@state/types";
 
+import { HAPP_DNA_NAME } from "../constants";
 // Configuration object to allow specifying custom conductor DNA IDs to bind to.
 // Default is to use a DNA with the same ID as the mapping ID (ie. agent = "agent")
 export interface DNAIdMappings {
@@ -23,7 +23,7 @@ export interface ResolverOptions {
   conductorUri: string;
 
   // Callback to listen for signals from the Holochain app websocket, to support realtime event notifications.
-  traceAppSignals?: AppSignalCb;
+  traceAppSignals?: (signal: object) => void;
 }
 
 // types that serialize for rust zome calls

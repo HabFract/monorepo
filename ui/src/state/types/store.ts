@@ -1,7 +1,7 @@
 import { RootOrbitEntryHash } from "./orbit";
 import { SphereEntry, SphereOrbitNodes } from "./sphere";
 import WinState, { WinDataPerOrbitNode } from "./win";
-import { ActionHashB64 } from "@holochain/client";
+import { ActionHashB64 } from "@state/types";
 import { Hierarchy } from "./hierarchy";
 import { store } from "../store";
 

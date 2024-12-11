@@ -1,5 +1,5 @@
 import { useAtom, useSetAtom } from "jotai";
-import { appStateAtom, store } from "../../state/store";
+import { appStateChangeAtom, store } from "../../state/store";
 import {
   UpdateOrbitResponsePayload,
   useUpdateOrbitMutation as useUpdateOrbitMutationGenerated,
@@ -13,7 +13,7 @@ import { decodeFrequency, getOrbitEhFromId } from "../../state/orbit";
 import { OrbitHashes } from "../../state";
 
 export const useUpdateOrbitMutation = (opts) => {
-  const [prevState, setAppState] = useAtom(appStateAtom);
+  const [prevState, setAppState] = useAtom(appStateChangeAtom);
 
   return useUpdateOrbitMutationGenerated({
     ...opts,

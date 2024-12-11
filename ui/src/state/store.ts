@@ -54,10 +54,4 @@ export const appStateChangeAtom = atomWithStorage<AppState>("appState", {
     currentDay: new Date().toISOString(),
   },
 });
-export const appStateAtom = atom(
-  (get) => get(appStateChangeAtom),
-  (get, set, update: AppState) => {
-    // console.log("AppState being updated:", update);
-    set(appStateChangeAtom, update);
-  }
-);
+

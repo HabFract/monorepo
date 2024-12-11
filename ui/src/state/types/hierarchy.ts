@@ -1,4 +1,4 @@
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { CurrentOrbitId, RootOrbitEntryHash } from "./orbit";
 import { Scale } from "../../graphql/generated";
 

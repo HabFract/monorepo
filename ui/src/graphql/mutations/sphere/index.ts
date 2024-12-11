@@ -9,14 +9,9 @@ import {
   SphereCreateParams,
   SphereUpdateParams,
 } from "../../generated";
-import { EntryRecord } from "@holochain-open-dev/utils";
-import {
-  ActionHash,
-  ActionHashB64,
-  EntryHashB64,
-  Record as HolochainRecord,
-  encodeHashToBase64,
-} from "@holochain/client";
+
+import { EntryRecord, encodeHashToBase64, HolochainRecord } from "../../utils";
+import { ActionHashB64, EntryHashB64, ActionHash } from "@state/types";
 
 export type createArgs = { sphere: SphereCreateParams };
 export type updateArgs = { sphere: SphereUpdateParams };

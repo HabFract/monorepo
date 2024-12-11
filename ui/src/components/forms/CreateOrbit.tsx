@@ -13,7 +13,7 @@ import {
 } from "../../graphql/generated";
 import { extractEdges } from "../../graphql/utils";
 import { useCreateOrbitMutation } from "../../hooks/gql/useCreateOrbitMutation";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import { currentOrbitIdAtom, decodeFrequency, getOrbitNodeDetailsFromEhAtom } from "../../state/orbit";
 

@@ -3,6 +3,11 @@ import { defineConfig } from "vitest/config";
 import path from "path";
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@state': path.resolve(__dirname, '../ui/src/state')
+    }
+  },
   plugins: [react()],
   test: {
     server: {

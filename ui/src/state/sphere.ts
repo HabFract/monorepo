@@ -1,8 +1,8 @@
 import { atom } from "jotai";
-import { appStateAtom } from "./store";
+import { appStateChangeAtom } from "./store";
 import { SphereDetails } from "./types/sphere";
 import { nodeCache } from "./store";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { getOrbitNodeDetailsFromEhAtom } from "./orbit";
 import { AppState } from "./types/store";
 
@@ -13,7 +13,7 @@ import { AppState } from "./types/store";
  */
 export const currentSphereHashesAtom = atom(
   (get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const currentSphereHash = state.spheres.currentSphereHash;
     const currentSphere = state.spheres.byHash[currentSphereHash];
 
@@ -25,7 +25,7 @@ export const currentSphereHashesAtom = atom(
       : null;
   },
   (get, set, newSphereActionHash: ActionHashB64) => {
-    const prevState = get(appStateAtom);
+    const prevState = get(appStateChangeAtom);
     if(!newSphereActionHash) return;
     const newState = {
       ...prevState,
@@ -34,7 +34,7 @@ export const currentSphereHashesAtom = atom(
         currentSphereHash: newSphereActionHash
       },
     } as AppState;
-    set(appStateAtom, newState);
+    set(appStateChangeAtom, newState);
   }
 );
 (currentSphereHashesAtom as any).testId = "currentSphereHashes";
@@ -44,7 +44,7 @@ export const currentSphereHashesAtom = atom(
  * @returns {SphereDetails | null} The current sphere object or null if no sphere is selected
  */
 export const currentSphereDetailsAtom = atom<SphereDetails | null>((get) => {
-  const state = get(appStateAtom);
+  const state = get(appStateChangeAtom);
   const currentSphereHash = state.spheres.currentSphereHash;
   return state.spheres.byHash[currentSphereHash]?.details || null;
 });
@@ -56,7 +56,7 @@ export const currentSphereDetailsAtom = atom<SphereDetails | null>((get) => {
  */
 export const getSphereIdFromEhAtom = (sphereEh: EntryHashB64) =>
   atom<ActionHashB64 | null>((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const sphere = Object.entries(state.spheres.byHash).find(
       ([_id, sphereDetails]) => sphereDetails.details.entryHash == sphereEh
     );
@@ -71,7 +71,7 @@ export const getSphereIdFromEhAtom = (sphereEh: EntryHashB64) =>
  * @returns {boolean | null} See below
  */
 export const currentSphereHasCachedNodesAtom = atom<boolean | null>((get) => {
-  const state = get(appStateAtom);
+  const state = get(appStateChangeAtom);
   const sphereId = state.spheres.currentSphereHash;
   if (!sphereId) return false;
 
@@ -86,7 +86,7 @@ export const currentSphereHasCachedNodesAtom = atom<boolean | null>((get) => {
  */
 export const sphereHasCachedNodesAtom = (sphereId: ActionHashB64) =>
   atom<boolean | null>((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const selectedSphere = state.spheres.byHash[sphereId];
     if (!selectedSphere) return null;
     const rootOrbitHashes = selectedSphere.hierarchyRootOrbitEntryHashes;

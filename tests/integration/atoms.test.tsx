@@ -24,7 +24,7 @@ import {
 import { getHierarchyAtom, isLeafNodeHashAtom, updateHierarchyAtom } from '../../ui/src/state/hierarchy';
 import { calculateCurrentStreakAtom, calculateLongestStreakAtom, calculateCompletionStatusAtom, setWinDataAtom, winDataPerOrbitNodeAtom } from '../../ui/src/state/win';
 import { hierarchy } from 'd3-hierarchy';
-import { appStateAtom } from '../../ui/src/state';
+import { appStateChangeAtom } from '../../ui/src/state';
 import { DateTime } from 'luxon';
 
 describe('Sphere Atoms', () => {
@@ -1060,7 +1060,7 @@ describe('Win Record Atoms', () => {
 
   describe('AppState - setWinDataAtom', () => {
     const TestComponent = () => {
-      const [appState] = useAtom(appStateAtom);
+      const [appState] = useAtom(appStateChangeAtom);
       const [_, setWinRecord] = useAtom(setWinDataAtom);
       return (
         <div>

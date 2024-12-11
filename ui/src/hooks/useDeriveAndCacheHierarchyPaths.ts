@@ -41,7 +41,7 @@ import {
 } from "../components/vis/links/paths";
 import { nodeCache, store } from "../state/store";
 import { currentSphereOrbitNodeDetailsAtom } from "../state/orbit";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import {
   ONE_CHILD,
   THREE_CHILDREN_LEFT,

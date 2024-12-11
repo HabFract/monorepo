@@ -1,6 +1,5 @@
-import { winDataPerOrbitNodeAtom } from "../../state/win";
+import { winDataPerOrbitNodeAtom, winDataArrayToWinRecord } from "../../state/win";
 import { useCreateWinRecordMutation as useCreateOrUpdateWinRecordMutationGenerated } from "../../graphql/generated";
-import { winDataArrayToWinRecord } from "../useWinData";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { getOrbitIdFromEh, store } from "../../state";

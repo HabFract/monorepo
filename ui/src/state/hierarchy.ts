@@ -1,9 +1,7 @@
 import {
   getOrbitNodeDetailsFromEhAtom,
-  getOrbitNodeDetailsFromIdAtom,
 } from "./orbit";
 // ui/src/state/hierarchy.ts
-import { ActionHashB64 } from "@holochain/client";
 import { atom } from "jotai";
 import { hierarchy } from "d3-hierarchy";
 import {
@@ -11,15 +9,12 @@ import {
   NodeContent,
   SphereHierarchyBounds,
 } from "./types/hierarchy";
-import { EntryHashB64 } from "@holochain/client";
-import { appStateAtom, nodeCache } from "./store";
+import { EntryHashB64, ActionHashB64 } from "@state/types";
+import { appStateChangeAtom } from "./store";
 import { OrbitNodeDetails, RootOrbitEntryHash } from "./types/orbit";
 import { Hierarchy } from "./types/hierarchy";
 import { getSphereIdFromEhAtom } from "./sphere";
 import { HierarchyNode } from "d3-hierarchy";
-import { WinData, WinDataPerOrbitNode } from "./types";
-import { DateTime } from "luxon";
-import { calculateWinDataForNonLeafNodeAtom } from "./win";
 
 /** PRIMITIVE (not currently in AppState or IndexDB) */
 
@@ -108,7 +103,7 @@ export const newTraversalLevelIndexId = atom<{
  */
 export const getHierarchyAtom = (rootOrbitEntryHash: RootOrbitEntryHash) => {
   const selectHierarchy = atom<Hierarchy | null>((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     return state.hierarchies.byRootOrbitEntryHash[rootOrbitEntryHash] || null;
   });
   return selectHierarchy;
@@ -133,7 +128,7 @@ export const updateHierarchyAtom = atom(
     }
   ) => {
     if (!newHierarchy?.rootData) return null;
-    const currentAppState = get(appStateAtom);
+    const currentAppState = get(appStateChangeAtom);
     const rootNode = newHierarchy.rootData.data.content;
     const nodeHashes: ActionHashB64[] = [];
     const leafNodeHashes: ActionHashB64[] = [];
@@ -188,7 +183,7 @@ export const updateHierarchyAtom = atom(
       },
     };
 
-    set(appStateAtom, newState);
+    set(appStateChangeAtom, newState);
   }
 );
 
@@ -199,7 +194,7 @@ export const updateHierarchyAtom = atom(
  */
 export const isLeafNodeHashAtom = (nodeId: ActionHashB64) => {
   return atom<boolean>((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
 
     const hierarchies = state.hierarchies.byRootOrbitEntryHash;
 
@@ -221,7 +216,7 @@ export const isLeafNodeHashAtom = (nodeId: ActionHashB64) => {
  */
 export const getDescendantLeafNodesAtom = (orbitEh: EntryHashB64) => {
   return atom((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
 
     const orbit: OrbitNodeDetails | null = get(
       getOrbitNodeDetailsFromEhAtom(orbitEh)
@@ -264,7 +259,7 @@ export const getHierarchyOrbitDetailsAtom = (
   rootOrbitEntryHash: RootOrbitEntryHash
 ) => {
   const selectOrbits = atom<OrbitNodeDetails[] | null>((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const hierarchy =
       state.hierarchies.byRootOrbitEntryHash[rootOrbitEntryHash];
     const sphereEh = state.orbitNodes.byHash[rootOrbitEntryHash].sphereHash;

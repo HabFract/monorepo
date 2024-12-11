@@ -6,13 +6,8 @@ import {
   HAPP_ZOME_NAME_PERSONAL_HABITS,
 } from "../../../constants";
 import { Sphere, SphereConnection } from "../../generated";
-import { createEdges } from "../../utils";
-import { EntryRecord } from "@holochain-open-dev/utils";
-import {
-  encodeHashToBase64,
-  EntryHashB64,
-  Record as HolochainRecord,
-} from "@holochain/client";
+import { EntryRecord, createEdges, encodeHashToBase64, HolochainRecord } from "../../utils";
+import { EntryHashB64 } from "@state/types";
 
 export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
   const read = mapZomeFn<ById, HolochainRecord>(

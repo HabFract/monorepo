@@ -9,7 +9,6 @@ import { Spinner, SystemCalendarCard, toYearDotMonth } from "habit-fract-design-
 import { extractEdges, fetchWinDataForOrbit } from "../../graphql/utils";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import {
-  appStateAtom,
   appStateChangeAtom,
   getOrbitIdFromEh,
   getOrbitNodeDetailsFromEhAtom,
@@ -18,7 +17,7 @@ import {
   store,
   WinDataPerOrbitNode,
 } from "../../state";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AppMachine } from "../../main";
 import { byStartTime, parseAndSortTrees } from "../vis/helpers";
@@ -73,7 +72,7 @@ function ListSpheres() {
     let parsedTrees: any = null;
   
     try {
-      const state = store.get(appStateAtom);
+      const state = store.get(appStateChangeAtom);
       
       // Fetch hierarchy data
       const visCoverage = VisCoverage.CompleteSphere;
@@ -153,7 +152,7 @@ function ListSpheres() {
       }
   
       // Single atomic state update
-      store.set(appStateAtom, {
+      store.set(appStateChangeAtom, {
         ...state,
         spheres: {
           ...state.spheres,
@@ -229,7 +228,7 @@ function ListSpheres() {
         await loadSphereHierarchyData(sphere);
 
         // Verify data was loaded correctly
-        const state = store.get(appStateAtom);
+        const state = store.get(appStateChangeAtom);
         const sphereEntry = state.spheres.byHash[sphere.id];
         const rootOrbitEh = sphereEntry?.hierarchyRootOrbitEntryHashes?.[0];
 

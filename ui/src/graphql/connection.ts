@@ -21,20 +21,21 @@ import {
   HAPP_ZOME_NAME_PERSONAL_HABITS,
   NODE_ENV,
 } from "../constants";
-import {
-  AdminWebsocket,
+import type { 
   AppAuthenticationToken,
-  AppSignalCb,
   AppWebsocket,
   CellId,
   CellInfo,
   HoloHash,
 } from "@holochain/client";
+
+type HolochainClient = typeof import("@holochain/client");
+let clientModule: HolochainClient | null = null;
+
 import deepForEach from "deep-for-each";
 import { format, parse } from "fecha";
 import isObject from "is-object";
 import { Base64 } from "js-base64";
-import { debounce } from "../components/vis/helpers";
 
 type RecordId = [HoloHash, HoloHash];
 
@@ -67,6 +68,11 @@ export async function autoConnect(conductorUri?: string) {
   }
 
   connectionPromise = (async () => {
+    // Dynamically import the client only when needed
+    if (!clientModule) {
+      clientModule = await import("@holochain/client");
+    }
+    
     console.log(`Environment: `, NODE_ENV);
     const dev = NODE_ENV == "dev";
     let dnaConfig, appWs;
@@ -77,7 +83,7 @@ export async function autoConnect(conductorUri?: string) {
       appWs = await openConnection();
       dnaConfig = await sniffHolochainAppCells(appWs);
     } else {
-      const adminWs = await AdminWebsocket.connect({
+      const adminWs = await clientModule.AdminWebsocket.connect({
         url: new URL(`ws://localhost:${ADMIN_WS_PORT}`),
       } as any);
       const token = await adminWs.issueAppAuthenticationToken({
@@ -97,8 +103,12 @@ export async function autoConnect(conductorUri?: string) {
   return connectionPromise;
 }
 
-export const openConnection = (token?: AppAuthenticationToken) => {
-  return AppWebsocket.connect(
+export const openConnection = async(token?: AppAuthenticationToken) => {
+  if (!clientModule) {
+    clientModule = await import("@holochain/client");
+  }
+  
+  return clientModule.AppWebsocket.connect(
     NODE_ENV == "dev"
       ? { token, url: DEFAULT_CONNECTION_URI }
       : (undefined as any)

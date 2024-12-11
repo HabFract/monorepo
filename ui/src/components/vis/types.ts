@@ -1,4 +1,4 @@
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { HierarchyNode } from "d3-hierarchy";
 import { Selection } from "d3-selection";
 import { D3ZoomEvent, ZoomBehavior } from "d3-zoom";

@@ -1,7 +1,7 @@
 import { NODE_ENV } from "./../constants";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { atom } from "jotai";
-import { appStateAtom } from "./store";
+import { appStateChangeAtom } from "./store";
 import { SphereOrbitNodeDetails, SphereOrbitNodes } from "./types/sphere";
 import { Frequency, OrbitHashes, OrbitNodeDetails } from "./types/orbit";
 import { Orbit, Frequency as GraphQLFrequency } from "../graphql/generated";
@@ -91,7 +91,7 @@ export const mapToCacheObject = (orbit: Orbit): OrbitNodeDetails => {
  */
 export const currentSphereOrbitNodeDetailsAtom =
   atom<SphereOrbitNodeDetails | null>((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const currentSphereHash = state.spheres.currentSphereHash;
     if (!currentSphereHash) return null;
 
@@ -172,7 +172,7 @@ export const getCurrentSphereOrbitNodeDetailsFromEhAtom = (
   orbitEh: EntryHashB64
 ) =>
   atom((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const currentSphereHash = state.spheres.currentSphereHash;
     const currentSphere = state.spheres.byHash[currentSphereHash];
     if (!currentSphere) return null;
@@ -219,7 +219,7 @@ export const setOrbitWithEntryHashAtom = atom(
       update,
     }: { orbitEh: EntryHashB64; update: Partial<OrbitNodeDetails> }
   ) => {
-    const prevState = get(appStateAtom);
+    const prevState = get(appStateChangeAtom);
     const orbitActionHash = Object.keys(prevState.orbitNodes.byHash).find(
       (key) => prevState.orbitNodes.byHash[key].eH === orbitEh
     );
@@ -240,7 +240,7 @@ export const setOrbitWithEntryHashAtom = atom(
       },
     } as AppState;
 
-    set(appStateAtom, newState);
+    set(appStateChangeAtom, newState);
   }
 );
 
@@ -281,7 +281,7 @@ export const getOrbitFrequency = (orbitId: ActionHashB64) => {
  */
 export const currentSphereOrbitNodesAtom = atom<SphereOrbitNodes | null>(
   (get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const currentSphereHash = state.spheres.currentSphereHash;
     const currentSphere = state.spheres.byHash[currentSphereHash];
     if (!currentSphere) return null;
@@ -304,13 +304,13 @@ export const currentSphereOrbitNodesAtom = atom<SphereOrbitNodes | null>(
  */
 export const currentOrbitIdAtom = atom(
   (get): Partial<OrbitHashes> | null => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     return state.orbitNodes.currentOrbitHash
       ? { id: state.orbitNodes.currentOrbitHash }
       : null;
   },
   (_get, set, newOrbitId: EntryHashB64) => {
-    const prevState = _get(appStateAtom);
+    const prevState = _get(appStateChangeAtom);
     const newState = {
       ...prevState,
       orbitNodes: {
@@ -321,7 +321,7 @@ export const currentOrbitIdAtom = atom(
 
     // NODE_ENV !== "test" && console.log("Setting orbit id :>> ", newState);
 
-    set(appStateAtom, newState);
+    set(appStateChangeAtom, newState);
   }
 );
 (currentOrbitIdAtom as any).testId = "currentOrbitIdAtom";
@@ -333,7 +333,7 @@ export const currentOrbitIdAtom = atom(
  */
 export const getOrbitIdFromEh = (orbitEh: EntryHashB64) =>
   atom((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const orbitActionHash = Object.keys(state.orbitNodes.byHash).find(
       (key) => state.orbitNodes.byHash[key].eH === orbitEh
     );
@@ -348,7 +348,7 @@ export const getOrbitIdFromEh = (orbitEh: EntryHashB64) =>
  */
 export const getOrbitEhFromId = (id: ActionHashB64) =>
   atom((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     const orbitEh = state.orbitNodes.byHash[id]?.eH;
     return orbitEh || null;
   });
@@ -360,7 +360,7 @@ export const getOrbitEhFromId = (id: ActionHashB64) =>
  */
 export const orbitWinDataAtom = (orbitId: ActionHashB64) => {
   const selectWinData = atom<WinData<Frequency.Rationals>>((get) => {
-    const state = get(appStateAtom);
+    const state = get(appStateChangeAtom);
     return state.wins[orbitId] || {};
   });
   return selectWinData;

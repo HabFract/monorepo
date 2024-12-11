@@ -1,5 +1,5 @@
 import { Orbit, Sphere } from './../../../../../ui/src/graphql/generated';
-import { EntryRecord } from '@holochain-open-dev/utils';
+import { EntryRecord } from '@holochain-open-dev/utils/dist/entry-record';;
 import {
   DnaSource,
   Record,

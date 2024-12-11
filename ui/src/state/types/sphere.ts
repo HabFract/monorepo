@@ -1,4 +1,4 @@
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { OrbitHashes, OrbitNodeDetails, RootOrbitEntryHash } from "./orbit";
 
 export interface SphereDetails {

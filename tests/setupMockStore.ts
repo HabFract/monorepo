@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 
-import { ActionHashB64 } from "@holochain/client";
+import { ActionHashB64 } from "@holochain/client/lib/types";
 import { Frequency } from "../ui/src/state/types";
 import mockAppState, { SPHERE_ID } from "./integration/mocks/mockAppState";
 import { createTestStore } from "./utils-frontend";

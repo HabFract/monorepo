@@ -15,7 +15,7 @@ import { resetMocks, setMockUseStateTransitionResponse } from '../setup';
 import { addCustomMock, clearCustomMocks, mockedCacheEntries, mockStore } from '../setupMockStore';
 import { GetOrbitHierarchyDocument } from '../../ui/src/graphql/generated';
 import { InMemoryCache } from '@apollo/client';
-import { appStateAtom, Frequency, getHierarchyAtom } from '../../ui/src/state';
+import { getHierarchyAtom } from '../../ui/src/state';
 import { useAtom } from 'jotai';
 
 const mockClient = createMockClient();

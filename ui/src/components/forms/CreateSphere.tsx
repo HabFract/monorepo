@@ -7,7 +7,7 @@ import {
   useUpdateSphereMutation,
 } from "../../graphql/generated";
 import { useStateTransition } from "../../hooks/useStateTransition";
-import { ActionHashB64 } from "@holochain/client";
+import { ActionHashB64 } from "@state/types";;
 import DefaultSubmitBtn from "./buttons/DefaultSubmitButton";
 import { ImageUploadInput, Label, TextAreaField, TextInputField } from "habit-fract-design-system";
 import { useCreateSphereMutation } from "../../hooks/gql/useCreateSphereMutation";

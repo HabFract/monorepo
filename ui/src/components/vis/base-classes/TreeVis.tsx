@@ -78,7 +78,7 @@ import {
   newYTranslate,
 } from "../helpers";
 import { currentOrbitIdAtom, getOrbitNodeDetailsFromIdAtom, getOrbitIdFromEh, currentOrbitDetailsAtom } from "../../../state/orbit";
-import { EntryHashB64 } from "@holochain/client";
+import { EntryHashB64 } from "@state/types";
 import { getHierarchyAtom } from "../../../state/hierarchy";
 import { AppMachine } from "../../../main";
 import { NODE_ENV } from "../../../constants";

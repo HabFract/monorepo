@@ -1,5 +1,5 @@
 import { Scale } from "./../../graphql/generated/index";
-import { ActionHashB64, EntryHashB64 } from "@holochain/client";
+import { ActionHashB64, EntryHashB64 } from "@state/types";
 export type ObjectValues<T extends Record<string, unknown>> = T[keyof T];
 
 export namespace Frequency {
