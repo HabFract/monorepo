@@ -28,7 +28,7 @@
 /* Figures with Planitt Scales
 -------------------------------------------------- */
 .figure-image-container {
-  @apply flex-1 w-full;
+  @apply flex-1 w-full pt-8;
 }
 .figure-images, .figure-captions {
   @apply flex items-center justify-around gap-8;

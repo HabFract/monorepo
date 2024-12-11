@@ -61,7 +61,7 @@
 }
 
 .relative-controls-container {
-  top: -20.5rem;
+  top: -21rem;
   width: 100%;
   left: 0;
   right: 0;
@@ -73,7 +73,7 @@
 .vis-controls-container {
   height: fit-content;
   position: absolute;
-  bottom: -16.5rem;
+  bottom: -17rem;
   padding: .5rem;
   width: 100%;
   background: transparent;
@@ -87,12 +87,12 @@
 }
 
 .overlay-win-streak-container {
-  @apply flex justify-between gap-2;
-  padding: .5rem !important;
+  @apply flex justify-between gap-4;
+  padding: 1rem !important;
 }
 
 .calendar-nav {
-  @apply dark:bg-surface-overlay-dark text-white;
+  @apply dark:bg-overlay-tab text-white;
 }
 
 .calendar-day {
@@ -129,21 +129,21 @@
 }
 
 .orbit-pill-container {
-  @apply min-w-24 flex items-center justify-start h-8 gap-1 gap-4 px-2 text-xs font-light text-white border-gray-100 rounded-full;
+  @apply min-w-24 flex items-center justify-start h-12 gap-2 px-1 text-xs font-light text-white border-gray-100 rounded-full;
   flex-wrap: nowrap;
   max-width: 8rem;
 }
 
 .orbit-pill-container.selected {
   @apply border-2;
-  background-color: #6a817f;
+  background-color: rgba(255,255,255,0.15);
 }
 
 .orbit-pill-container .orbit-name {
   text-overflow: ellipsis;
-  line-height: 1rem;
-  @apply flex;
-  max-height: 1rem;
+  line-height: 1.5rem;
+  @apply flex text-base;
+  max-height: 1.5rem;
   overflow: hidden;
   white-space: nowrap;
   display: inline-block;
@@ -163,7 +163,7 @@
 }
 
 .swipe-up-tab-container {
-  @apply rounded-3xl dark:bg-surface-overlay-dark z-50 flex flex-col gap-1 p-2 text-white;
+  @apply rounded-3xl dark:bg-overlay-tab z-50 flex flex-col gap-1 p-2 text-white;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 
@@ -265,7 +265,7 @@ div.handle span {
 
 .win-count-container,
 .streak-count-container {
-  @apply min-h-24 dark:bg-surface-top-dark bg-surface-elevated-dark rounded-2xl grid w-1/2 gap-3 p-2 m-0;
+  @apply min-h-24 dark:bg-overlay-dashboard bg-overlay-dashboard rounded-2xl grid w-1/2 gap-3 p-2 m-0;
   row-gap: 4px;
   grid-template-rows: 1.5rem auto;
   grid-template-columns: 1fr 1fr 1fr;
@@ -348,7 +348,7 @@ div.handle span {
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
-  @apply dark:bg-surface-overlay-dark rounded-2xl p-1;
+  @apply dark:bg-overlay-controls rounded-2xl p-1;
 }
 
 .vis-move-lateral-container::-webkit-scrollbar,
@@ -358,14 +358,14 @@ div.handle span {
 
 .vis-move-lateral-container {
   width: calc(100% - 1rem);
-  bottom: 3.5rem;
-  left: -1.5rem;
-  height: 3rem;
+  bottom: 4.5rem;
+  left: .5rem;
+  height: 4rem;
 }
 
 .vis-move-vertical-container {
   height: 12rem;
-  width: 3rem;
+  width: 4rem;
   bottom: 15.5rem;
   padding-bottom: 2.5rem;
 }
@@ -430,7 +430,7 @@ div.handle span {
 
 .center-marker {
   position: relative;
-  left: 3rem;
+  left: 3.75rem;
   bottom: 21.25em;
   z-index: 50;
   width: 1rem;
@@ -473,7 +473,7 @@ div.handle span {
   height: 100%;
   min-width: 100%;
   width: max-content;
-  left: 2rem;
+  left: 1rem;
 }
 
 .intersecting-pill:first-child {

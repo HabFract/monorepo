@@ -18,14 +18,14 @@ export function getIconForPlanetValue(
       return () => (
         <img
           className="planet-icon"
-          style={{ height: "24px", width: "auto", transform: 'scale(1.3) translate(3px, 3.5px)', marginTop: '0px', objectFit: "cover" }}
+          style={{ height: "24px", width: "auto", transform: 'scale(1.3) translate(1px, 2px)', marginLeft: '4px', objectFit: "cover" }}
           src="assets/planet.svg"
         />
       );
     case Scale.Atom:
       return () => (
         <img
-          style={{ height: "24px", width: "auto", maxWidth: "24px", transform: 'scale(0.8)', marginTop: '0px', objectFit: "cover" }}
+          style={{ height: "24px", width: "auto", maxWidth: "24px", transform: 'scale(0.9)', marginLeft: '4px', objectFit: "cover" }}
           src="assets/moon.svg"
         />
       );

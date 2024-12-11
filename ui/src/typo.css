@@ -83,7 +83,7 @@ a {
 /* Onboarding Content */
 .onboarding-layout .content,
 .create-form .content {
-  @apply flex flex-col gap-4 px-4;
+  @apply flex flex-col gap-2 px-4;
   overflow-y: auto;
 }
 .onboarding-layout .content .form-description,

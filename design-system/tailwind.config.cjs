@@ -69,7 +69,7 @@ const tailwindConfig = {
         // Base semantic tokens
         surface: {
           DEFAULT: '#ffffff',
-          dark: '#242424',
+          dark: '#171717',
           overlay: {            // for overlay controls in the Vis
             DEFAULT: '#cecece',
             dark: {
@@ -145,6 +145,15 @@ const tailwindConfig = {
         },
 
         // Status colors
+        overlay: {
+          controls: "rgba(37, 55, 93, 0.8)",
+          tooltip: "rgba(0,0,0, 0.8)",
+          dashboard: "#1C3A38",
+          tab: "#1F2827",
+          gridline: "rgba(146, 168, 212, 0.3)",
+
+        },
+        // Status colors
         warn: {
           DEFAULT: 'rgba(251,200,43, 1)',
           500: 'rgba(251,200,43, .5)',
@@ -154,7 +163,7 @@ const tailwindConfig = {
           500: 'rgba(191,67,66, .5)',
         },
         success: {
-          DEFAULT: '#12d39d',
+          DEFAULT: '#rgba(11, 254, 184, 0.8)',
           incomplete: 'rgba(255, 255, 255, 0.1)',
         },
 

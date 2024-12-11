@@ -16,7 +16,7 @@ body {
 html,
 body {
   @apply dark:bg-surface-dark;
-  background: radial-gradient(#2F3232, #242424);
+  background: radial-gradient(#2F3232, #171717);
 }
 
 .page-container {
@@ -38,6 +38,12 @@ body {
   background-image:
     linear-gradient(to right, rgba(57, 57, 57, 0.5) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(57, 57, 57, 0.5) 1px, transparent 1px);
+}
+
+#vis {
+  background-image:
+    linear-gradient(to right, rgba(146, 168, 212, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(146, 168, 212, 0.3) 1px, transparent 1px);
 }
 
 
