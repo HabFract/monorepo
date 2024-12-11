@@ -81,7 +81,6 @@
     "@graphql-codegen/typescript-resolvers": "^4.0.6",
     "@graphql-tools/utils": "^10.1.0",
     "@holochain-playground/cli": "^0.2.0",
-    "@holochain/hc-spin": "^0.200.10",
     "@playlyfe/gql": "^2.6.2",
     "@rollup/plugin-graphql": "^2.0.4",
     "@tauri-apps/cli": "2.0.0-rc.1",

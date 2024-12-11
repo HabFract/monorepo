@@ -12,7 +12,6 @@
     
     "start:precheck": "npm run clean:sandbox && npm run start:local-services",
     "start:local-services": "hc run-local-services --bootstrap-port $BOOTSTRAP_PORT --signal-port $SIGNAL_PORT",
-    "start:electron": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc-spin -n $AGENTS ../workdir/habit_fract.happ --ui-path ../ui/dist --app-id habit_fract --bootstrap-url http://127.0.0.1:$BOOTSTRAP_PORT --signaling-url ws://127.0.0.1:$SIGNAL_PORT",
 
     "generate:dev": "RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc s --piped -f $VITE_ADMIN_PORT generate ../workdir/habit_fract.happ -a habit_fract network --bootstrap http://127.0.0.1:$BOOTSTRAP_PORT webrtc ws://127.0.0.1:$SIGNAL_PORT",
     "start:dev": "dotenv concurrently -- \"npm run generate:dev; RUST_LOG=warn WASM_LOG=debug echo \"pass\" | hc s --piped -f $VITE_ADMIN_PORT run -l -p $VITE_APP_PORT\" \"holochain-playground\"",
