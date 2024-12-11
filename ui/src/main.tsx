@@ -16,6 +16,7 @@ import { StateMachineContext } from "./contexts/state-machine";
 import BootSequence from "./BootSequence";
 import { ApolloProvider } from "@apollo/client";
 import { ModalProvider } from "./contexts/modal";
+import { useWinDataCache, WinDataContext } from "./contexts/windata";
 
 /*
 Application State Management (Courtesy of Ada Burrows for hREA playspace)
@@ -41,7 +42,15 @@ const root = ReactDOM.createRoot(document.getElementById("root")!);
 export const withJotaiStore = (component: React.ReactNode) => {
   return <Provider store={store}>{component}</Provider>;
 };
-
+const WinDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const cache = useWinDataCache();
+  
+  return (
+    <WinDataContext.Provider value={cache}>
+      {children}
+    </WinDataContext.Provider>
+  );
+};
 export async function renderPage(page: React.ReactNode, client) {
   // Cleanup previous render
   const cleanup = () => {
@@ -52,7 +61,9 @@ export async function renderPage(page: React.ReactNode, client) {
         <StateMachineContext.Provider value={AppMachine as any}>
           <ModalProvider>
             <ToastProvider>
+            <WinDataProvider>
               {withJotaiStore(<App>{page}</App>)}
+            </WinDataProvider>
             </ToastProvider>
           </ModalProvider>
         </StateMachineContext.Provider>

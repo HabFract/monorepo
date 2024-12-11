@@ -1,154 +1,107 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { OrbitNodeDetails, WinDataPerOrbitNode } from "../state/types";
+import { NODE_ENV } from './../constants';
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
-import { atom, useAtom, useAtomValue } from "jotai";
-import { appStateAtom, isLeafNodeHashAtom } from "../state";
-import { hierarchy } from "d3-hierarchy";
-import { isMoreThenDaily } from "../components/vis/tree-helpers";
+import {
+  NodeContent,
+  OrbitNodeDetails,
+  WinDataPerOrbitNode,
+} from "../state/types";
 import { useCreateOrUpdateWinRecord } from "./gql/useCreateOrUpdateWinRecord";
 import { fetchWinDataForOrbit } from "../graphql/utils";
 import { client as gql } from "../graphql/client";
-import { useWinDataState } from "../contexts/windata";
-import { debounce } from "../components/vis/helpers";
-import {
-  calculateWinDataForNonLeafNodeAtom,
-  winDataPerOrbitNodeAtom,
-} from "../state/win";
-
-/* Helper to transform fetched winData to a win records */
-export const winDataArrayToWinRecord = (
-  acc: any,
-  { date, value: val }: any
-) => {
-  acc[date] = "single" in val ? val.single : val.multiple;
-  return acc;
-};
+import { HierarchyNode } from "d3-hierarchy";
+import { useWinDataCache } from "../contexts/windata";
 
 /**
- * Custom hook to manage win data fetching and caching for both leaf and non-leaf orbit nodes.
+ * Custom hook to manage win data fetching and state management for both leaf and non-leaf orbit nodes.
+ * This hook handles the fetching, caching, and aggregation of win data while maintaining proper cleanup
+ * and memory management.
  *
- * @param {OrbitNodeDetails | null} currentOrbitDetails - The details of the current orbit
+ * @param {OrbitNodeDetails | null} currentOrbitDetails - The details of the current orbit node
  * @param {DateTime} currentDate - The current date for which win data is being managed
+ * @param {boolean} isLeafNode - Boolean indicating whether the current orbit is a leaf node
+ * @param {HierarchyNode<NodeContent>} rootHierarchy - The D3 hierarchy data structure containing the orbit tree
+ *
  * @returns {Object} An object containing:
- *   - `workingWinDataForOrbit`: The current win data for the orbit (actual for leaf nodes, calculated for non-leaf nodes)
- *   - `handleUpdateWorkingWins`: A function to update the win count for the current date (only for leaf nodes)
- *   - `handlePersistWins`: A function to persist the win record on the source chain
- *   - `isLeaf`: Boolean indicating whether the current orbit is a leaf node
- *   - `numberOfLeafOrbitDescendants`: Number indicating how many potential leaf node descendants could be completed
+ *   - `workingWinDataForOrbit`: {WinDataPerOrbitNode | null} The current win data for the orbit
+ *     - For leaf nodes: Direct win data from the source
+ *     - For non-leaf nodes: Aggregated win data calculated from leaf descendants
+ *
+ *   - `handleUpdateWorkingWins`: {(newWinCount: number) => void} Function to update the win count
+ *     for the current date (only active for leaf nodes)
+ *
+ *   - `handlePersistWins`: {() => void} Function to persist the win record to the source chain
+ *     (only active for leaf nodes)
+ *
+ *   - `numberOfLeafOrbitDescendants`: {number | null} Number indicating how many leaf node
+ *     descendants exist under this orbit node
+ *
+ *   - `isLeaf`: {boolean} Boolean indicating whether the current orbit is a leaf node
+ *
+ * @example
+ * ```tsx
+ * const {
+ *   workingWinDataForOrbit,
+ *   handleUpdateWorkingWins,
+ *   handlePersistWins,
+ *   numberOfLeafOrbitDescendants,
+ *   isLeaf
+ * } = useWinData(orbitDetails, currentDate, isLeafNode, rootHierarchy);
+ * ```
+ *
+ * @remarks
+ * - The hook manages its own loading and mounted states to prevent memory leaks
+ * - For non-leaf nodes, win data is calculated by aggregating the completion status of all leaf descendants
+ * - Updates are debounced and batched to prevent excessive re-renders
+ * - Proper cleanup is performed when the component unmounts or when the orbit changes
+ *
+ * @see {@link WinDataPerOrbitNode} for the structure of win data
+ * @see {@link OrbitNodeDetails} for the structure of orbit details
  */
 export function useWinData(
   currentOrbitDetails: OrbitNodeDetails | null,
-  currentDate: DateTime
+  currentDate: DateTime,
+  isLeafNode: boolean,
+  rootHierarchy: HierarchyNode<NodeContent>
 ) {
-  const appState = useAtomValue(appStateAtom);
-  const subsRef = useRef<Array<() => void>>([]);
+  const [state, setState] = useState<{
+    winData: WinDataPerOrbitNode | null;
+    leafDescendants: number | null;
+  }>({
+    winData: null,
+    leafDescendants: null,
+  });
+
+  const debugLog = (...args: any[]) => {
+    NODE_ENV =='development' && console.log("[useWinDataV2]", ...args);
+  };
+  const { getWinData, setWinData } = useWinDataCache();
+  const mountedRef = useRef(true);
   const loadingRef = useRef(false);
+  const currentWinDataRef = useRef<WinDataPerOrbitNode | null>(null);
+  const leafDescendantsRef = useRef<Array<{ content: string }>>([]);
 
-  const orbitId = currentOrbitDetails?.id;
+  const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
+    variables: { winRecord: { orbitEh: currentOrbitDetails?.eH } },
+  });
 
-  // Create atoms
-  const winDataAtom = useMemo(() => {
-    return winDataPerOrbitNodeAtom(orbitId || "placeholder");
-  }, [orbitId]);
-
-  const isLeafAtom = useMemo(
-    () => isLeafNodeHashAtom(orbitId || "placeholder"),
-    [orbitId]
-  );
-
-  // Use atom values
-  const isLeaf = useAtomValue(isLeafAtom);
-  const [workingWinDataForOrbit, setWorkingWinData] = useAtom(winDataAtom);
-
-  // Create a stable reference for the calculated win data atom
-  const calculatedWinDataRef = useRef(atom<WinDataPerOrbitNode | null>(null));
-
-  // Update the calculated win data
+  // Check cache first when mounting
   useEffect(() => {
-    if (!isLeaf && currentOrbitDetails?.eH) {
-      calculatedWinDataRef.current = calculateWinDataForNonLeafNodeAtom(
-        currentOrbitDetails.eH
-      ) as any;
-    }
-  }, [isLeaf, currentOrbitDetails?.eH]);
-
-  // Use the calculated win data with proper null handling
-  const nonLeafWinData = useAtomValue(calculatedWinDataRef.current);
-
-  // Cleanup subscriptions
-  useEffect(() => {
-    return () => {
-      subsRef.current.forEach((unsub) => unsub());
-      subsRef.current = [];
-    };
-  }, []);
-
-  // Fetch data for leaf nodes
-  useEffect(() => {
-    if (!currentOrbitDetails?.eH || loadingRef.current || !isLeaf) return;
-
-    let mounted = true;
-    loadingRef.current = true;
-
-    const fetchData = async () => {
-      try {
-        const data = await fetchWinDataForOrbit(
-          (await gql) as any,
-          currentOrbitDetails.eH,
-          currentDate
-        );
-
-        if (mounted && data) {
-          setWorkingWinData(data);
-        }
-      } finally {
-        loadingRef.current = false;
+    if (currentOrbitDetails && !state.winData) {
+      const cachedData = getWinData(currentOrbitDetails);
+      if (cachedData) {
+        setState((prev) => ({
+          ...prev,
+          winData: cachedData,
+        }));
+        currentWinDataRef.current = cachedData;
       }
-    };
-
-    fetchData();
-
-    return () => {
-      mounted = false;
-    };
-  }, [currentOrbitDetails?.eH, currentDate.toISO(), isLeaf, winDataAtom]);
-
-  // Initialize win data for leaf nodes
-  useEffect(() => {
-    if (
-      !currentOrbitDetails?.id ||
-      !currentDate ||
-      !isLeaf ||
-      workingWinDataForOrbit?.[currentDate.toLocaleString()] !== undefined // Changed this check
-    )
-      return;
-
-    const newData = {
-      ...(workingWinDataForOrbit || {}),
-      [currentDate.toLocaleString()]:
-        currentOrbitDetails.frequency > 1
-          ? new Array(currentOrbitDetails.frequency).fill(false)
-          : false,
-    } as WinDataPerOrbitNode;
-
-    setWorkingWinData(newData);
-  }, [
-    currentOrbitDetails?.id,
-    currentDate.toLocaleString(),
-    isLeaf,
-    workingWinDataForOrbit,
-  ]);
-
-  const latestWinDataRef = useRef(workingWinDataForOrbit);
-
-  // Update ref whenever win data changes
-  useEffect(() => {
-    latestWinDataRef.current = workingWinDataForOrbit;
-  }, [workingWinDataForOrbit]);
+    }
+  }, [currentOrbitDetails]);
 
   const handleUpdateWorkingWins = useCallback(
     (newWinCount: number) => {
-      if (!currentOrbitDetails?.id || !isLeaf) return;
+      if (!currentOrbitDetails?.id || !isLeafNode) return;
 
       const newValue =
         currentOrbitDetails.frequency > 1
@@ -158,85 +111,188 @@ export function useWinData(
           : !!newWinCount;
 
       const updatedData = {
-        ...(workingWinDataForOrbit || {}),
+        ...(currentWinDataRef.current || {}),
         [currentDate.toLocaleString()]: newValue,
       };
 
-      setWorkingWinData(updatedData);
-      latestWinDataRef.current = updatedData; // Update ref immediately
+      // Update local state and cache
+      setState((prev) => ({
+        ...prev,
+        winData: updatedData,
+      }));
+      currentWinDataRef.current = updatedData;
+
+      if (currentOrbitDetails) {
+        setWinData(currentOrbitDetails, updatedData);
+      }
     },
-    [currentOrbitDetails, isLeaf, currentDate, workingWinDataForOrbit]
+    [currentOrbitDetails, isLeafNode, currentDate, setWinData]
   );
-
-  const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
-    variables: { winRecord: { orbitEh: currentOrbitDetails?.eH } },
-  });
-
+  // Handle persisting wins to the source chain
   const handlePersistWins = useCallback(() => {
-    if (!currentOrbitDetails?.eH || !isLeaf) return;
+    if (!currentOrbitDetails?.eH || !isLeafNode || !currentWinDataRef.current) {
+      debugLog("Cannot persist wins - invalid state");
+      return;
+    }
 
-    // Use setTimeout to ensure we have the latest data
-    setTimeout(() => {
-      const currentWinData = latestWinDataRef.current;
-      console.log("Persisting win data with latest state:", currentWinData);
+    debugLog("Persisting wins for orbit:", currentOrbitDetails.eH);
 
-      if (!currentWinData) return;
-
-      createOrUpdateWinRecord({
-        variables: {
-          winRecord: {
-            orbitEh: currentOrbitDetails.eH,
-            winData: Object.entries(currentWinData).map(([date, value]) => ({
+    createOrUpdateWinRecord({
+      variables: {
+        winRecord: {
+          orbitEh: currentOrbitDetails.eH,
+          winData: Object.entries(currentWinDataRef.current).map(
+            ([date, value]) => ({
               date,
-              ...(isMoreThenDaily(currentOrbitDetails.frequency || 0)
+              ...(Array.isArray(value)
                 ? { multiple: value }
                 : { single: value }),
-            })),
-          },
+            })
+          ),
         },
-      });
-    }, 0);
-  }, [currentOrbitDetails?.eH, isLeaf]);
+      },
+    });
+  }, [currentOrbitDetails?.eH, isLeafNode]);
 
-  const hierarchyData = useMemo(() => {
-    if (!orbitId) return null;
-    return Object.values(appState.hierarchies.byRootOrbitEntryHash).find((h) =>
-      h.nodeHashes.includes(orbitId!)
-    );
-  }, [appState.hierarchies.byRootOrbitEntryHash]);
+  // Fetch initial data
+  useEffect(() => {
+    if (!currentOrbitDetails?.eH || loadingRef.current) return;
 
-  const isHierarchyLoaded = useMemo(() => {
-    return (
-      hierarchyData?.json &&
-      hierarchyData.json !== "" &&
-      hierarchyData.nodeHashes?.length > 1
-    );
-  }, [hierarchyData]);
+    const fetchData = async () => {
+      debugLog("Fetching initial win data for orbit:", currentOrbitDetails.eH);
+      loadingRef.current = true;
 
-  const numberOfLeafOrbitDescendants = useMemo(() => {
-    if (!isHierarchyLoaded || !hierarchyData || !currentOrbitDetails?.eH)
-      return null;
+      try {
+        if (isLeafNode) {
+          const data = await fetchWinDataForOrbit(
+            (await gql) as any,
+            currentOrbitDetails.eH,
+            currentDate
+          );
+
+          if (!mountedRef.current) return;
+
+          if (data) {
+            debugLog("Received win data:", data);
+            setState((prev) => ({
+              ...prev,
+              winData: data,
+            }));
+            currentWinDataRef.current = data;
+          }
+        } else {
+          // Calculate aggregated win data for non-leaf node
+          const leaves =
+            rootHierarchy
+              .find((node) => node.data.content === currentOrbitDetails.eH)
+              ?.leaves() || [];
+
+          // Fetch win data for all leaf descendants
+          const leafWinData = await Promise.all(
+            leaves.map(async (leaf) => {
+              const data = await fetchWinDataForOrbit(
+                (await gql) as any,
+                leaf.data.content,
+                currentDate
+              );
+              return { content: leaf.data.content, winData: data };
+            })
+          );
+
+          // Get all unique dates
+          const allDates = new Set<string>();
+          leafWinData.forEach(({ winData }) => {
+            if (winData && typeof winData === "object") {
+              Object.keys(winData).forEach((date) => allDates.add(date));
+            }
+          });
+
+          // Create aggregated win data preserving individual completion states
+          const aggregatedData = Array.from(allDates).reduce((acc, date) => {
+            // Map each leaf node's completion state for this date
+            const completionStates = leafWinData.map(({ winData }) => {
+              const dayData = winData?.[date];
+              return Array.isArray(dayData)
+                ? dayData.every(Boolean) // If it's an array, check if all true
+                : !!dayData; // If it's a single value, convert to boolean
+            });
+
+            acc[date] = completionStates;
+            return acc;
+          }, {} as WinDataPerOrbitNode);
+
+          debugLog("Calculated non-leaf win data:", {
+            leaves: leaves.length,
+            leafWinData,
+            aggregatedData,
+          });
+
+          if (!mountedRef.current) return;
+
+          setState((prev) => ({
+            ...prev,
+            winData: aggregatedData,
+          }));
+          currentWinDataRef.current = aggregatedData;
+
+          // Cache the calculated data
+          if (currentOrbitDetails) {
+            setWinData(currentOrbitDetails, aggregatedData);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching win data:", error);
+      } finally {
+        loadingRef.current = false;
+      }
+    };
+
+    fetchData();
+  }, [currentOrbitDetails?.eH, currentDate.toISO(), isLeafNode]);
+
+  // Calculate leaf descendants
+  useEffect(() => {
+    if (!rootHierarchy || !currentOrbitDetails?.eH) return;
 
     try {
-      const tree = JSON.parse(hierarchyData.json)[0];
-      const d3Hierarchy = hierarchy(tree);
-      const currentNode = d3Hierarchy.find(
+      const currentNode = rootHierarchy.find(
         (node) => node.data.content === currentOrbitDetails.eH
       );
-      return currentNode ? currentNode.leaves().length : null;
+
+      if (currentNode) {
+        const leaves = currentNode.leaves();
+        leafDescendantsRef.current = leaves.map((node) => ({
+          content: node.data.content,
+        }));
+        setState((prev) => ({
+          ...prev,
+          leafDescendants: leaves.length,
+        }));
+        debugLog("Calculated leaf descendants:", leaves.length);
+      }
     } catch (e) {
       console.error("Error calculating leaf descendants:", e);
-      return null;
     }
-  }, [isHierarchyLoaded, hierarchyData, currentOrbitDetails?.eH]);
+  }, [rootHierarchy, currentOrbitDetails?.eH]);
+
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      debugLog("Cleaning up win data hook");
+      mountedRef.current = false;
+      currentWinDataRef.current = null;
+      setState({
+        winData: null,
+        leafDescendants: null,
+      });
+    };
+  }, []);
 
   return {
-    workingWinDataForOrbit: isLeaf ? workingWinDataForOrbit : {...nonLeafWinData, leafDescendants: numberOfLeafOrbitDescendants, useRootFrequency: false} ,
-    handleUpdateWorkingWins: currentOrbitDetails?.id
-      ? handleUpdateWorkingWins
-      : undefined,
-    handlePersistWins: currentOrbitDetails?.id ? handlePersistWins : undefined,
-    numberOfLeafOrbitDescendants,
-    isLeaf,
+    workingWinDataForOrbit: state.winData,
+    handleUpdateWorkingWins,
+    handlePersistWins,
+    numberOfLeafOrbitDescendants: state.leafDescendants,
+    isLeaf: isLeafNode,
   };
 }

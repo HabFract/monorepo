@@ -1,31 +1,28 @@
-// contexts/winDataContext.tsx
-import { useCallback, useRef } from 'react';
-import { atom, useAtom } from 'jotai';
+import { createContext, useContext, useRef, useCallback } from 'react';
 import { WinDataPerOrbitNode } from '../state/types';
 
-const winStateAtom = atom<Record<string, WinDataPerOrbitNode>>({});
+// Use WeakMap to allow garbage collection when orbits are no longer referenced
+const winDataCache = new WeakMap<object, WinDataPerOrbitNode>();
 
-export function useWinDataState() {
-  const [winState, setWinState] = useAtom(winStateAtom);
+type WinDataContextType = {
+  getWinData: (orbitKey: object) => WinDataPerOrbitNode | undefined;
+  setWinData: (orbitKey: object, data: WinDataPerOrbitNode) => void;
+};
 
-  const updateInProgressRef = useRef(false);
+export const WinDataContext = createContext<WinDataContextType>({
+  getWinData: () => undefined,
+  setWinData: () => {},
+});
 
-  const updateWinData = useCallback((orbitId: string, data: WinDataPerOrbitNode) => {
-    if (updateInProgressRef.current) return;
-    
-    updateInProgressRef.current = true;
-    setWinState(prev => {
-      const newState = {
-        ...prev,
-        [orbitId]: data
-      };
-      updateInProgressRef.current = false;
-      return newState;
-    });
+// Custom hook for win data cache management
+export const useWinDataCache = () => {
+  const getWinData = useCallback((orbitKey: object) => {
+    return winDataCache.get(orbitKey);
   }, []);
 
-  return {
-    winState,
-    updateWinData
-  };
-}
+  const setWinData = useCallback((orbitKey: object, data: WinDataPerOrbitNode) => {
+    winDataCache.set(orbitKey, data);
+  }, []);
+
+  return { getWinData, setWinData };
+};

@@ -1,3 +1,8 @@
+/**
+ * ListSpheres.tsx
+ * Component for displaying and managing a list of spheres with their associated orbit hierarchies and win data.
+ */
+
 import {
   Sphere,
   useDeleteSphereMutation,
@@ -5,7 +10,7 @@ import {
   useGetSpheresQuery,
 } from "../../graphql/generated";
 import "./common.css";
-import { Spinner, SystemCalendarCard, toYearDotMonth } from "habit-fract-design-system";
+import { Spinner, SystemCalendarCard } from "habit-fract-design-system";
 import { extractEdges, fetchWinDataForOrbit } from "../../graphql/utils";
 import { useStateTransition } from "../../hooks/useStateTransition";
 import {
@@ -25,39 +30,85 @@ import { hierarchy, HierarchyNode } from "d3-hierarchy";
 import { VisCoverage } from "../vis/types";
 import { generateQueryParams } from "../vis/tree-helpers";
 import { DateTime } from "luxon";
-import { useWinData } from "../../hooks/useWinData";
 
+/** Debug flag for development logging */
+const DEBUG = true;
+
+/**
+ * Helper function for debug logging
+ * @param args Arguments to log
+ */
+const debugLog = (...args: any[]) => {
+  if (DEBUG) console.log(...args);
+};
+
+/**
+ * Type definition for non-leaf orbit completion calculation context
+ */
 export type nonLeafCompletionCalculationContext = {
-  useRootFrequency: boolean; // Tell UI components further down to use the orbit's frequency to determine completion, rather than number of winnable descendant leaves
-  leafDescendants: number | undefined; // If the above flag is false, tell the components what they should calculate completion out of (this is dynamically calculated from the fetched hierarchy data)
-}
+  /** Tell UI components to use orbit frequency instead of descendant count */
+  useRootFrequency: boolean;
+  /** Number of winnable descendant leaves for completion calculation */
+  leafDescendants: number | undefined;
+};
 
+/**
+ * Type definition for sphere data state
+ */
+type SphereDataState = {
+  rootOrbitOrbitDetails: OrbitNodeDetails | null;
+  winData: WinDataPerOrbitNode;
+  calculateOptions: nonLeafCompletionCalculationContext;
+};
+
+/**
+ * Helper function to convert Map to plain object
+ * @param map Map to convert
+ * @returns Plain object representation of the map
+ */
+const mapToObject = (map: Map<string, any>): Record<string, any> => {
+  return Array.from(map.entries()).reduce((obj, [key, value]) => {
+    obj[key] = value;
+    return obj;
+  }, {} as Record<string, any>);
+};
+
+/**
+ * ListSpheres Component
+ * Displays a list of spheres with their associated orbit hierarchies and win data.
+ * Handles data fetching, state management, and navigation.
+ */
 function ListSpheres() {
   const [_state, transition, _params, client] = useStateTransition();
   
+  /** Loading states for individual spheres */
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
   const loadingInitiatedRef = useRef(false);
+  
+  /** Refs for storing update data during processing */
   const winDataUpdatesRef = useRef<Map<ActionHashB64, any>>(new Map());
   const orbitDataUpdatesRef = useRef<Record<ActionHashB64, any>>({});
   
+  /** Query hooks for fetching data */
   const { loading, error, data } = useGetSpheresQuery();
   const [getHierarchy] = useGetOrbitHierarchyLazyQuery({
     fetchPolicy: "network-only",
   });
 
-  // Sphere data state
+  /** Memoized spheres data from query */
   const spheres = useMemo(() => extractEdges(data!.spheres) as Sphere[], [data]);
-  const [spheresData, setSpheresData] = useState<Record<string, {
-    rootOrbitOrbitDetails: OrbitNodeDetails | null,
-    winData: WinDataPerOrbitNode | (WinDataPerOrbitNode & nonLeafCompletionCalculationContext),
-    calculateOptions: nonLeafCompletionCalculationContext
-  }>>({});
+  
+  /** State for storing processed sphere data */
+  const [spheresData, setSpheresData] = useState<Record<string, SphereDataState>>({});
+
   /**
-   * Fetches and then creates/updates AppState data for sphere, sphere hierarchy and sphere hierarchy orbit wins
-   * Ensures we have fresh data as the graphql requests are network-only.
+   * Loads hierarchy data for a single sphere
+   * Fetches and processes orbit hierarchy and win data
+   * @param sphere The sphere to load data for
    */
   const loadSphereHierarchyData = useCallback(async (sphere: Sphere) => {
-    // Clear any previous data for this sphere
+    debugLog('Loading hierarchy data for sphere:', sphere.eH);
+    
     setSpheresData(prev => {
       const newData = { ...prev };
       delete newData[sphere.eH];
@@ -73,8 +124,6 @@ function ListSpheres() {
   
     try {
       const state = store.get(appStateChangeAtom);
-      
-      // Fetch hierarchy data
       const visCoverage = VisCoverage.CompleteSphere;
       const queryParams = generateQueryParams(visCoverage, sphere.eH)(0);
   
@@ -89,23 +138,18 @@ function ListSpheres() {
   
       if (!hierarchyData?.getOrbitHierarchy) return;
   
-      // Parse hierarchy data with cleanup
       const trees = JSON.parse(hierarchyData.getOrbitHierarchy);
       if (!trees) return;
   
       parsedTrees = parseAndSortTrees(trees);
       const rootOrbitEh = parsedTrees[0].content;
-      
-      // Create hierarchy with cleanup
       d3Hierarchy = hierarchy(parsedTrees[0]).sort(byStartTime);
   
       const nodeHashes: string[] = [];
       const leafNodeHashes: string[] = [];
       const leaves: HierarchyNode<NodeContent>[] = [];
-      winDataUpdatesRef.current = new Map();
-      orbitDataUpdatesRef.current = {};
-
-      // Process nodes in batches to prevent memory spikes
+      
+      // Process nodes in batches
       const batchSize = 50;
       const nodes = d3Hierarchy.descendants();
       
@@ -121,11 +165,10 @@ function ListSpheres() {
           };
           if (!node.children || node.children.length === 0) {
             leafNodeHashes.push(actionHash);
-            leaves.push(node)
+            leaves.push(node);
           }
         });
   
-        // Allow garbage collection between batches
         await new Promise(resolve => setTimeout(resolve, 0));
       }
   
@@ -140,18 +183,16 @@ function ListSpheres() {
           if(!winDataUpdatesRef.current) return;
           
           const actionHash = store.get(getOrbitIdFromEh(node.data.content));
-
           const winData = await fetchWinDataForOrbit(client, node.data.content, today);
           if (winData) {
             winDataUpdatesRef.current!.set(actionHash, winData);
           }
         }));
   
-        // Allow garbage collection between batches
         await new Promise(resolve => setTimeout(resolve, 0));
       }
   
-      // Single atomic state update
+      // Update app state
       store.set(appStateChangeAtom, {
         ...state,
         spheres: {
@@ -191,33 +232,44 @@ function ListSpheres() {
           ...Object.fromEntries(winDataUpdatesRef.current)
         }
       });
+
       const rootOrbitDetails = store.get(getOrbitNodeDetailsFromEhAtom(rootOrbitEh));
-      // Update local state
+      const winDataObject = mapToObject(winDataUpdatesRef.current);
+      const calculateOptions: nonLeafCompletionCalculationContext = {
+        useRootFrequency: d3Hierarchy?.height === 0,
+        leafDescendants: leaves.length
+      };
+      debugLog('Setting sphere data:', {
+        rootOrbitDetails,
+        winData: winDataObject,
+        calculateOptions
+      });
+
+      // Update component state
       setSpheresData(prev => ({
         ...prev,
         [sphere.eH]: {
           rootOrbitOrbitDetails: rootOrbitDetails,
-          winData: Object.fromEntries(winDataUpdatesRef.current! || {}),
-          calculateOptions: {
-            useRootFrequency: d3Hierarchy?.height === 0,
-            leafDescendants: leaves.length
-          }
+          winData:  winDataObject,
+          calculateOptions
         }
       }));
+
     } catch (error) {
       console.error(`Error loading hierarchy data for sphere ${sphere.eH}:`, error);
-      
     } finally {
       setLoadingStates(prev => ({ ...prev, [sphere.eH]: false }));
-      // Cleanup references
-      d3Hierarchy = null;
-      parsedTrees = null;
-      // GC for working update map, since a weak map doesn't allow enumeration
-      winDataUpdatesRef.current = new Map();
-      orbitDataUpdatesRef.current = {};
+      // Cleanup after state updates
+      setTimeout(() => {
+        d3Hierarchy = null;
+        parsedTrees = null;
+        winDataUpdatesRef.current = new Map();
+        orbitDataUpdatesRef.current = {};
+      }, 0);
     }
   }, [getHierarchy, client]);
 
+  /** Effect to load data for all spheres */
   useEffect(() => {
     if (!spheres.length || loadingInitiatedRef.current) return;
 
@@ -227,7 +279,7 @@ function ListSpheres() {
       for (const sphere of spheres) {
         await loadSphereHierarchyData(sphere);
 
-        // Verify data was loaded correctly
+        // Verify data loading
         const state = store.get(appStateChangeAtom);
         const sphereEntry = state.spheres.byHash[sphere.id];
         const rootOrbitEh = sphereEntry?.hierarchyRootOrbitEntryHashes?.[0];
@@ -248,6 +300,7 @@ function ListSpheres() {
     };
   }, [spheres]);
 
+  /** Navigation handlers */
   const routeToCreatePlanitt = (sphereEh: EntryHashB64) => {
     transition("CreateOrbit", { sphereEh });
   };
@@ -270,6 +323,11 @@ function ListSpheres() {
     store.set(appStateChangeAtom, state);
   };
 
+  /** Debug effect for state changes */
+  useEffect(() => {
+    debugLog('Spheres data updated:', spheresData);
+  }, [spheresData]);
+
   if (loading) return <Spinner type="full" />;
   if (error) return <p>Error: {error.message}</p>;
   if (!spheres.length) return <></>;
@@ -278,17 +336,49 @@ function ListSpheres() {
     <div className="spheres-list">
       {spheres.map((sphere: Sphere) => {
         const isLoading = loadingStates[sphere.eH];
-        const sphereData = spheresData[sphere.eH] || {};
+        const sphereData = spheresData[sphere.eH];
+        
+        debugLog('Rendering sphere:', sphere.eH, 'with data:', sphereData);
+        // TODO move to main component for meaningful memoisation
+        // Calculate aggregated win data for root node
+        const rootOrbitWinData = useMemo(() => {
+          if (!sphereData?.winData || !sphereData.rootOrbitOrbitDetails) return {};
 
-        const winDataHook = useWinData(sphereData?.rootOrbitOrbitDetails, DateTime.now());
+          const leafWinData = sphereData.winData;
+          const rootId = sphereData.rootOrbitOrbitDetails.id;
+
+          // Get all unique dates
+          const allDates = new Set<string>();
+          Object.entries(leafWinData).forEach(([key, winData]) => {
+            if (key !== rootId && winData && typeof winData === 'object') {
+              Object.keys(winData).forEach(date => allDates.add(date));
+            }
+          });
+
+          // Create aggregated win data preserving individual completion states
+          return Array.from(allDates).reduce((acc, date) => {
+            // Map each leaf node's completion state for this date
+            const completionStates = Object.entries(leafWinData)
+              .filter(([key]) => key !== rootId)
+              .map(([_, winData]) => {
+                const dayData = winData?.[date];
+                return Array.isArray(dayData) 
+                  ? dayData.every(Boolean)  // If it's an array, check if all true
+                  : !!dayData;              // If it's a single value, convert to boolean
+              });
+
+            acc[date] = completionStates;
+            return acc;
+          }, {} as Record<string, boolean[]>);
+        }, [sphereData]);
 
         return (
           <SystemCalendarCard
             key={sphere.id}
             sphere={sphere}
             loading={isLoading}
-            rootOrbitWinData={winDataHook.workingWinDataForOrbit}
-            rootOrbitOrbitDetails={sphereData?.rootOrbitOrbitDetails}
+            rootOrbitWinData={sphereData?.winData ? {...rootOrbitWinData, ...sphereData.calculateOptions} : {}}
+            rootOrbitOrbitDetails={sphereData?.rootOrbitOrbitDetails ?? null}
             setSphereIsCurrent={() => handleSetCurrentSphere(sphere.id)}
             handleVisAction={() => routeToVis(sphere)}
             handleCreateAction={() => routeToCreatePlanitt(sphere.eH)}

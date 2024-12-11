@@ -35,7 +35,7 @@ import {
   ConsolidatedFlags,
   OrbitDescendant,
 } from "../../state/types/hierarchy";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { useVisCanvas } from "../../hooks/useVisCanvas";
 import { DEFAULT_MARGINS } from "../vis/constants";
 import { StoreType } from "../../state/types/store";
@@ -44,7 +44,6 @@ import { DateTime } from "luxon";
 import { calculateCurrentStreakAtom, calculateLongestStreakAtom, setWinDataAtom } from "../../state/win";
 import { useVisContext } from "../../contexts/vis";
 import memoizeOne from "memoize-one";
-import { useStateTransition } from "../../hooks/useStateTransition";
 
 /**
  * Higher-order component to enhance a visualization component with additional logic and state management.
@@ -72,8 +71,8 @@ export function withVisCanvas<T extends IVisualization>(
   const ComponentWithVis = React.memo(() => {
     // Get the details of the cu  rrent Orbit in context, and the calculated bounds for navigation of the rendered hierarchy
     // which will determine the state/visibility of the Vis OverlayLayout/controls
-    const currentOrbitDetails: OrbitNodeDetails | null = store.get(currentOrbitDetailsAtom);
-    const currentOrbitIsLeaf = store.get(currentOrbitIsLeafAtom);
+    const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
+    const currentOrbitIsLeaf = useAtomValue(currentOrbitIsLeafAtom);
 
     const currentOrbitStreakAtom = useMemo(() => calculateCurrentStreakAtom(currentOrbitDetails?.id as string), [currentOrbitDetails?.id])
     const currentStreak = store.get(currentOrbitStreakAtom);
@@ -126,7 +125,6 @@ export function withVisCanvas<T extends IVisualization>(
     const [currentDate, setCurrentDate] = useAtom<DateTime>(currentDayAtom);
     const visRef = useRef<T | null>(null);
     const memoizedOrbitDetails = useMemo(() => currentOrbitDetails, [currentOrbitDetails?.id]);
-    const memoizedDate = useMemo(() => currentDate, [currentDate.toISO()]);
 
     useEffect(() => {
       return () => {
@@ -144,8 +142,6 @@ export function withVisCanvas<T extends IVisualization>(
     }
   }, [appendedSvg, currentOrbitDetails?.id]);
 
-    // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
-    const winDataHook = useWinData(memoizedOrbitDetails, memoizedDate);
 
     // const loading = useGetWinRecordForOrbitForMonthQueryLoading || createOrUpdateWinRecordLoading;
     // const error = useGetWinRecordForOrbitForMonthQueryError || createOrUpdateWinRecordError;
@@ -165,6 +161,18 @@ export function withVisCanvas<T extends IVisualization>(
             orbitSiblings
           } = memoisedActionsAndData(currentVis, currentOrbitDetails?.eH);
 
+          const isLeaf = useMemo(() => !!currentOrbitIsLeaf, [currentOrbitIsLeaf]);
+          // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
+          const winDataHookResult = useWinData(memoizedOrbitDetails, currentDate, isLeaf, currentVis.rootData!);
+          const memoizedWinDataHook = useMemo(() => winDataHookResult, [
+            winDataHookResult.workingWinDataForOrbit,
+            winDataHookResult.handleUpdateWorkingWins,
+            winDataHookResult.handlePersistWins,
+            winDataHookResult.numberOfLeafOrbitDescendants,
+            winDataHookResult.isLeaf,
+            currentOrbitDetails?.id,
+            currentDate.toISO() 
+          ]);
           
           if (!visRef.current) {
             visRef.current = currentVis;
@@ -186,8 +194,8 @@ export function withVisCanvas<T extends IVisualization>(
             setNewDate: setCurrentDate,
             currentStreak,
             longestStreak,
-            ...winDataHook,
-            numberOfLeafOrbitDescendants: winDataHook.numberOfLeafOrbitDescendants || 0,
+            ...memoizedWinDataHook,
+            numberOfLeafOrbitDescendants: memoizedWinDataHook.numberOfLeafOrbitDescendants || 0,
             orbitFrequency: currentOrbitDetails?.frequency || 1.0,
             orbitSiblings,
             orbitDescendants,
@@ -201,7 +209,7 @@ export function withVisCanvas<T extends IVisualization>(
             currentOrbitDetails?.frequency,
             orbitSiblings,
             orbitDescendants,
-            winDataHook,
+            memoizedWinDataHook,
             currentOrbitDetails?.id,
             consolidatedActions
           ]);
