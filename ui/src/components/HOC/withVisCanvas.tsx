@@ -2,7 +2,7 @@ import React, { ComponentType, ReactNode, useCallback, useEffect, useMemo, useRe
 
 import "../vis/vis.css";
 
-import { VisProps, VisCoverage, IVisualization } from "../vis/types";
+import { VisProps, VisCoverage, IVisualization, WithVisCanvasProps } from "../vis/types";
 import { useNodeTraversal } from "../../hooks/useNodeTraversal";
 import {
   currentSphereHierarchyBounds,
@@ -41,9 +41,9 @@ import { DEFAULT_MARGINS } from "../vis/constants";
 import { StoreType } from "../../state/types/store";
 import { useWinData } from "../../hooks/useWinData";
 import { DateTime } from "luxon";
-import { calculateCurrentStreakAtom, calculateLongestStreakAtom, setWinDataAtom } from "../../state/win";
 import { useVisContext } from "../../contexts/vis";
 import memoizeOne from "memoize-one";
+import { AnimatePresence, motion } from "framer-motion";
 
 /**
  * Higher-order component to enhance a visualization component with additional logic and state management.
@@ -68,25 +68,15 @@ import memoizeOne from "memoize-one";
 export function withVisCanvas<T extends IVisualization>(
   Component: ComponentType<VisProps<T>>,
 ): ReactNode {
-  const ComponentWithVis = React.memo(() => {
-    // Get the details of the cu  rrent Orbit in context, and the calculated bounds for navigation of the rendered hierarchy
-    // which will determine the state/visibility of the Vis OverlayLayout/controls
+  const ComponentWithVis = React.memo(({ }: WithVisCanvasProps) => {
     const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
     const currentOrbitIsLeaf = useAtomValue(currentOrbitIsLeafAtom);
-
-    const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
-      currentSphereHierarchyBounds,
-    );
-    const currentHierarchyIndices: Coords = store.get(
-      currentSphereHierarchyIndices,
-    );
-
-    // Get the hashes of the current Sphere's context and use it as a useEffect dependency for appending the SVG canvas.
+    const sphereHierarchyBounds: SphereHierarchyBounds = store.get(currentSphereHierarchyBounds);
+    const currentHierarchyIndices: Coords = store.get(currentSphereHierarchyIndices);
     const selectedSphere: SphereHashes = store.get(currentSphereHashesAtom);
     const { appendedSvg } = useVisCanvas(selectedSphere);
     const { canvasHeight, canvasWidth } = getCanvasDimensions();
 
-    // Get actions for Node traversal and update of the hierarchy bounds/current indices
     const {
       incrementBreadth,
       decrementBreadth,
@@ -101,26 +91,19 @@ export function withVisCanvas<T extends IVisualization>(
       ] as HierarchyBounds,
     );
 
-    // ## -- Vis Layout level state -- ##
     const { isAppendingNode, setIsAppendingNode } = useVisContext();
-
-    // ## -- Component level state -- ##
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
     const allFirstChildDescendantOrbits = useRef<any>(null);
-    const [currentParentOrbitEh, setCurrentParentOrbitEh] =
-      useState<EntryHashB64>();
-    const [currentChildOrbitEh, setCurrentChildOrbitEh] =
-      useState<EntryHashB64>();
-    const resetModalParentChildStates = () => {
-      setCurrentParentOrbitEh(undefined)
-      setCurrentChildOrbitEh(undefined)
-    }
-
-    // Store and update date in local component state to ensure re-render with VisControls, Calendar
+    const [currentParentOrbitEh, setCurrentParentOrbitEh] = useState<EntryHashB64>();
+    const [currentChildOrbitEh, setCurrentChildOrbitEh] = useState<EntryHashB64>();
     const [currentDate, setCurrentDate] = useAtom<DateTime>(currentDayAtom);
     const visRef = useRef<T | null>(null);
     const memoizedOrbitDetails = useMemo(() => currentOrbitDetails, [currentOrbitDetails?.id]);
+
+    const resetModalParentChildStates = () => {
+      setCurrentParentOrbitEh(undefined);
+      setCurrentChildOrbitEh(undefined);
+    };
 
     useEffect(() => {
       return () => {
@@ -138,100 +121,126 @@ export function withVisCanvas<T extends IVisualization>(
       }
     }, [appendedSvg, currentOrbitDetails?.id]);
 
-    // const loading = useGetWinRecordForOrbitForMonthQueryLoading || createOrUpdateWinRecordLoading;
-    // const error = useGetWinRecordForOrbitForMonthQueryError || createOrUpdateWinRecordError;
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+      if (appendedSvg && currentOrbitDetails?.eH) {
+        setIsLoading(false);
+      }
+    }, [appendedSvg, currentOrbitDetails]);
+
+    const isCurrentlyLoading = useMemo(() => {
+      return isLoading || !appendedSvg || !currentOrbitDetails?.eH;
+    }, [isLoading, appendedSvg, currentOrbitDetails]);
+
     return (
-      <Component
-        canvasHeight={canvasHeight}
-        canvasWidth={canvasWidth}
-        margin={DEFAULT_MARGINS}
-        render={(currentVis: T) => {
-          if (!currentOrbitDetails?.eH) return <Spinner />
+      <div className="relative w-full h-full">
+        <AnimatePresence mode="wait">
+          {isCurrentlyLoading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.1 }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <Spinner />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="w-full h-full"
+            >
+              <Component
+                canvasHeight={canvasHeight}
+                canvasWidth={canvasWidth}
+                margin={DEFAULT_MARGINS}
+                render={(currentVis: T) => {
+                  if (!currentOrbitDetails?.eH) return null;
 
-          const memoisedActionsAndData = memoizeOne(getActionsAndDataForControls)
-          const {
-            consolidatedFlags,
-            consolidatedActions,
-            orbitDescendants,
-            orbitSiblings
-          } = memoisedActionsAndData(currentVis, currentOrbitDetails?.eH);
+                  const memoisedActionsAndData = memoizeOne(getActionsAndDataForControls);
+                  const {
+                    consolidatedFlags,
+                    consolidatedActions,
+                    orbitDescendants,
+                    orbitSiblings
+                  } = memoisedActionsAndData(currentVis, currentOrbitDetails?.eH);
 
-          const isLeaf = useMemo(() => !!currentOrbitIsLeaf, [currentOrbitIsLeaf]);
-          // ## -- Hook for handling the fetching and updating of WinData for a given Orbit and Date -- ##
-          const winDataHookResult = useWinData(memoizedOrbitDetails, currentDate, isLeaf, currentVis.rootData!);
-          const memoizedWinDataHook = useMemo(() => winDataHookResult, [
-            winDataHookResult.workingWinDataForOrbit,
-            winDataHookResult.handleUpdateWorkingWins,
-            winDataHookResult.handlePersistWins,
-            winDataHookResult.numberOfLeafOrbitDescendants,
-            winDataHookResult.isLeaf,
-            currentOrbitDetails?.id,
-            currentDate.toISO()
-          ]);
+                  const isLeaf = useMemo(() => !!currentOrbitIsLeaf, [currentOrbitIsLeaf]);
+                  const winDataHookResult = useWinData(memoizedOrbitDetails, currentDate, isLeaf, currentVis.rootData!);
+                  const memoizedWinDataHook = useMemo(() => winDataHookResult, [
+                    winDataHookResult.workingWinDataForOrbit,
+                    winDataHookResult.handleUpdateWorkingWins,
+                    winDataHookResult.handlePersistWins,
+                    winDataHookResult.numberOfLeafOrbitDescendants,
+                    winDataHookResult.isLeaf,
+                    currentOrbitDetails?.id,
+                    currentDate.toISO()
+                  ]);
 
-          if (!visRef.current) {
-            visRef.current = currentVis;
-          }
-          useEffect(() => {
-            if (appendedSvg && visRef.current) {
-              visRef.current.modalOpen = setIsModalOpen;
-              visRef.current.modalParentOrbitEh = (val) => {
-                console.log('Set parent id for new orbit in modal :>> ', val);
-                setCurrentParentOrbitEh(val);
-              };
-              visRef.current.modalChildOrbitEh = setCurrentChildOrbitEh;
-              visRef.current.render();
-            }
-          }, [appendedSvg]);
+                  if (!visRef.current) {
+                    visRef.current = currentVis;
+                  }
 
-          const overlayProps = useMemo(() => ({
-            currentDate,
-            setNewDate: setCurrentDate,
-            ...memoizedWinDataHook,
-            numberOfLeafOrbitDescendants: memoizedWinDataHook.numberOfLeafOrbitDescendants || 0,
-            orbitFrequency: currentOrbitDetails?.frequency || 1.0,
-            orbitSiblings,
-            orbitDescendants,
-            isLeafOrbit: !!currentOrbitIsLeaf,
-            currentOrbitDetails,
-            actions: consolidatedActions
-          }), [
-            currentDate.toISO(),
-            currentOrbitDetails?.frequency,
-            orbitSiblings,
-            orbitDescendants,
-            memoizedWinDataHook,
-            currentOrbitDetails?.id,
-            consolidatedActions
-          ]);
-          // console.log('Render from withVisCanvas HOC render prop :>> ', winDataHook);
-          return (
-            <>
-              {/* Magnification Icon for indicating when full zoom capability is present */}
-              {/* {currentVis.coverageType == VisCoverage.CompleteSphere && currentHierarchyIndices.y == 0 && <svg className="top-20 right-4 dark:text-white fixed w-6 h-6 text-white text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path fillRule="evenodd" d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z" clipRule="evenodd" />
-              </svg> */}
-              {/* Currently we are only supporting mobile for Navigation/Win Completion */}
-              {isSmallScreen()
-                ? <OverlayLayout {...overlayProps} ></OverlayLayout>
-                : null
-              }
+                  useEffect(() => {
+                    if (appendedSvg && visRef.current) {
+                      visRef.current.modalOpen = setIsModalOpen;
+                      visRef.current.modalParentOrbitEh = (val) => {
+                        console.log('Set parent id for new orbit in modal :>> ', val);
+                        setCurrentParentOrbitEh(val);
+                      };
+                      visRef.current.modalChildOrbitEh = setCurrentChildOrbitEh;
+                      visRef.current.render();
+                    }
+                  }, [appendedSvg]);
 
-              {/* Modal, primarily for appending/prepending new nodes to the hierarchy from the Vis */}
-              {VisModal<T>(
-                isModalOpen,
-                setIsModalOpen,
-                selectedSphere,
-                currentParentOrbitEh,
-                currentChildOrbitEh,
-                resetModalParentChildStates,
-                setIsAppendingNode,
-                currentVis,
-              )}
-            </>
-          );
-        }}
-      ></Component>
+                  const overlayProps = useMemo(() => ({
+                    currentDate,
+                    setNewDate: setCurrentDate,
+                    ...memoizedWinDataHook,
+                    numberOfLeafOrbitDescendants: memoizedWinDataHook.numberOfLeafOrbitDescendants || 0,
+                    orbitFrequency: currentOrbitDetails?.frequency || 1.0,
+                    orbitSiblings,
+                    orbitDescendants,
+                    isLeafOrbit: !!currentOrbitIsLeaf,
+                    currentOrbitDetails,
+                    actions: consolidatedActions
+                  }), [
+                    currentDate.toISO(),
+                    currentOrbitDetails?.frequency,
+                    orbitSiblings,
+                    orbitDescendants,
+                    memoizedWinDataHook,
+                    currentOrbitDetails?.id,
+                    consolidatedActions
+                  ]);
+
+                  return (
+                    <>
+                      {isSmallScreen() && <OverlayLayout {...overlayProps} />}
+                      {VisModal<T>(
+                        isModalOpen,
+                        setIsModalOpen,
+                        selectedSphere,
+                        currentParentOrbitEh,
+                        currentChildOrbitEh,
+                        resetModalParentChildStates,
+                        setIsAppendingNode,
+                        currentVis,
+                      )}
+                    </>
+                  );
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     );
 
 

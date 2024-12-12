@@ -43,13 +43,13 @@ function App({ children: pageComponent }) {
   const [_, transition, params] = useStateTransition(); // Top level state machine and routing
   const state = AppMachine.state.currentState;
 
-  useEffect(() => {
-    logMemoryUsage('Page Load');
+  // useEffect(() => {
+  //   logMemoryUsage('Page Load');
 
-    return () => {
-      logMemoryUsage('Page Unload');
-    };
-  }, [state]); // Log on state changes
+  //   return () => {
+  //     logMemoryUsage('Page Unload');
+  //   };
+  // }, [state]); // Log on state changes
 
   const [sideNavExpanded, setSideNavExpanded] = useState<boolean>(false); // Adds and removes expanded class to side-nav
 

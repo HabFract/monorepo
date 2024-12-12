@@ -205,10 +205,10 @@ export abstract class BaseVisualization implements IVisualization {
     const nodeContainer = this._canvas!.select('g.nodes');
     nodeContainer.on('click', handleNodeEvent);
 
-    const handleCurrentDayChange = memoizeOne(() => {
+    const handleCurrentDayChange = () => {
       if (AppMachine.state.currentState !== "Vis") return;
       this.eventHandlers.handleNodeClick!.call(this, {} as any, {} as any);
-    });
+    };
 
     const subOrbitId = store.sub(currentOrbitIdAtom, () => {
       const newId = store.get(currentOrbitDetailsAtom)?.eH;

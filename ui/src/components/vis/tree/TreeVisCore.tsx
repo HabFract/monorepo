@@ -70,7 +70,7 @@ export const TreeVisCore: React.FC<TreeVisCoreProps> = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{
-                duration: 2,
+                duration: 0.2,
                 ease: "easeInOut"
               }}
               className="absolute inset-0 flex items-center justify-center"
@@ -98,7 +98,7 @@ export const TreeVisCore: React.FC<TreeVisCoreProps> = ({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 2 }}
+                    transition={{ duration: 0.2 }}
                     className="w-full h-full flex items-center justify-center"
                   >
                     <SpinnerFallback />
