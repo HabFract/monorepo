@@ -17,14 +17,16 @@ nav.side-nav ul[role="menu"] {
   border-radius: 12px;
   padding-bottom: 16px;
   padding-top: 56px;
-  
-  @apply dark:bg-surface-overlay-dark text-title;
+
+  @apply dark:bg-overlay-tab-700 text-title;
   border-bottom-left-radius: 0px;
   border-top-left-radius: 0px;
 }
+
 nav.side-nav:not(.off-screen):not(.expanded) ul[role="menu"] {
   width: 4rem !important;
 }
+
 /* Side nav divider */
 nav.side-nav ul[role="menu"]::before {
   content: "";
@@ -32,7 +34,7 @@ nav.side-nav ul[role="menu"]::before {
   position: absolute;
   top: 55px;
   left: 16px;
-  border-top: 1px solid rgba(255,255,255,0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Button to show/hide the nav */
@@ -40,6 +42,7 @@ nav.side-nav.off-screen {
   left: -4.5rem;
   top: 4rem;
 }
+
 nav.side-nav .off-screen-toggle-button {
   display: block;
   position: absolute;
@@ -51,6 +54,7 @@ nav.side-nav.off-screen .off-screen-toggle-button button {
   transform: scaleX(1);
   transition: all .25s ease-in;
 }
+
 nav.side-nav .off-screen-toggle-button button {
   transition: all .25s ease-in;
   transform: scaleX(-1);
@@ -65,14 +69,11 @@ nav.side-nav.off-screen .off-screen-toggle-button {
   width: 36px;
   height: 60px;
   border-radius: 12px;
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
-    background: rgb(58, 58, 58);
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    display: flex;
-  justify-content: center;
-  align-items: center;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  @apply flex items-center justify-center dark:bg-overlay-tab
 }
 
 .off-screen-toggle-button button {
@@ -130,6 +131,7 @@ nav.side-nav.off-screen .off-screen-toggle-button {
 .side-nav.expanded .ant-menu-item:first-child {
   padding-left: 22px !important;
 }
+
 .ant-menu-item:first-child {
   @apply flex justify-center items-center pt-2 !important;
   padding-inline: 0 !important;
@@ -147,13 +149,14 @@ nav.side-nav.off-screen .off-screen-toggle-button {
   opacity: 1;
 }
 
-.side-nav:not(.expanded) > .ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child),
-.side-nav:not(.expanded) > .ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) img {
+.side-nav:not(.expanded)>.ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child),
+.side-nav:not(.expanded)>.ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) img {
   max-width: 32px !important;
   height: 100% !important;
   aspect-ratio: 1/1;
 }
-.side-nav:not(.expanded) > .ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) {
+
+.side-nav:not(.expanded)>.ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) {
   margin: 0 auto;
   margin-top: .5rem;
 }
@@ -202,10 +205,13 @@ nav.side-nav.off-screen .off-screen-toggle-button {
   margin-left: -0.125rem;
   border-radius: 1.05rem;
 }
+
 .ant-menu-item-icon {
   height: 32px !important;
   width: 32px !important;
   margin-top: .5rem;
+  background: #fefefe;
+  /* In case of transparency of PNG */
 }
 
 .side-nav:not(.expanded)>.ant-menu-root .ant-menu-item:not(.ant-menu-item:first-child) {
@@ -343,7 +349,8 @@ nav>.ant-menu:first-child .ant-menu-item:last-child {
 .ant-menu-item {
   border-radius: 0.5rem !important;
 }
-.ant-menu-item > * {
+
+.ant-menu-item>* {
   height: 32px !important;
   width: 32px !important;
 }

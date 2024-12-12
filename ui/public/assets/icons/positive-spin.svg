@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" fill="rgba(255,255,255,0.8)" stroke="transparent" viewBox="144 144 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" fill="#3A6E6A" stroke="#fefefe" viewBox="144 144 512 512">
   <path d="M400 287a113 113 0 1 0 0 226 113 113 0 0 0 0-226zm59 128h-44v44a15 15 0 1 1-30 0v-44h-44a15 15 0 1 1 0-30h44v-44a15 15 0 1 1 30 0v44h44a15 15 0 1 1 0 30z"/>
   <path d="M578 222a252 252 0 0 0-356 356 252 252 0 0 0 356-356zM400 543a143 143 0 1 1 0-286 143 143 0 0 1 0 286z"/>
 </svg>

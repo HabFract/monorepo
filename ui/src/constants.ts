@@ -27,7 +27,7 @@ export const MODEL_DISPLAY_VALUES = {
 
 export const INPUT_INFO_MODALS = {
   password: {
-    placeholder: "Enter your password",
+    placeholder: "No password needed currently",
     title: "Why don't I have traditional login options?",
     body: "This is what we call a Web 3 application - congratulations on being a part of the next web! //As a consequence there is no corporate cloud login, and all you need to be secure is a safe password.//Entering it again here is how you activate your public and private keys - your digital signature in the Planitt universe.",
     footer:

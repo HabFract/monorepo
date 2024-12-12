@@ -170,6 +170,14 @@ const tailwindConfig = {
           500: "rgba(191,67,66, .5)",
         },
         success: {
+          positive: {
+            DEFAULT: "#3A6E6A",
+            streak: "rgba(11, 254, 184, 0.9)",
+          },
+          negative: {
+            DEFAULT: "rgba(146, 168, 212, 1)",
+            streak: "rgba(11, 254, 184, 0.9)",
+          },
           DEFAULT: "rgba(11, 254, 184, 0.9)",
           incomplete: "rgba(255, 255, 255, 0.1)",
         },

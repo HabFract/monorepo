@@ -41,7 +41,7 @@ const beforeUpload = (file: RcFile) => {
 };
 
 /** Default avatar image in base64 format */
-const DEFAULT_IMAGE = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNC4yNSAySDhDNS4yMzg1OCAyIDMgNC4yMzg1OCAzIDdWMTdDMyAxOS43NjE0IDUuMjM4NTggMjIgOCAyMkgxNkMxOC43NjE0IDIyIDIxIDE5Ljc2MTQgMjEgMTdWOC43NUgxOEMxNS45Mjg5IDguNzUgMTQuMjUgNy4wNzEwNyAxNC4yNSA1VjJaTTE1Ljc1IDVWMi44MTA2NkwyMC4xODkzIDcuMjVIMThDMTYuNzU3NCA3LjI1IDE1Ljc1IDYuMjQyNjQgMTUuNzUgNVpNMTIuNzI4IDguNzM5OThDMTIuMzgxNyA4LjIyMDQ3IDExLjYxODMgOC4yMjA0NyAxMS4yNzIgOC43Mzk5OEw5LjM3NTk2IDExLjU4NEM5LjE0NjIgMTEuOTI4NiA5LjIzOTMzIDEyLjM5NDMgOS41ODM5NyAxMi42MjRDOS45Mjg2MiAxMi44NTM4IDEwLjM5NDMgMTIuNzYwNyAxMC42MjQgMTIuNDE2TDExLjI1IDExLjQ3NzFWMTVDMTEuMjUgMTUuNDE0MiAxMS41ODU4IDE1Ljc1IDEyIDE1Ljc1QzEyLjQxNDIgMTUuNzUgMTIuNzUgMTUuNDE0MiAxMi43NSAxNVYxMS40NzcxTDEzLjM3NiAxMi40MTZDMTMuNjA1NyAxMi43NjA3IDE0LjA3MTQgMTIuODUzOCAxNC40MTYgMTIuNjI0QzE0Ljc2MDcgMTIuMzk0MyAxNC44NTM4IDExLjkyODYgMTQuNjI0IDExLjU4NEwxMi43MjggOC43Mzk5OFoiIGZpbGw9ImN1cnJlbnRDb2xvciIvPgo8L3N2Zz4K";
+const UPLOAD_IMAGE = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNC4yNSAySDhDNS4yMzg1OCAyIDMgNC4yMzg1OCAzIDdWMTdDMyAxOS43NjE0IDUuMjM4NTggMjIgOCAyMkgxNkMxOC43NjE0IDIyIDIxIDE5Ljc2MTQgMjEgMTdWOC43NUgxOEMxNS45Mjg5IDguNzUgMTQuMjUgNy4wNzEwNyAxNC4yNSA1VjJaTTE1Ljc1IDVWMi44MTA2NkwyMC4xODkzIDcuMjVIMThDMTYuNzU3NCA3LjI1IDE1Ljc1IDYuMjQyNjQgMTUuNzUgNVpNMTIuNzI4IDguNzM5OThDMTIuMzgxNyA4LjIyMDQ3IDExLjYxODMgOC4yMjA0NyAxMS4yNzIgOC43Mzk5OEw5LjM3NTk2IDExLjU4NEM5LjE0NjIgMTEuOTI4NiA5LjIzOTMzIDEyLjM5NDMgOS41ODM5NyAxMi42MjRDOS45Mjg2MiAxMi44NTM4IDEwLjM5NDMgMTIuNzYwNyAxMC42MjQgMTIuNDE2TDExLjI1IDExLjQ3NzFWMTVDMTEuMjUgMTUuNDE0MiAxMS41ODU4IDE1Ljc1IDEyIDE1Ljc1QzEyLjQxNDIgMTUuNzUgMTIuNzUgMTUuNDE0MiAxMi43NSAxNVYxMS40NzcxTDEzLjM3NiAxMi40MTZDMTMuNjA1NyAxMi43NjA3IDE0LjA3MTQgMTIuODUzOCAxNC40MTYgMTIuNjI0QzE0Ljc2MDcgMTIuMzk0MyAxNC44NTM4IDExLjkyODYgMTQuNjI0IDExLjU4NEwxMi43MjggOC43Mzk5OFoiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC44KSIvPgo8L3N2Zz4K";
 
 interface ImageUploadProps {
   field: {
@@ -57,7 +57,7 @@ interface ImageUploadProps {
   uploadButton?: React.ReactNode;
   clearButton?: React.ReactNode;
   noDefaultImage?: boolean;
-  defaultImage?: string;
+  defaultImage: string;
   defaultOptions?: Array<{
     src: string;
     alt: string;
@@ -89,12 +89,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   uploadButton,
   clearButton,
   defaultOptions,
-  defaultImage = DEFAULT_IMAGE,
-  noDefaultImage = false
+  defaultImage,
 }) => {
   const [loading, setLoading] = useState(false);
   const [custom, setCustom] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>("");
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
   const convertImageToBase64 = async (imageUrl: string): Promise<string> => {
@@ -115,69 +113,28 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       return imageUrl;
     }
   };
-
   useEffect(() => {
-    const initializeImage = async () => {
-      // If there's no field value, use the default image
-      if (!field?.value) {
-        try {
-          setLoading(true);
-          // Convert default image to base64 if it's not already a data URI
-          if (!defaultImage.startsWith('data:')) {
-            const base64Image = await convertImageToBase64(defaultImage);
-            setImageUrl(base64Image);
-            setCustom(false);
-            setFieldValue(field.name, base64Image);
-          } else {
-            setImageUrl(defaultImage);
-            setCustom(false);
-            setFieldValue(field.name, defaultImage);
-          }
-        } catch (error) {
-          console.error('Error initializing default image:', error);
-        } finally {
-          setLoading(false);
-        }
+    const setInitial = async () => {
+      const defaultB64 = await convertImageToBase64(defaultImage)
+      if (field.value == '') {
+        setFieldValue(field.name, defaultB64);
+        setCustom(false);
       }
-      // If there's an existing value
-      else {
-        setImageUrl(field.value);
-        setCustom(true);
-      }
-    };
-    initializeImage();
-  }, [field?.value, defaultImage, setFieldValue]);
-
-  // Check if the form has been modified from initial values
-  const isFormUnchanged = imageUrl === initialValues[field.name];
-
-  useEffect(() => {
-    // If there's no field value or it's the same as defaultImage
-    if (!field?.value || field.value === defaultImage) {
-      setImageUrl(defaultImage);
-      setCustom(false);
-      setFieldValue(field.name, defaultImage); // Ensure the form field is set
     }
-    // If there's a different value
-    else {
-      setImageUrl(field.value);
-      setCustom(true);
-    }
-  }, [field?.value, defaultImage, setFieldValue]);
+    setInitial()
+  }, [field.value, defaultImage, setFieldValue]);
 
   const handleClear = () => {
-    setImageUrl(noDefaultImage ? "" : defaultImage);
     setCustom(false);
-    setFieldValue(field.name, noDefaultImage ? "" : defaultImage);
+    setFieldValue(field.name, defaultImage);
   };
 
   const handleOptionSelect = async (selectedImage: string) => {
     setLoading(true);
     try {
       const base64Image = await convertImageToBase64(selectedImage);
-      setImageUrl(base64Image);
-      setCustom(true);
       setFieldValue(field.name, base64Image);
+      setCustom(true);
     } catch (error) {
       console.error('Error handling image selection:', error);
       message.error('Failed to process image');
@@ -187,6 +144,20 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     }
   };
 
+  const handleFileChange = (file: File | Blob) => {
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      const url = reader.result as string;
+      setLoading(false);
+      setCustom(true);
+      setFieldValue(field.name, url);
+    });
+    reader.readAsDataURL(file);
+  };
+
+
 
   const defaultUploadButton = (
     <Button
@@ -194,7 +165,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       className="mt-4 ml-4"
       type="button"
       variant="neutral"
-      isDisabled={isFormUnchanged}
+      isDisabled={false}
       onClick={() => setIsOptionsOpen(true)}
     >
       Choose Symbol
@@ -207,47 +178,26 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     }, 0);
   };
 
-  const changedFromDefault = imageUrl && custom && imageUrl !== defaultImage;
-
-  const handleFileChange = (file: File | Blob) => {
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      const url = reader.result as string;
-      setLoading(false);
-      setCustom(true);
-      setImageUrl(url);
-      setFieldValue(field.name, url);
-    });
-    reader.readAsDataURL(file);
-  };
-
-
   return (
-    <div className={!changedFromDefault ? "default-image" : "custom-image"}>
+    <div className={!custom ? "default-image" : "custom-image"}>
       <div className="avatar-container">
         <Upload
-          src={imageUrl}
+          src={custom ? field.value : UPLOAD_IMAGE}
           aspect={1}
           onChange={(info: UploadChangeInfo) => {
             if (info.file.status === "uploading") {
               setLoading(true);
               return;
             }
-            // If the file was rejected due to size/type
             if (info.file.status === "error") {
               setLoading(false);
               return;
             }
-
-            // Double-check size here as well
             if (info.file.originFileObj && info.file.originFileObj.size / 1024 > 512) {
               setLoading(false);
               message.error("Image must be smaller than 512KB!");
               return;
             }
-
             if (info.file.status === "done" && info.file.originFileObj) {
               handleFileChange(info.file.originFileObj);
             }
@@ -263,7 +213,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         >
         </Upload>
         {React.cloneElement(uploadButton as React.ReactElement || defaultUploadButton, {
-          isDisabled: isFormUnchanged,
+          isDisabled: false,
           onClick: (e: React.MouseEvent) => {
             e.stopPropagation();
             setIsOptionsOpen(true);
@@ -271,7 +221,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         })}
       </div>
 
-      {changedFromDefault && (
+      {custom && (
         <div onClick={handleClear}>
           {clearButton}
         </div>
