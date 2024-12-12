@@ -7,7 +7,15 @@ interface TreeRendererProps {
 }
 
 const TreeRenderer: React.FC<TreeRendererProps> = ({ tree, render }) => {
-  return <>{render(tree)}</>;
-};
+  if (!tree || !tree.rootData) {
+    return null;
+  }
 
+  try {
+    return <>{render(tree)}</>;
+  } catch (error) {
+    console.error('Error rendering tree:', error);
+    return null;
+  }
+};
 export default TreeRenderer;

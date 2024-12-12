@@ -147,7 +147,7 @@ export class TreeVisualization extends BaseVisualization {
       handleEditNode: function ({ orbitEh }) {
         this.modalChildOrbitEh('edit');
         const orbitId = store.get(getOrbitIdFromEh(orbitEh));
-        if(!orbitId) return;
+        if (!orbitId) return;
         this.modalParentOrbitEh(orbitId);
         this.modalOpen(true);
         this.modalIsOpen = true;
@@ -170,7 +170,7 @@ export class TreeVisualization extends BaseVisualization {
 
         const zoomOffsetY = -(this._viewConfig.isSmallScreen() ? (isRootNode ? NEGATIVE_ZOOM_Y_OFFSET_SM_ROOT : NEGATIVE_ZOOM_Y_OFFSET_SM_NONROOT) : NEGATIVE_ZOOM_Y_OFFSET_MD_LG)
         const scale = (this._viewConfig.isSmallScreen() ? NODE_RESCALE_FACTOR_SM : NODE_RESCALE_FACTOR_MD_LG) * (orbit && orbit.scale ? chooseZoomScaleForOrbit(orbit) : 1);
-           const x = -(node as any).x * scale + this._viewConfig.canvasWidth / 2;
+        const x = -(node as any).x * scale + this._viewConfig.canvasWidth / 2;
         const y = -(node as any).y * scale + this._viewConfig.canvasHeight / 2 + zoomOffsetY;
 
         this._zoomConfig.globalZoomScale = scale;
@@ -189,9 +189,9 @@ export class TreeVisualization extends BaseVisualization {
           .duration(this.startInFocusMode ? 0 : PLANNIT_ZOOM_TRANSITION_DURATION)
           .ease(easeCubicOut)
           .attr("transform", `translate(${x},${y}) scale(${scale})`)
-          // .on("end", () => {
-          //   this._zoomConfig.focusMode = true;
-          // }) as any;
+        // .on("end", () => {
+        //   this._zoomConfig.focusMode = true;
+        // }) as any;
       },
 
       memoizedhandleNodeZoom(id: EntryHashB64, foundNode?: HierarchyNode<NodeContent>) {
@@ -467,20 +467,20 @@ export class TreeVisualization extends BaseVisualization {
         .descendants()
         .reverse()
         .filter((d) => {
-        // const outOfBounds = outOfBoundsNode(d, this.rootData);
-        // // Set new active node when this one is out of bounds
-        // if (outOfBounds && this.activeNode?.data.name == d.data.name) {
-        //   this.rootData.isNew = true;
-        //   let newActive = this.rootData.find((n) => {
-        //     return !n.data.content.match(/OOB/);
-        //   });
-        //   this.setActiveNode(newActive || this.rootData);
-        //   this._zoomConfig.previousRenderZoom = { node: newActive };
-        // }
+          // const outOfBounds = outOfBoundsNode(d, this.rootData);
+          // // Set new active node when this one is out of bounds
+          // if (outOfBounds && this.activeNode?.data.name == d.data.name) {
+          //   this.rootData.isNew = true;
+          //   let newActive = this.rootData.find((n) => {
+          //     return !n.data.content.match(/OOB/);
+          //   });
+          //   this.setActiveNode(newActive || this.rootData);
+          //   this._zoomConfig.previousRenderZoom = { node: newActive };
+          // }
 
-        // return !outOfBounds;
-        return true;
-      }),
+          // return !outOfBounds;
+          return true;
+        }),
       (d: any) => d.data.content
     );
     nodes.exit().remove();
@@ -545,7 +545,7 @@ export class TreeVisualization extends BaseVisualization {
           case "Sub":
             return "30";
           case "Atom":
-            return "120";
+            return "100";
         }
       })
       .append("xhtml:div")

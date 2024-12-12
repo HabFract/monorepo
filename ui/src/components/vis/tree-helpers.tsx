@@ -55,7 +55,7 @@ CustomBezier.prototype = {
       //@ts-expect-error
       case 1:
         this._point = 2;
-        // falls through
+      // falls through
 
       default: {
         const dx = x - this._x;
@@ -63,33 +63,33 @@ CustomBezier.prototype = {
 
         if (Math.abs(dx) > 1e-6) {
 
-        // To create a shape like a curly brace:
-        // - Start with steep vertical rise/fall at the anchors
-        // - Flatten quickly into horizontal
-        // - Steepen back into vertical to meet the next anchor
-        
-        // Control points to create a quick approach and departure in y, long horizontal stretch
-        const x1 = this._x + (dx * 0.0002);  // Start control: quick horizontal shift
-        const y1 = this._y + (dy * 0.9999);  // Strong vertical pull down near initial point
-        const x2 = x - (dx * 0.0002);        // End control: quick horizontal shift
-        const y2 = y - (dy * 0.9999);        // Strong vertical pull down near final point
+          // To create a shape like a curly brace:
+          // - Start with steep vertical rise/fall at the anchors
+          // - Flatten quickly into horizontal
+          // - Steepen back into vertical to meet the next anchor
 
-        this._context.bezierCurveTo(x1, y1, x2, y2, x, y);
-      } else {
-        // Close to vertical line, straight line segment
-        this._context.lineTo(x, y);
+          // Control points to create a quick approach and departure in y, long horizontal stretch
+          const x1 = this._x + (dx * 0.0002);  // Start control: quick horizontal shift
+          const y1 = this._y + (dy * 0.9999);  // Strong vertical pull down near initial point
+          const x2 = x - (dx * 0.0002);        // End control: quick horizontal shift
+          const y2 = y - (dy * 0.9999);        // Strong vertical pull down near final point
+
+          this._context.bezierCurveTo(x1, y1, x2, y2, x, y);
+        } else {
+          // Close to vertical line, straight line segment
+          this._context.lineTo(x, y);
+        }
+        break;
       }
-      break;
     }
+    (this._x = x), (this._y = y);
   }
-  (this._x = x), (this._y = y);
-}
 };
 
 
 
 export const curves = {
-  curveCustomBezier: function(context) {
+  curveCustomBezier: function (context) {
     return new CustomBezier(context);
   }
 };
@@ -251,7 +251,7 @@ export const fetchHierarchyDataForLevel = async ({
     console.error("Couldn't get client or data from Apollo cache")
   }
   if (cachedData) {
-    console.log("Fetching current hierarchy level from Apollo cache...")
+    // console.log("Fetching current hierarchy level from Apollo cache...")
     return cachedData
   } else {
     NODE_ENV !== 'test' && console.log("Fetching current hierarchy level from source chain: ", JSON.stringify({ variables: { params: { ...query } } }, null, 2))
