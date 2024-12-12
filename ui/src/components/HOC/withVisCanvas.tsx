@@ -39,7 +39,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { useVisCanvas } from "../../hooks/useVisCanvas";
 import { DEFAULT_MARGINS } from "../vis/constants";
 import { StoreType } from "../../state/types/store";
-import {useWinData} from "../../hooks/useWinData";
+import { useWinData } from "../../hooks/useWinData";
 import { DateTime } from "luxon";
 import { calculateCurrentStreakAtom, calculateLongestStreakAtom, setWinDataAtom } from "../../state/win";
 import { useVisContext } from "../../contexts/vis";
@@ -74,10 +74,6 @@ export function withVisCanvas<T extends IVisualization>(
     const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
     const currentOrbitIsLeaf = useAtomValue(currentOrbitIsLeafAtom);
 
-    const currentOrbitStreakAtom = useMemo(() => calculateCurrentStreakAtom(currentOrbitDetails?.id as string), [currentOrbitDetails?.id])
-    const currentStreak = store.get(currentOrbitStreakAtom);
-    const currentOrbitLongestStreakAtom = useMemo(() => calculateLongestStreakAtom(currentOrbitDetails?.id as string), [currentOrbitDetails?.id])
-    const longestStreak = store.get(currentOrbitLongestStreakAtom);
     const sphereHierarchyBounds: SphereHierarchyBounds = store.get(
       currentSphereHierarchyBounds,
     );
@@ -135,13 +131,12 @@ export function withVisCanvas<T extends IVisualization>(
       };
     }, []);
 
-  useEffect(() => {
-    if (appendedSvg && visRef.current) {
-      visRef.current.unbindEventHandlers();
-      visRef.current.bindEventHandlers();
-    }
-  }, [appendedSvg, currentOrbitDetails?.id]);
-
+    useEffect(() => {
+      if (appendedSvg && visRef.current) {
+        visRef.current.unbindEventHandlers();
+        visRef.current.bindEventHandlers();
+      }
+    }, [appendedSvg, currentOrbitDetails?.id]);
 
     // const loading = useGetWinRecordForOrbitForMonthQueryLoading || createOrUpdateWinRecordLoading;
     // const error = useGetWinRecordForOrbitForMonthQueryError || createOrUpdateWinRecordError;
@@ -171,9 +166,9 @@ export function withVisCanvas<T extends IVisualization>(
             winDataHookResult.numberOfLeafOrbitDescendants,
             winDataHookResult.isLeaf,
             currentOrbitDetails?.id,
-            currentDate.toISO() 
+            currentDate.toISO()
           ]);
-          
+
           if (!visRef.current) {
             visRef.current = currentVis;
           }
@@ -192,8 +187,6 @@ export function withVisCanvas<T extends IVisualization>(
           const overlayProps = useMemo(() => ({
             currentDate,
             setNewDate: setCurrentDate,
-            currentStreak,
-            longestStreak,
             ...memoizedWinDataHook,
             numberOfLeafOrbitDescendants: memoizedWinDataHook.numberOfLeafOrbitDescendants || 0,
             orbitFrequency: currentOrbitDetails?.frequency || 1.0,
@@ -204,8 +197,6 @@ export function withVisCanvas<T extends IVisualization>(
             actions: consolidatedActions
           }), [
             currentDate.toISO(),
-            currentStreak,
-            longestStreak,
             currentOrbitDetails?.frequency,
             orbitSiblings,
             orbitDescendants,

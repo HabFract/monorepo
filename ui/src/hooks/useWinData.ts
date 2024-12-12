@@ -1,4 +1,4 @@
-import { NODE_ENV } from './../constants';
+import { NODE_ENV } from "./../constants";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import {
@@ -11,7 +11,12 @@ import { fetchWinDataForOrbit } from "../graphql/utils";
 import { client as gql } from "../graphql/client";
 import { HierarchyNode } from "d3-hierarchy";
 import { useWinDataCache } from "../contexts/windata";
+import { useMemo } from "react";
 
+interface StreakData {
+  currentStreak: number;
+  longestStreak: number;
+}
 /**
  * Custom hook to manage win data fetching and state management for both leaf and non-leaf orbit nodes.
  * This hook handles the fetching, caching, and aggregation of win data while maintaining proper cleanup
@@ -73,7 +78,7 @@ export function useWinData(
   });
 
   const debugLog = (...args: any[]) => {
-    NODE_ENV =='development' && console.log("[useWinDataV2]", ...args);
+    NODE_ENV == "development" && console.log("[useWinDataV2]", ...args);
   };
   const { getWinData, setWinData } = useWinDataCache();
   const mountedRef = useRef(true);
@@ -84,6 +89,79 @@ export function useWinData(
   const createOrUpdateWinRecord = useCreateOrUpdateWinRecord({
     variables: { winRecord: { orbitEh: currentOrbitDetails?.eH } },
   });
+
+  // Calculate streaks whenever win data changes
+  const streakData = useMemo((): StreakData => {
+    if (!currentWinDataRef.current) {
+      return { currentStreak: 0, longestStreak: 0 };
+    }
+
+    const winData = currentWinDataRef.current;
+
+    // Calculate current streak
+    let currentStreak = 0;
+    let date = DateTime.now();
+
+    while (true) {
+      const dateString = date.toFormat("dd/MM/yyyy");
+      const winEntry = winData[dateString];
+
+      if (winEntry === undefined) break;
+
+      if (Array.isArray(winEntry)) {
+        if (winEntry.every(Boolean)) {
+          currentStreak++;
+        } else {
+          break;
+        }
+      } else if (winEntry === true) {
+        currentStreak++;
+      } else {
+        break;
+      }
+
+      date = date.minus({ days: 1 });
+    }
+
+    // Calculate longest streak
+    let longestStreak = 0;
+    let tempStreak = 0;
+    let previousDate: DateTime | null = null;
+
+    // Sort dates chronologically
+    const sortedDates = Object.keys(winData).sort((a, b) => {
+      const dateA = DateTime.fromFormat(a, "dd/MM/yyyy");
+      const dateB = DateTime.fromFormat(b, "dd/MM/yyyy");
+      return dateA.toMillis() - dateB.toMillis();
+    });
+
+    for (const date of sortedDates) {
+      const winEntry = winData[date];
+      const currentDate = DateTime.fromFormat(date, "dd/MM/yyyy");
+
+      // Reset streak if dates aren't consecutive
+      if (previousDate && currentDate.diff(previousDate, "days").days !== 1) {
+        tempStreak = 0;
+      }
+
+      if (Array.isArray(winEntry)) {
+        if (winEntry.every(Boolean)) {
+          tempStreak++;
+        } else {
+          tempStreak = 0;
+        }
+      } else if (winEntry === true) {
+        tempStreak++;
+      } else {
+        tempStreak = 0;
+      }
+
+      longestStreak = Math.max(longestStreak, tempStreak);
+      previousDate = currentDate;
+    }
+
+    return { currentStreak, longestStreak };
+  }, [currentWinDataRef.current]);
 
   // Check cache first when mounting
   useEffect(() => {
@@ -294,5 +372,7 @@ export function useWinData(
     handlePersistWins,
     numberOfLeafOrbitDescendants: state.leafDescendants,
     isLeaf: isLeafNode,
+    currentStreak: streakData.currentStreak,
+    longestStreak: streakData.longestStreak,
   };
 }
