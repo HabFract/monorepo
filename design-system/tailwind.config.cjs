@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const tailwindConfig = {
-  darkMode: 'class',
+  darkMode: "class",
   content: [
     "./**/*.{js,jsx,ts,tsx}",
     "../../node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
@@ -36,166 +36,173 @@ const tailwindConfig = {
         normal: 400,
         bold: 700,
         extrabold: 900,
-        
+
         // Deprecated names - to be removed
-        std: 300,        // use 'light' instead
-        medium: 400,     // use 'normal' instead
-        semibold: 700,   // use 'bold' instead
-        'std-bold': 900, // use 'extrabold' instead
+        std: 300, // use 'light' instead
+        medium: 400, // use 'normal' instead
+        semibold: 700, // use 'bold' instead
+        "std-bold": 900, // use 'extrabold' instead
       },
       lineHeight: {
         // New semantic names
         tight: "17.76px",
         normal: "20px",
         relaxed: "24px",
-        
+
         // Deprecated names - to be removed
-        sm: "17.76px",   // use 'tight' instead
-        lg: "20px",      // use 'normal' instead
-        std: "24px",     // use 'relaxed' instead
+        sm: "17.76px", // use 'tight' instead
+        lg: "20px", // use 'normal' instead
+        std: "24px", // use 'relaxed' instead
       },
       fontSize: {
         // New semantic names
         xs: "13px",
         sm: "14px",
         base: "16px",
-        
+
         // Deprecated names - to be removed
-        'std-sm': "13px",     // use 'xs' instead
-        'std-input': "14px",  // use 'sm' instead
-        'std-base': "16px",   // use 'base' instead
+        "std-sm": "13px", // use 'xs' instead
+        "std-input": "14px", // use 'sm' instead
+        "std-base": "16px", // use 'base' instead
       },
       colors: {
         // Base semantic tokens
         surface: {
-          DEFAULT: '#ffffff',
-          dark: '#171717',
-          overlay: {            // for overlay controls in the Vis
-            DEFAULT: '#cecece',
+          DEFAULT: "#ffffff",
+          dark: "#171717",
+          overlay: {
+            // for overlay controls in the Vis
+            DEFAULT: "#cecece",
             dark: {
               DEFAULT: "#2F3232",
-              500: "rgba(49, 49, 49, 0.5)"
-            }
+              500: "rgba(49, 49, 49, 0.5)",
+            },
           },
-          elevated: {           // for cards, modals, forms, dropdowns, etc.
-            DEFAULT: '#ffffff',
-            dark: '#3A3A3A'
+          elevated: {
+            // for cards, modals, forms, dropdowns, etc.
+            DEFAULT: "#ffffff",
+            dark: "#3A3A3A",
           },
           top: {
-            DEFAULT: '#ffffff',
+            DEFAULT: "#ffffff",
             dark: {
               DEFAULT: "#3A4040",
-              500: "rgba(58, 64, 64, 0.5)"
-            }
-          }
+              500: "rgba(58, 64, 64, 0.5)",
+            },
+          },
         },
         secondary: {
-          DEFAULT: '#0A7557',
-          500: 'rgba(29, 64, 76, .5)',
-          dark:  {
-            DEFAULT: 'rgb(29, 64, 76)',
-            500: 'rgba(29, 64, 76, .5)',
+          DEFAULT: "rgba(146, 168, 212, 1)",
+          500: "rgba(146, 168, 212, 0.5)",
+          dark: {
+            DEFAULT: "rgba(146, 168, 212, 1)",
+            500: "rgba(146, 168, 212, 0.5)",
           },
         },
         primary: {
-          DEFAULT: '#1d404c',
-          500: 'rgba(2, 177, 151, 0.5)',
-          dark:  {
-            DEFAULT: 'rgba(2, 177, 151, 0.75)',
-            500: 'rgba(29, 64, 76, .5)',
+          DEFAULT: "#24917C",
+          500: "rgba(2, 177, 151, 0.5)",
+          dark: {
+            DEFAULT: "rgba(2, 177, 151, 0.75)",
+            500: "rgba(29, 64, 76, .5)",
           },
         },
         accent: {
-          DEFAULT: '#0BFEB8',
-          dark: 'rgba(11,254,184, 1)',
+          DEFAULT: "#0BFEB8",
+          dark: "rgba(11,254,184, 1)",
         },
-        
+
         // Component-specific tokens
         modal: {
           bg: {
-            DEFAULT: '#ffffff',
-            dark: '#3A4040',
+            DEFAULT: "#1F2827",
+            dark: "#1F2827",
           },
           footer: {
-            DEFAULT: '#f8f9fa',
-            dark: '#02b197',
-          }
+            DEFAULT: "#1C3A38",
+            dark: "#1C3A38",
+          },
         },
         input: {
           bg: {
-            DEFAULT: '#ffffff',
-            dark: '#2F3232',
+            DEFAULT: "#ffffff",
+            dark: "#2F3232",
           },
           border: {
-            DEFAULT: '#e5e7eb',
-            dark: 'rgba(255,255,255, 0.1)',
+            DEFAULT: "#e5e7eb",
+            dark: "rgba(255,255,255, 0.1)",
           },
           text: {
-            DEFAULT: '#000000',
-            dark: 'rgba(255,255,255, 1)',
+            DEFAULT: "#000000",
+            dark: "rgba(255,255,255, 1)",
           },
           placeholder: {
-            DEFAULT: '#9ca3af',
-            dark: 'rgba(255,255,255, 0.7)',
+            DEFAULT: "#9ca3af",
+            dark: "rgba(255,255,255, 0.7)",
           },
           icon: {
-            DEFAULT: '#9ca3af',
-            dark: '#9ca3af',
-          }
+            DEFAULT: "#9ca3af",
+            dark: "#9ca3af",
+          },
         },
 
         // Status colors
         overlay: {
           controls: "rgba(37, 55, 93, 0.8)",
           tooltip: "rgba(0,0,0, 0.8)",
-          dashboard: "#1C3A38",
-          tab: "#1F2827",
+          dashboard: {
+            DEFAULT: "#1C3A38",
+            700: "rgba(28, 58, 56, 0.7)",
+          },
+          tab: {
+            DEFAULT: "#1F2827",
+            700: "rgba(31, 40, 39, 0.7)",
+          },
           gridline: "rgba(146, 168, 212, 0.3)",
-
         },
         // Status colors
         warn: {
-          DEFAULT: 'rgba(251,200,43, 1)',
-          500: 'rgba(251,200,43, .5)',
+          DEFAULT: "rgba(251,200,43, 1)",
+          500: "rgba(251,200,43, .5)",
         },
         danger: {
-          DEFAULT: 'rgba(191,67,66, 1)',
-          500: 'rgba(191,67,66, .5)',
+          DEFAULT: "rgba(191,67,66, 1)",
+          500: "rgba(191,67,66, .5)",
         },
         success: {
-          DEFAULT: '#3A6E6A',
-          incomplete: 'rgba(255, 255, 255, 0.1)',
+          DEFAULT: "rgba(11, 254, 184, 0.9)",
+          incomplete: "rgba(255, 255, 255, 0.1)",
         },
 
         // Text colors
         text: {
-          DEFAULT: '#000000',
-          dark: '#fefefe',
+          DEFAULT: "#000000",
+          dark: "#fefefe",
           accent: {
-            DEFAULT: '#A2EAC4',
-            dark: '#A2EAC4',
-          }
+            DEFAULT: "#A2EAC4",
+            dark: "#A2EAC4",
+          },
         },
         title: {
-          DEFAULT: '#000000',
-          dark: '#ffffff',
+          DEFAULT: "#000000",
+          dark: "#ffffff",
         },
 
         // Utility colors
         gray: {
-          100: '#c0c7ce',
-          200: '#909896',
-          300: '#505554',
-          400: '#37383a',
-          500: '#00120f',
+          100: "#c0c7ce",
+          200: "#909896",
+          300: "#505554",
+          400: "#37383a",
+          500: "#00120f",
         },
         category: {
-          1: '#688acc',
-          2: '#c0dea9',
-          3: '#9e5fcb',
-          4: '#92a8d4',
-          5: '#f16d53',
-          6: '#e2b657',
+          1: "#688acc",
+          2: "#c0dea9",
+          3: "#9e5fcb",
+          4: "#92a8d4",
+          5: "#f16d53",
+          6: "#e2b657",
         },
       },
     },

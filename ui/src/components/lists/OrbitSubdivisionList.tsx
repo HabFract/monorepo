@@ -48,7 +48,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
       Yup.object().shape({
         name: Yup.string()
           .matches(/(?!^\d+$)^.+$/, "Name must contain letters.")
-          .min(3, "Must be 4 characters or more")
+          .min(4, "Must be 4 characters or more")
           .max(55, "Must be 55 characters or less")
           .required("Required"),
       }),
@@ -78,7 +78,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
             throw new Error("No sphere set or parent hash, cannot refine orbits");
           }
           setSubmitRefineBtnIsLoading(true);
-  
+
           try {
             if (refinementType == Refinement.Update) {
               await updateOrbit({
@@ -98,7 +98,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
               (submitBtn as any).props.onClick.call(null);
             } else {
               const { list, scale } = values;
-              
+
               // Queue up all orbit creation tasks
               for (const orbit of list!) {
                 await dataLoadingQueue.enqueue(async () => {
@@ -117,7 +117,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                   await sleep(500);
                 });
               }
-  
+
               // Queue final completion tasks
               await dataLoadingQueue.enqueue(async () => {
                 console.log("New orbit subdivisions created! :>> ");
@@ -141,7 +141,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
           const refineTitle =
             refinementType == Refinement.Update
               ? "Refine Planitt Name"
-              : "Choose Sub-Planitt Scale";
+              : "Choose Sub-Planitt Scales";
           const refineMessage =
             refinementType == Refinement.Update
               ? "Since you have chosen the Atomic scale for your Orbit, it's best to make sure it is named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable:"
@@ -189,7 +189,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                 noValidate={true}
                 style={{ gridColumn: "-2/-1", gridRow: "1/-1" }}
               >
-                <div className="md:gap-4 flex flex-col gap-2">
+                <div className="md:gap-4 flex flex-col gap-2 w-full">
                   {refinementType == Refinement.Update ? (
                     <Field
                       component={TextInputField}
@@ -227,18 +227,18 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                         labelValue={"Scale:"}
                       />
                       {isSmallScreen() &&
-                        refinementType == Refinement.Split &&
+                        refinementType == Refinement.Update &&
                         values.scale == Scale.Atom &&
                         RenamingHelperText()}
                       <Label htmlFor="list">
-                        New Planitt Names: <span className="reqd">*</span>
+                        {values.scale == Scale.Sub ? "I agree to:" : "I will:"}<span className="reqd">*</span>
                       </Label>
                       <FieldArray
                         name="list"
                         render={(arrayHelpers) => (
                           <>
                             {values!.list!.map((item, index) => (
-                              <div key={index} className="flex gap-2">
+                              <div key={index} className="flex gap-2 mx-2">
                                 <Field
                                   component={TextInputField}
                                   size="base"
@@ -269,9 +269,9 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                             ))}
 
                             {errors.list && (
-                              <Label className="text-warn my-1">
-                                All names must be a valid length
-                              </Label>
+                              <span className="font-sans text-base leading-loose text-danger mx-2 my-1">
+                                All names must be at least 4 characters
+                              </span>
                             )}
                             {values!.list!.length <= 3 && (
                               <button
@@ -289,7 +289,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                     </>
                   )}
                 </div>
-                
+
                 {SubmitButton}
               </Form>
             </>
@@ -305,7 +305,7 @@ export default OrbitSubdivisionList;
 function RenamingHelperText() {
   return (
     <HelperText
-      title={"Refine Planitt Name"}
+      title={"Choose Planitt Name"}
       titleIcon={<Pencil />}
       withInfo={false}
     >

@@ -12,7 +12,11 @@ import {
   Label,
   ErrorLabel,
 } from "./components/inputs";
-import { ActionCard, PlanittCard, SystemCalendarCard } from "./components/cards";
+import {
+  ActionCard,
+  PlanittCard,
+  SystemCalendarCard,
+} from "./components/cards";
 import { SphereVis, OrbitVis } from "./components/vis";
 import { ProgressBar } from "./components/onboarding";
 import Modal from "./components/modals/Modal";
@@ -27,7 +31,7 @@ import { VisControls, ListSortFilter } from "./components/controls";
 import OrbitControls from "./components/vis/OrbitControls";
 import OrbitLabel from "./components/vis/OrbitLabel";
 import { default as darkTheme } from "./darkTheme";
-import Spinner from "./components/Spinner";
+import Spinner, { SpinnerFallback } from "./components/Spinner";
 
 import "./components/inputs/common.css";
 import "./components/onboarding/common.css";
@@ -36,6 +40,7 @@ export * from "./components/controls";
 
 export {
   Spinner,
+  SpinnerFallback,
   Select,
   SelectInputField,
   TextInput,

@@ -12,6 +12,7 @@ export type ButtonVariant =
   | "icon"
   | "icon btn-primary responsive"
   | "circle-icon"
+  | "icon btn-primary"
   | "circle-icon-lg"
   | "circle-icon btn-primary"
   | "circle-icon btn-neutral"
@@ -26,6 +27,7 @@ export type ButtonVariant =
   | "circle-icon-lg btn-secondary"
   | "circle-icon-lg btn-neutral outlined"
   | "secondary responsive"
+  | "primary responsive outlined"
   ;
 
 export interface ButtonProps {
@@ -73,7 +75,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
   className = "",
   onClick,
 }, ref) => {
-  const buttonClass = `btn btn-${variant} ${className}`;
+  const iconAndText = !!icon && !!children;
+  const buttonClass = `btn btn-${variant} ${className} ${iconAndText ? "wide" : ""}`;
 
   return (
     <button
@@ -85,7 +88,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
       onClick={onClick}
     >
       <div>
-        {isLoading ? <LoadingSpinner /> : icon || children}
+        {isLoading ? <LoadingSpinner /> : icon ? <>{icon}{children}</> : children}
       </div>
     </button>
   );

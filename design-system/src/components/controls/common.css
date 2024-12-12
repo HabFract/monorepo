@@ -9,7 +9,7 @@
 }
 
 .clip-bottom-right {
-  --clip-size: 3rem;
+  --clip-size: 5rem;
   /* This should match the thickness of your components */
   clip-path: polygon(0 0,
       100% 0,
@@ -19,7 +19,7 @@
 }
 
 .clip-top-left {
-  --clip-size: 2.5rem;
+  --clip-size: 3.5rem;
   /* This should match the thickness of your components */
   clip-path: polygon(var(--clip-size) 0,
       100% 0,
@@ -88,7 +88,7 @@
 
 .overlay-win-streak-container {
   @apply flex justify-between gap-4;
-  padding: 1rem !important;
+  padding: 1rem 1rem .5rem 1rem !important;
 }
 
 .calendar-nav {
@@ -136,7 +136,7 @@
 
 .orbit-pill-container.selected {
   @apply border-2;
-  background-color: rgba(255,255,255,0.15);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .orbit-pill-container .orbit-name {
@@ -144,6 +144,7 @@
   line-height: 1.5rem;
   @apply flex text-base;
   max-height: 1.5rem;
+  margin-right: .25rem;
   overflow: hidden;
   white-space: nowrap;
   display: inline-block;
@@ -206,7 +207,7 @@
   overflow: hidden;
 }
 
-.ant-upload-wrapper + .swipe-up-screen-container {
+.ant-upload-wrapper+.swipe-up-screen-container {
   height: auto !important;
   position: static !important;
 }
@@ -223,7 +224,6 @@ div.handle {
   padding-bottom: 1rem;
   z-index: 20;
   left: 0;
-  @apply bg-gradient-to-b dark:to-transparent dark:from-surface-top-dark-500;
 }
 
 .swipe-up-tab-container .handle {
@@ -237,7 +237,7 @@ div.handle {
 
 div.handle span {
   margin: 0 auto;
-  background-color: rgba(255,255,255, 0.75);
+  background-color: rgba(255, 255, 255, 0.75);
   border-radius: 100px;
   height: 6px;
   width: 100%;
@@ -245,18 +245,28 @@ div.handle span {
 
 .swipe-up-tab-container .handle span {
   height: 4px;
+  width: 7rem;
+  position: absolute;
+  top: 6px;
+  left: calc(50% - 4rem);
+  z-index: 5;
 }
 
-.swipe-up-screen-tab-container .handle::before {
+.handle::before {
   content: '';
-  @apply bg-gradient-to-b dark:to-transparent dark:from-surface-top-dark rounded-t-3xl absolute inset-x-0 top-0 h-12;
+  @apply bg-gradient-to-b dark:to-transparent dark:from-overlay-dashboard rounded-t-3xl absolute inset-x-0 top-0 h-12;
   z-index: -1;
+}
+
+.swipe-up-tab-container .handle::before {
+  width: 100vw;
+  margin-left: -2.25rem;
 }
 
 .swipe-up-screen-tab-container .handle {
   padding: 8px 33%;
   height: 100%;
-  @apply z-10 fixed dark:from-surface-top-dark rounded-t-3xl from-50%;
+  @apply z-10 fixed dark:from-surface-dark rounded-t-3xl from-50%;
 }
 
 .swipe-up-screen-tab-container .handle span {
@@ -305,11 +315,13 @@ div.handle span {
 }
 
 .current-calendar-context-container {
-  @apply flex items-center justify-between my-2;
+  @apply flex justify-between;
+  margin: .5rem;
+  margin-left: 0;
 }
 
 .current-date-string {
-  @apply text-sm font-light;
+  @apply text-sm font-medium mb-4;
   line-height: 2rem;
 }
 
@@ -358,16 +370,17 @@ div.handle span {
 
 .vis-move-lateral-container {
   width: calc(100% - 1rem);
-  bottom: 4.5rem;
+  bottom: 4.25rem;
   left: .5rem;
   height: 4rem;
 }
 
 .vis-move-vertical-container {
   height: 12rem;
-  width: 4rem;
+  width: 3.5rem;
   bottom: 15.5rem;
-  padding-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  margin-left: .25rem;
 }
 
 .intersecting-planet-column {
@@ -496,6 +509,7 @@ div.handle span {
 .intersecting-pill-row .intersecting-pill {
   margin-right: 2rem;
 }
+
 /* 
 .intersecting-pill-row .intersecting-pill:nth-child(1) {
   --n-multiplier: 2.5;
@@ -533,6 +547,11 @@ div.handle span {
 .date-nav-button {
   height: 1.5rem;
   width: 1.5rem;
+  z-index: 20;
+}
+
+.date-nav-button.disabled {
+  opacity: 0.5;
 }
 
 .date-nav-button:hover {

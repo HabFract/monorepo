@@ -6,7 +6,7 @@ import { Button, getIconSvg, SwipeUpScreenTab, TextInputField } from 'habit-frac
 import { ListSpheres } from '../lists';
 import { motion } from 'framer-motion';
 import { Popover, ListGroup } from 'flowbite-react';
-import { BUTTON_ACTION_TEXT, ERROR_MESSAGES, PAGE_COPY } from '../../constants';
+import { BUTTON_ACTION_TEXT, ERROR_MESSAGES, INPUT_INFO_MODALS, PAGE_COPY } from '../../constants';
 
 function HomeLayout({ firstVisit = true }: any) {
   const [_, transition] = useStateTransition(); // Top level state machine and routing
@@ -60,23 +60,26 @@ function HomeLayout({ firstVisit = true }: any) {
           </div>
           <span>
             <h1>Welcome back! 👋</h1>
-            <h2>{PAGE_COPY['slogan']} <em>I plan...</em></h2>
+            <h2>{PAGE_COPY['slogan']} <em>Plan to...</em></h2>
           </span>
           <div className="text-text dark:text-text-dark flex justify-around h-12 gap-4">
             <Button onClick={() => { transition("Onboarding1", { spin: 'positive' }) }} type="button" variant="primary responsive">
-              <span className="text-success-500 dark:text-success-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  viewBox="144 144 512 512"
-                  className="w-8 h-8 my-1 mr-2 opacity-75"
-                >
-                  <path d="M400 287a113 113 0 1 0 0 226 113 113 0 0 0 0-226zm59 128h-44v44a15 15 0 1 1-30 0v-44h-44a15 15 0 1 1 0-30h44v-44a15 15 0 1 1 30 0v44h44a15 15 0 1 1 0 30z" />
-                  <path d="M578 222a252 252 0 0 0-356 356 252 252 0 0 0 356-356zM400 543a143 143 0 1 1 0-286 143 143 0 0 1 0 286z" />
-                </svg>
-              </span>{BUTTON_ACTION_TEXT['positive-spin-cta']}</Button>
-            <Button isDisabled={true} onClick={() => { transition("CreateSphere", { spin: 'negative' }) }} type="button" variant="primary responsive"><span className="text-success-500"><img src="assets/icons/negative-spin.svg" className='w-8 h-8 my-1 mr-2 opacity-75' /></span>{BUTTON_ACTION_TEXT['negative-spin-cta']}</Button>
+              <svg
+                className="w-6 h-6 my-1 mr-2" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" clipRule="evenodd" d="M17.3333 9C17.3333 13.6024 13.6024 17.3333 8.99999 17.3333C4.39762 17.3333 0.666656 13.6024 0.666656 9C0.666656 4.39763 4.39762 0.666666 8.99999 0.666666C13.6024 0.666666 17.3333 4.39763 17.3333 9ZM8.99999 4.91667C9.4142 4.91667 9.74999 5.25245 9.74999 5.66667V8.25H12.3333C12.7475 8.25 13.0833 8.58579 13.0833 9C13.0833 9.41421 12.7475 9.75 12.3333 9.75H9.74999V12.3333C9.74999 12.7475 9.4142 13.0833 8.99999 13.0833C8.58578 13.0833 8.24999 12.7475 8.24999 12.3333V9.75H5.66666C5.25244 9.75 4.91666 9.41421 4.91666 9C4.91666 8.58579 5.25244 8.25 5.66666 8.25H8.24999V5.66667C8.24999 5.25245 8.58578 4.91667 8.99999 4.91667Z" fill="white" />
+              </svg>
+              {BUTTON_ACTION_TEXT['positive-spin-cta']}</Button>
+            <Button
+              isDisabled={true}
+              onClick={() => { transition("CreateSphere", { spin: 'negative' }) }}
+              type="button"
+              variant="secondary responsive"
+            >
+              <svg className='w-6 h-6 my-1 mr-2' width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" clipRule="evenodd" d="M8.99998 17.3333C13.6024 17.3333 17.3333 13.6023 17.3333 8.99997C17.3333 4.39758 13.6024 0.666615 8.99998 0.666615C4.39759 0.666615 0.666626 4.39758 0.666626 8.99997C0.666626 13.6023 4.39759 17.3333 8.99998 17.3333ZM12.3333 9.74994C12.7475 9.74994 13.0833 9.41415 13.0833 8.99994C13.0833 8.58573 12.7475 8.24994 12.3333 8.24994L5.66666 8.24994C5.25245 8.24994 4.91666 8.58573 4.91666 8.99994C4.91666 9.41415 5.25245 9.74994 5.66666 9.74994L12.3333 9.74994Z" fill="white" />
+              </svg>
+              {BUTTON_ACTION_TEXT['negative-spin-cta']}
+            </Button>
           </div>
         </header>
       }
@@ -108,17 +111,14 @@ function HomeLayout({ firstVisit = true }: any) {
                     id="password"
                     withInfo={true}
                     isPassword={true}
-                    onClickInfo={() => ({
-                      title: "Why don't I have traditional login options?",
-                      body: "This is what we call a Web 3 application - congratulations on being a part of the next web! //As a consequence there is no corporate cloud login, and all you need to be secure is a safe password.//Entering it again here is how you activate your public and private keys - your digital signature in the Planitt universe.// Write it somewhere and store it securely, since there is no password retrieval: you are responsible for your own keys.",
-                    })}
+                    onClickInfo={() => INPUT_INFO_MODALS['password']}
                     required={true}
                     labelValue={"Password:"}
-                    placeholder={"Enter your password"}
+                    placeholder={INPUT_INFO_MODALS['password'].placeholder}
                   />
-                <Button type={"button"} isDisabled={isSubmitting} variant={"primary"} onClick={() => submitForm()}>
-                  Sign In
-                </Button>
+                  <Button type={"button"} isDisabled={isSubmitting} variant={"primary responsive"} onClick={() => submitForm()}>
+                    Sign In
+                  </Button>
 
                 </div>
 

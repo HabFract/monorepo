@@ -19,7 +19,7 @@
 }
 
 .system-calendar-card footer {
-  @apply dark:bg-surface-top-dark-500 rounded-3xl h-20 p-4 rounded-t-none;
+  @apply dark:bg-surface-overlay-dark-500 rounded-3xl h-20 p-4 rounded-t-none;
 }
 
 .system-calendar-card header img {
@@ -48,7 +48,7 @@
 
 /* Planitt Card Header & Title */
 .planitt-card-title {
-  @apply flex items-center justify-start w-full gap-2;
+  @apply flex items-center justify-start w-full gap-4;
 }
 
 .planitt-card-title .planitt-scale-image {
@@ -84,9 +84,9 @@
   @apply dark:text-text-dark flex flex-col font-sans text-base font-bold;
 }
 
-.planitt-card section.stats > div {
+.planitt-card section.stats>div {
   @apply flex items-center justify-between;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding: .5rem 0;
 }
 
@@ -123,11 +123,12 @@
 .action-card-icon {
   @apply text-red-200;
 }
-.action-card-icon > .action-card-icon-content {
+
+.action-card-icon>.action-card-icon-content {
   @apply flex items-center justify-between w-full gap-4;
 }
 
-.action-card-button > .action-card-icon-content {
+.action-card-button>.action-card-icon-content {
   @apply flex items-center justify-between gap-4;
 }
 
@@ -136,7 +137,7 @@
   @apply w-full;
 }
 
-.action-card-icon > div > div:first-child {
+.action-card-icon>div>div:first-child {
   @apply flex flex-col gap-1;
   justify-content: flex-start;
 }
@@ -149,6 +150,7 @@
   @apply grid items-start justify-center grid-cols-1 grid-rows-1 gap-4;
   min-height: 11rem;
 }
+
 .card.action-card-avatar img {
   min-height: 6rem;
   min-width: 6rem;
@@ -157,10 +159,13 @@
 .action-card-avatar-content .avatar-container {
   @apply flex-col;
 }
+
 .action-card-avatar-content {
-  @apply w-full h-full; 
+  @apply w-full h-full;
 }
-.action-card-avatar-content div.ant-upload, .action-card-avatar-content span.ant-upload {
+
+.action-card-avatar-content div.ant-upload,
+.action-card-avatar-content span.ant-upload {
   padding: 0 !important;
   min-height: auto !important;
 }
@@ -170,7 +175,7 @@
   width: calc(100% - 3rem);
 }
 
-.action-card-avatar-content .custom-image > div {
+.action-card-avatar-content .custom-image>div {
   /* Trash button */
   position: absolute;
   bottom: 1rem;
@@ -181,6 +186,7 @@
 .action-card header {
   @apply text-sm font-bold leading-relaxed;
 }
+
 .action-card .action-card-body {
   @apply text-sm leading-relaxed opacity-75;
 }

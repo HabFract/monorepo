@@ -45,7 +45,7 @@ function App({ children: pageComponent }) {
 
   useEffect(() => {
     logMemoryUsage('Page Load');
-    
+
     return () => {
       logMemoryUsage('Page Unload');
     };
@@ -76,7 +76,7 @@ function App({ children: pageComponent }) {
         global.gc();
       }
     }, 30000); // Run every 30 seconds
-  
+
     return () => {
       clearInterval(cleanup);
     };
@@ -99,7 +99,7 @@ function App({ children: pageComponent }) {
       message: ALPHA_RELEASE_DISCLAIMER,
       withConfirm: true,
       withCancel: false,
-      size: "md"
+      size: "sm"
     });
   }, [showModal]);
 
@@ -115,7 +115,7 @@ function App({ children: pageComponent }) {
 
   const enhancedPageComponent = useMemo(() => {
     if (!pageComponent) return null;
-    
+
     return cloneElement(pageComponent, {
       headerDiv: state.match("Onboarding") && (
         //@ts-ignore
@@ -151,7 +151,7 @@ function App({ children: pageComponent }) {
             open={handleDisclaimer}
           />
         )}
-        
+
         {showNav && (
           <Nav
             sideNavExpanded={sideNavExpanded}

@@ -173,7 +173,7 @@ export abstract class BaseVisualization implements IVisualization {
 
   bindEventHandlers() {
     this.unbindEventHandlers();
-  
+
     /* Create memoized handlers */
     const memoizedHandleClick = memoizeOne((e, d) => {
       store.set(currentOrbitIdAtom, d.data.content);
@@ -222,10 +222,10 @@ export abstract class BaseVisualization implements IVisualization {
     if (this._canvas) {
       this._canvas.selectAll('*').on('.', null);
     }
-      
+
     // Clear subscriptions
     if (this._subscriptions) {
-      this._subscriptions.forEach((unsub:any) => unsub());
+      this._subscriptions.forEach((unsub: any) => unsub());
       this._subscriptions = [];
     }
   }
@@ -322,7 +322,7 @@ export abstract class BaseVisualization implements IVisualization {
     if (!this.firstRender()) {
       this.unbindEventHandlers();
     }
-    
+
     if (this.noCanvas()) {
       this.setupCanvas();
     }
@@ -336,23 +336,23 @@ export abstract class BaseVisualization implements IVisualization {
     }
     if (this.firstRender() || this.hasNextData()) {
       this.clearCanvas();
-      
+
       let hasUpdated;
       if (this.hasNextData()) {
         this.rootData = this._nextRootData!;
         this._nextRootData = null;
         hasUpdated = true;
       }
-      
+
       this.setupLayout();
       this.setNodeAndLinkGroups();
       this.setNodeAndLinkEnterSelections();
       this.setNodeAndLabelGroups();
-      
+
       this.appendNodeVectors();
       this.appendLinkPath();
       this._gTooltip = this.clearAndRedrawLabels();
-      
+
       if (!hasUpdated) {
         this.applyInitialTransform();
         this.eventHandlers.memoizedhandleNodeZoom.call(
@@ -364,16 +364,16 @@ export abstract class BaseVisualization implements IVisualization {
       if (!(this.coverageType == VisCoverage.Partial || this.noCanvas())) {
         this.initializeZoomer();
       }
-      
+
       const newRenderNodeDetails = store.get(newTraversalLevelIndexId);
       const finalNodeToFocus = newRenderNodeDetails?.id;
       if (this.startInFocusMode && hasUpdated) {
         // console.log('Actual new focus node :>> ', finalNodeToFocus);
-        
+
         this._lastOrbitId = null;
         const initialNodeZoomId =
-        newRenderNodeDetails?.intermediateId || finalNodeToFocus || this._lastRenderParentId;
-        
+          newRenderNodeDetails?.intermediateId || finalNodeToFocus || this._lastRenderParentId;
+
         let initialZoom = this.eventHandlers.memoizedhandleNodeZoom.call(
           this,
           initialNodeZoomId,
@@ -464,14 +464,22 @@ export abstract class BaseVisualization implements IVisualization {
         const { scale, parentEh } = cachedNode;
 
         return scale == Scale.Astro
-          ? (!parentEh ? "-80" : "-100")
+          ? (!parentEh ? "-40" : "-30")
           : scale == Scale.Sub
-            ? (!parentEh ? "12" : "10")
-            : (!parentEh ? "12" : "66");
+            ? (!parentEh ? "20" : "40")
+            : (!parentEh ? "55" : "75");
       })
-      .attr("x", "-110")
-      .attr("width", "220")
-      .attr("height", "350")
+      .attr("x", (d) => {
+        const cachedNode = this.nodeDetails[d.data.content];
+        const { scale, parentEh } = cachedNode;
+        return !parentEh ? "-122" : "-90"
+      })
+      .attr("width", (d) => {
+        const cachedNode = this.nodeDetails[d.data.content];
+        const { scale, parentEh } = cachedNode;
+        return !parentEh ? "246" : "220"
+      })
+      .attr("height", "300")
       .html(this.appendLabelHtml);
   }
 

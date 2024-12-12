@@ -101,7 +101,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
 
           transition(
             state == "Onboarding1" ? "Onboarding2" : "Home",
-            {... props, spin: params?.spin},
+            { ...props, spin: params?.spin },
           );
         } catch (error) {
           console.error(error);
@@ -149,14 +149,14 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                 />
               </div>
               <Form noValidate onSubmit={async (e) => {
-                  e.preventDefault();
-                  // Validate before submitting
-                  const errors = await validateForm();
-                  if (Object.keys(errors).length === 0) {
-                    // Form is valid, allow submission
-                    submitForm()
-                  }
-                }}>
+                e.preventDefault();
+                // Validate before submitting
+                const errors = await validateForm();
+                if (Object.keys(errors).length === 0) {
+                  // Form is valid, allow submission
+                  submitForm()
+                }
+              }}>
                 {editMode && (
                   <SphereFetcher
                     sphereToEditId={sphereToEditId}
@@ -188,7 +188,7 @@ const CreateSphere: React.FC<CreateSphereProps> = ({
                 </div>
                 <div className="form-field">
                   <Label id="image" labelValue="Symbol: ">
-                    <Field defaultImage={params?.spin == 'negative' ? '/assets/icons/negative-spin.svg' : '/assets/icons/positive-spin.svg' } component={ImageUploadInput} defaultOptions={[
+                    <Field defaultImage={params?.spin == 'negative' ? '/assets/icons/negative-spin.svg' : '/assets/icons/image-upload.svg'} component={ImageUploadInput} defaultOptions={[
                       { src: '/assets/icons/sphere-symbol-1.svg', alt: 'Symbol 1' },
                       { src: '/assets/icons/sphere-symbol-2.svg', alt: 'Symbol 2' },
                       { src: '/assets/icons/sphere-symbol-3.svg', alt: 'Symbol 3' },

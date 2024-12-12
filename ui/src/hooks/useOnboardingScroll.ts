@@ -12,7 +12,7 @@ export function useOnboardingScroll(
     setTimeout(() => {
       (progressBarRef.current as any)
         .querySelector(".onboarding-progress")
-        .scrollTo(((stage - 1) + (returningUser ? 0 : 1)) * 110, 0);
+        .scrollTo((stage - 1 + (returningUser ? 0 : 1)) * 90, 0);
     }, 500);
   }, [state, progressBarRef]);
 

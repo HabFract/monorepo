@@ -29,19 +29,19 @@ const beforeUpload = (file: RcFile) => {
     message.error("You can only upload JPG/PNG file!");
     return false;
   }
-  
+
   // 512KB = 512 * 1024 bytes
   const isLt512KB = file.size / 1024 < 512;
   if (!isLt512KB) {
     message.error("Image must be smaller than 512KB!");
     return false;
   }
-  
+
   return isJpgOrPng && isLt512KB;
 };
 
 /** Default avatar image in base64 format */
-const DEFAULT_IMAGE = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDIiIGhlaWdodD0iNDIiIHZpZXdCb3g9IjAgMCA0MiA0MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzI0M18zNjY5KSI+CjxyZWN0IHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgcng9IjIxIiBmaWxsPSIjMjEzMjMwIi8+CjxwYXRoIGQ9Ik03IDM3LjYzOTZDNyAzMi41NTE5IDExLjUwNjIgMjguNjQzNyAxNi41NDI3IDI5LjM2MzJMMTkuNDU2NiAyOS43Nzk1QzIwLjQ4MDMgMjkuOTI1OCAyMS41MTk3IDI5LjkyNTggMjIuNTQzNCAyOS43Nzk1TDI1LjQ1NzMgMjkuMzYzMkMzMC40OTM5IDI4LjY0MzcgMzUgMzIuNTUxOSAzNSAzNy42Mzk2QzM1IDQyLjI1NjkgMzEuMjU2OSA0NiAyNi42Mzk2IDQ2SDE1LjM2MDRDMTAuNzQzMSA0NiA3IDQyLjI1NjkgNyAzNy42Mzk2WiIgZmlsbD0iIzAyQjE5NyIvPgo8Y2lyY2xlIGN4PSIyMSIgY3k9IjIwIiByPSI2IiBmaWxsPSIjMDJCMTk3Ii8+CjwvZz4KPHJlY3QgeD0iMC41IiB5PSIwLjUiIHdpZHRoPSI0MSIgaGVpZ2h0PSI0MSIgcng9IjIwLjUiIHN0cm9rZT0iIzAyQjE5NyIgc3Ryb2tlLW9wYWNpdHk9IjAuMSIvPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMF8yNDNfMzY2OSI+CjxyZWN0IHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgcng9IjIxIiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=";
+const DEFAULT_IMAGE = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNC4yNSAySDhDNS4yMzg1OCAyIDMgNC4yMzg1OCAzIDdWMTdDMyAxOS43NjE0IDUuMjM4NTggMjIgOCAyMkgxNkMxOC43NjE0IDIyIDIxIDE5Ljc2MTQgMjEgMTdWOC43NUgxOEMxNS45Mjg5IDguNzUgMTQuMjUgNy4wNzEwNyAxNC4yNSA1VjJaTTE1Ljc1IDVWMi44MTA2NkwyMC4xODkzIDcuMjVIMThDMTYuNzU3NCA3LjI1IDE1Ljc1IDYuMjQyNjQgMTUuNzUgNVpNMTIuNzI4IDguNzM5OThDMTIuMzgxNyA4LjIyMDQ3IDExLjYxODMgOC4yMjA0NyAxMS4yNzIgOC43Mzk5OEw5LjM3NTk2IDExLjU4NEM5LjE0NjIgMTEuOTI4NiA5LjIzOTMzIDEyLjM5NDMgOS41ODM5NyAxMi42MjRDOS45Mjg2MiAxMi44NTM4IDEwLjM5NDMgMTIuNzYwNyAxMC42MjQgMTIuNDE2TDExLjI1IDExLjQ3NzFWMTVDMTEuMjUgMTUuNDE0MiAxMS41ODU4IDE1Ljc1IDEyIDE1Ljc1QzEyLjQxNDIgMTUuNzUgMTIuNzUgMTUuNDE0MiAxMi43NSAxNVYxMS40NzcxTDEzLjM3NiAxMi40MTZDMTMuNjA1NyAxMi43NjA3IDE0LjA3MTQgMTIuODUzOCAxNC40MTYgMTIuNjI0QzE0Ljc2MDcgMTIuMzk0MyAxNC44NTM4IDExLjkyODYgMTQuNjI0IDExLjU4NEwxMi43MjggOC43Mzk5OFoiIGZpbGw9ImN1cnJlbnRDb2xvciIvPgo8L3N2Zz4K";
 
 interface ImageUploadProps {
   field: {
@@ -211,7 +211,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
   const handleFileChange = (file: File | Blob) => {
     if (!file) return;
-    
+
     const reader = new FileReader();
     reader.addEventListener("load", () => {
       const url = reader.result as string;
@@ -240,14 +240,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               setLoading(false);
               return;
             }
-          
+
             // Double-check size here as well
             if (info.file.originFileObj && info.file.originFileObj.size / 1024 > 512) {
               setLoading(false);
               message.error("Image must be smaller than 512KB!");
               return;
             }
-            
+
             if (info.file.status === "done" && info.file.originFileObj) {
               handleFileChange(info.file.originFileObj);
             }
@@ -286,7 +286,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           }}
         >
           {({ bindDrag }) => (
-            <div className="bg-surface dark:bg-surface-top-dark p-4 rounded-t-3xl min-h-[50vh]"> {/* Added min-height */}
+            <div className="bg-surface dark:bg-overlay-tab p-4 rounded-t-3xl min-h-[50vh]"> {/* Added min-height */}
               <motion.div className="handle" {...bindDrag}>
                 <span></span>
               </motion.div>

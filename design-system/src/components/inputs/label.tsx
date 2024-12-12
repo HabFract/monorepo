@@ -11,7 +11,7 @@ export interface LabelProps {
   isListItem?: boolean;
   required?: boolean;
   withInfo?: boolean;
-  onClickInfo?: () => { title: string, body: string };
+  onClickInfo?: () => { title: string, body: string, footer?: string };
   children: React.ReactNode;
 }
 
@@ -49,14 +49,14 @@ const withLabel: React.FC<LabelProps> = ({
 
         <div className="btn-info">
           {withInfo && (
-              <>
-                <button onClick={() => setTooltipVisible(true)} type="button">
-                  {getIconSvg('info')({})}
-                </button>
-                <Modal footerElement="" title={onClickInfo?.()?.title as string} isModalOpen={tooltipVisible} size="lg" onClose={() => setTooltipVisible(false)}>
-                  {onClickInfo?.()?.body.split("//").map((para, idx) => <p key={idx}>{para}</p>)}
-                </Modal>
-              </>
+            <>
+              <button onClick={() => setTooltipVisible(true)} type="button">
+                {getIconSvg('info')({})}
+              </button>
+              <Modal footerElement={onClickInfo?.()?.footer && <p>{onClickInfo().footer as string}</p>} title={onClickInfo?.()?.title as string} isModalOpen={tooltipVisible} size="sm" onClose={() => setTooltipVisible(false)}>
+                {onClickInfo?.()?.body.split("//").map((para, idx) => <p key={idx}>{para}</p>)}
+              </Modal>
+            </>
           )}
         </div>
 

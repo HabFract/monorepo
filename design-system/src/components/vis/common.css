@@ -7,16 +7,19 @@
   -moz-hyphens: auto;
   -ms-hyphens: auto;
   hyphens: auto;
-  outline: 1px solid rgba(255,255,255,0.1);
+  outline: 1px solid rgba(255, 255, 255, 0.1);
   outline-offset: -1px;
 
 }
+
 .orbit-label-container h2 {
   @apply flex items-center justify-between gap-4 font-semibold;
 }
+
 .orbit-label-container p {
   @apply pr-2;
 }
+
 /* Orbit Vis Label Tooltip Arrow */
 .orbit-label-container::before {
   content: "";
@@ -24,13 +27,14 @@
   width: 0;
   height: 0;
   position: absolute;
-  
+
   border: 12px solid transparent;
   /* @apply border-b-secondary; */
-  border-bottom-color: rgba(0,0,0, 0.8);
-  left: calc(50% - 12px);
+  border-bottom-color: rgba(0, 0, 0, 0.8);
+  left: calc(40% - 12px);
   top: -23px;
 }
+
 /* Orbit Vis Label Frequency Indicator */
 .orbit-label-container .frequency-indicator-container {
   margin-top: -.1rem;
@@ -42,7 +46,8 @@
   position: relative;
   margin-left: auto;
   top: 0;
-  margin-bottom: 12px;
+  margin-right: 3.5rem;
+  margin-bottom: 4px;
 }
 
 
@@ -62,6 +67,7 @@
   .sphere-pie .pie {
     min-width: initial;
   }
+
   .sphere-pie .pie {
     min-height: 18rem;
   }

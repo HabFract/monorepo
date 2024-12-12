@@ -44,6 +44,6 @@
 /* Subdivision List Styles
 -------------------------------------------------- */
 .layout.orbit-subdivision-list {
-  @apply dark:bg-surface-dark flex flex-col gap-2 p-0;
+  @apply flex flex-col gap-2 p-0;
   min-height: initial;
 }

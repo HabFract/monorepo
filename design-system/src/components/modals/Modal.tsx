@@ -1,4 +1,4 @@
-import { Modal as FBModal} from "flowbite-react";
+import { Modal as FBModal } from "flowbite-react";
 import "./common.css";
 
 export interface ModalProps {

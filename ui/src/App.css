@@ -19,8 +19,14 @@ body {
   background: radial-gradient(#2F3232, #171717);
 }
 
+.page-container.vis,
+.header-action-container,
+.page-container.settings {
+  background: #171717
+}
+
 .page-container {
-  @apply dark:bg-surface-dark flex w-full gap-2 overflow-auto;
+  @apply flex w-full gap-2 overflow-auto;
   height: fit-content;
   min-height: 100vh;
   flex-direction: column;
@@ -42,8 +48,8 @@ body {
 
 #vis {
   background-image:
-    linear-gradient(to right, rgba(146, 168, 212, 0.3) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(146, 168, 212, 0.3) 1px, transparent 1px);
+    linear-gradient(to right, rgba(146, 168, 212, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(146, 168, 212, 0.15) 1px, transparent 1px);
 }
 
 

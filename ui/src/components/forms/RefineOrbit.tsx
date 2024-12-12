@@ -48,17 +48,21 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({
 
             <div className="content">
               <div className="form-description">
-                This is your chance to divide a large scale {MODEL_DISPLAY_VALUES['orbit'].toLowerCase()} into several smaller <em>agreements or actions</em> that will simplify carrying out your plan.
+                {
+                  values.scale !== Scale.Atom
+                    ? `This is your chance to divide a large scale ${MODEL_DISPLAY_VALUES['orbit'].toLowerCase()} into several smaller agreements or actions that will simplify carrying out your plan.`
+                    : `This is your chance to ensure you chose the correct name for your ${MODEL_DISPLAY_VALUES['orbit'].toLowerCase()}: it should be an easy and short step to tick off. If you can, add a specific time/place!`
+                }
               </div>
-            <OrbitSubdivisionList
-              submitBtn={submitBtn}
-              currentOrbitValues={values}
-              refinementType={
-                values.scale == Scale.Atom
-                  ? Refinement.Update
-                  : Refinement.Split
-              }
-            ></OrbitSubdivisionList>
+              <OrbitSubdivisionList
+                submitBtn={submitBtn}
+                currentOrbitValues={values}
+                refinementType={
+                  values.scale == Scale.Atom
+                    ? Refinement.Update
+                    : Refinement.Split
+                }
+              ></OrbitSubdivisionList>
             </div>
           </section>
         );

@@ -5,9 +5,14 @@ button.btn {
   max-width: 30rem;
   color: white;
 }
-button.btn > div {
+
+button.btn>div {
   @apply flex items-center transition-all duration-200;
   padding: 0 1rem;
+}
+
+button.btn.btn-icon.wide>div {
+  padding: .75rem;
 }
 
 /* Primary Button Variants
@@ -28,7 +33,7 @@ button.btn.btn-secondary.nohover:hover {
 }
 
 button.btn.btn-secondary:not(.nohover):hover {
-  @apply bg-secondary border-secondary dark:bg-secondary-dark dark:border-secondary-500 ;
+  @apply bg-secondary border-secondary dark:bg-secondary-dark dark:border-secondary-500;
 }
 
 /* Status Button Variants
@@ -72,19 +77,23 @@ button.btn.btn-secondary:not(.nohover):hover {
 }
 
 .btn-primary.outlined {
-  @apply outline-primary-500;
+  @apply outline-primary-500 bg-transparent dark:bg-transparent !important;
 }
+
 .btn-secondary.outlined {
-  @apply outline-secondary-500;
+  @apply outline-secondary-500 bg-transparent dark:bg-transparent !important;
 }
+
 .btn-neutral.outlined {
-  @apply outline-gray-300;
+  @apply outline-gray-300 dark:bg-transparent !important;
 }
+
 .btn-warn.outlined {
-  @apply outline-warn-500;
+  @apply outline-warn-500 dark:bg-transparent !important;
 }
+
 .btn-danger.outlined {
-  @apply outline-danger-500 text-danger;
+  @apply outline-danger-500 text-danger dark:bg-transparent !important;
 }
 
 /* Button States
@@ -92,41 +101,41 @@ button.btn.btn-secondary:not(.nohover):hover {
 /* Disabled */
 .btn:disabled,
 .btn-disabled.nohover:hover {
-  @apply dark:bg-gray-400 dark:text-gray-200 dark:border-gray-300 text-white bg-gray-500 dark:bg-gray-400 dark:text-gray-300 border-gray-200 pointer-events-none !important;
+  @apply text-white opacity-50 dark:text-white pointer-events-none !important;
 }
 
 .btn:disabled:hover,
 .btn:disabled:active,
 .btn:disabled:focus {
-  @apply text-white dark:text-white pointer-events-none  !important;
+  @apply text-white dark:text-white pointer-events-none !important;
   outline: none;
 }
 
 .btn .animate-spin {
-  @apply  dark:text-gray-400 fill-gray-400 dark:fill-gray-300 text-gray-200;
+  @apply dark:text-gray-400 fill-gray-400 dark:fill-gray-300 text-gray-200;
 }
 
 /* Focus & Active States
 -------------------------------------------------- */
 .focus-styles {
-  @apply relative
-    focus:ring-0 focus:shadow-none
-    before:content-[''] before:absolute before:inset-0 before:bg-white before:opacity-0
-    focus:before:opacity-10
-    active:before:opacity-10
-    !important;
+  @apply relative focus:ring-0 focus:shadow-none before:content-[''] before:absolute before:inset-0 before:bg-white before:opacity-0 focus:before:opacity-10 active:before:opacity-10 !important;
 }
-.btn.btn-circle-icon:focus:focus::before, .btn.btn-circle-icon:focus:hover:focus::before,
-.btn.btn-circle-icon-lg:focus:focus::before, .btn.btn-circle-icon-lg:focus:hover:focus::before {
+
+.btn.btn-circle-icon:focus:focus::before,
+.btn.btn-circle-icon:focus:hover:focus::before,
+.btn.btn-circle-icon-lg:focus:focus::before,
+.btn.btn-circle-icon-lg:focus:hover:focus::before {
   border-radius: 100%;
 }
 
 .active-styles {
-  @apply outline-gray-500 dark:outline-gray-300 active:outline active:outline-1 active:outline-gray-300 dark:active:outline-gray-100  !important;
+  @apply outline-gray-500 dark:outline-gray-300 active:outline active:outline-1 active:outline-gray-300 dark:active:outline-gray-100 !important;
 }
+
 .btn:active {
   @apply active-styles;
 }
+
 .btn:focus,
 .btn:focus:hover,
 .card ul li button:focus:hover {
@@ -137,7 +146,8 @@ button.btn.btn-secondary:not(.nohover):hover {
   @apply rounded-xl;
 }
 
-.list-item-danger button, .list-item-danger button:hover {
+.list-item-danger button,
+.list-item-danger button:hover {
   @apply text-danger dark:text-danger !important;
 }
 
@@ -147,20 +157,34 @@ button.btn.btn-secondary:not(.nohover):hover {
   @apply text-danger dark:text-danger !important;
 }
 
-.list-group-override button:hover, .list-group-override button:hover:focus, .list-group-override button:focus  {
+.list-group-override button:hover,
+.list-group-override button:hover:focus,
+.list-group-override button:focus {
   @apply focus:ring-0 focus:ring-offset-0 outline-none !important;
 }
-.list-group-override button:hover:focus, .list-group-override button:focus {
+
+.list-group-override button:hover:focus,
+.list-group-override button:focus {
   @apply focus-styles !important;
 }
-.list-group-override button:hover:active, .list-group-override button:active {
+
+.list-group-override button:hover:active,
+.list-group-override button:active {
   @apply active-styles !important;
-} 
+}
 
 /* Icon Button Variants
 -------------------------------------------------- */
-.btn.btn-icon, .input-with-icon-right, .input-with-icon, .btn-info {
+.btn.btn-icon,
+.input-with-icon-right,
+.input-with-icon,
+.btn-info {
   @apply text-text dark:text-text-dark;
+}
+
+.btn.btn-icon.wide {
+  width: fit-content !important;
+  @apply rounded-3xl;
 }
 
 .btn-info {
@@ -170,20 +194,33 @@ button.btn.btn-secondary:not(.nohover):hover {
 .btn.btn-icon {
   @apply bg-surface dark:bg-surface-dark w-8 h-8 border-0;
 }
+
 .btn.btn-circle-icon {
   @apply text-title dark:text-title-dark w-8 h-8 border-0;
 }
+
 .btn.btn-circle-icon-lg {
   @apply text-title dark:text-title-dark w-12 h-12 border-0 rounded-full;
 }
 
-.btn.btn-circle-icon, .btn.btn-circle-icon > div {
+.btn.btn-circle-icon,
+.btn.btn-circle-icon>div {
   @apply rounded-full;
 }
-.btn.btn-icon svg, .btn.btn-circle-icon svg{ 
+
+.btn.btn-icon svg,
+.btn.btn-circle-icon svg {
   @apply w-4 h-4;
 }
-.header-action-container .btn.btn-icon svg, .header-action-container .btn.btn-circle-icon svg{ 
+
+.btn.btn-icon.wide svg {
+  height: 1.5rem;
+  width: 1.5rem;
+  margin-right: .5rem;
+}
+
+.header-action-container .btn.btn-icon svg,
+.header-action-container .btn.btn-circle-icon svg {
   @apply w-6 h-6;
 }
 
@@ -215,7 +252,7 @@ button.btn.btn-danger.outlined {
 -------------------------------------------------- */
 .btn.responsive {
   @apply w-full h-auto text-base font-bold tracking-wide rounded-full;
-  min-height: 2.5rem;
+  min-height: 3rem;
 }
 
 .btn.responsive span[role="img"],
@@ -226,7 +263,8 @@ button.btn.btn-danger.outlined {
 .btn.responsive span[role="img"]+span {
   @apply hidden-sm;
 }
-.btn.responsive > div {
+
+.btn.responsive>div {
   min-height: 2rem;
 }
 
@@ -236,6 +274,7 @@ button.btn.btn-danger.outlined {
 .btn-onboarding {
   @apply bg-primary text-text hover:bg-primary-500 hover:text-text dark:bg-primary-dark dark:text-text-dark dark:hover:bg-primary-500 dark:hover:text-text-dark w-full mt-4 font-sans font-normal leading-normal border-0;
 }
+
 /* Popover Button */
 div[data-testid="flowbite-popover"] button {
   justify-content: space-between !important;

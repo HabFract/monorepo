@@ -41,7 +41,7 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
   return (
     <article className={"card system-calendar-card"}>
       {loading
-        ? (<div style={{height: '204px'}}>
+        ? (<div style={{ height: '204px' }}>
           <header>
           </header>
           <section>
@@ -82,7 +82,7 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
         >
           <Button onClick={() => setSphereIsCurrent()} variant="circle-icon-lg btn-neutral outlined" icon={getIconSvg('more')({}) as any}></Button>
         </Popover>
-        <Button onClick={() => handleVisAction()} variant="primary responsive">Visualise</Button>
+        <Button onClick={() => handleVisAction()} variant="primary responsive outlined">Visualise</Button>
       </footer>
     </article>
   );

@@ -259,6 +259,17 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
         if (!values?.scale) {
           setFieldValue("scale", scaleDefault);
         }
+        function getExampleForScale(scale: string) {
+          switch (scale) {
+            case "Star":
+              return `"Plan to run a marathon" in the Health and Fitness space.`
+            case "Giant":
+              return `"I agree to start a training plan" in the Health and Fitness space.`
+            case "Dwarf":
+              return `"Warm up for 5 minutes" in the Health and Fitness space.`
+          }
+        }
+
         return (
           <section>
             {!inModal ? headerDiv : null}
@@ -272,7 +283,15 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                 </div>
                 <figure>
                   <figcaption className="figure-captions">
-                    {['Star', 'Giant', 'Dwarf'].map(scale => <HelperText key={scale} withInfo={true} onClickInfo={() => ({ title: `Planitt Scales`, label: `${scale}`, body: scale })}>{scale}</HelperText>)}
+                    {['Star', 'Giant', 'Dwarf'].map(scale => <HelperText key={scale} withInfo={true} onClickInfo={() => (
+                      {
+                        title: `Planitt Scales`,
+                        label: `${scale}`,
+                        body: scale,
+                        footer: `Example: 
+                        ${getExampleForScale(scale)}`
+                      }
+                    )}>{scale}</HelperText>)}
                   </figcaption>
                   <div className="figure-images">
                     {['sun', 'planet', 'moon'].map(scale => <div className="figure-image-container" key={scale}><img key={scale} src={`assets/${scale}.svg`} alt={`${scale} figure`} style={{ width: "100%" }} /></div>)}
@@ -290,7 +309,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                 }
               }}>
 
-              {!parentOrbitEh && !inOnboarding && (
+                {!parentOrbitEh && !inOnboarding && (
                   <div className="form-field flex">
                     <Field
                       component={SelectInputField}
@@ -307,14 +326,14 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                       }}
                       options={[
                         ...(orbitEdges.length == 0
-                        ? [<option value={"root"}>{"None"}</option>]
-                        : (childOrbitEh
-                          ? []
-                          : orbitEdges.map((orbit, i) => (
-                            <option key={i} value={orbit.eH}>
-                              {orbit.name}
-                            </option>
-                          )))),
+                          ? [<option value={"root"}>{"None"}</option>]
+                          : (childOrbitEh
+                            ? []
+                            : orbitEdges.map((orbit, i) => (
+                              <option key={i} value={orbit.eH}>
+                                {orbit.name}
+                              </option>
+                            )))),
                       ]}
                       required={true}
                       disabled={!!editMode}
@@ -369,7 +388,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                   />
                 </div>
 
-                {state.match("Onboarding") && <p style={{alignSelf: 'flex-start'}}>{descriptionParts[5]}<em>{descriptionParts[6]}</em>{descriptionParts[7]}</p>}
+                {state.match("Onboarding") && <p style={{ alignSelf: 'flex-start' }}>{descriptionParts[5]}<em>{descriptionParts[6]}</em>{descriptionParts[7]}</p>}
                 <div className="form-field flex">
                   <Field
                     component={TextInputField}
@@ -397,7 +416,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                     name="description"
                     id="description"
                     required={false}
-                    labelValue={"Details:"}
+                    labelValue={"Intention:"}
                     placeholder={"E.g. Give some more details..."}
                   />
                 </div>
@@ -420,7 +439,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                     //   body: "This refers to the magnitude of your behaviour. Astronomic goes well with anything vast, like running a marathon. Atomic is for small, incremental actions, like putting on your running shoes. Sub-astronomic is anything inbetween!",
                     // })}
                     options={[
-                      ...Object.values(Frequency).map((frequency) => {
+                      ...Object.values(Frequency).filter((frequency) => frequency.startsWith('D')).map((frequency) => {
                         return (
                           <option key={frequency} value={frequency}>
                             {getFrequencyDisplayNameLong(decodeFrequency(frequency))}
@@ -471,13 +490,13 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                   </div>
                 </div>
               </Flex>} */}
-              {inModal
-                ? <div className="modal-submit-btn bottom-4 absolute">
-                  {submitButton}
-                </div>
-                : <>{submitButton}</>
-              }
-                
+                {inModal
+                  ? <div className="modal-submit-btn bottom-4 absolute">
+                    {submitButton}
+                  </div>
+                  : <>{submitButton}</>
+                }
+
               </Form>
             </div>
           </section>

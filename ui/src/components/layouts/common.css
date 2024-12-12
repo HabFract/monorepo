@@ -7,6 +7,8 @@
 
 .home-layout .welcome-cta .logo {
   @apply w-64 pl-2 mb-2;
+  opacity: 0.8;
+  filter: drop-shadow(2px 4px 6px black);
 }
 
 .home-layout .welcome-cta,
@@ -28,14 +30,20 @@
 .home-layout .avatar-menu button {
   @apply w-full h-12 cursor-pointer;
 }
+
+.home-layout .avatar-menu button:disabled {
+  @apply cursor-not-allowed opacity-10;
+}
+
 .home-layout .avatar-menu button div {
   @apply p-0;
 }
 
-.home-layout .login-options, .home-layout .spaces-tab {
+.home-layout .login-options,
+.home-layout .spaces-tab {
   height: calc(65vh - var(--vertical-section-spacing));
   border-radius: 1.5rem;
-  @apply dark:bg-surface-top-dark absolute bottom-0 flex flex-col w-full gap-2 px-4 py-6 rounded-b-none; 
+  @apply dark:bg-overlay-tab absolute bottom-0 flex flex-col w-full gap-2 px-4 py-6 rounded-b-none;
 }
 
 .home-layout .spaces-tab {
@@ -55,9 +63,15 @@
   background-color: transparent;
 }
 
-.form-layout, .list-layout, .settings-layout {
+.form-layout,
+.list-layout,
+.settings-layout {
   height: 100%;
   width: 100%;
+}
+
+.list-content {
+  overflow-y: auto;
 }
 
 
@@ -76,7 +90,7 @@
   height: 45vh;
 }
 
-.home-layout .returning-cta > div {
+.home-layout .returning-cta>div {
   @apply flex items-center justify-between;
 }
 
@@ -89,7 +103,8 @@
 
 /* Settings */
 
-.settings-layout, .settings-layout section {
+.settings-layout,
+.settings-layout section {
   @apply flex flex-col w-full gap-4 p-2 bg-transparent;
 }
 
@@ -140,12 +155,13 @@
 .onboarding-layout .container {
   width: 100%;
 }
+
 .onboarding-layout form {
   margin-bottom: 6rem;
 }
 
 .onboarding-continue {
-  @apply w-[100vw] p-4 dark:bg-surface-top-dark-500 fixed inset-x-0 bottom-0 flex bg-gray-200;
+  @apply w-[100vw] p-4 dark:bg-overlay-dashboard-700 fixed inset-x-0 bottom-0 flex bg-gray-200;
   height: 5rem;
 }
 
@@ -158,6 +174,7 @@
   top: 1rem !important;
   transform: none !important;
 }
+
 /* -- Vis */
 .vis-layout .header-action-container div[role="dialog"] {
   left: calc(100% - 15.25rem) !important;
@@ -176,6 +193,8 @@
 }
 
 /* Nav Visibility (fallback) */
-.home .side-nav, .list.page-container .side-nav, .create-form.page-container .side-nav{
+.home .side-nav,
+.list.page-container .side-nav,
+.create-form.page-container .side-nav {
   @apply hidden;
 }

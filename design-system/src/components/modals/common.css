@@ -4,47 +4,63 @@
 }
 
 /* Modal Content Container */
-[data-testid="modal-overlay"] > div {
+[data-testid="modal-overlay"]>div {
   @apply relative w-full md:h-auto max-w-lg h-[90vh];
 }
 
 /* Modal Content Container Account for Footer positioning */
-[data-testid="modal-overlay"] > div:nth-child(2) div.overflow-auto:nth-child(2):not(.hide-footer)  {
-  @apply mb-16;
+[data-testid="modal-overlay"]>div:nth-child(2) div.overflow-auto:nth-child(2):not(.hide-footer) {
+  @apply mb-24;
 }
 
 /* Modal Inner Container */
-[data-testid="modal-overlay"] > div > div {
-  @apply relative dark:bg-surface-elevated-dark flex max-h-[90dvh] min-h-[70dvh] flex-col rounded-2xl;
+[data-testid="modal-overlay"]>div>div {
+  @apply relative flex max-h-[90dvh] min-h-[50dvh] flex-col rounded-2xl;
   overflow: hidden;
+  height: -webkit-fill-available;
 }
 
+/* Footer */
+[data-testid="modal-overlay"]>div>div>div:last-child p {
+  @apply leading-loose font-medium text-base text-white dark:text-white text-center;
+}
 
 /* Small Modal Content Container */
-[data-testid="modal-overlay"] > div:has(div > div.sm.flex-1) {
+[data-testid="modal-overlay"]>div:has(div > div.sm.flex-1) {
   margin-top: -4rem;
   place-content: center;
   display: grid;
 }
-/* Small Modal Inner Container */
-[data-testid="modal-overlay"] > div > div:has(div.sm.flex-1) {
+
+/* Small Modal Inner Containers */
+[data-testid="modal-overlay"]>div>div:has(div.xs.flex-1) {
   min-height: 33vh;
   max-height: 50vh;
 }
+
+[data-testid="modal-overlay"]>div>div:has(div.sm.flex-1) {
+  min-height: 33vh;
+  max-height: 65vh;
+}
+
 /* Small Modal Content */
-[data-testid="modal-overlay"] > div > div > div.sm.flex-1 {
+[data-testid="modal-overlay"]>div>div>div.sm.flex-1 {
+  @apply mb-0;
+}
+
+/* Small Modal Content */
+[data-testid="modal-overlay"]>div>div>div.sm.flex-1 {
   @apply mb-0;
 }
 
 /* Modal Inner Container Paragraph */
-[data-testid="modal-overlay"] > div > div p {
-  @apply text-opacity-70 w-full pr-4 font-medium text-white;
-  /* leading-std font-lg */
+[data-testid="modal-overlay"]>div>div p {
+  @apply text-opacity-70 w-full font-medium text-white;
 }
 
 /* Modal Header Title Padding override */
 [data-testid="modal-overlay"] h3 {
-  padding-right: 2rem !important;
+  padding: 0 0 0 1rem !important;
   margin-bottom: 0;
 }
 

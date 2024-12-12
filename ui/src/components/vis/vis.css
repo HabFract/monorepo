@@ -56,8 +56,8 @@ g.node-subgroup {
   top: .5px;
 }
 
-.node-vector-group.sub::before {
-}
+.node-vector-group.sub::before {}
+
 .node-vector-group.selected.sub::before {
   background-size: 70px;
   left: -.5px;
@@ -72,6 +72,7 @@ g.node-subgroup {
 .node-vector-group.winning.astro::after {
   top: 1rem;
 }
+
 .node-vector-group.winning.astro::after {
   top: .75rem;
 }

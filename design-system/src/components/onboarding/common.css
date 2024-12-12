@@ -1,9 +1,11 @@
 /* Base Progress Bar Layout
 -------------------------------------------------- */
 .onboarding-progress {
-  @apply flex-row overflow-hidden py-2 px-4 gap-4 min-h-[2.5rem] top-0 right-0 overflow-x-auto dark:bg-surface-top-dark !important;
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+  @apply flex-row overflow-hidden py-2 px-4 gap-4 min-h-[2.5rem] top-0 right-0 overflow-x-auto dark:bg-overlay-dashboard-700 !important;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* Scrollbar Styling
@@ -28,34 +30,39 @@
 /* Figures with Planitt Scales
 -------------------------------------------------- */
 .figure-image-container {
-  @apply flex-1 w-full pt-8;
+  @apply flex-1 w-full pt-2;
 }
-.figure-images, .figure-captions {
+
+.figure-images,
+.figure-captions {
   @apply flex items-center justify-around gap-8;
 }
 
 .figure-image-container:nth-child(1) img {
-  transform: scale(1) translateX(4px);
+  transform: scale(1) translateX(8px);
 }
+
 .figure-image-container:nth-child(2) img {
-  transform: scale(1.2) translate(8px, 8px);
+  transform: scale(1.2) translate(4px, 4px);
 }
-.figure-image-container:nth-child(3) img  {
-  transform: scale(.4) translate(-4px, -10px);
+
+.figure-image-container:nth-child(3) img {
+  transform: scale(.4) translate(-4px, 4px);
 }
 
 /* Collapse
 -------------------------------------------------- */
-.ant-collapse, .ant-collapse-header {
+.ant-collapse,
+.ant-collapse-header {
   @apply p-0 mb-2 border-0 inline-block relative font-sans text-sm font-light leading-relaxed !important;
   text-decoration: none !important;
 }
 
-.ant-collapse-item .ant-collapse-content  {
+.ant-collapse-item .ant-collapse-content {
   @apply bg-transparent border-0 !important;
 }
 
-.ant-collapse-item .ant-collapse-content-box  {
+.ant-collapse-item .ant-collapse-content-box {
   @apply p-0 !important;
 }
 
@@ -110,7 +117,8 @@
   @apply grid place-content-center m-0 p-0 !important;
 }
 
-.ant-steps-item-icon, .ant-steps-item-icon svg {
+.ant-steps-item-icon,
+.ant-steps-item-icon svg {
   @apply w-6 h-6 !important;
 }
 
@@ -132,6 +140,7 @@
 .ant-steps-item.ant-steps-item-active .ant-steps-item-icon {
   @apply border-transparent dark:bg-success text-white !important;
 }
+
 .ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon {
   @apply dark:text-black text-white !important;
 }
@@ -139,7 +148,7 @@
 /* Waiting State
 -------------------------------------------------- */
 .ant-steps-item.ant-steps-item-wait .ant-steps-item-icon .ant-steps-icon {
-  @apply bg-transparent border-gray-200  grid place-content-center text-gray-200 dark:border-gray-300 dark:text-transparent dark:text-gray-300 !important;
+  @apply bg-transparent border-gray-200 grid place-content-center text-gray-200 dark:border-gray-300 dark:text-transparent dark:text-gray-300 !important;
 }
 
 
@@ -148,11 +157,11 @@
 .ant-steps-item.ant-steps-item-finish .ant-steps-item-icon .ant-steps-icon {
   @apply dark:bg-transparent bg-gray-200 dark:text-success !important;
 }
+
 .ant-steps-item.ant-steps-item-finish .ant-steps-item-subtitle {
   @apply text-black dark:text-success opacity-75 !important;
 }
 
 /* Media Queries
 -------------------------------------------------- */
-@media screen and (min-width: 440px) {
-}
+@media screen and (min-width: 440px) {}
