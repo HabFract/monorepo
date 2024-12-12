@@ -1,5 +1,5 @@
-import { Orbit, Sphere } from './../../../../../ui/src/graphql/generated/index';
-import { EntryRecord } from '@holochain-open-dev/utils/dist/entry-record';
+import { Orbit, Sphere } from "../../../../../ui/src/graphql/generated/index";
+import { EntryRecord } from "@holochain-open-dev/utils/dist/entry-record";
 import {
   DnaSource,
   Record,
@@ -14,7 +14,7 @@ import {
 import { pause, runScenario } from "@holochain/tryorama";
 import pkg from "tape-promise/tape";
 import { setUpAliceandBob } from "../../../../utils-backend";
-import { anOrbit, aSphere, setupSphere } from './utils';
+import { anOrbit, aSphere, setupSphere } from "./utils";
 const { test } = pkg;
 
 export default () => {
@@ -49,16 +49,18 @@ export default () => {
         const hash = await setupSphere(callZomeAlice);
         t.ok(hash, "A sphere was created,");
 
-        // When Alice then creates an Orbit with otherwise valid input, using the hash as a sphereHash 
+        // When Alice then creates an Orbit with otherwise valid input, using the hash as a sphereHash
         const createOrbitResponse = await callZomeAlice(
           "personal",
           "create_my_orbit",
-          anOrbit({sphereHash: encodeHashToBase64(hash)})
+          anOrbit({ sphereHash: encodeHashToBase64(hash) })
         );
-        t.ok(createOrbitResponse, 'an orbit was created,');
+        t.ok(createOrbitResponse, "an orbit was created,");
         // Then the Orbit was created
 
-        const orbitActionHash = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse).actionHash);
+        const orbitActionHash = encodeHashToBase64(
+          new EntryRecord<Orbit>(createOrbitResponse).actionHash
+        );
         const orbitGetResponse = await callZomeAlice(
           "personal",
           "get_my_orbit",
@@ -66,34 +68,42 @@ export default () => {
         );
         // And When get_orbit is called
         const orbitRecord = new EntryRecord<Orbit>(orbitGetResponse);
-        t.ok(orbitGetResponse, 'an orbit can be retrieved.');
+        t.ok(orbitGetResponse, "an orbit can be retrieved.");
         // Then Orbit can be retrieved
 
-
-        // 2. Given Alice then creates another Orbit with otherwise valid input, using the hash as a sphereHash and the new Orbit's hash as a parentHash 
+        // 2. Given Alice then creates another Orbit with otherwise valid input, using the hash as a sphereHash and the new Orbit's hash as a parentHash
         const createOrbitResponse2 = await callZomeAlice(
           "personal",
           "create_my_orbit",
-          anOrbit({name: 'A new name', sphereHash: encodeHashToBase64(hash), parentHash: encodeHashToBase64(orbitRecord.entryHash)})
+          anOrbit({
+            name: "A new name",
+            sphereHash: encodeHashToBase64(hash),
+            parentHash: encodeHashToBase64(orbitRecord.entryHash),
+          })
         );
-        t.ok(createOrbitResponse2, 'Another Orbit was created,');
+        t.ok(createOrbitResponse2, "Another Orbit was created,");
         // Then the Orbit was created
 
-        const orbitActionHash2 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse2).actionHash);
-        // When Alice updates the second orbit to have a new name 
+        const orbitActionHash2 = encodeHashToBase64(
+          new EntryRecord<Orbit>(createOrbitResponse2).actionHash
+        );
+        // When Alice updates the second orbit to have a new name
         const updatedOrbit = anOrbit({
-          name: 'A completely different name', sphereHash: encodeHashToBase64(hash), parentHash: encodeHashToBase64(orbitRecord.entryHash)
+          name: "A completely different name",
+          sphereHash: encodeHashToBase64(hash),
+          parentHash: encodeHashToBase64(orbitRecord.entryHash),
         });
         const updateOrbitResponse = await callZomeAlice(
           "personal",
           "update_orbit",
           {
             originalOrbitHash: orbitActionHash2,
-            updatedOrbit
+            updatedOrbit,
           }
         );
-        t.ok(updateOrbitResponse, 'the orbit was updated,');
-        const updatedOrbitHash = new EntryRecord<Orbit>(updateOrbitResponse).actionHash;
+        t.ok(updateOrbitResponse, "the orbit was updated,");
+        const updatedOrbitHash = new EntryRecord<Orbit>(updateOrbitResponse)
+          .actionHash;
         // Then the Orbit was updated
 
         // And When get_orbit is called with the *original* hash
@@ -102,11 +112,18 @@ export default () => {
           "get_my_orbit",
           orbitActionHash2
         );
-        t.ok(orbitGetResponse2, 'an orbit can be retrieved from the original hash,');
+        t.ok(
+          orbitGetResponse2,
+          "an orbit can be retrieved from the original hash,"
+        );
         // Then it return a response
-        
+
         const orbitRecord2 = new EntryRecord<Orbit>(orbitGetResponse2);
-        t.equal(updatedOrbit.name, orbitRecord2.entry.name, 'with the updated name, or')
+        t.equal(
+          updatedOrbit.name,
+          orbitRecord2.entry.name,
+          "with the updated name, or"
+        );
         // And it has the updated orbit name
 
         // And When get_orbit is called with the *update* action hash
@@ -116,19 +133,25 @@ export default () => {
           updatedOrbitHash
         );
 
-        t.ok(orbitGetResponse3, 'an orbit can be retrieved from the update hash,');
+        t.ok(
+          orbitGetResponse3,
+          "an orbit can be retrieved from the update hash,"
+        );
         const orbitRecord3 = new EntryRecord<Orbit>(orbitGetResponse3);
-        t.equal(updatedOrbit.name, orbitRecord3.entry.name, 'with the updated name.')
+        t.equal(
+          updatedOrbit.name,
+          orbitRecord3.entry.name,
+          "with the updated name."
+        );
         // Then it returns the updated entry
-        
 
         // 3. Given Alice already created two orbits
         const orbitGetAllResponse = await callZomeAlice(
           "personal",
           "get_all_my_sphere_orbits",
-          {sphereHash: encodeHashToBase64(hash)}
+          { sphereHash: encodeHashToBase64(hash) }
         );
-        t.equal(2, orbitGetAllResponse?.length, 'Two orbits exist,');
+        t.equal(2, orbitGetAllResponse?.length, "Two orbits exist,");
 
         // When Alice deletes the updated orbit
         const orbitDeleteResponse = await callZomeAlice(
@@ -136,19 +159,24 @@ export default () => {
           "delete_orbit",
           updatedOrbitHash
         );
-        t.ok(orbitDeleteResponse, 'an updated orbit can be deleted,');
+        t.ok(orbitDeleteResponse, "an updated orbit can be deleted,");
         const orbitGetAllResponse2 = await callZomeAlice(
           "personal",
           "get_all_my_sphere_orbits",
-          {sphereHash: encodeHashToBase64(hash)}
+          { sphereHash: encodeHashToBase64(hash) }
         );
-        t.equal(1, orbitGetAllResponse2.length, 'one orbit exists,');
+        t.equal(1, orbitGetAllResponse2.length, "one orbit exists,");
         // Then another get_all returns only 1 orbit
-          
-        const entryRecords2 = orbitGetAllResponse2.map(orbit => new EntryRecord<Orbit>(orbit).entry);
-        t.equal(orbitRecord.entry.name, entryRecords2[0].name, 'and it is the first orbit, not the updated orbit.')
-        // And it returns the not-deleted entry
 
+        const entryRecords2 = orbitGetAllResponse2.map(
+          (orbit) => new EntryRecord<Orbit>(orbit).entry
+        );
+        t.equal(
+          orbitRecord.entry.name,
+          entryRecords2[0].name,
+          "and it is the first orbit, not the updated orbit."
+        );
+        // And it returns the not-deleted entry
 
         // 4. Given Alice deleted all but the first orbit, When we delete the first orbit
         const orbitDeleteResponse2 = await callZomeAlice(
@@ -156,13 +184,17 @@ export default () => {
           "delete_orbit",
           orbitActionHash
         );
-        t.ok(orbitDeleteResponse2, 'A created orbit can be deleted,');
+        t.ok(orbitDeleteResponse2, "A created orbit can be deleted,");
         const orbitGetAllResponse3 = await callZomeAlice(
           "personal",
           "get_all_my_sphere_orbits",
-          {sphereHash: encodeHashToBase64(hash)}
+          { sphereHash: encodeHashToBase64(hash) }
         );
-        t.equal(0, orbitGetAllResponse3.length, 'an empty array is returned from get_all,');
+        t.equal(
+          0,
+          orbitGetAllResponse3.length,
+          "an empty array is returned from get_all,"
+        );
         // Then another get_all returns an empty array
 
         const orbitGetResponse4 = await callZomeAlice(
@@ -172,9 +204,12 @@ export default () => {
         );
         // And When get_orbit is called
         const noOrbitRecord = new EntryRecord<Orbit>(orbitGetResponse4);
-        t.equal(null, noOrbitRecord.record, 'and a null record is returned from get.');
+        t.equal(
+          null,
+          noOrbitRecord.record,
+          "and a null record is returned from get."
+        );
         // Then a null record is returned
-        
       } catch (e) {
         t.ok(null);
       }
@@ -214,11 +249,11 @@ export default () => {
         const orbitHierarchyResponse = await callZomeAlice(
           "personal",
           "get_orbit_hierarchy_json",
-          {orbitEntryHashB64: null}
-          );
+          { orbitEntryHashB64: null }
+        );
         // And an Orbit hierarchy was returned
-        console.log('orbitHierarchyResponse2 :>> ', orbitHierarchyResponse);
-        t.ok(orbitHierarchyResponse, 'a hierarchy can not be generated');
+        console.log("orbitHierarchyResponse2 :>> ", orbitHierarchyResponse);
+        t.ok(orbitHierarchyResponse, "a hierarchy can not be generated");
       } catch (e) {
         t.ok(null);
       }
@@ -226,4 +261,3 @@ export default () => {
     });
   });
 };
-

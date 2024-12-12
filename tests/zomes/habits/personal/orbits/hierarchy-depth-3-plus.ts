@@ -1,5 +1,5 @@
-import { Orbit, Sphere } from './../../../../../ui/src/graphql/generated/index';
-import { EntryRecord } from '@holochain-open-dev/utils/dist/entry-record';;
+import { Orbit, Sphere } from "../../../../../ui/src/graphql/generated/index";
+import { EntryRecord } from "@holochain-open-dev/utils/dist/entry-record";
 import {
   DnaSource,
   Record,
@@ -14,7 +14,7 @@ import {
 import { pause, runScenario } from "@holochain/tryorama";
 import pkg from "tape-promise/tape";
 import { setUpAliceandBob } from "../../../../utils-backend";
-import { anOrbit, aSphere, setupSphere } from './utils';
+import { anOrbit, aSphere, setupSphere } from "./utils";
 const { test } = pkg;
 
 export default () => {
@@ -49,44 +49,58 @@ export default () => {
         const hash = await setupSphere(callZomeAlice);
         t.ok(hash, "A sphere was created,");
 
-        // And Given Alice then creates an Orbit with otherwise valid input, using the hash as a sphereHash 
+        // And Given Alice then creates an Orbit with otherwise valid input, using the hash as a sphereHash
         const createOrbitResponse = await callZomeAlice(
           "personal",
           "create_my_orbit",
-          anOrbit({sphereHash: encodeHashToBase64(hash)})
+          anOrbit({ sphereHash: encodeHashToBase64(hash) })
         );
-        t.ok(createOrbitResponse, 'an orbit was created,');
+        t.ok(createOrbitResponse, "an orbit was created,");
 
-        const orbitHash = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse).entryHash);
-        // And Given Alice then creates another Orbit with otherwise valid input, using the hash as a sphereHash and the new Orbit's hash as a parentHash 
+        const orbitHash = encodeHashToBase64(
+          new EntryRecord<Orbit>(createOrbitResponse).entryHash
+        );
+        // And Given Alice then creates another Orbit with otherwise valid input, using the hash as a sphereHash and the new Orbit's hash as a parentHash
         const createOrbitResponse2 = await callZomeAlice(
           "personal",
           "create_my_orbit",
-          anOrbit({sphereHash: encodeHashToBase64(hash), parentHash: orbitHash})
+          anOrbit({
+            sphereHash: encodeHashToBase64(hash),
+            parentHash: orbitHash,
+          })
         );
-        t.ok(createOrbitResponse2, 'another orbit was created,');
+        t.ok(createOrbitResponse2, "another orbit was created,");
 
         // When Alice then requests an orbit hierarchy
         const orbitHierarchyResponse = await callZomeAlice(
           "personal",
           "get_orbit_hierarchy_json",
-          {orbitEntryHashB64: orbitHash}
+          { orbitEntryHashB64: orbitHash }
         );
-        t.ok(orbitHierarchyResponse, 'a root hierarchy can be generated,');
+        t.ok(orbitHierarchyResponse, "a root hierarchy can be generated,");
         // Then an Orbit hierarchy was returned
 
-        const orbitHash2 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse2).entryHash);
-        t.equal(orbitHash2, orbitHierarchyResponse.children[0].content, 'with the correct children.');
+        const orbitHash2 = encodeHashToBase64(
+          new EntryRecord<Orbit>(createOrbitResponse2).entryHash
+        );
+        t.equal(
+          orbitHash2,
+          orbitHierarchyResponse.children[0].content,
+          "with the correct children."
+        );
         // And the children array of the hierarchy contains the second Orbit's entry hash
-
 
         // 2. Given Alice then creates a third Orbit with otherwise valid and different input, using the second Orbit's hash as a parentHash
         const createOrbitResponse3 = await callZomeAlice(
           "personal",
           "create_my_orbit",
-          anOrbit({ name: 'A different name!', sphereHash: encodeHashToBase64(hash), parentHash: orbitHash2 })
+          anOrbit({
+            name: "A different name!",
+            sphereHash: encodeHashToBase64(hash),
+            parentHash: orbitHash2,
+          })
         );
-        t.ok(createOrbitResponse3, 'A third orbit was created,');
+        t.ok(createOrbitResponse3, "A third orbit was created,");
 
         // When Alice then requests an orbit hierarchy
         const orbitHierarchyResponse2 = await callZomeAlice(
@@ -94,24 +108,40 @@ export default () => {
           "get_orbit_hierarchy_json",
           { orbitEntryHashB64: orbitHash }
         );
-        t.ok(orbitHierarchyResponse2, 'a second root hierarchy can be generated,');
+        t.ok(
+          orbitHierarchyResponse2,
+          "a second root hierarchy can be generated,"
+        );
         // Then an Orbit hierarchy was returned
 
-        t.equal(orbitHash2, orbitHierarchyResponse2.children[0].content, 'the second orbit is a child of the first one,');
+        t.equal(
+          orbitHash2,
+          orbitHierarchyResponse2.children[0].content,
+          "the second orbit is a child of the first one,"
+        );
         // And the children array of the first Orbit's hierarchy contains the second Orbit's entry hash
 
-        const orbitHash3 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse3).entryHash);
-        t.equal(orbitHash3, orbitHierarchyResponse2.children[0].children[0].content, 'the third orbit is a child of the second one.');
+        const orbitHash3 = encodeHashToBase64(
+          new EntryRecord<Orbit>(createOrbitResponse3).entryHash
+        );
+        t.equal(
+          orbitHash3,
+          orbitHierarchyResponse2.children[0].children[0].content,
+          "the third orbit is a child of the second one."
+        );
         // And the children array of the second Orbit's hierarchy contains the third Orbit's entry hash
-
 
         // 3. Given Alice then creates a fourth Orbit with otherwise valid and different input, using the third Orbit's hash as a parentHash
         const createOrbitResponse4 = await callZomeAlice(
           "personal",
           "create_my_orbit",
-          anOrbit({ name: 'A second different name!', sphereHash: encodeHashToBase64(hash), parentHash: orbitHash3 })
+          anOrbit({
+            name: "A second different name!",
+            sphereHash: encodeHashToBase64(hash),
+            parentHash: orbitHash3,
+          })
         );
-        t.ok(createOrbitResponse4, 'A third orbit was created,');
+        t.ok(createOrbitResponse4, "A third orbit was created,");
 
         // When Alice then requests an orbit hierarchy
         const orbitHierarchyResponse3 = await callZomeAlice(
@@ -119,22 +149,38 @@ export default () => {
           "get_orbit_hierarchy_json",
           { orbitEntryHashB64: orbitHash }
         );
-        t.ok(orbitHierarchyResponse3, 'a third root hierarchy can be generated,');
+        t.ok(
+          orbitHierarchyResponse3,
+          "a third root hierarchy can be generated,"
+        );
         // Then an Orbit hierarchy was returned
-// console.log('orbitHierarchyResponse3 :>> LVL 0 ', orbitHierarchyResponse3);
-// console.log('orbitHierarchyResponse3 :>> LVL 1 ', orbitHierarchyResponse3.children);
-// console.log('orbitHierarchyResponse3 :>> LVL 2 ', orbitHierarchyResponse3.children[0].children);
-// console.log('orbitHierarchyResponse3 :>> LVL 3 ', orbitHierarchyResponse3.children[0].children[0].children);
-        t.equal(orbitHash2, orbitHierarchyResponse3.children[0].content, 'the second orbit is a child of the first one,');
+        // console.log('orbitHierarchyResponse3 :>> LVL 0 ', orbitHierarchyResponse3);
+        // console.log('orbitHierarchyResponse3 :>> LVL 1 ', orbitHierarchyResponse3.children);
+        // console.log('orbitHierarchyResponse3 :>> LVL 2 ', orbitHierarchyResponse3.children[0].children);
+        // console.log('orbitHierarchyResponse3 :>> LVL 3 ', orbitHierarchyResponse3.children[0].children[0].children);
+        t.equal(
+          orbitHash2,
+          orbitHierarchyResponse3.children[0].content,
+          "the second orbit is a child of the first one,"
+        );
         // And the children array of the first Orbit's hierarchy contains the second Orbit's entry hash
 
-        const orbitHash4 = encodeHashToBase64(new EntryRecord<Orbit>(createOrbitResponse4).entryHash);
-        t.equal(orbitHash3, orbitHierarchyResponse3.children[0].children[0].content, 'the third orbit is a child of the second one,');
+        const orbitHash4 = encodeHashToBase64(
+          new EntryRecord<Orbit>(createOrbitResponse4).entryHash
+        );
+        t.equal(
+          orbitHash3,
+          orbitHierarchyResponse3.children[0].children[0].content,
+          "the third orbit is a child of the second one,"
+        );
         // And the children array of the second Orbit's hierarchy contains the third Orbit's entry hash
 
-        t.equal(orbitHash4, orbitHierarchyResponse3.children[0].children[0].children[0].content, 'the fourth orbit is a child of the third one.');
+        t.equal(
+          orbitHash4,
+          orbitHierarchyResponse3.children[0].children[0].children[0].content,
+          "the fourth orbit is a child of the third one."
+        );
         // And the children array of the third Orbit's hierarchy contains the fourth Orbit's entry hash
-
       } catch (e) {
         t.ok(null);
       }
@@ -174,11 +220,11 @@ export default () => {
         const orbitHierarchyResponse = await callZomeAlice(
           "personal",
           "get_orbit_hierarchy_json",
-          {orbitEntryHashB64: null}
-          );
+          { orbitEntryHashB64: null }
+        );
         // And an Orbit hierarchy was returned
-        console.log('orbitHierarchyResponse2 :>> ', orbitHierarchyResponse);
-        t.ok(orbitHierarchyResponse, 'a hierarchy can not be generated');
+        console.log("orbitHierarchyResponse2 :>> ", orbitHierarchyResponse);
+        t.ok(orbitHierarchyResponse, "a hierarchy can not be generated");
       } catch (e) {
         t.ok(null);
       }
@@ -186,4 +232,3 @@ export default () => {
     });
   });
 };
-
