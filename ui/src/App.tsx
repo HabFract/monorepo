@@ -28,6 +28,8 @@ import Toast from "./components/Toast";
 import { useModal } from "./contexts/modal";
 import { AppMachine } from "./main";
 import { extractEdges } from "./graphql/utils";
+import { useAtomValue } from "jotai";
+import { handednessAtom } from "@state/ui";
 
 export const logMemoryUsage = (tag: string) => {
   if (process.env.NODE_ENV === 'development') {
@@ -39,6 +41,15 @@ export const logMemoryUsage = (tag: string) => {
     });
   }
 };
+
+export const useInitializeBodyAttributes = () => {
+  const handedness = useAtomValue(handednessAtom);
+
+  useEffect(() => {
+    document.body.setAttribute('data-handedness', handedness);
+  }, [handedness]);
+};
+
 function App({ children: pageComponent }) {
   const [_, transition, params] = useStateTransition(); // Top level state machine and routing
   const state = AppMachine.state.currentState;
@@ -82,6 +93,7 @@ function App({ children: pageComponent }) {
     };
   }, []);
 
+  useInitializeBodyAttributes();
   const {
     loading: loadingSpheres,
     error,

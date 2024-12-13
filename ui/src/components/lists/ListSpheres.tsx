@@ -160,7 +160,6 @@ function ListSpheres() {
           if (!node.data?.content) return;
           const actionHash = store.get(getOrbitIdFromEh(node.data.content));
           nodeHashes.push(actionHash);
-          console.log('actionHash :>> ', actionHash);
           orbitDataUpdatesRef.current![actionHash] = {
             eH: node.data.content,
           };

@@ -35,6 +35,10 @@
   top: -23px;
 }
 
+body[data-handedness='right'] .orbit-label-container::before {
+  left: calc(60% - 12px);
+}
+
 /* Orbit Vis Label Frequency Indicator */
 .orbit-label-container .frequency-indicator-container {
   margin-top: -.1rem;
@@ -47,7 +51,7 @@
   margin-left: auto;
   top: 0;
   margin-right: 3.5rem;
-  margin-bottom: 4px;
+  margin-bottom: .5rem;
 }
 
 

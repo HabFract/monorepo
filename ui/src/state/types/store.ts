@@ -24,6 +24,8 @@ export interface AppState {
       sortOrder: string;
     };
     currentDay: string;
+    handedness: "left" | "right";
+    performanceMode: "snappy" | "snancy" | "fancy";
   };
 }
 

@@ -70,6 +70,26 @@
   width: 100%;
 }
 
+.button-group {
+  @apply flex justify-around gap-0;
+}
+
+.button-group button {
+  @apply flex-1;
+}
+
+.button-group button:first-child {
+  @apply rounded-r-none;
+}
+
+.button-group button:last-child {
+  @apply rounded-l-none;
+}
+
+.button-group button:nth-child(2):not(button:last-child) {
+  @apply rounded-none;
+}
+
 .list-content {
   overflow-y: auto;
 }

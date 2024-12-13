@@ -8,6 +8,16 @@
   border-top-right-radius: 0;
 }
 
+.clip-bottom-left {
+  --clip-size: 5rem;
+  /* This should match the thickness of your components */
+  clip-path: polygon(0 0,
+      100% 0,
+      100% 100%,
+      var(--clip-size) 100%,
+      0 calc(100% - var(--clip-size)));
+}
+
 .clip-bottom-right {
   --clip-size: 5rem;
   /* This should match the thickness of your components */
@@ -26,6 +36,16 @@
       100% 100%,
       0 100%,
       0 var(--clip-size));
+}
+
+.clip-top-right {
+  --clip-size: 3.5rem;
+  /* This should match the thickness of your components */
+  clip-path: polygon(0 0,
+      calc(100% - var(--clip-size)) 0,
+      100% var(--clip-size),
+      100% 100%,
+      0 100%);
 }
 
 .fade-edges-lateral {
@@ -58,6 +78,31 @@
       black var(--fade-height-from),
       black calc(100% - var(--fade-height-to)),
       transparent);
+}
+
+body[data-handedness='right'] .vis-move-vertical-container {
+  @apply clip-bottom-left;
+  margin-right: .25rem;
+  left: calc(100% - 4.25rem);
+}
+
+body[data-handedness='right'] .vis-move-lateral-container {
+  @apply clip-top-right;
+}
+
+body[data-handedness='right'] .orbit-controls-container {
+  margin-right: auto;
+  margin-left: -1.5rem;
+}
+
+body[data-handedness='right'] .center-marker {
+  left: calc(100% - 4.25rem);
+}
+
+body[data-handedness='right'] .center-marker::before {
+  border: 12px solid transparent;
+  border-left-color: #ffffff80;
+  left: initial;
 }
 
 .relative-controls-container {
@@ -370,6 +415,11 @@ div.handle span {
   bottom: 4.25rem;
   left: .5rem;
   height: 4rem;
+}
+
+body[data-handedness='right'] .vis-move-lateral-container {
+  left: initial;
+  right: -.5rem;
 }
 
 .vis-move-vertical-container {
