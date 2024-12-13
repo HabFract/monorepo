@@ -33,7 +33,7 @@ import { currentSphereDetailsAtom, currentSphereHashesAtom } from "../../state/s
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state/hierarchy";
 import { useUpdateOrbitMutation } from "../../hooks/gql/useUpdateOrbitMutation";
 import { getScaleDisplayName } from "../vis/helpers";
-import { ERROR_MESSAGES, ONBOARDING_FORM_DESCRIPTIONS } from "../../constants";
+import { ERROR_MESSAGES, INPUT_INFO_MODALS, ONBOARDING_FORM_DESCRIPTIONS } from "../../constants";
 import Collapse from "antd/es/collapse";
 
 // Define the validation schema using Yup
@@ -264,7 +264,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
             case "Star":
               return `"Plan to run a marathon" in the Health and Fitness space.`
             case "Giant":
-              return `"I agree to start a training plan" in the Health and Fitness space.`
+              return `"I commit to starting a training plan" in the Health and Fitness space.`
             case "Dwarf":
               return `"Warm up for 5 minutes" in the Health and Fitness space.`
           }
@@ -368,10 +368,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                       parentOrbitEh !== null
                     }
                     withInfo={true}
-                    onClickInfo={() => ({
-                      title: "Scales, Explained",
-                      body: "This refers to the magnitude of your tracked behaviour. //We like to think of the three scales in terms of Plans, Agreements, and Actions. // Make an over-arching Plan (a star).// Link it to a number of Agreements - sometimes these are the biggest milestones - the Giants! // Then, make the whole thing easy to carry out: write down a number of small Actions (Dwarves, in our language), ready to be ticked off.",
-                    })}
+                    onClickInfo={() => INPUT_INFO_MODALS['scales']}
                     options={[
                       // values?.scale ? null : <option value={undefined}>{'Select:'}</option>,
                       ...Object.values(Scale).map((scale) => {
@@ -398,10 +395,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                     icon={"tag"}
                     iconSide={"left"}
                     withInfo={true}
-                    onClickInfo={() => ({
-                      title: "The name should be scale-appropriate",
-                      body: "Try to make the name to fit with the scale of the Planitt. //For example, a Giant Planitt might be called 'Run 5km' or 'Write a business plan'. //A Dwarf Planitt would be more like 'Run for 10 minutes' or  'Read 40 pages of my book'.",
-                    })}
+                    onClickInfo={() => INPUT_INFO_MODALS['planitt-name']}
                     required={true}
                     value={editMode ? values.name : undefined}
                     labelValue={"Name:"}

@@ -47,3 +47,10 @@
   @apply flex flex-col gap-2 p-0;
   min-height: initial;
 }
+
+.layout.orbit-subdivision-list .input-with-icon-right:has(input:focus-within) {
+  position: fixed;
+  bottom: 5rem;
+  left: 1rem;
+  right: 1rem;
+}

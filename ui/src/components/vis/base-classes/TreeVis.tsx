@@ -543,7 +543,7 @@ export class TreeVisualization extends BaseVisualization {
           case "Astro":
             return "-5";
           case "Sub":
-            return "30";
+            return "10";
           case "Atom":
             return "100";
         }

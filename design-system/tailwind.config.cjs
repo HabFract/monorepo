@@ -81,7 +81,7 @@ const tailwindConfig = {
           elevated: {
             // for cards, modals, forms, dropdowns, etc.
             DEFAULT: "#ffffff",
-            dark: "#3A3A3A",
+            dark: "rgba(69, 97, 95, 0.25)",
           },
           top: {
             DEFAULT: "#ffffff",
@@ -179,7 +179,7 @@ const tailwindConfig = {
             streak: "rgba(11, 254, 184, 0.9)",
           },
           DEFAULT: "rgba(11, 254, 184, 0.9)",
-          incomplete: "rgba(255, 255, 255, 0.1)",
+          incomplete: "rgba(31, 40, 39, 0.5)",
         },
 
         // Text colors

@@ -19,7 +19,8 @@
 }
 
 .system-calendar-card footer {
-  @apply dark:bg-surface-overlay-dark-500 rounded-3xl h-20 p-4 rounded-t-none;
+  @apply rounded-3xl h-20 p-4 rounded-t-none;
+  background-color: rgba(34, 128, 120, 0.1);
 }
 
 .system-calendar-card header img {

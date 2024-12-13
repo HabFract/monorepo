@@ -252,13 +252,10 @@ div.handle span {
   z-index: 5;
 }
 
-.handle::before {
+.swipe-up-tab-container .handle::before {
   content: '';
   @apply bg-gradient-to-b dark:to-transparent dark:from-overlay-dashboard rounded-t-3xl absolute inset-x-0 top-0 h-12;
   z-index: -1;
-}
-
-.swipe-up-tab-container .handle::before {
   width: 100vw;
   margin-left: -2.25rem;
 }

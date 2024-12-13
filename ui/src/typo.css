@@ -4,14 +4,14 @@
   /* Font Family */
   @apply font-sans;
   font-synthesis: none;
-  
+
   /* Base Text Settings */
   @apply text-base font-normal leading-normal;
-  
+
   /* Color Settings */
   color-scheme: light dark;
   @apply text-text dark:text-text-dark bg-surface dark:bg-surface-dark;
-  
+
   /* Text Rendering */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -21,7 +21,8 @@
 
 /* Paragraph
 -------------------------------------------------- */
-p, .form-description {
+p,
+.form-description {
   @apply text-text dark:text-text-dark opacity-80 mb-2 font-sans text-sm font-light leading-relaxed;
 }
 
@@ -61,6 +62,7 @@ h4 {
 .warning-message h1 {
   @apply mb-2 text-lg font-bold tracking-wide;
 }
+
 .warning-message h2 {
   @apply leading-std opacity-80 text-base font-medium;
 }
@@ -86,6 +88,7 @@ a {
   @apply flex flex-col gap-2 px-4;
   overflow-y: auto;
 }
+
 .onboarding-layout .content .form-description,
 .create-form .content .form-description {
   margin-bottom: 2px;
@@ -95,9 +98,12 @@ a {
 .form-description em,
 form em,
 .ant-collapse-header-text em,
+.ant-collapse-header-text em,
+p em,
 .helper-text em {
   @apply text-primary-500 dark:text-accent-dark font-medium;
 }
+
 .ant-collapse-header-text em {
   text-decoration: underline !important;
 }

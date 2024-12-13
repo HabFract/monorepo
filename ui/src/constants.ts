@@ -33,6 +33,17 @@ export const INPUT_INFO_MODALS = {
     footer:
       "Store your password somewhere secure; in Web 3, you are responsible for your own keys!",
   },
+  scales: {
+    title: "Scales, Explained",
+    body: "This refers to the <em>magnitude</em> of your tracked behaviour. //We like to think of the three scales in terms of <em>Plans, Commitments, and Actions</em>. // Make an over-arching <em>Plan</em> (a star).// Link it to a number of <em>Commitment</em>s - sometimes these are the biggest personal milestones: when your attitude changes you start to make Giant steps! // Then, make the whole thing easy to carry out: write down a number of small <em>Action</em>s (Dwarves, in our language), ready to Win.",
+    footer: "As you break down your Planitts, the available scale gets smaller",
+  },
+  ["planitt-name"]: {
+    title: "Make your names short and appropriate",
+    body: "Try to make the name <em>fit with the scale</em> of the Planitt. //For example, a Giant Planitt might be called <em>'Commit to running daily'</em> or 'Write a business plan'. //A Dwarf Planitt would be more like <em>'Run for 10 minutes'</em> or  'Read 40 pages of my book'.",
+    footer:
+      "This is just a guide, feel free to experiment with what works for you 🚀",
+  },
 };
 
 export const ONBOARDING_FORM_TITLES = [

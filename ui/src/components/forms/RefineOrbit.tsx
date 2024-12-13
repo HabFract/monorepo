@@ -50,7 +50,7 @@ const RefineOrbitOnboarding: React.FC<RefineOrbitProps> = ({
               <div className="form-description">
                 {
                   values.scale !== Scale.Atom
-                    ? `This is your chance to divide a large scale ${MODEL_DISPLAY_VALUES['orbit'].toLowerCase()} into several smaller agreements or actions that will simplify carrying out your plan.`
+                    ? `This is your chance to divide a large scale ${MODEL_DISPLAY_VALUES['orbit'].toLowerCase()} into several smaller commitments or actions that will simplify carrying out your plan.`
                     : `This is your chance to ensure you chose the correct name for your ${MODEL_DISPLAY_VALUES['orbit'].toLowerCase()}: it should be an easy and short step to tick off. If you can, add a specific time/place!`
                 }
               </div>

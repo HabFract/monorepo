@@ -28,6 +28,7 @@ import { getScaleDisplayName, isSmallScreen } from "../vis/helpers";
 import { currentSphereHashesAtom } from "../../state/sphere";
 import OnboardingContinue from "../forms/buttons/OnboardingContinueButton";
 import { DataLoadingQueue } from "../PreloadAllData";
+import { INPUT_INFO_MODALS } from "../../constants";
 
 interface OrbitSubdivisionListProps {
   currentOrbitValues: Orbit;
@@ -142,10 +143,10 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
             refinementType == Refinement.Update
               ? "Refine Planitt Name"
               : "Choose Sub-Planitt Scales";
-          const refineMessage =
-            refinementType == Refinement.Update
-              ? "Since you have chosen the Atomic scale for your Orbit, it's best to make sure it is named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable:"
-              : "Since you have chosen a big scale for your Orbit (shooting for the stars!) you can now break it up into smaller actions - so start by subdividing into Orbits of a smaller scale.";
+          // const refineMessage =
+          //   refinementType == Refinement.Update
+          //     ? "Since you have chosen the Atomic scale for your Orbit, it's best to make sure it is named in a way that is an <em>incremental action</em> - one that is quantifiable and achievable:"
+          //     : "Since you have chosen a big scale for your Orbit (shooting for the stars!) you can now break it up into smaller actions - so start by subdividing into Orbits of a smaller scale.";
           return (
             <>
               {refinementType == Refinement.Update && (
@@ -157,10 +158,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                   refinementType == Refinement.Update ? <Pencil /> : <Split />
                 }
                 withInfo={isSmallScreen()}
-                onClickInfo={() => ({
-                  title: refineTitle,
-                  body: refineMessage,
-                })}
+                onClickInfo={() => (INPUT_INFO_MODALS['scales'])}
               >
                 {!isSmallScreen() &&
                   (refinementType == Refinement.Update ? (
@@ -231,7 +229,7 @@ const OrbitSubdivisionList: React.FC<OrbitSubdivisionListProps> = ({
                         values.scale == Scale.Atom &&
                         RenamingHelperText()}
                       <Label htmlFor="list">
-                        {values.scale == Scale.Sub ? "I agree to:" : "I will:"}<span className="reqd">*</span>
+                        {values.scale == Scale.Sub ? "I commit to:" : "I will:"}<span className="reqd">*</span>
                       </Label>
                       <FieldArray
                         name="list"

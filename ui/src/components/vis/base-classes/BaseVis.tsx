@@ -466,7 +466,7 @@ export abstract class BaseVisualization implements IVisualization {
         return scale == Scale.Astro
           ? (!parentEh ? "-40" : "-30")
           : scale == Scale.Sub
-            ? (!parentEh ? "20" : "40")
+            ? (!parentEh ? "0" : "20")
             : (!parentEh ? "55" : "75");
       })
       .attr("x", (d) => {
