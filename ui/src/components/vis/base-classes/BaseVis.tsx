@@ -39,6 +39,7 @@ import { currentDayAtom } from "../../../state";
 import { AppMachine } from "../../../main";
 import { debounce } from "../helpers";
 import memoizeOne from "memoize-one";
+import { handednessAtom } from "@state/ui";
 
 /**
  * Base class for creating D3 hierarchical visualizations.
@@ -466,13 +467,14 @@ export abstract class BaseVisualization implements IVisualization {
         return scale == Scale.Astro
           ? (!parentEh ? "-40" : "-30")
           : scale == Scale.Sub
-            ? (!parentEh ? "0" : "20")
+            ? (!parentEh ? "0" : "0")
             : (!parentEh ? "55" : "75");
       })
       .attr("x", (d) => {
         const cachedNode = this.nodeDetails[d.data.content];
-        const { scale, parentEh } = cachedNode;
-        return !parentEh ? "-122" : "-90"
+        const { parentEh } = cachedNode;
+        const handedness = store.get(handednessAtom)
+        return !parentEh ? "-122" : handedness == 'right' ? "-130" : "-90"
       })
       .attr("width", (d) => {
         const cachedNode = this.nodeDetails[d.data.content];
@@ -480,6 +482,7 @@ export abstract class BaseVisualization implements IVisualization {
         return !parentEh ? "246" : "220"
       })
       .attr("height", "300")
+      .attr("style", "overflow: visible")
       .html(this.appendLabelHtml);
   }
 

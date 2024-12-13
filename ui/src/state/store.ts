@@ -52,6 +52,8 @@ export const appStateChangeAtom = atomWithStorage<AppState>("appState", {
       sortOrder: "lowestToGreatest",
     },
     currentDay: new Date().toISOString(),
+    handedness: "right",
+    performanceMode: "fancy",
   },
 });
 // export let appStateAtom: any = atom(
@@ -61,5 +63,3 @@ export const appStateChangeAtom = atomWithStorage<AppState>("appState", {
 //     set(appStateChangeAtom, update);
 //   }
 // );
-
-

@@ -70,9 +70,6 @@ export const updateAppStateWithOrbit = (
   oldOrbitId?: string
 ): AppState => {
   const updatedState = { ...prevState };
-  console.log("orbitDetails :>> ", orbitDetails);
-  ("debugger;");
-  debugger;
   // Update orbitNodes
   updatedState.orbitNodes = {
     ...prevState.orbitNodes,

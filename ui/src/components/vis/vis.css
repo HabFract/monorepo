@@ -47,9 +47,9 @@ g.node-subgroup {
   background-size: 1.5rem;
 }
 
-.node-vector-group.winning.astro::after {
-  top: .25rem;
-  left: 2%;
+.node-vector-group.winning.sub::after {
+  top: .75rem;
+  left: 8%;
 }
 
 
