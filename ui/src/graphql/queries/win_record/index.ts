@@ -34,6 +34,7 @@ export default (dnaConfig: DNAIdMappings, conductorUri: string) => {
       } catch (error) {
         console.error(
           "Couldn't fetch win records for orbit for month :>> ",
+          args.params,
           error
         );
       }

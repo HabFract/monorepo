@@ -47,6 +47,11 @@ g.node-subgroup {
   background-size: 1.5rem;
 }
 
+.node-vector-group.winning.astro::after {
+  top: .25rem;
+  left: 2%;
+}
+
 
 
 /* Outline positioning for specific node scales */

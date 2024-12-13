@@ -163,9 +163,9 @@ export function useWinData(
     return { currentStreak, longestStreak };
   }, [currentWinDataRef.current]);
 
-  // Check cache first when mounting
+  // Check cache first when mounting or when currentOrbitDetails.eH changes
   useEffect(() => {
-    if (currentOrbitDetails && !state.winData) {
+    if (currentOrbitDetails?.eH) {
       const cachedData = getWinData(currentOrbitDetails);
       if (cachedData) {
         setState((prev) => ({
@@ -230,7 +230,7 @@ export function useWinData(
         },
       },
     });
-  }, [currentOrbitDetails?.eH, isLeafNode]);
+  }, [currentOrbitDetails?.eH, isLeafNode, currentWinDataRef.current]);
 
   // Fetch initial data
   useEffect(() => {
@@ -247,17 +247,23 @@ export function useWinData(
             currentOrbitDetails.eH,
             currentDate
           );
-
           if (!mountedRef.current) return;
 
           if (data) {
             debugLog("Received win data:", data);
-            setState((prev) => ({
-              ...prev,
-              winData: data,
-            }));
             currentWinDataRef.current = data;
+          } else {
+            currentWinDataRef.current = {
+              [currentDate.toLocaleString()]:
+                currentOrbitDetails.frequency > 1
+                  ? Array(currentOrbitDetails.frequency).fill(false)
+                  : false,
+            } as any;
           }
+          setState((prev) => ({
+            ...prev,
+            winData: currentWinDataRef.current,
+          }));
         } else {
           // Calculate aggregated win data for non-leaf node
           const leaves =

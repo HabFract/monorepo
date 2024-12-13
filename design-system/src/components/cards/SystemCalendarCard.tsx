@@ -82,7 +82,7 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
         >
           <Button onClick={() => setSphereIsCurrent()} variant="circle-icon-lg btn-neutral outlined" icon={getIconSvg('more')({}) as any}></Button>
         </Popover>
-        <Button onClick={() => handleVisAction()} variant="primary responsive outlined">Visualise</Button>
+        <Button onClick={() => handleVisAction()} variant="primary responsive">Visualise</Button>
       </footer>
     </article>
   );

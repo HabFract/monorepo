@@ -1,6 +1,4 @@
-import {
-  getOrbitNodeDetailsFromEhAtom,
-} from "./orbit";
+import { getOrbitNodeDetailsFromEhAtom } from "./orbit";
 // ui/src/state/hierarchy.ts
 import { atom } from "jotai";
 import { hierarchy } from "d3-hierarchy";
@@ -158,7 +156,9 @@ export const updateHierarchyAtom = atom(
       nodeHashes,
       leafNodeHashes,
     };
-    const currentSphereHierarchyRootNodes = currentAppState.spheres.byHash[newHierarchy.sphereAh]?.hierarchyRootOrbitEntryHashes || [];
+    const currentSphereHierarchyRootNodes =
+      currentAppState.spheres.byHash[newHierarchy.sphereAh]
+        ?.hierarchyRootOrbitEntryHashes || [];
     const newState = {
       ...currentAppState,
       spheres: {
@@ -167,10 +167,10 @@ export const updateHierarchyAtom = atom(
           ...currentAppState.spheres.byHash,
           [newHierarchy.sphereAh]: {
             ...currentAppState.spheres.byHash[newHierarchy.sphereAh],
-            hierarchyRootOrbitEntryHashes: (currentSphereHierarchyRootNodes.includes(rootNode) ? currentSphereHierarchyRootNodes : [
-              ...currentSphereHierarchyRootNodes,
-              rootNode,
-            ]),
+            hierarchyRootOrbitEntryHashes:
+              currentSphereHierarchyRootNodes.includes(rootNode)
+                ? currentSphereHierarchyRootNodes
+                : [...currentSphereHierarchyRootNodes, rootNode],
           },
         },
       },
@@ -195,7 +195,6 @@ export const updateHierarchyAtom = atom(
 export const isLeafNodeHashAtom = (nodeId: ActionHashB64) => {
   return atom<boolean>((get) => {
     const state = get(appStateChangeAtom);
-
     const hierarchies = state.hierarchies.byRootOrbitEntryHash;
 
     for (const hierarchyKey in hierarchies) {

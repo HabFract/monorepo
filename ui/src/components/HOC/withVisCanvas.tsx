@@ -7,6 +7,7 @@ import { useNodeTraversal } from "../../hooks/useNodeTraversal";
 import {
   currentSphereHierarchyBounds,
   currentSphereHierarchyIndices,
+  isLeafNodeHashAtom,
   newTraversalLevelIndexId,
 } from "../../state/hierarchy";
 
@@ -70,7 +71,6 @@ export function withVisCanvas<T extends IVisualization>(
 ): ReactNode {
   const ComponentWithVis = React.memo(({ }: WithVisCanvasProps) => {
     const currentOrbitDetails: OrbitNodeDetails | null = useAtomValue(currentOrbitDetailsAtom);
-    const currentOrbitIsLeaf = useAtomValue(currentOrbitIsLeafAtom);
     const sphereHierarchyBounds: SphereHierarchyBounds = store.get(currentSphereHierarchyBounds);
     const currentHierarchyIndices: Coords = store.get(currentSphereHierarchyIndices);
     const selectedSphere: SphereHashes = store.get(currentSphereHashesAtom);
@@ -98,7 +98,6 @@ export function withVisCanvas<T extends IVisualization>(
     const [currentChildOrbitEh, setCurrentChildOrbitEh] = useState<EntryHashB64>();
     const [currentDate, setCurrentDate] = useAtom<DateTime>(currentDayAtom);
     const visRef = useRef<T | null>(null);
-    const memoizedOrbitDetails = useMemo(() => currentOrbitDetails, [currentOrbitDetails?.id]);
 
     const resetModalParentChildStates = () => {
       setCurrentParentOrbitEh(undefined);
@@ -161,8 +160,8 @@ export function withVisCanvas<T extends IVisualization>(
                 canvasWidth={canvasWidth}
                 margin={DEFAULT_MARGINS}
                 render={(currentVis: T) => {
-                  if (!currentOrbitDetails?.eH) return null;
-
+                  if (!currentOrbitDetails?.eH) return <Spinner />;
+                  const currentOrbitIsLeaf = useMemo(() => store.get(isLeafNodeHashAtom(currentOrbitDetails?.id)), [currentOrbitDetails?.id]);
                   const memoisedActionsAndData = memoizeOne(getActionsAndDataForControls);
                   const {
                     consolidatedFlags,
@@ -170,9 +169,7 @@ export function withVisCanvas<T extends IVisualization>(
                     orbitDescendants,
                     orbitSiblings
                   } = memoisedActionsAndData(currentVis, currentOrbitDetails?.eH);
-
-                  const isLeaf = useMemo(() => !!currentOrbitIsLeaf, [currentOrbitIsLeaf]);
-                  const winDataHookResult = useWinData(memoizedOrbitDetails, currentDate, isLeaf, currentVis.rootData!);
+                  const winDataHookResult = useWinData(currentOrbitDetails, currentDate, !!currentOrbitIsLeaf, currentVis.rootData!);
                   const memoizedWinDataHook = useMemo(() => winDataHookResult, [
                     winDataHookResult.workingWinDataForOrbit,
                     winDataHookResult.handleUpdateWorkingWins,
@@ -198,7 +195,6 @@ export function withVisCanvas<T extends IVisualization>(
                       visRef.current.render();
                     }
                   }, [appendedSvg]);
-
                   const overlayProps = useMemo(() => ({
                     currentDate,
                     setNewDate: setCurrentDate,

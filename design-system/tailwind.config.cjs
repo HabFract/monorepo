@@ -81,7 +81,7 @@ const tailwindConfig = {
           elevated: {
             // for cards, modals, forms, dropdowns, etc.
             DEFAULT: "#ffffff",
-            dark: "rgba(69, 97, 95, 0.25)",
+            dark: "#3A3A3A",
           },
           top: {
             DEFAULT: "#ffffff",

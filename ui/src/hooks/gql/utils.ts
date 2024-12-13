@@ -16,49 +16,51 @@ import { ActionHashB64, EntryHashB64 } from "@state/types";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { client } from "../../graphql/client";
 
-export const invalidateOrbitHierarchyCache = async(sphereHashB64: string) => {
-  return (client as Promise<ApolloClient<NormalizedCacheObject>>).then((client) => {
-    const normalizedId = client.cache.identify({
-      __typename: "Query",
-      id: "ROOT_QUERY",
-      fieldName: "getOrbitHierarchy",
-      args: {
-        params: {
-          levelQuery: {
-            sphereHashB64,
-            orbitLevel: 0,
+export const invalidateOrbitHierarchyCache = async (sphereHashB64: string) => {
+  return (client as Promise<ApolloClient<NormalizedCacheObject>>).then(
+    (client) => {
+      const normalizedId = client.cache.identify({
+        __typename: "Query",
+        id: "ROOT_QUERY",
+        fieldName: "getOrbitHierarchy",
+        args: {
+          params: {
+            levelQuery: {
+              sphereHashB64,
+              orbitLevel: 0,
+            },
           },
         },
-      },
-    });
-    console.log("Evicting cache with id :>> ", normalizedId);
-    client.cache.evict({ id: normalizedId });
-    client.cache.gc();
-  });
+      });
+      console.log("Evicting cache with id :>> ", normalizedId);
+      client.cache.evict({ id: normalizedId });
+      client.cache.gc();
+    }
+  );
 };
 
 export const updateNodeCache = (
   orbitDetails: OrbitNodeDetails,
   oldOrbitEh?: EntryHashB64
 ) => {
-    const sphere = store.get(currentSphereHashesAtom) as SphereHashes;
-    const existingNodes = store.get(
-      nodeCache.item(sphere.actionHash as string)
-    ) || {} as SphereOrbitNodeDetails;
+  const sphere = store.get(currentSphereHashesAtom) as SphereHashes;
+  const existingNodes =
+    store.get(nodeCache.item(sphere.actionHash as string)) ||
+    ({} as SphereOrbitNodeDetails);
 
-    const newSphereOrbitNodeDetails: SphereOrbitNodeDetails = {
-      ...existingNodes,
-      [orbitDetails.eH]: orbitDetails,
-    };
-    // Remove old entry if it exists
-    if (oldOrbitEh && oldOrbitEh !== orbitDetails.eH) {
-      delete newSphereOrbitNodeDetails[oldOrbitEh];
-    }
-    store.set(
-      nodeCache.set,
-      sphere.actionHash as ActionHashB64,
-      newSphereOrbitNodeDetails
-    );
+  const newSphereOrbitNodeDetails: SphereOrbitNodeDetails = {
+    ...existingNodes,
+    [orbitDetails.eH]: orbitDetails,
+  };
+  // Remove old entry if it exists
+  if (oldOrbitEh && oldOrbitEh !== orbitDetails.eH) {
+    delete newSphereOrbitNodeDetails[oldOrbitEh];
+  }
+  store.set(
+    nodeCache.set,
+    sphere.actionHash as ActionHashB64,
+    newSphereOrbitNodeDetails
+  );
 };
 
 export const updateAppStateWithOrbit = (
@@ -68,7 +70,9 @@ export const updateAppStateWithOrbit = (
   oldOrbitId?: string
 ): AppState => {
   const updatedState = { ...prevState };
-
+  console.log("orbitDetails :>> ", orbitDetails);
+  ("debugger;");
+  debugger;
   // Update orbitNodes
   updatedState.orbitNodes = {
     ...prevState.orbitNodes,
@@ -111,7 +115,6 @@ export const updateAppStateWithOrbit = (
           ] = orbitDetails.eH;
         }
       }
-      
     }
   } else {
     // If this is not a root orbit, ensure it's not in the byRootOrbitEntryHash

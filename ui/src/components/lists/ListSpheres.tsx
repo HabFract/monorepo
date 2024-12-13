@@ -80,15 +80,15 @@ const mapToObject = (map: Map<string, any>): Record<string, any> => {
  */
 function ListSpheres() {
   const [_state, transition, _params, client] = useStateTransition();
-  
+
   /** Loading states for individual spheres */
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
   const loadingInitiatedRef = useRef(false);
-  
+
   /** Refs for storing update data during processing */
   const winDataUpdatesRef = useRef<Map<ActionHashB64, any>>(new Map());
   const orbitDataUpdatesRef = useRef<Record<ActionHashB64, any>>({});
-  
+
   /** Query hooks for fetching data */
   const { loading, error, data } = useGetSpheresQuery();
   const [getHierarchy] = useGetOrbitHierarchyLazyQuery({
@@ -97,7 +97,7 @@ function ListSpheres() {
 
   /** Memoized spheres data from query */
   const spheres = useMemo(() => extractEdges(data!.spheres) as Sphere[], [data]);
-  
+
   /** State for storing processed sphere data */
   const [spheresData, setSpheresData] = useState<Record<string, SphereDataState>>({});
 
@@ -108,58 +108,63 @@ function ListSpheres() {
    */
   const loadSphereHierarchyData = useCallback(async (sphere: Sphere) => {
     debugLog('Loading hierarchy data for sphere:', sphere.eH);
-    
+
     setSpheresData(prev => {
       const newData = { ...prev };
       delete newData[sphere.eH];
       return newData;
     });
-  
+
     setLoadingStates(prev => ({ ...prev, [sphere.eH]: true }));
-    
+
     winDataUpdatesRef.current = new Map();
     orbitDataUpdatesRef.current = {};
     let d3Hierarchy: any = null;
     let parsedTrees: any = null;
-  
+
     try {
       const state = store.get(appStateChangeAtom);
       const visCoverage = VisCoverage.CompleteSphere;
       const queryParams = generateQueryParams(visCoverage, sphere.eH)(0);
-  
+
       if (!queryParams) {
         console.warn('Failed to generate query params for sphere:', sphere.eH);
         return;
       }
-  
+
       const { data: hierarchyData } = await getHierarchy({
         variables: { params: queryParams }
       });
-  
+
       if (!hierarchyData?.getOrbitHierarchy) return;
-  
+
       const trees = JSON.parse(hierarchyData.getOrbitHierarchy);
       if (!trees) return;
-  
+
       parsedTrees = parseAndSortTrees(trees);
       const rootOrbitEh = parsedTrees[0].content;
       d3Hierarchy = hierarchy(parsedTrees[0]).sort(byStartTime);
-  
+
       const nodeHashes: string[] = [];
       const leafNodeHashes: string[] = [];
       const leaves: HierarchyNode<NodeContent>[] = [];
-      
+
       // Process nodes in batches
       const batchSize = 50;
       const nodes = d3Hierarchy.descendants();
-      
+
       for (let i = 0; i < nodes.length; i += batchSize) {
         const batch = nodes.slice(i, i + batchSize);
-        
+
         batch.forEach(node => {
           if (!node.data?.content) return;
+          if (node.data?.content == "uhCEkXzh1LV8i07SK1JnsHgZ8Fia17HaJgD1jop1dPSjNQUgW1DYm") {
+            debugger;
+
+          }
           const actionHash = store.get(getOrbitIdFromEh(node.data.content));
           nodeHashes.push(actionHash);
+          console.log('actionHash :>> ', actionHash);
           orbitDataUpdatesRef.current![actionHash] = {
             eH: node.data.content,
           };
@@ -168,30 +173,29 @@ function ListSpheres() {
             leaves.push(node);
           }
         });
-  
+
         await new Promise(resolve => setTimeout(resolve, 0));
       }
-  
+
       // Process win data in batches
       const today = DateTime.now();
-      
+
       for (let i = 0; i < leaves.length; i += batchSize) {
         const batch = leaves.slice(i, i + batchSize);
-        
+
         await Promise.all(batch.map(async node => {
           if (!node.data?.content) return;
-          if(!winDataUpdatesRef.current) return;
-          
+          if (!winDataUpdatesRef.current) return;
+
           const actionHash = store.get(getOrbitIdFromEh(node.data.content));
           const winData = await fetchWinDataForOrbit(client, node.data.content, today);
           if (winData) {
             winDataUpdatesRef.current!.set(actionHash, winData);
           }
         }));
-  
+
         await new Promise(resolve => setTimeout(resolve, 0));
       }
-  
       // Update app state
       store.set(appStateChangeAtom, {
         ...state,
@@ -250,7 +254,7 @@ function ListSpheres() {
         ...prev,
         [sphere.eH]: {
           rootOrbitOrbitDetails: rootOrbitDetails,
-          winData:  winDataObject,
+          winData: winDataObject,
           calculateOptions
         }
       }));
@@ -331,13 +335,13 @@ function ListSpheres() {
   if (loading) return <Spinner type="full" />;
   if (error) return <p>Error: {error.message}</p>;
   if (!spheres.length) return <></>;
-  
+
   return (
     <div className="spheres-list">
       {spheres.map((sphere: Sphere) => {
         const isLoading = loadingStates[sphere.eH];
         const sphereData = spheresData[sphere.eH];
-        
+
         debugLog('Rendering sphere:', sphere.eH, 'with data:', sphereData);
         // TODO move to main component for meaningful memoisation
         // Calculate aggregated win data for root node
@@ -362,7 +366,7 @@ function ListSpheres() {
               .filter(([key]) => key !== rootId)
               .map(([_, winData]) => {
                 const dayData = winData?.[date];
-                return Array.isArray(dayData) 
+                return Array.isArray(dayData)
                   ? dayData.every(Boolean)  // If it's an array, check if all true
                   : !!dayData;              // If it's a single value, convert to boolean
               });
@@ -377,7 +381,7 @@ function ListSpheres() {
             key={sphere.id}
             sphere={sphere}
             loading={isLoading}
-            rootOrbitWinData={sphereData?.winData ? {...rootOrbitWinData, ...sphereData.calculateOptions} : {}}
+            rootOrbitWinData={sphereData?.winData ? { ...rootOrbitWinData, ...sphereData.calculateOptions } : {}}
             rootOrbitOrbitDetails={sphereData?.rootOrbitOrbitDetails ?? null}
             setSphereIsCurrent={() => handleSetCurrentSphere(sphere.id)}
             handleVisAction={() => routeToVis(sphere)}

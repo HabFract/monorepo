@@ -32,7 +32,7 @@ import { OrbitFetcher } from "./utils";
 import { currentSphereDetailsAtom, currentSphereHashesAtom } from "../../state/sphere";
 import { currentSphereHierarchyIndices, newTraversalLevelIndexId } from "../../state/hierarchy";
 import { useUpdateOrbitMutation } from "../../hooks/gql/useUpdateOrbitMutation";
-import { getScaleDisplayName } from "../vis/helpers";
+import { debounce, getScaleDisplayName } from "../vis/helpers";
 import { ERROR_MESSAGES, INPUT_INFO_MODALS, ONBOARDING_FORM_DESCRIPTIONS } from "../../constants";
 import Collapse from "antd/es/collapse";
 
@@ -154,7 +154,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
     <Formik
       initialValues={currentOrbitValues}
       validationSchema={OrbitValidationSchema}
-      onSubmit={async (values, { setSubmitting, validateForm }) => {
+      onSubmit={debounce(async (values, { setSubmitting, validateForm }) => {
         try {
           const errors = await validateForm();
           if (Object.keys(errors).length === 0) {
@@ -215,17 +215,16 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
         } catch (error) {
           console.error(error);
         }
-      }}
+      }, 1000)}
     >
       {({ values, errors, touched, setFieldValue, validateForm, submitForm }) => {
-        const handleSubmit = () => {
+        const handleSubmit = debounce(async () => {
           try {
-            submitForm();
-            Object.values(errors).length == 0 && (submitBtn as any).props.onClick.call(null);
+            Object.values(errors).length == 0 && ((submitBtn as any).props?.onClick ? (submitBtn as any).props.onClick.call(null) : submitForm())
           } catch (error) {
             console.log('error :>> ', error);
           }
-        };
+        }, 1500);
         const submitButton = submitBtn ? (
           React.cloneElement(submitBtn as React.ReactElement, {
             loading,
@@ -299,16 +298,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                 </figure>
               </>
               }
-              <Form noValidate={true} onSubmit={async (e) => {
-                e.preventDefault();
-                // Validate before submitting
-                const errors = await validateForm();
-                if (Object.keys(errors).length === 0) {
-                  // Form is valid, allow submission
-                  submitForm()
-                }
-              }}>
-
+              <Form noValidate={true}>
                 {!parentOrbitEh && !inOnboarding && (
                   <div className="form-field flex">
                     <Field
