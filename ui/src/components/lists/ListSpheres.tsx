@@ -158,10 +158,6 @@ function ListSpheres() {
 
         batch.forEach(node => {
           if (!node.data?.content) return;
-          if (node.data?.content == "uhCEkXzh1LV8i07SK1JnsHgZ8Fia17HaJgD1jop1dPSjNQUgW1DYm") {
-            debugger;
-
-          }
           const actionHash = store.get(getOrbitIdFromEh(node.data.content));
           nodeHashes.push(actionHash);
           console.log('actionHash :>> ', actionHash);
