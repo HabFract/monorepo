@@ -13,34 +13,34 @@ interface ListLayoutProps {
   secondaryMenuAction: () => void;
 }
 
-const ListLayout = memo(({ 
-  children, 
-  type, 
-  title, 
-  primaryMenuAction, 
-  secondaryMenuAction 
+const ListLayout = memo(({
+  children,
+  type,
+  title,
+  primaryMenuAction,
+  secondaryMenuAction
 }: ListLayoutProps) => {
   const [_, transition, params, __, goBack] = useStateTransition();
 
   const routeBack = useCallback(() => {
-    if (!goBack()) {
+    if (!history[0] || (history[0]?.state).match("CreateOrbit") || !goBack()) {
       transition("Home");
     }
   }, [goBack, transition]);
 
   const actionMenu = useMemo(() => (
     <ListGroup className="no-auto-focus list-group-override w-32">
-      <ListGroup.Item 
-        disabled 
-        onClick={primaryMenuAction} 
+      <ListGroup.Item
+        disabled
+        onClick={primaryMenuAction}
         icon={getIconSvg('pencil')}
       >
         Edit
       </ListGroup.Item>
       <span className="list-item-danger text-danger">
-        <ListGroup.Item 
-          color="danger" 
-          onClick={secondaryMenuAction} 
+        <ListGroup.Item
+          color="danger"
+          onClick={secondaryMenuAction}
           icon={getIconSvg('trash')}
         >
           Delete

@@ -490,7 +490,8 @@ export abstract class BaseVisualization implements IVisualization {
    * Reset the zoom on the vis base
    */
   resetZoomer(): void {
-    const zoomer: ZoomBehavior<Element, unknown> = zoom();
+    const zoomer: ZoomBehavior<Element, unknown> = zoom().scaleExtent([0.7, 1.5])
+      .on("zoom", this.handleZoom.bind(this) as any);
     select("#vis") && select("#vis")!.call(zoomer as any);
     this.initializeZoomConfig()
   }
@@ -515,7 +516,7 @@ export abstract class BaseVisualization implements IVisualization {
 
   initializeZoomer(): ZoomBehavior<Element, unknown> {
     const zoomer: ZoomBehavior<Element, unknown> = zoom()
-      .scaleExtent([1, 1.5])
+      .scaleExtent([0.7, 1.5])
       .on("zoom", this.handleZoom.bind(this) as any);
     select("#vis") && select("#vis")!.call(zoomer as any);
     return (this.zoomer = zoomer);

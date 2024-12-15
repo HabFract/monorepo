@@ -15,11 +15,11 @@ import { useToast } from "../../contexts/toast";
 import { VisProvider } from "../../contexts/vis";
 
 const pageVariants = {
-  initial: { 
+  initial: {
     opacity: 0,
     scale: 1
   },
-  animate: { 
+  animate: {
     opacity: 1,
     scale: 1,
     transition: {
@@ -27,7 +27,7 @@ const pageVariants = {
       ease: "easeOut"
     }
   },
-  exit: { 
+  exit: {
     opacity: 0,
     scale: 1,
     transition: {
@@ -70,7 +70,7 @@ const withLayout = (component: ReactNode): FC<WithLayoutProps> => {
     if (currentSphereDetails?.eH && currentSphereDetails.eH !== store.get(currentSphereHashesAtom)?.entryHash) {
       const eH = currentSphereDetails?.eH;
       const id = currentSphereDetails?.id;
-      console.log('set current Sphere to :>> ', { entryHash: eH, actionHash: id });
+      // console.log('set current Sphere to :>> ', { entryHash: eH, actionHash: id });
       store.set(currentSphereHashesAtom, id)
     }
 
@@ -86,7 +86,7 @@ const withLayout = (component: ReactNode): FC<WithLayoutProps> => {
     const handleDeleteSphere = useCallback(() => {
       const id = store.get(currentSphereHashesAtom)?.actionHash;
       if (!id) return;
-      
+
       showModal({
         title: "Are you sure?",
         message: "This action cannot be undone...",
@@ -104,24 +104,24 @@ const withLayout = (component: ReactNode): FC<WithLayoutProps> => {
 
     // Wrap the content based on state
     const getLayoutContent = useCallback(() => {
-      const wrappedContent = (layoutComponent: ReactNode) => 
+      const wrappedContent = (layoutComponent: ReactNode) =>
         withPageTransition(layoutComponent, state);
 
       switch (true) {
         case !!state.match("Onboarding"):
           return <Onboarding>{component}</Onboarding>;
-        
+
         case ["Home", "PreloadAndCache"].includes(state):
           if (state === "Home") {
             return wrappedContent(<Home firstVisit={newUser} />);
           }
           return wrappedContent(component);
-        
+
         case state === "Settings":
           return wrappedContent(
             <SettingsLayout>{component}</SettingsLayout>
           );
-        
+
         case state === "Vis":
           return wrappedContent(
             <VisProvider>
@@ -137,7 +137,7 @@ const withLayout = (component: ReactNode): FC<WithLayoutProps> => {
 
         case ["CreateOrbit", "CreateSphere"].includes(state):
           return wrappedContent(
-            <FormLayout 
+            <FormLayout
               type={state.split('Create')[1]}
             >
               {component}
@@ -146,25 +146,25 @@ const withLayout = (component: ReactNode): FC<WithLayoutProps> => {
 
         case ["ListOrbits"].includes(state):
           return wrappedContent(
-            <ListLayout 
+            <ListLayout
               type="orbit"
               title={currentSphereDetails?.name}
-              primaryMenuAction={() => {}}
+              primaryMenuAction={() => { }}
               secondaryMenuAction={handleDeleteSphere}
             >
               {component}
             </ListLayout>
           );
-        
+
         default:
           return wrappedContent(component);
       }
     }, [
-      state, 
-      component, 
-      currentSphereDetails, 
-      handleDeleteSphere, 
-      newUser, 
+      state,
+      component,
+      currentSphereDetails,
+      handleDeleteSphere,
+      newUser,
       memoizedParams
     ]);
     return getLayoutContent();
