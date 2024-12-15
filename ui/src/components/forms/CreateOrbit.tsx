@@ -220,7 +220,10 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
       {({ values, errors, touched, setFieldValue, validateForm, submitForm }) => {
         const handleSubmit = debounce(async () => {
           try {
-            Object.values(errors).length == 0 && ((submitBtn as any).props?.onClick ? (submitBtn as any).props.onClick.call(null) : submitForm())
+            if(Object.values(errors).length == 0) {
+              submitForm();
+              (submitBtn as any)?.props?.onClick() 
+            }
           } catch (error) {
             console.log('error :>> ', error);
           }
@@ -298,7 +301,9 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
                 </figure>
               </>
               }
-              <Form noValidate={true}>
+              <Form noValidate={true} onSubmit={async (e) => {
+                e.preventDefault()
+              }}>
                 {!parentOrbitEh && !inOnboarding && (
                   <div className="form-field flex">
                     <Field

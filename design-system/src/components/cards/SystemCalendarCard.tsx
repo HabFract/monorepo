@@ -61,7 +61,7 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
               orbitWins={rootOrbitWinData || {}}
               disabled={!hasData}
             />
-            <div className="dark:bg-surface-elevated-dark rounded-2xl flex justify-between gap-2 py-2 pl-2 pr-4 mt-4">
+            <div className="dark:bg-surface-overlay-tab rounded-2xl flex justify-between gap-2 py-2 pl-2 pr-4 mt-4">
               {rootOrbitOrbitDetails?.scale && <h1 className="root-orbit-label opacity-75">{getIconForPlanetValue(rootOrbitOrbitDetails.scale)({})}</h1>}<h2 className="root-orbit-name w-full text-center">
                 {hasData
                   ? rootOrbitOrbitDetails.name
@@ -75,14 +75,14 @@ const SystemCalendar: React.FC<SystemCalendarProps> = ({
           content={<ListGroup
             theme={darkThemeListGroup}
             className="list-group-override w-48">
-            <ListGroup.Item onClick={() => handleListAction()} icon={getIconSvg('list')}>List Planitts</ListGroup.Item>
+            <ListGroup.Item disabled={!hasData} onClick={() => handleListAction()} icon={getIconSvg('list')}>List Planitts</ListGroup.Item>
             <ListGroup.Item onClick={() => handleCreateAction()} icon={getIconSvg('plus')}>Add Planitt</ListGroup.Item>
           </ListGroup>
           }
         >
           <Button onClick={() => setSphereIsCurrent()} variant="circle-icon-lg btn-neutral outlined" icon={getIconSvg('more')({}) as any}></Button>
         </Popover>
-        <Button onClick={() => handleVisAction()} variant="primary responsive">Visualise</Button>
+        <Button isDisabled={!hasData} onClick={() => handleVisAction()} variant="primary responsive">Visualise</Button>
       </footer>
     </article>
   );
