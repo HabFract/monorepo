@@ -363,7 +363,7 @@ div.handle span {
 }
 
 .current-date-string {
-  @apply text-sm font-medium mb-4;
+  @apply mb-4 text-sm font-medium;
   line-height: 2rem;
 }
 
@@ -533,7 +533,7 @@ body[data-handedness='right'] .vis-move-lateral-container {
   height: 100%;
   min-width: 100%;
   width: max-content;
-  left: 1rem;
+  left: .5rem;
 }
 
 .intersecting-pill:first-child {

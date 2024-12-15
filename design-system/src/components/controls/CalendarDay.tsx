@@ -6,11 +6,13 @@ import { DateTime } from "luxon";
 export interface CalendarDayProps {
   dateString: string;
   completed: boolean;
+  onClickDay: (date: DateTime) => void;
 }
 
 const CalendarDay: React.FC<CalendarDayProps> = ({
   dateString,
   completed,
+  onClickDay
 }) => {
   const dateFromIso = DateTime.fromISO(dateString);
   const day = dateFromIso.day;
@@ -20,7 +22,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
       <div className="calendar-day-title">
         { weekDay }
       </div>
-      <div className={completed ? "calendar-day-complete" : "calendar-day-incomplete"}>
+      <div onClick={() => onClickDay(dateFromIso)} className={completed ? "calendar-day-complete" : "calendar-day-incomplete"}>
         { day }
       </div>
     </div>
