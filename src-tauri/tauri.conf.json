@@ -1,6 +1,6 @@
 {
-  "productName": "Habit Fract",
-  "version": "0.2.0",
+  "productName": "Planitt",
+  "version": "0.3.0",
   "identifier": "net.habitfract.personal",
   "build": {
     "beforeBuildCommand": "npm run build:frontend",

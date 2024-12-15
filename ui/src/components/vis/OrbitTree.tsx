@@ -2,6 +2,7 @@ import React, { ComponentType, useEffect, useState, useCallback, useMemo, useRef
 import { VisProps } from "./types";
 import { useTreeState } from "./tree/useTreeState";
 import { TreeVisCore } from "./tree/TreeVisCore";
+
 import {
   useGetLowestSphereHierarchyLevelQuery,
   useGetOrbitHierarchyLazyQuery,
@@ -17,8 +18,9 @@ import { byStartTime, determineNewLevelIndex, parseAndSortTrees } from "./helper
 import { determineVisCoverage, generateQueryParams, deriveJsonData, createTreeVisualization, fetchHierarchyDataForLevel, handleZoomerInitialization, updateSphereHierarchyIndices, updateBreadthIndex, calculateAndSetBreadthBounds, parseOrbitHierarchyData } from "./tree-helpers";
 import { currentSphereHashesAtom, newTraversalLevelIndexId, SphereHashes, updateHierarchyAtom } from "../../state";
 import { useSetAtom } from "jotai";
-import { NODE_ENV } from "../../constants";
 import { useD3Dependencies } from "./tree/useD3Deps";
+import { useVisContext } from "../../contexts/vis";
+import { NODE_ENV } from "../../constants";
 
 export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   canvasHeight,
@@ -28,9 +30,12 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 }) => {
   // ## -- Router level state -- ##
   const [_state, transition, params, client] = useStateTransition();
-
+  const { isAppendingNode, setIsAppendingNode: _ } = useVisContext();
+  
   // ## -- Lazily load bigger d3 deps -- ##
   const { d3Modules, isLoading, error: lazyLoadError } = useD3Dependencies();
+  // Add ref to track initial render
+  const renderCountRef = useRef(0);
 
   // ## -- Component level state -- ##
   const { currentOrbitTree, setCurrentOrbitTree } = useTreeState();
@@ -43,16 +48,17 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
   const setHierarchyInAppState = useSetAtom(updateHierarchyAtom);
 
   // ## -- Data fetching hooks -- ##
-  const [getHierarchy, { data, loading, error }] = useGetOrbitHierarchyLazyQuery({
+  const [getHierarchy, { data, loading: dataLoading, error }] = useGetOrbitHierarchyLazyQuery({
     fetchPolicy: "cache-first",
   });
   // Get the hashes of the current Sphere's context
   const sphere: SphereHashes = store.get(currentSphereHashesAtom);
-  const { data: dataLevel, loading: loadingLowest } = useGetLowestSphereHierarchyLevelQuery({
+  const { data: dataLevel, loading: levelLoading } = useGetLowestSphereHierarchyLevelQuery({
     variables: { sphereEntryHashB64: sphere.entryHash as string },
   });
+
   // ## -- State for a specific TreeVis render -- ##
-  const useVisState = useCallback(() => useOrbitTreeData(sphere), [sphere.actionHash]);
+  const useVisState = useCallback(() => useOrbitTreeData(sphere), [sphere.actionHash, isAppendingNode]);
   const {
     setBreadthBounds,
     depthBounds,
@@ -72,7 +78,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   const instantiateVisObject = () => {
     if (!error && json && !currentOrbitTree && sphereNodeDetails) {
-      console.log("Instantiating tree...");
+      // console.log("Instantiating tree...");
       const newTree = createTreeVisualization({
         json,
         visCoverage,
@@ -80,14 +86,14 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
         canvasWidth,
         margin,
         transition,
-        params,
+        params: {...params, currentSphereEhB64: sphere.entryHash, currentSphereAhB64: sphere.actionHash },
         sphereNodeDetails,
         getJsonDerivation,
         setDepthBounds,
       });
       setTimeout(() => {
         setNewCurrentOrbitId((newTree as TreeVisualization)!.rootData!.data.content);
-      }, 250);
+      }, 350);
       setCurrentOrbitTree(newTree);
       newTree._json = json
       setHierarchyInAppState(newTree as any);
@@ -96,9 +102,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   const getJsonDerivation = useCallback((json: string) => deriveJsonData(json, visCoverage, x), [json, visCoverage, x]);
 
-  const fetchCurrentLevel = useCallback(async () => {
-    // console.log('data, json :>> ', data, json);
-    if (data?.getOrbitHierarchy) return;
+  const fetchCurrentLevel = async () => {
     let result = await fetchHierarchyDataForLevel({
       error,
       depthBounds,
@@ -107,7 +111,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       getHierarchy,
       client
     });
-    // console.log('json, result, data :>> ', json, result, data);
     if (!json && (!result && !data)) return;
     setUsedCachedHierarchy(!!result);
 
@@ -117,7 +120,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
     setJson(newJson);
     return newJson;
-  }, [data]);
+  };
 
   const processNewHierarchyLevel = async (json) => {
     if (!json || !data?.getOrbitHierarchy) return;
@@ -126,7 +129,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       ? JSON.parse(json!)
       : parseOrbitHierarchyData(data.getOrbitHierarchy);
 
-    !(NODE_ENV == 'test') && console.log('Processing with result... :>> ', sortedTrees);
+    // !(NODE_ENV == 'test') && console.log('Processing with result... :>> ', sortedTrees);
     setJson(JSON.stringify(sortedTrees));
 
     calculateAndSetBreadthBounds(setBreadthBounds, params, visCoverage, sortedTrees.length);
@@ -137,7 +140,6 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       setNewHierarchyIndices({ x: newLevelXIndex, y });
     }
     setBreadthIndex(isNewLevelXIndexValid ? newLevelXIndex : breadthIndex);
-
     handleZoomerInitialization(currentOrbitTree, visCoverage);
   };
 
@@ -158,28 +160,31 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
 
   useEffect(() => {
     instantiateVisObject();
-  }, [y]);
+  }, [json]);
 
   const fetchAndProcess = useCallback(async () => {
     let newJson = await fetchCurrentLevel();
-    // console.log('newJson :>> ', newJson, data);
-    if (!newJson && !data) return;
+    // console.log('newJson :>> ', newJson);
+    if (!newJson) return;
     await processHierarchyLevelAndFetchNext(newJson);
     setCanTriggerNextTreeVisRender(true);
-  }, [data, json]);
+  }, []);
 
   useEffect(() => {
     fetchAndProcess();
-  }, [data, y]);
+  }, [data, y, isAppendingNode]);
 
   useEffect(() => {
     setTimeout(() => setCanTriggerNextTreeVisRender(true), 0);
-  }, [y, x]);
+  }, [y, x, isAppendingNode]);
 
   useEffect(() => {
     if (canTriggerNextTreeVisRender && !error && currentOrbitTree && json && d3Modules) {
-      console.log('Triggered a new hierarchy render in focus mode');
+      // console.log('Triggered a new hierarchy render in focus mode');
 
+      renderCountRef.current += 1;
+      console.log('Render count:', renderCountRef.current);
+  
       const { hierarchy } = d3Modules;
       currentOrbitTree._nextRootData = hierarchy(
         getJsonDerivation(json),
@@ -201,7 +206,7 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
       }
 
       const intermediateId = newRenderNodeDetails?.direction === 'up' ? currentOrbitTree._lastRenderParentId : (noNewFocusNode ? currentOrbitTree._nextRootData.data.content : null);
-      console.log("Setting new render traversal details");
+      // console.log("Setting new render traversal details");
       setNewRenderTraversalDetails((prev) => ({ ...prev, id: newlySelectedNodeId, intermediateId }));
 
       currentOrbitTree.startInFocusMode = true;
@@ -223,14 +228,17 @@ export const OrbitTree: ComponentType<VisProps<TreeVisualization>> = ({
     }
   }, [cache, hasCachedNodes]);
 
+  const loading = dataLoading || levelLoading
   return (
-    <TreeVisCore
-      currentOrbitTree={currentOrbitTree}
-      loading={isLoading || loading || loadingLowest}
-      error={error}
-      json={json}
-      render={render}
-    />
+    <Suspense fallback={<span data-testid="loading-tree" />}>
+      <TreeVisCore
+        currentOrbitTree={currentOrbitTree}
+        loading={isLoading || loading || levelLoading}
+        error={error}
+        json={json}
+        render={render}
+      />
+    </Suspense>
   );
 };
 

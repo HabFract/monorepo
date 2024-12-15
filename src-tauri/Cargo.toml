@@ -1,7 +1,7 @@
 [package]
 name = "habit_fract"
-version = "0.2.0"
-description = "Habit Fract"
+version = "0.3.0"
+description = "Planitt"
 authors = ["Nick Stebbings"]
 license = "Apache-2.0"
 repository = "https://github.com/HabFract/monorepo"
