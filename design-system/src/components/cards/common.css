@@ -73,7 +73,7 @@
 }
 
 .planitt-card-title .planitt-scale-image.sub img {
-  transform: scale(2) translate(-2px, 4px) !important;
+  transform: scale(2) translate(-2px, 0px) !important;
 }
 
 .planitt-card-title .planitt-scale-image.atom img {

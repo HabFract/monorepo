@@ -18,7 +18,7 @@ export function getIconForPlanetValue(
       return () => (
         <img
           className="planet-icon"
-          style={{ height: "24px", width: "auto", transform: 'scale(1.3) translate(1px, 2px)', marginLeft: '4px', objectFit: "cover" }}
+          style={{ height: "24px", width: "auto", transform: 'scale(1.3) translate(0px, 1px)', marginLeft: '4px', objectFit: "cover" }}
           src="assets/planet.svg"
         />
       );
@@ -35,7 +35,7 @@ export function getIconSvg(
   icon: string,
 ): FC<ComponentProps<"svg">> | FC<ComponentProps<any>> {
   if (Object.values(Frequency).includes(icon as Frequency)) {
-    return () => <span style={{marginTop: "-0.25rem"}}>
+    return () => <span style={{ marginTop: "-0.25rem" }}>
       <FrequencyIndicator size={"sm"} frequency={decodeFrequency(icon as Frequency)} />
     </span>;
   }
@@ -44,54 +44,54 @@ export function getIconSvg(
     case "fire":
       return () => (
         <svg width="14" height="18" viewBox="0 0 14 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M13.6281 11.2222C13.3629 13.9868 10.5969 17.3333 7.13012 17.3333C3.53772 17.3333 0.699048 14.5649 0.379769 11.2222C0.0653604 7.93042 1.39909 6.38962 2.86418 4.34873C2.94106 4.24162 3.11404 4.29861 3.11799 4.43039C3.19288 6.92496 3.93319 6.57451 4.33868 8.48663C4.37304 8.64867 4.73227 8.6511 4.76105 8.48798C5.51999 4.18728 7.10385 5.76991 7.55946 0.991887C7.5708 0.872915 7.71986 0.818976 7.7972 0.910092C9.89751 3.38463 10.5836 5.21499 9.1393 9.3735C9.10191 9.48118 9.20416 9.58484 9.30805 9.53794C10.628 8.94221 11.7166 7.50353 11.8873 6.05664C11.9023 5.92931 12.0711 5.87442 12.147 5.97773C12.9668 7.09341 13.865 8.75183 13.6281 11.2222Z" fill="white"/>
+          <path d="M13.6281 11.2222C13.3629 13.9868 10.5969 17.3333 7.13012 17.3333C3.53772 17.3333 0.699048 14.5649 0.379769 11.2222C0.0653604 7.93042 1.39909 6.38962 2.86418 4.34873C2.94106 4.24162 3.11404 4.29861 3.11799 4.43039C3.19288 6.92496 3.93319 6.57451 4.33868 8.48663C4.37304 8.64867 4.73227 8.6511 4.76105 8.48798C5.51999 4.18728 7.10385 5.76991 7.55946 0.991887C7.5708 0.872915 7.71986 0.818976 7.7972 0.910092C9.89751 3.38463 10.5836 5.21499 9.1393 9.3735C9.10191 9.48118 9.20416 9.58484 9.30805 9.53794C10.628 8.94221 11.7166 7.50353 11.8873 6.05664C11.9023 5.92931 12.0711 5.87442 12.147 5.97773C12.9668 7.09341 13.865 8.75183 13.6281 11.2222Z" fill="white" />
         </svg>
       );
     case "trash":
       return () => (
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fillRule="evenodd" clipRule="evenodd" d="M4.16663 6.66663H15.8333V16.3333C15.8333 17.4379 14.9379 18.3333 13.8333 18.3333H6.16663C5.06206 18.3333 4.16663 17.4379 4.16663 16.3333V6.66663ZM8.33329 8.41663C8.74751 8.41663 9.08329 8.75241 9.08329 9.16663V14.1666C9.08329 14.5808 8.74751 14.9166 8.33329 14.9166C7.91908 14.9166 7.58329 14.5808 7.58329 14.1666V9.16663C7.58329 8.75241 7.91908 8.41663 8.33329 8.41663ZM12.4166 9.16663C12.4166 8.75241 12.0808 8.41663 11.6666 8.41663C11.2524 8.41663 10.9166 8.75241 10.9166 9.16663V14.1666C10.9166 14.5808 11.2524 14.9166 11.6666 14.9166C12.0808 14.9166 12.4166 14.5808 12.4166 14.1666V9.16663Z" fill="currentColor"/>
-          <path d="M7.5 2.66663C7.5 2.11434 7.94772 1.66663 8.5 1.66663H11.5C12.0523 1.66663 12.5 2.11434 12.5 2.66663V3.33329H7.5V2.66663Z" fill="currentColor"/>
-          <path d="M2.5 4.99996C2.5 4.53972 2.8731 4.16663 3.33333 4.16663H16.6667C17.1269 4.16663 17.5 4.53972 17.5 4.99996C17.5 5.4602 17.1269 5.83329 16.6667 5.83329H3.33333C2.8731 5.83329 2.5 5.4602 2.5 4.99996Z" fill="currentColor"/>
+          <path fillRule="evenodd" clipRule="evenodd" d="M4.16663 6.66663H15.8333V16.3333C15.8333 17.4379 14.9379 18.3333 13.8333 18.3333H6.16663C5.06206 18.3333 4.16663 17.4379 4.16663 16.3333V6.66663ZM8.33329 8.41663C8.74751 8.41663 9.08329 8.75241 9.08329 9.16663V14.1666C9.08329 14.5808 8.74751 14.9166 8.33329 14.9166C7.91908 14.9166 7.58329 14.5808 7.58329 14.1666V9.16663C7.58329 8.75241 7.91908 8.41663 8.33329 8.41663ZM12.4166 9.16663C12.4166 8.75241 12.0808 8.41663 11.6666 8.41663C11.2524 8.41663 10.9166 8.75241 10.9166 9.16663V14.1666C10.9166 14.5808 11.2524 14.9166 11.6666 14.9166C12.0808 14.9166 12.4166 14.5808 12.4166 14.1666V9.16663Z" fill="currentColor" />
+          <path d="M7.5 2.66663C7.5 2.11434 7.94772 1.66663 8.5 1.66663H11.5C12.0523 1.66663 12.5 2.11434 12.5 2.66663V3.33329H7.5V2.66663Z" fill="currentColor" />
+          <path d="M2.5 4.99996C2.5 4.53972 2.8731 4.16663 3.33333 4.16663H16.6667C17.1269 4.16663 17.5 4.53972 17.5 4.99996C17.5 5.4602 17.1269 5.83329 16.6667 5.83329H3.33333C2.8731 5.83329 2.5 5.4602 2.5 4.99996Z" fill="currentColor" />
         </svg>
       );
     case "search":
       return () => (
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M17.5 17.4999L15 14.9999" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-          <ellipse cx="9.16663" cy="9.99996" rx="7.5" ry="7.49996" stroke="currentColor" strokeWidth="1.5"/>
+          <path d="M17.5 17.4999L15 14.9999" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+          <ellipse cx="9.16663" cy="9.99996" rx="7.5" ry="7.49996" stroke="currentColor" strokeWidth="1.5" />
         </svg>
       );
     case "filter":
       return () => (
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M14.8513 2.5H4.99205C3.96346 2.5 3.37509 3.673 3.99014 4.49745L7.91367 9.75673C8.07475 9.97264 8.16176 10.2348 8.16176 10.5042V16.3793C8.16176 17.3175 9.33728 17.7393 9.9337 17.015L10.9649 15.7628C11.1492 15.539 11.25 15.2581 11.25 14.9682V10.5377C11.25 10.2478 11.3508 9.96691 11.5351 9.74311L15.8162 4.54463C16.4877 3.72917 15.9077 2.5 14.8513 2.5Z" fill="currentColor"/>
+          <path d="M14.8513 2.5H4.99205C3.96346 2.5 3.37509 3.673 3.99014 4.49745L7.91367 9.75673C8.07475 9.97264 8.16176 10.2348 8.16176 10.5042V16.3793C8.16176 17.3175 9.33728 17.7393 9.9337 17.015L10.9649 15.7628C11.1492 15.539 11.25 15.2581 11.25 14.9682V10.5377C11.25 10.2478 11.3508 9.96691 11.5351 9.74311L15.8162 4.54463C16.4877 3.72917 15.9077 2.5 14.8513 2.5Z" fill="currentColor" />
         </svg>
       );
     case "tree-vis":
       return () => (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 87">
-          <path 
-            fill="currentColor" 
+          <path
+            fill="currentColor"
             d="M60.1 57a1.6 1.6 0 0 1-1.1-.4l-5.5-5.4a1.6 1.6 0 0 1 1.2-2.8 1.6 1.6 0 0 1 1.1.5l4.5 4.4 4.1-4.4a1.6 1.6 0 0 1 2.3 2.3l-5.4 5.4a1.6 1.6 0 0 1-1.2.5Z"
           />
-          <path 
-            fill="currentColor" 
+          <path
+            fill="currentColor"
             d="M60.1 57a1.6 1.6 0 0 1-1.6-1.5V40.2a1.6 1.6 0 0 1 3.2 0v15.3a1.6 1.6 0 0 1-1.6 1.6ZM23.8 52a1.6 1.6 0 0 1-1.6-1.5v-7.7a1.6 1.6 0 1 1 3.2 0V49l6-.2a1.6 1.6 0 1 1 0 3.3Z"
           />
-          <path 
-            fill="currentColor" 
+          <path
+            fill="currentColor"
             d="M23.8 52a1.6 1.6 0 0 1-1.2-.4 1.6 1.6 0 0 1 0-2.3l10.8-10.8a1.6 1.6 0 0 1 2.8 1.2 1.6 1.6 0 0 1-.5 1.1L25 51.6a1.6 1.6 0 0 1-1.1.5ZM88.4 52a1.6 1.6 0 1 1 0-3.1h6.2l-.1-6.1a1.6 1.6 0 0 1 3.2 0v7.7a1.6 1.6 0 0 1-1.6 1.6Z"
           />
-          <path 
-            fill="currentColor" 
+          <path
+            fill="currentColor"
             d="M96 52a1.6 1.6 0 0 1-1-.4L84.1 40.8a1.6 1.6 0 0 1 0-2.3 1.6 1.6 0 0 1 1-.4 1.6 1.6 0 0 1 1.2.4l10.8 10.8a1.6 1.6 0 0 1 0 2.3 1.6 1.6 0 0 1-1.1.5ZM60.2 32.4a16.2 16.2 0 1 1 16.1-16.2 16.2 16.2 0 0 1-16.1 16.2Zm0-30.4a14.1 14.1 0 1 0 14 14.2A14.2 14.2 0 0 0 60.3 2Z"
           />
-          <path 
-            fill="currentColor" 
+          <path
+            fill="currentColor"
             d="M60.2 22.7a6.5 6.5 0 1 1 6.4-6.5 6.5 6.5 0 0 1-6.4 6.5Zm0-11a4.5 4.5 0 1 0 4.4 4.4 4.5 4.5 0 0 0-4.4-4.4Z"
           />
-          <path 
+          <path
             fill="currentColor"
             stroke="currentColor"
             strokeMiterlimit="10"
@@ -103,10 +103,10 @@ export function getIconSvg(
     case "swap-sort":
       return () => (
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.16663 6.66667L6.22373 2.98804C6.02356 2.73784 5.64302 2.73784 5.44286 2.98804L2.49996 6.66667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M5.83337 15L5.83337 3.33333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M17.5 13.3333L14.5571 17.012C14.3569 17.2622 13.9764 17.2622 13.7762 17.012L10.8333 13.3333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M14.1667 5L14.1667 16.6667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M9.16663 6.66667L6.22373 2.98804C6.02356 2.73784 5.64302 2.73784 5.44286 2.98804L2.49996 6.66667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M5.83337 15L5.83337 3.33333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M17.5 13.3333L14.5571 17.012C14.3569 17.2622 13.9764 17.2622 13.7762 17.012L10.8333 13.3333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M14.1667 5L14.1667 16.6667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       );
     case "tag":
@@ -184,12 +184,12 @@ export function getIconSvg(
     case "list":
       return () => (
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="3" width="3" height="3" rx="1" fill="currentColor"/>
-          <rect x="2" y="8" width="3" height="3" rx="1" fill="currentColor"/>
-          <rect x="2" y="13" width="3" height="3" rx="1" fill="currentColor"/>
-          <rect x="7" y="3" width="11" height="3" rx="1" fill="currentColor"/>
-          <rect x="7" y="8" width="11" height="3" rx="1" fill="currentColor"/>
-          <rect x="7" y="13" width="11" height="3" rx="1" fill="currentColor"/>
+          <rect x="2" y="3" width="3" height="3" rx="1" fill="currentColor" />
+          <rect x="2" y="8" width="3" height="3" rx="1" fill="currentColor" />
+          <rect x="2" y="13" width="3" height="3" rx="1" fill="currentColor" />
+          <rect x="7" y="3" width="11" height="3" rx="1" fill="currentColor" />
+          <rect x="7" y="8" width="11" height="3" rx="1" fill="currentColor" />
+          <rect x="7" y="13" width="11" height="3" rx="1" fill="currentColor" />
         </svg>
 
       );
@@ -209,7 +209,7 @@ export function getIconSvg(
       );
     case "plus":
       return () => (
-        <svg width="18" height="18" viewBox="0 0 12 12" style={{marginTop: '2px'}} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <svg width="18" height="18" viewBox="0 0 12 12" style={{ marginTop: '2px' }} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path d="M6 1.33337L6 10.6667" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           <path d="M10.6667 6L1.33335 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
@@ -236,14 +236,14 @@ export function getIconSvg(
     case "settings":
       return () => (
         <svg width="16" height="18" viewBox="0 0 16 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path fillRule="evenodd" clipRule="evenodd" d="M2.2102 3.4237C1.16548 3.92119 0.5 4.97516 0.5 6.13228V11.8677C0.5 13.0248 1.16548 14.0788 2.2102 14.5763L6.7102 16.7191C7.52617 17.1077 8.47383 17.1077 9.2898 16.7191L13.7898 14.5763C14.8345 14.0788 15.5 13.0248 15.5 11.8677V6.13228C15.5 4.97516 14.8345 3.92119 13.7898 3.4237L9.2898 1.28084C8.47383 0.892286 7.52617 0.892286 6.7102 1.28084L2.2102 3.4237ZM6.25 8.99999C6.25 8.03349 7.0335 7.24999 8 7.24999C8.9665 7.24999 9.75 8.03349 9.75 8.99999C9.75 9.96649 8.9665 10.75 8 10.75C7.0335 10.75 6.25 9.96649 6.25 8.99999ZM8 5.74999C6.20507 5.74999 4.75 7.20506 4.75 8.99999C4.75 10.7949 6.20507 12.25 8 12.25C9.79493 12.25 11.25 10.7949 11.25 8.99999C11.25 7.20506 9.79493 5.74999 8 5.74999Z" fill="currentColor"/>
+          <path fillRule="evenodd" clipRule="evenodd" d="M2.2102 3.4237C1.16548 3.92119 0.5 4.97516 0.5 6.13228V11.8677C0.5 13.0248 1.16548 14.0788 2.2102 14.5763L6.7102 16.7191C7.52617 17.1077 8.47383 17.1077 9.2898 16.7191L13.7898 14.5763C14.8345 14.0788 15.5 13.0248 15.5 11.8677V6.13228C15.5 4.97516 14.8345 3.92119 13.7898 3.4237L9.2898 1.28084C8.47383 0.892286 7.52617 0.892286 6.7102 1.28084L2.2102 3.4237ZM6.25 8.99999C6.25 8.03349 7.0335 7.24999 8 7.24999C8.9665 7.24999 9.75 8.03349 9.75 8.99999C9.75 9.96649 8.9665 10.75 8 10.75C7.0335 10.75 6.25 9.96649 6.25 8.99999ZM8 5.74999C6.20507 5.74999 4.75 7.20506 4.75 8.99999C4.75 10.7949 6.20507 12.25 8 12.25C9.79493 12.25 11.25 10.7949 11.25 8.99999C11.25 7.20506 9.79493 5.74999 8 5.74999Z" fill="currentColor" />
         </svg>
       );
     case "user":
       return () => (
         <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M7.99972 17.3333C4.70457 17.3333 2.3187 17.3333 0.769747 15.2121C-0.779204 13.0909 4.70459 11.5 7.99974 11.5C11.2949 11.5 16.7795 13.0909 15.2302 15.2121C13.6808 17.3332 11.2949 17.3333 7.99972 17.3333Z" fill="currentColor"/>
-          <ellipse cx="8.00004" cy="4.83332" rx="4.16667" ry="4.16667" fill="currentColor"/>
+          <path d="M7.99972 17.3333C4.70457 17.3333 2.3187 17.3333 0.769747 15.2121C-0.779204 13.0909 4.70459 11.5 7.99974 11.5C11.2949 11.5 16.7795 13.0909 15.2302 15.2121C13.6808 17.3332 11.2949 17.3333 7.99972 17.3333Z" fill="currentColor" />
+          <ellipse cx="8.00004" cy="4.83332" rx="4.16667" ry="4.16667" fill="currentColor" />
         </svg>
       );
     default:

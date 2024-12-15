@@ -217,12 +217,12 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
         }
       }, 1000)}
     >
-      {({ values, errors, touched, setFieldValue, validateForm, submitForm }) => {
+      {({ values, errors, touched, setFieldValue, isSubmitting, submitForm }) => {
         const handleSubmit = debounce(async () => {
           try {
-            if(Object.values(errors).length == 0) {
+            if (Object.values(errors).length == 0) {
               submitForm();
-              (submitBtn as any)?.props?.onClick() 
+              (submitBtn as any)?.props?.onClick()
             }
           } catch (error) {
             console.log('error :>> ', error);
@@ -230,7 +230,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
         }, 1500);
         const submitButton = submitBtn ? (
           React.cloneElement(submitBtn as React.ReactElement, {
-            loading,
+            loading: isSubmitting,
             errors,
             touched,
             disabled: Object.keys(errors).length > 0 && Object.keys(touched).length > 0,
@@ -238,7 +238,7 @@ const CreateOrbit: React.FC<CreateOrbitProps> = ({
           })
         ) : (
           <DefaultSubmitBtn
-            loading={loading}
+            loading={isSubmitting}
             editMode={editMode}
             errors={errors}
             touched={touched}

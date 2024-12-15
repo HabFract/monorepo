@@ -90,13 +90,13 @@ const Settings: React.FC<{}> = ({ }) => {
         button={
           <div className="button-group">
             <Button
-              variant={handedness === 'left' ? "primary" : "secondary"}
+              variant={handedness === 'left' ? "primary" : "neutral"}
               onClick={() => setHandedness('left')}
             >
               Left
             </Button>
             <Button
-              variant={handedness === 'right' ? "primary" : "secondary"}
+              variant={handedness === 'right' ? "primary" : "neutral"}
               onClick={() => setHandedness('right')}
             >
               Right
@@ -106,33 +106,33 @@ const Settings: React.FC<{}> = ({ }) => {
       />
 
       {/* Performance Mode Section */}
-      {/* <ActionCard
-        title="Performance Mode"
-        body="Select the performance mode for the application (Better running ➡️ Better looking)"
+      <ActionCard
+        title="Look/Performance Mode"
+        body="Select the mode for the Planitt images (Flat: Better performance ➡️ Deep: Better looking)"
         variant="button"
         button={
           <div className="button-group">
             <Button
-              variant={performanceMode === 'snappy' ? "primary" : "secondary"}
+              variant={performanceMode === 'snappy' ? "primary" : "neutral"}
               onClick={() => setPerformanceMode('snappy')}
             >
-              Snappy
+              Flat
             </Button>
             <Button
-              variant={performanceMode === 'snancy' ? "primary" : "secondary"}
+              variant={performanceMode === 'snancy' ? "primary" : "neutral"}
               onClick={() => setPerformanceMode('snancy')}
             >
               Balanced
             </Button>
             <Button
-              variant={performanceMode === 'fancy' ? "primary" : "secondary"}
+              variant={performanceMode === 'fancy' ? "primary" : "neutral"}
               onClick={() => setPerformanceMode('fancy')}
             >
-              Fancy
+              Deep
             </Button>
           </div>
         }
-      /> */}
+      />
     </section>
 
     <section>

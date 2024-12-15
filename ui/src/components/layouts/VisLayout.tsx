@@ -17,7 +17,7 @@ function VisLayout({ children, title, handleDeleteSphere }: any) {
   }, [title, transition])
 
   const routeBack = useCallback(() => {
-    if ((history[0]?.state).match("PreloadAndCache") || (history[0]?.state).match("Onboarding") || (history[0]?.state == 'Vis') || !goBack()) {
+    if (!history[0] || (history[0]?.state).match("PreloadAndCache") || (history[0]?.state).match("Onboarding") || (history[0]?.state == 'Vis') || !goBack()) {
       transition("Home");
     }
   }, [history, goBack, transition]);

@@ -85,6 +85,7 @@ import { NODE_ENV } from "../../../constants";
 import { curves, getClassesForNodeVectorGroup, getScaleForPlanet } from "../tree-helpers";
 import { calculateCompletionStatusAtom, getWinCompletionForOrbitForDayAtom } from "../../../state/win";
 import { currentDayAtom } from "../../../state";
+import { performanceModeAtom } from "@state/ui";
 
 export class TreeVisualization extends BaseVisualization {
   layout!: TreeLayout<unknown>;
@@ -556,14 +557,17 @@ export class TreeVisualization extends BaseVisualization {
       //@ts-expect-error
       .attr("style", (d: any) => {
         if (!d?.data?.content || !this.nodeDetails[d.data.content]) return "";
+        const mode = store.get(performanceModeAtom)
         const { scale } = this.nodeDetails[d.data.content];
+        const imageVersion = mode == 'snancy' ? "1" : mode == 'snappy' ? "2" : "";
+        console.log('mode, imageVersion :>> ', mode, imageVersion);
         switch (scale) {
           case "Atom":
-            return "background: url(assets/moon.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
+            return `background: url(assets/moon${imageVersion}.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;`;
           case "Astro":
-            return "background: url(assets/sun.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
+            return `background: url(assets/sun${imageVersion}.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;`;
           case "Sub":
-            return "background: url(assets/planet.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;";
+            return `background: url(assets/planet${imageVersion}.svg);background-position: bottom;background-size: cover;background-repeat: no-repeat;width: 100%;height: 100%;`;
         }
       });
   }
